@@ -63,7 +63,7 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigRestTime = 'rest-config';
   static const _routineConfigMaxRestTime = 'max-rest-config';
 
-  Routine? _currentRoutine;
+  Routine? activeRoutine;
   late ExercisesProvider _exerciseProvider;
   final WgerBaseProvider baseProvider;
   List<Routine> _routines = [];
@@ -97,7 +97,7 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Clears all lists
   void clear() {
-    _currentRoutine = null;
+    activeRoutine = null;
     _routines = [];
     _weightUnits = [];
     _repetitionUnits = [];
@@ -138,28 +138,14 @@ class RoutinesProvider with ChangeNotifier {
     return _routines.indexWhere((routine) => routine.id == id);
   }
 
-  /// Set the currently "active" workout plan
-  void setCurrentPlan(int id) {
-    _currentRoutine = findById(id);
-  }
-
-  /// Returns the currently "active" workout plan
-  Routine? get currentRoutine {
-    return _currentRoutine;
-  }
-
-  /// Reset the currently "active" workout plan to null
-  void resetCurrentRoutine() {
-    _currentRoutine = null;
-  }
-
-  /// Returns the current active workout plan. At the moment this is just
-  /// the latest, but this might change in the future.
-  Routine? get activeRoutine {
+  /// Sets the current active routine. At the moment this is just the latest,
+  /// but this might change in the future.
+  void setActiveRoutine() {
     if (_routines.isNotEmpty) {
-      return _routines.first;
+      activeRoutine = _routines.first;
+    } else {
+      activeRoutine = null;
     }
-    return null;
   }
 
   /*
@@ -179,12 +165,13 @@ class RoutinesProvider with ChangeNotifier {
       await fetchAndSetRoutineFull(entry['id']);
     }
 
+    setActiveRoutine();
     notifyListeners();
   }
 
-  /// Fetches all workout plan sparsely, i.e. only with the data on the plan
-  /// object itself and no child attributes
-  Future<void> fetchAndSetAllPlansSparse() async {
+  /// Fetches all routines sparsely, i.e. only with the data on the object itself
+  /// and no child attributes
+  Future<void> fetchAndSetAllRoutinesSparse() async {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(_routinesUrlPath, query: {'limit': '1000', 'is_template': 'false'}),
     );
@@ -194,7 +181,7 @@ class RoutinesProvider with ChangeNotifier {
       _routines.add(plan);
     }
 
-    // _workoutPlans.sort((a, b) => b.created.compareTo(a.created));
+    setActiveRoutine();
     notifyListeners();
   }
 
@@ -216,18 +203,19 @@ class RoutinesProvider with ChangeNotifier {
     }
   }
 
-  /// Fetches a workout plan sparsely, i.e. only with the data on the plan
-  /// object itself and no child attributes
+  /// Fetches a routine sparsely, i.e. only with the data on the object itself
+  /// and no child attributes
   Future<Routine> fetchAndSetRoutineSparse(int planId) async {
     final fullPlanData = await baseProvider.fetch(
       baseProvider.makeUrl(_routinesUrlPath, id: planId),
     );
-    final plan = Routine.fromJson(fullPlanData);
-    _routines.add(plan);
+    final routine = Routine.fromJson(fullPlanData);
+    _routines.add(routine);
     _routines.sort((a, b) => b.created.compareTo(a.created));
 
+    setActiveRoutine();
     notifyListeners();
-    return plan;
+    return routine;
   }
 
   /// Fetches a workout plan fully, i.e. with all corresponding child attributes
@@ -306,7 +294,7 @@ class RoutinesProvider with ChangeNotifier {
     routine.dayDataGym = dayDataEntriesGym;
 
     // Logs
-    routine.sessions = List<WorkoutSessionApi>.from(sessionDataEntries);
+    routine.sessions = List<WorkoutSessionApi>.of(sessionDataEntries);
     for (final session in routine.sessions) {
       for (final log in session.logs) {
         if (log.weightUnitId != null) {
@@ -327,6 +315,7 @@ class RoutinesProvider with ChangeNotifier {
       _routines.add(routine);
     }
 
+    setActiveRoutine();
     notifyListeners();
     return routine;
   }

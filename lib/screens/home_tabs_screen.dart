@@ -101,7 +101,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-        routinesProvider.fetchAndSetAllPlansSparse(),
+        routinesProvider.fetchAndSetAllRoutinesSparse(),
         // routinesProvider.fetchAndSetAllRoutinesFull(),
         weightProvider.fetchAndSetEntries(),
         measurementProvider.fetchAndSetAllCategoriesAndEntries(),
@@ -114,12 +114,11 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
       }
 
-      // Current workout plan
+      // Current routine
       widget._logger.info('Loading current routine');
       if (routinesProvider.activeRoutine != null) {
         final planId = routinesProvider.activeRoutine!.id!;
         await routinesProvider.fetchAndSetRoutineFull(planId);
-        routinesProvider.setCurrentPlan(planId);
       }
     }
 
