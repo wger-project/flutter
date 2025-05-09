@@ -19,21 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 
 class AboutPage extends StatelessWidget {
   static String routeName = '/AboutPage';
-
-  static String githubProjectUrl = 'https://github.com/wger-project';
-  static String githubIssuesUrl = 'https://github.com/wger-project/flutter/issues/new/choose';
-  static String discordUrl = 'https://discord.gg/rPWFv6W';
-  static String mastodonUrl = 'https://fosstodon.org/@wger';
-  static String weblateUrl = 'https://hosted.weblate.org/engage/wger';
-  static String buyMeACoffeeUrl = 'https://buymeacoffee.com/wger';
-  static String liberapayUrl = 'https://liberapay.com/wger';
-  static String githubSponsorsUrl = 'https://github.com/sponsors/wger-project';
 
   const AboutPage({super.key});
 
@@ -111,19 +103,19 @@ class AboutPage extends StatelessWidget {
               leading: const Icon(Icons.bug_report),
               title: Text(i18n.aboutBugsListTitle),
               contentPadding: EdgeInsets.zero,
-              onTap: () => launchURL(githubIssuesUrl, context),
+              onTap: () => launchURL(GITHUB_ISSUES_URL, context),
             ),
             ListTile(
               leading: const Icon(Icons.translate),
               title: Text(i18n.aboutTranslationListTitle),
               contentPadding: EdgeInsets.zero,
-              onTap: () => launchURL(weblateUrl, context),
+              onTap: () => launchURL(WEBLATE_URL, context),
             ),
             ListTile(
               leading: const Icon(Icons.code),
               title: Text(i18n.aboutSourceListTitle),
               contentPadding: EdgeInsets.zero,
-              onTap: () => launchURL(githubProjectUrl, context),
+              onTap: () => launchURL(GITHUB_PROJECT_URL, context),
             ),
 
             _buildSectionSpacer(),
@@ -140,17 +132,17 @@ class AboutPage extends StatelessWidget {
                   ElevatedButton.icon(
                     icon: const FaIcon(FontAwesomeIcons.mugHot, size: 18),
                     label: const Text('Buy Me A Coffee'),
-                    onPressed: () => launchURL(buyMeACoffeeUrl, context),
+                    onPressed: () => launchURL(BUY_ME_A_COFFE_URL, context),
                   ),
                   ElevatedButton.icon(
                     icon: const FaIcon(FontAwesomeIcons.solidHeart, size: 18),
                     label: const Text('Liberapay'),
-                    onPressed: () => launchURL(liberapayUrl, context),
+                    onPressed: () => launchURL(LIBERAPAY_URL, context),
                   ),
                   ElevatedButton.icon(
                     icon: const FaIcon(FontAwesomeIcons.github, size: 18),
                     label: const Text('GitHub Sponsors'),
-                    onPressed: () => launchURL(githubSponsorsUrl, context),
+                    onPressed: () => launchURL(GITHUB_SPONSORS_URL, context),
                   ),
                 ],
               ),
@@ -162,13 +154,13 @@ class AboutPage extends StatelessWidget {
               leading: const FaIcon(FontAwesomeIcons.discord),
               title: Text(i18n.aboutContactUsListTitle),
               contentPadding: EdgeInsets.zero,
-              onTap: () => launchURL(discordUrl, context),
+              onTap: () => launchURL(DISCORD_URL, context),
             ),
             ListTile(
               leading: const FaIcon(FontAwesomeIcons.mastodon),
               title: Text(i18n.aboutMastodonListTitle),
               contentPadding: EdgeInsets.zero,
-              onTap: () => launchURL(mastodonUrl, context),
+              onTap: () => launchURL(MASTODON_URL, context),
             ),
 
             _buildSectionSpacer(),

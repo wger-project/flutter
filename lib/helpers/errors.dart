@@ -32,6 +32,8 @@ import 'package:wger/main.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/routines.dart';
 
+import 'consts.dart';
+
 void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? context}) {
   final logger = Logger('showHttpExceptionErrorDialog');
 
@@ -191,7 +193,6 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
             TextButton(
               child: const Text('Report issue'),
               onPressed: () async {
-                const githubRepoUrl = 'https://github.com/wger-project/flutter';
                 final description = Uri.encodeComponent(
                   '## Description\n\n'
                   '[Please describe what you were doing when the error occurred.]\n\n'
@@ -201,7 +202,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                   'Stack trace:\n'
                   '```\n$stackTrace\n```',
                 );
-                final githubIssueUrl = '$githubRepoUrl/issues/new?template=1_bug.yml'
+                final githubIssueUrl = '$GITHUB_ISSUES_BUG_URL'
                     '&title=$errorTitle'
                     '&description=$description';
                 final Uri reportUri = Uri.parse(githubIssueUrl);
