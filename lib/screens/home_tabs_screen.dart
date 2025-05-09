@@ -49,6 +49,7 @@ class HomeTabsScreen extends StatefulWidget {
 
 class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
   late Future<void> _initialData;
+  bool _errorHandled = false;
   int _selectedIndex = 0;
 
   @override
@@ -87,45 +88,30 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
       // Base data
       widget._logger.info('Loading base data');
-      try {
-        await Future.wait([
-          authProvider.setServerVersion(),
-          userProvider.fetchAndSetProfile(),
-          routinesProvider.fetchAndSetUnits(),
-          nutritionPlansProvider.fetchIngredientsFromCache(),
-          exercisesProvider.fetchAndSetInitialData(),
-        ]);
-      } catch (e) {
-        widget._logger.warning('Exception loading base data');
-        widget._logger.warning(e.toString());
-      }
+      await Future.wait([
+        authProvider.setServerVersion(),
+        userProvider.fetchAndSetProfile(),
+        routinesProvider.fetchAndSetUnits(),
+        nutritionPlansProvider.fetchIngredientsFromCache(),
+        exercisesProvider.fetchAndSetInitialData(),
+      ]);
 
       // Plans, weight and gallery
-      widget._logger.info('Loading plans, weight, measurements and gallery');
-      try {
-        await Future.wait([
-          galleryProvider.fetchAndSetGallery(),
-          nutritionPlansProvider.fetchAndSetAllPlansSparse(),
-          routinesProvider.fetchAndSetAllRoutinesSparse(),
-          // routinesProvider.fetchAndSetAllRoutinesFull(),
-          weightProvider.fetchAndSetEntries(),
-          measurementProvider.fetchAndSetAllCategoriesAndEntries(),
-        ]);
-      } catch (e) {
-        widget._logger.warning('Exception loading plans, weight, measurements and gallery');
-        widget._logger.info(e.toString());
-      }
+      widget._logger.info('Loading routines, weight, measurements and gallery');
+      await Future.wait([
+        galleryProvider.fetchAndSetGallery(),
+        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+        routinesProvider.fetchAndSetAllRoutinesSparse(),
+        // routinesProvider.fetchAndSetAllRoutinesFull(),
+        weightProvider.fetchAndSetEntries(),
+        measurementProvider.fetchAndSetAllCategoriesAndEntries(),
+      ]);
 
       // Current nutritional plan
       widget._logger.info('Loading current nutritional plan');
-      try {
-        if (nutritionPlansProvider.currentPlan != null) {
-          final plan = nutritionPlansProvider.currentPlan!;
-          await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
-        }
-      } catch (e) {
-        widget._logger.warning('Exception loading current nutritional plan');
-        widget._logger.warning(e.toString());
+      if (nutritionPlansProvider.currentPlan != null) {
+        final plan = nutritionPlansProvider.currentPlan!;
+        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
       }
 
       // Current routine
@@ -144,6 +130,28 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     return FutureBuilder<void>(
       future: _initialData,
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          // Throw the original error with the original stack trace, otherwise
+          // the error will only point to these lines here
+          if (!_errorHandled) {
+            _errorHandled = true;
+            final error = snapshot.error;
+            final stackTrace = snapshot.stackTrace;
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                if (error != null && stackTrace != null) {
+                  throw Error.throwWithStackTrace(error, stackTrace);
+                }
+                throw error!;
+              }
+            });
+          }
+
+          // Note that we continue to show the app, even if there was an error.
+          // return const Scaffold(body: LoadingWidget());
+        }
+
         if (snapshot.connectionState != ConnectionState.done) {
           return const Scaffold(
             body: LoadingWidget(),

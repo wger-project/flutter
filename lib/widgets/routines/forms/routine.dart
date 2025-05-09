@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
@@ -20,6 +22,7 @@ class RoutineForm extends StatefulWidget {
 
 class _RoutineFormState extends State<RoutineForm> {
   final _form = GlobalKey<FormState>();
+  Widget errorMessage = const SizedBox.shrink();
 
   bool isSaving = false;
   late bool fitInWeek;
@@ -50,6 +53,7 @@ class _RoutineFormState extends State<RoutineForm> {
     final i18n = AppLocalizations.of(context);
 
     final children = [
+      errorMessage,
       TextFormField(
         key: const Key('field-name'),
         decoration: InputDecoration(labelText: i18n.name),
@@ -225,19 +229,22 @@ class _RoutineFormState extends State<RoutineForm> {
                       );
                     }
                   }
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${i18n.anErrorOccurred} $e')),
-                  );
+                  setState(() {
+                    errorMessage = const SizedBox.shrink();
+                  });
+                } on WgerHttpException catch (error) {
+                  if (context.mounted) {
+                    setState(() {
+                      errorMessage = FormHttpErrorsWidget(error);
+                    });
+                  }
                 } finally {
                   if (mounted) {
-                    setState(() => isSaving = false);
+                    setState(() {
+                      isSaving = false;
+                    });
                   }
                 }
-
-                setState(() {
-                  isSaving = false;
-                });
               },
         child: isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
       ),

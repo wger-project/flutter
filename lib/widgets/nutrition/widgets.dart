@@ -25,7 +25,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -203,15 +202,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
       key: const Key('scan-button'),
       icon: const FaIcon(FontAwesomeIcons.barcode),
       onPressed: () async {
-        try {
-          if (!widget.test!) {
-            barcode = await readerscan(context);
-          }
-        } catch (e) {
-          if (mounted) {
-            showErrorDialog(e, context);
-          }
+        if (!widget.test!) {
+          barcode = await readerscan(context);
         }
+
         if (!mounted) {
           return;
         }

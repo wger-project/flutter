@@ -18,9 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
@@ -101,35 +99,26 @@ class MeasurementCategoryForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              try {
-                categoryData['id'] == null
-                    ? await Provider.of<MeasurementProvider>(
-                        context,
-                        listen: false,
-                      ).addCategory(
-                        MeasurementCategory(
-                          id: categoryData['id'],
-                          name: categoryData['name'],
-                          unit: categoryData['unit'],
-                        ),
-                      )
-                    : await Provider.of<MeasurementProvider>(
-                        context,
-                        listen: false,
-                      ).editCategory(
-                        categoryData['id'],
-                        categoryData['name'],
-                        categoryData['unit'],
-                      );
-              } on WgerHttpException catch (error) {
-                if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
-                }
-              } catch (error) {
-                if (context.mounted) {
-                  showErrorDialog(error, context);
-                }
-              }
+              categoryData['id'] == null
+                  ? await Provider.of<MeasurementProvider>(
+                      context,
+                      listen: false,
+                    ).addCategory(
+                      MeasurementCategory(
+                        id: categoryData['id'],
+                        name: categoryData['name'],
+                        unit: categoryData['unit'],
+                      ),
+                    )
+                  : await Provider.of<MeasurementProvider>(
+                      context,
+                      listen: false,
+                    ).editCategory(
+                      categoryData['id'],
+                      categoryData['name'],
+                      categoryData['unit'],
+                    );
+
               if (context.mounted) {
                 Navigator.of(context).pop();
               }
@@ -276,37 +265,28 @@ class MeasurementEntryForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              try {
-                _entryData['id'] == null
-                    ? await Provider.of<MeasurementProvider>(
-                        context,
-                        listen: false,
-                      ).addEntry(MeasurementEntry(
-                        id: _entryData['id'],
-                        category: _entryData['category'],
-                        date: _entryData['date'],
-                        value: _entryData['value'],
-                        notes: _entryData['notes'],
-                      ))
-                    : await Provider.of<MeasurementProvider>(
-                        context,
-                        listen: false,
-                      ).editEntry(
-                        _entryData['id'],
-                        _entryData['category'],
-                        _entryData['value'],
-                        _entryData['notes'],
-                        _entryData['date'],
-                      );
-              } on WgerHttpException catch (error) {
-                if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
-                }
-              } catch (error) {
-                if (context.mounted) {
-                  showErrorDialog(error, context);
-                }
-              }
+              _entryData['id'] == null
+                  ? await Provider.of<MeasurementProvider>(
+                      context,
+                      listen: false,
+                    ).addEntry(MeasurementEntry(
+                      id: _entryData['id'],
+                      category: _entryData['category'],
+                      date: _entryData['date'],
+                      value: _entryData['value'],
+                      notes: _entryData['notes'],
+                    ))
+                  : await Provider.of<MeasurementProvider>(
+                      context,
+                      listen: false,
+                    ).editEntry(
+                      _entryData['id'],
+                      _entryData['category'],
+                      _entryData['value'],
+                      _entryData['notes'],
+                      _entryData['date'],
+                    );
+
               if (context.mounted) {
                 Navigator.of(context).pop();
               }

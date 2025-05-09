@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/routines.dart';
@@ -125,6 +126,21 @@ void main() {
           verify(mockRoutinesProvider.editSession(captureAny)).captured.single as WorkoutSession;
       expect(captured.notes, 'Updated notes');
       expect(onSavedCalled, isTrue);
+    });
+
+    testWidgets('shows server side error messages', (WidgetTester tester) async {
+      // Arrange
+      await pumpSessionForm(tester);
+      when(mockRoutinesProvider.addSession(any, any)).thenThrow(WgerHttpException.fromMap({
+        'name': ['The name is not valid'],
+      }));
+
+      // Act
+      await tester.tap(find.byKey(const ValueKey('save-button')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('The name is not valid'), findsOneWidget, reason: 'Error message is shown');
     });
   });
 }

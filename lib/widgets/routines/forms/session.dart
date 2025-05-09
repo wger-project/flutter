@@ -21,8 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/routines.dart';
@@ -51,6 +51,7 @@ class SessionForm extends StatefulWidget {
 }
 
 class _SessionFormState extends State<SessionForm> {
+  Widget errorMessage = const SizedBox.shrink();
   final _form = GlobalKey<FormState>();
 
   final impressionController = TextEditingController();
@@ -90,6 +91,7 @@ class _SessionFormState extends State<SessionForm> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          errorMessage,
           ToggleButtons(
             renderBorder: false,
             onPressed: (int index) {
@@ -128,6 +130,7 @@ class _SessionFormState extends State<SessionForm> {
             children: [
               Flexible(
                 child: TextFormField(
+                  key: const ValueKey('time-start'),
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).timeStart,
                     errorMaxLines: 2,
@@ -170,6 +173,7 @@ class _SessionFormState extends State<SessionForm> {
               const SizedBox(width: 10),
               Flexible(
                 child: TextFormField(
+                  key: const ValueKey('time-end'),
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).timeEnd,
                   ),
@@ -219,16 +223,18 @@ class _SessionFormState extends State<SessionForm> {
                   await routinesProvider.editSession(widget._session);
                 }
 
+                setState(() {
+                  errorMessage = const SizedBox.shrink();
+                });
+
                 if (context.mounted && widget._onSaved != null) {
                   widget._onSaved!();
                 }
               } on WgerHttpException catch (error) {
                 if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
-                }
-              } catch (error) {
-                if (context.mounted) {
-                  showErrorDialog(error, context);
+                  setState(() {
+                    errorMessage = FormHttpErrorsWidget(error);
+                  });
                 }
               }
             },

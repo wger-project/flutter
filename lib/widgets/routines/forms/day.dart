@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/routines.dart';
@@ -56,6 +58,8 @@ class ReorderableDaysList extends StatefulWidget {
 }
 
 class _ReorderableDaysListState extends State<ReorderableDaysList> {
+  Widget errorMessage = const SizedBox.shrink();
+
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
@@ -63,6 +67,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
 
     return Column(
       children: [
+        errorMessage,
         ReorderableListView.builder(
           buildDefaultDragHandles: false,
           shrinkWrap: true,
@@ -120,7 +125,18 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
               }
             });
 
-            provider.editDays(widget.days);
+            try {
+              provider.editDays(widget.days);
+              setState(() {
+                errorMessage = const SizedBox.shrink();
+              });
+            } on WgerHttpException catch (error) {
+              if (context.mounted) {
+                setState(() {
+                  errorMessage = FormHttpErrorsWidget(error);
+                });
+              }
+            }
           },
         ),
         Card(
@@ -161,6 +177,8 @@ class DayFormWidget extends StatefulWidget {
 }
 
 class _DayFormWidgetState extends State<DayFormWidget> {
+  Widget errorMessage = const SizedBox.shrink();
+
   final descriptionController = TextEditingController();
   final nameController = TextEditingController();
   late bool isRestDay;
@@ -193,6 +211,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
       key: _form,
       child: Column(
         children: [
+          errorMessage,
           Text(
             widget.day.isRest ? i18n.restDay : widget.day.name,
             style: Theme.of(context).textTheme.titleLarge,
@@ -292,25 +311,24 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                     try {
                       await Provider.of<RoutinesProvider>(context, listen: false)
                           .editDay(widget.day);
-                    } catch (error) {
-                      await showDialog(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: const Text('An error occurred!'),
-                          content: const Text('Something went wrong.'),
-                          actions: [
-                            TextButton(
-                              child: const Text('Okay'),
-                              onPressed: () {
-                                Navigator.of(ctx).pop();
-                              },
-                            ),
-                          ],
-                        ),
-                      );
+                      if (context.mounted) {
+                        setState(() {
+                          errorMessage = const SizedBox.shrink();
+                        });
+                      }
+                    } on WgerHttpException catch (error) {
+                      if (context.mounted) {
+                        setState(() {
+                          errorMessage = FormHttpErrorsWidget(error);
+                        });
+                      }
+                    } finally {
+                      if (mounted) {
+                        setState(() {
+                          isSaving = false;
+                        });
+                      }
                     }
-
-                    setState(() => isSaving = false);
                   },
             child:
                 isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
