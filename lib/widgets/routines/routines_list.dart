@@ -41,7 +41,7 @@ class _RoutinesListState extends State<RoutinesList> {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
 
     return RefreshIndicator(
-      onRefresh: () => widget._routineProvider.fetchAndSetAllPlansSparse(),
+      onRefresh: () => widget._routineProvider.fetchAndSetAllRoutinesSparse(),
       child: widget._routineProvider.items.isEmpty
           ? const TextPrompt()
           : ListView.builder(
@@ -53,7 +53,7 @@ class _RoutinesListState extends State<RoutinesList> {
                 return Card(
                   child: ListTile(
                     onTap: () async {
-                      widget._routineProvider.setCurrentPlan(currentRoutine.id!);
+                      widget._routineProvider.activeRoutine = currentRoutine;
 
                       setState(() {
                         _loadingRoutine = currentRoutine.id;

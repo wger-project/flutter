@@ -22,6 +22,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
+import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
@@ -69,18 +71,54 @@ void _setupLogging() {
   });
 }
 
-void main() async {
-  _setupLogging();
-  //zx.setLogEnabled(kDebugMode);
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+void main() async {
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Logger
+  _setupLogging();
+
+  final logger = Logger('main');
+  //zx.setLogEnabled(kDebugMode);
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
 
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
+
+  // Catch errors from Flutter itself (widget build, layout, paint, etc.)
+  FlutterError.onError = (FlutterErrorDetails details) {
+    final stack = details.stack ?? StackTrace.empty;
+    if (kDebugMode) {
+      FlutterError.dumpErrorToConsole(details);
+    }
+
+    // Don't show the full error dialog for network image loading errors.
+    if (details.exception is NetworkImageLoadException) {
+      return;
+    }
+
+    showGeneralErrorDialog(details.exception, stack);
+  };
+
+  // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (kDebugMode) {
+      logger.warning('Caught error by PlatformDispatcher: $error');
+      logger.warning('Stack trace: $stack');
+    }
+    if (error is WgerHttpException) {
+      showHttpExceptionErrorDialog(error);
+    } else {
+      showGeneralErrorDialog(error, stack);
+    }
+
+    // Return true to indicate that the error has been handled.
+    return true;
+  };
 
   // Application
   runApp(const riverpod.ProviderScope(child: MainApp()));
@@ -90,18 +128,19 @@ class MainApp extends StatelessWidget {
   const MainApp();
 
   Widget _getHomeScreen(AuthProvider auth) {
-    if (auth.state == AuthState.loggedIn) {
-      return HomeTabsScreen();
-    } else if (auth.state == AuthState.updateRequired) {
-      return const UpdateAppScreen();
-    } else {
-      return FutureBuilder(
-        future: auth.tryAutoLogin(),
-        builder: (ctx, authResultSnapshot) =>
-            authResultSnapshot.connectionState == ConnectionState.waiting
-                ? const SplashScreen()
-                : const AuthScreen(),
-      );
+    switch (auth.state) {
+      case AuthState.loggedIn:
+        return HomeTabsScreen();
+      case AuthState.updateRequired:
+        return const UpdateAppScreen();
+      default:
+        return FutureBuilder(
+          future: auth.tryAutoLogin(),
+          builder: (ctx, authResultSnapshot) =>
+              authResultSnapshot.connectionState == ConnectionState.waiting
+                  ? const SplashScreen()
+                  : const AuthScreen(),
+        );
     }
   }
 
@@ -173,6 +212,7 @@ class MainApp extends StatelessWidget {
         builder: (ctx, auth, _) => Consumer<UserProvider>(
           builder: (ctx, user, _) => MaterialApp(
             title: 'wger',
+            navigatorKey: navigatorKey,
             theme: wgerLightTheme,
             darkTheme: wgerDarkTheme,
             highContrastTheme: wgerLightThemeHc,

@@ -22,7 +22,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/ui.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -41,7 +41,7 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
+    final deviceSize = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
@@ -105,6 +105,7 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard> {
   bool isObscure = true;
   bool confirmIsObscure = true;
+  Widget errorMessage = const SizedBox.shrink();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
@@ -195,24 +196,21 @@ class _AuthCardState extends State<AuthCard> {
         );
         return;
       }
-
-      setState(() {
-        _isLoading = false;
-      });
+      if (context.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } on WgerHttpException catch (error) {
-      if (mounted) {
-        showHttpExceptionErrorDialog(error, context);
+      if (context.mounted) {
+        setState(() {
+          errorMessage = FormHttpErrorsWidget(error);
+        });
       }
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (error) {
+    } finally {
       if (mounted) {
-        showErrorDialog(error, context);
+        setState(() => _isLoading = false);
       }
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
@@ -250,6 +248,7 @@ class _AuthCardState extends State<AuthCard> {
             child: AutofillGroup(
               child: Column(
                 children: [
+                  errorMessage,
                   TextFormField(
                     key: const Key('inputUsername'),
                     decoration: InputDecoration(

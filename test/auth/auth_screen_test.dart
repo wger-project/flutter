@@ -146,7 +146,7 @@ void main() {
       ));
     });
 
-    testWidgets('Login - wront username & password', (WidgetTester tester) async {
+    testWidgets('Login - wrong username & password', (WidgetTester tester) async {
       // Arrange
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
@@ -168,7 +168,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.textContaining('An Error Occurred'), findsOne);
       expect(find.textContaining('Non field errors'), findsOne);
       expect(find.textContaining('Username or password unknown'), findsOne);
       verify(mockClient.post(
@@ -259,7 +258,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.textContaining('An Error Occurred'), findsOne);
       expect(find.textContaining('This password is too common'), findsOne);
       expect(find.textContaining('This password is entirely numeric'), findsOne);
       expect(find.textContaining('This field must be unique'), findsOne);
