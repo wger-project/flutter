@@ -422,10 +422,17 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
       ) as _i9.Future<_i7.Ingredient?>);
 
   @override
-  _i9.Future<void> logMealToDiary(_i5.Meal? meal) => (super.noSuchMethod(
+  _i9.Future<void> logMealToDiary(
+    _i5.Meal? meal,
+    DateTime? mealDateTime,
+  ) =>
+      (super.noSuchMethod(
         Invocation.method(
           #logMealToDiary,
-          [meal],
+          [
+            meal,
+            mealDateTime,
+          ],
         ),
         returnValue: _i9.Future<void>.value(),
         returnValueForMissingStub: _i9.Future<void>.value(),
