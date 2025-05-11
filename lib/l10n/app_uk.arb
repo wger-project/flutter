@@ -958,5 +958,7 @@
   "errorInfoDescription": "Вибачте, але щось пішло не так. Ви можете допомогти нам виправити це, повідомивши про проблему на GitHub.",
   "@errorInfoDescription": {},
   "copyToClipboard": "Копіювати в буфер обміну",
-  "@copyToClipboard": {}
+  "@copyToClipboard": {},
+  "aboutWhySupportTitle": "Відкритий код та безкоштовний у використанні ❤️",
+  "@aboutWhySupportTitle": {}
 }
