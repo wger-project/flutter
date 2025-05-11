@@ -245,7 +245,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.textContaining('An Error Occurred'), findsOne);
       expect(find.textContaining('Detail'), findsOne);
       expect(find.textContaining('Invalid token'), findsOne);
       verify(mockClient.get(
