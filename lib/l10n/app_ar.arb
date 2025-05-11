@@ -415,6 +415,7 @@
   "registerInstead": "ليس لديك حساب ؟ سجّل الان",
   "@registerInstead": {},
   "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
   "repetitions": "التكرار",
   "@repetitions": {
     "description": "Generated entry for translation for server strings"
