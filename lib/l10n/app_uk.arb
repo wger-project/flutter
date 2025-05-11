@@ -976,5 +976,19 @@
   "aboutTranslationListTitle": "Перекласти програму",
   "@aboutTranslationListTitle": {},
   "others": "Інші",
-  "@others": {}
+  "@others": {},
+  "apiToken": "Токен API",
+  "@apiToken": {},
+  "useApiToken": "Використовувати токен API",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "Використовуйте ім'я користувача та пароль",
+  "@useUsernameAndPassword": {},
+  "invalidApiToken": "Будь ласка, введіть дійсний ключ API",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "Ключ API може містити лише літери a-f, цифри 0-9 та мати довжину рівно 40 символів",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  }
 }
