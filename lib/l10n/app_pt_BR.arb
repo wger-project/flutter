@@ -448,6 +448,7 @@
   "useMetric": "Use unidades métricas para peso corporal",
   "@useMetric": {},
   "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
   "selectEntry": "Por favor, selecione uma entrada",
   "@selectEntry": {},
   "noMatchingExerciseFound": "Nenhum exercício correspondente encontrado",
