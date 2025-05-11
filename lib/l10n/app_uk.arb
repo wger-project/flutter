@@ -521,7 +521,7 @@
   },
   "miles": "Милі",
   "@miles": {},
-  "aboutPageTitle": "Про Wger",
+  "aboutPageTitle": "Про нас та підтримка",
   "@aboutPageTitle": {},
   "noMeasurementEntries": "У вас немає записів вимірювання",
   "@noMeasurementEntries": {},
@@ -698,7 +698,7 @@
   "@kg": {
     "description": "Generated entry for translation for server strings"
   },
-  "kilometers_per_hour": "Кілометрів на годину",
+  "kilometers_per_hour": "Кілометри на годину",
   "@kilometers_per_hour": {
     "description": "Generated entry for translation for server strings"
   },
@@ -845,9 +845,9 @@
   "@today": {},
   "loggedToday": "Зареєстровано сьогодні",
   "@loggedToday": {},
-  "aboutDonateTitle": "Пожертвуйте",
+  "aboutDonateTitle": "Зробіть пожертву",
   "@aboutDonateTitle": {},
-  "aboutDonateText": "Купіть нам каву, щоб допомогти проекту, оплатити витрати на сервер і підтримати нас",
+  "aboutDonateText": "Хоча проект є безкоштовним і завжди ним залишатиметься, запуск сервера - ні! Розвиток також вимагає значного часу і зусиль від волонтерів. Ваш внесок безпосередньо підтримує ці витрати, допомагаючи підтримувати надійність сервісу.",
   "@aboutDonateText": {},
   "surplus": "надлишок",
   "@surplus": {
@@ -960,5 +960,21 @@
   "copyToClipboard": "Копіювати в буфер обміну",
   "@copyToClipboard": {},
   "aboutWhySupportTitle": "Відкритий код та безкоштовний у використанні ❤️",
-  "@aboutWhySupportTitle": {}
+  "@aboutWhySupportTitle": {},
+  "aboutJoinCommunityTitle": "Приєднуйтесь до спільноти",
+  "@aboutJoinCommunityTitle": {},
+  "aboutDiscordTitle": "Дискорд",
+  "@aboutDiscordTitle": {},
+  "aboutBugsListTitle": "Повідомити про проблему або запропонувати функцію",
+  "@aboutBugsListTitle": {},
+  "aboutSourceListTitle": "Переглянути вихідний код",
+  "@aboutSourceListTitle": {},
+  "aboutContributeTitle": "Зробити внесок",
+  "@aboutContributeTitle": {},
+  "aboutContributeText": "Ми вітаємо будь-які види внесків. Незалежно від того, чи ви розробник, перекладач, чи просто захоплений фітнесом, ми цінуємо будь-яку підтримку!",
+  "@aboutContributeText": {},
+  "aboutTranslationListTitle": "Перекласти програму",
+  "@aboutTranslationListTitle": {},
+  "others": "Інші",
+  "@others": {}
 }
