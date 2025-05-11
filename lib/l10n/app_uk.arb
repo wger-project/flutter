@@ -866,6 +866,7 @@
   "selectMealToLog": "Виберіть страву, щоб записати в щоденник",
   "@selectMealToLog": {},
   "aboutMastodonTitle": "Мастодонт",
+  "@aboutMastodonTitle": {},
   "settingsCacheTitle": "Кеш",
   "@settingsCacheTitle": {},
   "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
