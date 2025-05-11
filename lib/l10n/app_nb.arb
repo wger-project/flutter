@@ -132,10 +132,6 @@
   "@repetitions": {
     "description": "Repetitions for an exercise set"
   },
-  "newWorkout": "Ny treningsøktplan",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "exercise": "Øvelse",
   "@exercise": {
     "description": "An exercise for a workout"
@@ -147,10 +143,6 @@
   "labelWorkoutPlan": "Trenkingsøktplan",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
-  },
-  "labelWorkoutPlans": "Treningsøktplaner",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "logHelpEntriesUnits": "Kun oppføringer med vekt vises, ingen andre kombinasjoner.",
   "@logHelpEntriesUnits": {},

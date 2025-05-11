@@ -41,13 +41,13 @@ void main() {
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
 
-  when(mockNutrition.editMeal(any)).thenAnswer((_) => Future.value(Meal()));
-  when(mockNutrition.addMeal(any, any)).thenAnswer((_) => Future.value(Meal()));
-
   setUp(() {
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
     mockNutrition = MockNutritionPlansProvider();
+
+    when(mockNutrition.editMeal(any)).thenAnswer((_) => Future.value(Meal()));
+    when(mockNutrition.addMeal(any, any)).thenAnswer((_) => Future.value(Meal()));
   });
 
   Widget createFormScreen(Meal meal, {locale = 'en'}) {

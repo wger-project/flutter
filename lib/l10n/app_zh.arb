@@ -105,14 +105,6 @@
   "@repetitionUnit": {},
   "weightUnit": "重量单位",
   "@weightUnit": {},
-  "noWorkoutPlans": "您还没有设定锻炼计划",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "newWorkout": "新增锻炼计划",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "category": "类别",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
@@ -152,10 +144,6 @@
   "labelBottomNavWorkout": "锻炼",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
-  },
-  "labelWorkoutPlans": "锻炼计划",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "loginInstead": "已经有帐号了吗？立即登入",
   "@loginInstead": {},
@@ -216,22 +204,6 @@
   },
   "calendar": "日历",
   "@calendar": {},
-  "aboutContactUsTitle": "Hello!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutBugsTitle": "有疑问或者建议?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutSourceText": "获取code and server",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutSourceTitle": "源代码",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "aboutDescription": "感谢您使用wger！ wger 是一个协作开源项目，由来自世界各地的健身爱好者创建。",
   "@aboutDescription": {
     "description": "Text in the about dialog"
@@ -425,14 +397,6 @@
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
   },
-  "aboutTranslationText": "可以在weblate网站上参与翻译工作",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutTranslationTitle": "翻译",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "musclesSecondary": "次要部位",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
@@ -440,14 +404,6 @@
   "newSet": "新增训练日",
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
-  },
-  "aboutContactUsText": "聊一聊",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutBugsText": "如果某些情况未如预期运作或您认为缺少某个功能，请与我们联络。",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
   },
   "plateCalculatorNotDivisible": "达不到预定重量",
   "@plateCalculatorNotDivisible": {
@@ -754,10 +710,6 @@
   "@aboutPageTitle": {},
   "selectEntry": "请选择一项",
   "@selectEntry": {},
-  "aboutMastodonText": "在长毛象上关注我们以获得此项目的新闻",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "cardio": "有氧",
   "@cardio": {
     "description": "Generated entry for translation for server strings"
@@ -972,9 +924,6 @@
     "description": "Generated entry for translation for server strings"
   },
   "aboutMastodonTitle": "长毛象",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "routines": "训练计划",
   "@routines": {},
   "newRoutine": "新计划",

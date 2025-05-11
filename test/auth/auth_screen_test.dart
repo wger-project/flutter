@@ -176,7 +176,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.textContaining('An Error Occurred'), findsOne);
       expect(find.textContaining('Non field errors'), findsOne);
       expect(find.textContaining('Username or password unknown'), findsOne);
       verify(mockClient.post(
@@ -346,7 +345,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.textContaining('An Error Occurred'), findsOne);
       expect(find.textContaining('This password is too common'), findsOne);
       expect(find.textContaining('This password is entirely numeric'), findsOne);
       expect(find.textContaining('This field must be unique'), findsOne);

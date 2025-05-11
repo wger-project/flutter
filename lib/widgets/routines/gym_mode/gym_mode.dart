@@ -194,6 +194,7 @@ class _GymModeState extends ConsumerState<GymMode> {
             _controller,
             ref.read(gymStateProvider).startTime,
             _exercisePages,
+            dayId: widget._dayDataGym.day!.id!,
           ),
         ];
 

@@ -112,3 +112,15 @@ const COLOR_SECONDARY_MUSCLES = Colors.orange;
 // Min account age to contribute exercises. Needs to be kept in sync with
 // the value on the backend
 const MIN_ACCOUNT_AGE = 14;
+
+/// Different project URLs
+const GITHUB_PROJECT_URL = 'https://github.com/wger-project';
+const GITHUB_REPO_URL = '$GITHUB_PROJECT_URL/flutter';
+const GITHUB_ISSUES_URL = '$GITHUB_REPO_URL/issues/new/choose';
+const GITHUB_ISSUES_BUG_URL = '$GITHUB_REPO_URL/issues/new?template=1_bug.yml';
+const GITHUB_SPONSORS_URL = 'https://github.com/sponsors/wger-project';
+const DISCORD_URL = 'https://discord.gg/rPWFv6W';
+const MASTODON_URL = 'https://fosstodon.org/@wger';
+const WEBLATE_URL = 'https://hosted.weblate.org/engage/wger';
+const BUY_ME_A_COFFEE_URL = 'https://buymeacoffee.com/wger';
+const LIBERAPAY_URL = 'https://liberapay.com/wger';
