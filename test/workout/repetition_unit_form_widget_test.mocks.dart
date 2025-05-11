@@ -189,6 +189,15 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i4.RepetitionUnit);
 
   @override
+  set activeRoutine(_i5.Routine? _activeRoutine) => super.noSuchMethod(
+        Invocation.setter(
+          #activeRoutine,
+          _activeRoutine,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   set weightUnits(List<_i3.WeightUnit>? weightUnits) => super.noSuchMethod(
         Invocation.setter(
           #weightUnits,
@@ -285,18 +294,9 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as int);
 
   @override
-  void setCurrentPlan(int? id) => super.noSuchMethod(
+  void setActiveRoutine() => super.noSuchMethod(
         Invocation.method(
-          #setCurrentPlan,
-          [id],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void resetCurrentRoutine() => super.noSuchMethod(
-        Invocation.method(
-          #resetCurrentRoutine,
+          #setActiveRoutine,
           [],
         ),
         returnValueForMissingStub: null,
@@ -313,9 +313,9 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<void> fetchAndSetAllPlansSparse() => (super.noSuchMethod(
+  _i13.Future<void> fetchAndSetAllRoutinesSparse() => (super.noSuchMethod(
         Invocation.method(
-          #fetchAndSetAllPlansSparse,
+          #fetchAndSetAllRoutinesSparse,
           [],
         ),
         returnValue: _i13.Future<void>.value(),
