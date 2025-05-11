@@ -426,6 +426,7 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
     String? username,
     String? password,
     String? serverUrl,
+    String? apiToken,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -434,6 +435,7 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
             username,
             password,
             serverUrl,
+            apiToken,
           ],
         ),
         returnValue: _i5.Future<_i2.LoginActions>.value(_i2.LoginActions.update),
