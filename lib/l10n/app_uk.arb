@@ -945,5 +945,17 @@
   "setHasProgressionWarning": "Зверніть увагу, що на даний момент неможливо змінити всі параметри набору в мобільному додатку або налаштувати автоматичний прогрес. Наразі використовуйте веб-додаток.",
   "@setHasProgressionWarning": {},
   "setHasNoExercises": "У цьому комплексі ще немає вправ!",
-  "@setHasNoExercises": {}
+  "@setHasNoExercises": {},
+  "errorCouldNotConnectToServerDetails": "Програмі не вдалося підключитися до сервера. Перевірте підключення до Інтернету або URL-адресу сервера та спробуйте ще раз. Якщо проблема не зникає, зверніться до адміністратора сервера.",
+  "@errorCouldNotConnectToServerDetails": {},
+  "errorViewDetails": "Технічні деталі",
+  "@errorViewDetails": {},
+  "errorCouldNotConnectToServer": "Не вдалося підключитися до сервера",
+  "@errorCouldNotConnectToServer": {},
+  "errorInfoDescription2": "Ви можете продовжувати користуватися додатком, але деякі функції можуть не працювати.",
+  "@errorInfoDescription2": {},
+  "errorInfoDescription": "Вибачте, але щось пішло не так. Ви можете допомогти нам виправити це, повідомивши про проблему на GitHub.",
+  "@errorInfoDescription": {},
+  "copyToClipboard": "Копіювати в буфер обміну",
+  "@copyToClipboard": {}
 }

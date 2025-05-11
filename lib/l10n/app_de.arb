@@ -852,5 +852,19 @@
     }
   },
   "settingsIngredientCacheDescription": "Zutaten-Cache",
-  "@settingsIngredientCacheDescription": {}
+  "@settingsIngredientCacheDescription": {},
+  "routines": "Routinen",
+  "@routines": {},
+  "newRoutine": "Neue Routine",
+  "@newRoutine": {},
+  "noRoutines": "Du hast keine Routinen",
+  "@noRoutines": {},
+  "sets": "Sätze",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "restTime": "Pausenzeit",
+  "@restTime": {},
+  "restDay": "Erholungstag",
+  "@restDay": {}
 }
