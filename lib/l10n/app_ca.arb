@@ -89,14 +89,6 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "Nou pla d'entrenament",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "No tens cap pla d'entrenament",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "repetitions": "Repeticions",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
@@ -287,34 +279,6 @@
   },
   "goToDetailPage": "Vés a la pàgina dels detalls",
   "@goToDetailPage": {},
-  "aboutSourceTitle": "Codi font",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Teniu cap problema o idea?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Poseu-vos en contacte si alguna cosa no funciona com s'esperava o si hi ha alguna funció que penseu que manca.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Saludeu!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "Si voleu xatejar amb nosaltres, entreu al servidor de Discord i poseu-vos en contacte",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Traducció",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "Aquesta aplicació es tradueix a weblate. Si voleu ajudar-hi també, feu clic al vincle i comenceu a traduir",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "calendar": "Calendari",
   "@calendar": {},
   "enterValue": "Introduïu un valor",
@@ -384,10 +348,6 @@
   },
   "loginInstead": "Ja tens un compte? Entra",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Plans d'entrenament",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavNutrition": "Nutrició",
   "@labelBottomNavNutrition": {
     "description": "Label used in bottom navigation, use a short word"
@@ -474,10 +434,6 @@
   "@sodium": {},
   "delete": "Esborra",
   "@delete": {},
-  "aboutSourceText": "Obtingueu el codi font d'aquesta aplicació i el seu servidor a Github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
   "confirmDelete": "Esteu segur de voler esborrar '{toDelete}'?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
@@ -696,13 +652,6 @@
     }
   },
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Segueix-nos a Mastodon per a actualitzacions i notícies sobre el projecte",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "selectEntry": "Si us plau, selecciona una entrada",
   "@selectEntry": {},
   "baseNameEnglish": "Tots els exercicis necessiten un nom base en anglès",

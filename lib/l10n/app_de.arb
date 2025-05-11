@@ -1,11 +1,5 @@
 {
   "@@last_modified": "2020-11-11T15:04:05.523531",
-  "labelWorkoutPlans": "Trainingspläne",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans",
-    "type": "text",
-    "placeholders": {}
-  },
   "labelWorkoutPlan": "Trainingsplan",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan",
@@ -118,10 +112,6 @@
   "@nutritionalPlan": {},
   "addIngredient": "Zutat hinzufügen",
   "@addIngredient": {},
-  "newWorkout": "Neuer Trainingsplan",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "gymMode": "Studiomodus",
   "@gymMode": {
     "description": "Label when starting the gym mode"
@@ -266,10 +256,6 @@
   },
   "todaysWorkout": "Dein Training heute",
   "@todaysWorkout": {},
-  "noWorkoutPlans": "Du hast keine Trainingspläne",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "nrOfSets": "Sätze pro Übung: {nrOfSets}",
   "@nrOfSets": {
     "description": "Label shown on the slider where the user selects the nr of sets",
@@ -344,38 +330,6 @@
   "logout": "Abmelden",
   "@logout": {
     "description": "Text for logout button"
-  },
-  "aboutTranslationText": "Diese Anwendung wird auf weblate übersetzt. Wenn du auch helfen möchtest, klicke auf den Link und beginne zu übersetzen",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutTranslationTitle": "Übersetzung",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutContactUsText": "Wenn du mit uns chatten möchtest, komm auf den Discord-Server und sag hallo",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutContactUsTitle": "Sag Hallo!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutBugsText": "Setze dich mit uns in Verbindung, wenn sich etwas nicht wie erwartet verhalten hat oder wenn es eine Funktion gibt, die du vermisst.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutBugsTitle": "Hast du ein Problem oder eine Idee?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutSourceText": "Hole dir den Quellcode dieser Anwendung und des dazugehörigen Servers auf Github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutSourceTitle": "Quelltext",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
   },
   "aboutDescription": "Danke, dass du wger verwendest! wger ist ein gemeinschaftliches quelloffenes Projekt, das von Fitness-Enthusiasten aus der ganzen Welt entwickelt wurde.",
   "@aboutDescription": {
@@ -770,16 +724,9 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "plates": "Platten",
   "@plates": {
     "description": "Generated entry for translation for server strings"
-  },
-  "aboutMastodonText": "Folgen Sie uns auf Mastodon für Updates und Neuigkeiten zum Projekt",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
   },
   "aboutDonateTitle": "Spende",
   "@aboutDonateTitle": {},

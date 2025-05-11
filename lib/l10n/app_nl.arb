@@ -83,10 +83,6 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "Nieuwe workout planing",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "reps": "Herhalingen",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"

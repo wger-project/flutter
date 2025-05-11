@@ -56,38 +56,6 @@
   },
   "calendar": "Calendario",
   "@calendar": {},
-  "aboutTranslationText": "Esta aplicación fue traducida en weblste. Si tú también quieres ayudar, haz click en el link y comienza a traducir",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutTranslationTitle": "Traducción",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutContactUsText": "Si quieres chatear con nosotros, ingresa a nuestro servidor de Discord y ponte en contacto",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutContactUsTitle": "¡Saluda!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutBugsText": "Ponte en contacto si algo no funciona como se esperaba o si hay alguna función que sientes que está faltando.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutBugsTitle": "¿Tienes algún problema o idea?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutSourceText": "Obtener el código fuente de esta aplicación y su servidor en GitHub",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutSourceTitle": "Código fuente",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "aboutDescription": "¡Gracias por usar wger! wger es un proyecto colaborativo de código abierto, realizado por entusiastas del fitness de todo el planeta.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
@@ -280,14 +248,6 @@
   },
   "addExercise": "Añadir ejercicio",
   "@addExercise": {},
-  "noWorkoutPlans": "No posees ningún plan de entrenamiento",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "newWorkout": "Nuevo plan de entrenamiento",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "category": "Categoría",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
@@ -315,10 +275,6 @@
   "labelWorkoutLogs": "Registros de entrenamientos",
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
-  },
-  "labelWorkoutPlans": "Planes de ejercicios",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "loginInstead": "¿Ya tiene una cuenta? Inicia sesión",
   "@loginInstead": {},
@@ -785,13 +741,6 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Siguenos en mastodon para recibir actualizaciones y noticias sobre el proyecto",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "settingsExerciseCacheDescription": "Cache de ejercicios",
   "@settingsExerciseCacheDescription": {},
   "aboutDonateTitle": "Donar",

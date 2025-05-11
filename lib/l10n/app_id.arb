@@ -68,10 +68,6 @@
   "@registerInstead": {},
   "loginInstead": "Punya akun? Masuk",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Daftar rencana workout",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Workout",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -123,14 +119,6 @@
   "category": "Kategori",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "newWorkout": "Rencana workout baru",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "Kamu belum mempunyain rencana workout",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "repetitions": "Pengulangan",
   "@repetitions": {
@@ -417,38 +405,6 @@
   "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
-  },
-  "aboutSourceTitle": "Source code",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutSourceText": "Get the source code of this application and its server on github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Have a problem or idea?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Get in touch if something didn't behave as expected or if there is a feature that you feel is missing.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Say hi!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "If you want to chat with us, hop on the Discord server and get in touch",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Translation",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "This application is translated on weblate. If you also want to help, click the link and start translating",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
   },
   "calendar": "Calendar",
   "@calendar": {},
