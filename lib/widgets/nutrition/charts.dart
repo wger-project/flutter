@@ -289,7 +289,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       _ => '',
     };
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(text, style: style),
     );
   }
@@ -298,8 +298,9 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     if (value == meta.max) {
       return Container();
     }
+
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(
         AppLocalizations.of(context).gValue(meta.formattedValue),
         style: const TextStyle(fontSize: 10),
@@ -480,13 +481,13 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
       _ => '',
     };
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(text, style: const TextStyle(fontSize: 10)),
     );
   }
 
   Widget leftTitles(double value, TitleMeta meta) => SideTitleWidget(
-        axisSide: meta.axisSide,
+        meta: meta,
         child: Text(
           AppLocalizations.of(context).percentValue(value.toStringAsFixed(0)),
           style: const TextStyle(fontSize: 10),
