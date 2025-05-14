@@ -884,6 +884,10 @@
   "@repetitions": {
     "description": "Generated entry for translation for server strings"
   },
+  "resistance_band": "Resistance band",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  },
   "sz_bar": "SZ-Bar",
   "@sz_bar": {
     "description": "Generated entry for translation for server strings"

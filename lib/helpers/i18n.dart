@@ -98,6 +98,9 @@ String getTranslation(String value, BuildContext context) {
     case 'Repetitions':
       return AppLocalizations.of(context).repetitions;
 
+    case 'Resistance band':
+      return AppLocalizations.of(context).resistance_band;
+
     case 'SZ-Bar':
       return AppLocalizations.of(context).sz_bar;
 
