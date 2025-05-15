@@ -785,5 +785,15 @@
   "textPromptSubheading": "اضغط على الزر للبدء",
   "@textPromptSubheading": {},
   "measurement": "القياس",
-  "@measurement": {}
+  "@measurement": {},
+  "useApiToken": "استخدم رمز API",
+  "@useApiToken": {},
+  "apiToken": "رمز API",
+  "@apiToken": {},
+  "invalidApiToken": "رجاءً أدخل مفتاح API صالح",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "useUsernameAndPassword": "استخدم اسم المستخدم وكلمة المرور",
+  "@useUsernameAndPassword": {}
 }
