@@ -18,12 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
-import 'package:wger/helpers/json.dart';
 
 class LogMealArguments {
   final Meal meal;
@@ -43,11 +43,22 @@ class LogMealScreen extends StatefulWidget {
 
 class _LogMealScreenState extends State<LogMealScreen> {
   double portionPct = 100;
-  final _whatDateController = TextEditingController();
-  final _whatTimeController = TextEditingController();
-  _LogMealScreenState() {
-    _whatDateController.text = dateToYYYYMMDD(DateTime.now())!;
-    _whatTimeController.text = timeToString(TimeOfDay.now())!;
+  final _dateController = TextEditingController();
+  final _timeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _dateController.text = dateToYYYYMMDD(DateTime.now())!;
+    _timeController.text = timeToString(TimeOfDay.now())!;
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    _timeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -100,27 +111,12 @@ class _LogMealScreenState extends State<LogMealScreen> {
                     const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
                     Expanded(
                       child: TextFormField(
-                        textAlign: TextAlign.center,
-
+                        key: const ValueKey('field-date'),
                         readOnly: true,
-
-                        // Stop keyboard from appearing
-
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).date,
-
-                          floatingLabelAlignment: FloatingLabelAlignment.center,
-
-                          // suffixIcon: const Icon(Icons.calendar_today),
-                        ),
-
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
                         enableInteractiveSelection: false,
-
-                        controller: _whatDateController,
-
+                        controller: _dateController,
                         onTap: () async {
-                          // Show Date Picker Here
-
                           final pickedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
@@ -129,48 +125,37 @@ class _LogMealScreenState extends State<LogMealScreen> {
                           );
 
                           if (pickedDate != null) {
-                            _whatDateController.text = dateToYYYYMMDD(pickedDate)!;
+                            _dateController.text = dateToYYYYMMDD(pickedDate)!;
                           }
                         },
-
                         onSaved: (newValue) {
-                          _whatDateController.text = newValue!;
+                          _dateController.text = newValue!;
                         },
                       ),
                     ),
                     const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
                     Expanded(
-                        child: TextFormField(
-                      key: const Key('field-time'),
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).time,
+                      child: TextFormField(
+                        key: const ValueKey('field-time'),
+                        readOnly: true,
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
+                        controller: _timeController,
+                        onTap: () async {
+                          // Open time picker
+                          final pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(DateTime.now()),
+                          );
 
-                        floatingLabelAlignment: FloatingLabelAlignment.center,
-
-                        //suffixIcon: const Icon(Icons.punch_clock)
+                          if (pickedTime != null) {
+                            _timeController.text = timeToString(pickedTime)!;
+                          }
+                        },
+                        onSaved: (newValue) {
+                          _timeController.text = newValue!;
+                        },
                       ),
-                      controller: _whatTimeController,
-                      onTap: () async {
-                        // Stop keyboard from appearing
-
-                        FocusScope.of(context).requestFocus(FocusNode());
-
-                        // Open time picker
-
-                        final pickedTime = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.fromDateTime(DateTime.now()),
-                        );
-
-                        if (pickedTime != null) {
-                          _whatTimeController.text = timeToString(pickedTime)!;
-                        }
-                      },
-                      onSaved: (newValue) {
-                        _whatTimeController.text = newValue!;
-                      },
-                    )),
+                    ),
                     const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
                   ],
                 ),
@@ -186,9 +171,9 @@ class _LogMealScreenState extends State<LogMealScreen> {
                             context,
                             listen: false,
                           ).logMealToDiary(
-                              meal,
-                              DateTime.parse(
-                                  '${_whatDateController.text} ${_whatTimeController.text}'));
+                            meal,
+                            DateTime.parse('${_dateController.text} ${_timeController.text}'),
+                          );
                           // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

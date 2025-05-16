@@ -100,7 +100,6 @@ class MealItem {
     num? amount,
     Ingredient? ingredient,
     IngredientWeightUnit? weightUnitObj,
-    DateTime? dateTimeOfMeal,
   }) {
     final m = MealItem(
       id: id ?? this.id,
