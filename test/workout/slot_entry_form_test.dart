@@ -26,7 +26,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
-import 'package:wger/widgets/routines/forms/slot.dart';
+import 'package:wger/widgets/routines/forms/slot_entry.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
 import '../../test_data/routines.dart';
