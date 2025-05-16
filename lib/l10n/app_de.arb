@@ -418,7 +418,7 @@
   },
   "timeStartAhead": "Die Startzeit kann nicht vor der Endzeit liegen",
   "@timeStartAhead": {},
-  "total": "Summe",
+  "total": "Gesamt",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
@@ -871,5 +871,41 @@
   "copyToClipboard": "In Zwischenablage kopieren",
   "@copyToClipboard": {},
   "min": "Min",
-  "@min": {}
+  "@min": {},
+  "apiToken": "API Token",
+  "@apiToken": {},
+  "useApiToken": "Nutze API Token",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "Nutze Nutzername und Passwort",
+  "@useUsernameAndPassword": {},
+  "invalidApiToken": "Bitte geben Sie einen gültigen API-Schlüssel ein",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "Ein API-Schlüssel darf nur die Buchstaben a-f und die Zahlen 0-9 enthalten und genau 40 Zeichen lang sein",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "exerciseNr": "Übung {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "Supersatz {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "isRestDay": "Ist Ruhetag",
+  "@isRestDay": {}
 }
