@@ -53,6 +53,17 @@ String? dateToYYYYMMDD(DateTime? dateTime) {
   return DateFormat('yyyy-MM-dd').format(dateTime);
 }
 
+String dateToIsoWithTimezone(DateTime dateTime) {
+  final offset = dateTime.timeZoneOffset;
+  final sign = offset.isNegative ? '-' : '+';
+  final int hours = offset.inHours;
+  final int minutes = offset.inMinutes.remainder(60).abs();
+  final offsetString = '$sign'
+      '${hours.abs().toString().padLeft(2, '0')}:'
+      '${minutes.toString().padLeft(2, '0')}';
+  return '${dateTime.toIso8601String()} $offsetString';
+}
+
 /*
  * Converts a time to a date object.
  * Needed e.g. when the wger api only sends a time but no date information.

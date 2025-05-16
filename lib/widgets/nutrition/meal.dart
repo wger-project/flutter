@@ -116,7 +116,7 @@ class _MealWidgetState extends State<MealWidget> {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).addIngredient,
-                            MealItemForm(widget._meal, widget._recentMealItems),
+                            getMealItemForm(widget._meal, widget._recentMealItems),
                             hasListView: true,
                           ),
                         );

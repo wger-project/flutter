@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -70,8 +71,10 @@ class _LogMealScreenState extends State<LogMealScreen> {
           .toList(),
     );
 
+    final i18n = AppLocalizations.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context).logMeal)),
+      appBar: AppBar(title: Text(i18n.logMeal)),
       body: Consumer<NutritionPlansProvider>(
         builder: (context, nutritionProvider, child) => SingleChildScrollView(
           child: Padding(
@@ -83,7 +86,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 if (meal.mealItems.isEmpty)
-                  ListTile(title: Text(AppLocalizations.of(context).noIngredientsDefined))
+                  ListTile(title: Text(i18n.noIngredientsDefined))
                 else
                   Column(
                     children: [
@@ -113,7 +116,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
                       child: TextFormField(
                         key: const ValueKey('field-date'),
                         readOnly: true,
-                        decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+                        decoration: InputDecoration(labelText: i18n.date),
                         enableInteractiveSelection: false,
                         controller: _dateController,
                         onTap: () async {
@@ -138,7 +141,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
                       child: TextFormField(
                         key: const ValueKey('field-time'),
                         readOnly: true,
-                        decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
+                        decoration: InputDecoration(labelText: i18n.time),
                         controller: _timeController,
                         onTap: () async {
                           // Open time picker
@@ -165,28 +168,32 @@ class _LogMealScreenState extends State<LogMealScreen> {
                   children: [
                     if (meal.mealItems.isNotEmpty)
                       TextButton(
-                        child: const Text('Log'),
+                        child: Text(i18n.save),
                         onPressed: () async {
+                          final loggedTime = getDateTimeFromDateAndTime(
+                            _dateController.text,
+                            _timeController.text,
+                          );
+
                           await Provider.of<NutritionPlansProvider>(
                             context,
                             listen: false,
-                          ).logMealToDiary(
-                            meal,
-                            DateTime.parse('${_dateController.text} ${_timeController.text}'),
-                          );
-                          // ignore: use_build_context_synchronously
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                // ignore: use_build_context_synchronously
-                                AppLocalizations.of(context).mealLogged,
-                                textAlign: TextAlign.center,
+                          ).logMealToDiary(meal, loggedTime);
+
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  i18n.mealLogged,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
-                            ),
-                          );
-                          Navigator.of(context).pop();
-                          if (args.popTwice) {
+                            );
+
                             Navigator.of(context).pop();
+                            if (args.popTwice) {
+                              Navigator.of(context).pop();
+                            }
                           }
                         },
                       ),

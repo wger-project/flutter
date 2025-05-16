@@ -39,6 +39,15 @@ void main() {
       });
     });
 
+    group('dateToIsoWithTimezone', () {
+      test('should format DateTime to a string with timezone', () {
+        expect(
+          dateToIsoWithTimezone(DateTime(2025, 5, 16, 18, 15)),
+          '2025-05-16T18:15:00.000 +02:00',
+        );
+      });
+    });
+
     group('stringToTime', () {
       test('should default to 00:00 for null input', () {
         expect(stringToTime(null), const TimeOfDay(hour: 0, minute: 0));
