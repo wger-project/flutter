@@ -8,7 +8,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/misc.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
 import 'package:wger/models/exercises/muscle.dart';

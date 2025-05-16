@@ -27,7 +27,7 @@ Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
       'id': instance.id,
       'meal': instance.mealId,
       'plan': instance.planId,
-      'datetime': instance.datetime.toIso8601String(),
+      'datetime': dateToUtcIso8601(instance.datetime),
       'comment': instance.comment,
       'ingredient': instance.ingredientId,
       'weight_unit': instance.weightUnitId,

@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * wger Workout Manager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/helpers/json.dart';
@@ -36,6 +54,15 @@ void main() {
       test('should format DateTime to yyyy-MM-dd', () {
         final dateTime = DateTime(2022, 1, 30);
         expect(dateToYYYYMMDD(dateTime), '2022-01-30');
+      });
+    });
+
+    group('dateToIsoWithTimezone', () {
+      test('should format DateTime to a string with timezone', () {
+        expect(
+          dateToUtcIso8601(DateTime.parse('2025-05-16T18:15:00+02:00')),
+          '2025-05-16T16:15:00.000Z',
+        );
       });
     });
 
