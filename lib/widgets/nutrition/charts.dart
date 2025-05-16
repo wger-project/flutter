@@ -429,8 +429,10 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Wrap(
+                spacing: 10.0,
+                runSpacing: 10.0,
+                alignment: WrapAlignment.center,
                 children: [
                   (AppLocalizations.of(context).deficit, colorPlanned),
                   (AppLocalizations.of(context).surplus, COLOR_SURPLUS),
@@ -439,8 +441,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                 ]
                     .map(
                       (e) => Indicator(
-                        color: e.$2,
                         text: e.$1,
+                        color: e.$2,
                         isSquare: true,
                         marginRight: 0,
                       ),
