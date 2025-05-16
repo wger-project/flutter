@@ -990,5 +990,9 @@
   "apiTokenValidChars": "Ключ API може містити лише літери a-f, цифри 0-9 та мати довжину рівно 40 символів",
   "@apiTokenValidChars": {
     "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "resistance_band": "Еспандер",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
   }
 }
