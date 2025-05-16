@@ -63,38 +63,6 @@ String repText(
   return out.join(' ');
 }
 
-/// Returns a list of [DateTime] objects from [first] to [last], inclusive.
-List<DateTime> daysInRange(DateTime first, DateTime last) {
-  final dayCount = last.difference(first).inDays + 1;
-  return List.generate(
-    dayCount,
-    (index) => DateTime.utc(first.year, first.month, first.day + index),
-  );
-}
-
-extension TimeOfDayExtension on TimeOfDay {
-  bool isAfter(TimeOfDay other) {
-    return toMinutes() > other.toMinutes();
-  }
-
-  bool isBefore(TimeOfDay other) {
-    return toMinutes() < other.toMinutes();
-  }
-
-  int toMinutes() {
-    return (hour * 60) + minute;
-  }
-}
-
-extension DateTimeExtension on DateTime {
-  bool isSameDayAs(DateTime other) {
-    final thisDay = DateTime(year, month, day);
-    final otherDay = DateTime(other.year, other.month, other.day);
-
-    return thisDay.isAtSameMomentAs(otherDay);
-  }
-}
-
 void launchURL(String url, BuildContext context) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   final launched = await launchUrl(Uri.parse(url));

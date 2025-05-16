@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,21 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wger/helpers/misc.dart';
+import 'package:wger/helpers/date.dart';
 
 void main() {
-  test('Test the TimeOfDayExtension', () {
-    const time1 = TimeOfDay(hour: 00, minute: 00);
-    const time2 = TimeOfDay(hour: 23, minute: 59);
-
-    expect(time2.toMinutes(), 23 * 60 + 59);
-    expect(time1.isAfter(time2), false);
-    expect(time1.isBefore(time2), true);
-    expect(time2.isAfter(time1), true);
-    expect(time2.isBefore(time1), false);
-    expect(time1.isAfter(time1), false);
-    expect(time2.isBefore(time2), false);
+  group('getDateTimeFromDateAndTime', () {
+    test('should correctly generate a DateTime', () {
+      expect(
+        getDateTimeFromDateAndTime('2025-05-16', '17:02'),
+        DateTime(2025, 5, 16, 17, 2),
+      );
+    });
   });
 }

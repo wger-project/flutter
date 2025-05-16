@@ -60,7 +60,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   AppLocalizations.of(context).logIngredient,
-                  IngredientLogForm(nutritionalPlan),
+                  getIngredientLogForm(nutritionalPlan),
                   hasListView: true,
                 ),
               );

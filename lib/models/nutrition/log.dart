@@ -36,7 +36,7 @@ class Log {
   @JsonKey(required: true, name: 'plan')
   int planId;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, toJson: dateToUtcToIso8601String)
   late DateTime datetime;
 
   String? comment;
