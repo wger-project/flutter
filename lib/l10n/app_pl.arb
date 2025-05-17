@@ -711,6 +711,7 @@
   "searchNamesInEnglish": "Szukaj również w języku angielskim",
   "@searchNamesInEnglish": {},
   "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
   "plates": "Talerze",
   "@plates": {
     "description": "Generated entry for translation for server strings"

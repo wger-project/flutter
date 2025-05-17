@@ -652,6 +652,7 @@
     }
   },
   "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
   "selectEntry": "Si us plau, selecciona una entrada",
   "@selectEntry": {},
   "baseNameEnglish": "Tots els exercicis necessiten un nom base en anglès",

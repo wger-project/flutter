@@ -6,11 +6,11 @@
     "type": "text",
     "placeholders": {}
   },
-  "labelDashboard": "Startseite",
+  "labelDashboard": "Übersicht",
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
-  "rir": "WidR",
+  "rir": "RiR",
   "@rir": {
     "description": "Shorthand for Repetitions In Reserve"
   },
@@ -186,7 +186,7 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "customServerHint": "Gebe die Adresse deines eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
+  "customServerHint": "Geben Sie die Adresse deines eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
@@ -194,15 +194,15 @@
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
-  "invalidUsername": "Bitte gebe einen gültigen Benutzernamen ein",
+  "invalidUsername": "Bitte geben Sie einen gültigen Benutzernamen ein",
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
   "username": "Benutzername",
   "@username": {},
-  "email": "E-Mail-Adresse",
+  "email": "E-Mail Adresse",
   "@email": {},
-  "invalidEmail": "Bitte gebe eine gültigen E-Mail-Adresse ein",
+  "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
   "@invalidEmail": {
     "description": "Error message when the user enters an invalid email"
   },
@@ -285,7 +285,7 @@
   },
   "selectExercises": "Wenn du einen Supersatz machen willst, kannst du nach mehreren Übungen suchen, sie werden dann gruppiert",
   "@selectExercises": {},
-  "sameRepetitions": "Wenn du für alle Sätze die gleichen Wiederholungen und das gleiche Gewicht verwendest, kannst du nur eine Zeile ausfüllen. Gebe z. B. für 4 Sätze einfach 10 für die Wiederholungen ein, daraus wird automatisch „4 × 10„.",
+  "sameRepetitions": "Wenn du für alle Sätze die gleichen Wiederholungen und das gleiche Gewicht verwendest, kannst du nur eine Zeile ausfüllen. Gebe z. B. für 4 Sätze einfach 10 für die Wiederholungen ein, daraus wird automatisch „4 × 10“.",
   "@sameRepetitions": {},
   "setNr": "Satz {nr}",
   "@setNr": {
@@ -297,7 +297,7 @@
       }
     }
   },
-  "dayDescriptionHelp": "Eine Beschreibung was an diesem Tag gemacht wird (z. B. „Zugtag“) oder welche Körperteile trainiert werden (z. B. „Brust und Schultern“)",
+  "dayDescriptionHelp": "Eine Beschreibung, was an diesem Tag gemacht wird (z. B. „Zugtag“) oder welche Körperteile trainiert werden (z. B. „Brust und Schultern“)",
   "@dayDescriptionHelp": {},
   "set": "Satz",
   "@set": {
@@ -319,7 +319,7 @@
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
-  "successfullySaved": "Erfolgreich gespeichert",
+  "successfullySaved": "Gespeichert",
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
@@ -418,7 +418,7 @@
   },
   "timeStartAhead": "Die Startzeit kann nicht vor der Endzeit liegen",
   "@timeStartAhead": {},
-  "total": "Summe",
+  "total": "Gesamt",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
@@ -588,7 +588,7 @@
   "@hamstrings": {},
   "lower_back": "Unterer Rücken",
   "@lower_back": {},
-  "aboutPageTitle": "Über Wger",
+  "aboutPageTitle": "Über uns & Support",
   "@aboutPageTitle": {},
   "alsoKnownAs": "Auch bekannt als:{aliases}",
   "@alsoKnownAs": {
@@ -724,13 +724,14 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
   "plates": "Platten",
   "@plates": {
     "description": "Generated entry for translation for server strings"
   },
-  "aboutDonateTitle": "Spende",
+  "aboutDonateTitle": "Mach eine Spende",
   "@aboutDonateTitle": {},
-  "aboutDonateText": "Kaufen Sie uns einen Kaffee, um das Projekt zu unterstützen, Serverkosten zu decken und uns weiterhin zu versorgen",
+  "aboutDonateText": "Das Projekt ist kostenlos und wird es auch bleiben, der Betrieb des Servers hingegen nicht! Die Entwicklung erfordert zudem viel Zeit und Mühe von Freiwilligen. Ihr Beitrag deckt diese Kosten direkt und trägt zur Zuverlässigkeit des Dienstes bei.",
   "@aboutDonateText": {},
   "settingsCacheTitle": "Zwischenspeicher",
   "@settingsCacheTitle": {},
@@ -746,7 +747,7 @@
   "@useMetric": {},
   "done": "Fertig",
   "@done": {},
-  "searchNamesInEnglish": "Namen auch auf English suchen",
+  "searchNamesInEnglish": "Namen auch auf Englisch suchen",
   "@searchNamesInEnglish": {},
   "goalMacro": "Makroziele",
   "@goalMacro": {
@@ -865,6 +866,140 @@
   },
   "restTime": "Pausenzeit",
   "@restTime": {},
-  "restDay": "Erholungstag",
-  "@restDay": {}
+  "restDay": "Ruhetag",
+  "@restDay": {},
+  "copyToClipboard": "In Zwischenablage kopieren",
+  "@copyToClipboard": {},
+  "min": "Min",
+  "@min": {},
+  "apiToken": "API Token",
+  "@apiToken": {},
+  "useApiToken": "API Token benutzen",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "Nutzername und Passwort benutzen",
+  "@useUsernameAndPassword": {},
+  "invalidApiToken": "Bitte geben Sie einen gültigen API-Schlüssel ein",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "Ein API-Schlüssel darf nur die Buchstaben a-f und die Zahlen 0-9 enthalten und genau 40 Zeichen lang sein",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "exerciseNr": "Übung {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "Supersatz {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "isRestDay": "Ist Ruhetag",
+  "@isRestDay": {},
+  "goalTypeMeals": "Von Mahlzeiten",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeAdvanced": "Fortgeschritten",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "addSuperset": "Supersatz hinzufügen",
+  "@addSuperset": {},
+  "setHasNoExercises": "Dieser Satz enthält noch keine Übungen!",
+  "@setHasNoExercises": {},
+  "simpleMode": "Einfacher Modus",
+  "@simpleMode": {},
+  "darkMode": "Immer Dunkelmodus",
+  "@darkMode": {},
+  "errorViewDetails": "Technische Details",
+  "@errorViewDetails": {},
+  "simpleModeHelp": "Blenden Sie einige der erweiterten Einstellungen beim Bearbeiten von Übungen aus",
+  "@simpleModeHelp": {},
+  "isRestDayHelp": "Bitte beachten Sie, dass alle Sätze und Übungen entfernt werden, wenn Sie einen Tag als Ruhetag markieren.",
+  "@isRestDayHelp": {},
+  "needsLogsToAdvance": "Benötigt Eintrag, um fortzufahren",
+  "@needsLogsToAdvance": {},
+  "needsLogsToAdvanceHelp": "Wählen Sie aus, ob die Routine nur dann zum nächsten geplanten Tag fortgesetzt werden soll, wenn Sie für diesen Tag ein Training protokolliert haben",
+  "@needsLogsToAdvanceHelp": {},
+  "routineDays": "Tage in der Routine",
+  "@routineDays": {},
+  "resultingRoutine": "Resultierende Routine",
+  "@resultingRoutine": {},
+  "errorInfoDescription": "Es tut uns leid, aber etwas ist schiefgelaufen. Sie können uns helfen, das Problem zu beheben, indem Sie es auf GitHub melden.",
+  "@errorInfoDescription": {},
+  "errorInfoDescription2": "Sie können die App weiterhin verwenden, einige Funktionen funktionieren jedoch möglicherweise nicht.",
+  "@errorInfoDescription2": {},
+  "errorCouldNotConnectToServer": "Verbindung zum Server konnte nicht hergestellt werden",
+  "@errorCouldNotConnectToServer": {},
+  "max": "Max",
+  "@max": {},
+  "aboutWhySupportTitle": "Open Source und kostenlos nutzbar ❤️",
+  "@aboutWhySupportTitle": {},
+  "aboutBugsListTitle": "Ein Problem melden oder eine Funktion vorschlagen",
+  "@aboutBugsListTitle": {},
+  "aboutTranslationListTitle": "Übersetzen Sie die Anwendung",
+  "@aboutTranslationListTitle": {},
+  "aboutSourceListTitle": "Quellcode anzeigen",
+  "@aboutSourceListTitle": {},
+  "aboutJoinCommunityTitle": "Treten Sie der Community bei",
+  "@aboutJoinCommunityTitle": {},
+  "aboutDiscordTitle": "Discord",
+  "@aboutDiscordTitle": {},
+  "others": "Sonstiges",
+  "@others": {},
+  "setHasProgression": "Set hat Fortschritt",
+  "@setHasProgression": {},
+  "progressionRules": "Diese Übung unterliegt Fortschrittsregeln und kann in der mobilen App nicht bearbeitet werden. Bitte verwenden Sie die Webanwendung, um diese Übung zu bearbeiten.",
+  "@progressionRules": {},
+  "goalTypeBasic": "Normal",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "indicatorRaw": "raw",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "overallChangeWeight": "Allgemeine Veränderung",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "indicatorAvg": "Durchschn.",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "themeMode": "Theme Modus",
+  "@themeMode": {},
+  "lightMode": "Immer Hellmodus",
+  "@lightMode": {},
+  "systemMode": "Systemeinstellungen",
+  "@systemMode": {},
+  "errorCouldNotConnectToServerDetails": "Die Anwendung konnte keine Verbindung zum Server herstellen. Bitte überprüfen Sie Ihre Internetverbindung oder die Server-URL und versuchen Sie es erneut. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Serveradministrator.",
+  "@errorCouldNotConnectToServerDetails": {},
+  "fitInWeek": "Ruhetage in der Woche",
+  "@fitInWeek": {},
+  "fitInWeekHelp": "Wenn diese Option aktiviert ist, wiederholen sich die Tage in einem wöchentlichen Zyklus, andernfalls folgen die Tage der Reihe nach, ohne Rücksicht auf den Beginn einer neuen Woche.",
+  "@fitInWeekHelp": {},
+  "aboutContributeText": "Beiträge aller Art sind willkommen. Egal, ob Sie Entwickler, Übersetzer oder einfach nur Fitnessbegeisterter sind – jede Unterstützung ist willkommen!",
+  "@aboutContributeText": {},
+  "aboutContributeTitle": "Beitragen",
+  "@aboutContributeTitle": {},
+  "resistance_band": "Widerstandsband",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "setHasProgressionWarning": "Bitte beachten Sie, dass es derzeit nicht möglich ist, alle Einstellungen für ein Set in der mobilen Anwendung zu bearbeiten oder den automatischen Fortschritt zu konfigurieren. Nutzen Sie vorerst bitte die Webanwendung.",
+  "@setHasProgressionWarning": {}
 }
