@@ -142,7 +142,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                     widget._entries.last.date,
                     widget._entries.first.date,
                   )
-                : 1000,
+                : 1000000,
           ),
         ),
         leftTitles: AxisTitles(
