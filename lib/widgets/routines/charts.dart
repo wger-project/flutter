@@ -27,8 +27,9 @@ import 'package:wger/models/workouts/log.dart';
 
 class LogChartWidgetFl extends StatefulWidget {
   final Map<num, List<Log>> _data;
+  final DateTime _currentDate;
 
-  const LogChartWidgetFl(this._data);
+  const LogChartWidgetFl(this._data, this._currentDate);
 
   @override
   State<LogChartWidgetFl> createState() => _LogChartWidgetFlState();
