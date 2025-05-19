@@ -46,7 +46,7 @@ dependencies:
   flutter_svg: ^2.1.0
   flutter_svg_icons: ^0.0.1
   flutter_typeahead: ^5.2.0
-  flutter_zxing: ^2.0.0
+  flutter_zxing: ^2.1.0
   font_awesome_flutter: ^10.8.0
   freezed_annotation: ^3.0.0
   get_it: ^8.0.3
