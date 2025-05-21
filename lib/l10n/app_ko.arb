@@ -1,1 +1,216 @@
-{}
+{
+  "apiTokenValidChars": "API 키값은 영소문자(a-f), 숫자(0-9), 40자 이어야 합니다",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "userProfile": "환경설정",
+  "@userProfile": {},
+  "success": "성공",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "login": "로그인",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "dayDescriptionHelp": "이 날에 무엇을 하는지에 대한 설명(예: '풀 데이') 또는 어떤 신체 부위를 훈련하는지에 대한 설명(예: '가슴과 어깨')",
+  "@dayDescriptionHelp": {},
+  "successfullySaved": "저장",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "customServerHint": "서버 주소를 입력하세요 미입력시 기본 주소가 사용됩니다",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "register": "등록",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "labelDashboard": "대시보드",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "logout": "로그아웃",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "useDefaultServer": "기본 서버 정보",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useCustomServer": "커스텀 서버 정보",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "invalidUrl": "올바른 URL 정보를 입력하세요",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "usernameValidChars": "사용자명은 문자, 숫자, '@, +, ., -, _' 만 가능합니다",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "passwordTooShort": "비밀번호가 너무 짧습니다",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "password": "비밀번호",
+  "@password": {},
+  "confirmPassword": "비밀번호 확인",
+  "@confirmPassword": {},
+  "invalidEmail": "올바른 이메일 주소를 입력하세요",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "email": "이메일 주소",
+  "@email": {},
+  "username": "사용자명",
+  "@username": {},
+  "invalidUsername": "올바른 사용자명을 입력하세요",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "useApiToken": "API 토큰값 사용",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "사용자명, 비밀번호 사용",
+  "@useUsernameAndPassword": {},
+  "apiToken": "API 토큰값",
+  "@apiToken": {},
+  "invalidApiToken": "올바른 API 토큰값을 입력하세요",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "customServerUrl": "wger 인스턴스의 URL",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "reset": "초기화",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "registerInstead": "계정이 없나요? 지금 등록하세요",
+  "@registerInstead": {},
+  "loginInstead": "이미 계정이 있으신가요? 로그인하세요",
+  "@loginInstead": {},
+  "labelBottomNavWorkout": "운동",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelWorkoutLogs": "트레이닝 이력",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "noIngredientsDefined": "아직 정의된 성분이 없어요",
+  "@noIngredientsDefined": {},
+  "exerciseList": "예시 목록",
+  "@exerciseList": {},
+  "exercise": "예시",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "exercises": "다수 예시",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "예시명",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "searchExercise": "추가할 예시 검색",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "noMatchingExerciseFound": "예시를 찾을 수 없어요",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "searchNamesInEnglish": "영어 이름도 검색해 보세요",
+  "@searchNamesInEnglish": {},
+  "equipment": "도구",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "muscles": "근육",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "musclesSecondary": "이차 근육",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "category": "카테고리",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "routines": "루틴",
+  "@routines": {},
+  "newRoutine": "새로운 루틴",
+  "@newRoutine": {},
+  "noRoutines": "루틴이 없어요",
+  "@noRoutines": {},
+  "reps": "반복",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "restTime": "휴식 시간",
+  "@restTime": {},
+  "sets": "세트",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "rir": "RiR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "useMetric": "체중에는 미터법 단위를 사용하세요",
+  "@useMetric": {},
+  "weightUnit": "체중",
+  "@weightUnit": {},
+  "repetitionUnit": "반복단위",
+  "@repetitionUnit": {},
+  "set": "세트",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "exerciseNr": "예시 {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "슈퍼세트 {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "labelWorkoutPlan": "운동 계획",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "passwordsDontMatch": "비밀번호가 불일치 합니다",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "labelBottomNavNutrition": "영양물 섭취",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "successfullyDeleted": "삭제",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "rirNotUsed": "RiR 미사용",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  }
+}
