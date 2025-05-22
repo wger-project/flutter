@@ -4,10 +4,12 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
@@ -22,7 +24,7 @@ void main() {
   late ExerciseDatabase database;
 
   const String categoryUrl = 'exercisecategory';
-  const String exerciseBaseInfoUrl = 'exercisebaseinfo';
+  const String exerciseInfoUrl = 'exerciseinfo';
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
@@ -36,13 +38,13 @@ void main() {
   final Uri tExerciseInfoUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/',
+    path: 'api/v2/$exerciseInfoUrl/',
   );
 
   final Uri tExerciseInfoDetailUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/9/',
+    path: 'api/v2/$exerciseInfoUrl/9/',
   );
 
   final Uri tMuscleEntriesUri = Uri(
@@ -79,8 +81,8 @@ void main() {
   final Map<String, dynamic> tLanguageMap = jsonDecode(
     fixture('exercises/language_entries.json'),
   );
-  final Map<String, dynamic> tExerciseBaseInfoMap = jsonDecode(
-    fixture('exercises/exercisebaseinfo_response.json'),
+  final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
+    fixture('exercises/exerciseinfo_response.json'),
   );
 
   setUp(() {
@@ -93,7 +95,9 @@ void main() {
     );
 
     WidgetsFlutterBinding.ensureInitialized();
-    SharedPreferences.setMockInitialValues({});
+
+    /// Replacement for SharedPreferences.setMockInitialValues()
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
     // Mock categories
     when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
@@ -118,14 +122,14 @@ void main() {
     );
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl)).thenReturn(tExerciseInfoUri);
     when(mockBaseProvider.fetch(tExerciseInfoUri)).thenAnswer(
-      (_) => Future.value(tExerciseBaseInfoMap),
+      (_) => Future.value(tExerciseInfoMap),
     );
 
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
     when(mockBaseProvider.fetch(tExerciseInfoDetailUri)).thenAnswer(
-      (_) => Future.value(tExerciseBaseInfoMap),
+      (_) => Future.value(tExerciseInfoMap),
     );
   });
 
@@ -136,14 +140,14 @@ void main() {
   group('Muscles', () {
     test('that fetched data from the API is written to the DB', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       // Act
       await provider.fetchAndSetMuscles(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_MUSCLES))!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
       expect(updateTime.isSameDayAs(valid), true);
 
@@ -168,7 +172,7 @@ void main() {
 
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       final valid = DateTime.now().add(const Duration(days: 1));
@@ -185,7 +189,7 @@ void main() {
       await provider.fetchAndSetMuscles(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_MUSCLES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_MUSCLES))!);
       expect(updateTime.isSameDayAs(valid), true);
 
       expect(provider.muscles.length, 2);
@@ -199,14 +203,14 @@ void main() {
   group('Languages', () {
     test('that fetched data from the API is written to the DB', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       // Act
       await provider.fetchAndSetLanguages(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_LANGUAGES))!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
       expect(updateTime.isSameDayAs(valid), true);
 
@@ -235,7 +239,7 @@ void main() {
 
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       final valid = DateTime.now().add(const Duration(days: 1));
@@ -252,7 +256,7 @@ void main() {
       await provider.fetchAndSetLanguages(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_LANGUAGES))!);
       expect(updateTime.isSameDayAs(valid), true);
 
       expect(provider.languages.length, 2);
@@ -265,14 +269,14 @@ void main() {
   group('Categories', () {
     test('that fetched data from the API is written to the DB', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       // Act
       await provider.fetchAndSetCategories(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_CATEGORIES))!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
       expect(updateTime.isSameDayAs(valid), true);
 
@@ -293,7 +297,7 @@ void main() {
 
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       final valid = DateTime.now().add(const Duration(days: 1));
@@ -310,7 +314,7 @@ void main() {
       await provider.fetchAndSetCategories(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_CATEGORIES))!);
       expect(updateTime.isSameDayAs(valid), true);
 
       expect(provider.categories.length, 2);
@@ -324,14 +328,14 @@ void main() {
   group('Equipment', () {
     test('that fetched data from the API is written to the DB', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       // Act
       await provider.fetchAndSetEquipments(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT))!);
       final valid = DateTime.now().add(const Duration(days: ExercisesProvider.EXERCISE_CACHE_DAYS));
       expect(updateTime.isSameDayAs(valid), true);
 
@@ -354,7 +358,7 @@ void main() {
 
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
 
       final valid = DateTime.now().add(const Duration(days: 1));
@@ -371,7 +375,7 @@ void main() {
       await provider.fetchAndSetEquipments(database);
 
       // Assert
-      final updateTime = DateTime.parse(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT)!);
+      final updateTime = DateTime.parse((await prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT))!);
       expect(updateTime.isSameDayAs(valid), true);
 
       expect(provider.equipment.length, 2);
@@ -385,16 +389,16 @@ void main() {
   group('Exercise cache DB', () {
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       await provider.initCacheTimesLocalPrefs();
       final valid = DateTime.now().add(const Duration(days: 1));
       prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, valid.toIso8601String());
 
       await database.into(database.exercises).insert(
             ExercisesCompanion.insert(
-              id: tExerciseBaseInfoMap['id'],
-              data: json.encode(tExerciseBaseInfoMap),
-              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              id: tExerciseInfoMap['id'],
+              data: json.encode(tExerciseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseInfoMap['last_update_global']),
               lastFetched: DateTime.now(),
             ),
           );
@@ -424,9 +428,9 @@ void main() {
       provider.languages = testLanguages;
       await database.into(database.exercises).insert(
             ExercisesCompanion.insert(
-              id: tExerciseBaseInfoMap['id'],
-              data: json.encode(tExerciseBaseInfoMap),
-              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              id: tExerciseInfoMap['id'],
+              data: json.encode(tExerciseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseInfoMap['last_update_global']),
               lastFetched: DateTime.now().subtract(const Duration(hours: 1)),
             ),
           );
@@ -449,9 +453,9 @@ void main() {
       provider.languages = testLanguages;
       await database.into(database.exercises).insert(
             ExercisesCompanion.insert(
-              id: tExerciseBaseInfoMap['id'],
-              data: json.encode(tExerciseBaseInfoMap),
-              lastUpdate: DateTime.parse(tExerciseBaseInfoMap['last_update_global']),
+              id: tExerciseInfoMap['id'],
+              data: json.encode(tExerciseInfoMap),
+              lastUpdate: DateTime.parse(tExerciseInfoMap['last_update_global']),
               lastFetched: DateTime.now().subtract(const Duration(days: 10)),
             ),
           );
@@ -475,7 +479,7 @@ void main() {
     test('fetching a known exercise - needed API refresh - new data from API', () async {
       // Arrange
       provider.languages = testLanguages;
-      final newData = Map.from(tExerciseBaseInfoMap);
+      final newData = Map.from(tExerciseInfoMap);
       newData['uuid'] = 'bf6d5557-1c49-48fd-922e-75d11f81d4eb';
 
       await database.into(database.exercises).insert(

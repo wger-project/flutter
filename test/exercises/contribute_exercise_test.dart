@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -29,10 +29,9 @@ import 'package:wger/screens/add_exercise_screen.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/profile.dart';
-import '../workout/gym_mode_screen_test.mocks.dart';
 import 'contribute_exercise_test.mocks.dart';
 
-@GenerateMocks([AddExerciseProvider, UserProvider])
+@GenerateMocks([AddExerciseProvider, UserProvider, ExercisesProvider])
 void main() {
   final mockAddExerciseProvider = MockAddExerciseProvider();
   final mockExerciseProvider = MockExercisesProvider();
@@ -75,7 +74,7 @@ void main() {
     when(mockExerciseProvider.categories).thenReturn(testCategories);
     when(mockExerciseProvider.muscles).thenReturn(testMuscles);
     when(mockExerciseProvider.equipment).thenReturn(testEquipment);
-    when(mockExerciseProvider.exerciseBasesByVariation).thenReturn({});
+    when(mockExerciseProvider.exerciseByVariation).thenReturn({});
     when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
     when(mockExerciseProvider.languages).thenReturn(testLanguages);
 

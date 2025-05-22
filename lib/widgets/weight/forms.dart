@@ -17,12 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
 
@@ -36,7 +35,7 @@ class WeightForm extends StatelessWidget {
   WeightForm([WeightEntry? weightEntry]) {
     _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
     weightController.text = _weightEntry.weight == 0 ? '' : _weightEntry.weight.toString();
-    dateController.text = toDate(_weightEntry.date)!;
+    dateController.text = dateToYYYYMMDD(_weightEntry.date)!;
   }
 
   @override
@@ -48,8 +47,8 @@ class WeightForm extends StatelessWidget {
           // Weight date
           TextFormField(
             key: const Key('dateInput'),
-            readOnly: true,
             // Stop keyboard from appearing
+            readOnly: true,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).date,
               suffixIcon: const Icon(
@@ -60,7 +59,6 @@ class WeightForm extends StatelessWidget {
             enableInteractiveSelection: false,
             controller: dateController,
             onTap: () async {
-              // Show Date Picker Here
               final pickedDate = await showDatePicker(
                 context: context,
                 initialDate: _weightEntry.date,
@@ -79,7 +77,7 @@ class WeightForm extends StatelessWidget {
               );
 
               if (pickedDate != null) {
-                dateController.text = toDate(pickedDate)!;
+                dateController.text = dateToYYYYMMDD(pickedDate)!;
               }
             },
             onSaved: (newValue) {
@@ -161,6 +159,7 @@ class WeightForm extends StatelessWidget {
             },
           ),
           ElevatedButton(
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry
@@ -171,20 +170,11 @@ class WeightForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              try {
-                final provider = Provider.of<BodyWeightProvider>(context, listen: false);
-                _weightEntry.id == null
-                    ? await provider.addEntry(_weightEntry)
-                    : await provider.editEntry(_weightEntry);
-              } on WgerHttpException catch (error) {
-                if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
-                }
-              } catch (error) {
-                if (context.mounted) {
-                  showErrorDialog(error, context);
-                }
-              }
+              final provider = Provider.of<BodyWeightProvider>(context, listen: false);
+              _weightEntry.id == null
+                  ? await provider.addEntry(_weightEntry)
+                  : await provider.editEntry(_weightEntry);
+
               if (context.mounted) {
                 Navigator.of(context).pop();
               }

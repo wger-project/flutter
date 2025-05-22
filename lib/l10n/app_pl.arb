@@ -93,16 +93,14 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutSourceTitle": "Kod źródłowy",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "productFoundDescription": "Kod kreskowy odpowiada temu produktowi: {productName}. Czy chcesz kontynuować?",
   "@productFoundDescription": {
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "dataCopied": "Dane skopiowane do nowego dziennika",
@@ -128,8 +126,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "nrOfSets": "Ilość serii ćwiczenia: {nrOfSets}",
@@ -137,12 +139,10 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
-  },
-  "supersetWith": "Dodatkowa seria",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "rirNotUsed": "Bez rezerwy powtórzeń",
   "@rirNotUsed": {
@@ -163,7 +163,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "sameRepetitions": "Jeśli wykonasz tą sama liczbę powtórzenia z tym samym ciężarem dla wszystkich serii, możesz po prostu wypełnić jeden wiersz. Na przykład dla 4 serii wystarczy wpisać 10 dla powtórzeń, automatycznie zmieni się to na „4 x 10”.",
@@ -205,14 +207,6 @@
   "category": "Kategoria",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "newWorkout": "Nowy plan treningowy",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "Nie masz planów treningowych",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "repetitions": "Powtórzenia",
   "@repetitions": {
@@ -266,10 +260,6 @@
   "@registerInstead": {},
   "loginInstead": "Posiadasz konto? Zaloguj się",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Plany treningowe",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Trening",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -383,7 +373,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "planned": "Zaplanowane",
@@ -438,10 +430,6 @@
   },
   "goToDetailPage": "Przejdź do strony szczegółów",
   "@goToDetailPage": {},
-  "aboutSourceText": "Zobacz kod źródłowy tej aplikacji i jej serwera na Githubie",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
   "takePicture": "Zrób zdjęcie",
   "@takePicture": {},
   "chooseFromLibrary": "Wybierz z galerii zdjęć",
@@ -465,7 +453,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "scanBarcode": "Zeskanuj kod kreskowy",
@@ -496,26 +486,6 @@
   "@kcal": {
     "description": "Energy in a meal in kilocalories, kcal"
   },
-  "aboutBugsTitle": "Masz problem lub pomysł?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Skontaktuj się z nami, jeżeli coś zachowało się w niespodziewany sposób lub czujesz, że brakuje jakiejś funkcji.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Przywitaj się!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "Jeśli chcesz z nami porozmawiać, wskocz na serwer Discorda i przywitaj się",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Tłumaczenie",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "selectIngredient": "Wybierz składnik",
   "@selectIngredient": {
     "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
@@ -532,17 +502,9 @@
   "@optionsLabel": {
     "description": "Label for the popup with general app options"
   },
-  "aboutTranslationText": "Ta aplikacja jest tłumaczona poprzez Weblate. Jeśli też chcesz pomóc, kliknij link i zacznij tłumaczyć",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "goToToday": "Przejdź do dziś",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "Proszę wypełnić powtórzenia lub wagę przynajmniej jednej serii",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "enterValue": "proszę wprowadzić wartość",
   "@enterValue": {
@@ -568,7 +530,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "Wszystkie ćwiczenia wymagają nazwy podstawowej w języku angielskim",
@@ -586,7 +550,9 @@
   "alsoKnownAs": "Znany również jako: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -599,7 +565,9 @@
   "verifiedEmailInfo": "Wiadomość weryfikacyjna została wysłana na adres {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "alternativeNames": "Alternatywne nazwy",
@@ -743,9 +711,6 @@
   "searchNamesInEnglish": "Szukaj również w języku angielskim",
   "@searchNamesInEnglish": {},
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "plates": "Talerze",
   "@plates": {
     "description": "Generated entry for translation for server strings"
@@ -777,7 +742,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "gValue": "{value} g",
@@ -785,7 +752,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -793,12 +762,10 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
-  },
-  "aboutMastodonText": "Obserwuj nas na Mastodonie, aby otrzymywać aktualizacje i aktualności na temat projektu",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
   },
   "settingsCacheTitle": "Pamięć podręczna",
   "@settingsCacheTitle": {},
@@ -824,10 +791,6 @@
   "@kg": {
     "description": "Generated entry for translation for server strings"
   },
-  "addGoalsToPlan": "Dodaj cele do tego planu",
-  "@addGoalsToPlan": {},
-  "addGoalsToPlanHelpText": "To pozwoli Ci ustawić ogólne cele dla energii, białka, węglowodanów i tłuszczy dla planu. Pamiętaj, że jeśli skonfigurujesz szczegółowy plan posiłków, te wartości będą miały pierwszeństwo.",
-  "@addGoalsToPlanHelpText": {},
   "goalMacro": "Cele makro",
   "@goalMacro": {
     "description": "The goal for macronutrients"
@@ -847,5 +810,25 @@
   "deficit": "deficyt",
   "@deficit": {
     "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "chartAllTimeTitle": "{name} Z całego okresu",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chart30DaysTitle": "{name} ostatnie 30 dni",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

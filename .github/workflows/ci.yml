@@ -9,29 +9,32 @@ on:
     paths:
       - '**.dart'
       - 'pubspec.yaml'
+  workflow_call:
+  workflow_dispatch:
+
 jobs:
   test:
+    name: Run tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          cache: true
-          channel: 'stable'
-          flutter-version: '3.24.x'
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
 
-      - run: dart --version
-      - run: flutter --version
+      - name: Install dependencies
+        run: |
+          sudo apt install libsqlite3-dev lcov --no-install-recommends
+          flutter pub get
 
-      - name: Install app dependencies
-        run: flutter pub get
-
+      # Removing some folders from the coverage since these files are not really
+      # part of the app code and just get in the way of the report
       - name: Test app
-        run: flutter test --coverage
+        run: |
+          flutter test --coverage
+          lcov --remove coverage/lcov.info 'lib/l10n/generated/*' 'lib/theme/*' -o coverage/lcov.info
 
       - name: Coveralls
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

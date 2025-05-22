@@ -18,13 +18,13 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -41,13 +41,13 @@ void main() {
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
 
-  when(mockNutrition.editMeal(any)).thenAnswer((_) => Future.value(Meal()));
-  when(mockNutrition.addMeal(any, any)).thenAnswer((_) => Future.value(Meal()));
-
   setUp(() {
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
     mockNutrition = MockNutritionPlansProvider();
+
+    when(mockNutrition.editMeal(any)).thenAnswer((_) => Future.value(Meal()));
+    when(mockNutrition.addMeal(any, any)).thenAnswer((_) => Future.value(Meal()));
   });
 
   Widget createFormScreen(Meal meal, {locale = 'en'}) {

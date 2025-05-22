@@ -17,11 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/platform.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
@@ -52,68 +53,82 @@ class Gallery extends StatelessWidget {
                   return GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
-                        builder: (context) => Container(
-                          key: Key('image-${currentImage.id}-detail'),
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              Text(
-                                DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                                    .format(currentImage.date),
-                                style: Theme.of(context).textTheme.headlineSmall,
-                              ),
-                              Expanded(
-                                child: Image.network(currentImage.url!),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                child: Text(currentImage.description),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () {
-                                      Provider.of<GalleryProvider>(
-                                        context,
-                                        listen: false,
-                                      ).deleteImage(currentImage);
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  if (!isDesktop)
-                                    IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          FormScreen.routeName,
-                                          arguments: FormScreenArguments(
-                                            AppLocalizations.of(context).edit,
-                                            ImageForm(currentImage),
-                                            hasListView: true,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                        builder: (context) => ImageDetail(image: currentImage),
                         context: context,
                       );
                     },
                     child: FadeInImage(
-                      key: Key('image-${currentImage.id}'),
+                      key: Key('image-${currentImage.id!}'),
                       placeholder: const AssetImage('assets/images/placeholder.png'),
                       image: NetworkImage(currentImage.url!),
                       fit: BoxFit.cover,
+                      imageSemanticLabel: currentImage.description,
                     ),
                   );
                 },
               ),
+      ),
+    );
+  }
+}
+
+class ImageDetail extends StatelessWidget {
+  const ImageDetail({
+    super.key,
+    required this.image,
+  });
+
+  final gallery.Image image;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: Key('image-${image.id!}-detail'),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        children: [
+          Text(
+            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(image.date),
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          Expanded(
+            child: Image.network(image.url!, semanticLabel: image.description),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(image.description),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  Provider.of<GalleryProvider>(
+                    context,
+                    listen: false,
+                  ).deleteImage(image);
+                  Navigator.of(context).pop();
+                },
+              ),
+              if (!isDesktop)
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context).edit,
+                        ImageForm(image),
+                        hasListView: true,
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -19,10 +19,6 @@
   },
   "calendar": "Calendario",
   "@calendar": {},
-  "aboutText": "wger è rilasciato con \"permesso d'autore\", licenza AGPLv3+ e disponibile su GitHub:",
-  "@aboutText": {
-    "description": "Text in the about dialog"
-  },
   "toggleDetails": "Scegli dettagli",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
@@ -34,7 +30,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "delete": "Elimina",
@@ -113,8 +111,6 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "dismiss": "Annulla",
-  "@dismiss": {},
   "noNutritionalPlans": "Non hai nessun piano nutrizionale",
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
@@ -179,14 +175,6 @@
   },
   "addExercise": "Aggiungi esercizi",
   "@addExercise": {},
-  "noWorkoutPlans": "Non hai nessun piano di allenamento",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "newWorkout": "Nuovo piano di allenamento",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "exercise": "Esercizio",
   "@exercise": {
     "description": "An exercise for a workout"
@@ -202,10 +190,6 @@
   "labelWorkoutPlan": "Piano di allenamento",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
-  },
-  "labelWorkoutPlans": "Piani di allenamento",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "loginInstead": "Hai già un account? Registrati ora",
   "@loginInstead": {},
@@ -272,7 +256,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "enterCharacters": "Inserisci una stringa tra {min} e {max} caratteri",
@@ -280,8 +266,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "selectExercise": "Prego, seleziona un esercizio",
@@ -299,7 +289,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "dayDescriptionHelp": "Una descrizione di ciò che è stato fatto. (p.e. «allenamento gambe») o quale parte del corpo sono state allenate (p.e. «petto e spalle»)",
@@ -336,47 +328,11 @@
   "@logout": {
     "description": "Text for logout button"
   },
-  "enterRepetitionsOrWeight": "Inserisci sia le ripetizioni che il peso per almeno una delle serie",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
-  "aboutTranslationText": "Questa applicazione è tradotta su weblate. Se anche tu vuoi contribuire, clicca sul link e inizia a tradurre",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutTranslationTitle": "Traduzione",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutContactUsText": "Se vuoi parlare con noi, vieni nel nostro server su Discord",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutContactUsTitle": "Fatti conoscere!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutBugsText": "Entra in contatto con noi se hai trovato qualche errore o se vuoi proporre qualche funzionalità.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutBugsTitle": "Problemi o idee?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutSourceText": "Codice sorgente dell'applicazione e repository su github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutSourceTitle": "Codice sorgente",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "aboutDescription": "Grazie per esserti registrato/a su wger! wger è un progetto collaborativo con codice aperto, creato da entusiasti del fitness in tutto il mondo.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "logMeal": "Registra questo pasto",
+  "logMeal": "Registra questo pasto nel diario",
   "@logMeal": {},
   "category": "Categoria",
   "@category": {
@@ -515,10 +471,6 @@
   "@recentlyUsedIngredients": {
     "description": "A message when a user adds a new ingredient to a meal."
   },
-  "supersetWith": "superset con",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "plateCalculator": "Piastre",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
@@ -532,7 +484,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "productNotFound": "Prodotto non trovato",
@@ -556,14 +510,16 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "close": "Chiudi",
   "@close": {
     "description": "Translation for close"
   },
-  "logIngredient": "Salva nel diario nutrizionale",
+  "logIngredient": "Salva l'ingrediente nel diario nutrizionale",
   "@logIngredient": {},
   "searchIngredient": "Cerca ingrediente",
   "@searchIngredient": {
@@ -592,7 +548,9 @@
   "verifiedEmailInfo": "Un'email di verifica è stata inviata a {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "oneNamePerLine": "Un nome per linea",
@@ -682,19 +640,14 @@
   "baseNameEnglish": "Tutti gli esercizi necessitano di un nome base in inglese",
   "@baseNameEnglish": {},
   "aboutMastodonTitle": "Mastodonte",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Seguici su mastodon per aggiornamenti e novità sul progetto",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "enterMinCharacters": "Inserisci almeno {min} caratteri",
   "@enterMinCharacters": {
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "sz_bar": "SZ-Bar",
@@ -710,7 +663,9 @@
   "alsoKnownAs": "Conosciuto anche come: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -853,5 +808,162 @@
   "settingsCacheDeletedSnackbar": "Cache svuotata con successo",
   "@settingsCacheDeletedSnackbar": {},
   "done": "Fatto",
-  "@done": {}
+  "@done": {},
+  "ingredientLogged": "Ingrediente registrato nel diario",
+  "@ingredientLogged": {},
+  "chartDuringPlanTitle": "{chartName} durante il piano nutrizionale {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "chart30DaysTitle": "{name} ultimi 30 giorni",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "goalMacro": "Obiettivi dei macronutrienti",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "goalFiber": "Obbiettivo fibre",
+  "@goalFiber": {},
+  "overallChangeWeight": "Variazione complessiva",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "Dai pasti",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Base",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Avanzato",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "grezzo",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "med",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "themeMode": "Modalità del tema",
+  "@themeMode": {},
+  "lightMode": "Sempre in modalità chiara",
+  "@lightMode": {},
+  "systemMode": "Parametri di sistema",
+  "@systemMode": {},
+  "settingsIngredientCacheDescription": "Cache ingredienti",
+  "@settingsIngredientCacheDescription": {},
+  "onlyLogging": "Traccia solo le calorie",
+  "@onlyLogging": {},
+  "goalEnergy": "Obiettivo energetico",
+  "@goalEnergy": {},
+  "goalProtein": "Obbiettivo proteine",
+  "@goalProtein": {},
+  "goalCarbohydrates": "Obbiettivo carboidrati",
+  "@goalCarbohydrates": {},
+  "goalFat": "Obbiettivo grassi",
+  "@goalFat": {},
+  "today": "Oggi",
+  "@today": {},
+  "loggedToday": "Registrato oggi",
+  "@loggedToday": {},
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "onlyLoggingHelpText": "Selezionate la casella se volete registrare solo le calorie e non volete impostare un piano nutrizionale dettagliato con pasti specifici",
+  "@onlyLoggingHelpText": {},
+  "noIngredientsDefined": "Nessun ingrediente ancora definito",
+  "@noIngredientsDefined": {},
+  "selectMealToLog": "Selezionare un pasto da registrare nel diario",
+  "@selectMealToLog": {},
+  "surplus": "eccedenza",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "deficit",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "chartAllTimeTitle": "{name} per tutto il periodo",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "darkMode": "Sempre in modalità scura",
+  "@darkMode": {},
+  "routines": "Routine",
+  "@routines": {},
+  "newRoutine": "Nuova routine",
+  "@newRoutine": {},
+  "noRoutines": "Non hai nessuna routine",
+  "@noRoutines": {},
+  "restTime": "Tempo di riposo",
+  "@restTime": {},
+  "exerciseNr": "Esercizio {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "restDay": "Giorno di riposo",
+  "@restDay": {},
+  "needsLogsToAdvance": "Ha bisogno di registri per avanzare",
+  "@needsLogsToAdvance": {},
+  "isRestDayHelp": "Tieni presente che tutte le serie e gli esercizi verranno rimossi quando contrassegni un giorno come giorno di riposo.",
+  "@isRestDayHelp": {}
 }

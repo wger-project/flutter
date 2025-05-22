@@ -71,10 +71,6 @@
   "@usernameValidChars": {
     "description": "Error message when the user tries to register a username with forbidden characters"
   },
-  "labelWorkoutPlans": "Προγράμματα προπόνησης",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "previous": "Προηγούμενο",
   "@previous": {},
   "userProfile": "Το προφίλ σας",
@@ -208,7 +204,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "newDay": "Νέα ημέρα",
@@ -259,19 +257,11 @@
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
-  "noWorkoutPlans": "Δεν έχετε πλάνα προπόνησης",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "searchNamesInEnglish": "Επίσης, αναζητήστε ονόματα στα Αγγλικά",
   "@searchNamesInEnglish": {},
   "noMatchingExerciseFound": "Δεν βρέθηκαν αντίστοιχες ασκήσεις",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
-  },
-  "supersetWith": "υπερσύνολο με",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "equipment": "Εξοπλισμός",
   "@equipment": {
@@ -280,10 +270,6 @@
   "muscles": "Μύες",
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
-  },
-  "newWorkout": "Νέο πλάνο προπόνησης",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "reps": "Επαναλήψεις",
   "@reps": {

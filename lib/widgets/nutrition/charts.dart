@@ -20,8 +20,8 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/helpers/colors.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/widgets/measurements/charts.dart';
@@ -289,7 +289,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       _ => '',
     };
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(text, style: style),
     );
   }
@@ -298,8 +298,9 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     if (value == meta.max) {
       return Container();
     }
+
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(
         AppLocalizations.of(context).gValue(meta.formattedValue),
         style: const TextStyle(fontSize: 10),
@@ -428,8 +429,10 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Wrap(
+                spacing: 10.0,
+                runSpacing: 10.0,
+                alignment: WrapAlignment.center,
                 children: [
                   (AppLocalizations.of(context).deficit, colorPlanned),
                   (AppLocalizations.of(context).surplus, COLOR_SURPLUS),
@@ -438,8 +441,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                 ]
                     .map(
                       (e) => Indicator(
-                        color: e.$2,
                         text: e.$1,
+                        color: e.$2,
                         isSquare: true,
                         marginRight: 0,
                       ),
@@ -480,13 +483,13 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
       _ => '',
     };
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(text, style: const TextStyle(fontSize: 10)),
     );
   }
 
   Widget leftTitles(double value, TitleMeta meta) => SideTitleWidget(
-        axisSide: meta.axisSide,
+        meta: meta,
         child: Text(
           AppLocalizations.of(context).percentValue(value.toStringAsFixed(0)),
           style: const TextStyle(fontSize: 10),

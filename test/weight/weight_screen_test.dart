@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
@@ -75,8 +75,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the body weight screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the widgets on the body weight screen', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
     expect(find.text('Weight'), findsOneWidget);
@@ -85,8 +84,7 @@ void main() {
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
-  testWidgets('Test deleting an item using the Delete button',
-      (WidgetTester tester) async {
+  testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     // Arrange
     await tester.pumpWidget(createWeightScreen());
 
@@ -101,8 +99,7 @@ void main() {
     verify(mockWeightProvider.deleteEntry(1)).called(1);
   });
 
-  testWidgets('Test the form on the body weight screen',
-      (WidgetTester tester) async {
+  testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
 
     expect(find.byType(WeightForm), findsNothing);
@@ -111,16 +108,14 @@ void main() {
     expect(find.byType(WeightForm), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - EN',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
     // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
     // expect(find.text('1/1'), findsOneWidget);
     //  expect(find.text('1/10'), findsOneWidget);
   });
 
-  testWidgets('Tests the localization of dates - DE',
-      (WidgetTester tester) async {
+  testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen(locale: 'de'));
     // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
     // expect(find.text('1.1.'), findsOneWidget);

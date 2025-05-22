@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -73,12 +73,10 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         final addExerciseProvider = context.read<AddExerciseProvider>();
                         final exerciseProvider = context.read<ExercisesProvider>();
 
-                        final baseId = await addExerciseProvider.addExercise();
-                        final base = await exerciseProvider.fetchAndSetExercise(baseId);
-                        final name = base
-                            .getExercise(
-                              Localizations.localeOf(context).languageCode,
-                            )
+                        final exerciseId = await addExerciseProvider.addExercise();
+                        final exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
+                        final name = exercise!
+                            .getTranslation(Localizations.localeOf(context).languageCode)
                             .name;
 
                         setState(() {
@@ -102,7 +100,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                                     Navigator.pushReplacementNamed(
                                       context,
                                       ExerciseDetailScreen.routeName,
-                                      arguments: base,
+                                      arguments: exercise,
                                     );
                                   },
                                 ),

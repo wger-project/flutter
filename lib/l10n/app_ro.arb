@@ -42,12 +42,10 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
-  },
-  "noWorkoutPlans": "Nu ai niciun de antrenament",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "muscles": "Mușchi",
   "@muscles": {
@@ -71,10 +69,6 @@
   "@weightUnit": {},
   "email": "Adresă de e-mail",
   "@email": {},
-  "newWorkout": "Plan de antrenament nou",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "searchNamesInEnglish": "Caută nume și în engleză",
   "@searchNamesInEnglish": {},
   "username": "Nume de utilizator",
@@ -108,10 +102,6 @@
   "usernameValidChars": "Un nume de utilizator poate conține numai litere, cifre și caracterele @, +, ., - și _",
   "@usernameValidChars": {
     "description": "Error message when the user tries to register a username with forbidden characters"
-  },
-  "labelWorkoutPlans": "Planuri de antrenament",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "proteinShort": "P",
   "@proteinShort": {
@@ -158,10 +148,6 @@
   "logout": "Deconectează-te",
   "@logout": {
     "description": "Text for logout button"
-  },
-  "supersetWith": "superset cu",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
   },
   "customServerUrl": "URL-ul instanței wger",
   "@customServerUrl": {

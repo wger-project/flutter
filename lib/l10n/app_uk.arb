@@ -67,10 +67,6 @@
   },
   "loginInstead": "Вже маєте обліковий запис? Увійти",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Плани тренувань",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Тренування",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -99,10 +95,6 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
-  "supersetWith": "супер-набір з",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Обладнання",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -118,10 +110,6 @@
   "category": "Категорія",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "newWorkout": "Новий план тренувань",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "repetitions": "Повторень",
   "@repetitions": {
@@ -146,7 +134,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "sameRepetitions": "Якщо ви робите однакові повторення та вагу для всіх наборів, то ви можете просто заповнити один рядок. Наприклад, для 4 наборів просто введіть 10 для повторень, це автоматично стане «4 x 10».",
@@ -211,10 +201,6 @@
   },
   "weightUnit": "Одиниця ваги",
   "@weightUnit": {},
-  "noWorkoutPlans": "У вас немає планів тренувань",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "dayDescriptionHelp": "Опис того, що робиться в цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, «груди та плечі»)",
   "@dayDescriptionHelp": {},
   "workoutSession": "Сеанс тренування",
@@ -261,10 +247,6 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutBugsText": "Зв'яжіться з нами, якщо щось відбувається не так, як очікувалося, або якщо є функція, яка, на вашу думку, відсутня.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
   "selectExercise": "Будь ласка, виберіть вправу",
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
@@ -284,7 +266,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "description": "Опис",
@@ -335,7 +319,7 @@
   },
   "measurementEntriesHelpText": "Одиниця вимірювання, яка використовується для вимірювання категорії, як от \"см\" або \"%\"",
   "@measurementEntriesHelpText": {},
-  "start": "Почати",
+  "start": "Старт",
   "@start": {
     "description": "Label on button to start the gym mode (i.e., an imperative)"
   },
@@ -430,7 +414,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "toggleDetails": "Перемкнути відомості",
@@ -439,49 +425,21 @@
   },
   "goToDetailPage": "Перейти до сторінки відомостей",
   "@goToDetailPage": {},
-  "aboutSourceTitle": "Джерельний код",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutSourceText": "Отримайте джерельний код цього застосунку та його сервера на github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "У вас є проблема чи ідея?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Привітайтеся!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "Якщо ви хочете поспілкуватися з нами, зайдіть на сервер Discord і зв'яжіться з нами",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Перекладання",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "Цей заатосунок перекладено на Weblate. Якщо ви також хочете допомогти, клацніть на посилання та почніть переклад",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "goToToday": "Перейти до сьогодні",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "Будь ласка, заповніть кількість повторень або вагу принаймні для одного з наборів",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "enterCharacters": "Будь ласка, введіть між{min} та {max} символами",
   "@enterCharacters": {
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "nrOfSets": "Наборів на вправу: {nrOfSets}",
@@ -489,7 +447,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "setUnitsAndRir": "Встановіть одиниці вимірювання та RiR",
@@ -542,7 +502,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "scanBarcode": "Сканувати штрих-код",
@@ -570,7 +532,9 @@
   "verifiedEmailInfo": "Повідомлення з підтвердженням електронної пошти надіслано на {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "addExercise": "Додати вправу",
@@ -658,7 +622,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "Всі вправи потребують базової назви англійською",
@@ -670,7 +636,9 @@
   "alsoKnownAs": "Також відомий як: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -779,7 +747,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -787,7 +757,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "settingsExerciseCacheDescription": "Кеш вправ",
@@ -797,7 +769,9 @@
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chart30DaysTitle": "{name} останні 30 днів",
@@ -805,7 +779,9 @@
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chartDuringPlanTitle": "{chartName} під час плану харчування {planName}",
@@ -813,8 +789,12 @@
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
     "placeholders": {
-      "chartName": {},
-      "planName": {}
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
     }
   },
   "kcalValue": "{value} ккал",
@@ -822,7 +802,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "log": "Журнал",
@@ -871,10 +853,6 @@
   "@surplus": {
     "description": "Caloric surplus (either planned or unplanned)"
   },
-  "aboutMastodonText": "Слідкуйте за оновленнями та новинами про проект на Mastodon",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "done": "Готово",
   "@done": {},
   "noIngredientsDefined": "Інгредієнти ще не визначені",
@@ -888,11 +866,96 @@
   "selectMealToLog": "Виберіть страву, щоб записати в щоденник",
   "@selectMealToLog": {},
   "aboutMastodonTitle": "Мастодонт",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "settingsCacheTitle": "Кеш",
   "@settingsCacheTitle": {},
   "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
-  "@settingsCacheDeletedSnackbar": {}
+  "@settingsCacheDeletedSnackbar": {},
+  "themeMode": "Тематичний режим",
+  "@themeMode": {},
+  "darkMode": "Завжди темний режим",
+  "@darkMode": {},
+  "lightMode": "Завжди легкий режим",
+  "@lightMode": {},
+  "systemMode": "Налаштування системи",
+  "@systemMode": {},
+  "restDay": "День відпочинку",
+  "@restDay": {},
+  "noRoutines": "У вас немає рутин",
+  "@noRoutines": {},
+  "restTime": "Час відпочинку",
+  "@restTime": {},
+  "sets": "Набори",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "supersetNr": "Суперсет {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "isRestDay": "Є День відпочинку",
+  "@isRestDay": {},
+  "isRestDayHelp": "Будь ласка, зверніть увагу, що всі комплекси та вправи будуть видалені, коли ви позначите день як вихідний.",
+  "@isRestDayHelp": {},
+  "routineDays": "Дні в рутині",
+  "@routineDays": {},
+  "fitInWeek": "Вписується в тиждень",
+  "@fitInWeek": {},
+  "fitInWeekHelp": "Якщо ввімкнено, дні повторюватимуться в тижневому циклі, інакше дні будуть йти послідовно незалежно від початку нового тижня.",
+  "@fitInWeekHelp": {},
+  "addSuperset": "Додайте надмножину",
+  "@addSuperset": {},
+  "setHasProgression": "Набір має прогресію",
+  "@setHasProgression": {},
+  "simpleMode": "Простий режим",
+  "@simpleMode": {},
+  "resultingRoutine": "Результативна рутина",
+  "@resultingRoutine": {},
+  "simpleModeHelp": "Приховайте деякі розширені налаштування під час редагування вправ",
+  "@simpleModeHelp": {},
+  "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному додатку. Щоб відредагувати цю вправу, використовуйте веб-додаток.",
+  "@progressionRules": {},
+  "min": "Мін",
+  "@min": {},
+  "max": "Макс",
+  "@max": {},
+  "newRoutine": "Нова рутина",
+  "@newRoutine": {},
+  "needsLogsToAdvance": "Для просування потрібні журнали",
+  "@needsLogsToAdvance": {},
+  "routines": "Рутини",
+  "@routines": {},
+  "exerciseNr": "Вправа {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "needsLogsToAdvanceHelp": "Виберіть, якщо ви бажаєте, щоб програма перейшла до наступного запланованого дня, лише якщо ви зареєстрували тренування на цей день",
+  "@needsLogsToAdvanceHelp": {},
+  "setHasProgressionWarning": "Зверніть увагу, що на даний момент неможливо змінити всі параметри набору в мобільному додатку або налаштувати автоматичний прогрес. Наразі використовуйте веб-додаток.",
+  "@setHasProgressionWarning": {},
+  "setHasNoExercises": "У цьому комплексі ще немає вправ!",
+  "@setHasNoExercises": {},
+  "errorCouldNotConnectToServerDetails": "Програмі не вдалося підключитися до сервера. Перевірте підключення до Інтернету або URL-адресу сервера та спробуйте ще раз. Якщо проблема не зникає, зверніться до адміністратора сервера.",
+  "@errorCouldNotConnectToServerDetails": {},
+  "errorViewDetails": "Технічні деталі",
+  "@errorViewDetails": {},
+  "errorCouldNotConnectToServer": "Не вдалося підключитися до сервера",
+  "@errorCouldNotConnectToServer": {},
+  "errorInfoDescription2": "Ви можете продовжувати користуватися додатком, але деякі функції можуть не працювати.",
+  "@errorInfoDescription2": {},
+  "errorInfoDescription": "Вибачте, але щось пішло не так. Ви можете допомогти нам виправити це, повідомивши про проблему на GitHub.",
+  "@errorInfoDescription": {},
+  "copyToClipboard": "Копіювати в буфер обміну",
+  "@copyToClipboard": {}
 }

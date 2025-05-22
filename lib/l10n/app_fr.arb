@@ -7,12 +7,14 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "confirmDelete": "Êtes-vous sûre de vouloir supprimer « {toDelete} » ?",
+  "confirmDelete": "Êtes-vous sûre de vouloir supprimer « {toDelete} » ?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "selectIngredient": "Veuillez sélectionner un ingrédient",
@@ -33,10 +35,6 @@
   },
   "calendar": "Calendrier",
   "@calendar": {},
-  "aboutText": "wger est un logiciel libre, sous licence AFPLv3+ et disponible sur GitHub:",
-  "@aboutText": {
-    "description": "Text in the about dialog"
-  },
   "toggleDetails": "Afficher les détails",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
@@ -115,8 +113,6 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
-  "dismiss": "Rejeter",
-  "@dismiss": {},
   "anErrorOccurred": "Une erreur s’est produite !",
   "@anErrorOccurred": {},
   "noNutritionalPlans": "Aucun programme nutritionnel",
@@ -179,14 +175,6 @@
   },
   "addExercise": "Ajouter un exercice",
   "@addExercise": {},
-  "noWorkoutPlans": "Aucun plan d’entraînement",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "newWorkout": "Nouveau plan d’entraînement",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "exercise": "Exercice",
   "@exercise": {
     "description": "An exercise for a workout"
@@ -202,10 +190,6 @@
   "labelWorkoutPlan": "Plan d’entraînement",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
-  },
-  "labelWorkoutPlans": "Plans d’entraînement",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "registerInstead": "Vous n'avez pas de compte ? Inscrivez-vous maintenant",
   "@registerInstead": {},
@@ -284,7 +268,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "enterCharacters": "Veuillez saisir un nombre de caractères compris entre {min} et {max}",
@@ -292,49 +278,17 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "selectExercise": "Veuillez sélectionner un exercice",
   "@selectExercise": {
     "description": "Error message when the user hasn't selected an exercise in the form"
-  },
-  "enterRepetitionsOrWeight": "Veuillez indiquer les répétitions ou le poids pour au moins une des séries",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
-  "aboutTranslationText": "Cette application est traduite sur Weblate. Si vous voulez aussi aider, cliquez sur le lien et commencez à traduire",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutTranslationTitle": "Traduction",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutContactUsText": "Si vous souhaitez discuter avec nous, rendez-vous sur le serveur Discord et contactez-nous",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutContactUsTitle": "Dites-nous bonjour !",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutBugsText": "Contactez-nous si un élément ne s’est pas comporté comme prévu ou si une fonctionnalité vous semble manquer.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutBugsTitle": "Vous avez un problème ou une idée ?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutSourceText": "Récupérez le code source de cette application et de son serveur sur Github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutSourceTitle": "Code source",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
   },
   "aboutDescription": "Merci d’utiliser wger ! wger est un projet collaboratif à code source ouvert, réalisé par des passionnés de fitness du monde entier.",
   "@aboutDescription": {
@@ -361,7 +315,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "dayDescriptionHelp": "Une description de ce qui est fait ce jour-ci (par exemple : « journée de tractions ») ou des parties du corps qui sont entraînées (par exemple : « poitrine et épaules »)",
@@ -451,10 +407,6 @@
   },
   "timeStartAhead": "L'heure de début ne peut pas être après à l'heure de fin",
   "@timeStartAhead": {},
-  "supersetWith": "supersérie avec",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "plateCalculatorNotDivisible": "Impossible d'atteindre le poids avec les disques disponibles",
   "@plateCalculatorNotDivisible": {
     "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
@@ -564,7 +516,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "productNotFoundDescription": "Le produit dont le code-barres a été scanné {barcode} n'a pas été trouvé dans la base de données wger",
@@ -572,7 +526,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "contributeExerciseWarning": "Vous ne pouvez contribuer aux exercices que si votre compte a plus de {days} jours et si vous avez vérifié votre adresse email",
@@ -592,7 +548,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "Tous les exercices doivent avoir un nom de base en anglais",
@@ -610,7 +568,9 @@
   "alsoKnownAs": "Aussi connu sous le nom de : {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -619,7 +579,9 @@
   "verifiedEmailInfo": "Un email de vérification a été envoyé à {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "whatVariationsExist": "Quelles sont les variantes de cet exercice, s'il en existe ?",
@@ -762,10 +724,6 @@
   },
   "verify": "Vérifier",
   "@verify": {},
-  "aboutMastodonText": "Suivez-nous sur mastodon pour des mises à jour et des informations sur le projet",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "noMatchingExerciseFound": "Aucun exercice correspondant n'a été trouvé",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
@@ -779,9 +737,6 @@
   "onlyLoggingHelpText": "Cochez la case si vous souhaitez uniquement enregistrer vos calories et ne souhaitez pas établir un plan nutritionnel détaillé avec des repas spécifiques",
   "@onlyLoggingHelpText": {},
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "aboutDonateTitle": "Faire un don",
   "@aboutDonateTitle": {},
   "goalEnergy": "Objectif énergétique",
@@ -793,7 +748,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "gValue": "{value} g",
@@ -801,7 +758,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -809,7 +768,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "noIngredientsDefined": "Aucun ingrédient défini pour le moment",
@@ -853,5 +814,31 @@
     "description": "Log a specific meal (imperative form)"
   },
   "done": "Fait",
-  "@done": {}
+  "@done": {},
+  "lightMode": "Mode clair permanent",
+  "@lightMode": {},
+  "darkMode": "Mode sombre permanent",
+  "@darkMode": {},
+  "systemMode": "Paramètres du système",
+  "@systemMode": {},
+  "chart30DaysTitle": "{name} 30 derniers jours",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartAllTimeTitle": "{name} de tous temps",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

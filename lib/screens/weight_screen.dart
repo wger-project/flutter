@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
@@ -27,6 +27,7 @@ import 'package:wger/widgets/weight/weight_overview.dart';
 
 class WeightScreen extends StatelessWidget {
   const WeightScreen();
+
   static const routeName = '/weight';
 
   @override
@@ -37,7 +38,7 @@ class WeightScreen extends StatelessWidget {
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () async {
+        onPressed: () {
           Navigator.pushNamed(
             context,
             FormScreen.routeName,
@@ -50,7 +51,7 @@ class WeightScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Consumer<BodyWeightProvider>(
-          builder: (context, workoutProvider, child) => const WeightOverview(),
+          builder: (context, provider, child) => WeightOverview(provider),
         ),
       ),
     );

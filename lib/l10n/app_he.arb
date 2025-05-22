@@ -73,10 +73,6 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
-  "supersetWith": "סט תרגילים ראשי עם",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "muscles": "שרירים",
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
@@ -88,14 +84,6 @@
   "category": "קטגוריה",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "newWorkout": "תוכנית כושר חדשה",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "אין לך תוכניות כושר",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "repetitions": "חזרות",
   "@repetitions": {
@@ -128,7 +116,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "impression": "התרשמות",
@@ -304,7 +294,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "newNutritionalPlan": "תוכנית תזונה חדשה",
@@ -315,18 +307,6 @@
   },
   "goToDetailPage": "עבור לדף פירוט",
   "@goToDetailPage": {},
-  "aboutSourceTitle": "קוד מקור",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutContactUsTitle": "אמור שלום!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "תרגום",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "calendar": "לוח שנה",
   "@calendar": {},
   "goToToday": "עבור להיום",
@@ -336,14 +316,6 @@
   "enterValue": "אנא הכנס ערך",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
-  },
-  "aboutSourceText": "לקבלת קוד המקור של אפליקציה זאת והשרת שלה בגיטהאב",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "enterRepetitionsOrWeight": "אנא מלאו את החזרות או את המשקל בלפחות אחד מהסטים",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "setUnitsAndRir": "יחידות סט וחזרות בעתודה",
   "@setUnitsAndRir": {
@@ -365,8 +337,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "nrOfSets": "כמות סטים לאימון: {nrOfSets}",
@@ -374,7 +350,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "enterValidNumber": "אנא הכנס מספר תקין",
@@ -427,10 +405,6 @@
   },
   "registerInstead": "אין לך חשבון? הירשם עכשיו",
   "@registerInstead": {},
-  "labelWorkoutPlans": "תוכניות כושר",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "כושר",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -463,10 +437,6 @@
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
-  "aboutBugsTitle": "נתקלת בבעיה או יש לך רעיון?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
   "aboutDescription": "תודה לך על השימוש בווגר! ווגר הוא פרויקט קוד פתוח שנעשה על ידי אוהבי כושר מרחבי העולם.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
@@ -475,18 +445,6 @@
   "@selectExercises": {},
   "logHelpEntries": "אם ביום אחד ישנה יותר מרשומה אחת עם אותה כמות חזרות, אבל משקל שונה, רק הרשומה עם המשקל הגבוה יותר תופיע בדיאגרמה.",
   "@logHelpEntries": {},
-  "aboutBugsText": "צרו קשר אם משהו לא מתנהג כצפוי או אם יש תכונה שאתם מרגישים בחוסרה.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutTranslationText": "האפליקציה הזאת מתורגמת ב-weblate. אם גם אתם רוצים לעזור, לחצו על הקישור ותתחילו לתרגם",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutContactUsText": "אם אתם רוצים לדבר עמנו, אתם מוזמנים לגשת לשרת הדיסקורד וליצור עמנו קשר שם",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
   "searchNamesInEnglish": "חפש גם לפי שמות באנגלית",
   "@searchNamesInEnglish": {},
   "success": "מוצלח",

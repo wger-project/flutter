@@ -6,14 +6,20 @@
 # To encrypt a new version of the keys:
 # gpg -c filename.json
 
-echo "decrypting playstore API keys"
-gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPTKEY_PLAYSTORE" \
---output ./playstore.json playstore.json.gpg
+if [ -n "$DECRYPTKEY_PLAYSTORE" ]; then
+  echo "decrypting playstore API keys"
+  gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPTKEY_PLAYSTORE" \
+  --output ./playstore.json playstore.json.gpg
+fi
 
-echo "decrypting key.properties"
-gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPTKEY_PROPERTIES" \
---output ./key.properties key.properties.gpg
+if [ -n "$DECRYPTKEY_PROPERTIES" ]; then
+  echo "decrypting key.properties"
+  gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPTKEY_PROPERTIES" \
+  --output ./key.properties key.properties.gpg
+fi
 
-echo "decrypting playstore signing keys"
-gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPTKEY_PLAYSTORE_SIGNING_KEY" \
---output ./keys.jks keys.jks.gpg
+if [ -n "$DECRYPTKEY_PLAYSTORE_SIGNING_KEY" ]; then
+  echo "decrypting playstore signing keys"
+  gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPTKEY_PLAYSTORE_SIGNING_KEY" \
+  --output ./keys.jks keys.jks.gpg
+fi

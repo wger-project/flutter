@@ -17,8 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
@@ -33,6 +34,7 @@ class LogMealArguments {
 
 class LogMealScreen extends StatefulWidget {
   const LogMealScreen();
+
   static const routeName = '/log-meal';
 
   @override
@@ -41,6 +43,23 @@ class LogMealScreen extends StatefulWidget {
 
 class _LogMealScreenState extends State<LogMealScreen> {
   double portionPct = 100;
+  final _dateController = TextEditingController();
+  final _timeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _dateController.text = dateToYYYYMMDD(DateTime.now())!;
+    _timeController.text = timeToString(TimeOfDay.now())!;
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    _timeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +106,61 @@ class _LogMealScreenState extends State<LogMealScreen> {
                     ],
                   ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
+                    Expanded(
+                      child: TextFormField(
+                        key: const ValueKey('field-date'),
+                        readOnly: true,
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+                        enableInteractiveSelection: false,
+                        controller: _dateController,
+                        onTap: () async {
+                          final pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(DateTime.now().year - 10),
+                            lastDate: DateTime.now(),
+                          );
+
+                          if (pickedDate != null) {
+                            _dateController.text = dateToYYYYMMDD(pickedDate)!;
+                          }
+                        },
+                        onSaved: (newValue) {
+                          _dateController.text = newValue!;
+                        },
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
+                    Expanded(
+                      child: TextFormField(
+                        key: const ValueKey('field-time'),
+                        readOnly: true,
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
+                        controller: _timeController,
+                        onTap: () async {
+                          // Open time picker
+                          final pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(DateTime.now()),
+                          );
+
+                          if (pickedTime != null) {
+                            _timeController.text = timeToString(pickedTime)!;
+                          }
+                        },
+                        onSaved: (newValue) {
+                          _timeController.text = newValue!;
+                        },
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
+                  ],
+                ),
+                const Padding(padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     if (meal.mealItems.isNotEmpty)
@@ -96,7 +170,10 @@ class _LogMealScreenState extends State<LogMealScreen> {
                           await Provider.of<NutritionPlansProvider>(
                             context,
                             listen: false,
-                          ).logMealToDiary(meal);
+                          ).logMealToDiary(
+                            meal,
+                            DateTime.parse('${_dateController.text} ${_timeController.text}'),
+                          );
                           // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

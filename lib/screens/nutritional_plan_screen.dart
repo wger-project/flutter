@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -34,6 +34,7 @@ enum NutritionalPlanOptions {
 
 class NutritionalPlanScreen extends StatelessWidget {
   const NutritionalPlanScreen();
+
   static const routeName = '/nutritional-plan-detail';
 
   Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) {

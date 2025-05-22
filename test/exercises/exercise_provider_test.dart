@@ -5,9 +5,12 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -23,7 +26,7 @@ void main() {
   late ExercisesProvider provider;
 
   const String categoryUrl = 'exercisecategory';
-  const String exerciseBaseInfoUrl = 'exercisebaseinfo';
+  const String exerciseInfoUrl = 'exerciseinfo';
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
@@ -38,7 +41,7 @@ void main() {
   final Uri tExerciseInfoUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$exerciseBaseInfoUrl/1/',
+    path: 'api/v2/$exerciseInfoUrl/1/',
   );
 
   final Uri tMuscleEntriesUri = Uri(
@@ -80,8 +83,8 @@ void main() {
   final Map<String, dynamic> tLanguageMap = jsonDecode(
     fixture('exercises/language_entries.json'),
   );
-  final Map<String, dynamic> tExerciseBaseInfoMap = jsonDecode(
-    fixture('exercises/exercisebaseinfo_response.json'),
+  final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
+    fixture('exercises/exerciseinfo_response.json'),
   );
 
   setUpAll(() {
@@ -97,7 +100,8 @@ void main() {
     );
     provider.languages = [...testLanguages];
 
-    SharedPreferences.setMockInitialValues({});
+    /// Replacement for SharedPreferences.setMockInitialValues()
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
     // Mock categories
@@ -122,10 +126,10 @@ void main() {
         .thenAnswer((_) => Future.value(tLanguageMap['results']));
 
     // Mock base info response
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 1)).thenReturn(tExerciseInfoUri);
-    when(mockBaseProvider.makeUrl(exerciseBaseInfoUrl, id: 2)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 1)).thenReturn(tExerciseInfoUri);
+    when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 2)).thenReturn(tExerciseInfoUri);
     when(mockBaseProvider.fetch(tExerciseInfoUri))
-        .thenAnswer((_) => Future.value(tExerciseBaseInfoMap));
+        .thenAnswer((_) => Future.value(tExerciseInfoMap));
   });
 
   group('findCategoryById()', () {
@@ -387,57 +391,57 @@ void main() {
     test('initCacheTimesLocalPrefs correctly initalises the cache values', () async {
       // arrange
       const initValue = '2023-01-01T00:00:00.000';
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
 
       // act
       await provider.initCacheTimesLocalPrefs();
 
       // assert
-      expect(prefs.getString(PREFS_LAST_UPDATED_MUSCLES), initValue);
-      expect(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), initValue);
-      expect(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), initValue);
-      expect(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), initValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_MUSCLES), initValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), initValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), initValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), initValue);
     });
 
     test('calling initCacheTimesLocalPrefs again does nothing', () async {
       // arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       const newValue = '2023-10-10T01:18:35.000';
 
       // act
       await provider.initCacheTimesLocalPrefs();
-      prefs.setString(PREFS_LAST_UPDATED_MUSCLES, newValue);
-      prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, newValue);
-      prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, newValue);
-      prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, newValue);
+      await prefs.setString(PREFS_LAST_UPDATED_MUSCLES, newValue);
+      await prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, newValue);
+      await prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, newValue);
+      await prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, newValue);
       await provider.initCacheTimesLocalPrefs();
 
       // Assert
-      expect(prefs.getString(PREFS_LAST_UPDATED_MUSCLES), newValue);
-      expect(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), newValue);
-      expect(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), newValue);
-      expect(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), newValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_MUSCLES), newValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), newValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), newValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), newValue);
     });
 
     test('calling initCacheTimesLocalPrefs with forceInit replaces the date', () async {
       // arrange
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = PreferenceHelper.asyncPref;
       const initValue = '2023-01-01T00:00:00.000';
       const newValue = '2023-10-10T01:18:35.000';
 
       // act
       await provider.initCacheTimesLocalPrefs();
-      prefs.setString(PREFS_LAST_UPDATED_MUSCLES, newValue);
-      prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, newValue);
-      prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, newValue);
-      prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, newValue);
+      await prefs.setString(PREFS_LAST_UPDATED_MUSCLES, newValue);
+      await prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, newValue);
+      await prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, newValue);
+      await prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, newValue);
       await provider.initCacheTimesLocalPrefs(forceInit: true);
 
       // Assert
-      expect(prefs.getString(PREFS_LAST_UPDATED_MUSCLES), initValue);
-      expect(prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), initValue);
-      expect(prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), initValue);
-      expect(prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), initValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_MUSCLES), initValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_EQUIPMENT), initValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_CATEGORIES), initValue);
+      expect(await prefs.getString(PREFS_LAST_UPDATED_LANGUAGES), initValue);
     });
   });
 }

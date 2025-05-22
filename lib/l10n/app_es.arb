@@ -24,7 +24,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "enterCharacters": "Por favor ingresa entre {min} y {max} caracteres",
@@ -32,8 +34,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "selectExercise": "Por favor selecciona un ejercicio",
@@ -44,48 +50,12 @@
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
   },
-  "enterRepetitionsOrWeight": "Por favor completa las repeticiones o pesos para al menos una de las series",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "goToToday": "Ir a \"hoy\"",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
   },
   "calendar": "Calendario",
   "@calendar": {},
-  "aboutTranslationText": "Esta aplicación fue traducida en weblste. Si tú también quieres ayudar, haz click en el link y comienza a traducir",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutTranslationTitle": "Traducción",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutContactUsText": "Si quieres chatear con nosotros, ingresa a nuestro servidor de Discord y ponte en contacto",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutContactUsTitle": "¡Saluda!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutBugsText": "Ponte en contacto si algo no funciona como se esperaba o si hay alguna función que sientes que está faltando.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutBugsTitle": "¿Tienes algún problema o idea?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutSourceText": "Obtener el código fuente de esta aplicación y su servidor en GitHub",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutSourceTitle": "Código fuente",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "aboutDescription": "¡Gracias por usar wger! wger es un proyecto colaborativo de código abierto, realizado por entusiastas del fitness de todo el planeta.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
@@ -101,7 +71,9 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "delete": "Borrar",
@@ -180,8 +152,6 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "dismiss": "Cerrar",
-  "@dismiss": {},
   "anErrorOccurred": "¡Un error ha ocurrido!",
   "@anErrorOccurred": {},
   "noNutritionalPlans": "No tienes planes nutricionales",
@@ -253,7 +223,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "dayDescriptionHelp": "Una descripción de lo que se hace este día (ej. 'día de levantamientos') o qué partes del cuerpo se entrenan (ej. 'pecho y hombros')",
@@ -276,14 +248,6 @@
   },
   "addExercise": "Añadir ejercicio",
   "@addExercise": {},
-  "noWorkoutPlans": "No posees ningún plan de entrenamiento",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "newWorkout": "Nuevo plan de entrenamiento",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "category": "Categoría",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
@@ -311,10 +275,6 @@
   "labelWorkoutLogs": "Registros de entrenamientos",
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
-  },
-  "labelWorkoutPlans": "Planes de ejercicios",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "loginInstead": "¿Ya tiene una cuenta? Inicia sesión",
   "@loginInstead": {},
@@ -494,10 +454,6 @@
   "@searchIngredient": {
     "description": "Label on ingredient search form"
   },
-  "supersetWith": "en conjunto con",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "rirNotUsed": "Valor ReR sin usar",
   "@rirNotUsed": {
     "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
@@ -532,7 +488,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "weekAverage": "Promedio de 7 días",
@@ -552,7 +510,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "scanBarcode": "Escanear código de barras",
@@ -576,7 +536,9 @@
   "alsoKnownAs": "También conocido como: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -589,7 +551,9 @@
   "verifiedEmailInfo": "Se envió un correo electrónico de verificación a {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "oneNamePerLine": "Un nombre por línea",
@@ -687,7 +651,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "add_exercise_image_license": "Las imágenes deben ser compatibles con la licencia CC BY SA. Si tienes dudas, sube solamente fotos que hayas tomado tú mismo.",
@@ -775,13 +741,6 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Siguenos en mastodon para recibir actualizaciones y noticias sobre el proyecto",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "settingsExerciseCacheDescription": "Cache de ejercicios",
   "@settingsExerciseCacheDescription": {},
   "aboutDonateTitle": "Donar",

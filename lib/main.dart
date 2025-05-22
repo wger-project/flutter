@@ -15,11 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/locator.dart';
+import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/errors.dart';
+import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -27,9 +34,9 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/dashboard.dart';
@@ -46,28 +53,99 @@ import 'package:wger/screens/measurement_entries_screen.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/routine_edit_screen.dart';
+import 'package:wger/screens/routine_list_screen.dart';
+import 'package:wger/screens/routine_logs_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
+import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plan_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
 
 import 'providers/auth.dart';
 
-void main() async {
-  //zx.setLogEnabled(kDebugMode);
-  // Needs to be called before runApp
-  WidgetsFlutterBinding.ensureInitialized();
-  // Locator to initialize exerciseDB
-  await ServiceLocator().configure();
-  // Application
-  runApp(const MyApp());
+void _setupLogging() {
+  Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time} [${record.loggerName}] ${record.message}');
+  });
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp(); // This widget is the root of your application.
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+void main() async {
+  // Needs to be called before runApp
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Logger
+  _setupLogging();
+
+  final logger = Logger('main');
+  //zx.setLogEnabled(kDebugMode);
+
+  // Locator to initialize exerciseDB
+  await ServiceLocator().configure();
+
+  // SharedPreferences to SharedPreferencesAsync migration function
+  await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
+
+  // Catch errors from Flutter itself (widget build, layout, paint, etc.)
+  FlutterError.onError = (FlutterErrorDetails details) {
+    final stack = details.stack ?? StackTrace.empty;
+    if (kDebugMode) {
+      FlutterError.dumpErrorToConsole(details);
+    }
+
+    // Don't show the full error dialog for network image loading errors.
+    if (details.exception is NetworkImageLoadException) {
+      return;
+    }
+
+    showGeneralErrorDialog(details.exception, stack);
+  };
+
+  // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (kDebugMode) {
+      logger.warning('Caught error by PlatformDispatcher: $error');
+      logger.warning('Stack trace: $stack');
+    }
+    if (error is WgerHttpException) {
+      showHttpExceptionErrorDialog(error);
+    } else {
+      showGeneralErrorDialog(error, stack);
+    }
+
+    // Return true to indicate that the error has been handled.
+    return true;
+  };
+
+  // Application
+  runApp(const riverpod.ProviderScope(child: MainApp()));
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp();
+
+  Widget _getHomeScreen(AuthProvider auth) {
+    switch (auth.state) {
+      case AuthState.loggedIn:
+        return HomeTabsScreen();
+      case AuthState.updateRequired:
+        return const UpdateAppScreen();
+      default:
+        return FutureBuilder(
+          future: auth.tryAutoLogin(),
+          builder: (ctx, authResultSnapshot) =>
+              authResultSnapshot.connectionState == ConnectionState.waiting
+                  ? const SplashScreen()
+                  : const AuthScreen(),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -81,14 +159,14 @@ class MyApp extends StatelessWidget {
           update: (context, base, previous) =>
               previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
-        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, WorkoutPlansProvider>(
-          create: (context) => WorkoutPlansProvider(
+        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, RoutinesProvider>(
+          create: (context) => RoutinesProvider(
             WgerBaseProvider(Provider.of(context, listen: false)),
             Provider.of(context, listen: false),
             [],
           ),
           update: (context, auth, exercises, previous) =>
-              previous ?? WorkoutPlansProvider(WgerBaseProvider(auth), exercises, []),
+              previous ?? RoutinesProvider(WgerBaseProvider(auth), exercises, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) => NutritionPlansProvider(
@@ -134,46 +212,43 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: Consumer<AuthProvider>(
-        builder: (ctx, auth, _) => MaterialApp(
-          title: 'wger',
-          theme: wgerLightTheme,
-          darkTheme: wgerDarkTheme,
-          highContrastTheme: wgerLightThemeHc,
-          highContrastDarkTheme: wgerDarkThemeHc,
-          themeMode: ThemeMode.system,
-          home: auth.isAuth
-              ? const HomeTabsScreen()
-              : FutureBuilder(
-                  future: auth.tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState == ConnectionState.waiting
-                          ? const SplashScreen()
-                          : const AuthScreen(),
-                ),
-          routes: {
-            DashboardScreen.routeName: (ctx) => const DashboardScreen(),
-            FormScreen.routeName: (ctx) => const FormScreen(),
-            GalleryScreen.routeName: (ctx) => const GalleryScreen(),
-            GymModeScreen.routeName: (ctx) => const GymModeScreen(),
-            HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
-            MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
-            MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
-            NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
-            NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
-            NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-            LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
-            LogMealScreen.routeName: (ctx) => const LogMealScreen(),
-            WeightScreen.routeName: (ctx) => const WeightScreen(),
-            WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
-            WorkoutPlansScreen.routeName: (ctx) => const WorkoutPlansScreen(),
-            ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
-            ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
-            AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
-            AboutPage.routeName: (ctx) => const AboutPage(),
-            SettingsPage.routeName: (ctx) => const SettingsPage(),
-          },
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
+        builder: (ctx, auth, _) => Consumer<UserProvider>(
+          builder: (ctx, user, _) => MaterialApp(
+            title: 'wger',
+            navigatorKey: navigatorKey,
+            theme: wgerLightTheme,
+            darkTheme: wgerDarkTheme,
+            highContrastTheme: wgerLightThemeHc,
+            highContrastDarkTheme: wgerDarkThemeHc,
+            themeMode: user.themeMode,
+            home: _getHomeScreen(auth),
+            routes: {
+              DashboardScreen.routeName: (ctx) => const DashboardScreen(),
+              FormScreen.routeName: (ctx) => const FormScreen(),
+              GalleryScreen.routeName: (ctx) => const GalleryScreen(),
+              GymModeScreen.routeName: (ctx) => const GymModeScreen(),
+              HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
+              MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
+              MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
+              NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
+              NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
+              NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+              LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
+              LogMealScreen.routeName: (ctx) => const LogMealScreen(),
+              WeightScreen.routeName: (ctx) => const WeightScreen(),
+              RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+              RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
+              WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
+              RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
+              ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
+              ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
+              AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
+              AboutPage.routeName: (ctx) => const AboutPage(),
+              SettingsPage.routeName: (ctx) => const SettingsPage(),
+            },
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+          ),
         ),
       ),
     );
