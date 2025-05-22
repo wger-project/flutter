@@ -18,16 +18,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/add_plate_weights.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
@@ -43,8 +45,7 @@ class LogPage extends StatefulWidget {
   final Routine _workoutPlan;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
-  late Log _log;
-  final int _iteration;
+  final Log _log;
 
   LogPage(
     this._controller,
@@ -54,12 +55,10 @@ class LogPage extends StatefulWidget {
     this._workoutPlan,
     this._ratioCompleted,
     this._exercisePages,
-    this._iteration,
-  ) {
-    _log = Log.fromSetConfigData(_configData);
-    _log.routineId = _workoutPlan.id!;
-    _log.iteration = _iteration;
-  }
+    int? iteration,
+  ) : _log = Log.fromSetConfigData(_configData)
+          ..routineId = _workoutPlan.id!
+          ..iteration = iteration;
 
   @override
   _LogPageState createState() => _LogPageState();
@@ -164,6 +163,9 @@ class _LogPageState extends State<LogPage> {
                 setState(() {
                   widget._log.weight = newValue;
                   _weightController.text = newValue.toString();
+                  context.read<PlateWeights>().setWeight(
+                        _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                      );
                 });
               }
             } on FormatException {}
@@ -182,6 +184,9 @@ class _LogPageState extends State<LogPage> {
                 num.parse(value);
                 setState(() {
                   widget._log.weight = num.parse(value);
+                  context.read<PlateWeights>().setWeight(
+                        _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                      );
                 });
               } on FormatException {}
             },
@@ -208,6 +213,9 @@ class _LogPageState extends State<LogPage> {
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
+                context.read<PlateWeights>().setWeight(
+                      _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                    );
               });
             } on FormatException {}
           },
@@ -366,64 +374,71 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getPlates() {
-    final plates = plateCalculator(
-      double.parse(_weightController.text == '' ? '0' : _weightController.text),
-      BAR_WEIGHT,
-      AVAILABLE_PLATES,
-    );
-    final groupedPlates = groupPlates(plates);
-
-    return Column(
-      children: [
-        Text(
-          AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        SizedBox(
-          height: 35,
-          child: plates.isNotEmpty
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...groupedPlates.keys.map(
-                      (key) => Row(
-                        children: [
-                          Text(groupedPlates[key].toString()),
-                          const Text('×'),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primaryContainer,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3),
-                              child: SizedBox(
-                                height: 35,
-                                width: 35,
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    key.toString(),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+    return Consumer<PlateWeights>(
+      builder: (context, plateProvider, child) => Column(
+        children: [
+          Text(
+            AppLocalizations.of(context).plateCalculator,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => const AddPlateWeights()));
+            },
+            icon: const Icon(Icons.settings),
+          ),
+          SizedBox(
+            height: 35,
+            child: plateProvider.hasPlates
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ...plateProvider.calculatePlates.entries.map(
+                        (entry) => Row(
+                          children: [
+                            Text(entry.value.toString()),
+                            const Text('×'),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: plateProvider.getColor(entry.key),
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.black, width: 1),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 3),
+                                child: SizedBox(
+                                  height: 35,
+                                  width: 35,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      entry.key.toString(),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                        ],
+                            const SizedBox(width: 10),
+                          ],
+                        ),
                       ),
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: MutedText(
+                      AppLocalizations.of(context).plateCalculatorNotDivisible,
+                      textAlign: TextAlign.center,
                     ),
-                  ],
-                )
-              : MutedText(
-                  AppLocalizations.of(context).plateCalculatorNotDivisible,
-                ),
-        ),
-        const SizedBox(height: 3),
-      ],
+                  ),
+          ),
+          const SizedBox(height: 3),
+        ],
+      ),
     );
   }
 

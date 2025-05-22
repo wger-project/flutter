@@ -18,9 +18,14 @@
 
 /// Calculates the number of plates needed to reach a specific weight
 List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
-  final List<num> ans = [];
+  final List<num> result = [];
+
   // Weight is less than the bar
   if (totalWeight < barWeight) {
+    return [];
+  }
+
+  if (plates.isEmpty) {
     return [];
   }
 
@@ -36,11 +41,11 @@ List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
   for (final plate in plates.reversed) {
     while (totalWeight >= plate) {
       totalWeight -= plate;
-      ans.add(plate);
+      result.add(plate);
     }
   }
 
-  return ans;
+  return result;
 }
 
 /// Groups a list of plates as calculated by [plateCalculator]

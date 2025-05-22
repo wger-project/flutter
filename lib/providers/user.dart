@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
-import 'package:path/path.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -47,10 +46,10 @@ class UserProvider with ChangeNotifier {
   }
 
   // change the unit of plates
-  void unitChange(){
-    if(profile?.weightUnitStr == 'kg'){
+  void unitChange() {
+    if (profile?.weightUnitStr == 'kg') {
       profile?.weightUnitStr = 'lb';
-    }else{
+    } else {
       profile?.weightUnitStr = 'kg';
     }
     ChangeNotifier();

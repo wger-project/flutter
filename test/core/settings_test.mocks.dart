@@ -1181,6 +1181,15 @@ class MockUserProvider extends _i1.Mock implements _i22.UserProvider {
       );
 
   @override
+  void unitChange() => super.noSuchMethod(
+        Invocation.method(
+          #unitChange,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   void setThemeMode(_i23.ThemeMode? mode) => super.noSuchMethod(
         Invocation.method(
           #setThemeMode,
