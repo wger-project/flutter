@@ -20,6 +20,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementOverallChangeWidget extends StatelessWidget {
@@ -142,7 +143,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                     widget._entries.last.date,
                     widget._entries.first.date,
                   )
-                : 1000000,
+                : CHART_MILLISECOND_FACTOR,
           ),
         ),
         leftTitles: AxisTitles(

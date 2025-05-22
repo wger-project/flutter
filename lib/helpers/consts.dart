@@ -112,3 +112,9 @@ const COLOR_SECONDARY_MUSCLES = Colors.orange;
 // Min account age to contribute exercises. Needs to be kept in sync with
 // the value on the backend
 const MIN_ACCOUNT_AGE = 14;
+
+/// Factor to multiply / divide in the charts when converting dates to milliseconds
+/// from epoch since fl_charts does not support real time series charts and using
+/// the milliseconds themselves can cause the application to crash since it runs
+/// out of memory...
+const double CHART_MILLISECOND_FACTOR = 100000.0;
