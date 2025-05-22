@@ -85,14 +85,6 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "תוכנית כושר חדשה",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "אין לך תוכניות כושר",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "repetitions": "חזרות",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
@@ -315,18 +307,6 @@
   },
   "goToDetailPage": "עבור לדף פירוט",
   "@goToDetailPage": {},
-  "aboutSourceTitle": "קוד מקור",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutContactUsTitle": "אמור שלום!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "תרגום",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "calendar": "לוח שנה",
   "@calendar": {},
   "goToToday": "עבור להיום",
@@ -336,10 +316,6 @@
   "enterValue": "אנא הכנס ערך",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
-  },
-  "aboutSourceText": "לקבלת קוד המקור של אפליקציה זאת והשרת שלה בגיטהאב",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
   },
   "setUnitsAndRir": "יחידות סט וחזרות בעתודה",
   "@setUnitsAndRir": {
@@ -429,10 +405,6 @@
   },
   "registerInstead": "אין לך חשבון? הירשם עכשיו",
   "@registerInstead": {},
-  "labelWorkoutPlans": "תוכניות כושר",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "כושר",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -465,10 +437,6 @@
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
-  "aboutBugsTitle": "נתקלת בבעיה או יש לך רעיון?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
   "aboutDescription": "תודה לך על השימוש בווגר! ווגר הוא פרויקט קוד פתוח שנעשה על ידי אוהבי כושר מרחבי העולם.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
@@ -477,18 +445,6 @@
   "@selectExercises": {},
   "logHelpEntries": "אם ביום אחד ישנה יותר מרשומה אחת עם אותה כמות חזרות, אבל משקל שונה, רק הרשומה עם המשקל הגבוה יותר תופיע בדיאגרמה.",
   "@logHelpEntries": {},
-  "aboutBugsText": "צרו קשר אם משהו לא מתנהג כצפוי או אם יש תכונה שאתם מרגישים בחוסרה.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutTranslationText": "האפליקציה הזאת מתורגמת ב-weblate. אם גם אתם רוצים לעזור, לחצו על הקישור ותתחילו לתרגם",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutContactUsText": "אם אתם רוצים לדבר עמנו, אתם מוזמנים לגשת לשרת הדיסקורד וליצור עמנו קשר שם",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
   "searchNamesInEnglish": "חפש גם לפי שמות באנגלית",
   "@searchNamesInEnglish": {},
   "success": "מוצלח",

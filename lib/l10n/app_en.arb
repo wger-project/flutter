@@ -53,6 +53,18 @@
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
+  "useApiToken": "Use API Token",
+  "useUsernameAndPassword": "Use username and password",
+  "apiToken": "API Token",
+  "@apiToken": {},
+  "invalidApiToken": "Please enter a valid API key",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "An API key may only contain the letters a-f, numbers 0-9 and be exactly 40 characters long",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
   "customServerUrl": "URL of the wger instance",
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
@@ -302,7 +314,12 @@
   "goalFat": "Fat goal",
   "goalFiber": "Fiber goal",
   "anErrorOccurred": "An Error Occurred!",
-  "@anErrorOccurred": {},
+  "errorInfoDescription": "We're sorry, but something went wrong. You can help us fix this by reporting the issue on GitHub.",
+  "errorInfoDescription2": "You can continue using the app, but some features may not work.",
+  "errorViewDetails": "Technical details",
+  "errorCouldNotConnectToServer": "Couldn't connect to server",
+  "errorCouldNotConnectToServerDetails": "The application could not connect to the server. Please check your internet connection or the server URL and try again. If the problem persists, contact the server administrator.",
+  "copyToClipboard": "Copy to clipboard",
   "weight": "Weight",
   "min": "Min",
   "max": "Max",
@@ -541,52 +558,22 @@
   },
   "goToDetailPage": "Go to detail page",
   "@goToDetailPage": {},
+  "aboutWhySupportTitle": "Open Source & free to use ❤️",
   "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutSourceTitle": "Source code",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutSourceText": "Get the source code of this application and its server on github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Have a problem or idea?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Get in touch if something didn't behave as expected or if there is a feature that you feel is missing.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Say hi!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "If you want to chat with us, hop on the Discord server and get in touch",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
+  "aboutDonateTitle": "Make a donation",
+  "aboutDonateText": "While the project is free and will always remain it, running the server isn’t! Development also takes significant time and effort from volunteers. Your contribution directly supports these costs, helping to keep the service reliable.",
+  "aboutContributeTitle": "Contribute",
+  "aboutContributeText": "All types of contributions are encouraged. Whether you're a developer, a translator, or just passionate about fitness, every bit of support is appreciated!",
+  "aboutBugsListTitle": "Report a problem or suggest a feature",
+  "aboutTranslationListTitle": "Translate the application",
+  "aboutSourceListTitle": "View source code",
+  "aboutJoinCommunityTitle": "Join the community",
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Follow us on mastodon for updates and news about the project",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
-  "aboutTranslationTitle": "Translation",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "This application is translated on weblate. If you also want to help, click the link and start translating",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutDonateTitle": "Donate",
-  "aboutDonateText": "Buy us a coffee to help the project, pay for server costs, and keep us fueled",
+  "aboutDiscordTitle": "Discord",
+  "others": "Others",
   "calendar": "Calendar",
   "@calendar": {},
   "goToToday": "Go to today",
@@ -764,7 +751,7 @@
   "settingsExerciseCacheDescription": "Exercise cache",
   "settingsIngredientCacheDescription": "Ingredient cache",
   "settingsCacheDeletedSnackbar": "Cache successfully cleared",
-  "aboutPageTitle": "About Wger",
+  "aboutPageTitle": "About us & Support",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
   "@contributeExerciseWarning": {
     "description": "Number of days before which a person can add exercise",
@@ -895,6 +882,10 @@
   },
   "repetitions": "Repetitions",
   "@repetitions": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "resistance_band": "Resistance band",
+  "@resistance_band": {
     "description": "Generated entry for translation for server strings"
   },
   "sz_bar": "SZ-Bar",

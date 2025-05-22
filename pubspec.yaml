@@ -38,7 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   drift: ^2.26.1
   equatable: ^2.0.7
-  fl_chart: ^0.69.2
+  fl_chart: ^1.0.0
   flex_color_scheme: ^8.1.1
   flex_seed_scheme: ^3.5.1
   flutter_html: ^3.0.0
@@ -46,11 +46,11 @@ dependencies:
   flutter_svg: ^2.1.0
   flutter_svg_icons: ^0.0.1
   flutter_typeahead: ^5.2.0
-  flutter_zxing: ^2.0.0
+  flutter_zxing: ^2.1.0
   font_awesome_flutter: ^10.8.0
   freezed_annotation: ^3.0.0
   get_it: ^8.0.3
-  http: ^1.2.2
+  http: ^1.4.0
   image_picker: ^1.1.0
   intl: ^0.19.0
   json_annotation: ^4.8.1

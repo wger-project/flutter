@@ -19,19 +19,27 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/colors.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/routines/charts.dart';
+import 'package:wger/widgets/routines/forms/session.dart';
 
-class SessionInfo extends StatelessWidget {
+class SessionInfo extends StatefulWidget {
   final WorkoutSession _session;
 
   const SessionInfo(this._session);
+
+  @override
+  State<SessionInfo> createState() => _SessionInfoState();
+}
+
+class _SessionInfoState extends State<SessionInfo> {
+  bool editMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,39 +49,55 @@ class SessionInfo extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          Text(
-            i18n.workoutSession,
-            style: Theme.of(context).textTheme.headlineSmall,
+          ListTile(
+            title: Text(
+              i18n.workoutSession,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            subtitle: Text(
+              DateFormat.yMd(Localizations.localeOf(context).languageCode)
+                  .format(widget._session.date),
+            ),
+            onTap: () => setState(() => editMode = !editMode),
+            trailing: Icon(editMode ? Icons.edit_off : Icons.edit),
+            contentPadding: EdgeInsets.zero,
           ),
-          Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(_session.date),
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 8.0),
-          _buildInfoRow(
-            context,
-            i18n.timeStart,
-            _session.timeStart != null
-                ? MaterialLocalizations.of(context).formatTimeOfDay(_session.timeStart!)
-                : '-/-',
-          ),
-          _buildInfoRow(
-            context,
-            i18n.timeEnd,
-            _session.timeEnd != null
-                ? MaterialLocalizations.of(context).formatTimeOfDay(_session.timeEnd!)
-                : '-/-',
-          ),
-          _buildInfoRow(
-            context,
-            i18n.impression,
-            _session.impressionAsString,
-          ),
-          _buildInfoRow(
-            context,
-            i18n.notes,
-            _session.notes.isNotEmpty ? _session.notes : '-/-',
-          ),
+          if (editMode)
+            SessionForm(
+              widget._session.routineId,
+              onSaved: () => setState(() => editMode = false),
+              session: widget._session,
+            )
+          else
+            Column(
+              children: [
+                _buildInfoRow(
+                  context,
+                  i18n.timeStart,
+                  widget._session.timeStart != null
+                      ? MaterialLocalizations.of(context)
+                          .formatTimeOfDay(widget._session.timeStart!)
+                      : '-/-',
+                ),
+                _buildInfoRow(
+                  context,
+                  i18n.timeEnd,
+                  widget._session.timeEnd != null
+                      ? MaterialLocalizations.of(context).formatTimeOfDay(widget._session.timeEnd!)
+                      : '-/-',
+                ),
+                _buildInfoRow(
+                  context,
+                  i18n.impression,
+                  widget._session.impressionAsString,
+                ),
+                _buildInfoRow(
+                  context,
+                  i18n.notes,
+                  widget._session.notes.isNotEmpty ? widget._session.notes : '-/-',
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -89,12 +113,7 @@ class SessionInfo extends StatelessWidget {
             '$label: ',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );

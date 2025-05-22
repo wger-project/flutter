@@ -15,10 +15,6 @@
   "@registerInstead": {},
   "loginInstead": "已經有帳號了嗎？立即登入",
   "@loginInstead": {},
-  "labelWorkoutPlans": "健身計劃",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "userProfile": "你的檔案",
   "@userProfile": {},
   "register": "註冊",
@@ -267,16 +263,8 @@
       }
     }
   },
-  "aboutBugsTitle": "有問題或想法嗎？",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
   "newNutritionalPlan": "新的營養計劃",
   "@newNutritionalPlan": {},
-  "aboutSourceText": "在 GitHub 上取得此應用程式及其伺服器的原始碼",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
   "aboutDescription": "感謝您使用 wger！wger 是一個協作式開源專案，由來自世界各地的健身愛好者共同打造。",
   "@aboutDescription": {
     "description": "Text in the about dialog"
@@ -284,14 +272,6 @@
   "enterValue": "請輸入數值",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
-  },
-  "enterRepetitionsOrWeight": "請至少為其中一組填寫重複次數或重量",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
-  "aboutBugsText": "如果有任何功能未如預期運作，或您覺得缺少某些功能，請與我們聯絡。",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
   },
   "previous": "上一個",
   "@previous": {},
@@ -393,10 +373,6 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "新健身計劃",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "musclesSecondary": "輔助肌群",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
@@ -483,20 +459,8 @@
   },
   "delete": "刪除",
   "@delete": {},
-  "aboutSourceTitle": "原始碼",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "goToDetailPage": "前往詳細資訊頁面",
   "@goToDetailPage": {},
-  "aboutContactUsText": "如果您想與我們聊聊，歡迎加入 Discord 伺服器與我們聯繫",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutMastodonText": "在 Mastodon 上追蹤我們，取得專案的最新資訊與更新",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "appUpdateTitle": "需要更新",
   "@appUpdateTitle": {},
   "variations": "變化",
@@ -541,8 +505,6 @@
   "@goalFat": {},
   "onlyLogging": "僅追蹤卡路里",
   "@onlyLogging": {},
-  "addGoalsToPlan": "新增目標至此計劃",
-  "@addGoalsToPlan": {},
   "measurementCategoriesHelpText": "測量類別，例如「二頭肌」或「體脂率」",
   "@measurementCategoriesHelpText": {},
   "today": "今天",
@@ -551,8 +513,6 @@
   "@percentEnergy": {},
   "onlyLoggingHelpText": "如果您只想紀錄卡路里但不想設定詳細的營養計劃和特定餐點，請勾選此項",
   "@onlyLoggingHelpText": {},
-  "addGoalsToPlanHelpText": "這使你可以為計劃設定能量、蛋白質、碳水化合物或脂肪的總體目標。請注意，如果你設定了詳細的膳食計劃，這些數值將取得優先權。",
-  "@addGoalsToPlanHelpText": {},
   "goalCarbohydrates": "碳水化合物目標",
   "@goalCarbohydrates": {},
   "loggedToday": "今天的紀錄",
@@ -637,10 +597,6 @@
   "@miles_per_hour": {
     "description": "Generated entry for translation for server strings"
   },
-  "supersetWith": "與之組成超級組",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "weekAverage": "七天平均值",
   "@weekAverage": {
     "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
@@ -703,10 +659,6 @@
       }
     }
   },
-  "noWorkoutPlans": "您沒有健身計劃",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "reps": "次",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
@@ -758,10 +710,6 @@
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
   },
-  "aboutContactUsTitle": "您好！",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
   "addImage": "新增圖片",
   "@addImage": {},
   "addExercise": "新增動作",
@@ -778,10 +726,6 @@
   },
   "appUpdateContent": "此版本的應用程式與伺服器不相容，請更新您的應用程式。",
   "@appUpdateContent": {},
-  "aboutTranslationText": "這個應用程式是在 Weblate 上進行翻譯的。如果您也想提供協助，請點選連結開始翻譯",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "enterCharacters": "請輸入 {min} 到 {max} 個字元",
   "@enterCharacters": {
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
@@ -842,13 +786,6 @@
   "aboutDonateText": "請我們喝杯咖啡來支持專案、支付伺服器費用，讓我們持續前進",
   "@aboutDonateText": {},
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutTranslationTitle": "翻譯",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "aboutDonateTitle": "贊助",
   "@aboutDonateTitle": {},
   "goToToday": "回到今天",

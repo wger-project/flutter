@@ -21,6 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
@@ -74,7 +75,7 @@ void main() {
     );
   }
 
-  testWidgets('Test the widgets on the workout form', (WidgetTester tester) async {
+  testWidgets('Test the widgets on the routine form', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget(existingRoutine));
     await tester.pumpAndSettle();
 
@@ -82,19 +83,19 @@ void main() {
     expect(find.byType(ElevatedButton), findsOneWidget);
   });
 
-  testWidgets('Test editing an existing workout', (WidgetTester tester) async {
+  testWidgets('Test editing an existing routine', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget(existingRoutine));
     await tester.pumpAndSettle();
 
     expect(
       find.text('test 1'),
       findsOneWidget,
-      reason: 'Name of existing workout plan',
+      reason: 'Name of existing routine',
     );
     expect(
       find.text('description 1'),
       findsOneWidget,
-      reason: 'Description of existing workout plan',
+      reason: 'Description of existing routine',
     );
     await tester.enterText(find.byKey(const Key('field-name')), 'New description');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -112,13 +113,28 @@ void main() {
     //expect(find.text(('New description')), findsOneWidget, reason: 'Workout plan detail page');
   });
 
-  testWidgets('Test creating a new workout - only name', (WidgetTester tester) async {
+  testWidgets('Test editing an existing routine - server error', (WidgetTester tester) async {
+    // Arrange
+    when(mockRoutinesProvider.editRoutine(any)).thenThrow(WgerHttpException.fromMap({
+      'name': ['The name is not valid'],
+    }));
+
+    // Act
+    await tester.pumpWidget(renderWidget(existingRoutine));
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pump();
+
+    // Assert
+    expect(find.text('The name is not valid'), findsOneWidget, reason: 'Error message is shown');
+  });
+
+  testWidgets('Test creating a new routine - only name', (WidgetTester tester) async {
     final editRoutine = Routine(
       id: 2,
       created: newRoutine.created,
       start: DateTime(2024, 11, 1),
       end: DateTime(2024, 12, 1),
-      name: 'New cool workout',
+      name: 'New cool routine',
     );
 
     when(mockRoutinesProvider.addRoutine(any)).thenAnswer((_) => Future.value(editRoutine));
@@ -127,7 +143,7 @@ void main() {
     await tester.pumpWidget(renderWidget(newRoutine));
     await tester.pumpAndSettle();
 
-    expect(find.text(''), findsNWidgets(2), reason: 'New workout has no name or description');
+    expect(find.text(''), findsNWidgets(2), reason: 'New routine has no name or description');
     await tester.enterText(find.byKey(const Key('field-name')), editRoutine.name);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
@@ -136,16 +152,16 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text('New cool workout'), findsWidgets, reason: 'Workout plan detail page');
+    expect(find.text('New cool routine'), findsWidgets, reason: 'routine detail page');
   });
 
-  testWidgets('Test creating a new workout - name and description', (WidgetTester tester) async {
+  testWidgets('Test creating a new routine - name and description', (WidgetTester tester) async {
     final editRoutine = Routine(
       id: 2,
       created: newRoutine.created,
       start: DateTime(2024, 11, 1),
       end: DateTime(2024, 12, 1),
-      name: 'My workout',
+      name: 'My routine',
       description: 'Get yuuuge',
     );
     when(mockRoutinesProvider.addRoutine(any)).thenAnswer((_) => Future.value(editRoutine));
@@ -154,7 +170,7 @@ void main() {
     await tester.pumpWidget(renderWidget(newRoutine));
     await tester.pumpAndSettle();
 
-    expect(find.text(''), findsNWidgets(2), reason: 'New workout has no name or description');
+    expect(find.text(''), findsNWidgets(2), reason: 'New routine has no name or description');
     await tester.enterText(find.byKey(const Key('field-name')), editRoutine.name);
     await tester.enterText(find.byKey(const Key('field-description')), editRoutine.description);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -164,6 +180,22 @@ void main() {
 
     // Detail page
     await tester.pumpAndSettle();
-    expect(find.text('My workout'), findsWidgets, reason: 'Workout plan detail page');
+    expect(find.text('My routine'), findsWidgets, reason: 'routine detail page');
+  });
+
+  testWidgets('Test creating a new routine - server error', (WidgetTester tester) async {
+    // Arrange
+    when(mockRoutinesProvider.addRoutine(any)).thenThrow(WgerHttpException.fromMap({
+      'name': ['The name is not valid'],
+    }));
+
+    // Act
+    await tester.pumpWidget(renderWidget(newRoutine));
+    await tester.enterText(find.byKey(const Key('field-name')), 'test 1234');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pump();
+
+    // Assert
+    expect(find.text('The name is not valid'), findsOneWidget, reason: 'Error message is shown');
   });
 }

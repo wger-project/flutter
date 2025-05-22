@@ -5,10 +5,6 @@
   },
   "email": "Адрес электронной почты",
   "@email": {},
-  "labelWorkoutPlans": "Планы тренировок",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "registerInstead": "У вас нет аккаунта? Зарегистрируйтесь сейчас",
   "@registerInstead": {},
   "loginInstead": "Уже есть аккаунт? Войти",
@@ -101,18 +97,6 @@
   },
   "goToDetailPage": "Перейти на страницу сведений",
   "@goToDetailPage": {},
-  "aboutSourceTitle": "Исходный код",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutContactUsTitle": "Скажите привет!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Перевод",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "calendar": "Календарь",
   "@calendar": {},
   "enterValue": "Пожалуйста, введите значение",
@@ -175,10 +159,6 @@
   "category": "Категория",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "noWorkoutPlans": "У вас нет планов тренировок",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "login": "Войти",
   "@login": {
@@ -273,10 +253,6 @@
   "musclesSecondary": "Вторичные мышцы",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
-  },
-  "newWorkout": "Новый план тренировок",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "dayDescriptionHelp": "Описание того, что делается в этот день (например, 'день подтягиваний') или какие части тела тренируются (например, 'грудь и плечи')",
   "@dayDescriptionHelp": {},
@@ -455,29 +431,9 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutContactUsText": "Если вы хотите пообщаться с нами, зайдите на сервер Discord и свяжитесь с нами",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationText": "Это приложение переведено на weblate. Если вы тоже хотите помочь, нажмите на ссылку и начните переводить",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutSourceText": "Получите исходный код этого приложения и его сервера на github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Есть проблема или идея?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
   "enterValidNumber": "Пожалуйста, введите правильное число",
   "@enterValidNumber": {
     "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
-  },
-  "aboutBugsText": "Свяжитесь с нами, если что-то пошло не так или если вам кажется, что какой-то функции не хватает.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
   },
   "goToToday": "Перейти на сегодня",
   "@goToToday": {
@@ -826,10 +782,6 @@
       }
     }
   },
-  "aboutMastodonText": "Подписывайтесь на нас в Mastodon, чтобы получать обновления и новости о проекте",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "useMetric": "Использовать метрические единицы измерения для веса тела.",
   "@useMetric": {},
   "verify": "Подтвердить",
@@ -897,9 +849,6 @@
     "description": "Generated entry for translation for server strings"
   },
   "aboutMastodonTitle": "Мастодонт",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "surplus": "превышение",
   "@surplus": {
     "description": "Caloric surplus (either planned or unplanned)"

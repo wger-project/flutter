@@ -175,14 +175,6 @@
   },
   "addExercise": "Aggiungi esercizi",
   "@addExercise": {},
-  "noWorkoutPlans": "Non hai nessun piano di allenamento",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "newWorkout": "Nuovo piano di allenamento",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
   "exercise": "Esercizio",
   "@exercise": {
     "description": "An exercise for a workout"
@@ -198,10 +190,6 @@
   "labelWorkoutPlan": "Piano di allenamento",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
-  },
-  "labelWorkoutPlans": "Piani di allenamento",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "loginInstead": "Hai già un account? Registrati ora",
   "@loginInstead": {},
@@ -339,38 +327,6 @@
   "logout": "Disconnetti",
   "@logout": {
     "description": "Text for logout button"
-  },
-  "aboutTranslationText": "Questa applicazione è tradotta su weblate. Se anche tu vuoi contribuire, clicca sul link e inizia a tradurre",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutTranslationTitle": "Traduzione",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutContactUsText": "Se vuoi parlare con noi, vieni nel nostro server su Discord",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutContactUsTitle": "Fatti conoscere!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutBugsText": "Entra in contatto con noi se hai trovato qualche errore o se vuoi proporre qualche funzionalità.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutBugsTitle": "Problemi o idee?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutSourceText": "Codice sorgente dell'applicazione e repository su github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutSourceTitle": "Codice sorgente",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
   },
   "aboutDescription": "Grazie per esserti registrato/a su wger! wger è un progetto collaborativo con codice aperto, creato da entusiasti del fitness in tutto il mondo.",
   "@aboutDescription": {
@@ -684,13 +640,6 @@
   "baseNameEnglish": "Tutti gli esercizi necessitano di un nome base in inglese",
   "@baseNameEnglish": {},
   "aboutMastodonTitle": "Mastodonte",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Seguici su mastodon per aggiornamenti e novità sul progetto",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "enterMinCharacters": "Inserisci almeno {min} caratteri",
   "@enterMinCharacters": {
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",

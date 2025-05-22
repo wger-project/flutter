@@ -18,393 +18,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/helpers/consts.dart';
+import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
-import 'package:wger/widgets/routines/forms/reps_unit.dart';
-import 'package:wger/widgets/routines/forms/rir.dart';
-import 'package:wger/widgets/routines/forms/weight_unit.dart';
-
-class ProgressionRulesInfoBox extends StatelessWidget {
-  final Exercise exercise;
-
-  const ProgressionRulesInfoBox(this.exercise, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    final i18n = AppLocalizations.of(context);
-
-    return Column(
-      children: [
-        ListTile(
-          title: Text(
-            exercise.getTranslation(languageCode).name,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ),
-        ListTile(
-          leading: const Icon(Icons.info),
-          tileColor: Theme.of(context).colorScheme.primaryContainer,
-          title: Text(
-            i18n.progressionRules,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class SlotEntryForm extends StatefulWidget {
-  final SlotEntry entry;
-  final bool simpleMode;
-  final int routineId;
-
-  const SlotEntryForm(this.entry, this.routineId, {this.simpleMode = true, super.key});
-
-  @override
-  State<SlotEntryForm> createState() => _SlotEntryFormState();
-}
-
-class _SlotEntryFormState extends State<SlotEntryForm> {
-  bool isSaving = false;
-  bool isDeleting = false;
-
-  final iconSize = 18.0;
-
-  double setsSliderValue = 1.0;
-
-  final weightController = TextEditingController();
-  final maxWeightController = TextEditingController();
-  final repetitionsController = TextEditingController();
-  final maxRepetitionsController = TextEditingController();
-  final restController = TextEditingController();
-  final maxRestController = TextEditingController();
-  final rirController = TextEditingController();
-
-  final _form = GlobalKey<FormState>();
-
-  var _edit = false;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.entry.nrOfSetsConfigs.isNotEmpty) {
-      setsSliderValue = widget.entry.nrOfSetsConfigs.first.value.toDouble();
-    }
-
-    if (widget.entry.weightConfigs.isNotEmpty) {
-      weightController.text = widget.entry.weightConfigs.first.value.toString();
-    }
-    if (widget.entry.maxWeightConfigs.isNotEmpty) {
-      maxWeightController.text = widget.entry.maxWeightConfigs.first.value.toString();
-    }
-
-    if (widget.entry.repetitionsConfigs.isNotEmpty) {
-      repetitionsController.text = widget.entry.repetitionsConfigs.first.value.round().toString();
-    }
-    if (widget.entry.maxRepetitionsConfigs.isNotEmpty) {
-      maxRepetitionsController.text =
-          widget.entry.maxRepetitionsConfigs.first.value.round().toString();
-    }
-
-    if (widget.entry.restTimeConfigs.isNotEmpty) {
-      restController.text = widget.entry.restTimeConfigs.first.value.round().toString();
-    }
-    if (widget.entry.maxRestTimeConfigs.isNotEmpty) {
-      maxRestController.text = widget.entry.maxRestTimeConfigs.first.value.round().toString();
-    }
-
-    if (widget.entry.rirConfigs.isNotEmpty) {
-      rirController.text = widget.entry.rirConfigs.first.value.round().toString();
-    }
-  }
-
-  @override
-  void dispose() {
-    weightController.dispose();
-    maxWeightController.dispose();
-
-    repetitionsController.dispose();
-    maxRepetitionsController.dispose();
-
-    restController.dispose();
-    maxRestController.dispose();
-
-    rirController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context);
-    final languageCode = Localizations.localeOf(context).languageCode;
-
-    final provider = context.read<RoutinesProvider>();
-
-    return Form(
-      key: _form,
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              widget.entry.exerciseObj.getTranslation(languageCode).name,
-              style: Theme.of(context).textTheme.titleMedium,
-              // textAlign: TextAlign.center,
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    setState(() => _edit = !_edit);
-                  },
-                  icon: _edit
-                      ? Icon(Icons.edit_off, size: iconSize)
-                      : Icon(Icons.edit, size: iconSize),
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete, size: iconSize),
-                  onPressed: isDeleting
-                      ? null
-                      : () async {
-                          setState(() => isDeleting = true);
-                          await provider.deleteSlotEntry(widget.entry.id!, widget.routineId);
-                          if (mounted) {
-                            setState(() => isDeleting = false);
-                          }
-                        },
-                ),
-              ],
-            ),
-          ),
-          if (_edit)
-            ExerciseAutocompleter(
-              onExerciseSelected: (exercise) => setState(() {
-                widget.entry.exercise = exercise;
-                _edit = false;
-              }),
-            ),
-          Row(
-            children: [
-              Text('${i18n.sets}: ${setsSliderValue.round()}'),
-              Expanded(
-                child: Slider(
-                  value: setsSliderValue,
-                  min: 1,
-                  max: 20,
-                  divisions: 20,
-                  label: setsSliderValue.round().toString(),
-                  onChanged: (double value) {
-                    setState(() => setsSliderValue = value);
-                  },
-                ),
-              ),
-            ],
-          ),
-          if (!widget.simpleMode)
-            WeightUnitInputWidget(
-              widget.entry.weightUnitId,
-              onChanged: (value) {
-                widget.entry.weightUnitId = value;
-              },
-            ),
-          Row(
-            spacing: 10,
-            children: [
-              Flexible(
-                child: TextFormField(
-                  controller: weightController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: i18n.weight),
-                  validator: (value) {
-                    if (value != null && value != '' && double.tryParse(value) == null) {
-                      return i18n.enterValidNumber;
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              if (!widget.simpleMode)
-                Flexible(
-                  child: TextFormField(
-                    controller: maxWeightController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && double.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-            ],
-          ),
-          if (!widget.simpleMode)
-            RepetitionUnitInputWidget(
-              widget.entry.repetitionUnitId,
-              onChanged: (value) {
-                widget.entry.repetitionUnitId = value;
-              },
-            ),
-          Row(
-            spacing: 10,
-            children: [
-              Flexible(
-                child: TextFormField(
-                  controller: repetitionsController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: i18n.repetitions),
-                  validator: (value) {
-                    if (value != null && value != '' && int.tryParse(value) == null) {
-                      return i18n.enterValidNumber;
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              if (!widget.simpleMode)
-                Flexible(
-                  child: TextFormField(
-                    controller: maxRepetitionsController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && int.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-            ],
-          ),
-          if (!widget.simpleMode)
-            Row(
-              spacing: 10,
-              children: [
-                Flexible(
-                  child: TextFormField(
-                    controller: restController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: i18n.restTime),
-                    validator: (value) {
-                      if (value != null && value != '' && int.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Flexible(
-                  child: TextFormField(
-                    controller: maxRestController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && int.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ],
-            ),
-          if (!widget.simpleMode)
-            RiRInputWidget(
-              rirController.text == '' ? null : num.parse(rirController.text),
-              onChanged: (value) => rirController.text = value,
-            ),
-          const SizedBox(height: 5),
-          OutlinedButton(
-            key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            onPressed: isSaving
-                ? null
-                : () async {
-                    if (!_form.currentState!.validate()) {
-                      return;
-                    }
-                    _form.currentState!.save();
-                    setState(() => isSaving = true);
-
-                    // Process new, edited or entries to be deleted
-                    try {
-                      await Future.wait([
-                        provider.handleConfig(
-                          widget.entry,
-                          setsSliderValue == 0 ? '' : setsSliderValue.round().toString(),
-                          ConfigType.sets,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          weightController.text,
-                          ConfigType.weight,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          maxWeightController.text,
-                          ConfigType.maxWeight,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          repetitionsController.text,
-                          ConfigType.repetitions,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          maxRepetitionsController.text,
-                          ConfigType.maxRepetitions,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          restController.text,
-                          ConfigType.rest,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          maxRestController.text,
-                          ConfigType.maxRest,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          rirController.text,
-                          ConfigType.rir,
-                        ),
-                      ]);
-
-                      await provider.editSlotEntry(widget.entry, widget.routineId);
-                      if (mounted) {
-                        setState(() => isSaving = false);
-                      }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${i18n.anErrorOccurred} $e')),
-                      );
-                    } finally {
-                      if (mounted) {
-                        setState(() => isSaving = false);
-                      }
-                    }
-                  },
-            child:
-                isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
-          ),
-          const SizedBox(height: 10),
-        ],
-      ),
-    );
-  }
-}
+import 'package:wger/widgets/routines/forms/slot_entry.dart';
+import 'package:wger/widgets/routines/slot.dart';
 
 class SlotDetailWidget extends StatefulWidget {
   final Slot slot;
@@ -419,6 +43,7 @@ class SlotDetailWidget extends StatefulWidget {
 
 class _SlotDetailWidgetState extends State<SlotDetailWidget> {
   bool _showExerciseSearchBox = false;
+  Widget errorMessage = const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
@@ -427,6 +52,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
 
     return Column(
       children: [
+        errorMessage,
         ...widget.slot.entries.map((entry) => entry.hasProgressionRules
             ? ProgressionRulesInfoBox(entry.exerciseObj)
             : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode)),
@@ -442,7 +68,18 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
                 exercise: exercise,
               );
 
-              await provider.addSlotEntry(entry, widget.routineId);
+              try {
+                await provider.addSlotEntry(entry, widget.routineId);
+                if (context.mounted) {
+                  setState(() => errorMessage = const SizedBox.shrink());
+                }
+              } on WgerHttpException catch (error) {
+                if (context.mounted) {
+                  setState(() {
+                    errorMessage = FormHttpErrorsWidget(error);
+                  });
+                }
+              }
             },
           ),
         if (widget.slot.entries.isNotEmpty)
@@ -473,6 +110,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
   bool simpleMode = true;
   bool isAddingSlot = false;
   int? isDeletingSlot;
+  Widget errorMessage = const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
@@ -482,6 +120,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
 
     return Column(
       children: [
+        errorMessage,
         if (!widget.day.isRest)
           SwitchListTile(
             value: simpleMode,
@@ -579,7 +218,18 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                 widget.slots[i].order = i + 1;
               }
 
-              provider.editSlots(widget.slots, widget.day.routineId);
+              try {
+                provider.editSlots(widget.slots, widget.day.routineId);
+                setState(() {
+                  errorMessage = const SizedBox.shrink();
+                });
+              } on WgerHttpException catch (error) {
+                if (context.mounted) {
+                  setState(() {
+                    errorMessage = FormHttpErrorsWidget(error);
+                  });
+                }
+              }
             });
           },
         ),

@@ -161,14 +161,6 @@
   "@timeStartAhead": {},
   "carbohydrates": "Carboidratos",
   "@carbohydrates": {},
-  "noWorkoutPlans": "Você não tem planos de treino",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "aboutTranslationTitle": "Tradução",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
   "muscles": "Músculos",
   "@muscles": {
     "description": "(main) muscles trained by an exercise"
@@ -209,16 +201,8 @@
   "@searchIngredient": {
     "description": "Label on ingredient search form"
   },
-  "aboutBugsText": "Entre em contato se algo não se comportou conforme o esperado ou se houver algum recurso que você acha que está faltando.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
   "anErrorOccurred": "Ocorreu um erro!",
   "@anErrorOccurred": {},
-  "aboutContactUsTitle": "Diga oi!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
   "enterValue": "por favor insira um valor",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
@@ -232,10 +216,6 @@
   "addSet": "Adicionar set",
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
-  },
-  "newWorkout": "Novo plano de treino",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "energyShort": "E",
   "@energyShort": {
@@ -297,10 +277,6 @@
   "@nutritionalDiary": {},
   "protein": "Proteína",
   "@protein": {},
-  "labelWorkoutPlans": "Planos de treino",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "proteinShort": "P",
   "@proteinShort": {
     "description": "The first letter or short name of the word 'Protein', used in overviews"
@@ -319,10 +295,6 @@
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
   },
-  "aboutTranslationText": "Este aplicativo está traduzido no weblate. Se você também quiser ajudar, clique no link e comece a traduzir",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "ingredient": "Ingrediente",
   "@ingredient": {},
   "measurementCategoriesHelpText": "Categoria de medição, como 'bíceps' ou 'gordura corporal'",
@@ -333,10 +305,6 @@
   },
   "todaysWorkout": "Seu treino hoje",
   "@todaysWorkout": {},
-  "aboutSourceText": "Obtenha o código fonte deste aplicativo e seu servidor no github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
   "kJ": "kJ",
   "@kJ": {
     "description": "Energy in a meal in kilo joules, kJ"
@@ -364,10 +332,6 @@
   "musclesSecondary": "Músculos secundários",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
-  },
-  "aboutContactUsText": "Se você quiser bater um papo conosco, entre no servidor Discord e entre em contato",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
   },
   "labelDashboard": "Painel",
   "@labelDashboard": {
@@ -411,10 +375,6 @@
   "@measurementEntriesHelpText": {},
   "sugars": "Açúcar",
   "@sugars": {},
-  "aboutBugsTitle": "Tem um problema ou ideia?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
   "carbohydratesShort": "C",
   "@carbohydratesShort": {
     "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
@@ -473,10 +433,6 @@
   },
   "logHelpEntriesUnits": "Observe que apenas as entradas com uma unidade de peso (kg ou lb) e repetições são registradas; outras combinações, como tempo ou até a falha, são ignoradas aqui.",
   "@logHelpEntriesUnits": {},
-  "aboutSourceTitle": "Código fonte",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "measurement": "Medição",
   "@measurement": {},
   "nrOfSets": "Séries por exercício: {nrOfSets}",
@@ -492,9 +448,6 @@
   "useMetric": "Use unidades métricas para peso corporal",
   "@useMetric": {},
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
   "selectEntry": "Por favor, selecione uma entrada",
   "@selectEntry": {},
   "noMatchingExerciseFound": "Nenhum exercício correspondente encontrado",
@@ -511,10 +464,6 @@
   },
   "baseNameEnglish": "Todos os exercícios necessitam de um nome base em inglês",
   "@baseNameEnglish": {},
-  "aboutMastodonText": "Siga-nos no Mastodon para atualizações e novidades sobre o projeto",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "labelBottomNavWorkout": "Treino",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"

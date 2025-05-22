@@ -73,8 +73,8 @@ class SlotEntry {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late RepetitionUnit? repetitionUnitObj;
 
-  @JsonKey(required: true, name: 'repetition_rounding', fromJson: stringToNum)
-  late num repetitionRounding;
+  @JsonKey(required: true, name: 'repetition_rounding', fromJson: stringToNumNull)
+  late num? repetitionRounding;
 
   @JsonKey(required: false, name: 'repetitions_configs', includeToJson: false, defaultValue: [])
   late List<BaseConfig> repetitionsConfigs = [];
@@ -88,8 +88,8 @@ class SlotEntry {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late WeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNum)
-  late num weightRounding;
+  @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNumNull)
+  late num? weightRounding;
 
   @JsonKey(required: false, name: 'weight_configs', includeToJson: false, defaultValue: [])
   late List<BaseConfig> weightConfigs = [];
@@ -174,10 +174,10 @@ class SlotEntry {
     exerciseObj = exercise;
     exerciseId = exercise.id!;
     this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG;
-    this.weightRounding = weightRounding ?? 2.5;
+    this.weightRounding = weightRounding;
 
     this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;
-    this.repetitionRounding = repetitionRounding ?? 1;
+    this.repetitionRounding = repetitionRounding;
   }
 
   get rir {

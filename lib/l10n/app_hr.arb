@@ -55,10 +55,6 @@
   "@registerInstead": {},
   "loginInstead": "Već imaš račun? Prijavi se",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Planovi treninga",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Trening",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -200,14 +196,6 @@
   "toggleDetails": "Prikaži detalje",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
-  },
-  "aboutBugsText": "Javi ako se nešto ponaša neočekivano ili ako smatraš da nedostaje neka funkcija.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Pozdrav!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
   },
   "enterValue": "Upiši vrijednost",
   "@enterValue": {
@@ -369,10 +357,6 @@
   },
   "newNutritionalPlan": "Novi plan prehrane",
   "@newNutritionalPlan": {},
-  "noWorkoutPlans": "Nemaš planove treninga",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
   "amount": "Količina",
   "@amount": {
     "description": "The amount (e.g. in grams) of an ingredient in a meal"
@@ -397,30 +381,6 @@
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutSourceTitle": "Izvorni kod",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Imaš problem ili ideju?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutContactUsText": "Ako želiš s nama razgovarati prijeđi na Discord poslužitelj i kontaktiraj nas",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutSourceText": "Preuzmi izvorni kod ove aplikacije i njezinog poslužitelja na githubu",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutTranslationTitle": "Prijevod",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "Ova je aplikacija prevedena putem Weblatea. Ako i ti želiš pomoći, klikni poveznicu i počni prevoditi",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "calendar": "Kalendar",
   "@calendar": {},
   "musclesSecondary": "Sekundarni mišići",
@@ -434,10 +394,6 @@
   "category": "Kategorija",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "newWorkout": "Novi plan treninga",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "searchExercise": "Traži vježbe koje želiš dodati",
   "@searchExercise": {
@@ -825,13 +781,6 @@
     "description": "Generated entry for translation for server strings"
   },
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Prati nas na Mastodonu za nove verzije i novosti o projektu",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
   "noMatchingExerciseFound": "Nisu pronađene odgovarajuće vježbe",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
@@ -860,8 +809,6 @@
   "@onlyLogging": {},
   "onlyLoggingHelpText": "Označi okvir ako želiš bilježiti samo svoje kalorije i ne želiš postaviti detaljan plan prehrane s određenim obrocima",
   "@onlyLoggingHelpText": {},
-  "addGoalsToPlanHelpText": "Ovo omogućuje postavljanje općih ciljeva za energiju, proteine, ugljikohidrate ili masti za plan. Imaj na umu da će ove vrijednosti imati prednost ako postaviš detaljan plan obroka.",
-  "@addGoalsToPlanHelpText": {},
   "percentValue": "{value} %",
   "@percentValue": {
     "description": "A value in percent, e.g. 10 %",
@@ -872,8 +819,6 @@
       }
     }
   },
-  "addGoalsToPlan": "Dodaj ciljeve ovom planu",
-  "@addGoalsToPlan": {},
   "goalEnergy": "Cilj za energiju",
   "@goalEnergy": {},
   "goalProtein": "Cilj za proteine",
