@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/user.dart';
+import 'package:wger/widgets/routines/plate_calculator.dart';
 
 class AddPlateWeights extends ConsumerStatefulWidget {
   const AddPlateWeights({super.key});
@@ -13,8 +16,7 @@ class AddPlateWeights extends ConsumerStatefulWidget {
 
 class _AddPlateWeightsState extends ConsumerState<AddPlateWeights>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _animation;
+  final _unitController = TextEditingController();
 
   @override
   void initState() {
@@ -22,151 +24,79 @@ class _AddPlateWeightsState extends ConsumerState<AddPlateWeights>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(plateWeightsProvider.notifier);
     });
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    );
-    _animation = Tween<Offset>(
-      begin: const Offset(-1.0, 0.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-
-    _controller.forward();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _unitController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     final plateWeightsState = ref.watch(plateWeightsProvider);
     final plateWeightsNotifier = ref.read(plateWeightsProvider.notifier);
-    final userProviderInstance = provider.Provider.of<UserProvider>(context);
-    final userProfile = userProviderInstance.profile;
+    final userProvider = provider.Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Select Available Plates')),
       body: Column(
+        mainAxisSize: MainAxisSize.max,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Preferred Unit'),
-              DropdownButton<String>(
-                value: (userProfile?.isMetric ?? true) ? 'kg' : 'lbs',
-                onChanged: (String? newValue) {
-                  if (newValue == null) return;
-                  final selectedUnitIsMetric = (newValue == 'kg');
-                  if (selectedUnitIsMetric != (userProfile?.isMetric ?? true)) {
-                    plateWeightsNotifier.unitChange();
-                    provider.Provider.of<UserProvider>(context, listen: false).unitChange();
-                    _controller.reset();
-                    _controller.forward();
-                  }
-                },
-                items: ['kg', 'lbs'].map((unit) {
-                  return DropdownMenuItem<String>(
-                    value: unit,
-                    child: Text(unit),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: DropdownMenu<WeightUnitEnum>(
+              width: double.infinity,
+              initialSelection: plateWeightsState.isMetric ? WeightUnitEnum.kg : WeightUnitEnum.lb,
+              controller: _unitController,
+              requestFocusOnTap: true,
+              label: Text(i18n.unit),
+              onSelected: (WeightUnitEnum? unit) {
+                if (unit == null) {
+                  return;
+                }
+                plateWeightsNotifier.unitChange(unit: unit);
+                // userProvider.changeUnit(changeTo: unit.name);
+                // userProvider.saveProfile();
+              },
+              dropdownMenuEntries: WeightUnitEnum.values.map((unit) {
+                return DropdownMenuEntry<WeightUnitEnum>(
+                  value: unit,
+                  label: unit == WeightUnitEnum.kg ? i18n.kg : i18n.lb,
+                );
+              }).toList(),
+            ),
+          ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              const double widthThreshold = 450.0;
+              final int crossAxisCount = constraints.maxWidth > widthThreshold ? 10 : 5;
+              return GridView.count(
+                crossAxisCount: crossAxisCount,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: plateWeightsState.availablePlates.map((number) {
+                  final bool isSelected = plateWeightsState.selectedPlates.contains(number);
+                  return GestureDetector(
+                    onTap: () => plateWeightsNotifier.toggleSelection(number),
+                    child: PlateWeight(
+                      value: number,
+                      isSelected: isSelected,
+                      color: plateWeightsState.getColor(number),
+                    ),
                   );
                 }).toList(),
-              ),
-            ],
+              );
+            },
           ),
-          Wrap(
-            alignment: WrapAlignment.center,
-            runAlignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: (userProfile == null || userProfile.isMetric)
-                ? plateWeightsState.kgWeights.map((number) {
-                    return SlideTransition(
-                      position: _animation,
-                      child: GestureDetector(
-                        onTap: () => plateWeightsNotifier.toggleSelection(number),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 50,
-                            width: 50,
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: plateWeightsState.selectedPlates.contains(number)
-                                  ? plateWeightsState.getColor(number)
-                                  : const Color.fromARGB(255, 97, 105, 101),
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.black, width: 2),
-                            ),
-                            child: Text(
-                              number.toString(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList()
-                : plateWeightsState.lbsWeights.map((number) {
-                    return SlideTransition(
-                      position: _animation,
-                      child: GestureDetector(
-                        onTap: () => plateWeightsNotifier.toggleSelection(number),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            margin: const EdgeInsets.all(8),
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: plateWeightsState.selectedPlates.contains(number)
-                                  ? const Color.fromARGB(255, 82, 226, 236)
-                                  : const Color.fromARGB(255, 97, 105, 101),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              '$number lbs',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Done'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  plateWeightsNotifier.selectAllPlates();
-                },
-                child: const Text('Select all'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  plateWeightsNotifier.resetPlates();
-                },
-                child: const Text('Reset'),
-              ),
-            ],
+          FilledButton(
+            onPressed: () {
+              plateWeightsNotifier.saveToSharedPrefs();
+              Navigator.pop(context);
+            },
+            child: Text(i18n.save),
           ),
         ],
       ),

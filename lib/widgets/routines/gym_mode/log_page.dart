@@ -36,6 +36,7 @@ import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
+import 'package:wger/widgets/routines/plate_calculator.dart';
 
 class LogPage extends ConsumerStatefulWidget {
   final PageController _controller;
@@ -379,21 +380,26 @@ class _LogPageState extends ConsumerState<LogPage> {
 
   Widget getPlates() {
     final plateWeightsState = ref.watch(plateWeightsProvider);
+
     return Column(
       children: [
-        Text(
-          AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        IconButton(
-          onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => const AddPlateWeights()));
-          },
-          icon: const Icon(Icons.settings),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              AppLocalizations.of(context).plateCalculator,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => const AddPlateWeights()));
+              },
+              icon: const Icon(Icons.settings),
+            ),
+          ],
         ),
         SizedBox(
-          height: 35,
           child: plateWeightsState.hasPlates
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -403,28 +409,12 @@ class _LogPageState extends ConsumerState<LogPage> {
                         children: [
                           Text(entry.value.toString()),
                           const Text('×'),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: ref.read(plateWeightsProvider).getColor(entry.key),
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.black, width: 1),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3),
-                              child: SizedBox(
-                                height: 35,
-                                width: 35,
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    entry.key.toString(),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                          PlateWeight(
+                            value: entry.key,
+                            size: 37,
+                            padding: 2,
+                            margin: 0,
+                            color: ref.read(plateWeightsProvider).getColor(entry.key),
                           ),
                           const SizedBox(width: 10),
                         ],

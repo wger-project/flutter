@@ -593,10 +593,11 @@ class MockUserProvider extends _i1.Mock implements _i17.UserProvider {
       );
 
   @override
-  void unitChange() => super.noSuchMethod(
+  void changeUnit({dynamic changeTo = 'kg'}) => super.noSuchMethod(
         Invocation.method(
-          #unitChange,
+          #changeUnit,
           [],
+          {#changeTo: changeTo},
         ),
         returnValueForMissingStub: null,
       );

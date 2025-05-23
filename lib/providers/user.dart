@@ -46,13 +46,12 @@ class UserProvider with ChangeNotifier {
   }
 
   // change the unit of plates
-  void unitChange() {
-    if (profile?.weightUnitStr == 'kg') {
+  void changeUnit({changeTo = 'kg'}) {
+    if (changeTo == 'kg') {
       profile?.weightUnitStr = 'lb';
     } else {
       profile?.weightUnitStr = 'kg';
     }
-    ChangeNotifier();
   }
 
   // Load theme mode from SharedPreferences

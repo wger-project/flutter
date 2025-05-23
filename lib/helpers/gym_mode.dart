@@ -19,13 +19,14 @@
 /// Calculates the number of plates needed to reach a specific weight
 List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
   final List<num> result = [];
+  final sortedPlates = List.of(plates)..sort();
 
   // Weight is less than the bar
   if (totalWeight < barWeight) {
     return [];
   }
 
-  if (plates.isEmpty) {
+  if (sortedPlates.isEmpty) {
     return [];
   }
 
@@ -33,12 +34,12 @@ List<num> plateCalculator(num totalWeight, num barWeight, List<num> plates) {
   totalWeight = (totalWeight - barWeight) / 2;
 
   // Weight can't be divided with the smallest plate
-  if (totalWeight % plates.first > 0) {
+  if (totalWeight % sortedPlates.first > 0) {
     return [];
   }
 
   // Iterate through the plates, beginning with the biggest ones
-  for (final plate in plates.reversed) {
+  for (final plate in sortedPlates.reversed) {
     while (totalWeight >= plate) {
       totalWeight -= plate;
       result.add(plate);
