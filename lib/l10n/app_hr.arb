@@ -781,6 +781,7 @@
     "description": "Generated entry for translation for server strings"
   },
   "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
   "noMatchingExerciseFound": "Nisu pronađene odgovarajuće vježbe",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"

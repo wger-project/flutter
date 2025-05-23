@@ -721,6 +721,7 @@
     "description": "Generated entry for translation for server strings"
   },
   "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
   "settingsTitle": "Ayarlar",
   "@settingsTitle": {},
   "settingsCacheTitle": "Önbellek",

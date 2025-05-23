@@ -640,6 +640,7 @@
   "baseNameEnglish": "Tutti gli esercizi necessitano di un nome base in inglese",
   "@baseNameEnglish": {},
   "aboutMastodonTitle": "Mastodonte",
+  "@aboutMastodonTitle": {},
   "enterMinCharacters": "Inserisci almeno {min} caratteri",
   "@enterMinCharacters": {
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
