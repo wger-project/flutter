@@ -37,6 +37,7 @@
   "@passwordTooShort": {
     "description": "Error message when the user a password that is too short"
   },
+  "selectAvailablePlates": "Select Available Plates",
   "password": "Password",
   "@password": {},
   "confirmPassword": "Confirm password",

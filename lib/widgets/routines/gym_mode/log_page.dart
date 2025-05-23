@@ -16,26 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/add_plate_weights.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
+import 'package:wger/widgets/routines/plate_calculator.dart';
 
-class LogPage extends StatefulWidget {
+class LogPage extends ConsumerStatefulWidget {
   final PageController _controller;
   final SetConfigData _configData;
   final SlotData _slotData;
@@ -43,8 +46,7 @@ class LogPage extends StatefulWidget {
   final Routine _workoutPlan;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
-  late Log _log;
-  final int _iteration;
+  final Log _log;
 
   LogPage(
     this._controller,
@@ -54,18 +56,16 @@ class LogPage extends StatefulWidget {
     this._workoutPlan,
     this._ratioCompleted,
     this._exercisePages,
-    this._iteration,
-  ) {
-    _log = Log.fromSetConfigData(_configData);
-    _log.routineId = _workoutPlan.id!;
-    _log.iteration = _iteration;
-  }
+    int? iteration,
+  ) : _log = Log.fromSetConfigData(_configData)
+          ..routineId = _workoutPlan.id!
+          ..iteration = iteration;
 
   @override
   _LogPageState createState() => _LogPageState();
 }
 
-class _LogPageState extends State<LogPage> {
+class _LogPageState extends ConsumerState<LogPage> {
   final _form = GlobalKey<FormState>();
   final _repetitionsController = TextEditingController();
   final _weightController = TextEditingController();
@@ -122,7 +122,9 @@ class _LogPageState extends State<LogPage> {
             controller: _repetitionsController,
             keyboardType: TextInputType.number,
             focusNode: focusNode,
-            onFieldSubmitted: (_) {},
+            onFieldSubmitted: (_) {
+              // Placeholder for potential future logic
+            },
             onSaved: (newValue) {
               widget._log.repetitions = num.parse(newValue!);
               focusNode.unfocus();
@@ -164,6 +166,9 @@ class _LogPageState extends State<LogPage> {
                 setState(() {
                   widget._log.weight = newValue;
                   _weightController.text = newValue.toString();
+                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                        _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                      );
                 });
               }
             } on FormatException {}
@@ -176,12 +181,17 @@ class _LogPageState extends State<LogPage> {
             ),
             controller: _weightController,
             keyboardType: TextInputType.number,
-            onFieldSubmitted: (_) {},
+            onFieldSubmitted: (_) {
+              // Placeholder for potential future logic
+            },
             onChanged: (value) {
               try {
                 num.parse(value);
                 setState(() {
                   widget._log.weight = num.parse(value);
+                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                        _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                      );
                 });
               } on FormatException {}
             },
@@ -208,6 +218,9 @@ class _LogPageState extends State<LogPage> {
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
+                ref.read(plateCalculatorProvider.notifier).setWeight(
+                      _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                    );
               });
             } on FormatException {}
           },
@@ -366,51 +379,42 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getPlates() {
-    final plates = plateCalculator(
-      double.parse(_weightController.text == '' ? '0' : _weightController.text),
-      BAR_WEIGHT,
-      AVAILABLE_PLATES,
-    );
-    final groupedPlates = groupPlates(plates);
+    final plateWeightsState = ref.watch(plateCalculatorProvider);
 
     return Column(
       children: [
-        Text(
-          AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.titleLarge,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              AppLocalizations.of(context).plateCalculator,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => const AddPlateWeights()));
+              },
+              icon: const Icon(Icons.settings),
+            ),
+          ],
         ),
         SizedBox(
-          height: 35,
-          child: plates.isNotEmpty
+          child: plateWeightsState.hasPlates
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ...groupedPlates.keys.map(
-                      (key) => Row(
+                    ...plateWeightsState.calculatePlates.entries.map(
+                      (entry) => Row(
                         children: [
-                          Text(groupedPlates[key].toString()),
+                          Text(entry.value.toString()),
                           const Text('×'),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primaryContainer,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3),
-                              child: SizedBox(
-                                height: 35,
-                                width: 35,
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    key.toString(),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                          PlateWeight(
+                            value: entry.key,
+                            size: 37,
+                            padding: 2,
+                            margin: 0,
+                            color: ref.read(plateCalculatorProvider).getColor(entry.key),
                           ),
                           const SizedBox(width: 10),
                         ],
@@ -418,8 +422,12 @@ class _LogPageState extends State<LogPage> {
                     ),
                   ],
                 )
-              : MutedText(
-                  AppLocalizations.of(context).plateCalculatorNotDivisible,
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: MutedText(
+                    AppLocalizations.of(context).plateCalculatorNotDivisible,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
         ),
         const SizedBox(height: 3),

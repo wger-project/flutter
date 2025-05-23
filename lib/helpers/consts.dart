@@ -130,3 +130,5 @@ const LIBERAPAY_URL = 'https://liberapay.com/wger';
 /// the milliseconds themselves can cause the application to crash since it runs
 /// out of memory...
 const double CHART_MILLISECOND_FACTOR = 100000.0;
+
+enum WeightUnitEnum { kg, lb }
