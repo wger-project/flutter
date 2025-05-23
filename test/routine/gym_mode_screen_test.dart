@@ -22,6 +22,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -52,6 +54,8 @@ void main() {
   final testExercises = getTestExercises();
 
   Widget renderGymMode({locale = 'en'}) {
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+
     return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => RoutinesProvider(
         mockBaseProvider,

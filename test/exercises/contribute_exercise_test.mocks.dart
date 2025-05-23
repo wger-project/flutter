@@ -593,16 +593,6 @@ class MockUserProvider extends _i1.Mock implements _i17.UserProvider {
       );
 
   @override
-  void changeUnit({dynamic changeTo = 'kg'}) => super.noSuchMethod(
-        Invocation.method(
-          #changeUnit,
-          [],
-          {#changeTo: changeTo},
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   void setThemeMode(_i18.ThemeMode? mode) => super.noSuchMethod(
         Invocation.method(
           #setThemeMode,
