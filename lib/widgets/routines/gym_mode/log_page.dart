@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as provider;
-import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -37,7 +37,7 @@ import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
-class LogPage extends StatefulWidget {
+class LogPage extends ConsumerStatefulWidget {
   final PageController _controller;
   final SetConfigData _configData;
   final SlotData _slotData;
@@ -64,7 +64,7 @@ class LogPage extends StatefulWidget {
   _LogPageState createState() => _LogPageState();
 }
 
-class _LogPageState extends State<LogPage> {
+class _LogPageState extends ConsumerState<LogPage> {
   final _form = GlobalKey<FormState>();
   final _repetitionsController = TextEditingController();
   final _weightController = TextEditingController();
@@ -121,7 +121,9 @@ class _LogPageState extends State<LogPage> {
             controller: _repetitionsController,
             keyboardType: TextInputType.number,
             focusNode: focusNode,
-            onFieldSubmitted: (_) {},
+            onFieldSubmitted: (_) {
+              // Placeholder for potential future logic
+            },
             onSaved: (newValue) {
               widget._log.repetitions = num.parse(newValue!);
               focusNode.unfocus();
@@ -163,7 +165,7 @@ class _LogPageState extends State<LogPage> {
                 setState(() {
                   widget._log.weight = newValue;
                   _weightController.text = newValue.toString();
-                  context.read<PlateWeights>().setWeight(
+                  ref.read(plateWeightsProvider.notifier).setWeight(
                         _weightController.text == '' ? 0 : double.parse(_weightController.text),
                       );
                 });
@@ -178,13 +180,15 @@ class _LogPageState extends State<LogPage> {
             ),
             controller: _weightController,
             keyboardType: TextInputType.number,
-            onFieldSubmitted: (_) {},
+            onFieldSubmitted: (_) {
+              // Placeholder for potential future logic
+            },
             onChanged: (value) {
               try {
                 num.parse(value);
                 setState(() {
                   widget._log.weight = num.parse(value);
-                  context.read<PlateWeights>().setWeight(
+                  ref.read(plateWeightsProvider.notifier).setWeight(
                         _weightController.text == '' ? 0 : double.parse(_weightController.text),
                       );
                 });
@@ -213,7 +217,7 @@ class _LogPageState extends State<LogPage> {
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
-                context.read<PlateWeights>().setWeight(
+                ref.read(plateWeightsProvider.notifier).setWeight(
                       _weightController.text == '' ? 0 : double.parse(_weightController.text),
                     );
               });
@@ -374,71 +378,70 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getPlates() {
-    return Consumer<PlateWeights>(
-      builder: (context, plateProvider, child) => Column(
-        children: [
-          Text(
-            AppLocalizations.of(context).plateCalculator,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => const AddPlateWeights()));
-            },
-            icon: const Icon(Icons.settings),
-          ),
-          SizedBox(
-            height: 35,
-            child: plateProvider.hasPlates
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ...plateProvider.calculatePlates.entries.map(
-                        (entry) => Row(
-                          children: [
-                            Text(entry.value.toString()),
-                            const Text('×'),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: plateProvider.getColor(entry.key),
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.black, width: 1),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 3),
-                                child: SizedBox(
-                                  height: 35,
-                                  width: 35,
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      entry.key.toString(),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+    final plateWeightsState = ref.watch(plateWeightsProvider);
+    return Column(
+      children: [
+        Text(
+          AppLocalizations.of(context).plateCalculator,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        IconButton(
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => const AddPlateWeights()));
+          },
+          icon: const Icon(Icons.settings),
+        ),
+        SizedBox(
+          height: 35,
+          child: plateWeightsState.hasPlates
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ...plateWeightsState.calculatePlates.entries.map(
+                      (entry) => Row(
+                        children: [
+                          Text(entry.value.toString()),
+                          const Text('×'),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: ref.read(plateWeightsProvider).getColor(entry.key),
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.black, width: 1),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 3),
+                              child: SizedBox(
+                                height: 35,
+                                width: 35,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    entry.key.toString(),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 10),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 10),
+                        ],
                       ),
-                    ],
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: MutedText(
-                      AppLocalizations.of(context).plateCalculatorNotDivisible,
-                      textAlign: TextAlign.center,
                     ),
+                  ],
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: MutedText(
+                    AppLocalizations.of(context).plateCalculatorNotDivisible,
+                    textAlign: TextAlign.center,
                   ),
-          ),
-          const SizedBox(height: 3),
-        ],
-      ),
+                ),
+        ),
+        const SizedBox(height: 3),
+      ],
     );
   }
 

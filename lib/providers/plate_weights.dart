@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/gym_mode.dart';
 
@@ -8,8 +9,12 @@ const DEFAULT_KG_PLATES = [2.5, 5, 10, 15, 20, 25];
 
 const PREFS_KEY_PLATES = 'selectedPlates';
 
-class PlateWeights extends ChangeNotifier {
-  final plateColorMapKg = {
+final plateWeightsProvider = StateNotifierProvider<PlateWeightsNotifier, PlateWeightsState>((ref) {
+  return PlateWeightsNotifier();
+});
+
+class PlateWeightsState {
+  final Map<double, Color> plateColorMapKg = {
     25: Colors.red,
     20: Colors.blue,
     15: Colors.yellow,
@@ -21,7 +26,7 @@ class PlateWeights extends ChangeNotifier {
     1: Colors.green,
     0.5: Colors.white,
   };
-  final plateColorMapLb = {
+  final Map<double, Color> plateColorMapLb = {
     55: Colors.red,
     45: Colors.blue,
     35: Colors.yellow,
@@ -31,92 +36,23 @@ class PlateWeights extends ChangeNotifier {
     1.25: Colors.white,
   };
 
-  bool isMetric = true;
+  final bool isMetric;
+  final num totalWeight;
+  final num barWeight;
+  final List<num> selectedPlates;
+  final List<num> kgWeights = const [0.5, 1, 1.25, 2, 2.5, 5, 10, 15, 20, 25];
+  final List<num> lbsWeights = const [2.5, 5, 10, 25, 35, 45];
 
-  bool loadedFromSharedPref = false;
-  num totalWeight = 0;
-  num barWeight = 20;
-  num convertToLbs = 2.205;
-  num totalWeightInKg = 0;
-  num barWeightInKg = 20;
-  List<num> selectedPlates = [...DEFAULT_KG_PLATES];
-  List<num> kgWeights = [0.5, 1, 1.25, 2, 2.5, 5, 10, 15, 20, 25];
-  List<num> lbsWeights = [2.5, 5, 10, 25, 35, 45];
+  PlateWeightsState({
+    this.isMetric = true,
+    this.totalWeight = 0,
+    this.barWeight = 20,
+    List<num>? selectedPlates,
+  }) : selectedPlates = selectedPlates ?? [...DEFAULT_KG_PLATES];
 
-  List<num> get data => selectedPlates;
+  num get totalWeightInKg => isMetric ? totalWeight : totalWeight / 2.205;
 
-  set data(List<num> newData) {
-    selectedPlates = newData;
-    saveIntoSharedPrefs();
-    notifyListeners();
-  }
-
-  Color getColor(num plate) {
-    if (isMetric) {
-      return plateColorMapKg[plate] ?? Colors.white;
-    }
-
-    return plateColorMapLb[plate] ?? Colors.white;
-  }
-
-  Future<void> saveIntoSharedPrefs() async {
-    final pref = await SharedPreferences.getInstance();
-    pref.setString(PREFS_KEY_PLATES, jsonEncode(selectedPlates));
-    notifyListeners();
-  }
-
-  void readPlates() async {
-    final pref = await SharedPreferences.getInstance();
-    final platePrefData = pref.getString(PREFS_KEY_PLATES);
-    if (platePrefData != null) {
-      try {
-        final plateData = json.decode(platePrefData);
-        if (plateData is List) {
-          selectedPlates = plateData.cast<num>();
-        } else {
-          throw const FormatException('Not a List');
-        }
-      } catch (e) {
-        selectedPlates = [];
-      }
-    }
-    notifyListeners();
-  }
-
-  Future<void> toggleSelection(num x) async {
-    if (selectedPlates.contains(x)) {
-      selectedPlates.remove(x);
-    } else {
-      selectedPlates.add(x);
-    }
-    await saveIntoSharedPrefs();
-    notifyListeners();
-  }
-
-  void unitChange() {
-    if (isMetric == false) {
-      totalWeight = totalWeightInKg;
-      isMetric = true;
-      barWeight = barWeightInKg;
-    } else {
-      isMetric = false;
-      totalWeight = totalWeightInKg * 2.205;
-      barWeight = barWeightInKg * 2.205;
-    }
-    notifyListeners();
-  }
-
-  void clear() async {
-    selectedPlates.clear();
-    await saveIntoSharedPrefs();
-    notifyListeners();
-  }
-
-  void setWeight(num x) {
-    totalWeight = x;
-    totalWeightInKg = x;
-    notifyListeners();
-  }
+  num get barWeightInKg => isMetric ? barWeight : barWeight / 2.205;
 
   List<num> get platesList {
     return plateCalculator(totalWeight, barWeight, selectedPlates);
@@ -127,21 +63,102 @@ class PlateWeights extends ChangeNotifier {
   }
 
   Map<num, int> get calculatePlates {
-    selectedPlates.sort();
-    return groupPlates(platesList);
+    List<num> sortedPlates = List.from(selectedPlates)..sort();
+    return groupPlates(plateCalculator(totalWeight, barWeight, sortedPlates));
+  }
+
+  Color getColor(num plate) {
+    if (isMetric) {
+      return plateColorMapKg[plate.toDouble()] ?? Colors.grey;
+    }
+    return plateColorMapLb[plate.toDouble()] ?? Colors.grey;
+  }
+
+  PlateWeightsState copyWith({
+    bool? isMetric,
+    num? totalWeight,
+    num? barWeight,
+    List<num>? selectedPlates,
+  }) {
+    return PlateWeightsState(
+      isMetric: isMetric ?? this.isMetric,
+      totalWeight: totalWeight ?? this.totalWeight,
+      barWeight: barWeight ?? this.barWeight,
+      selectedPlates: selectedPlates ?? this.selectedPlates,
+    );
+  }
+}
+
+class PlateWeightsNotifier extends StateNotifier<PlateWeightsState> {
+  PlateWeightsNotifier() : super(PlateWeightsState()) {
+    _readPlates();
+  }
+
+  Future<void> _saveIntoSharedPrefs() async {
+    final pref = await SharedPreferences.getInstance();
+    pref.setString(PREFS_KEY_PLATES, jsonEncode(state.selectedPlates));
+  }
+
+  Future<void> _readPlates() async {
+    final pref = await SharedPreferences.getInstance();
+    final platePrefData = pref.getString(PREFS_KEY_PLATES);
+    if (platePrefData != null) {
+      try {
+        final plateData = json.decode(platePrefData);
+        if (plateData is List) {
+          state = state.copyWith(selectedPlates: plateData.cast<num>());
+        } else {
+          throw const FormatException('Not a List');
+        }
+      } catch (e) {
+        state = state.copyWith(selectedPlates: []);
+      }
+    }
+  }
+
+  Future<void> toggleSelection(num x) async {
+    final newSelectedPlates = List<num>.from(state.selectedPlates);
+    if (newSelectedPlates.contains(x)) {
+      newSelectedPlates.remove(x);
+    } else {
+      newSelectedPlates.add(x);
+    }
+    state = state.copyWith(selectedPlates: newSelectedPlates);
+    await _saveIntoSharedPrefs();
+  }
+
+  void unitChange() {
+    if (state.isMetric == false) {
+      state = state.copyWith(
+        isMetric: true,
+        totalWeight: state.totalWeightInKg,
+        barWeight: state.barWeightInKg,
+      );
+    } else {
+      state = state.copyWith(
+        isMetric: false,
+        totalWeight: state.totalWeightInKg * 2.205,
+        barWeight: state.barWeightInKg * 2.205,
+      );
+    }
+  }
+
+  void clear() async {
+    state = state.copyWith(selectedPlates: []);
+    await _saveIntoSharedPrefs();
+  }
+
+  void setWeight(num x) {
+    state = state.copyWith(totalWeight: x);
   }
 
   void resetPlates() async {
-    selectedPlates = [...DEFAULT_KG_PLATES];
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('selectedPlates', jsonEncode(selectedPlates));
-    notifyListeners();
+    state = state.copyWith(selectedPlates: [...DEFAULT_KG_PLATES]);
+    await _saveIntoSharedPrefs();
   }
 
   void selectAllPlates() async {
-    selectedPlates = [...kgWeights];
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('selectedPlates', jsonEncode(selectedPlates));
-    notifyListeners();
+    state = state.copyWith(selectedPlates: [...state.kgWeights]);
+    await _saveIntoSharedPrefs();
   }
 }

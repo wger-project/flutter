@@ -33,7 +33,6 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
@@ -102,8 +101,8 @@ void main() async {
       return;
     }
 
-    // showGeneralErrorDialog(details.exception, stack);
-    throw details.exception;
+    showGeneralErrorDialog(details.exception, stack);
+    // throw details.exception;
   };
 
   // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
@@ -115,8 +114,8 @@ void main() async {
     if (error is WgerHttpException) {
       showHttpExceptionErrorDialog(error);
     } else {
-      // showGeneralErrorDialog(error, stack);
-      throw error;
+      showGeneralErrorDialog(error, stack);
+      // throw error;
     }
 
     // Return true to indicate that the error has been handled.
@@ -151,7 +150,6 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => PlateWeights()),
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
           create: (context) => ExercisesProvider(

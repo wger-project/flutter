@@ -26,7 +26,6 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -93,10 +92,7 @@ void main() {
       exerciseIdToExclude: anyNamed('exerciseIdToExclude'),
     )).thenReturn([]);
 
-    await tester.pumpWidget(ChangeNotifierProvider(
-      create: (context) => PlateWeights(),
-      builder: (context, _) => renderGymMode(),
-    ));
+    await tester.pumpWidget(renderGymMode());
     //await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));
     //print(find.byType(TextButton));
