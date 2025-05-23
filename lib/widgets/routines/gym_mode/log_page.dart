@@ -166,7 +166,7 @@ class _LogPageState extends ConsumerState<LogPage> {
                 setState(() {
                   widget._log.weight = newValue;
                   _weightController.text = newValue.toString();
-                  ref.read(plateWeightsProvider.notifier).setWeight(
+                  ref.read(plateCalculatorProvider.notifier).setWeight(
                         _weightController.text == '' ? 0 : double.parse(_weightController.text),
                       );
                 });
@@ -189,7 +189,7 @@ class _LogPageState extends ConsumerState<LogPage> {
                 num.parse(value);
                 setState(() {
                   widget._log.weight = num.parse(value);
-                  ref.read(plateWeightsProvider.notifier).setWeight(
+                  ref.read(plateCalculatorProvider.notifier).setWeight(
                         _weightController.text == '' ? 0 : double.parse(_weightController.text),
                       );
                 });
@@ -218,7 +218,7 @@ class _LogPageState extends ConsumerState<LogPage> {
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
-                ref.read(plateWeightsProvider.notifier).setWeight(
+                ref.read(plateCalculatorProvider.notifier).setWeight(
                       _weightController.text == '' ? 0 : double.parse(_weightController.text),
                     );
               });
@@ -379,7 +379,7 @@ class _LogPageState extends ConsumerState<LogPage> {
   }
 
   Widget getPlates() {
-    final plateWeightsState = ref.watch(plateWeightsProvider);
+    final plateWeightsState = ref.watch(plateCalculatorProvider);
 
     return Column(
       children: [
@@ -414,7 +414,7 @@ class _LogPageState extends ConsumerState<LogPage> {
                             size: 37,
                             padding: 2,
                             margin: 0,
-                            color: ref.read(plateWeightsProvider).getColor(entry.key),
+                            color: ref.read(plateCalculatorProvider).getColor(entry.key),
                           ),
                           const SizedBox(width: 10),
                         ],

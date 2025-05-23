@@ -13,11 +13,12 @@ const DEFAULT_LB_PLATES = [2.5, 5, 10, 25, 35, 45];
 
 const PREFS_KEY_PLATES = 'selectedPlates';
 
-final plateWeightsProvider = StateNotifierProvider<PlateWeightsNotifier, PlateWeightsState>((ref) {
-  return PlateWeightsNotifier();
+final plateCalculatorProvider =
+    StateNotifierProvider<PlateCalculatorNotifier, PlateCalculatorState>((ref) {
+  return PlateCalculatorNotifier();
 });
 
-class PlateWeightsState {
+class PlateCalculatorState {
   final _logger = Logger('PlateWeightsState');
 
   final barWeightKg = 20;
@@ -53,7 +54,7 @@ class PlateWeightsState {
   final List<num> availablePlatesKg = const [0.5, 1, 1.25, 2, 2.5, 5, 10, 15, 20, 25];
   final List<num> availablePlatesLb = const [2.5, 5, 10, 25, 35, 45];
 
-  PlateWeightsState({
+  PlateCalculatorState({
     this.isMetric = true,
     this.totalWeight = 0,
     List<num>? selectedPlates,
@@ -90,12 +91,12 @@ class PlateWeightsState {
     return {'isMetric': isMetric, 'selectedPlates': selectedPlates};
   }
 
-  PlateWeightsState copyWith({
+  PlateCalculatorState copyWith({
     bool? isMetric,
     num? totalWeight,
     List<num>? selectedPlates,
   }) {
-    return PlateWeightsState(
+    return PlateCalculatorState(
       isMetric: isMetric ?? this.isMetric,
       totalWeight: totalWeight ?? this.totalWeight,
       selectedPlates: selectedPlates ?? this.selectedPlates,
@@ -103,21 +104,23 @@ class PlateWeightsState {
   }
 }
 
-class PlateWeightsNotifier extends StateNotifier<PlateWeightsState> {
-  final _logger = Logger('PlateWeightsNotifier');
+class PlateCalculatorNotifier extends StateNotifier<PlateCalculatorState> {
+  final _logger = Logger('PlateCalculatorNotifier');
 
   late SharedPreferencesAsync prefs;
 
-  PlateWeightsNotifier({SharedPreferencesAsync? prefs}) : super(PlateWeightsState()) {
+  PlateCalculatorNotifier({SharedPreferencesAsync? prefs}) : super(PlateCalculatorState()) {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _readDataFromSharedPrefs();
   }
 
   Future<void> saveToSharedPrefs() async {
+    _logger.fine('Saving plate data to SharedPreferences');
     await prefs.setString(PREFS_KEY_PLATES, jsonEncode(state.toJson()));
   }
 
   Future<void> _readDataFromSharedPrefs() async {
+    _logger.fine('Reading plate data from SharedPreferences');
     final prefsData = await prefs.getString(PREFS_KEY_PLATES);
 
     if (prefsData != null) {

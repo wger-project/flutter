@@ -22,7 +22,7 @@ class _AddPlateWeightsState extends ConsumerState<AddPlateWeights>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(plateWeightsProvider.notifier);
+      ref.read(plateCalculatorProvider.notifier);
     });
   }
 
@@ -36,8 +36,8 @@ class _AddPlateWeightsState extends ConsumerState<AddPlateWeights>
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
 
-    final plateWeightsState = ref.watch(plateWeightsProvider);
-    final plateWeightsNotifier = ref.read(plateWeightsProvider.notifier);
+    final plateWeightsState = ref.watch(plateCalculatorProvider);
+    final plateWeightsNotifier = ref.read(plateCalculatorProvider.notifier);
     final userProvider = provider.Provider.of<UserProvider>(context);
 
     return Scaffold(
