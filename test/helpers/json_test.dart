@@ -59,5 +59,55 @@ void main() {
         expect(timeToString(time), '12:34');
       });
     });
+
+    group('dateToIso8601StringWithOffset', () {
+      test('should return null for null input', () {
+        expect(dateToIso8601StringWithOffset(null), isNull);
+      });
+
+      test('should format DateTime with positive offset', () {
+        final dateTime = DateTime(2023, 6, 15, 14, 30).toLocal();
+        final result = dateToIso8601StringWithOffset(dateTime);
+
+        // Extract the date part and offset part
+        final datePart = result!.substring(0, 19); // YYYY-MM-DDTHH:mm:ss
+        final offsetPart = result.substring(19); // +HH:mm or -HH:mm
+
+        expect(datePart, matches(RegExp(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$')));
+        expect(offsetPart, matches(RegExp(r'^[+-]\d{2}:\d{2}$')));
+      });
+    });
+
+    group('iso8601StringToLocalDateTime', () {
+      test('should parse UTC ISO string correctly', () {
+        const input = '2023-06-15T14:30:00Z';
+        final result = iso8601StringToLocalDateTime(input);
+
+        expect(result, isA<DateTime>());
+        expect(result.isUtc, isFalse); // Should be converted to local time
+      });
+
+      test('should parse ISO string with offset correctly', () {
+        const input = '2023-06-15T14:30:00+02:00';
+        final result = iso8601StringToLocalDateTime(input);
+
+        expect(result, isA<DateTime>());
+        expect(result.isUtc, isFalse);
+      });
+    });
+
+    group('iso8601StringToLocalDateTimeNull', () {
+      test('should return null for null input', () {
+        expect(iso8601StringToLocalDateTimeNull(null), isNull);
+      });
+
+      test('should parse valid ISO string', () {
+        const input = '2023-06-15T14:30:00Z';
+        final result = iso8601StringToLocalDateTimeNull(input);
+
+        expect(result, isA<DateTime>());
+        expect(result!.isUtc, isFalse);
+      });
+    });
   });
 }
