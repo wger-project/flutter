@@ -19,6 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+final hourMinuteFormatter = NumberFormat('00');
+
 num stringToNum(String? e) {
   return e == null ? 0 : num.parse(e);
 }
@@ -50,7 +52,39 @@ String? dateToYYYYMMDD(DateTime? dateTime) {
   if (dateTime == null) {
     return null;
   }
-  return DateFormat('yyyy-MM-dd').format(dateTime);
+  return DateFormat('yyyy-MM-dd').format(dateTime.toUtc());
+}
+
+/*
+ * Converts a datetime to ISO8601 date format, with timezone offset
+ * https://github.com/dart-lang/sdk/issues/43391#issuecomment-1954335465
+ */
+String? dateToIso8601StringWithOffset(DateTime? dateTime) {
+  if (dateTime == null) {
+    return null;
+  }
+  final timeZoneOffset = dateTime.timeZoneOffset;
+  final sign = timeZoneOffset.isNegative ? '-' : '+';
+  final hours = hourMinuteFormatter.format(timeZoneOffset.inHours.abs());
+  final minutes = hourMinuteFormatter.format(timeZoneOffset.inMinutes.abs().remainder(60));
+  final offsetString = '$sign$hours:$minutes';
+  final formattedDate = dateTime.toIso8601String().split('.').first;
+  return '$formattedDate$offsetString';
+}
+
+/*
+ * Converts a date in ISO8601 format to a DateTime object, with local timezone.
+ */
+DateTime iso8601StringToLocalDateTime(String dateTime) {
+  final parsedDate = DateTime.parse(dateTime);
+  return parsedDate.toLocal();
+}
+
+DateTime? iso8601StringToLocalDateTimeNull(String? dateTime) {
+  if (dateTime == null) {
+    return null;
+  }
+  return iso8601StringToLocalDateTime(dateTime);
 }
 
 /*
