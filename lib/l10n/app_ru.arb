@@ -33,15 +33,15 @@
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
-  "workoutSession": "Тренировка",
+  "workoutSession": "Записанная тренировка",
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
   "newDay": "Новый день",
   "@newDay": {},
-  "selectExercises": "Если вы хотите сделать суперсет, вы можете найти несколько упражнений, они будут сгруппированы вместе",
+  "selectExercises": "Если вы хотите сделать супер подход (сет), вы можете найти несколько упражнений, они будут сгруппированы вместе",
   "@selectExercises": {},
-  "plateCalculator": "Пластины",
+  "plateCalculator": "Пластины (блины)",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
   },
@@ -272,7 +272,7 @@
   "@impression": {
     "description": "General impression (e.g. for a workout session) such as good, bad, etc."
   },
-  "set": "Сет",
+  "set": "Подход",
   "@set": {
     "description": "A set in a workout plan"
   },
@@ -284,17 +284,17 @@
   "@jumpTo": {
     "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
   },
-  "logHelpEntriesUnits": "Обратите внимание, что в таблицу заносятся только записи с единицей веса (кг или фунты) и повторениями, другие комбинации, такие как время или до отказа, здесь не учитываются.",
+  "logHelpEntriesUnits": "Обратите внимание, что на графиках отображаются только записи с указанием веса (кг или фунты) и повторений. Другие комбинации, такие как время или \"до отказа\", здесь игнорируются.",
   "@logHelpEntriesUnits": {},
   "pause": "Пауза",
   "@pause": {
     "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
   },
-  "plateCalculatorNotDivisible": "Невозможно достичь веса с имеющимися пластинами",
+  "plateCalculatorNotDivisible": "Невозможно достичь веса с имеющимися пластинами (весами)",
   "@plateCalculatorNotDivisible": {
     "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
   },
-  "todaysWorkout": "Ваша тренировка сегодня",
+  "todaysWorkout": "Ваша сегодняшняя тренировка",
   "@todaysWorkout": {},
   "logHelpEntries": "Если в один день есть несколько записей с одинаковым количеством повторений, но разными весами, то на диаграмме отображается только запись с большим весом.",
   "@logHelpEntries": {},
@@ -314,7 +314,7 @@
   "@nutritionalPlans": {},
   "timeStartAhead": "Время начала не может быть раньше времени окончания",
   "@timeStartAhead": {},
-  "logIngredient": "Сохранить в дневнике питания",
+  "logIngredient": "Записать в дневнике питания",
   "@logIngredient": {},
   "searchIngredient": "Поиск ингредиента",
   "@searchIngredient": {
@@ -336,7 +336,7 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
-  "start": "Начать",
+  "start": "Старт",
   "@start": {
     "description": "Label on button to start the gym mode (i.e., an imperative)"
   },
@@ -443,9 +443,9 @@
   "@optionsLabel": {
     "description": "Label for the popup with general app options"
   },
-  "sameRepetitions": "Если вы делаете одинаковые повторения и вес для всех сетов, вы можете просто заполнить одну строку. Например, для 4 сетов просто введите 10 повторений, это автоматически превратится в \"4 x 10\".",
+  "sameRepetitions": "Если количество повторений и вес не меняются от подхода к подходу, достаточно указать данные один раз. Например, для 4 подходов введите 10 повторений, и это автоматически преобразуется в '4 x 10'.",
   "@sameRepetitions": {},
-  "newSet": "Новый сет",
+  "newSet": "Новый подход (сет)",
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
@@ -934,5 +934,65 @@
     }
   },
   "settingsIngredientCacheDescription": "Кэш ингредиентов",
-  "@settingsIngredientCacheDescription": {}
+  "@settingsIngredientCacheDescription": {},
+  "isRestDayHelp": "Пожалуйста, имейте в виду, что если вы отметите этот день как день отдыха, все подходы и упражнения будут удалены.",
+  "@isRestDayHelp": {},
+  "routines": "Тренировки",
+  "@routines": {},
+  "needsLogsToAdvanceHelp": "Выберите, если вы хотите, чтобы программа переходила к следующему запланированному дню только после того, как вы записали тренировку за текущий день.",
+  "@needsLogsToAdvanceHelp": {},
+  "routineDays": "Дней в тренировке",
+  "@routineDays": {},
+  "resultingRoutine": "Итоговая тренировка",
+  "@resultingRoutine": {},
+  "useApiToken": "Использовать токен API",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "Использовать имя пользователя и пароль",
+  "@useUsernameAndPassword": {},
+  "apiToken": "API токен",
+  "@apiToken": {},
+  "invalidApiToken": "Пожалуйста, введите действительный ключ API",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "API-ключ может содержать только буквы a–f, цифры 0–9 и иметь длину ровно 40 символов",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "newRoutine": "Новая тренировка",
+  "@newRoutine": {},
+  "noRoutines": "У вас нет тренировок",
+  "@noRoutines": {},
+  "restTime": "Время отдыха",
+  "@restTime": {},
+  "sets": "Подходы",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "exerciseNr": "Упражнение {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "Супер подход",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "restDay": "День отдыха",
+  "@restDay": {},
+  "isRestDay": "Выходной день",
+  "@isRestDay": {},
+  "needsLogsToAdvance": "Требуются записи для прогресса",
+  "@needsLogsToAdvance": {}
 }
