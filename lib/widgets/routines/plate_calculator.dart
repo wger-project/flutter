@@ -31,7 +31,7 @@ class PlateWeight extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected ? color : Colors.black12,
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.black, width: isSelected ? 1 : 0),
+            border: Border.all(color: Colors.black, width: isSelected ? 2 : 0),
           ),
           child: Text(
             value.toString(),

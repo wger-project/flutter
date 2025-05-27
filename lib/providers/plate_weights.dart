@@ -11,6 +11,9 @@ import 'package:wger/helpers/shared_preferences.dart';
 const DEFAULT_KG_PLATES = [2.5, 5, 10, 15, 20, 25];
 const DEFAULT_LB_PLATES = [2.5, 5, 10, 25, 35, 45];
 
+const DEFAULT_BAR_WEIGHT_KG = 20;
+const DEFAULT_BAR_WEIGHT_LB = 45;
+
 const PREFS_KEY_PLATES = 'selectedPlates';
 
 final plateCalculatorProvider =
@@ -20,9 +23,6 @@ final plateCalculatorProvider =
 
 class PlateCalculatorState {
   final _logger = Logger('PlateWeightsState');
-
-  final barWeightKg = 20;
-  final barWeightLb = 45;
 
   // https://en.wikipedia.org/wiki/Barbell#Bumper_plates
   final Map<double, Color> plateColorMapKg = {
@@ -48,24 +48,66 @@ class PlateCalculatorState {
     1.25: Colors.white,
   };
 
+  final bool useColors;
   final bool isMetric;
   final num totalWeight;
+  final num barWeight;
   final List<num> selectedPlates;
   final List<num> availablePlatesKg = const [0.5, 1, 1.25, 2, 2.5, 5, 10, 15, 20, 25];
   final List<num> availablePlatesLb = const [2.5, 5, 10, 25, 35, 45];
 
+  final availableBarWeightsKg = [10, 15, 20];
+  final availableBarWeightsLb = [15, 20, 25, 33, 45];
+
   PlateCalculatorState({
+    this.useColors = true,
+    num? barWeight,
     this.isMetric = true,
     this.totalWeight = 0,
     List<num>? selectedPlates,
-  }) : selectedPlates = selectedPlates ?? [...DEFAULT_KG_PLATES];
+  })  : barWeight = barWeight ?? (isMetric ? DEFAULT_BAR_WEIGHT_KG : DEFAULT_BAR_WEIGHT_LB),
+        selectedPlates =
+            selectedPlates ?? (isMetric ? [...DEFAULT_KG_PLATES] : [...DEFAULT_LB_PLATES]);
 
-  num get barWeight {
-    return isMetric ? barWeightKg : barWeightLb;
+  PlateCalculatorState.fromJson(Map<String, dynamic> plateData)
+      : useColors = plateData['useColors'] ?? true,
+        isMetric = plateData['isMetric'] ?? true,
+        selectedPlates = plateData['selectedPlates']?.cast<num>() ?? [...DEFAULT_KG_PLATES],
+        barWeight = plateData['barWeight'] ??
+            ((plateData['isMetric'] ?? true) ? DEFAULT_BAR_WEIGHT_KG : DEFAULT_BAR_WEIGHT_LB),
+        totalWeight = 0;
+
+  PlateCalculatorState copyWith({
+    bool? useColors,
+    bool? isMetric,
+    num? totalWeight,
+    num? barWeight,
+    List<num>? selectedPlates,
+  }) {
+    return PlateCalculatorState(
+      useColors: useColors ?? this.useColors,
+      isMetric: isMetric ?? this.isMetric,
+      totalWeight: totalWeight ?? this.totalWeight,
+      barWeight: barWeight ?? this.barWeight,
+      selectedPlates: selectedPlates ?? this.selectedPlates,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'useColors': useColors,
+      'isMetric': isMetric,
+      'selectedPlates': selectedPlates,
+      'barWeight': barWeight,
+    };
   }
 
   List<num> get availablePlates {
     return isMetric ? availablePlatesKg : availablePlatesLb;
+  }
+
+  List<num> get availableBarsWeights {
+    return isMetric ? availableBarWeightsKg : availableBarWeightsLb;
   }
 
   List<num> get platesList {
@@ -81,26 +123,14 @@ class PlateCalculatorState {
   }
 
   Color getColor(num plate) {
+    if (!useColors) {
+      return Colors.grey;
+    }
+
     if (isMetric) {
       return plateColorMapKg[plate.toDouble()] ?? Colors.grey;
     }
     return plateColorMapLb[plate.toDouble()] ?? Colors.grey;
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'isMetric': isMetric, 'selectedPlates': selectedPlates};
-  }
-
-  PlateCalculatorState copyWith({
-    bool? isMetric,
-    num? totalWeight,
-    List<num>? selectedPlates,
-  }) {
-    return PlateCalculatorState(
-      isMetric: isMetric ?? this.isMetric,
-      totalWeight: totalWeight ?? this.totalWeight,
-      selectedPlates: selectedPlates ?? this.selectedPlates,
-    );
   }
 }
 
@@ -125,13 +155,11 @@ class PlateCalculatorNotifier extends StateNotifier<PlateCalculatorState> {
 
     if (prefsData != null) {
       try {
-        final plateData = json.decode(prefsData);
-        state = state.copyWith(
-          isMetric: plateData['isMetric'] ?? true,
-          selectedPlates: plateData['selectedPlates'].cast<num>() ?? [...DEFAULT_KG_PLATES],
-        );
+        state = PlateCalculatorState.fromJson(json.decode(prefsData));
+        _logger.fine('Plate data loaded from SharedPreferences: ${state.toJson()}');
       } catch (e) {
         _logger.fine('Error decoding plate data from SharedPreferences: $e');
+        state = PlateCalculatorState();
       }
     }
   }
@@ -147,6 +175,15 @@ class PlateCalculatorNotifier extends StateNotifier<PlateCalculatorState> {
     await saveToSharedPrefs();
   }
 
+  void setBarWeight(num x) {
+    _logger.fine('Setting bar weight to $x');
+    state = state.copyWith(barWeight: x);
+  }
+
+  void setUseColors(bool value) {
+    state = state.copyWith(useColors: value);
+  }
+
   void unitChange({WeightUnitEnum? unit}) {
     final WeightUnitEnum changeTo =
         unit ?? (state.isMetric ? WeightUnitEnum.lb : WeightUnitEnum.kg);
@@ -155,6 +192,7 @@ class PlateCalculatorNotifier extends StateNotifier<PlateCalculatorState> {
       state = state.copyWith(
         isMetric: true,
         totalWeight: 0,
+        barWeight: DEFAULT_BAR_WEIGHT_KG,
         selectedPlates: [...DEFAULT_KG_PLATES],
       );
     }
@@ -163,6 +201,7 @@ class PlateCalculatorNotifier extends StateNotifier<PlateCalculatorState> {
       state = state.copyWith(
         isMetric: false,
         totalWeight: 0,
+        barWeight: DEFAULT_BAR_WEIGHT_LB,
         selectedPlates: [...DEFAULT_LB_PLATES],
       );
     }

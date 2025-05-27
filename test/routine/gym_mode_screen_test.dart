@@ -53,9 +53,11 @@ void main() {
   final testRoutine = getTestRoutine();
   final testExercises = getTestExercises();
 
-  Widget renderGymMode({locale = 'en'}) {
+  setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+  });
 
+  Widget renderGymMode({locale = 'en'}) {
     return ChangeNotifierProvider<RoutinesProvider>(
       create: (context) => RoutinesProvider(
         mockBaseProvider,

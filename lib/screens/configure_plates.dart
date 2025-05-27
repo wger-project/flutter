@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' as provider;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/plate_weights.dart';
-import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
 
-class AddPlateWeights extends ConsumerStatefulWidget {
-  const AddPlateWeights({super.key});
+class ConfigureAvailablePlates extends ConsumerStatefulWidget {
+  const ConfigureAvailablePlates({super.key});
 
   @override
-  ConsumerState<AddPlateWeights> createState() => _AddPlateWeightsState();
+  ConsumerState<ConfigureAvailablePlates> createState() => _AddPlateWeightsState();
 }
 
-class _AddPlateWeightsState extends ConsumerState<AddPlateWeights>
-    with SingleTickerProviderStateMixin {
-  final _unitController = TextEditingController();
-
+class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
   @override
   void initState() {
     super.initState();
@@ -27,18 +22,12 @@ class _AddPlateWeightsState extends ConsumerState<AddPlateWeights>
   }
 
   @override
-  void dispose() {
-    _unitController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
 
     final plateWeightsState = ref.watch(plateCalculatorProvider);
     final plateWeightsNotifier = ref.read(plateCalculatorProvider.notifier);
-    final userProvider = provider.Provider.of<UserProvider>(context);
+    // final userProvider = provider.Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Select Available Plates')),
@@ -50,7 +39,6 @@ class _AddPlateWeightsState extends ConsumerState<AddPlateWeights>
             child: DropdownMenu<WeightUnitEnum>(
               width: double.infinity,
               initialSelection: plateWeightsState.isMetric ? WeightUnitEnum.kg : WeightUnitEnum.lb,
-              controller: _unitController,
               requestFocusOnTap: true,
               label: Text(i18n.unit),
               onSelected: (WeightUnitEnum? unit) {
@@ -68,6 +56,32 @@ class _AddPlateWeightsState extends ConsumerState<AddPlateWeights>
                 );
               }).toList(),
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: DropdownMenu<num>(
+              width: double.infinity,
+              initialSelection: plateWeightsState.barWeight,
+              requestFocusOnTap: true,
+              label: Text(i18n.barWeight),
+              onSelected: (num? value) {
+                if (value == null) {
+                  return;
+                }
+                plateWeightsNotifier.setBarWeight(value);
+              },
+              dropdownMenuEntries: plateWeightsState.availableBarsWeights.map((value) {
+                return DropdownMenuEntry<num>(
+                  value: value,
+                  label: value.toString(),
+                );
+              }).toList(),
+            ),
+          ),
+          SwitchListTile(
+            title: Text(i18n.useColors),
+            value: plateWeightsState.useColors,
+            onChanged: (state) => plateWeightsNotifier.setUseColors(state),
           ),
           LayoutBuilder(
             builder: (context, constraints) {

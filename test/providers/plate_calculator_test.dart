@@ -39,7 +39,7 @@ void main() {
       expect(notifier.state.isMetric, false);
       expect(notifier.state.totalWeight, 0);
       expect(notifier.state.selectedPlates, DEFAULT_LB_PLATES);
-      expect(notifier.state.barWeight, notifier.state.barWeightLb);
+      expect(notifier.state.barWeight, DEFAULT_BAR_WEIGHT_LB);
       expect(notifier.state.availablePlates, notifier.state.availablePlatesLb);
 
       // Change back to metric
@@ -48,7 +48,7 @@ void main() {
       expect(notifier.state.isMetric, true);
       expect(notifier.state.totalWeight, 0);
       expect(notifier.state.selectedPlates, DEFAULT_KG_PLATES);
-      expect(notifier.state.barWeight, notifier.state.barWeightKg);
+      expect(notifier.state.barWeight, DEFAULT_BAR_WEIGHT_KG);
       expect(notifier.state.availablePlates, notifier.state.availablePlatesKg);
     });
 
@@ -64,10 +64,12 @@ void main() {
       final updatedState = initialState.copyWith(
         isMetric: false,
         totalWeight: 100,
+        barWeight: 15,
         selectedPlates: [1, 2, 3],
       );
 
       expect(updatedState.isMetric, false);
+      expect(updatedState.barWeight, 15);
       expect(updatedState.totalWeight, 100);
       expect(updatedState.selectedPlates, [1, 2, 3]);
     });
@@ -76,18 +78,19 @@ void main() {
       final state = PlateCalculatorState(isMetric: false, selectedPlates: [10, 20]);
       final json = state.toJson();
       expect(json['isMetric'], false);
+      expect(json['barWeight'], DEFAULT_BAR_WEIGHT_LB);
       expect(json['selectedPlates'], [10, 20]);
     });
 
-    test('barWeight returns correct value based on isMetric', () {
+    test('barWeight returns correct default value based on isMetric', () {
       final metricState = PlateCalculatorState(isMetric: true);
-      expect(metricState.barWeight, metricState.barWeightKg);
+      expect(metricState.barWeight, DEFAULT_BAR_WEIGHT_KG);
 
       final imperialState = PlateCalculatorState(isMetric: false);
-      expect(imperialState.barWeight, imperialState.barWeightLb);
+      expect(imperialState.barWeight, DEFAULT_BAR_WEIGHT_LB);
     });
 
-    test('availablePlates returns correct list based on isMetric', () {
+    test('availablePlates returns correct default list based on isMetric', () {
       final metricState = PlateCalculatorState(isMetric: true);
       expect(metricState.availablePlates, metricState.availablePlatesKg);
 
@@ -95,14 +98,26 @@ void main() {
       expect(imperialState.availablePlates, metricState.availablePlatesLb);
     });
 
-    test('getColor returns correct color', () {
+    test('getColor returns correct color - 1', () {
       final metricState = PlateCalculatorState(isMetric: true);
       expect(metricState.getColor(20), Colors.blue);
+      expect(metricState.getColor(10), Colors.green);
       expect(metricState.getColor(0.1), Colors.grey, reason: 'Fallback color');
 
       final imperialState = PlateCalculatorState(isMetric: false);
       expect(imperialState.getColor(45), Colors.blue);
+      expect(imperialState.getColor(35), Colors.yellow);
       expect(imperialState.getColor(0.1), Colors.grey, reason: 'Fallback color');
+    });
+
+    test('getColor returns correct color - 2', () {
+      final metricState = PlateCalculatorState(isMetric: true, useColors: false);
+      expect(metricState.getColor(20), Colors.grey);
+      expect(metricState.getColor(10), Colors.grey);
+
+      final imperialState = PlateCalculatorState(isMetric: false, useColors: false);
+      expect(imperialState.getColor(45), Colors.grey);
+      expect(imperialState.getColor(25), Colors.grey);
     });
   });
 }
