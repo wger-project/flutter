@@ -45,6 +45,15 @@ class UserProvider with ChangeNotifier {
     profile = null;
   }
 
+  // // change the unit of plates
+  // void changeUnit({changeTo = 'kg'}) {
+  //   if (changeTo == 'kg') {
+  //     profile?.weightUnitStr = 'lb';
+  //   } else {
+  //     profile?.weightUnitStr = 'kg';
+  //   }
+  // }
+
   // Load theme mode from SharedPreferences
   Future<void> _loadThemeMode() async {
     final prefsDarkMode = await prefs.getBool(PREFS_USER_DARK_THEME);

@@ -16,26 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/configure_plates_screen.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
+import 'package:wger/widgets/routines/plate_calculator.dart';
 
-class LogPage extends StatefulWidget {
+class LogPage extends ConsumerStatefulWidget {
   final PageController _controller;
   final SetConfigData _configData;
   final SlotData _slotData;
@@ -43,8 +46,7 @@ class LogPage extends StatefulWidget {
   final Routine _workoutPlan;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
-  late Log _log;
-  final int _iteration;
+  final Log _log;
 
   LogPage(
     this._controller,
@@ -54,18 +56,16 @@ class LogPage extends StatefulWidget {
     this._workoutPlan,
     this._ratioCompleted,
     this._exercisePages,
-    this._iteration,
-  ) {
-    _log = Log.fromSetConfigData(_configData);
-    _log.routineId = _workoutPlan.id!;
-    _log.iteration = _iteration;
-  }
+    int? iteration,
+  ) : _log = Log.fromSetConfigData(_configData)
+          ..routineId = _workoutPlan.id!
+          ..iteration = iteration;
 
   @override
   _LogPageState createState() => _LogPageState();
 }
 
-class _LogPageState extends State<LogPage> {
+class _LogPageState extends ConsumerState<LogPage> {
   final _form = GlobalKey<FormState>();
   final _repetitionsController = TextEditingController();
   final _weightController = TextEditingController();
@@ -122,7 +122,9 @@ class _LogPageState extends State<LogPage> {
             controller: _repetitionsController,
             keyboardType: TextInputType.number,
             focusNode: focusNode,
-            onFieldSubmitted: (_) {},
+            onFieldSubmitted: (_) {
+              // Placeholder for potential future logic
+            },
             onSaved: (newValue) {
               widget._log.repetitions = num.parse(newValue!);
               focusNode.unfocus();
@@ -164,6 +166,9 @@ class _LogPageState extends State<LogPage> {
                 setState(() {
                   widget._log.weight = newValue;
                   _weightController.text = newValue.toString();
+                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                        _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                      );
                 });
               }
             } on FormatException {}
@@ -176,12 +181,17 @@ class _LogPageState extends State<LogPage> {
             ),
             controller: _weightController,
             keyboardType: TextInputType.number,
-            onFieldSubmitted: (_) {},
+            onFieldSubmitted: (_) {
+              // Placeholder for potential future logic
+            },
             onChanged: (value) {
               try {
                 num.parse(value);
                 setState(() {
                   widget._log.weight = num.parse(value);
+                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                        _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                      );
                 });
               } on FormatException {}
             },
@@ -208,6 +218,9 @@ class _LogPageState extends State<LogPage> {
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
+                ref.read(plateCalculatorProvider.notifier).setWeight(
+                      _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                    );
               });
             } on FormatException {}
           },
@@ -247,6 +260,7 @@ class _LogPageState extends State<LogPage> {
                     onChanged: (v) => {},
                   ),
                 ),
+                const SizedBox(width: 8),
               ],
             ),
           if (_detailed)
@@ -258,6 +272,7 @@ class _LogPageState extends State<LogPage> {
                 Flexible(
                   child: WeightUnitInputWidget(widget._log.weightUnitId, onChanged: (v) => {}),
                 ),
+                const SizedBox(width: 8),
               ],
             ),
           if (_detailed)
@@ -272,6 +287,7 @@ class _LogPageState extends State<LogPage> {
               },
             ),
           SwitchListTile(
+            dense: true,
             title: Text(AppLocalizations.of(context).setUnitsAndRir),
             value: _detailed,
             onChanged: (value) {
@@ -280,7 +296,7 @@ class _LogPageState extends State<LogPage> {
               });
             },
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: _isSaving
                 ? null
                 : () async {
@@ -327,103 +343,118 @@ class _LogPageState extends State<LogPage> {
   }
 
   Widget getPastLogs() {
-    return ListView(
-      children: [
-        Text(
-          AppLocalizations.of(context).labelWorkoutLogs,
-          style: Theme.of(context).textTheme.titleLarge,
-          textAlign: TextAlign.center,
-        ),
-        ...widget._workoutPlan.filterLogsByExercise(widget._exercise.id!, unique: true).map((log) {
-          return ListTile(
-            title: Text(log.singleLogRepTextNoNl),
-            subtitle: Text(
-              DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date),
-            ),
-            trailing: const Icon(Icons.copy),
-            onTap: () {
-              setState(() {
-                // Text field
-                _repetitionsController.text = log.repetitions?.toString() ?? '';
-                _weightController.text = log.weight?.toString() ?? '';
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+          // color: Theme.of(context).secondaryHeaderColor,
+          // color: Theme.of(context).splashColor,
+          // color: Theme.of(context).colorScheme.onInverseSurface,
+          // border: Border.all(color: Colors.black, width: 1),
+          ),
+      child: ListView(
+        children: [
+          Text(
+            AppLocalizations.of(context).labelWorkoutLogs,
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          ...widget._workoutPlan
+              .filterLogsByExercise(widget._exercise.id!, unique: true)
+              .map((log) {
+            return ListTile(
+              title: Text(log.singleLogRepTextNoNl),
+              subtitle: Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date),
+              ),
+              trailing: const Icon(Icons.copy),
+              onTap: () {
+                setState(() {
+                  // Text field
+                  _repetitionsController.text = log.repetitions?.toString() ?? '';
+                  _weightController.text = log.weight?.toString() ?? '';
 
-                // Drop downs
-                widget._log.rir = log.rir;
-                widget._log.repetitionUnit = log.repetitionsUnitObj;
-                widget._log.weightUnit = log.weightUnitObj;
+                  // Drop downs
 
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(AppLocalizations.of(context).dataCopied),
-                ));
-              });
-            },
-            contentPadding: const EdgeInsets.symmetric(horizontal: 40),
-          );
-        }),
-      ],
+                  widget._log.rir = log.rir;
+                  widget._log.repetitionUnit = log.repetitionsUnitObj;
+                  widget._log.weightUnit = log.weightUnitObj;
+
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(context).dataCopied),
+                  ));
+                });
+              },
+              contentPadding: const EdgeInsets.symmetric(horizontal: 40),
+            );
+          }),
+        ],
+      ),
     );
   }
 
   Widget getPlates() {
-    final plates = plateCalculator(
-      double.parse(_weightController.text == '' ? '0' : _weightController.text),
-      BAR_WEIGHT,
-      AVAILABLE_PLATES,
-    );
-    final groupedPlates = groupPlates(plates);
+    final plateWeightsState = ref.watch(plateCalculatorProvider);
 
-    return Column(
-      children: [
-        Text(
-          AppLocalizations.of(context).plateCalculator,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        SizedBox(
-          height: 35,
-          child: plates.isNotEmpty
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...groupedPlates.keys.map(
-                      (key) => Row(
-                        children: [
-                          Text(groupedPlates[key].toString()),
-                          const Text('×'),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primaryContainer,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3),
-                              child: SizedBox(
-                                height: 35,
-                                width: 35,
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    key.toString(),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
+    return Container(
+      color: Theme.of(context).colorScheme.onInverseSurface,
+      child: Column(
+        children: [
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     Text(
+          //       AppLocalizations.of(context).plateCalculator,
+          //       style: Theme.of(context).textTheme.titleMedium,
+          //     ),
+          //     IconButton(
+          //       onPressed: () {
+          //         Navigator.of(context)
+          //             .push(MaterialPageRoute(builder: (context) => const AddPlateWeights()));
+          //       },
+          //       icon: const Icon(Icons.settings, size: 16),
+          //     ),
+          //   ],
+          // ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
+            },
+            child: SizedBox(
+              child: plateWeightsState.hasPlates
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ...plateWeightsState.calculatePlates.entries.map(
+                          (entry) => Row(
+                            children: [
+                              Text(entry.value.toString()),
+                              const Text('×'),
+                              PlateWeight(
+                                value: entry.key,
+                                size: 37,
+                                padding: 2,
+                                margin: 0,
+                                color: ref.read(plateCalculatorProvider).getColor(entry.key),
                               ),
-                            ),
+                              const SizedBox(width: 10),
+                            ],
                           ),
-                          const SizedBox(width: 10),
-                        ],
+                        ),
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: MutedText(
+                        AppLocalizations.of(context).plateCalculatorNotDivisible,
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ],
-                )
-              : MutedText(
-                  AppLocalizations.of(context).plateCalculatorNotDivisible,
-                ),
-        ),
-        const SizedBox(height: 3),
-      ],
+            ),
+          ),
+          const SizedBox(height: 3),
+        ],
+      ),
     );
   }
 
@@ -436,27 +467,43 @@ class _LogPageState extends State<LogPage> {
           widget._controller,
           exercisePages: widget._exercisePages,
         ),
-        Center(
-          child: Text(
-            widget._configData.textRepr,
-            style: Theme.of(context).textTheme.headlineMedium,
-            textAlign: TextAlign.center,
+
+        Container(
+          color: Theme.of(context).colorScheme.onInverseSurface,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Center(
+            child: Text(
+              widget._configData.textRepr,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(color: Theme.of(context).colorScheme.primary),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
-        if (widget._slotData.comment != '')
+        if (widget._slotData.comment.isNotEmpty)
           Text(widget._slotData.comment, textAlign: TextAlign.center),
+        // Only show calculator for barbell
+        if (widget._log.exercise.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
+          getPlates(),
         const SizedBox(height: 10),
         Expanded(
           child: (widget._workoutPlan.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
               ? getPastLogs()
               : Container(),
         ),
-        // Only show calculator for barbell
-        if (widget._log.exercise.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
-          getPlates(),
+
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Card(child: getForm()),
+          padding: const EdgeInsets.all(10),
+          child: Card(
+            color: Theme.of(context).colorScheme.inversePrimary,
+            // color: Theme.of(context).secondaryHeaderColor,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: getForm(),
+            ),
+          ),
         ),
         NavigationFooter(widget._controller, widget._ratioCompleted),
       ],
