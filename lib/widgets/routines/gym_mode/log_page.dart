@@ -29,7 +29,7 @@ import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/screens/configure_plates.dart';
+import 'package:wger/screens/configure_plates_screen.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
@@ -418,8 +418,7 @@ class _LogPageState extends ConsumerState<LogPage> {
           // ),
           GestureDetector(
             onTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => const ConfigureAvailablePlates()));
+              Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
             },
             child: SizedBox(
               child: plateWeightsState.hasPlates

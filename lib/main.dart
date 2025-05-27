@@ -37,6 +37,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/auth_screen.dart';
+import 'package:wger/screens/configure_plates_screen.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/screens/exercises_screen.dart';
@@ -244,6 +245,7 @@ class MainApp extends StatelessWidget {
               AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
               AboutPage.routeName: (ctx) => const AboutPage(),
               SettingsPage.routeName: (ctx) => const SettingsPage(),
+              ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
             },
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
