@@ -82,6 +82,7 @@ class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
         Padding(
           padding: const EdgeInsets.all(10),
           child: DropdownMenu<WeightUnitEnum>(
+            key: const ValueKey('weightUnitDropdown'),
             width: double.infinity,
             initialSelection: plateWeightsState.isMetric ? WeightUnitEnum.kg : WeightUnitEnum.lb,
             requestFocusOnTap: true,
@@ -105,6 +106,7 @@ class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
         Padding(
           padding: const EdgeInsets.all(10),
           child: DropdownMenu<num>(
+            key: const ValueKey('barWeightDropdown'),
             width: double.infinity,
             initialSelection: plateWeightsState.barWeight,
             requestFocusOnTap: true,
@@ -124,6 +126,7 @@ class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
           ),
         ),
         SwitchListTile(
+          key: const ValueKey('useColorsSwitch'),
           title: Text(i18n.useColors),
           value: plateWeightsState.useColors,
           onChanged: (state) => plateWeightsNotifier.setUseColors(state),
