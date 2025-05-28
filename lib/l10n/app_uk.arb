@@ -994,5 +994,11 @@
   "resistance_band": "Еспандер",
   "@resistance_band": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "selectAvailablePlates": "Виберіть доступні тарілки",
+  "@selectAvailablePlates": {},
+  "barWeight": "Вага штанги",
+  "@barWeight": {},
+  "useColors": "Використовуйте кольори",
+  "@useColors": {}
 }
