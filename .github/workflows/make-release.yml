@@ -26,6 +26,8 @@ jobs:
     uses: ./.github/workflows/build-linux.yml
     with:
       ref: ${{ github.event.inputs.version }}
+    secrets:
+      SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
 
   build_android:
     name: Android
@@ -140,45 +142,9 @@ jobs:
           files: |
             builds-aab/app-release.aab
             builds-apk/app-release.apk
-            builds-linux/wger-linux-x86_64.tar.gz
-            builds-linux/wger-linux-x86_64.sha256
+            builds-linux/wger-linux-x86.tar.gz
             builds-ios/Runner.app
             builds-macos/wger.app
             builds-windows/wger.exe
 
-  generate_flathub_manifest:
-    runs-on: ubuntu-latest
-    name: Upload flathub manifest
-    needs:
-      - make_gh_release
-    steps:
-      - name: Checkout application
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.version }}
-
-      - name: Common flutter setup
-        uses: ./.github/actions/flutter-common
-
-      - name: Generate manifest
-        run: |
-          cd flatpak/scripts
-          dart pub get
-          dart manifest_generator.dart --meta ../flatpak_meta.json --github
-          mkdir ../../flathub
-          cp flatpak_generator_exports/de.wger.flutter.json ../../flathub
-          cp flatpak_generator_exports/flathub.json ../../flathub
-
-      - name: Push updated config to flathub repository
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-        with:
-          source-directory: flathub
-          destination-github-username: wger-project
-          destination-repository-name: de.wger.flutter
-          user-email: github-actions@github.com
-          target-branch: release-${{ github.event.inputs.version }}
-          create-target-branch-if-needed: true
-          commit-message: Update to ${{ github.event.inputs.version }}
 
