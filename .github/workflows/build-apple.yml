@@ -26,6 +26,26 @@ jobs:
           name: builds-ios
           path: build/ios/iphoneos/Runner.app
 
+  build_ipa:
+    name: IPA
+    runs-on: macos-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Build .xcarchive
+        run: flutter build ipa --release --no-codesign
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-ipa
+          path: build/ios/archive/Runner.xcarchive
+
   build_macos:
     name: macOS
     runs-on: macos-latest

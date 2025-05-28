@@ -144,6 +144,7 @@ jobs:
             builds-apk/app-release.apk
             builds-linux/wger-linux-x86.tar.gz
             builds-ios/Runner.app
+            builds-ipa/Runner.xcarchive
             builds-macos/wger.app
             builds-windows/wger.exe
 
