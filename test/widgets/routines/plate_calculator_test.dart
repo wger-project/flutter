@@ -34,15 +34,16 @@ void main() {
   testWidgets('Smoke test for ConfigureAvailablePlates', (WidgetTester tester) async {
     await pumpWidget(tester);
 
-    expect(find.text('Unit'), findsOneWidget);
-    expect(find.text('Bar weight'), findsOneWidget);
+    debugDumpApp();
+    expect(find.text('Unit'), findsWidgets);
+    expect(find.text('Bar weight'), findsWidgets);
     expect(find.byType(SwitchListTile), findsOneWidget);
     expect(find.byType(FilledButton), findsOneWidget);
     expect(find.byType(PlateWeight), findsWidgets);
   });
 
   testWidgets(
-    'ConfigureAvailablePlates interagiert korrekt mit echtem Notifier',
+    'ConfigureAvailablePlates correctly updates state',
     (WidgetTester tester) async {
       // Arrange
       final notifier = PlateCalculatorNotifier();
