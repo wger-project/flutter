@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=wger
+Comment=Fitness/workout, nutrition and weight tracker
+Categories=Education;Utility;Sports;
+Icon=de.wger.flutter
+Exec=wger
+StartupWMClass=wger
+X-Purism-FormFactor=Workstation;Mobile;
+X-KDE-FormFactors=desktop;tablet;handset;mediacenter;
