@@ -776,7 +776,7 @@
   },
   "textPromptSubheading": "Naciśnij przycisk, aby rozpocząć",
   "@textPromptSubheading": {},
-  "aboutDonateText": "Zakup nam kawę, aby wspomóc projekt, opłacić koszty serwera i zapewnić nam energię",
+  "aboutDonateText": "Dopóki nasz projekt jest darmowy i tak zostanie na zawsze, ale działanie serweru nie jest! Także tworzenie naszego projektu zajmuje dużo czasu i wysiłku od wolontariuszów. Twoja kontrybucja bezpośrednią pokrywa te koszty, sprawia że nasz projekt się rowzija.",
   "@aboutDonateText": {},
   "aboutDonateTitle": "Wspomóż",
   "@aboutDonateTitle": {},
@@ -831,5 +831,55 @@
         "type": "String"
       }
     }
-  }
+  },
+  "useApiToken": "Użyj API Token",
+  "@useApiToken": {},
+  "apiToken": "API Token",
+  "@apiToken": {},
+  "restTime": "Czas odpoczynku",
+  "@restTime": {},
+  "errorCouldNotConnectToServer": "Nie możemy połączyć się z serwerem",
+  "@errorCouldNotConnectToServer": {},
+  "errorCouldNotConnectToServerDetails": "Aplikacja nie może połączyć się z serwerem. Prosimy sprawdzić swoje połączenie z internetem lub adres URL i spróbować ponownie. Jeżeli problem nadal występuje, skontaktuj się z administratorem.",
+  "@errorCouldNotConnectToServerDetails": {},
+  "aboutWhySupportTitle": "Open Source & za darmo ❤️",
+  "@aboutWhySupportTitle": {},
+  "routines": "Rutyny",
+  "@routines": {},
+  "newRoutine": "Nowa rutyna",
+  "@newRoutine": {},
+  "min": "Min",
+  "@min": {},
+  "max": "Max",
+  "@max": {},
+  "copyToClipboard": "Skopiuj do schowku (clipboard)",
+  "@copyToClipboard": {},
+  "errorInfoDescription": "Przepraszamy coś poszło źle. Możesz pomóc nam rozwiązać ten problem zgłaszając go na GitHub.",
+  "@errorInfoDescription": {},
+  "invalidApiToken": "Wpisz poprawny token API",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "errorViewDetails": "Techniczne szczegóły",
+  "@errorViewDetails": {},
+  "exerciseNr": "Ćwiczenie {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "apiTokenValidChars": "Klucz API może zawierać wyłącznie litery od a-f (ang.), i cyrfy (0-9) i musi mieć długość dokładnie 40 znaków",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "noRoutines": "Ty nie masz żadnej rutyny",
+  "@noRoutines": {},
+  "restDay": "Dzień odpoczynkowy",
+  "@restDay": {},
+  "errorInfoDescription2": "Możesz kontynuować używanie tej aplikacji, ale niektóre funkcje mogą być niedostępne.",
+  "@errorInfoDescription2": {}
 }
