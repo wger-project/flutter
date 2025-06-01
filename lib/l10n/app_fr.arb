@@ -841,5 +841,25 @@
         "type": "String"
       }
     }
-  }
+  },
+  "selectAvailablePlates": "Sélectionnez les poids disponibles",
+  "@selectAvailablePlates": {},
+  "barWeight": "Poids de la barre",
+  "@barWeight": {},
+  "useColors": "Utiliser des couleurs",
+  "@useColors": {},
+  "newRoutine": "Nouvelle routine",
+  "@newRoutine": {},
+  "noRoutines": "Vous n’avez aucune de routine",
+  "@noRoutines": {},
+  "useUsernameAndPassword": "Utiliser le nom d’utilisateur et mot de passe",
+  "@useUsernameAndPassword": {},
+  "routines": "Routines",
+  "@routines": {},
+  "restTime": "Temps de repos",
+  "@restTime": {},
+  "restDay": "Jour de repos",
+  "@restDay": {},
+  "isRestDay": "Est un jour de repos",
+  "@isRestDay": {}
 }
