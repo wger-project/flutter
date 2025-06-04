@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
 class LogMealsScreen extends StatefulWidget {
@@ -35,20 +36,63 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
+    final nutritionalPlan =
+        ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).selectMealToLog),
       ),
-      body: ListView.builder(
-        itemCount: nutritionalPlan.meals.length,
-        itemBuilder: (context, index) => MealWidget(
-          nutritionalPlan.meals[index],
-          nutritionalPlan.dedupMealItems,
-          true,
-          true,
-        ),
+      body: Column(
+        children: [
+          // Meals list or empty state
+          Expanded(
+            child: nutritionalPlan.meals.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        AppLocalizations.of(context)
+                            .yourCurrentNutritionPlanHasNoMealsDefinedYet,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: nutritionalPlan.meals.length,
+                    itemBuilder: (context, index) => MealWidget(
+                      nutritionalPlan.meals[index],
+                      nutritionalPlan.dedupMealItems,
+                      true,
+                      true,
+                    ),
+                  ),
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 32.0),
+            child: Column(
+              children: [
+                Text(
+                  AppLocalizations.of(context).toAddMealsToThePlanGoToNutritionalPlanDetails,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  child: Text(AppLocalizations.of(context).goToDetailPage),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed(
+                      NutritionalPlanScreen.routeName,
+                      arguments: nutritionalPlan,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
