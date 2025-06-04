@@ -384,6 +384,14 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
+  "creationDate": "Start date",
+  "@creationDate": {
+    "description": "The Start date of a nutritional plan"
+  },
+  "endDate": "End date",
+  "@endDate": {
+    "description": "The End date of a nutritional plan"
+  },
   "value": "Value",
   "@value": {
     "description": "The value of a measurement entry"
