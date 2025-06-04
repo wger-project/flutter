@@ -1000,5 +1000,13 @@
   "barWeight": "Вага штанги",
   "@barWeight": {},
   "useColors": "Використовуйте кольори",
-  "@useColors": {}
+  "@useColors": {},
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "У вашому поточному плані харчування не визначено жодного прийому їжі",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "Щоб додати страви до плану, перейдіть до деталей плану харчування",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  }
 }
