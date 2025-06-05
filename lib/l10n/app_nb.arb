@@ -1,5 +1,6 @@
 {
   "fiber": "Fiber",
+  "@fiber": {},
   "mealLogged": "Måltid lagt til i dagbok",
   "@mealLogged": {},
   "successfullyDeleted": "Slettet",
@@ -30,7 +31,7 @@
   "@newNutritionalPlan": {},
   "delete": "Slett",
   "@delete": {},
-  "loadingText": "Laster …",
+  "loadingText": "Laster…",
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
@@ -120,7 +121,7 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
-  "notes": "Notiser",
+  "notes": "Notater",
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
@@ -255,5 +256,11 @@
     "description": "Text for logout button"
   },
   "difference": "Forskjell",
-  "@difference": {}
+  "@difference": {},
+  "copyToClipboard": "Kopier til utklippstavlen",
+  "@copyToClipboard": {},
+  "value": "Verdi",
+  "@value": {
+    "description": "The value of a measurement entry"
+  }
 }
