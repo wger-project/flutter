@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <component type="desktop-application">
     <id>de.wger.flutter</id>
     <name>wger</name>
@@ -7,7 +7,6 @@
         <p>wger is a free and open-source fitness application designed to help you achieve your
             fitness goals.
         </p>
-
         <p>Workout Management</p>
         <ul>
             <li>Create and customize workout routines tailored to your fitness level and
@@ -16,21 +15,18 @@
             <li>Track your progress with detailed exercise logs</li>
             <li>Access a vast library of exercises</li>
         </ul>
-
         <p>Nutrition Tracking</p>
         <ul>
             <li>Log your food intake using the Open Food Facts database</li>
             <li>Calculate your calorie intake and macronutrient breakdown</li>
             <li>Set personalized dietary goals and track your progress</li>
         </ul>
-
         <p>Body Measurement Tracking</p>
         <ul>
             <li>Monitor your body weight, body fat percentage, and other measurements</li>
             <li>Visualize your progress with charts and graphs</li>
         </ul>
     </description>
-
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>AGPL-3.0-or-later</project_license>
     <recommends>
@@ -45,13 +41,10 @@
     <url type="donation">https://buymeacoffee.com/wger</url>
     <url type="vcs-browser">https://github.com/wger-project/flutter</url>
     <url type="translate">https://hosted.weblate.org/engage/wger/</url>
-
-    <!-- https://docs.flathub.org/banner-preview/ -->
     <branding>
         <color scheme_preference="light" type="primary">#a2aedd</color>
         <color scheme_preference="dark" type="primary">#687bd9</color>
     </branding>
-
     <screenshots>
         <screenshot type="default">
             <caption>wger's dashboard</caption>
@@ -84,12 +77,9 @@
             </image>
         </screenshot>
     </screenshots>
-
     <releases>
         <release version="1.5.3" date="2023-03-16" />
     </releases>
-
     <content_rating type="oars-1.1" />
-
     <launchable type="desktop-id">de.wger.flutter.desktop</launchable>
 </component>
