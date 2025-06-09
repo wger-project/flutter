@@ -881,5 +881,9 @@
   "restDay": "Dzień odpoczynkowy",
   "@restDay": {},
   "errorInfoDescription2": "Możesz kontynuować używanie tej aplikacji, ale niektóre funkcje mogą być niedostępne.",
-  "@errorInfoDescription2": {}
+  "@errorInfoDescription2": {},
+  "resistance_band": "Guma oporowa",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
