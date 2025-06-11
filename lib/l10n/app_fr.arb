@@ -644,7 +644,7 @@
   "@quads": {},
   "noMeasurementEntries": "Vous n'avez pas d'entrées de mesure",
   "@noMeasurementEntries": {},
-  "aboutPageTitle": "A propos de Wger",
+  "aboutPageTitle": "À propos de nous et assistance",
   "@aboutPageTitle": {},
   "userProfile": "Votre profil",
   "@userProfile": {},
@@ -800,7 +800,7 @@
   "@deficit": {
     "description": "Caloric deficit (either planned or unplanned)"
   },
-  "aboutDonateText": "Achetez-nous un café pour aider le projet, payez les coûts du serveur et faites-nous le plein d'énergie",
+  "aboutDonateText": "Si le projet est gratuit et le restera, l'exploitation du serveur ne l'est pas ! Le développement requiert également beaucoup de temps et d'efforts de la part des bénévoles. Votre contribution finance directement ces coûts et contribue à la fiabilité du service.",
   "@aboutDonateText": {},
   "settingsTitle": "Paramètres",
   "@settingsTitle": {},
@@ -832,7 +832,7 @@
       }
     }
   },
-  "chartAllTimeTitle": "{name} de tous temps",
+  "chartAllTimeTitle": "{name} depuis le début",
   "@chartAllTimeTitle": {
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
@@ -861,5 +861,156 @@
   "restDay": "Jour de repos",
   "@restDay": {},
   "isRestDay": "Est un jour de repos",
-  "@isRestDay": {}
+  "@isRestDay": {},
+  "supersetNr": "Supersérie {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "apiToken": "Jeton API",
+  "@apiToken": {},
+  "routineDays": "Jours de routine",
+  "@routineDays": {},
+  "resultingRoutine": "Routine résultante",
+  "@resultingRoutine": {},
+  "errorInfoDescription": "Nous sommes désolés, mais quelque chose s'est mal passé. Vous pouvez nous aider à résoudre ce problème en le signalant sur GitHub.",
+  "@errorInfoDescription": {},
+  "errorInfoDescription2": "Vous pouvez continuer à utiliser l'application, mais certaines fonctions risquent de ne pas fonctionner.",
+  "@errorInfoDescription2": {},
+  "errorViewDetails": "Détails techniques",
+  "@errorViewDetails": {},
+  "aboutDiscordTitle": "Discord",
+  "@aboutDiscordTitle": {},
+  "others": "Autres",
+  "@others": {},
+  "aboutJoinCommunityTitle": "Rejoindre la communauté",
+  "@aboutJoinCommunityTitle": {},
+  "indicatorAvg": "moy",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "resistance_band": "Bande de résistance",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "overallChangeWeight": "Changement global",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "needsLogsToAdvanceHelp": "Sélectionnez si vous souhaitez que la routine passe au jour programmé suivant uniquement si vous avez enregistré une séance d'entraînement pour la journée",
+  "@needsLogsToAdvanceHelp": {},
+  "min": "Min",
+  "@min": {},
+  "themeMode": "Thème",
+  "@themeMode": {},
+  "chartDuringPlanTitle": "{chartName} pendant le plan nutritionnel {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "fitInWeek": "Ajouter à la semaine",
+  "@fitInWeek": {},
+  "addSuperset": "Ajouter une supersérie",
+  "@addSuperset": {},
+  "useApiToken": "Utiliser un jeton API",
+  "@useApiToken": {},
+  "apiTokenValidChars": "Une clé API ne peut contenir que les lettres a-f, les chiffres 0-9 et 40 caractères exactement",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "invalidApiToken": "Veuillez saisir une clé API valide",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "exerciseNr": "Exercice {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "sets": "Séries",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "isRestDayHelp": "Veuillez noter que toutes les séries et tous les exercices seront supprimés lorsque vous marquerez un jour comme jour de repos.",
+  "@isRestDayHelp": {},
+  "needsLogsToAdvance": "Nécessite des journaux pour avancer",
+  "@needsLogsToAdvance": {},
+  "errorCouldNotConnectToServer": "Impossible de se connecter au serveur",
+  "@errorCouldNotConnectToServer": {},
+  "errorCouldNotConnectToServerDetails": "L'application n'a pas pu se connecter au serveur. Veuillez vérifier votre connexion internet ou l'URL du serveur et réessayer. Si le problème persiste, contactez l'administrateur du serveur.",
+  "@errorCouldNotConnectToServerDetails": {},
+  "copyToClipboard": "Copier dans le presse-papiers",
+  "@copyToClipboard": {},
+  "max": "Max",
+  "@max": {},
+  "aboutWhySupportTitle": "Open Source et gratuit ❤️",
+  "@aboutWhySupportTitle": {},
+  "aboutContributeText": "Toutes les contributions sont les bienvenues. Que vous soyez développeur, traducteur ou simplement passionné de fitness, chaque contribution est appréciée !",
+  "@aboutContributeText": {},
+  "aboutBugsListTitle": "Signaler un problème ou suggérer une fonctionnalité",
+  "@aboutBugsListTitle": {},
+  "aboutTranslationListTitle": "Traduire l'application",
+  "@aboutTranslationListTitle": {},
+  "aboutSourceListTitle": "Voir le code source",
+  "@aboutSourceListTitle": {},
+  "fitInWeekHelp": "Si cette option est activée, les jours se répéteront selon un cycle hebdomadaire, sinon les jours se suivront séquentiellement sans tenir compte du début d'une nouvelle semaine.",
+  "@fitInWeekHelp": {},
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Votre plan nutritionnel actuel ne comporte pas de repas définis",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "Pour ajouter des repas au plan, allez dans les détails du plan nutritionnel",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  },
+  "setHasProgression": "La série a une progression",
+  "@setHasProgression": {},
+  "aboutContributeTitle": "Contribuer",
+  "@aboutContributeTitle": {},
+  "setHasProgressionWarning": "Veuillez noter qu'il n'est actuellement pas possible de modifier tous les paramètres d'une série sur l'application mobile ni de configurer la progression automatique. Pour l'instant, veuillez utiliser l'application web.",
+  "@setHasProgressionWarning": {},
+  "setHasNoExercises": "Cette série n'a pas encore d'exercices !",
+  "@setHasNoExercises": {},
+  "settingsIngredientCacheDescription": "Cache d'ingrédients",
+  "@settingsIngredientCacheDescription": {},
+  "simpleMode": "Mode simple",
+  "@simpleMode": {},
+  "simpleModeHelp": "Masquer certains des paramètres les plus avancés lors de l'édition des exercices",
+  "@simpleModeHelp": {},
+  "progressionRules": "Cet exercice a des règles de progression et ne peut pas être édité sur l'application mobile. Veuillez utiliser l'application web pour éditer cet exercice.",
+  "@progressionRules": {},
+  "goalTypeMeals": "Des repas",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Basique",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Avancé",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "brut",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  }
 }
