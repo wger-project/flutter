@@ -822,7 +822,7 @@
   "@darkMode": {},
   "systemMode": "Paramètres du système",
   "@systemMode": {},
-  "chart30DaysTitle": "{name} 30 derniers jours",
+  "chart30DaysTitle": "{name} les 30 derniers jours",
   "@chart30DaysTitle": {
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
