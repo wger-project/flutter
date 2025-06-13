@@ -1003,5 +1003,17 @@
   "setHasProgressionWarning": "Bitte beachten Sie, dass es derzeit nicht möglich ist, alle Einstellungen für ein Set in der mobilen Anwendung zu bearbeiten oder den automatischen Fortschritt zu konfigurieren. Nutzen Sie vorerst bitte die Webanwendung.",
   "@setHasProgressionWarning": {},
   "useColors": "farbig",
-  "@useColors": {}
+  "@useColors": {},
+  "barWeight": "Gewicht der Stange",
+  "@barWeight": {},
+  "selectAvailablePlates": "Verfügbare Platten auswählen",
+  "@selectAvailablePlates": {},
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Dein aktueller Ernährungsplan enthält keine Gerichte",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "Gehe zum Ernährungsplaner um Gerichte hinzuzufügen",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  }
 }
