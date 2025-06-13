@@ -711,7 +711,7 @@
   "@verify": {},
   "textPromptTitle": "Bereit zu starten?",
   "@textPromptTitle": {},
-  "settingsTitle": "Einstellung",
+  "settingsTitle": "Einstellungen",
   "@settingsTitle": {},
   "textPromptSubheading": "Drücken Sie die Aktionstaste, um zu beginnen",
   "@textPromptSubheading": {},
@@ -1001,5 +1001,19 @@
     "description": "Generated entry for translation for server strings"
   },
   "setHasProgressionWarning": "Bitte beachten Sie, dass es derzeit nicht möglich ist, alle Einstellungen für ein Set in der mobilen Anwendung zu bearbeiten oder den automatischen Fortschritt zu konfigurieren. Nutzen Sie vorerst bitte die Webanwendung.",
-  "@setHasProgressionWarning": {}
+  "@setHasProgressionWarning": {},
+  "useColors": "farbig",
+  "@useColors": {},
+  "barWeight": "Gewicht der Stange",
+  "@barWeight": {},
+  "selectAvailablePlates": "Verfügbare Platten auswählen",
+  "@selectAvailablePlates": {},
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Dein aktueller Ernährungsplan enthält keine Gerichte",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "Gehe zum Ernährungsplaner um Gerichte hinzuzufügen",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  }
 }
