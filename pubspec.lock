@@ -1229,10 +1229,10 @@ packages:
     dependency: "direct main"
     description:
       name: sqlite3_flutter_libs
-      sha256: "7986c26234c0a5cf4fd83ff4ee39d4195b1f47cdb50a949ec7987ede4dcbdc2a"
+      sha256: e07232b998755fe795655c56d1f5426e0190c9c435e1752d39e7b1cd33699c71
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.33"
+    version: "0.5.34"
   sqlparser:
     dependency: transitive
     description:
