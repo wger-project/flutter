@@ -53,11 +53,9 @@ jobs:
     steps:
       - name: Checkout application
         uses: actions/checkout@v4
-        with:
-          path: main
 
       - name: Common setup
-        uses: ./main/.github/actions/flutter-common
+        uses: ./.github/actions/flutter-common
 
       - name: Checkout application
         uses: actions/checkout@v4
