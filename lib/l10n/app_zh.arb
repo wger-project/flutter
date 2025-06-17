@@ -996,5 +996,23 @@
   "lightMode": "总是亮色模式",
   "@lightMode": {},
   "systemMode": "系统设置",
-  "@systemMode": {}
+  "@systemMode": {},
+  "barWeight": "杠铃重量",
+  "@barWeight": {},
+  "useColors": "使用颜色",
+  "@useColors": {},
+  "useApiToken": "使用API密钥",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "使用用户名与密码",
+  "@useUsernameAndPassword": {},
+  "apiToken": "API密钥",
+  "@apiToken": {},
+  "invalidApiToken": "请输入有效API值",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "API 密钥只能包含字母 a-f、数字 0-9，长度为 40 个字符",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  }
 }

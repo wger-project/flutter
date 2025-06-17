@@ -966,5 +966,21 @@
   "needsLogsToAdvance": "Ha bisogno di registri per avanzare",
   "@needsLogsToAdvance": {},
   "isRestDayHelp": "Tieni presente che tutte le serie e gli esercizi verranno rimossi quando contrassegni un giorno come giorno di riposo.",
-  "@isRestDayHelp": {}
+  "@isRestDayHelp": {},
+  "useColors": "Usa colori",
+  "@useColors": {},
+  "invalidApiToken": "Per favore inserisci una chiave API valida",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiToken": "API Token",
+  "@apiToken": {},
+  "useApiToken": "Usa il Token API",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "Usa username e password",
+  "@useUsernameAndPassword": {},
+  "apiTokenValidChars": "Una chiave API può contenere solo lettere a-f, numeri 0-9 e deve essere lunga 40 caratteri",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  }
 }
