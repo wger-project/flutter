@@ -51,6 +51,9 @@ jobs:
     needs:
       - build_linux
     steps:
+      - name: Common setup
+        uses: ./.github/actions/flutter-common
+
       - name: Checkout application
         uses: actions/checkout@v4
         with:
