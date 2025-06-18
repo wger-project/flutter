@@ -48,26 +48,22 @@ jobs:
   generate_flathub_manifest:
     runs-on: ubuntu-latest
     name: Update flathub manifest
+
+    # If the job fails just continue, this can be done manually later
+    continue-on-error: true
     needs:
       - build_linux
     steps:
-      - name: Checkout application
-        uses: actions/checkout@v4
 
-      - name: Common setup
-        uses: ./.github/actions/flutter-common
-
-      - name: Checkout application
+      - name: Checkout flatpak-flathub repo
         uses: actions/checkout@v4
         with:
           repository: wger-project/de.wger.flutter
-          path: flathub
 
       - name: Bump version and update manifest
         run: |
-          cd flathub
           pip install pyyaml toml
-          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.6.1 ../flatpak-flutter
+          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.7.0 ../flatpak-flutter
           python bump-wger-version.py ${{ inputs.ref }}
           ../flatpak-flutter/flatpak-flutter.py --app-module wger flatpak-flutter.json
 
@@ -76,7 +72,6 @@ jobs:
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
-          source-directory: flathub
           destination-github-username: wger-project
           destination-repository-name: de.wger.flutter
           user-email: github-actions@github.com
