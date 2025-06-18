@@ -92,7 +92,7 @@ def add_release_to_metainfo(
             desc_elem.append(child)
 
     url_elem = ET.SubElement(new_release, 'url')
-    url_elem.text = f'https://{repo}/releases/tag/{version}'
+    url_elem.text = f'https://github.com/{repo}/releases/tag/{version}'
 
     releases.insert(0, new_release)
     ET.indent(tree, space="    ", level=0)
