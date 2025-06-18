@@ -143,10 +143,10 @@ jobs:
           files: |
             builds-aab/app-release.aab
             builds-apk/app-release.apk
-            builds-linux/wger-linux-x64.tar.gz
-            builds-ios/Runner.app
-            builds-ipa/Runner.xcarchive
-            builds-macos/wger.app
+            builds-linux/linux-x64.tar.gz
+            builds-ios/Runner.app.zip
+            builds-ipa/Runner.xcarchive.zip
+            builds-macos/wger.app.zip
             builds-windows/wger.exe
 
 

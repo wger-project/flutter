@@ -19,7 +19,10 @@ jobs:
         uses: ./.github/actions/flutter-common
 
       - name: Build .app
-        run: flutter build ios --release --no-codesign
+        run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos
+          zip -r Runner.app.zip Runner.app
 
       - uses: actions/upload-artifact@v4
         with:
@@ -39,12 +42,15 @@ jobs:
         uses: ./.github/actions/flutter-common
 
       - name: Build .xcarchive
-        run: flutter build ipa --release --no-codesign
+        run: |
+          flutter build ipa --release --no-codesign
+          cd build/ios/archive
+          zip -r Runner.xcarchive.zip Runner.xcarchive
 
       - uses: actions/upload-artifact@v4
         with:
           name: builds-ipa
-          path: build/ios/archive/Runner.xcarchive
+          path: build/ios/archive/Runner.xcarchive.zip
 
   build_macos:
     name: macOS
@@ -59,9 +65,12 @@ jobs:
         uses: ./.github/actions/flutter-common
 
       - name: Build .app
-        run: flutter build macos --release
+        run: |
+          flutter build macos --release
+          cd build/macos/Build/Products/Release
+          zip -r wger.app.zip wger.app
 
       - uses: actions/upload-artifact@v4
         with:
           name: builds-macos
-          path: build/macos/Build/Products/Release/wger.app
+          path: build/macos/Build/Products/Release/wger.app.zip
