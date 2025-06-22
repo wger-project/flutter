@@ -78,7 +78,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     _events = <String, List<Event>>{};
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
-    loadEvents();
+    //Fix: Defer context-dependent loadEvents() until after build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadEvents();
+    });
   }
 
   void loadEvents() async {
