@@ -36,8 +36,7 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final nutritionalPlan =
-        ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
+    final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
       appBar: AppBar(
@@ -52,8 +51,7 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        AppLocalizations.of(context)
-                            .yourCurrentNutritionPlanHasNoMealsDefinedYet,
+                        AppLocalizations.of(context).yourCurrentNutritionPlanHasNoMealsDefinedYet,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
