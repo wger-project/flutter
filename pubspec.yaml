@@ -43,7 +43,7 @@ dependencies:
   flex_seed_scheme: ^3.5.1
   flutter_html: ^3.0.0
   flutter_staggered_grid_view: ^0.7.0
-  flutter_svg: ^2.1.0
+  flutter_svg: ^2.2.0
   flutter_svg_icons: ^0.0.1
   flutter_typeahead: ^5.2.0
   flutter_zxing: ^2.1.0
