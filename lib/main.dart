@@ -91,20 +91,25 @@ void main() async {
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
 
   // Catch errors from Flutter itself (widget build, layout, paint, etc.)
-  // FlutterError.onError = (FlutterErrorDetails details) {
-  //   final stack = details.stack ?? StackTrace.empty;
-  //   if (kDebugMode) {
-  //     FlutterError.dumpErrorToConsole(details);
-  //   }
   //
-  //   // Don't show the full error dialog for network image loading errors.
-  //   if (details.exception is NetworkImageLoadException) {
-  //     return;
-  //   }
-  //
-  //   // showGeneralErrorDialog(details.exception, stack);
-  //   // throw details.exception;
-  // };
+  // NOTE: it seems this sometimes makes problems and even freezes the flutter
+  //       process when widgets overflow, so it is disabled in dev mode.
+  if (kReleaseMode) {
+    FlutterError.onError = (FlutterErrorDetails details) {
+      final stack = details.stack ?? StackTrace.empty;
+      // if (kDebugMode) {
+      //   FlutterError.dumpErrorToConsole(details);
+      // }
+
+      // Don't show the full error dialog for network image loading errors.
+      if (details.exception is NetworkImageLoadException) {
+        return;
+      }
+
+      showGeneralErrorDialog(details.exception, stack);
+      // throw details.exception;
+    };
+  }
 
   // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
   PlatformDispatcher.instance.onError = (error, stack) {
