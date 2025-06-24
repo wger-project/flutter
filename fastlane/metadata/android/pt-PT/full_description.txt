@@ -1,39 +1,39 @@
-Feito por amantes da vida fitness - organize sua saúde com o WGER, seu Gerenciador de Treinos!
+De amantes do exercício para amantes do exercício - Organiza a tua saúde com WGER, o gestor de treinos!
 
-Você já encontrou o seu aplicativo de fitness nº1? Você adora criar suas próprias rotinas de treino? Não importa que tipo de fera esportiva você seja - todos nós temos algo em comum: adoramos acompanhar nossos dados de saúde <3
+Já encontraste a tua aplicação fitness n.º 1 e adoras criar as tuas próprias rotinas desportivas? Independentemente do animal desportivo que sejas, todos temos algo em comum: adoramos dominar os nossos dados biométricos <3
 
-Nós não te julgamos por ainda gerenciar sua jornada fitness em um caderno, mas bem-vindo(a) ao século 21!
+Por isso não te julgamos se ainda fazes os teus registos no teu lindo caderninho de treino, mas bem-vindo a 2025!
 
-Desenvolvemos um aplicativo de acompanhemento de saúde e fitness 100% gratuito para você, reduzido aos recursos mais relevantes para facilitar sua vida. Comece, treine e comemore seu progresso!
+Desenvolvemos uma aplicação digital de controle de treino e saúde 100% livre para ti, simplificada às funções mais importantes para simplificar a tua vida. Começa, continua a treinar e celebra os teus progressos!
 
-O wger é um projeto open-source que é sobre:
-* Seu Corpo
-* Seus Treinos
-* Seu Progresso
-* Seus Dados
+wger é um projeto open source e comprometido com:
+* O teu corpo
+* Os teus treinos
+* O teu progresso
+* Os teus dados
 
-Seu Corpo:
-Não precisa pesquisar no Google os ingredientes de suas receitas favoritas - escolha suas refeições diárias entre mais de 78.000 itens e veja os valores nutricionais. Adicione as refeições ao plano nutricional e mantenha uma visão geral de sua dieta no calendário.
+O teu corpo
+Não é preciso googlar os ingredientes dos teus petiscos favoritos - escolhe as tuas refeições diárias de mais de 78000 produtos e verifica os valores nutricionais. Adiciona refeições ao plano nutricional e tem uma visão de conjunto da tua dieta no calendário.
 
-Seus Treinos:
-Você sabe o que é melhor para o seu corpo. Crie seus próprios treinos a partir de uma variedade de mais de 200 exercícios. Em seguida, use o Modo Academia para orientá-lo durante o treino, enquanto registra suas cargas com um clique.
+Os teus treinos
+Tu sabes o que é melhor para o teu corpo. Cria os teus treinos a partir duma grande variedade de 200 exercícios diferentes. Depois, usa o modo ginásio para te guiar no treino enquanto registas os pesos com um toque.
 
-Seu Progresso:
-Nunca perca de vista seus objetivos. Acompanhe seu peso e mantenha suas estatísticas.
+O teu progresso
+Nunca percas os teus objetivos de vista. Regista o teu peso e guarda as tuas estatísticas.
 
-Seus Dados:
-O wger é o seu diário fitness personalizado - mas você é dono(a) dos seus dados. Use a REST API para acessá-los e fazer coisas incríveis com eles.
+Os teus dados
+wger é o teu diário de treino personalizado - mas tu possuis os teus dados. Usa a API REST para aceder e fazer coisas espantosas com eles.
 
-Obs.: Este aplicativo gratuito não é baseado em financiamentos adicionais e não pedimos que você doe dinheiro. Mais do que isso, é um projeto comunitário em constante crescimento. Portanto, esteja preparado(a) para novos recursos a qualquer momento!
+Por favor nota: Esta app gratuita não está baseada em fundos adicionais e não pedimos que dês dinheiro. Mais do que isso, é um projeto comunitário que tem evoluído constantemente. Por isso, espera novas funcionalidades a qualquer momento!
 
-#CódigoAberto - o que isso significa?
+#Código aberto - O que quer isso dizer?
 
-Código aberto significa que todo o código-fonte deste aplicativo e do servidor ao qual ele se conecta é gratuito e está disponível para qualquer pessoa:
-* Você quer executar o wger em seu próprio servidor, para você ou para sua academia? Sinta-se à vontade!
-* Está sentindo falta de um recurso e quer implementá-lo? Comece agora!
-* Quer verificar se nenhum dado está sendo compartilhado? Você pode!
+Código aberto quer dizer que todo o código fonte desta aplicação e do servidor com que comunica é livre e disponível para toda a gente:
+* Queres correr o wger no teu servidor para ti e para o teu ginásio? Força!
+* Sentes falta duma funcionalidade e queres implementá-la? Começa já!
+* Queres verificar que nada está a ser enviado para lado nenhum? Podes!
 
-Junte-se à nossa comunidade e faça parte dos entusiastas do esporte e geeks de TI de todo o mundo. Continuamos trabalhando para ajustar e otimizar o aplicativo de acordo com nossas necessidades. Amamos suas contribuições, então sinta-se à vontade para participar a qualquer momento e contribuir com seus desejos e ideias!
+Junta-te à nossa comunidade e torna-te parte de entusiastas do exercício e geeks das TI de todo o mundo. Nós continuamos a ajustar e otimizar a app talhada para as nossas necessidades. Adoramos o teu contributo, por isso sente-te à vontade para aparecer com sugestões e ideias!
 
--> encontre o código-fonte em https://github.com/wger-project
--> faça suas perguntas ou apenas diga Olá no nosso servidor do Discord https://discord.gg/rPWFv6W
+-> encontra o código fonte em https://github.com/wger-project
+-> faz as tuas perguntas ou simplesmente diz olá no nosso servidor discord https://discord.gg/rPWFv6W
