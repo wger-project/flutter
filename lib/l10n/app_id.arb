@@ -36,9 +36,9 @@
   "@passwordTooShort": {
     "description": "Error message when the user a password that is too short"
   },
-  "password": "Password",
+  "password": "Kata sandi",
   "@password": {},
-  "confirmPassword": "Konfirmasi Password",
+  "confirmPassword": "Konfirmasi Kata Sandi",
   "@confirmPassword": {},
   "invalidEmail": "Mohon masukkan E-mail yang valid",
   "@invalidEmail": {
@@ -520,7 +520,7 @@
   "@close": {
     "description": "Translation for close"
   },
-  "userProfile": "Profilmu",
+  "userProfile": "Profil Kamu",
   "@userProfile": {},
   "verify": "Verifikasi",
   "@verify": {},
@@ -574,7 +574,7 @@
   "@selectAvailablePlates": {},
   "useColors": "Gunakan warna",
   "@useColors": {},
-  "barWeight": "Berat Batang",
+  "barWeight": "Berat batang",
   "@barWeight": {},
   "routineDays": "Hari dalam rutinitas",
   "@routineDays": {},
