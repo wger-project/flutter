@@ -539,5 +539,276 @@
         "type": "String"
       }
     }
+  },
+  "carbohydrates": "Hidratos de carbono",
+  "@carbohydrates": {},
+  "carbohydratesShort": "HC",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "sugars": "Açúcares",
+  "@sugars": {},
+  "fat": "Gordura",
+  "@fat": {},
+  "fatShort": "G",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "fiber": "Fibra",
+  "@fiber": {},
+  "sodium": "Sódio",
+  "@sodium": {},
+  "amount": "Quantidade",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "unit": "Unidade",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "newEntry": "Nova entrada",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "noMeasurementEntries": "Não tens registos de medidas",
+  "@noMeasurementEntries": {},
+  "aboutDescription": "Obrigado por usar o Wger! Wger é um projeto colaborativo de código aberto, feito por entusiastas do exercício de todo o mundo.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "aboutDonateTitle": "Faz uma doação",
+  "@aboutDonateTitle": {},
+  "aboutDonateText": "Embora o projeto seja gratuito, e sê-lo-á sempre, manter o servidor não o é! O desenvolvimento também leva um tempo e esforço significativo dos voluntários. O teu contributo suporta diretamente estes custos ajudando a garantir o serviço.",
+  "@aboutDonateText": {},
+  "aboutContributeTitle": "Contribui",
+  "@aboutContributeTitle": {},
+  "aboutContributeText": "Todos os tipos de contribuição são encorajados. Sejas um desenvolvedor, tradutor ou apenas um apaixonado pelo exercício, todas as migalhas de ajuda são apreciadas!",
+  "@aboutContributeText": {},
+  "aboutBugsListTitle": "Relata um problema ou sugere uma funcionalidade",
+  "@aboutBugsListTitle": {},
+  "aboutTranslationListTitle": "Traduz a aplicação",
+  "@aboutTranslationListTitle": {},
+  "aboutSourceListTitle": "Vê o código fonte",
+  "@aboutSourceListTitle": {},
+  "aboutJoinCommunityTitle": "Junta-te à comunidade",
+  "@aboutJoinCommunityTitle": {},
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
+  "aboutDiscordTitle": "Discord",
+  "@aboutDiscordTitle": {},
+  "others": "Outros",
+  "@others": {},
+  "calendar": "Calendário",
+  "@calendar": {},
+  "goToToday": "Vai para hoje",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "enterValue": "Por favor, insere um valor",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "selectEntry": "Por favor, selecione uma entrada",
+  "@selectEntry": {},
+  "selectExercise": "Por favor, selecione um exercício",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "enterCharacters": "Por favor, utiliza entre {min} e {max} caracteres",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "enterMinCharacters": "Por favor, utiliza pelo menos {min} caracteres",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "baseNameEnglish": "Todos os exercícios necessitam de um nome base em inglês",
+  "@baseNameEnglish": {},
+  "nrOfSets": "Séries por exercício: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {
+        "type": "String"
+      }
+    }
+  },
+  "optionsLabel": "Opções",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "takePicture": "Tira uma fotografia",
+  "@takePicture": {},
+  "chooseFromLibrary": "Escolher da galeria de fotos",
+  "@chooseFromLibrary": {},
+  "gallery": "Galeria",
+  "@gallery": {},
+  "addImage": "Adicionar imagem",
+  "@addImage": {},
+  "appUpdateContent": "Esta versão da aplicação não é compatível com o servidor. Por favor, atualiza a aplicação.",
+  "@appUpdateContent": {},
+  "productNotFoundDescription": "O produto com o código de barras digitalizado {barcode} não foi encontrado na base de dados do wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "scanBarcode": "Digitaliza o código de barras",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "Fechar",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "add_exercise_image_license": "As imagens devem ser compatíveis com a licença CC BY SA. Em caso de dúvida, carrega apenas fotos que tenhas tirado tu.",
+  "@add_exercise_image_license": {},
+  "variations": "Variações",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "verifiedEmail": "Email verificado",
+  "@verifiedEmail": {},
+  "verifiedEmailReason": "Tens de verificar o teu email para contribuir com exercícios",
+  "@verifiedEmailReason": {},
+  "verifiedEmailInfo": "Um email de verificação foi enviado para {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "alternativeNames": "Nomes alternativos",
+  "@alternativeNames": {},
+  "oneNamePerLine": "Um nome por linha",
+  "@oneNamePerLine": {},
+  "whatVariationsExist": "Que variações deste exercício existem, se houver?",
+  "@whatVariationsExist": {},
+  "previous": "Anterior",
+  "@previous": {},
+  "next": "Próximo",
+  "@next": {},
+  "images": "Imagens",
+  "@images": {},
+  "language": "Linguagem",
+  "@language": {},
+  "addExercise": "Adicionar exercício",
+  "@addExercise": {},
+  "fitInWeek": "Encaixa na semana",
+  "@fitInWeek": {},
+  "toggleDetails": "Alternar detalhes",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "edit": "Editar",
+  "@edit": {},
+  "aboutWhySupportTitle": "Código aberto & livre para usar ❤️",
+  "@aboutWhySupportTitle": {},
+  "goToDetailPage": "Ir para a página de detalhes",
+  "@goToDetailPage": {},
+  "productFound": "Produto encontrado",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "unVerifiedEmail": "Email não verificado",
+  "@unVerifiedEmail": {},
+  "moreMeasurementEntries": "Adiciona nova medição",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "selectIngredient": "Por favor, seleciona um ingrediente",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "newNutritionalPlan": "Novo plano nutricional",
+  "@newNutritionalPlan": {},
+  "setUnitsAndRir": "Configura unidades e ReR",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "saturatedFat": "Gordura saturada",
+  "@saturatedFat": {},
+  "selectImage": "Por favor, seleciona uma imagem",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "appUpdateTitle": "Atualização necessária",
+  "@appUpdateTitle": {},
+  "noWeightEntries": "Não tens registos de peso",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "confirmDelete": "Tens certeza de que desejas excluir '{toDelete}'?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {
+        "type": "String"
+      }
+    }
+  },
+  "recentlyUsedIngredients": "Ingredientes adicionados recentemente",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "loadingText": "A carregar...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "delete": "Excluir",
+  "@delete": {},
+  "productNotFound": "Produto não encontrado",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "enterValidNumber": "Por favor, insere um número válido",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "dataCopied": "Dados copiados para a nova entrada",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "productFoundDescription": "O código de barras corresponde a este produto: {productName}. Queres continuar?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      }
+    }
+  },
+  "alsoKnownAs": "Também conhecido como:{aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {
+        "type": "String"
+      }
+    },
+    "description": "List of alternative names for an exercise"
   }
 }
