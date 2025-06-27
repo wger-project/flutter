@@ -600,34 +600,53 @@ class _PlanFormState extends State<PlanForm> {
             },
           ),
           // End Date
-          TextFormField(
-            key: const Key('field-end-date'),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).endDate,
-              hintText: 'YYYY-MM-DD',
-            ),
-            controller: _endDateController,
-            readOnly: true,
-            onTap: () async {
-              // Stop keyboard from appearing
-              FocusScope.of(context).requestFocus(FocusNode());
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  key: const Key('field-end-date'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).endDate,
+                    hintText: 'YYYY-MM-DD',
+                    helperText:
+                        'Tip: only for athletes with contest deadlines.  Most users benefit from flexibility',
+                  ),
+                  controller: _endDateController,
+                  readOnly: true,
+                  onTap: () async {
+                    // Stop keyboard from appearing
+                    FocusScope.of(context).requestFocus(FocusNode());
 
-              // Open date picker
-              final pickedDate = await showDatePicker(
-                context: context,
-                initialDate: widget._plan.endDate,
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-              );
+                    // Open date picker
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: widget._plan.endDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
 
-              if (pickedDate != null) {
-                setState(() {
-                  _endDateController.text =
-                      '${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}';
-                  widget._plan.endDate = pickedDate;
-                });
-              }
-            },
+                    if (pickedDate != null) {
+                      setState(() {
+                        _endDateController.text =
+                            '${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}';
+                        widget._plan.endDate = pickedDate;
+                      });
+                    }
+                  },
+                ),
+              ),
+              if (_endDateController.text.isNotEmpty)
+                IconButton(
+                  icon: const Icon(Icons.clear),
+                  tooltip: 'Clear end date',
+                  onPressed: () {
+                    setState(() {
+                      _endDateController.text = '';
+                      widget._plan.endDate = null;
+                    });
+                  },
+                ),
+            ],
           ),
           SwitchListTile(
             title: Text(AppLocalizations.of(context).onlyLogging),

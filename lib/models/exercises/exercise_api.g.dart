@@ -6,14 +6,16 @@ part of 'exercise_api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_ExerciseBaseData _$ExerciseBaseDataFromJson(Map<String, dynamic> json) => _ExerciseBaseData(
+_ExerciseBaseData _$ExerciseBaseDataFromJson(Map<String, dynamic> json) =>
+    _ExerciseBaseData(
       id: (json['id'] as num).toInt(),
       uuid: json['uuid'] as String,
       variationId: (json['variations'] as num?)?.toInt() ?? null,
       created: DateTime.parse(json['created'] as String),
       lastUpdate: DateTime.parse(json['last_update'] as String),
       lastUpdateGlobal: DateTime.parse(json['last_update_global'] as String),
-      category: ExerciseCategory.fromJson(json['category'] as Map<String, dynamic>),
+      category:
+          ExerciseCategory.fromJson(json['category'] as Map<String, dynamic>),
       muscles: (json['muscles'] as List<dynamic>)
           .map((e) => Muscle.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -33,12 +35,16 @@ _ExerciseBaseData _$ExerciseBaseDataFromJson(Map<String, dynamic> json) => _Exer
       videos: (json['videos'] as List<dynamic>)
           .map((e) => Video.fromJson(e as Map<String, dynamic>))
           .toList(),
-      authors: (json['author_history'] as List<dynamic>).map((e) => e as String).toList(),
-      authorsGlobal:
-          (json['total_authors_history'] as List<dynamic>).map((e) => e as String).toList(),
+      authors: (json['author_history'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      authorsGlobal: (json['total_authors_history'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     );
 
-Map<String, dynamic> _$ExerciseBaseDataToJson(_ExerciseBaseData instance) => <String, dynamic>{
+Map<String, dynamic> _$ExerciseBaseDataToJson(_ExerciseBaseData instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'variations': instance.variationId,
@@ -56,7 +62,8 @@ Map<String, dynamic> _$ExerciseBaseDataToJson(_ExerciseBaseData instance) => <St
       'total_authors_history': instance.authorsGlobal,
     };
 
-_ExerciseSearchDetails _$ExerciseSearchDetailsFromJson(Map<String, dynamic> json) =>
+_ExerciseSearchDetails _$ExerciseSearchDetailsFromJson(
+        Map<String, dynamic> json) =>
     _ExerciseSearchDetails(
       translationId: (json['id'] as num).toInt(),
       exerciseId: (json['base_id'] as num).toInt(),
@@ -66,7 +73,8 @@ _ExerciseSearchDetails _$ExerciseSearchDetailsFromJson(Map<String, dynamic> json
       imageThumbnail: json['image_thumbnail'] as String?,
     );
 
-Map<String, dynamic> _$ExerciseSearchDetailsToJson(_ExerciseSearchDetails instance) =>
+Map<String, dynamic> _$ExerciseSearchDetailsToJson(
+        _ExerciseSearchDetails instance) =>
     <String, dynamic>{
       'id': instance.translationId,
       'base_id': instance.exerciseId,
@@ -79,21 +87,25 @@ Map<String, dynamic> _$ExerciseSearchDetailsToJson(_ExerciseSearchDetails instan
 _ExerciseSearchEntry _$ExerciseSearchEntryFromJson(Map<String, dynamic> json) =>
     _ExerciseSearchEntry(
       value: json['value'] as String,
-      data: ExerciseSearchDetails.fromJson(json['data'] as Map<String, dynamic>),
+      data:
+          ExerciseSearchDetails.fromJson(json['data'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$ExerciseSearchEntryToJson(_ExerciseSearchEntry instance) =>
+Map<String, dynamic> _$ExerciseSearchEntryToJson(
+        _ExerciseSearchEntry instance) =>
     <String, dynamic>{
       'value': instance.value,
       'data': instance.data,
     };
 
-_ExerciseApiSearch _$ExerciseApiSearchFromJson(Map<String, dynamic> json) => _ExerciseApiSearch(
+_ExerciseApiSearch _$ExerciseApiSearchFromJson(Map<String, dynamic> json) =>
+    _ExerciseApiSearch(
       suggestions: (json['suggestions'] as List<dynamic>)
           .map((e) => ExerciseSearchEntry.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$ExerciseApiSearchToJson(_ExerciseApiSearch instance) => <String, dynamic>{
+Map<String, dynamic> _$ExerciseApiSearchToJson(_ExerciseApiSearch instance) =>
+    <String, dynamic>{
       'suggestions': instance.suggestions,
     };

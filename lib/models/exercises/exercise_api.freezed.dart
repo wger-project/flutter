@@ -47,7 +47,8 @@ mixin _$ExerciseApiData {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $ExerciseApiDataCopyWith<ExerciseApiData> get copyWith =>
-      _$ExerciseApiDataCopyWithImpl<ExerciseApiData>(this as ExerciseApiData, _$identity);
+      _$ExerciseApiDataCopyWithImpl<ExerciseApiData>(
+          this as ExerciseApiData, _$identity);
 
   /// Serializes this ExerciseApiData to a JSON map.
   Map<String, dynamic> toJson();
@@ -59,20 +60,26 @@ mixin _$ExerciseApiData {
             other is ExerciseApiData &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.uuid, uuid) || other.uuid == uuid) &&
-            (identical(other.variationId, variationId) || other.variationId == variationId) &&
+            (identical(other.variationId, variationId) ||
+                other.variationId == variationId) &&
             (identical(other.created, created) || other.created == created) &&
-            (identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate) &&
+            (identical(other.lastUpdate, lastUpdate) ||
+                other.lastUpdate == lastUpdate) &&
             (identical(other.lastUpdateGlobal, lastUpdateGlobal) ||
                 other.lastUpdateGlobal == lastUpdateGlobal) &&
-            (identical(other.category, category) || other.category == category) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
             const DeepCollectionEquality().equals(other.muscles, muscles) &&
-            const DeepCollectionEquality().equals(other.musclesSecondary, musclesSecondary) &&
+            const DeepCollectionEquality()
+                .equals(other.musclesSecondary, musclesSecondary) &&
             const DeepCollectionEquality().equals(other.equipment, equipment) &&
-            const DeepCollectionEquality().equals(other.translations, translations) &&
+            const DeepCollectionEquality()
+                .equals(other.translations, translations) &&
             const DeepCollectionEquality().equals(other.images, images) &&
             const DeepCollectionEquality().equals(other.videos, videos) &&
             const DeepCollectionEquality().equals(other.authors, authors) &&
-            const DeepCollectionEquality().equals(other.authorsGlobal, authorsGlobal));
+            const DeepCollectionEquality()
+                .equals(other.authorsGlobal, authorsGlobal));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -103,7 +110,8 @@ mixin _$ExerciseApiData {
 
 /// @nodoc
 abstract mixin class $ExerciseApiDataCopyWith<$Res> {
-  factory $ExerciseApiDataCopyWith(ExerciseApiData value, $Res Function(ExerciseApiData) _then) =
+  factory $ExerciseApiDataCopyWith(
+          ExerciseApiData value, $Res Function(ExerciseApiData) _then) =
       _$ExerciseApiDataCopyWithImpl;
   @useResult
   $Res call(
@@ -117,7 +125,8 @@ abstract mixin class $ExerciseApiDataCopyWith<$Res> {
       List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
       List<Equipment> equipment,
-      @JsonKey(name: 'translations', defaultValue: []) List<Translation> translations,
+      @JsonKey(name: 'translations', defaultValue: [])
+      List<Translation> translations,
       List<ExerciseImage> images,
       List<Video> videos,
       @JsonKey(name: 'author_history') List<String> authors,
@@ -125,7 +134,8 @@ abstract mixin class $ExerciseApiDataCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ExerciseApiDataCopyWithImpl<$Res> implements $ExerciseApiDataCopyWith<$Res> {
+class _$ExerciseApiDataCopyWithImpl<$Res>
+    implements $ExerciseApiDataCopyWith<$Res> {
   _$ExerciseApiDataCopyWithImpl(this._self, this._then);
 
   final ExerciseApiData _self;
@@ -229,14 +239,16 @@ class _ExerciseBaseData implements ExerciseApiData {
       @JsonKey(name: 'last_update_global') required this.lastUpdateGlobal,
       required this.category,
       required final List<Muscle> muscles,
-      @JsonKey(name: 'muscles_secondary') required final List<Muscle> musclesSecondary,
+      @JsonKey(name: 'muscles_secondary')
+      required final List<Muscle> musclesSecondary,
       required final List<Equipment> equipment,
       @JsonKey(name: 'translations', defaultValue: [])
       required final List<Translation> translations,
       required final List<ExerciseImage> images,
       required final List<Video> videos,
       @JsonKey(name: 'author_history') required final List<String> authors,
-      @JsonKey(name: 'total_authors_history') required final List<String> authorsGlobal})
+      @JsonKey(name: 'total_authors_history')
+      required final List<String> authorsGlobal})
       : _muscles = muscles,
         _musclesSecondary = musclesSecondary,
         _equipment = equipment,
@@ -245,7 +257,8 @@ class _ExerciseBaseData implements ExerciseApiData {
         _videos = videos,
         _authors = authors,
         _authorsGlobal = authorsGlobal;
-  factory _ExerciseBaseData.fromJson(Map<String, dynamic> json) => _$ExerciseBaseDataFromJson(json);
+  factory _ExerciseBaseData.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseBaseDataFromJson(json);
 
   @override
   final int id;
@@ -283,7 +296,8 @@ class _ExerciseBaseData implements ExerciseApiData {
   @override
   @JsonKey(name: 'muscles_secondary')
   List<Muscle> get musclesSecondary {
-    if (_musclesSecondary is EqualUnmodifiableListView) return _musclesSecondary;
+    if (_musclesSecondary is EqualUnmodifiableListView)
+      return _musclesSecondary;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_musclesSecondary);
   }
@@ -369,20 +383,27 @@ class _ExerciseBaseData implements ExerciseApiData {
             other is _ExerciseBaseData &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.uuid, uuid) || other.uuid == uuid) &&
-            (identical(other.variationId, variationId) || other.variationId == variationId) &&
+            (identical(other.variationId, variationId) ||
+                other.variationId == variationId) &&
             (identical(other.created, created) || other.created == created) &&
-            (identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate) &&
+            (identical(other.lastUpdate, lastUpdate) ||
+                other.lastUpdate == lastUpdate) &&
             (identical(other.lastUpdateGlobal, lastUpdateGlobal) ||
                 other.lastUpdateGlobal == lastUpdateGlobal) &&
-            (identical(other.category, category) || other.category == category) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
             const DeepCollectionEquality().equals(other._muscles, _muscles) &&
-            const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary) &&
-            const DeepCollectionEquality().equals(other._equipment, _equipment) &&
-            const DeepCollectionEquality().equals(other._translations, _translations) &&
+            const DeepCollectionEquality()
+                .equals(other._musclesSecondary, _musclesSecondary) &&
+            const DeepCollectionEquality()
+                .equals(other._equipment, _equipment) &&
+            const DeepCollectionEquality()
+                .equals(other._translations, _translations) &&
             const DeepCollectionEquality().equals(other._images, _images) &&
             const DeepCollectionEquality().equals(other._videos, _videos) &&
             const DeepCollectionEquality().equals(other._authors, _authors) &&
-            const DeepCollectionEquality().equals(other._authorsGlobal, _authorsGlobal));
+            const DeepCollectionEquality()
+                .equals(other._authorsGlobal, _authorsGlobal));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -412,7 +433,8 @@ class _ExerciseBaseData implements ExerciseApiData {
 }
 
 /// @nodoc
-abstract mixin class _$ExerciseBaseDataCopyWith<$Res> implements $ExerciseApiDataCopyWith<$Res> {
+abstract mixin class _$ExerciseBaseDataCopyWith<$Res>
+    implements $ExerciseApiDataCopyWith<$Res> {
   factory _$ExerciseBaseDataCopyWith(
           _ExerciseBaseData value, $Res Function(_ExerciseBaseData) _then) =
       __$ExerciseBaseDataCopyWithImpl;
@@ -429,7 +451,8 @@ abstract mixin class _$ExerciseBaseDataCopyWith<$Res> implements $ExerciseApiDat
       List<Muscle> muscles,
       @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
       List<Equipment> equipment,
-      @JsonKey(name: 'translations', defaultValue: []) List<Translation> translations,
+      @JsonKey(name: 'translations', defaultValue: [])
+      List<Translation> translations,
       List<ExerciseImage> images,
       List<Video> videos,
       @JsonKey(name: 'author_history') List<String> authors,
@@ -437,7 +460,8 @@ abstract mixin class _$ExerciseBaseDataCopyWith<$Res> implements $ExerciseApiDat
 }
 
 /// @nodoc
-class __$ExerciseBaseDataCopyWithImpl<$Res> implements _$ExerciseBaseDataCopyWith<$Res> {
+class __$ExerciseBaseDataCopyWithImpl<$Res>
+    implements _$ExerciseBaseDataCopyWith<$Res> {
   __$ExerciseBaseDataCopyWithImpl(this._self, this._then);
 
   final _ExerciseBaseData _self;
@@ -560,9 +584,11 @@ mixin _$ExerciseSearchDetails {
             other is ExerciseSearchDetails &&
             (identical(other.translationId, translationId) ||
                 other.translationId == translationId) &&
-            (identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId) &&
+            (identical(other.exerciseId, exerciseId) ||
+                other.exerciseId == exerciseId) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.category, category) || other.category == category) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
             (identical(other.image, image) || other.image == image) &&
             (identical(other.imageThumbnail, imageThumbnail) ||
                 other.imageThumbnail == imageThumbnail));
@@ -570,8 +596,8 @@ mixin _$ExerciseSearchDetails {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, translationId, exerciseId, name, category, image, imageThumbnail);
+  int get hashCode => Object.hash(runtimeType, translationId, exerciseId, name,
+      category, image, imageThumbnail);
 
   @override
   String toString() {
@@ -581,8 +607,8 @@ mixin _$ExerciseSearchDetails {
 
 /// @nodoc
 abstract mixin class $ExerciseSearchDetailsCopyWith<$Res> {
-  factory $ExerciseSearchDetailsCopyWith(
-          ExerciseSearchDetails value, $Res Function(ExerciseSearchDetails) _then) =
+  factory $ExerciseSearchDetailsCopyWith(ExerciseSearchDetails value,
+          $Res Function(ExerciseSearchDetails) _then) =
       _$ExerciseSearchDetailsCopyWithImpl;
   @useResult
   $Res call(
@@ -595,7 +621,8 @@ abstract mixin class $ExerciseSearchDetailsCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ExerciseSearchDetailsCopyWithImpl<$Res> implements $ExerciseSearchDetailsCopyWith<$Res> {
+class _$ExerciseSearchDetailsCopyWithImpl<$Res>
+    implements $ExerciseSearchDetailsCopyWith<$Res> {
   _$ExerciseSearchDetailsCopyWithImpl(this._self, this._then);
 
   final ExerciseSearchDetails _self;
@@ -680,7 +707,8 @@ class _ExerciseSearchDetails implements ExerciseSearchDetails {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   _$ExerciseSearchDetailsCopyWith<_ExerciseSearchDetails> get copyWith =>
-      __$ExerciseSearchDetailsCopyWithImpl<_ExerciseSearchDetails>(this, _$identity);
+      __$ExerciseSearchDetailsCopyWithImpl<_ExerciseSearchDetails>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -696,9 +724,11 @@ class _ExerciseSearchDetails implements ExerciseSearchDetails {
             other is _ExerciseSearchDetails &&
             (identical(other.translationId, translationId) ||
                 other.translationId == translationId) &&
-            (identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId) &&
+            (identical(other.exerciseId, exerciseId) ||
+                other.exerciseId == exerciseId) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.category, category) || other.category == category) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
             (identical(other.image, image) || other.image == image) &&
             (identical(other.imageThumbnail, imageThumbnail) ||
                 other.imageThumbnail == imageThumbnail));
@@ -706,8 +736,8 @@ class _ExerciseSearchDetails implements ExerciseSearchDetails {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, translationId, exerciseId, name, category, image, imageThumbnail);
+  int get hashCode => Object.hash(runtimeType, translationId, exerciseId, name,
+      category, image, imageThumbnail);
 
   @override
   String toString() {
@@ -718,8 +748,8 @@ class _ExerciseSearchDetails implements ExerciseSearchDetails {
 /// @nodoc
 abstract mixin class _$ExerciseSearchDetailsCopyWith<$Res>
     implements $ExerciseSearchDetailsCopyWith<$Res> {
-  factory _$ExerciseSearchDetailsCopyWith(
-          _ExerciseSearchDetails value, $Res Function(_ExerciseSearchDetails) _then) =
+  factory _$ExerciseSearchDetailsCopyWith(_ExerciseSearchDetails value,
+          $Res Function(_ExerciseSearchDetails) _then) =
       __$ExerciseSearchDetailsCopyWithImpl;
   @override
   @useResult
@@ -733,7 +763,8 @@ abstract mixin class _$ExerciseSearchDetailsCopyWith<$Res>
 }
 
 /// @nodoc
-class __$ExerciseSearchDetailsCopyWithImpl<$Res> implements _$ExerciseSearchDetailsCopyWith<$Res> {
+class __$ExerciseSearchDetailsCopyWithImpl<$Res>
+    implements _$ExerciseSearchDetailsCopyWith<$Res> {
   __$ExerciseSearchDetailsCopyWithImpl(this._self, this._then);
 
   final _ExerciseSearchDetails _self;
@@ -827,7 +858,8 @@ abstract mixin class $ExerciseSearchEntryCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ExerciseSearchEntryCopyWithImpl<$Res> implements $ExerciseSearchEntryCopyWith<$Res> {
+class _$ExerciseSearchEntryCopyWithImpl<$Res>
+    implements $ExerciseSearchEntryCopyWith<$Res> {
   _$ExerciseSearchEntryCopyWithImpl(this._self, this._then);
 
   final ExerciseSearchEntry _self;
@@ -882,7 +914,8 @@ class _ExerciseSearchEntry implements ExerciseSearchEntry {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   _$ExerciseSearchEntryCopyWith<_ExerciseSearchEntry> get copyWith =>
-      __$ExerciseSearchEntryCopyWithImpl<_ExerciseSearchEntry>(this, _$identity);
+      __$ExerciseSearchEntryCopyWithImpl<_ExerciseSearchEntry>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -913,8 +946,8 @@ class _ExerciseSearchEntry implements ExerciseSearchEntry {
 /// @nodoc
 abstract mixin class _$ExerciseSearchEntryCopyWith<$Res>
     implements $ExerciseSearchEntryCopyWith<$Res> {
-  factory _$ExerciseSearchEntryCopyWith(
-          _ExerciseSearchEntry value, $Res Function(_ExerciseSearchEntry) _then) =
+  factory _$ExerciseSearchEntryCopyWith(_ExerciseSearchEntry value,
+          $Res Function(_ExerciseSearchEntry) _then) =
       __$ExerciseSearchEntryCopyWithImpl;
   @override
   @useResult
@@ -925,7 +958,8 @@ abstract mixin class _$ExerciseSearchEntryCopyWith<$Res>
 }
 
 /// @nodoc
-class __$ExerciseSearchEntryCopyWithImpl<$Res> implements _$ExerciseSearchEntryCopyWith<$Res> {
+class __$ExerciseSearchEntryCopyWithImpl<$Res>
+    implements _$ExerciseSearchEntryCopyWith<$Res> {
   __$ExerciseSearchEntryCopyWithImpl(this._self, this._then);
 
   final _ExerciseSearchEntry _self;
@@ -971,7 +1005,8 @@ mixin _$ExerciseApiSearch {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $ExerciseApiSearchCopyWith<ExerciseApiSearch> get copyWith =>
-      _$ExerciseApiSearchCopyWithImpl<ExerciseApiSearch>(this as ExerciseApiSearch, _$identity);
+      _$ExerciseApiSearchCopyWithImpl<ExerciseApiSearch>(
+          this as ExerciseApiSearch, _$identity);
 
   /// Serializes this ExerciseApiSearch to a JSON map.
   Map<String, dynamic> toJson();
@@ -981,12 +1016,14 @@ mixin _$ExerciseApiSearch {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is ExerciseApiSearch &&
-            const DeepCollectionEquality().equals(other.suggestions, suggestions));
+            const DeepCollectionEquality()
+                .equals(other.suggestions, suggestions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(suggestions));
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(suggestions));
 
   @override
   String toString() {
@@ -1004,7 +1041,8 @@ abstract mixin class $ExerciseApiSearchCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ExerciseApiSearchCopyWithImpl<$Res> implements $ExerciseApiSearchCopyWith<$Res> {
+class _$ExerciseApiSearchCopyWithImpl<$Res>
+    implements $ExerciseApiSearchCopyWith<$Res> {
   _$ExerciseApiSearchCopyWithImpl(this._self, this._then);
 
   final ExerciseApiSearch _self;
@@ -1062,12 +1100,14 @@ class _ExerciseApiSearch implements ExerciseApiSearch {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _ExerciseApiSearch &&
-            const DeepCollectionEquality().equals(other._suggestions, _suggestions));
+            const DeepCollectionEquality()
+                .equals(other._suggestions, _suggestions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(_suggestions));
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_suggestions));
 
   @override
   String toString() {
@@ -1076,7 +1116,8 @@ class _ExerciseApiSearch implements ExerciseApiSearch {
 }
 
 /// @nodoc
-abstract mixin class _$ExerciseApiSearchCopyWith<$Res> implements $ExerciseApiSearchCopyWith<$Res> {
+abstract mixin class _$ExerciseApiSearchCopyWith<$Res>
+    implements $ExerciseApiSearchCopyWith<$Res> {
   factory _$ExerciseApiSearchCopyWith(
           _ExerciseApiSearch value, $Res Function(_ExerciseApiSearch) _then) =
       __$ExerciseApiSearchCopyWithImpl;
@@ -1086,7 +1127,8 @@ abstract mixin class _$ExerciseApiSearchCopyWith<$Res> implements $ExerciseApiSe
 }
 
 /// @nodoc
-class __$ExerciseApiSearchCopyWithImpl<$Res> implements _$ExerciseApiSearchCopyWith<$Res> {
+class __$ExerciseApiSearchCopyWithImpl<$Res>
+    implements _$ExerciseApiSearchCopyWith<$Res> {
   __$ExerciseApiSearchCopyWithImpl(this._self, this._then);
 
   final _ExerciseApiSearch _self;

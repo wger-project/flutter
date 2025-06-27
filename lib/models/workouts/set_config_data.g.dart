@@ -46,7 +46,8 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
         : stringToNumNull(json['weight_rounding'] as String?),
     repetitions: stringToNumNull(json['repetitions'] as String?),
     maxRepetitions: stringToNumNull(json['max_repetitions'] as String?),
-    repetitionsUnitId: (json['repetitions_unit'] as num?)?.toInt() ?? REP_UNIT_REPETITIONS_ID,
+    repetitionsUnitId:
+        (json['repetitions_unit'] as num?)?.toInt() ?? REP_UNIT_REPETITIONS_ID,
     repetitionsRounding: json['repetitions_rounding'] == null
         ? null
         : stringToNumNull(json['repetitions_rounding'] as String?),
@@ -60,7 +61,8 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$SetConfigDataToJson(SetConfigData instance) => <String, dynamic>{
+Map<String, dynamic> _$SetConfigDataToJson(SetConfigData instance) =>
+    <String, dynamic>{
       'exercise': instance.exerciseId,
       'slot_entry_id': instance.slotEntryId,
       'type': instance.type,

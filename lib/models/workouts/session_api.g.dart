@@ -20,6 +20,7 @@ WorkoutSessionApi _$WorkoutSessionApiFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$WorkoutSessionApiToJson(WorkoutSessionApi instance) => <String, dynamic>{
+Map<String, dynamic> _$WorkoutSessionApiToJson(WorkoutSessionApi instance) =>
+    <String, dynamic>{
       'session': instance.session,
     };

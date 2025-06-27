@@ -26,13 +26,15 @@ import 'package:shared_preferences/src/shared_preferences_async.dart' as _i2;
 ///
 /// See the documentation for Mockito's code generation for more information.
 // ignore: must_be_immutable
-class MockSharedPreferencesAsync extends _i1.Mock implements _i2.SharedPreferencesAsync {
+class MockSharedPreferencesAsync extends _i1.Mock
+    implements _i2.SharedPreferencesAsync {
   MockSharedPreferencesAsync() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<Set<String>> getKeys({Set<String>? allowList}) => (super.noSuchMethod(
+  _i3.Future<Set<String>> getKeys({Set<String>? allowList}) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getKeys,
           [],
@@ -42,13 +44,15 @@ class MockSharedPreferencesAsync extends _i1.Mock implements _i2.SharedPreferenc
       ) as _i3.Future<Set<String>>);
 
   @override
-  _i3.Future<Map<String, Object?>> getAll({Set<String>? allowList}) => (super.noSuchMethod(
+  _i3.Future<Map<String, Object?>> getAll({Set<String>? allowList}) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getAll,
           [],
           {#allowList: allowList},
         ),
-        returnValue: _i3.Future<Map<String, Object?>>.value(<String, Object?>{}),
+        returnValue:
+            _i3.Future<Map<String, Object?>>.value(<String, Object?>{}),
       ) as _i3.Future<Map<String, Object?>>);
 
   @override
