@@ -66,13 +66,30 @@ class NutritionPlansProvider with ChangeNotifier {
     ingredients = [];
   }
 
-  /// Returns the current active nutritional plan. At the moment this is just
-  /// the latest, but this might change in the future.
+  /// Returns the current active nutritional plan.
+  /// A plan is considered active if:
+  /// - Its start date is before now
+  /// - Its end date is after now or not set
+  /// If multiple plans match these criteria, the one with the most recent creation date is returned.
   NutritionalPlan? get currentPlan {
-    if (_plans.isNotEmpty) {
-      return _plans.first;
+    if (_plans.isEmpty) {
+      return null;
     }
-    return null;
+
+    final now = DateTime.now();
+    final activePlans = _plans.where((plan) {
+      final isAfterStart = plan.startDate.isBefore(now);
+      final isBeforeEnd = plan.endDate == null || plan.endDate!.isAfter(now);
+      return isAfterStart && isBeforeEnd;
+    }).toList();
+
+    if (activePlans.isEmpty) {
+      return null;
+    }
+
+    // Sort by creation date (newest first) and return the first one
+    activePlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+    return activePlans.first;
   }
 
   NutritionalPlan findById(int id) {
@@ -109,7 +126,8 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
   Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
+    final data = await baseProvider
+        .fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
     await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
   }
 
@@ -170,7 +188,8 @@ class NutritionPlansProvider with ChangeNotifier {
     // Logs
     await fetchAndSetLogs(plan);
     for (final meal in meals) {
-      meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
+      meal.diaryEntries =
+          plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
     }
 
     // ... and done
@@ -204,7 +223,8 @@ class NutritionPlansProvider with ChangeNotifier {
     _plans.removeAt(existingPlanIndex);
     notifyListeners();
 
-    final response = await baseProvider.deleteRequest(_nutritionalPlansPath, id);
+    final response =
+        await baseProvider.deleteRequest(_nutritionalPlansPath, id);
 
     if (response.statusCode >= 400) {
       _plans.insert(existingPlanIndex, existingPlan);
@@ -284,7 +304,8 @@ class NutritionPlansProvider with ChangeNotifier {
     notifyListeners();
 
     // Try to delete
-    final response = await baseProvider.deleteRequest(_mealItemPath, mealItem.id!);
+    final response =
+        await baseProvider.deleteRequest(_mealItemPath, mealItem.id!);
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
@@ -299,7 +320,8 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Fetch and return an ingredient
   ///
   /// If the ingredient is not known locally, it is fetched from the server
-  Future<Ingredient> fetchIngredient(int ingredientId, {IngredientDatabase? database}) async {
+  Future<Ingredient> fetchIngredient(int ingredientId,
+      {IngredientDatabase? database}) async {
     database ??= this.database;
     Ingredient ingredient;
 
@@ -317,9 +339,11 @@ class NutritionPlansProvider with ChangeNotifier {
         _logger.info("Loaded ingredient '${ingredient.name}' from db cache");
 
         // Prune old entries
-        if (DateTime.now()
-            .isAfter(ingredientDb.lastFetched.add(const Duration(days: DAYS_TO_CACHE)))) {
-          (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
+        if (DateTime.now().isAfter(ingredientDb.lastFetched
+            .add(const Duration(days: DAYS_TO_CACHE)))) {
+          (database.delete(database.ingredients)
+                ..where((i) => i.id.equals(ingredientId)))
+              .go();
         }
       } else {
         final data = await baseProvider.fetch(
@@ -347,7 +371,9 @@ class NutritionPlansProvider with ChangeNotifier {
     final ingredientDb = await database.select(database.ingredients).get();
     _logger.info('Read ${ingredientDb.length} ingredients from db cache');
     if (ingredientDb.isNotEmpty) {
-      ingredients = ingredientDb.map((e) => Ingredient.fromJson(jsonDecode(e.data))).toList();
+      ingredients = ingredientDb
+          .map((e) => Ingredient.fromJson(jsonDecode(e.data)))
+          .toList();
     }
   }
 

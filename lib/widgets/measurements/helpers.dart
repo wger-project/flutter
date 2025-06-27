@@ -21,11 +21,16 @@ List<Widget> getOverviewWidgets(
       height: 220,
       child: MeasurementChartWidgetFl(raw, unit, avgs: avg),
     ),
-    if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
+    if (avg.isNotEmpty)
+      MeasurementOverallChangeWidget(avg.first, avg.last, unit),
     const SizedBox(height: 8),
   ];
 }
 
+// TODO(dieter): i'm not sure if this handles well the case where weights were not logged consistently
+// e.g. if the plan runs for a month, but the first point is after 3 weeks.
+// and the last (non-included) point was *right* before the startDate.
+// wouldn't it be better to interpolate the missing points?
 List<Widget> getOverviewWidgetsSeries(
   String name,
   List<MeasurementChartEntry> entriesAll,
@@ -35,7 +40,10 @@ List<Widget> getOverviewWidgetsSeries(
   BuildContext context,
 ) {
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
-  final showPlan = plan != null && entriesAll.any((e) => e.date.isAfter(plan.creationDate));
+  final showPlan = plan != null &&
+      entriesAll.any((e) =>
+          e.date.isAfter(plan.startDate) &&
+          (plan.endDate == null || e.date.isBefore(plan.endDate!)));
 
   return [
     ...getOverviewWidgets(
@@ -47,9 +55,18 @@ List<Widget> getOverviewWidgetsSeries(
     ),
     if (showPlan)
       ...getOverviewWidgets(
-        AppLocalizations.of(context).chartDuringPlanTitle(name, plan.description),
-        entriesAll.where((e) => e.date.isAfter(plan.creationDate)).toList(),
-        entries7dAvg.where((e) => e.date.isAfter(plan.creationDate)).toList(),
+        AppLocalizations.of(context)
+            .chartDuringPlanTitle(name, plan.description),
+        entriesAll
+            .where((e) =>
+                e.date.isAfter(plan.startDate) &&
+                (plan.endDate == null || e.date.isBefore(plan.endDate!)))
+            .toList(),
+        entries7dAvg
+            .where((e) =>
+                e.date.isAfter(plan.startDate) &&
+                (plan.endDate == null || e.date.isBefore(plan.endDate!)))
+            .toList(),
         unit,
         context,
       ),
@@ -58,13 +75,15 @@ List<Widget> getOverviewWidgetsSeries(
     // then let's show a separate chart just focusing on the last 30 days,
     // if there is data for it.
     if (entriesAll.isNotEmpty &&
-        entriesAll.first.date.isBefore(entriesAll.last.date.subtract(const Duration(days: 75))) &&
+        entriesAll.first.date.isBefore(
+            entriesAll.last.date.subtract(const Duration(days: 75))) &&
         (plan == null ||
             (showPlan &&
                 entriesAll
-                    .firstWhere((e) => e.date.isAfter(plan.creationDate))
+                    .firstWhere((e) => e.date.isAfter(plan.startDate))
                     .date
-                    .isBefore(entriesAll.last.date.subtract(const Duration(days: 30))))) &&
+                    .isBefore(entriesAll.last.date
+                        .subtract(const Duration(days: 30))))) &&
         entriesAll.any((e) => e.date.isAfter(monthAgo)))
       ...getOverviewWidgets(
         AppLocalizations.of(context).chart30DaysTitle(name),
@@ -92,7 +111,7 @@ List<Widget> getOverviewWidgetsSeries(
   ];
 }
 
-// return the raw and average meaasurements for a "sensible range"
+// return the raw and average measurements for a "sensible range"
 // a sensible range is something relatively recent, which is most relevant
 // for the user to track their progress, but a range should always include
 // at least 5 points, and if not we chose a bigger one.
