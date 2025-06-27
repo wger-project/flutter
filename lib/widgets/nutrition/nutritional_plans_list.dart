@@ -33,21 +33,17 @@ class NutritionalPlansList extends StatelessWidget {
   const NutritionalPlansList(this._nutritionProvider);
 
   /// Builds the weight change information for a nutritional plan period
-  Widget _buildWeightChangeInfo(
-      BuildContext context, DateTime startDate, DateTime? endDate) {
+  Widget _buildWeightChangeInfo(BuildContext context, DateTime startDate, DateTime? endDate) {
     final _provider = Provider.of<BodyWeightProvider>(context, listen: false);
 
-    final entriesAll = _provider.items
-        .map((e) => MeasurementChartEntry(e.weight, e.date))
-        .toList();
+    final entriesAll = _provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
     final entries7dAvg = moving7dAverage(entriesAll);
     print('start: $startDate');
     print('end: $endDate');
     // Filter weight entries within the plan period
     final DateTime planEndDate = endDate ?? DateTime.now();
     final List<MeasurementChartEntry> entriesInPeriod = entries7dAvg
-        .where((entry) =>
-            entry.date.isAfter(startDate) && entry.date.isBefore(planEndDate))
+        .where((entry) => entry.date.isAfter(startDate) && entry.date.isBefore(planEndDate))
         .toList();
     print('entriesInPeriod: ${entriesInPeriod.length}');
     if (entriesInPeriod.length < 2) {
@@ -136,8 +132,7 @@ class NutritionalPlansList extends StatelessWidget {
                                   Localizations.localeOf(context).languageCode,
                                 ).format(currentPlan.startDate)} (open ended)',
                         ),
-                        _buildWeightChangeInfo(context, currentPlan.startDate,
-                            currentPlan.endDate),
+                        _buildWeightChangeInfo(context, currentPlan.startDate, currentPlan.endDate),
                       ],
                     ),
                     trailing: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -158,35 +153,29 @@ class NutritionalPlansList extends StatelessWidget {
                                 actions: [
                                   TextButton(
                                     child: Text(
-                                      MaterialLocalizations.of(context)
-                                          .cancelButtonLabel,
+                                      MaterialLocalizations.of(context).cancelButtonLabel,
                                     ),
-                                    onPressed: () =>
-                                        Navigator.of(contextDialog).pop(),
+                                    onPressed: () => Navigator.of(contextDialog).pop(),
                                   ),
                                   TextButton(
                                     child: Text(
                                       AppLocalizations.of(context).delete,
                                       style: TextStyle(
-                                        color:
-                                            Theme.of(context).colorScheme.error,
+                                        color: Theme.of(context).colorScheme.error,
                                       ),
                                     ),
                                     onPressed: () {
                                       // Confirmed, delete the plan
-                                      _nutritionProvider
-                                          .deletePlan(currentPlan.id!);
+                                      _nutritionProvider.deletePlan(currentPlan.id!);
 
                                       // Close the popup
                                       Navigator.of(contextDialog).pop();
 
                                       // and inform the user
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                            AppLocalizations.of(context)
-                                                .successfullyDeleted,
+                                            AppLocalizations.of(context).successfullyDeleted,
                                             textAlign: TextAlign.center,
                                           ),
                                         ),

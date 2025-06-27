@@ -25,10 +25,9 @@ mixin _$IngredientApiSearchDetails {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $IngredientApiSearchDetailsCopyWith<IngredientApiSearchDetails>
-      get copyWith =>
-          _$IngredientApiSearchDetailsCopyWithImpl<IngredientApiSearchDetails>(
-              this as IngredientApiSearchDetails, _$identity);
+  $IngredientApiSearchDetailsCopyWith<IngredientApiSearchDetails> get copyWith =>
+      _$IngredientApiSearchDetailsCopyWithImpl<IngredientApiSearchDetails>(
+          this as IngredientApiSearchDetails, _$identity);
 
   /// Serializes this IngredientApiSearchDetails to a JSON map.
   Map<String, dynamic> toJson();
@@ -57,8 +56,8 @@ mixin _$IngredientApiSearchDetails {
 
 /// @nodoc
 abstract mixin class $IngredientApiSearchDetailsCopyWith<$Res> {
-  factory $IngredientApiSearchDetailsCopyWith(IngredientApiSearchDetails value,
-          $Res Function(IngredientApiSearchDetails) _then) =
+  factory $IngredientApiSearchDetailsCopyWith(
+          IngredientApiSearchDetails value, $Res Function(IngredientApiSearchDetails) _then) =
       _$IngredientApiSearchDetailsCopyWithImpl;
   @useResult
   $Res call(
@@ -134,9 +133,8 @@ class _IngredientApiSearchDetails implements IngredientApiSearchDetails {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$IngredientApiSearchDetailsCopyWith<_IngredientApiSearchDetails>
-      get copyWith => __$IngredientApiSearchDetailsCopyWithImpl<
-          _IngredientApiSearchDetails>(this, _$identity);
+  _$IngredientApiSearchDetailsCopyWith<_IngredientApiSearchDetails> get copyWith =>
+      __$IngredientApiSearchDetailsCopyWithImpl<_IngredientApiSearchDetails>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -171,8 +169,7 @@ class _IngredientApiSearchDetails implements IngredientApiSearchDetails {
 abstract mixin class _$IngredientApiSearchDetailsCopyWith<$Res>
     implements $IngredientApiSearchDetailsCopyWith<$Res> {
   factory _$IngredientApiSearchDetailsCopyWith(
-          _IngredientApiSearchDetails value,
-          $Res Function(_IngredientApiSearchDetails) _then) =
+          _IngredientApiSearchDetails value, $Res Function(_IngredientApiSearchDetails) _then) =
       __$IngredientApiSearchDetailsCopyWithImpl;
   @override
   @useResult
@@ -259,8 +256,8 @@ mixin _$IngredientApiSearchEntry {
 
 /// @nodoc
 abstract mixin class $IngredientApiSearchEntryCopyWith<$Res> {
-  factory $IngredientApiSearchEntryCopyWith(IngredientApiSearchEntry value,
-          $Res Function(IngredientApiSearchEntry) _then) =
+  factory $IngredientApiSearchEntryCopyWith(
+          IngredientApiSearchEntry value, $Res Function(IngredientApiSearchEntry) _then) =
       _$IngredientApiSearchEntryCopyWithImpl;
   @useResult
   $Res call({String value, IngredientApiSearchDetails data});
@@ -325,8 +322,7 @@ class _IngredientApiSearchEntry implements IngredientApiSearchEntry {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   _$IngredientApiSearchEntryCopyWith<_IngredientApiSearchEntry> get copyWith =>
-      __$IngredientApiSearchEntryCopyWithImpl<_IngredientApiSearchEntry>(
-          this, _$identity);
+      __$IngredientApiSearchEntryCopyWithImpl<_IngredientApiSearchEntry>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -357,8 +353,8 @@ class _IngredientApiSearchEntry implements IngredientApiSearchEntry {
 /// @nodoc
 abstract mixin class _$IngredientApiSearchEntryCopyWith<$Res>
     implements $IngredientApiSearchEntryCopyWith<$Res> {
-  factory _$IngredientApiSearchEntryCopyWith(_IngredientApiSearchEntry value,
-          $Res Function(_IngredientApiSearchEntry) _then) =
+  factory _$IngredientApiSearchEntryCopyWith(
+          _IngredientApiSearchEntry value, $Res Function(_IngredientApiSearchEntry) _then) =
       __$IngredientApiSearchEntryCopyWithImpl;
   @override
   @useResult
@@ -427,14 +423,12 @@ mixin _$IngredientApiSearch {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is IngredientApiSearch &&
-            const DeepCollectionEquality()
-                .equals(other.suggestions, suggestions));
+            const DeepCollectionEquality().equals(other.suggestions, suggestions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(suggestions));
+  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(suggestions));
 
   @override
   String toString() {
@@ -452,8 +446,7 @@ abstract mixin class $IngredientApiSearchCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$IngredientApiSearchCopyWithImpl<$Res>
-    implements $IngredientApiSearchCopyWith<$Res> {
+class _$IngredientApiSearchCopyWithImpl<$Res> implements $IngredientApiSearchCopyWith<$Res> {
   _$IngredientApiSearchCopyWithImpl(this._self, this._then);
 
   final IngredientApiSearch _self;
@@ -478,8 +471,7 @@ class _$IngredientApiSearchCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _IngredientApiSearch implements IngredientApiSearch {
-  _IngredientApiSearch(
-      {required final List<IngredientApiSearchEntry> suggestions})
+  _IngredientApiSearch({required final List<IngredientApiSearchEntry> suggestions})
       : _suggestions = suggestions;
   factory _IngredientApiSearch.fromJson(Map<String, dynamic> json) =>
       _$IngredientApiSearchFromJson(json);
@@ -498,8 +490,7 @@ class _IngredientApiSearch implements IngredientApiSearch {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   _$IngredientApiSearchCopyWith<_IngredientApiSearch> get copyWith =>
-      __$IngredientApiSearchCopyWithImpl<_IngredientApiSearch>(
-          this, _$identity);
+      __$IngredientApiSearchCopyWithImpl<_IngredientApiSearch>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -513,14 +504,12 @@ class _IngredientApiSearch implements IngredientApiSearch {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _IngredientApiSearch &&
-            const DeepCollectionEquality()
-                .equals(other._suggestions, _suggestions));
+            const DeepCollectionEquality().equals(other._suggestions, _suggestions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_suggestions));
+  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(_suggestions));
 
   @override
   String toString() {
@@ -531,8 +520,8 @@ class _IngredientApiSearch implements IngredientApiSearch {
 /// @nodoc
 abstract mixin class _$IngredientApiSearchCopyWith<$Res>
     implements $IngredientApiSearchCopyWith<$Res> {
-  factory _$IngredientApiSearchCopyWith(_IngredientApiSearch value,
-          $Res Function(_IngredientApiSearch) _then) =
+  factory _$IngredientApiSearchCopyWith(
+          _IngredientApiSearch value, $Res Function(_IngredientApiSearch) _then) =
       __$IngredientApiSearchCopyWithImpl;
   @override
   @useResult
@@ -540,8 +529,7 @@ abstract mixin class _$IngredientApiSearchCopyWith<$Res>
 }
 
 /// @nodoc
-class __$IngredientApiSearchCopyWithImpl<$Res>
-    implements _$IngredientApiSearchCopyWith<$Res> {
+class __$IngredientApiSearchCopyWithImpl<$Res> implements _$IngredientApiSearchCopyWith<$Res> {
   __$IngredientApiSearchCopyWithImpl(this._self, this._then);
 
   final _IngredientApiSearch _self;

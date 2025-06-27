@@ -33,8 +33,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     routineId: (json['routine'] as num).toInt(),
     repetitions: stringToNum(json['repetitions'] as String?),
     repetitionsTarget: stringToNum(json['repetitions_target'] as String?),
-    repetitionsUnitId:
-        (json['repetitions_unit'] as num?)?.toInt() ?? REP_UNIT_REPETITIONS_ID,
+    repetitionsUnitId: (json['repetitions_unit'] as num?)?.toInt() ?? REP_UNIT_REPETITIONS_ID,
     rir: stringToNum(json['rir'] as String?),
     rirTarget: stringToNum(json['rir_target'] as String?),
     weight: stringToNum(json['weight'] as String?),

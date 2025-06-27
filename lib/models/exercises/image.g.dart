@@ -20,8 +20,7 @@ ExerciseImage _$ExerciseImageFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$ExerciseImageToJson(ExerciseImage instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ExerciseImageToJson(ExerciseImage instance) => <String, dynamic>{
       'id': instance.id,
       'uuid': instance.uuid,
       'exercise': instance.exerciseId,

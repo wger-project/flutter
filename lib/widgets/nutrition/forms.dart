@@ -42,8 +42,7 @@ class MealForm extends StatelessWidget {
   final _nameController = TextEditingController();
 
   MealForm(this._planId, [meal]) {
-    _meal = meal ??
-        Meal(plan: _planId, time: TimeOfDay.fromDateTime(DateTime.now()));
+    _meal = meal ?? Meal(plan: _planId, time: TimeOfDay.fromDateTime(DateTime.now()));
     _timeController.text = timeToString(_meal.time)!;
     _nameController.text = _meal.name;
   }
@@ -58,8 +57,7 @@ class MealForm extends StatelessWidget {
           children: [
             TextFormField(
               key: const Key('field-time'),
-              decoration:
-                  InputDecoration(labelText: AppLocalizations.of(context).time),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
               controller: _timeController,
               onTap: () async {
                 // Stop keyboard from appearing
@@ -81,8 +79,7 @@ class MealForm extends StatelessWidget {
             TextFormField(
               maxLength: 25,
               key: const Key('field-name'),
-              decoration:
-                  InputDecoration(labelText: AppLocalizations.of(context).name),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).name),
               controller: _nameController,
               onSaved: (newValue) {
                 _meal.name = newValue as String;
@@ -128,8 +125,7 @@ Widget MealItemForm(
     recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
       mealItem.mealId = meal.id!;
-      Provider.of<NutritionPlansProvider>(context, listen: false)
-          .addMealItem(mealItem, meal);
+      Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
     },
     barcode: barcode ?? '',
     test: test ?? false,
@@ -239,11 +235,9 @@ class IngredientFormState extends State<IngredientForm> {
   Widget build(BuildContext context) {
     final String unit = AppLocalizations.of(context).g;
     final queryLower = _searchQuery.toLowerCase();
-    final suggestions = widget.recent
-        .where((e) => e.ingredient.name.toLowerCase().contains(queryLower))
-        .toList();
-    final numberFormat =
-        NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final suggestions =
+        widget.recent.where((e) => e.ingredient.name.toLowerCase().contains(queryLower)).toList();
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     return Container(
       margin: const EdgeInsets.all(20),
@@ -350,8 +344,7 @@ class IngredientFormState extends State<IngredientForm> {
                   ),
               ],
             ),
-            if (ingredientIdController.text.isNotEmpty &&
-                _amountController.text.isNotEmpty)
+            if (ingredientIdController.text.isNotEmpty && _amountController.text.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -402,8 +395,7 @@ class IngredientFormState extends State<IngredientForm> {
                   return;
                 }
                 _form.currentState!.save();
-                _mealItem.ingredientId =
-                    int.parse(_ingredientIdController.text);
+                _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
                 var date = DateTime.parse(_dateController.text);
                 final tod = stringToTime(_timeController.text);
@@ -531,8 +523,7 @@ class _PlanFormState extends State<PlanForm> {
     _startDateController.text =
         '${widget._plan.startDate.year}-${widget._plan.startDate.month.toString().padLeft(2, '0')}-${widget._plan.startDate.day.toString().padLeft(2, '0')}';
     // ignore invalid enddates should the server gives us one
-    if (widget._plan.endDate != null &&
-        widget._plan.endDate!.isAfter(widget._plan.startDate)) {
+    if (widget._plan.endDate != null && widget._plan.endDate!.isAfter(widget._plan.startDate)) {
       _endDateController.text =
           '${widget._plan.endDate!.year}-${widget._plan.endDate!.month.toString().padLeft(2, '0')}-${widget._plan.endDate!.day.toString().padLeft(2, '0')}';
     }
@@ -624,12 +615,11 @@ class _PlanFormState extends State<PlanForm> {
                       context: context,
                       // if somehow the server has an invalid end date, default to null
                       initialDate: (widget._plan.endDate != null &&
-                              widget._plan.endDate!
-                                  .isAfter(widget._plan.startDate))
+                              widget._plan.endDate!.isAfter(widget._plan.startDate))
                           ? widget._plan.endDate!
                           : null,
-                      firstDate: widget._plan.startDate.add(
-                          const Duration(days: 1)), // end must be after start
+                      firstDate: widget._plan.startDate
+                          .add(const Duration(days: 1)), // end must be after start
                       lastDate: DateTime(2100),
                     );
 
@@ -731,8 +721,7 @@ class _PlanFormState extends State<PlanForm> {
                   val: widget._plan.goalCarbohydrates?.toString(),
                   label: AppLocalizations.of(context).goalCarbohydrates,
                   suffix: AppLocalizations.of(context).g,
-                  onSave: (double value) =>
-                      widget._plan.goalCarbohydrates = value,
+                  onSave: (double value) => widget._plan.goalCarbohydrates = value,
                   key: const Key('field-goal-carbohydrates'),
                 ),
                 GoalMacros(
@@ -812,8 +801,7 @@ class GoalMacros extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final numberFormat =
-        NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     return TextFormField(
       initialValue: val ?? '',
