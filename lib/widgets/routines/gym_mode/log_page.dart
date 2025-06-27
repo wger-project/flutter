@@ -185,7 +185,7 @@ class _LogPageState extends ConsumerState<LogPage> {
               labelText: AppLocalizations.of(context).weight,
             ),
             controller: _weightController,
-            keyboardType: TextInputType.number,
+            keyboardType: textInputTypeDecimal,
             onFieldSubmitted: (_) {
               // Placeholder for potential future logic
             },
