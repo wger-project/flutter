@@ -49,9 +49,15 @@ class NutritionalPlansList extends StatelessWidget {
                     },
                     title: Text(currentPlan.getLabel(context)),
                     subtitle: Text(
-                      DateFormat.yMd(
-                        Localizations.localeOf(context).languageCode,
-                      ).format(currentPlan.creationDate),
+                      currentPlan.endDate != null
+                          ? 'from ${DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode,
+                            ).format(currentPlan.startDate)} to ${DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode,
+                            ).format(currentPlan.endDate!)}'
+                          : 'from ${DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode,
+                            ).format(currentPlan.startDate)} (open ended)',
                     ),
                     trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                       const VerticalDivider(),
@@ -71,29 +77,35 @@ class NutritionalPlansList extends StatelessWidget {
                                 actions: [
                                   TextButton(
                                     child: Text(
-                                      MaterialLocalizations.of(context).cancelButtonLabel,
+                                      MaterialLocalizations.of(context)
+                                          .cancelButtonLabel,
                                     ),
-                                    onPressed: () => Navigator.of(contextDialog).pop(),
+                                    onPressed: () =>
+                                        Navigator.of(contextDialog).pop(),
                                   ),
                                   TextButton(
                                     child: Text(
                                       AppLocalizations.of(context).delete,
                                       style: TextStyle(
-                                        color: Theme.of(context).colorScheme.error,
+                                        color:
+                                            Theme.of(context).colorScheme.error,
                                       ),
                                     ),
                                     onPressed: () {
                                       // Confirmed, delete the plan
-                                      _nutritionProvider.deletePlan(currentPlan.id!);
+                                      _nutritionProvider
+                                          .deletePlan(currentPlan.id!);
 
                                       // Close the popup
                                       Navigator.of(contextDialog).pop();
 
                                       // and inform the user
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                            AppLocalizations.of(context).successfullyDeleted,
+                                            AppLocalizations.of(context)
+                                                .successfullyDeleted,
                                             textAlign: TextAlign.center,
                                           ),
                                         ),

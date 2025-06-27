@@ -530,7 +530,9 @@ class _PlanFormState extends State<PlanForm> {
     _descriptionController.text = widget._plan.description;
     _startDateController.text =
         '${widget._plan.startDate.year}-${widget._plan.startDate.month.toString().padLeft(2, '0')}-${widget._plan.startDate.day.toString().padLeft(2, '0')}';
-    if (widget._plan.endDate != null) {
+    // ignore invalid enddates should the server gives us one
+    if (widget._plan.endDate != null &&
+        widget._plan.endDate!.isAfter(widget._plan.startDate)) {
       _endDateController.text =
           '${widget._plan.endDate!.year}-${widget._plan.endDate!.month.toString().padLeft(2, '0')}-${widget._plan.endDate!.day.toString().padLeft(2, '0')}';
     }
@@ -620,8 +622,14 @@ class _PlanFormState extends State<PlanForm> {
                     // Open date picker
                     final pickedDate = await showDatePicker(
                       context: context,
-                      initialDate: widget._plan.endDate,
-                      firstDate: DateTime(2000),
+                      // if somehow the server has an invalid end date, default to null
+                      initialDate: (widget._plan.endDate != null &&
+                              widget._plan.endDate!
+                                  .isAfter(widget._plan.startDate))
+                          ? widget._plan.endDate!
+                          : null,
+                      firstDate: widget._plan.startDate.add(
+                          const Duration(days: 1)), // end must be after start
                       lastDate: DateTime(2100),
                     );
 

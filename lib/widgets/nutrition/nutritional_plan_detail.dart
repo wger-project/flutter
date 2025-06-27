@@ -35,9 +35,11 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
     final lastWeightEntry =
-        Provider.of<BodyWeightProvider>(context, listen: false).getNewestEntry();
-    final nutritionalGoalsGperKg =
-        lastWeightEntry != null ? nutritionalGoals / lastWeightEntry.weight.toDouble() : null;
+        Provider.of<BodyWeightProvider>(context, listen: false)
+            .getNewestEntry();
+    final nutritionalGoalsGperKg = lastWeightEntry != null
+        ? nutritionalGoals / lastWeightEntry.weight.toDouble()
+        : null;
 
     return SliverList(
       delegate: SliverChildListDelegate(
@@ -49,6 +51,49 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               child: FlNutritionalPlanGoalWidget(
                 nutritionalPlan: _nutritionalPlan,
               ),
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      '${AppLocalizations.of(context).start}: ',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '${_nutritionalPlan.startDate.day.toString().padLeft(2, '0')}.${_nutritionalPlan.startDate.month.toString().padLeft(2, '0')}.${_nutritionalPlan.startDate.year}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+                if (_nutritionalPlan.endDate != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          '${AppLocalizations.of(context).endDate}: ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '${_nutritionalPlan.endDate!.day.toString().padLeft(2, '0')}.${_nutritionalPlan.endDate!.month.toString().padLeft(2, '0')}.${_nutritionalPlan.endDate!.year}',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
           ),
           const SizedBox(height: 10),
@@ -68,7 +113,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(15),
               height: 220,
-              child: FlNutritionalPlanPieChartWidget(nutritionalGoals.toValues()),
+              child:
+                  FlNutritionalPlanPieChartWidget(nutritionalGoals.toValues()),
             ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
