@@ -18,15 +18,89 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 
 class NutritionalPlansList extends StatelessWidget {
   final NutritionPlansProvider _nutritionProvider;
 
   const NutritionalPlansList(this._nutritionProvider);
+
+  /// Builds the weight change information for a nutritional plan period
+  Widget _buildWeightChangeInfo(
+      BuildContext context, DateTime startDate, DateTime? endDate) {
+    final _provider = Provider.of<BodyWeightProvider>(context, listen: false);
+
+    final entriesAll = _provider.items
+        .map((e) => MeasurementChartEntry(e.weight, e.date))
+        .toList();
+    final entries7dAvg = moving7dAverage(entriesAll);
+    print('start: $startDate');
+    print('end: $endDate');
+    // Filter weight entries within the plan period
+    final DateTime planEndDate = endDate ?? DateTime.now();
+    final List<MeasurementChartEntry> entriesInPeriod = entries7dAvg
+        .where((entry) =>
+            entry.date.isAfter(startDate) && entry.date.isBefore(planEndDate))
+        .toList();
+    print('entriesInPeriod: ${entriesInPeriod.length}');
+    if (entriesInPeriod.length < 2) {
+      return const SizedBox.shrink();
+    }
+
+    // Sort entries by date
+    entriesInPeriod.sort((a, b) => a.date.compareTo(b.date));
+
+    // Calculate weight change
+    final firstWeight = entriesInPeriod.first;
+    final lastWeight = entriesInPeriod.last;
+    final weightDifference = lastWeight.value - firstWeight.value;
+
+    // Format the weight change text and determine color
+    final String weightChangeText;
+    final Color weightChangeColor;
+    final profile = context.read<UserProvider>().profile;
+
+    final unit = weightUnit(profile!.isMetric, context);
+
+// TODO: only proceed if it's "representative" (if we covered the plan timespan well enough), or actually,
+// we could also interpolate the missing values
+    if (weightDifference > 0) {
+      weightChangeText = '+${weightDifference.toStringAsFixed(1)} $unit';
+      weightChangeColor = Colors.red;
+    } else if (weightDifference < 0) {
+      weightChangeText = '${weightDifference.toStringAsFixed(1)} $unit';
+      weightChangeColor = Colors.green;
+    } else {
+      weightChangeText = '0 $unit';
+      weightChangeColor = Colors.grey;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: Row(
+        children: [
+          Text(
+            AppLocalizations.of(context).weight + ' change: ',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          Text(
+            weightChangeText,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: weightChangeColor,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,16 +122,23 @@ class NutritionalPlansList extends StatelessWidget {
                       );
                     },
                     title: Text(currentPlan.getLabel(context)),
-                    subtitle: Text(
-                      currentPlan.endDate != null
-                          ? 'from ${DateFormat.yMd(
-                              Localizations.localeOf(context).languageCode,
-                            ).format(currentPlan.startDate)} to ${DateFormat.yMd(
-                              Localizations.localeOf(context).languageCode,
-                            ).format(currentPlan.endDate!)}'
-                          : 'from ${DateFormat.yMd(
-                              Localizations.localeOf(context).languageCode,
-                            ).format(currentPlan.startDate)} (open ended)',
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          currentPlan.endDate != null
+                              ? 'from ${DateFormat.yMd(
+                                  Localizations.localeOf(context).languageCode,
+                                ).format(currentPlan.startDate)} to ${DateFormat.yMd(
+                                  Localizations.localeOf(context).languageCode,
+                                ).format(currentPlan.endDate!)}'
+                              : 'from ${DateFormat.yMd(
+                                  Localizations.localeOf(context).languageCode,
+                                ).format(currentPlan.startDate)} (open ended)',
+                        ),
+                        _buildWeightChangeInfo(context, currentPlan.startDate,
+                            currentPlan.endDate),
+                      ],
                     ),
                     trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                       const VerticalDivider(),
