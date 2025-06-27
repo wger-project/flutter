@@ -18,6 +18,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -77,16 +78,20 @@ class _LogPageState extends ConsumerState<LogPage> {
   @override
   void initState() {
     super.initState();
-
     focusNode = FocusNode();
 
-    if (widget._configData.repetitions != null) {
-      _repetitionsController.text = widget._configData.repetitions!.toString();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final locale = Localizations.localeOf(context).toString();
+      final numberFormat = NumberFormat.decimalPattern(locale);
 
-    if (widget._configData.weight != null) {
-      _weightController.text = widget._configData.weight!.toString();
-    }
+      if (widget._configData.repetitions != null) {
+        _repetitionsController.text = numberFormat.format(widget._configData.repetitions);
+      }
+
+      if (widget._configData.weight != null) {
+        _weightController.text = numberFormat.format(widget._configData.weight);
+      }
+    });
   }
 
   @override
@@ -95,144 +100,6 @@ class _LogPageState extends ConsumerState<LogPage> {
     _repetitionsController.dispose();
     _weightController.dispose();
     super.dispose();
-  }
-
-  Widget getRepsWidget() {
-    final repsValueChange = widget._configData.repetitionsRounding ?? 1;
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.remove, color: Colors.black),
-          onPressed: () {
-            try {
-              final num newValue =
-                  numberFormat.parse(_repetitionsController.text) - repsValueChange;
-              if (newValue > 0) {
-                _repetitionsController.text = newValue.toString();
-              }
-            } on FormatException {}
-          },
-        ),
-        Expanded(
-          child: TextFormField(
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).repetitions,
-            ),
-            enabled: true,
-            controller: _repetitionsController,
-            keyboardType: textInputTypeDecimal,
-            focusNode: focusNode,
-            onFieldSubmitted: (_) {
-              // Placeholder for potential future logic
-            },
-            onSaved: (newValue) {
-              widget._log.repetitions = numberFormat.parse(newValue!);
-              focusNode.unfocus();
-            },
-            validator: (value) {
-              if (numberFormat.tryParse(value ?? '') == null) {
-                return AppLocalizations.of(context).enterValidNumber;
-              }
-              return null;
-            },
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.add, color: Colors.black),
-          onPressed: () {
-            try {
-              final num newValue =
-                  numberFormat.parse(_repetitionsController.text) + repsValueChange;
-              _repetitionsController.text = newValue.toString();
-            } on FormatException {}
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget getWeightWidget() {
-    final weightValueChange = widget._configData.weightRounding ?? 1.25;
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.remove, color: Colors.black),
-          onPressed: () {
-            try {
-              final num newValue =
-                  numberFormat.parse(_weightController.text) - (2 * weightValueChange);
-              if (newValue > 0) {
-                setState(() {
-                  widget._log.weight = newValue;
-                  _weightController.text = newValue.toString();
-                  ref.read(plateCalculatorProvider.notifier).setWeight(
-                        _weightController.text == ''
-                            ? 0
-                            : numberFormat.parse(_weightController.text),
-                      );
-                });
-              }
-            } on FormatException {}
-          },
-        ),
-        Expanded(
-          child: TextFormField(
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).weight,
-            ),
-            controller: _weightController,
-            keyboardType: textInputTypeDecimal,
-            onFieldSubmitted: (_) {
-              // Placeholder for potential future logic
-            },
-            onChanged: (value) {
-              try {
-                numberFormat.parse(value);
-                setState(() {
-                  widget._log.weight = numberFormat.parse(value);
-                  ref.read(plateCalculatorProvider.notifier).setWeight(
-                        _weightController.text == ''
-                            ? 0
-                            : numberFormat.parse(_weightController.text),
-                      );
-                });
-              } on FormatException {}
-            },
-            onSaved: (newValue) {
-              setState(() {
-                widget._log.weight = numberFormat.parse(newValue!);
-              });
-            },
-            validator: (value) {
-              if (numberFormat.tryParse(value ?? '') == null) {
-                return AppLocalizations.of(context).enterValidNumber;
-              }
-              return null;
-            },
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.add, color: Colors.black),
-          onPressed: () {
-            try {
-              final num newValue =
-                  numberFormat.parse(_weightController.text) + (2 * weightValueChange);
-              setState(() {
-                widget._log.weight = newValue;
-                _weightController.text = newValue.toString();
-                ref.read(plateCalculatorProvider.notifier).setWeight(
-                      _weightController.text == '' ? 0 : numberFormat.parse(_weightController.text),
-                    );
-              });
-            } on FormatException {}
-          },
-        ),
-      ],
-    );
   }
 
   Widget getForm() {
@@ -249,16 +116,46 @@ class _LogPageState extends ConsumerState<LogPage> {
           if (!_detailed)
             Row(
               children: [
-                Flexible(child: getRepsWidget()),
+                Flexible(
+                  child: LogsRepsWidget(
+                    controller: _repetitionsController,
+                    configData: widget._configData,
+                    focusNode: focusNode,
+                    log: widget._log,
+                    setStateCallback: (fn) {
+                      setState(fn);
+                    },
+                  ),
+                ),
                 const SizedBox(width: 8),
-                Flexible(child: getWeightWidget()),
+                Flexible(
+                  child: LogsWeightWidget(
+                    controller: _weightController,
+                    configData: widget._configData,
+                    focusNode: focusNode,
+                    log: widget._log,
+                    setStateCallback: (fn) {
+                      setState(fn);
+                    },
+                  ),
+                ),
               ],
             ),
           if (_detailed)
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Flexible(child: getRepsWidget()),
+                Flexible(
+                  child: LogsRepsWidget(
+                    controller: _repetitionsController,
+                    configData: widget._configData,
+                    focusNode: focusNode,
+                    log: widget._log,
+                    setStateCallback: (fn) {
+                      setState(fn);
+                    },
+                  ),
+                ),
                 const SizedBox(width: 8),
                 Flexible(
                   child: RepetitionUnitInputWidget(
@@ -273,7 +170,17 @@ class _LogPageState extends ConsumerState<LogPage> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Flexible(child: getWeightWidget()),
+                Flexible(
+                  child: LogsWeightWidget(
+                    controller: _weightController,
+                    configData: widget._configData,
+                    focusNode: focusNode,
+                    log: widget._log,
+                    setStateCallback: (fn) {
+                      setState(fn);
+                    },
+                  ),
+                ),
                 const SizedBox(width: 8),
                 Flexible(
                   child: WeightUnitInputWidget(widget._log.weightUnitId, onChanged: (v) => {}),
@@ -348,80 +255,78 @@ class _LogPageState extends ConsumerState<LogPage> {
     );
   }
 
-  Widget getPastLogs() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-          // color: Theme.of(context).secondaryHeaderColor,
-          // color: Theme.of(context).splashColor,
-          // color: Theme.of(context).colorScheme.onInverseSurface,
-          // border: Border.all(color: Colors.black, width: 1),
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        NavigationHeader(
+          widget._exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
+          widget._controller,
+          exercisePages: widget._exercisePages,
+        ),
+
+        Container(
+          color: Theme.of(context).colorScheme.onInverseSurface,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Center(
+            child: Text(
+              widget._configData.textRepr,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(color: Theme.of(context).colorScheme.primary),
+              textAlign: TextAlign.center,
+            ),
           ),
-      child: ListView(
-        children: [
-          Text(
-            AppLocalizations.of(context).labelWorkoutLogs,
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
+        ),
+        if (widget._slotData.comment.isNotEmpty)
+          Text(widget._slotData.comment, textAlign: TextAlign.center),
+        // Only show calculator for barbell
+        if (widget._log.exercise.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
+          const LogsPlatesWidget(),
+        const SizedBox(height: 10),
+        Expanded(
+          child: (widget._workoutPlan.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
+              ? LogsPastLogsWidget(
+                  weightController: _weightController,
+                  repetitionsController: _repetitionsController,
+                  log: widget._log,
+                  pastLogs: widget._workoutPlan.filterLogsByExercise(widget._exercise.id!),
+                  setStateCallback: (fn) {
+                    setState(fn);
+                  },
+                )
+              : Container(),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Card(
+            color: Theme.of(context).colorScheme.inversePrimary,
+            // color: Theme.of(context).secondaryHeaderColor,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: getForm(),
+            ),
           ),
-          ...widget._workoutPlan
-              .filterLogsByExercise(widget._exercise.id!, unique: true)
-              .map((log) {
-            return ListTile(
-              title: Text(log.singleLogRepTextNoNl),
-              subtitle: Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(log.date),
-              ),
-              trailing: const Icon(Icons.copy),
-              onTap: () {
-                setState(() {
-                  // Text field
-                  _repetitionsController.text = log.repetitions?.toString() ?? '';
-                  _weightController.text = log.weight?.toString() ?? '';
-
-                  // Drop downs
-
-                  widget._log.rir = log.rir;
-                  widget._log.repetitionUnit = log.repetitionsUnitObj;
-                  widget._log.weightUnit = log.weightUnitObj;
-
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(AppLocalizations.of(context).dataCopied),
-                  ));
-                });
-              },
-              contentPadding: const EdgeInsets.symmetric(horizontal: 40),
-            );
-          }),
-        ],
-      ),
+        ),
+        NavigationFooter(widget._controller, widget._ratioCompleted),
+      ],
     );
   }
+}
 
-  Widget getPlates() {
+class LogsPlatesWidget extends ConsumerWidget {
+  const LogsPlatesWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final plateWeightsState = ref.watch(plateCalculatorProvider);
 
     return Container(
       color: Theme.of(context).colorScheme.onInverseSurface,
       child: Column(
         children: [
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Text(
-          //       AppLocalizations.of(context).plateCalculator,
-          //       style: Theme.of(context).textTheme.titleMedium,
-          //     ),
-          //     IconButton(
-          //       onPressed: () {
-          //         Navigator.of(context)
-          //             .push(MaterialPageRoute(builder: (context) => const AddPlateWeights()));
-          //       },
-          //       icon: const Icon(Icons.settings, size: 16),
-          //     ),
-          //   ],
-          // ),
           GestureDetector(
             onTap: () {
               Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
@@ -463,56 +368,257 @@ class _LogPageState extends ConsumerState<LogPage> {
       ),
     );
   }
+}
+
+class LogsRepsWidget extends StatelessWidget {
+  final TextEditingController controller;
+  final SetConfigData configData;
+  final FocusNode focusNode;
+  final Log log;
+  final void Function(VoidCallback fn) setStateCallback;
+
+  final _logger = Logger('LogsRepsWidget');
+
+  LogsRepsWidget({
+    super.key,
+    required this.controller,
+    required this.configData,
+    required this.focusNode,
+    required this.log,
+    required this.setStateCallback,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final repsValueChange = configData.repetitionsRounding ?? 1;
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
+    final i18n = AppLocalizations.of(context);
+
+    return Row(
       children: [
-        NavigationHeader(
-          widget._exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
-          widget._controller,
-          exercisePages: widget._exercisePages,
+        IconButton(
+          icon: const Icon(Icons.remove, color: Colors.black),
+          onPressed: () {
+            final currentValue = numberFormat.tryParse(controller.text) ?? 0;
+            final newValue = currentValue - repsValueChange;
+            if (newValue >= 0) {
+              setStateCallback(() {
+                log.repetitions = newValue;
+                controller.text = numberFormat.format(newValue);
+              });
+            }
+          },
         ),
-
-        Container(
-          color: Theme.of(context).colorScheme.onInverseSurface,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Center(
-            child: Text(
-              widget._configData.textRepr,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(color: Theme.of(context).colorScheme.primary),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        if (widget._slotData.comment.isNotEmpty)
-          Text(widget._slotData.comment, textAlign: TextAlign.center),
-        // Only show calculator for barbell
-        if (widget._log.exercise.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
-          getPlates(),
-        const SizedBox(height: 10),
         Expanded(
-          child: (widget._workoutPlan.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
-              ? getPastLogs()
-              : Container(),
-        ),
-
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: Card(
-            color: Theme.of(context).colorScheme.inversePrimary,
-            // color: Theme.of(context).secondaryHeaderColor,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: getForm(),
-            ),
+          child: TextFormField(
+            decoration: InputDecoration(labelText: i18n.repetitions),
+            enabled: true,
+            controller: controller,
+            keyboardType: textInputTypeDecimal,
+            focusNode: focusNode,
+            onChanged: (value) {
+              try {
+                final newValue = numberFormat.parse(value);
+                setStateCallback(() {
+                  log.repetitions = newValue;
+                });
+              } on FormatException catch (error) {
+                _logger.fine('Error parsing repetitions: $error');
+              }
+            },
+            onSaved: (newValue) {
+              _logger.info('Saving new reps value: $newValue');
+              setStateCallback(() {
+                log.repetitions = numberFormat.parse(newValue!);
+                // focusNode.unfocus();
+              });
+            },
+            validator: (value) {
+              if (numberFormat.tryParse(value ?? '') == null) {
+                return i18n.enterValidNumber;
+              }
+              return null;
+            },
           ),
         ),
-        NavigationFooter(widget._controller, widget._ratioCompleted),
+        IconButton(
+          icon: const Icon(Icons.add, color: Colors.black),
+          onPressed: () {
+            try {
+              final newValue = numberFormat.parse(controller.text) + repsValueChange;
+              setStateCallback(() {
+                log.repetitions = newValue;
+                controller.text = numberFormat.format(newValue);
+              });
+            } on FormatException catch (error) {
+              _logger.fine('Error parsing reps during quick-add: $error');
+            }
+          },
+        ),
       ],
+    );
+  }
+}
+
+class LogsWeightWidget extends ConsumerWidget {
+  final TextEditingController controller;
+  final SetConfigData configData;
+  final FocusNode focusNode;
+  final Log log;
+  final void Function(VoidCallback fn) setStateCallback;
+
+  final _logger = Logger('LogsWeightWidget');
+
+  LogsWeightWidget({
+    super.key,
+    required this.controller,
+    required this.configData,
+    required this.focusNode,
+    required this.log,
+    required this.setStateCallback,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weightValueChange = configData.weightRounding ?? 1.25;
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final i18n = AppLocalizations.of(context);
+
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.remove, color: Colors.black),
+          onPressed: () {
+            try {
+              final newValue = numberFormat.parse(controller.text) - weightValueChange;
+              if (newValue > 0) {
+                setStateCallback(() {
+                  log.weight = newValue;
+                  controller.text = numberFormat.format(newValue);
+                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                        controller.text == '' ? 0 : newValue,
+                      );
+                });
+              }
+            } on FormatException catch (error) {
+              _logger.fine('Error parsing weight during quick-remove: $error');
+            }
+          },
+        ),
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(labelText: i18n.weight),
+            controller: controller,
+            keyboardType: textInputTypeDecimal,
+            onChanged: (value) {
+              try {
+                final newValue = numberFormat.parse(value);
+                setStateCallback(() {
+                  log.weight = newValue;
+                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                        controller.text == '' ? 0 : numberFormat.parse(controller.text),
+                      );
+                });
+              } on FormatException catch (error) {
+                _logger.fine('Error parsing weight: $error');
+              }
+            },
+            onSaved: (newValue) {
+              setStateCallback(() {
+                log.weight = numberFormat.parse(newValue!);
+              });
+            },
+            validator: (value) {
+              if (numberFormat.tryParse(value ?? '') == null) {
+                return i18n.enterValidNumber;
+              }
+              return null;
+            },
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.add, color: Colors.black),
+          onPressed: () {
+            try {
+              final newValue = numberFormat.parse(controller.text) + weightValueChange;
+              setStateCallback(() {
+                log.weight = newValue;
+                controller.text = numberFormat.format(newValue);
+                ref.read(plateCalculatorProvider.notifier).setWeight(
+                      controller.text == '' ? 0 : newValue,
+                    );
+              });
+            } on FormatException catch (error) {
+              _logger.fine('Error parsing weight during quick-add: $error');
+            }
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class LogsPastLogsWidget extends StatelessWidget {
+  final TextEditingController weightController;
+  final TextEditingController repetitionsController;
+  final Log log;
+  final List<Log> pastLogs;
+  final void Function(VoidCallback fn) setStateCallback;
+
+  const LogsPastLogsWidget({
+    super.key,
+    required this.weightController,
+    required this.repetitionsController,
+    required this.log,
+    required this.pastLogs,
+    required this.setStateCallback,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ListView(
+        children: [
+          Text(
+            AppLocalizations.of(context).labelWorkoutLogs,
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          ...pastLogs.map((pastLog) {
+            return ListTile(
+              title: Text(pastLog.singleLogRepTextNoNl),
+              subtitle: Text(
+                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(pastLog.date),
+              ),
+              trailing: const Icon(Icons.copy),
+              onTap: () {
+                setStateCallback(() {
+                  // Text field
+                  repetitionsController.text =
+                      pastLog.repetitions != null ? numberFormat.format(pastLog.repetitions) : '';
+                  weightController.text =
+                      pastLog.weight != null ? numberFormat.format(pastLog.weight) : '';
+
+                  // Drop downs
+                  log.rir = pastLog.rir;
+                  log.repetitionUnit = pastLog.repetitionsUnitObj;
+                  log.weightUnit = pastLog.weightUnitObj;
+
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(context).dataCopied),
+                  ));
+                });
+              },
+              contentPadding: const EdgeInsets.symmetric(horizontal: 40),
+            );
+          }),
+        ],
+      ),
     );
   }
 }
