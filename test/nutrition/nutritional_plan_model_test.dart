@@ -46,11 +46,13 @@ void main() {
         ),
       );
     });
-    test('Test NutritionalPlan.nutritionalValues based on 3 macros and energy', () {
+    test('Test NutritionalPlan.nutritionalValues based on 3 macros and energy',
+        () {
       expect(
         NutritionalPlan(
           description: '3 macros and energy defined',
           creationDate: DateTime(2024, 5, 4),
+          startDate: DateTime(2024, 5, 4),
           goalProtein: 150,
           goalCarbohydrates: 100,
           goalFat: 100,
@@ -64,11 +66,13 @@ void main() {
         ),
       );
     });
-    test('Test NutritionalPlan.nutritionalValues based on 2 macros and energy', () {
+    test('Test NutritionalPlan.nutritionalValues based on 2 macros and energy',
+        () {
       expect(
         NutritionalPlan(
           description: '2 macros and energy defined',
           creationDate: DateTime(2024, 5, 4),
+          startDate: DateTime(2024, 5, 4),
           goalProtein: 100,
           goalCarbohydrates: 100,
           goalEnergy: 1700,
@@ -86,6 +90,7 @@ void main() {
         NutritionalPlan(
           description: '3 macros defined',
           creationDate: DateTime(2024, 5, 4),
+          startDate: DateTime(2024, 5, 4),
           goalProtein: 100,
           goalCarbohydrates: 100,
           goalFat: 10,
@@ -101,12 +106,14 @@ void main() {
 
     test('Test the nutritionalValues method for meals', () {
       final meal = plan.meals.first;
-      final values = NutritionalValues.values(518.75, 5.75, 17.5, 3.5, 29.0, 13.75, 49.5, 0.5);
+      final values = NutritionalValues.values(
+          518.75, 5.75, 17.5, 3.5, 29.0, 13.75, 49.5, 0.5);
       expect(meal.plannedNutritionalValues, values);
     });
 
     test('Test that the getter returns all meal items for a plan', () {
-      expect(plan.dedupMealItems, plan.meals[0].mealItems + plan.meals[1].mealItems);
+      expect(plan.dedupMealItems,
+          plan.meals[0].mealItems + plan.meals[1].mealItems);
     });
   });
 }

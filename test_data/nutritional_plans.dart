@@ -175,13 +175,17 @@ NutritionalPlan getNutritionalPlan() {
     id: 1,
     description: 'Less fat, more protein',
     creationDate: DateTime(2021, 5, 23),
+    startDate: DateTime(2021, 5, 23),
   );
   plan.meals = [meal1, meal2];
 
   // Add logs
-  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
+  plan.diaryEntries
+      .add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
+  plan.diaryEntries
+      .add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
+  plan.diaryEntries
+      .add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
 
   return plan;
 }
