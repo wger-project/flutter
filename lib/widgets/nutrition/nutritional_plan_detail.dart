@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -44,6 +45,26 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
     return SliverList(
       delegate: SliverChildListDelegate(
         [
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              _nutritionalPlan.endDate != null
+                  ? 'from ${DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(_nutritionalPlan.startDate)} to ${DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(_nutritionalPlan.endDate!)}'
+                  : 'from ${DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(_nutritionalPlan.startDate)} (open ended)',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 8),
           SizedBox(
             width: 300,
             child: Padding(
@@ -51,49 +72,6 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
               child: FlNutritionalPlanGoalWidget(
                 nutritionalPlan: _nutritionalPlan,
               ),
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      '${AppLocalizations.of(context).start}: ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '${_nutritionalPlan.startDate.day.toString().padLeft(2, '0')}.${_nutritionalPlan.startDate.month.toString().padLeft(2, '0')}.${_nutritionalPlan.startDate.year}',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
-                ),
-                if (_nutritionalPlan.endDate != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          '${AppLocalizations.of(context).endDate}: ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          '${_nutritionalPlan.endDate!.day.toString().padLeft(2, '0')}.${_nutritionalPlan.endDate!.month.toString().padLeft(2, '0')}.${_nutritionalPlan.endDate!.year}',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
             ),
           ),
           const SizedBox(height: 10),
