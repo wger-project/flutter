@@ -99,6 +99,7 @@ class _LogPageState extends ConsumerState<LogPage> {
 
   Widget getRepsWidget() {
     final repsValueChange = widget._configData.repetitionsRounding ?? 1;
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     return Row(
       children: [
@@ -106,7 +107,8 @@ class _LogPageState extends ConsumerState<LogPage> {
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
-              final num newValue = num.parse(_repetitionsController.text) - repsValueChange;
+              final num newValue =
+                  numberFormat.parse(_repetitionsController.text) - repsValueChange;
               if (newValue > 0) {
                 _repetitionsController.text = newValue.toString();
               }
@@ -120,19 +122,17 @@ class _LogPageState extends ConsumerState<LogPage> {
             ),
             enabled: true,
             controller: _repetitionsController,
-            keyboardType: TextInputType.number,
+            keyboardType: textInputTypeDecimal,
             focusNode: focusNode,
             onFieldSubmitted: (_) {
               // Placeholder for potential future logic
             },
             onSaved: (newValue) {
-              widget._log.repetitions = num.parse(newValue!);
+              widget._log.repetitions = numberFormat.parse(newValue!);
               focusNode.unfocus();
             },
             validator: (value) {
-              try {
-                num.parse(value!);
-              } catch (error) {
+              if (numberFormat.tryParse(value ?? '') == null) {
                 return AppLocalizations.of(context).enterValidNumber;
               }
               return null;
@@ -143,7 +143,8 @@ class _LogPageState extends ConsumerState<LogPage> {
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
-              final num newValue = num.parse(_repetitionsController.text) + repsValueChange;
+              final num newValue =
+                  numberFormat.parse(_repetitionsController.text) + repsValueChange;
               _repetitionsController.text = newValue.toString();
             } on FormatException {}
           },
@@ -154,6 +155,7 @@ class _LogPageState extends ConsumerState<LogPage> {
 
   Widget getWeightWidget() {
     final weightValueChange = widget._configData.weightRounding ?? 1.25;
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     return Row(
       children: [
@@ -161,13 +163,16 @@ class _LogPageState extends ConsumerState<LogPage> {
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             try {
-              final num newValue = num.parse(_weightController.text) - (2 * weightValueChange);
+              final num newValue =
+                  numberFormat.parse(_weightController.text) - (2 * weightValueChange);
               if (newValue > 0) {
                 setState(() {
                   widget._log.weight = newValue;
                   _weightController.text = newValue.toString();
                   ref.read(plateCalculatorProvider.notifier).setWeight(
-                        _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                        _weightController.text == ''
+                            ? 0
+                            : numberFormat.parse(_weightController.text),
                       );
                 });
               }
@@ -186,24 +191,24 @@ class _LogPageState extends ConsumerState<LogPage> {
             },
             onChanged: (value) {
               try {
-                num.parse(value);
+                numberFormat.parse(value);
                 setState(() {
-                  widget._log.weight = num.parse(value);
+                  widget._log.weight = numberFormat.parse(value);
                   ref.read(plateCalculatorProvider.notifier).setWeight(
-                        _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                        _weightController.text == ''
+                            ? 0
+                            : numberFormat.parse(_weightController.text),
                       );
                 });
               } on FormatException {}
             },
             onSaved: (newValue) {
               setState(() {
-                widget._log.weight = num.parse(newValue!);
+                widget._log.weight = numberFormat.parse(newValue!);
               });
             },
             validator: (value) {
-              try {
-                num.parse(value!);
-              } catch (error) {
+              if (numberFormat.tryParse(value ?? '') == null) {
                 return AppLocalizations.of(context).enterValidNumber;
               }
               return null;
@@ -214,12 +219,13 @@ class _LogPageState extends ConsumerState<LogPage> {
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             try {
-              final num newValue = num.parse(_weightController.text) + (2 * weightValueChange);
+              final num newValue =
+                  numberFormat.parse(_weightController.text) + (2 * weightValueChange);
               setState(() {
                 widget._log.weight = newValue;
                 _weightController.text = newValue.toString();
                 ref.read(plateCalculatorProvider.notifier).setWeight(
-                      _weightController.text == '' ? 0 : double.parse(_weightController.text),
+                      _weightController.text == '' ? 0 : numberFormat.parse(_weightController.text),
                     );
               });
             } on FormatException {}

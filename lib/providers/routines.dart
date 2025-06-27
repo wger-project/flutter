@@ -568,10 +568,10 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> handleConfig(SlotEntry entry, String input, ConfigType type) async {
+  Future<void> handleConfig(SlotEntry entry, num? value, ConfigType type) async {
     final configs = entry.getConfigsByType(type);
     final config = configs.isNotEmpty ? configs.first : null;
-    final value = input.isNotEmpty ? num.parse(input) : null;
+    // final value = input.isNotEmpty ? num.parse(input) : null;
 
     if (value == null && config != null) {
       // Value removed, delete entry
