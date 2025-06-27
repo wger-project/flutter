@@ -132,3 +132,6 @@ const LIBERAPAY_URL = 'https://liberapay.com/wger';
 const double CHART_MILLISECOND_FACTOR = 100000.0;
 
 enum WeightUnitEnum { kg, lb }
+
+/// TextInputType for decimal numbers
+const textInputTypeDecimal = TextInputType.numberWithOptions(decimal: true);

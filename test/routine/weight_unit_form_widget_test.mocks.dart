@@ -692,7 +692,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
   @override
   _i13.Future<void> handleConfig(
     _i8.SlotEntry? entry,
-    String? input,
+    num? value,
     _i8.ConfigType? type,
   ) =>
       (super.noSuchMethod(
@@ -700,7 +700,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
           #handleConfig,
           [
             entry,
-            input,
+            value,
             type,
           ],
         ),

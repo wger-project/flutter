@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
@@ -40,6 +41,8 @@ class WeightForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
     return Form(
       key: _form,
       child: Column(
@@ -142,16 +145,17 @@ class WeightForm extends StatelessWidget {
               ),
             ),
             controller: weightController,
-            keyboardType: TextInputType.number,
+            keyboardType: textInputTypeDecimal,
             onSaved: (newValue) {
-              _weightEntry.weight = double.parse(newValue!);
+              _weightEntry.weight = numberFormat.parse(newValue!);
             },
             validator: (value) {
               if (value!.isEmpty) {
                 return AppLocalizations.of(context).enterValue;
               }
+
               try {
-                double.parse(value);
+                numberFormat.parse(value);
               } catch (error) {
                 return AppLocalizations.of(context).enterValidNumber;
               }

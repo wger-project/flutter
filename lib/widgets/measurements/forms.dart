@@ -17,7 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
@@ -168,6 +170,8 @@ class MeasurementEntryForm extends StatelessWidget {
       (category) => category.id == _categoryId,
     );
 
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
     return Form(
       key: _form,
       child: Column(
@@ -218,20 +222,20 @@ class MeasurementEntryForm extends StatelessWidget {
               suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
             ),
             controller: _valueController,
-            keyboardType: TextInputType.number,
+            keyboardType: textInputTypeDecimal,
             validator: (value) {
               if (value!.isEmpty) {
                 return AppLocalizations.of(context).enterValue;
               }
               try {
-                double.parse(value);
+                numberFormat.parse(value);
               } catch (error) {
                 return AppLocalizations.of(context).enterValidNumber;
               }
               return null;
             },
             onSaved: (newValue) {
-              _entryData['value'] = double.parse(newValue!);
+              _entryData['value'] = numberFormat.parse(newValue!);
             },
           ),
           // Value
