@@ -27,16 +27,15 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
     id: (json['id'] as num?)?.toInt(),
     description: json['description'] as String,
     creationDate: DateTime.parse(json['creation_date'] as String),
+    startDate: DateTime.parse(json['start'] as String),
+    endDate: json['end'] == null ? null : DateTime.parse(json['end'] as String),
     onlyLogging: json['only_logging'] as bool? ?? false,
     goalEnergy: json['goal_energy'] as num?,
     goalProtein: json['goal_protein'] as num?,
     goalCarbohydrates: json['goal_carbohydrates'] as num?,
     goalFat: json['goal_fat'] as num?,
     goalFiber: json['goal_fiber'] as num?,
-  )
-    ..startDate = DateTime.parse(json['start'] as String)
-    ..endDate =
-        json['end'] == null ? null : DateTime.parse(json['end'] as String);
+  );
 }
 
 Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) =>

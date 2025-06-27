@@ -75,6 +75,8 @@ class NutritionalPlan {
     this.id,
     required this.description,
     required this.creationDate,
+    required this.startDate,
+    this.endDate,
     this.onlyLogging = false,
     this.goalEnergy,
     this.goalProtein,
