@@ -88,6 +88,7 @@ class NutritionPlansProvider with ChangeNotifier {
     }
 
     // Sort by creation date (newest first) and return the first one
+    // TODO: this should already be done on _plans. this whole function can be a firstWhere() ?
     activePlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
     return activePlans.first;
   }
