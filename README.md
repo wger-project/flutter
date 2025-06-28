@@ -19,13 +19,16 @@ If you want to contribute, hop on the Discord server and say hi!
 
 [<img src="https://wger.de/static/images/logos/play-store/badge.svg"
 alt="Get it on Google Play"
-height="80">](https://play.google.com/store/apps/details?id=de.wger.flutter)
-[<img src="https://wger.de/static/images/logos/app-store/black.svg"
+height="55">](https://play.google.com/store/apps/details?id=de.wger.flutter)
+[<img src="https://wger.de/static/images/logos/fdroid/get-it-on.svg"
 alt="Get it on F-Droid"
-height="80">](https://f-droid.org/packages/de.wger.flutter/)
+height="55">](https://f-droid.org/packages/de.wger.flutter/)
 [<img src="https://wger.de/static/images/logos/app-store/black.svg"
 alt="Download on the App Store"
-height="80">](https://apps.apple.com/us/app/wger-workout-manager/id6502226792)
+height="55">](https://apps.apple.com/us/app/wger-workout-manager/id6502226792)
+[<img src="https://wger.de/static/images/logos/flathub/black.svg"
+alt="Get it on Flathub"
+height="55">](https://flathub.org/apps/de.wger.flutter)
 
 ## Developing and contributing
 
