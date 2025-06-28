@@ -520,12 +520,10 @@ class _PlanFormState extends State<PlanForm> {
 
     _onlyLogging = widget._plan.onlyLogging;
     _descriptionController.text = widget._plan.description;
-    _startDateController.text =
-        '${widget._plan.startDate.year}-${widget._plan.startDate.month.toString().padLeft(2, '0')}-${widget._plan.startDate.day.toString().padLeft(2, '0')}';
+    _startDateController.text = dateToYYYYMMDD(widget._plan.startDate)!;
     // ignore invalid enddates should the server gives us one
     if (widget._plan.endDate != null && widget._plan.endDate!.isAfter(widget._plan.startDate)) {
-      _endDateController.text =
-          '${widget._plan.endDate!.year}-${widget._plan.endDate!.month.toString().padLeft(2, '0')}-${widget._plan.endDate!.day.toString().padLeft(2, '0')}';
+      _endDateController.text = dateToYYYYMMDD(widget._plan.endDate)!;
     }
     if (widget._plan.hasAnyAdvancedGoals) {
       _goalType = GoalType.advanced;
@@ -585,8 +583,7 @@ class _PlanFormState extends State<PlanForm> {
 
               if (pickedDate != null) {
                 setState(() {
-                  _startDateController.text =
-                      '${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}';
+                  _startDateController.text = dateToYYYYMMDD(pickedDate)!;
                   widget._plan.startDate = pickedDate;
                 });
               }
@@ -625,8 +622,7 @@ class _PlanFormState extends State<PlanForm> {
 
                     if (pickedDate != null) {
                       setState(() {
-                        _endDateController.text =
-                            '${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}';
+                        _endDateController.text = dateToYYYYMMDD(pickedDate)!;
                         widget._plan.endDate = pickedDate;
                       });
                     }
