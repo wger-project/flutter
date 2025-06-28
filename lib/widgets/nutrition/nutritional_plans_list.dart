@@ -38,14 +38,11 @@ class NutritionalPlansList extends StatelessWidget {
 
     final entriesAll = _provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
     final entries7dAvg = moving7dAverage(entriesAll);
-    print('start: $startDate');
-    print('end: $endDate');
     // Filter weight entries within the plan period
     final DateTime planEndDate = endDate ?? DateTime.now();
     final List<MeasurementChartEntry> entriesInPeriod = entries7dAvg
         .where((entry) => entry.date.isAfter(startDate) && entry.date.isBefore(planEndDate))
         .toList();
-    print('entriesInPeriod: ${entriesInPeriod.length}');
     if (entriesInPeriod.length < 2) {
       return const SizedBox.shrink();
     }
