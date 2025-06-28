@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -34,25 +35,17 @@ class NutritionalPlansList extends StatelessWidget {
 
   /// Builds the weight change information for a nutritional plan period
   Widget _buildWeightChangeInfo(BuildContext context, DateTime startDate, DateTime? endDate) {
-    final _provider = Provider.of<BodyWeightProvider>(context, listen: false);
+    final provider = Provider.of<BodyWeightProvider>(context, listen: false);
 
-    final entriesAll = _provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
-    final entries7dAvg = moving7dAverage(entriesAll);
-    // Filter weight entries within the plan period
-    final DateTime planEndDate = endDate ?? DateTime.now();
-    final List<MeasurementChartEntry> entriesInPeriod = entries7dAvg
-        .where((entry) => entry.date.isAfter(startDate) && entry.date.isBefore(planEndDate))
-        .toList();
-    if (entriesInPeriod.length < 2) {
+    final entriesAll = provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);
+    if (entries7dAvg.length < 2) {
       return const SizedBox.shrink();
     }
 
-    // Sort entries by date
-    entriesInPeriod.sort((a, b) => a.date.compareTo(b.date));
-
     // Calculate weight change
-    final firstWeight = entriesInPeriod.first;
-    final lastWeight = entriesInPeriod.last;
+    final firstWeight = entries7dAvg.first;
+    final lastWeight = entries7dAvg.last;
     final weightDifference = lastWeight.value - firstWeight.value;
 
     // Format the weight change text and determine color
@@ -62,8 +55,6 @@ class NutritionalPlansList extends StatelessWidget {
 
     final unit = weightUnit(profile!.isMetric, context);
 
-// TODO: only proceed if it's "representative" (if we covered the plan timespan well enough), or actually,
-// we could also interpolate the missing values
     if (weightDifference > 0) {
       weightChangeText = '+${weightDifference.toStringAsFixed(1)} $unit';
       weightChangeColor = Colors.red;
@@ -80,7 +71,7 @@ class NutritionalPlansList extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            AppLocalizations.of(context).weight + ' change: ',
+            '${AppLocalizations.of(context).weight} change: ',
             style: Theme.of(context).textTheme.bodySmall,
           ),
           Text(

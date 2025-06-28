@@ -36,10 +36,6 @@ List<Widget> getOverviewWidgets(
   ];
 }
 
-// TODO(dieter): i'm not sure if this handles well the case where weights were not logged consistently
-// e.g. if the plan runs for a month, but the first point is after 3 weeks.
-// and the last (non-included) point was *right* before the startDate.
-// wouldn't it be better to interpolate the missing points?
 List<Widget> getOverviewWidgetsSeries(
   String name,
   List<MeasurementChartEntry> entriesAll,
@@ -61,8 +57,8 @@ List<Widget> getOverviewWidgetsSeries(
     for (final plan in plans)
       ...getOverviewWidgets(
         AppLocalizations.of(context).chartDuringPlanTitle(name, plan.description),
-        entriesAll.whereDate(plan.startDate, plan.endDate),
-        entries7dAvg.whereDate(plan.startDate, plan.endDate),
+        entriesAll.whereDateWithInterpolation(plan.startDate, plan.endDate),
+        entries7dAvg.whereDateWithInterpolation(plan.startDate, plan.endDate),
         unit,
         context,
       ),
@@ -74,8 +70,8 @@ List<Widget> getOverviewWidgetsSeries(
         entriesAll.any((e) => e.date.isAfter(monthAgo)))
       ...getOverviewWidgets(
         AppLocalizations.of(context).chart30DaysTitle(name),
-        entriesAll.whereDate(monthAgo, null),
-        entries7dAvg.whereDate(monthAgo, null),
+        entriesAll.whereDateWithInterpolation(monthAgo, null),
+        entries7dAvg.whereDateWithInterpolation(monthAgo, null),
         unit,
         context,
       ),
