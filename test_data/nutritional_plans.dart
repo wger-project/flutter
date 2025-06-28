@@ -214,6 +214,7 @@ NutritionalPlan getNutritionalPlanScreenshot() {
     id: 1,
     description: 'Diet',
     creationDate: DateTime(2021, 5, 23),
+    startDate: DateTime(2021, 5, 23),
     meals: [meal1, meal2],
   );
 

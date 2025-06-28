@@ -26,9 +26,12 @@ import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -62,25 +65,43 @@ void main() {
     when(mockAuthProvider.serverUrl).thenReturn('http://localhost');
     when(mockAuthProvider.getAppNameHeader()).thenReturn('wger app');
 
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => NutritionPlansProvider(
-        mockBaseProvider,
-        [
-          NutritionalPlan(
-            id: 1,
-            description: 'test plan 1',
-            creationDate: DateTime(2021, 01, 01),
-            startDate: DateTime(2021, 01, 01),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (context) => NutritionPlansProvider(
+            mockBaseProvider,
+            [
+              NutritionalPlan(
+                id: 1,
+                description: 'test plan 1',
+                creationDate: DateTime(2021, 01, 01),
+                startDate: DateTime(2021, 01, 01),
+              ),
+              NutritionalPlan(
+                id: 2,
+                description: 'test plan 2',
+                creationDate: DateTime(2021, 01, 10),
+                startDate: DateTime(2021, 01, 10),
+              ),
+            ],
+            database: database,
           ),
-          NutritionalPlan(
-            id: 2,
-            description: 'test plan 2',
-            creationDate: DateTime(2021, 01, 10),
-            startDate: DateTime(2021, 01, 10),
-          ),
-        ],
-        database: database,
-      ),
+        ),
+        ChangeNotifierProvider<BodyWeightProvider>(
+          create: (context) => BodyWeightProvider(mockBaseProvider),
+        ),
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => UserProvider(
+            mockBaseProvider,
+          )..profile = Profile(
+              username: 'test',
+              emailVerified: true,
+              isTrustworthy: true,
+              email: 'test@example.com',
+              weightUnitStr: 'kg',
+            ),
+        ),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

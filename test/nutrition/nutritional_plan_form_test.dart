@@ -71,7 +71,7 @@ void main() {
     await tester.pumpWidget(createHomeScreen(plan1));
     await tester.pumpAndSettle();
 
-    expect(find.byType(TextFormField), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(3));
     expect(find.byType(ElevatedButton), findsOneWidget);
     expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
   });
@@ -110,7 +110,9 @@ void main() {
     await tester.pumpWidget(createHomeScreen(plan2));
     await tester.pumpAndSettle();
 
-    expect(find.text(''), findsOneWidget, reason: 'New nutritional plan has no description');
+    expect(find.text(''), findsNWidgets(2),
+        reason: 'New nutritional plan needs description, and end date');
+    // there's also the start date, but it will have a value depending on 'now'
     await tester.enterText(find.byKey(const Key('field-description')), 'New cool plan');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
