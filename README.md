@@ -23,6 +23,9 @@ height="80">](https://play.google.com/store/apps/details?id=de.wger.flutter)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
 alt="Get it on F-Droid"
 height="80">](https://f-droid.org/packages/de.wger.flutter/)
+[<img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-example-preferred.png"
+alt="Download on the App Store"
+height="80">](https://apps.apple.com/us/app/wger-workout-manager/id6502226792)
 
 ## Developing and contributing
 
