@@ -49,7 +49,8 @@ class _TimerWidgetState extends State<TimerWidget> {
     super.initState();
     _startTime = DateTime.now();
 
-    _uiTimer = Timer.periodic(Duration(seconds: 1), (_) {
+    _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      // ignore: no-empty-block, avoid-empty-setstate
       if (mounted) setState(() {});
     });
   }
@@ -64,8 +65,7 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget build(BuildContext context) {
     final elapsed = DateTime.now().difference(_startTime).inSeconds;
     final displaySeconds = elapsed > _maxSeconds ? _maxSeconds : elapsed;
-    final displayTime = DateTime(2000, 1, 1, 0, 0, 0)
-        .add(Duration(seconds: displaySeconds));
+    final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: displaySeconds));
 
     return Column(
       children: [
@@ -78,10 +78,7 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(displayTime),
-              style: Theme.of(context)
-                  .textTheme
-                  .displayLarge!
-                  .copyWith(color: wgerPrimaryColor),
+              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
             ),
           ),
         ),
@@ -117,7 +114,8 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
     super.initState();
     _endTime = DateTime.now().add(Duration(seconds: widget._seconds));
 
-    _uiTimer = Timer.periodic(Duration(seconds: 1), (_) {
+    _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      // ignore: no-empty-block, avoid-empty-setstate
       if (mounted) setState(() {});
     });
   }
@@ -132,8 +130,7 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
   Widget build(BuildContext context) {
     final remaining = _endTime.difference(DateTime.now());
     final remainingSeconds = remaining.inSeconds <= 0 ? 0 : remaining.inSeconds;
-    final displayTime = DateTime(2000, 1, 1, 0, 0, 0)
-        .add(Duration(seconds: remainingSeconds));
+    final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
 
     return Column(
       children: [
@@ -146,10 +143,7 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(displayTime),
-              style: Theme.of(context)
-                  .textTheme
-                  .displayLarge!
-                  .copyWith(color: wgerPrimaryColor),
+              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
             ),
           ),
         ),
