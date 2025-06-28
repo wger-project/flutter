@@ -17,10 +17,10 @@ If you want to contribute, hop on the Discord server and say hi!
 
 ## Installation
 
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+[<img src="https://wger.de/static/images/logos/play-store/badge.svg"
 alt="Get it on Google Play"
 height="80">](https://play.google.com/store/apps/details?id=de.wger.flutter)
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+[<img src="https://wger.de/static/images/logos/app-store/black.svg"
 alt="Get it on F-Droid"
 height="80">](https://f-droid.org/packages/de.wger.flutter/)
 [<img src="https://wger.de/static/images/logos/app-store/black.svg"
