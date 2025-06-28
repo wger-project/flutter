@@ -36,7 +36,7 @@ class EntriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+    final plans = Provider.of<NutritionPlansProvider>(context, listen: false).items;
 
     final entriesAll =
         _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
@@ -47,7 +47,7 @@ class EntriesList extends StatelessWidget {
         _category.name,
         entriesAll,
         entries7dAvg,
-        plan,
+        plans,
         _category.unit,
         context,
       ),

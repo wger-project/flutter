@@ -41,6 +41,12 @@ class NutritionalPlan {
   @JsonKey(required: true, name: 'creation_date', toJson: dateToYYYYMMDD)
   late DateTime creationDate;
 
+  @JsonKey(required: true, name: 'start', toJson: dateToYYYYMMDD)
+  late DateTime startDate;
+
+  @JsonKey(required: true, name: 'end', toJson: dateToYYYYMMDD)
+  late DateTime? endDate;
+
   @JsonKey(required: true, name: 'only_logging')
   late bool onlyLogging;
 
@@ -69,6 +75,8 @@ class NutritionalPlan {
     this.id,
     required this.description,
     required this.creationDate,
+    required this.startDate,
+    this.endDate,
     this.onlyLogging = false,
     this.goalEnergy,
     this.goalProtein,
@@ -84,6 +92,8 @@ class NutritionalPlan {
 
   NutritionalPlan.empty() {
     creationDate = DateTime.now();
+    startDate = DateTime.now();
+    endDate = null;
     description = '';
     onlyLogging = false;
     goalEnergy = null;

@@ -37,7 +37,7 @@ class WeightOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
-    final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+    final plans = Provider.of<NutritionPlansProvider>(context, listen: false).items;
 
     final entriesAll = _provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
     final entries7dAvg = moving7dAverage(entriesAll);
@@ -50,7 +50,7 @@ class WeightOverview extends StatelessWidget {
           AppLocalizations.of(context).weight,
           entriesAll,
           entries7dAvg,
-          plan,
+          plans,
           unit,
           context,
         ),

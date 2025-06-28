@@ -2,6 +2,8 @@
   "id": 1,
   "creation_date": "2022-08-09",
   "description": "",
+  "start": "2022-08-01",
+  "end": null,
   "only_logging": false,
   "goal_energy": null,
   "goal_protein": null,

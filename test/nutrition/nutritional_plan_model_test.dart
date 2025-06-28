@@ -51,6 +51,7 @@ void main() {
         NutritionalPlan(
           description: '3 macros and energy defined',
           creationDate: DateTime(2024, 5, 4),
+          startDate: DateTime(2024, 5, 4),
           goalProtein: 150,
           goalCarbohydrates: 100,
           goalFat: 100,
@@ -69,6 +70,7 @@ void main() {
         NutritionalPlan(
           description: '2 macros and energy defined',
           creationDate: DateTime(2024, 5, 4),
+          startDate: DateTime(2024, 5, 4),
           goalProtein: 100,
           goalCarbohydrates: 100,
           goalEnergy: 1700,
@@ -86,6 +88,7 @@ void main() {
         NutritionalPlan(
           description: '3 macros defined',
           creationDate: DateTime(2024, 5, 4),
+          startDate: DateTime(2024, 5, 4),
           goalProtein: 100,
           goalCarbohydrates: 100,
           goalFat: 10,
