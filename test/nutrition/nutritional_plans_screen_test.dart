@@ -20,8 +20,10 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -149,14 +151,16 @@ void main() {
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
-    expect(find.text('1/1/2021'), findsOneWidget);
-    expect(find.text('1/10/2021'), findsOneWidget);
+// note .. "(open ended)" at the time, depending on localisation strings
+    expect(find.textContaining('from 1/1/2021 ('), findsOneWidget);
+    expect(find.textContaining('from 1/10/2021 ('), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
+// note .. "(open ended)" at the time, depending on localisation strings
 
-    expect(find.text('1.1.2021'), findsOneWidget);
-    expect(find.text('10.1.2021'), findsOneWidget);
+    expect(find.textContaining('from 1.1.2021 ('), findsOneWidget);
+    expect(find.textContaining('from 10.1.2021 ('), findsOneWidget);
   });
 }

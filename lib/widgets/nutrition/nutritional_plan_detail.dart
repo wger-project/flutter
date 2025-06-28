@@ -55,7 +55,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                     ).format(_nutritionalPlan.endDate!)}'
                   : 'from ${DateFormat.yMd(
                       Localizations.localeOf(context).languageCode,
-                    ).format(_nutritionalPlan.startDate)} (open ended)',
+                    ).format(_nutritionalPlan.startDate)} (${AppLocalizations.of(context).openEnded})',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontStyle: FontStyle.italic,
                   ),

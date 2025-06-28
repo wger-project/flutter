@@ -392,6 +392,10 @@
   "@endDate": {
     "description": "The End date of a nutritional plan"
   },
+  "openEnded": "Open ended",
+  "@openEnded": {
+    "description": "When a nutrition plan has no pre-defined end date"
+  },
   "value": "Value",
   "@value": {
     "description": "The value of a measurement entry"
