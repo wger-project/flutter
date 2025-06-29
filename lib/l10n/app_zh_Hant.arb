@@ -938,5 +938,11 @@
   "ingredientLogged": "食材已紀錄到日記",
   "@ingredientLogged": {},
   "selectMealToLog": "選擇要紀錄到日記的餐點",
-  "@selectMealToLog": {}
+  "@selectMealToLog": {},
+  "errorCouldNotConnectToServerDetails": "無法連接到伺服器",
+  "@errorCouldNotConnectToServerDetails": {},
+  "copyToClipboard": "複製到剪貼簿",
+  "@copyToClipboard": {},
+  "aboutWhySupportTitle": "開源且免費使用❤️",
+  "@aboutWhySupportTitle": {}
 }
