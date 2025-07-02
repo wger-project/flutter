@@ -12,6 +12,6 @@ If applicable, please link to any related issues (`Closes #123`,
 
 - [ ] Tests for the changes have been added (for bug fixes / features)
 - [ ] Set a 100 character limit in your editor/IDE to avoid white space diffs in the PR
-  (run `dart format --line-length=100 .`)
+  (run `dart format .`)
 - [ ] Updated/added relevant documentation (doc comments with `///`).
 - [ ] Added relevant reviewers.
