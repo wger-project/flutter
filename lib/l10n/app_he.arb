@@ -49,11 +49,11 @@
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
   },
-  "labelWorkoutPlan": "תוכנית כושר",
+  "labelWorkoutPlan": "תוכנית אימונים",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
   },
-  "labelDashboard": "לוח פעולות",
+  "labelDashboard": "לוח בקרה",
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
@@ -65,7 +65,7 @@
   "@successfullySaved": {
     "description": "Message when an item was successfully saved"
   },
-  "exercise": "תרגיל כושר",
+  "exercise": "תרגיל",
   "@exercise": {
     "description": "An exercise for a workout"
   },
@@ -322,7 +322,7 @@
     "description": "Label shown on the slider where the user can toggle showing units and RiR",
     "type": "text"
   },
-  "reset": "אתחול",
+  "reset": "איפוס",
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
@@ -405,7 +405,7 @@
   },
   "registerInstead": "אין לך חשבון? הירשם עכשיו",
   "@registerInstead": {},
-  "labelBottomNavWorkout": "כושר",
+  "labelBottomNavWorkout": "אימון",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
   },
