@@ -638,8 +638,60 @@
   "@back": {
     "description": "Generated entry for translation for server strings"
   },
-  "biceps": "שרירי הקיבורת",
+  "biceps": "שרירי הקיבורת (דו־ראשיים)",
   "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "body_weight": "משקל הגוף",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "סיבולת",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "חזה",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "שטיח אימונים",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "קילומטרים",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "קילומטרים לשעה",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "מילים",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "מילים לשעה",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "דקות",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "resistance_band": "רצועת התנגדות",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "שניות",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "כתפיים",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "שרירים תלת־ראשיים",
+  "@triceps": {
     "description": "Generated entry for translation for server strings"
   }
 }
