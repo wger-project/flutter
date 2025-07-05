@@ -45,7 +45,7 @@
   "@customServerHint": {
     "description": "Hint text for the form where the users can enter their own wger instance"
   },
-  "labelWorkoutLogs": "יומני אימון",
+  "labelWorkoutLogs": "אימונים מתועדים",
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
   },
@@ -57,7 +57,7 @@
   "@labelDashboard": {
     "description": "Title for screen dashboard"
   },
-  "successfullyDeleted": "נמחק",
+  "successfullyDeleted": "המחיקה בוצעה",
   "@successfullyDeleted": {
     "description": "Message when an item was successfully deleted"
   },
@@ -69,7 +69,7 @@
   "@exercise": {
     "description": "An exercise for a workout"
   },
-  "searchExercise": "חיפוש תרגיל כושר להוספה",
+  "searchExercise": "חיפוש תרגילים להוספה",
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
@@ -165,7 +165,7 @@
   "@mealLogged": {},
   "addIngredient": "הוספת מרכיב",
   "@addIngredient": {},
-  "nutritionalPlan": "תוכנית תזונה",
+  "nutritionalPlan": "תכנון תזונתי",
   "@nutritionalPlan": {},
   "nutritionalDiary": "יומן תזונה",
   "@nutritionalDiary": {},
@@ -199,7 +199,7 @@
   "@value": {
     "description": "The value of a measurement entry"
   },
-  "start": "התחל",
+  "start": "התחלה",
   "@start": {
     "description": "Label on button to start the gym mode (i.e., an imperative)"
   },
@@ -223,7 +223,7 @@
   "@energy": {
     "description": "Energy in a meal, ingredient etc. e.g. in kJ"
   },
-  "logMeal": "רשום את הארוחה הזאת",
+  "logMeal": "תיעוד הארוחה ביומן התזונתי",
   "@logMeal": {},
   "logHelpEntriesUnits": "שים לב שרק רשומות עם יחידת משקל (ק\"ג או ליברות) וחזרות הן ממופות, ישנה התעלמות משילובים אחרים כגון זמן או עד כשלון.",
   "@logHelpEntriesUnits": {},
@@ -243,7 +243,7 @@
   "@difference": {},
   "percentEnergy": "אחוז של אנרגיה",
   "@percentEnergy": {},
-  "total": "סה\"כ",
+  "total": "סה״כ",
   "@total": {
     "description": "Label used for total sums of e.g. calories or similar"
   },
@@ -273,7 +273,7 @@
   "@amount": {
     "description": "The amount (e.g. in grams) of an ingredient in a meal"
   },
-  "unit": "יחידה",
+  "unit": "יחידת מידה",
   "@unit": {
     "description": "The unit used for a repetition (kg, time, etc.)"
   },
@@ -690,8 +690,40 @@
   "@shoulders": {
     "description": "Generated entry for translation for server strings"
   },
-  "triceps": "שרירים תלת־ראשיים",
+  "triceps": "השרירים התלת־ראשיים",
   "@triceps": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "kg": "ק״ג",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goalTypeBasic": "בסיסי",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "מתקדם",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorAvg": "ממוצע",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "systemMode": "הגדרות מערכת",
+  "@systemMode": {},
+  "copyToClipboard": "העתקה ללוח",
+  "@copyToClipboard": {},
+  "noIngredientsDefined": "עדיין לא הוגדרו מרכיבים",
+  "@noIngredientsDefined": {},
+  "restTime": "זמן מנוחה",
+  "@restTime": {},
+  "sets": "סטים",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "ingredientLogged": "המרכיב תועד ביומן",
+  "@ingredientLogged": {},
+  "logIngredient": "תיעוד המרכיב ביומן התזונתי",
+  "@logIngredient": {}
 }
