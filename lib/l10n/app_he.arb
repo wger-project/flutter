@@ -824,10 +824,10 @@
   },
   "done": "סיום",
   "@done": {},
-  "themeMode": "ערכת מצב",
+  "themeMode": "ערכת עיצוב",
   "@themeMode": {},
-  "darkMode": "מצב כהה תמיד",
+  "darkMode": "עיצוב כהה תמיד",
   "@darkMode": {},
-  "lightMode": "מצב בהיר תמיד",
+  "lightMode": "עיצוב בהיר תמיד",
   "@lightMode": {}
 }
