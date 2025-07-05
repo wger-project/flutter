@@ -223,7 +223,7 @@
   "@energy": {
     "description": "Energy in a meal, ingredient etc. e.g. in kJ"
   },
-  "logMeal": "תיעוד הארוחה ביומן התזונתי",
+  "logMeal": "תיעוד המנה ביומן התזונתי",
   "@logMeal": {},
   "logHelpEntriesUnits": "שים לב שרק רשומות עם יחידת משקל (ק\"ג או ליברות) וחזרות הן ממופות, ישנה התעלמות משילובים אחרים כגון זמן או עד כשלון.",
   "@logHelpEntriesUnits": {},
@@ -725,5 +725,23 @@
   "ingredientLogged": "המרכיב תועד ביומן",
   "@ingredientLogged": {},
   "logIngredient": "תיעוד המרכיב ביומן התזונתי",
-  "@logIngredient": {}
+  "@logIngredient": {},
+  "errorInfoDescription": "משהו השתבש, עמך הסליחה. ניתן לעזור לנו בתיקון התקלה בעזרת דיווח על הבעיה ב־GitHub.",
+  "@errorInfoDescription": {},
+  "errorInfoDescription2": "אפשר להמשיך להשתמש ביישום, אבל ייתכן כי תכונות מסוימות לא יעבדו.",
+  "@errorInfoDescription2": {},
+  "proteinShort": "חל׳",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "fatShort": "שומנ׳",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "moreMeasurementEntries": "הוספת מדד חדש",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "aboutBugsListTitle": "דיווח על בעיה או הצגת תכונה",
+  "@aboutBugsListTitle": {}
 }
