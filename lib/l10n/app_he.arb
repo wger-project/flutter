@@ -129,7 +129,7 @@
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
-  "workoutSession": "אימון",
+  "workoutSession": "סשן אימונים",
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
@@ -742,6 +742,88 @@
   "@moreMeasurementEntries": {
     "description": "Message shown when the user wants to add new measurement"
   },
-  "aboutBugsListTitle": "דיווח על בעיה או הצעת תכונה",
-  "@aboutBugsListTitle": {}
+  "aboutBugsListTitle": "דיווח על בעיה או הצעת תכונה חדשה",
+  "@aboutBugsListTitle": {},
+  "aboutDiscordTitle": "Discord",
+  "@aboutDiscordTitle": {},
+  "dataCopied": "הנתונים הועתקו לערך החדש",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "useMetric": "שימוש בשיטה המטרית למדידת משקל הגוף",
+  "@useMetric": {},
+  "selectMealToLog": "בחירת מנה לתיעוד ביומן",
+  "@selectMealToLog": {},
+  "energyShort": "אנרגיה",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "loggedToday": "תועדו היום",
+  "@loggedToday": {},
+  "enterMinCharacters": "נא להקליד לפחות {min} תווים",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "productFoundDescription": "הברקוד תואם למוצר: {productName}. להמשיך?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      }
+    }
+  },
+  "productNotFoundDescription": "לא נמצא המוצר עם הברקוד שנסרק {barcode} במאגר של wger",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "verifiedEmail": "דוא״ל מאומת",
+  "@verifiedEmail": {},
+  "unVerifiedEmail": "דוא״ל לא מאומת",
+  "@unVerifiedEmail": {},
+  "verifiedEmailInfo": "נשלחה הודעת אימות לכתובת {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "setHasNoExercises": "עדיין אין אימונים בסט זה!",
+  "@setHasNoExercises": {},
+  "settingsIngredientCacheDescription": "מטמון מרכיב",
+  "@settingsIngredientCacheDescription": {},
+  "settingsCacheDeletedSnackbar": "המטמון נוקה בהצלחה",
+  "@settingsCacheDeletedSnackbar": {},
+  "textPromptTitle": "מוכנים להתחיל?",
+  "@textPromptTitle": {},
+  "abs": "שרירי בטן",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "פאונד",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "log": "תיעוד",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "סיום",
+  "@done": {},
+  "themeMode": "ערכת נושא",
+  "@themeMode": {}
 }
