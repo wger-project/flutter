@@ -493,8 +493,68 @@
   "@routineDays": {},
   "verify": "אימות",
   "@verify": {},
-  "searchIngredient": "חיפוש רכיב",
+  "searchIngredient": "חיפוש מרכיב",
   "@searchIngredient": {
     "description": "Label on ingredient search form"
-  }
+  },
+  "onlyLogging": "מעקב אחר קלוריות בלבד",
+  "@onlyLogging": {},
+  "goalMacro": "מטרות מזעריות",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "goalEnergy": "יעד אנרגיה",
+  "@goalEnergy": {},
+  "goalProtein": "יעד חלבונים",
+  "@goalProtein": {},
+  "goalFat": "יעד שומנים",
+  "@goalFat": {},
+  "goalFiber": "יעד סיבים תזונתיים",
+  "@goalFiber": {},
+  "errorViewDetails": "פרטים טכניים",
+  "@errorViewDetails": {},
+  "errorCouldNotConnectToServer": "לא היה ניתן להתחבר לשרת",
+  "@errorCouldNotConnectToServer": {},
+  "min": "מינ׳",
+  "@min": {},
+  "max": "מקס׳",
+  "@max": {},
+  "today": "היום",
+  "@today": {},
+  "weekAverage": "ממוצע שבועי",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "kcalValue": "{value} ק׳ קלוריות",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "gValue": "{value} גר׳",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percentValue": "{value}%",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutWhySupportTitle": "תוכנה בקוד פתוח, וחופשית לשימוש",
+  "@aboutWhySupportTitle": {}
 }
