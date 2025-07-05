@@ -326,7 +326,7 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "loginInstead": "הכנס במקום",
+  "loginInstead": "כבר יש לך חשבון? ניתן להיכנס",
   "@loginInstead": {},
   "selectExercise": "אנא בחר/י אימון",
   "@selectExercise": {
@@ -447,7 +447,7 @@
   "@logHelpEntries": {},
   "searchNamesInEnglish": "חפש גם לפי שמות באנגלית",
   "@searchNamesInEnglish": {},
-  "success": "מוצלח",
+  "success": "הפעולה צלחה",
   "@success": {
     "description": "Message when an action completed successfully, usually used as a heading"
   },
@@ -466,5 +466,35 @@
   "noMatchingExerciseFound": "לא נמצאו תרגילים תואמים",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
+  },
+  "useColors": "שימוש בצבעים",
+  "@useColors": {},
+  "useApiToken": "שימוש באסימון API",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "שימוש בשם משתמש וסיסמה",
+  "@useUsernameAndPassword": {},
+  "apiToken": "אסימון API",
+  "@apiToken": {},
+  "invalidApiToken": "נא להקליד אסימון API תקין",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "routines": "שגרות",
+  "@routines": {},
+  "newRoutine": "שגרה חדשה",
+  "@newRoutine": {},
+  "noRoutines": "אין לך שגרות",
+  "@noRoutines": {},
+  "restDay": "יום מנוחה",
+  "@restDay": {},
+  "isRestDay": "הוא יום מנוחה",
+  "@isRestDay": {},
+  "routineDays": "ימים בשגרה",
+  "@routineDays": {},
+  "verify": "אימות",
+  "@verify": {},
+  "searchIngredient": "חיפוש רכיב",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
   }
 }
