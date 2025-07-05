@@ -555,6 +555,91 @@
       }
     }
   },
-  "aboutWhySupportTitle": "תוכנה בקוד פתוח, וחופשית לשימוש",
-  "@aboutWhySupportTitle": {}
+  "aboutWhySupportTitle": "תוכנה בקוד פתוח, וחופשית לשימוש ❤️",
+  "@aboutWhySupportTitle": {},
+  "aboutDonateTitle": "תרומה כספית",
+  "@aboutDonateTitle": {},
+  "aboutContributeTitle": "התנדבות",
+  "@aboutContributeTitle": {},
+  "aboutTranslationListTitle": "עזרה בתרגום היישום",
+  "@aboutTranslationListTitle": {},
+  "aboutSourceListTitle": "צפייה בקוד המקור",
+  "@aboutSourceListTitle": {},
+  "aboutJoinCommunityTitle": "הצטרפות לקהילה",
+  "@aboutJoinCommunityTitle": {},
+  "others": "אחרים",
+  "@others": {},
+  "selectEntry": "נא לבחור ערך",
+  "@selectEntry": {},
+  "recentlyUsedIngredients": "מרכיבים שנוספו לאחרונה",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "appUpdateTitle": "צריך לעדכן",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "גרסה זו של היישום אינה מסוגלת להתחבר לשרת, נא לעדכן את היישום.",
+  "@appUpdateContent": {},
+  "productFound": "המוצר נמצא",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productNotFound": "המוצר לא נמצא",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "scanBarcode": "סריקת ברקוד",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "סגירה",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "alsoKnownAs": "מוכר גם בתור: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {
+        "type": "String"
+      }
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "alternativeNames": "שמות חלופיים",
+  "@alternativeNames": {},
+  "previous": "הקודם",
+  "@previous": {},
+  "next": "הבא",
+  "@next": {},
+  "images": "תמונות",
+  "@images": {},
+  "language": "שפה",
+  "@language": {},
+  "addExercise": "הוספת תרגיל",
+  "@addExercise": {},
+  "translation": "תרגום",
+  "@translation": {},
+  "translateExercise": "לתרגם את התרגיל הזה כעת",
+  "@translateExercise": {},
+  "settingsTitle": "הגדרות",
+  "@settingsTitle": {},
+  "settingsCacheTitle": "מטמון",
+  "@settingsCacheTitle": {},
+  "settingsExerciseCacheDescription": "מטמון תרגילים",
+  "@settingsExerciseCacheDescription": {},
+  "aboutPageTitle": "מידע כללי ותמיכה",
+  "@aboutPageTitle": {},
+  "simpleMode": "מצב פשוט",
+  "@simpleMode": {},
+  "arms": "זרועות",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "back": "גב",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "שרירי הקיבורת",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
