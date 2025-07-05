@@ -742,6 +742,6 @@
   "@moreMeasurementEntries": {
     "description": "Message shown when the user wants to add new measurement"
   },
-  "aboutBugsListTitle": "דיווח על בעיה או הצגת תכונה",
+  "aboutBugsListTitle": "דיווח על בעיה או הצעת תכונה",
   "@aboutBugsListTitle": {}
 }
