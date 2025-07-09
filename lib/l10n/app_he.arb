@@ -927,8 +927,36 @@
   },
   "textPromptSubheading": "נא ללחוץ על כפתור הפעולה כדי להתחיל",
   "@textPromptSubheading": {},
-  "bench": "ספסל",
+  "bench": "",
   "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "משקולות",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "משקולות קטלבל",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "רגליים",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lower_back": "גב תחתון",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "מספר מרבי של חזרות",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "כדור התעמלות",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "ללא (התרגיל מסתמך על משקל הגוף)",
+  "@none__bodyweight_exercise_": {
     "description": "Generated entry for translation for server strings"
   }
 }
