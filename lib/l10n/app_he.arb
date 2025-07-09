@@ -925,6 +925,10 @@
       }
     }
   },
-  "textPromptSubheading": "לחץ על כפתור הפעולה כדי להתחיל",
-  "@textPromptSubheading": {}
+  "textPromptSubheading": "נא ללחוץ על כפתור הפעולה כדי להתחיל",
+  "@textPromptSubheading": {},
+  "bench": "ספסל",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  }
 }
