@@ -829,5 +829,102 @@
   "darkMode": "עיצוב כהה תמיד",
   "@darkMode": {},
   "lightMode": "עיצוב בהיר תמיד",
-  "@lightMode": {}
+  "@lightMode": {},
+  "barWeight": "משקל Bar",
+  "@barWeight": {},
+  "apiTokenValidChars": "מפתח API יכול להכיל רק את האותיות a-f, את הספרות 0-9, ועליו להיות באורך 40 תווים בדיוק",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "exerciseNr": "תרגיל {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "isRestDayHelp": "לתשומת לבך, כל הסטים והתרגילים יוסרו מימים שהגדרת בתור ימי מנוחה.",
+  "@isRestDayHelp": {},
+  "onlyLoggingHelpText": "נא לסמן תיבה זו אך ורק אם ברצונך לתעד את כמות הקלוריות מבלי להגדיר תוכנית תזונתית עם מנות ספציפיות",
+  "@onlyLoggingHelpText": {},
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "לא הוגדרו מנות בתוכניות התזונתית הנוכחית שלך",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "לצורך הוספת מנות לתוכנית, יש לגשת לפרטי התוכנית התזונתית",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  },
+  "errorCouldNotConnectToServerDetails": "אין באפשרות היישום להתחבר לשרת. נא לבדוק את החיבור לאינטרנט או לכתובת השרת ולנסות שוב. אם הבעיה ממשיכה להתקיים, נא לפנות למנהל השרת.",
+  "@errorCouldNotConnectToServerDetails": {},
+  "chartAllTimeTitle": "{name} בכל הזמנים",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chart30DaysTitle": "{name} ב־30 הימים האחרונים",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} במסגרת התוכנית התזונתית {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutDonateText": "בעוד המיזם הזה חופשי ותמיד יישאר כך, תפעול השרת כן עולה לנו כסף! גם הפיתוח דורש השקעה משמעותית של זמן ומאמץ של מתנדבים. התרומה שלך תלך ישירות לכיסוי העלויות האלה, המאפשרות לספק את השירות שלנו נאמנה.",
+  "@aboutDonateText": {},
+  "aboutContributeText": "אנחנו מעודדים את כל סוגי התרומה. בין אם היא מתבטאת בפיתוח קוד, תרגום, או אפילו רק תשוקה לכושר, אנו מעריכים כל סוג של תמיכה!",
+  "@aboutContributeText": {},
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
+  "baseNameEnglish": "לכל התרגילים נחוץ שם מקור באנגלית",
+  "@baseNameEnglish": {},
+  "add_exercise_image_license": "על התמונות להיות תואמות לרישיון CC BY SA. אם יש ספק כלשהו, יש להעלות רק תמונות שצילמת בעצמך.",
+  "@add_exercise_image_license": {},
+  "variations": "וריאציות",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "verifiedEmailReason": "עליך לאמת את הדואר האלקטרוני שלך כדי לתרום תרגילים",
+  "@verifiedEmailReason": {},
+  "oneNamePerLine": "שם אחד בכל שורה",
+  "@oneNamePerLine": {},
+  "whatVariationsExist": "מהן הווריאציות שיש לתרגיל זה, אם קיימות?",
+  "@whatVariationsExist": {},
+  "contributeExercise": "לתרום תרגיל",
+  "@contributeExercise": {},
+  "contributeExerciseWarning": "אפשר לתרום תרגילים אך ורק אם החשבון שלך בן יותר מ־{days} ימים וכתובת הדואר האלקטרוני שלך מאומתת",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "textPromptSubheading": "לחץ על כפתור הפעולה כדי להתחיל",
+  "@textPromptSubheading": {}
 }
