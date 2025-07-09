@@ -379,7 +379,7 @@
   "@gallery": {},
   "addImage": "הוסף תמונה",
   "@addImage": {},
-  "email": "כתובת מייל",
+  "email": "כתובת דואר אלקטרוני",
   "@email": {},
   "username": "שם משתמש",
   "@username": {},
@@ -399,7 +399,7 @@
   "@passwordsDontMatch": {
     "description": "Error message when the user enters two different passwords during registration"
   },
-  "invalidEmail": "אנא הכנס/י כתובת מייל תקינה",
+  "invalidEmail": "נא להקליד כתובת דואר אלקטרוני תקינה",
   "@invalidEmail": {
     "description": "Error message when the user enters an invalid email"
   },
@@ -445,7 +445,7 @@
   "@selectExercises": {},
   "logHelpEntries": "אם ביום אחד ישנה יותר מרשומה אחת עם אותה כמות חזרות, אבל משקל שונה, רק הרשומה עם המשקל הגבוה יותר תופיע בדיאגרמה.",
   "@logHelpEntries": {},
-  "searchNamesInEnglish": "חפש גם לפי שמות באנגלית",
+  "searchNamesInEnglish": "לחפש גם לפי השמות באנגלית",
   "@searchNamesInEnglish": {},
   "success": "הפעולה צלחה",
   "@success": {
@@ -955,8 +955,12 @@
   "@swiss_ball": {
     "description": "Generated entry for translation for server strings"
   },
-  "none__bodyweight_exercise_": "ללא (התרגיל מסתמך על משקל הגוף)",
+  "none__bodyweight_exercise_": "ללא (התרגיל מסתמך על משקל גוף)",
   "@none__bodyweight_exercise_": {
     "description": "Generated entry for translation for server strings"
+  },
+  "overallChangeWeight": "שינוי כללי",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
   }
 }
