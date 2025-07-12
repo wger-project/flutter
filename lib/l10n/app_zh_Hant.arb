@@ -155,7 +155,7 @@
   "@repetitionUnit": {},
   "dayDescriptionHelp": "描述這一天做了什麼（例如：拉力日）或訓練了哪些部位（例如：胸部和肩膀）",
   "@dayDescriptionHelp": {},
-  "comment": "註釋",
+  "comment": "註解",
   "@comment": {
     "description": "Comment, additional information"
   },
