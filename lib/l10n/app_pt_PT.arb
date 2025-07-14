@@ -297,7 +297,7 @@
   "@searchIngredient": {
     "description": "Label on ingredient search form"
   },
-  "nutritionalPlan": "Plano nutricional",
+  "nutritionalPlan": "Plano alimentar",
   "@nutritionalPlan": {},
   "nutritionalDiary": "Diário nutricional",
   "@nutritionalDiary": {},
@@ -351,9 +351,9 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "min": "Mín",
+  "min": "Mínimo",
   "@min": {},
-  "max": "Máx",
+  "max": "Máximo",
   "@max": {},
   "chartAllTimeTitle": "{name} total",
   "@chartAllTimeTitle": {
@@ -778,7 +778,7 @@
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
-  "delete": "Eliminar",
+  "delete": "Apagar",
   "@delete": {},
   "productNotFound": "Produto não encontrado",
   "@productNotFound": {
