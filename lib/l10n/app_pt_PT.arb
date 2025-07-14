@@ -233,7 +233,7 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
-  "isRestDayHelp": "Nota que todas as séries e exercícios serão removidos se marcares o dia como descanso",
+  "isRestDayHelp": "Nota que todas as séries e exercícios serão removidos se marcares o dia como descanso.",
   "@isRestDayHelp": {},
   "restDay": "Dia de descanso",
   "@restDay": {},
@@ -263,9 +263,9 @@
   },
   "todaysWorkout": "O teu treino de hoje",
   "@todaysWorkout": {},
-  "logHelpEntries": "Se houver várias entradas no mesmo dia com o mesmo número de repetições mas pesos diferentes, só aparece no gráfico a de maior peso",
+  "logHelpEntries": "Se houver várias entradas no mesmo dia com o mesmo número de repetições mas pesos diferentes, só aparece no gráfico a de maior peso.",
   "@logHelpEntries": {},
-  "logHelpEntriesUnits": "Apenas são mostradas entradas com unidade de peso (kg ou lb) e repetições, outras como tempo ou até falhar são ignoradas",
+  "logHelpEntriesUnits": "Apenas são mostradas entradas com unidade de peso (kg ou lb) e repetições, outras como tempo ou até falhar são ignoradas.",
   "@logHelpEntriesUnits": {},
   "description": "Descrição",
   "@description": {},
@@ -297,7 +297,7 @@
   "@searchIngredient": {
     "description": "Label on ingredient search form"
   },
-  "nutritionalPlan": "Plano alimentar",
+  "nutritionalPlan": "Plano nutricional",
   "@nutritionalPlan": {},
   "nutritionalDiary": "Diário nutricional",
   "@nutritionalDiary": {},
@@ -351,9 +351,9 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "min": "Mínimo",
+  "min": "Mín",
   "@min": {},
-  "max": "Máximo",
+  "max": "Máx",
   "@max": {},
   "chartAllTimeTitle": "{name} total",
   "@chartAllTimeTitle": {
@@ -681,7 +681,7 @@
   "@close": {
     "description": "Translation for close"
   },
-  "add_exercise_image_license": "Imagens têm de ser compatíveis com a licença CC BY SA. Se tiveres dúvidas, usa apenas fotos tiradas por ti",
+  "add_exercise_image_license": "Imagens têm de ser compatíveis com a licença CC BY SA. Se tiveres dúvidas, usa apenas fotos tiradas por ti.",
   "@add_exercise_image_license": {},
   "variations": "Variações",
   "@variations": {
@@ -778,7 +778,7 @@
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
-  "delete": "Apagar",
+  "delete": "Eliminar",
   "@delete": {},
   "productNotFound": "Produto não encontrado",
   "@productNotFound": {
@@ -813,11 +813,11 @@
   },
   "fitInWeekHelp": "Se ativado, os dias repetem-se semanalmente. Caso contrário, seguem-se em sequência sem respeitar o início da semana.",
   "@fitInWeekHelp": {},
-  "addSuperset": "Adicionar superset",
+  "addSuperset": "Adicionar Superset",
   "@addSuperset": {},
   "setHasProgression": "Série com progressão",
   "@setHasProgression": {},
-  "setHasProgressionWarning": "De momento não é possível editar todas as definições de uma série na app móvel ou configurar progressões automáticas. Usa a versão web",
+  "setHasProgressionWarning": "De momento não é possível editar todas as definições de uma série na app móvel ou configurar progressões automáticas. Usa a versão web.",
   "@setHasProgressionWarning": {},
   "setHasNoExercises": "Esta série ainda não tem exercícios!",
   "@setHasNoExercises": {},
@@ -857,9 +857,9 @@
   "@simpleMode": {},
   "simpleModeHelp": "Esconder opções mais avançadas ao editar exercícios",
   "@simpleModeHelp": {},
-  "progressionRules": "Este exercício tem regras de progressão e não pode ser editado na app. Usa a versão web para o editar",
+  "progressionRules": "Este exercício tem regras de progressão e não pode ser editado na app. Usa a versão web para o editar.",
   "@progressionRules": {},
-  "cacheWarning": "Por causa da cache, pode demorar um pouco até veres as alterações na app",
+  "cacheWarning": "Por causa da cache, pode demorar um pouco até veres as alterações na app.",
   "@cacheWarning": {},
   "textPromptTitle": "Pronto para começar?",
   "@textPromptTitle": {},
@@ -969,7 +969,7 @@
   "@plates": {
     "description": "Generated entry for translation for server strings"
   },
-  "pull_up_bar": "Barra de Pull-up",
+  "pull_up_bar": "Barra de elevações",
   "@pull_up_bar": {
     "description": "Generated entry for translation for server strings"
   },
