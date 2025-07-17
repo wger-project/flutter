@@ -10,6 +10,8 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
+/// A form widget for creating and editing workout routines.
+/// Handles validation and user input for routine details, including start and end dates.
 class RoutineForm extends StatefulWidget {
   final Routine _routine;
   final bool useListView;
@@ -152,6 +154,9 @@ class _RoutineFormState extends State<RoutineForm> {
       TextFormField(
         key: const Key('field-end-date'),
         readOnly: true,
+        /// Opens a date picker for selecting the routine's end date.
+        /// Ensures the end date is always after the start date and allows selection up to 10 years in the future.
+        /// The initial date shown is the current end date if valid, otherwise the minimum allowed end date.
         decoration: const InputDecoration(
           labelText: 'End date',
           suffixIcon: Icon(
