@@ -27,9 +27,11 @@ class _RoutineFormState extends State<RoutineForm> {
   bool isSaving = false;
   late bool fitInWeek;
   late DateTime startDate;
-  late DateTime endDate;
+  DateTime? endDate;
   final workoutNameController = TextEditingController();
   final workoutDescriptionController = TextEditingController();
+  final startDateController = TextEditingController();
+  final endDateController = TextEditingController();
 
   @override
   void initState() {
@@ -38,13 +40,20 @@ class _RoutineFormState extends State<RoutineForm> {
     workoutNameController.text = widget._routine.name;
     workoutDescriptionController.text = widget._routine.description;
     startDate = widget._routine.start;
-    endDate = widget._routine.end;
+    endDate = widget._routine.end == widget._routine.start ? null : widget._routine.end;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final locale = Localizations.localeOf(context).languageCode;
+      startDateController.text = DateFormat.yMd(locale).format(startDate);
+      endDateController.text = endDate != null ? DateFormat.yMd(locale).format(endDate!) : '';
+    });
   }
 
   @override
   void dispose() {
     workoutNameController.dispose();
     workoutDescriptionController.dispose();
+    startDateController.dispose();
+    endDateController.dispose();
     super.dispose();
   }
 
@@ -94,17 +103,18 @@ class _RoutineFormState extends State<RoutineForm> {
       ),
       TextFormField(
         key: const Key('field-start-date'),
-        // Stop keyboard from appearing
         readOnly: true,
         validator: (value) {
-          if (endDate.isBefore(startDate)) {
-            return 'End date must be after start date';
-          }
-          if (endDate.difference(startDate).inDays < Routine.MIN_DURATION * 7) {
-            return 'Duration of the routine must be more than ${Routine.MIN_DURATION} weeks';
-          }
-          if (endDate.difference(startDate).inDays > Routine.MAX_DURATION * 7) {
-            return 'Duration of the routine must be less than ${Routine.MAX_DURATION} weeks';
+          if (endDate != null) {
+            if (endDate!.isBefore(startDate)) {
+              return 'End date must be after start date';
+            }
+            if (endDate!.difference(startDate).inDays < Routine.MIN_DURATION * 7) {
+              return 'Duration of the routine must be more than  {Routine.MIN_DURATION} weeks';
+            }
+            if (endDate!.difference(startDate).inDays > Routine.MAX_DURATION * 7) {
+              return 'Duration of the routine must be less than  {Routine.MAX_DURATION} weeks';
+            }
           }
           return null;
         },
@@ -116,11 +126,7 @@ class _RoutineFormState extends State<RoutineForm> {
           ),
         ),
         enableInteractiveSelection: false,
-        controller: TextEditingController(
-          text: DateFormat.yMd(
-            Localizations.localeOf(context).languageCode,
-          ).format(startDate),
-        ),
+        controller: startDateController,
         onTap: () async {
           final picked = await showDatePicker(
             context: context,
@@ -137,13 +143,14 @@ class _RoutineFormState extends State<RoutineForm> {
           if (mounted) {
             setState(() {
               startDate = picked;
+              final locale = Localizations.localeOf(context).languageCode;
+              startDateController.text = DateFormat.yMd(locale).format(startDate);
             });
           }
         },
       ),
       TextFormField(
         key: const Key('field-end-date'),
-        // Stop keyboard from appearing
         readOnly: true,
         decoration: const InputDecoration(
           labelText: 'End date',
@@ -153,17 +160,19 @@ class _RoutineFormState extends State<RoutineForm> {
           ),
         ),
         enableInteractiveSelection: false,
-        controller: TextEditingController(
-          text: DateFormat.yMd(
-            Localizations.localeOf(context).languageCode,
-          ).format(endDate),
-        ),
+        controller: endDateController,
         onTap: () async {
+          final now = DateTime.now();
+          final firstEndDate = startDate.add(const Duration(days: 1));
+          DateTime initial = firstEndDate;
+          if (endDate != null && endDate!.isAfter(firstEndDate)) {
+            initial = endDate!;
+          }
           final picked = await showDatePicker(
             context: context,
-            initialDate: endDate,
-            firstDate: DateTime(DateTime.now().year - 10),
-            lastDate: DateTime.now(),
+            initialDate: initial,
+            firstDate: firstEndDate,
+            lastDate: now.add(const Duration(days: 365 * 10)),
           );
 
           if (picked == null) {
@@ -174,6 +183,8 @@ class _RoutineFormState extends State<RoutineForm> {
           if (mounted) {
             setState(() {
               endDate = picked;
+              final locale = Localizations.localeOf(context).languageCode;
+              endDateController.text = DateFormat.yMd(locale).format(endDate!);
             });
           }
         },
