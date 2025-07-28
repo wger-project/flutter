@@ -618,7 +618,7 @@
   "@kettlebell": {},
   "none__bodyweight_exercise_": "nenhum (somente peso do corpo)",
   "@none__bodyweight_exercise_": {},
-  "aboutPageTitle": "Sobre Wger",
+  "aboutPageTitle": "Sobre nós & suporte",
   "@aboutPageTitle": {},
   "enterMinCharacters": "Por favor, selecione ao menos {min} de caracteres",
   "@enterMinCharacters": {
@@ -873,7 +873,7 @@
   "@lightMode": {},
   "systemMode": "Configurações do sistema",
   "@systemMode": {},
-  "themeMode": "Modo temático",
+  "themeMode": "Tema",
   "@themeMode": {},
   "darkMode": "Modo sempre escuro",
   "@darkMode": {},
