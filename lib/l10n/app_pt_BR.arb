@@ -31,7 +31,7 @@
   "@logout": {
     "description": "Text for logout button"
   },
-  "notes": "Notas",
+  "notes": "Comentários",
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
@@ -95,7 +95,7 @@
   },
   "confirmPassword": "Confirme sua senha",
   "@confirmPassword": {},
-  "comment": "Comente",
+  "comment": "Comentário",
   "@comment": {
     "description": "Comment, additional information"
   },
@@ -227,7 +227,7 @@
   },
   "percentEnergy": "Porcentagem de energia",
   "@percentEnergy": {},
-  "searchNamesInEnglish": "Pesquise também por nomes em inglês",
+  "searchNamesInEnglish": "Procure também nomes em inglês",
   "@searchNamesInEnglish": {},
   "exercise": "Exercício",
   "@exercise": {
@@ -451,7 +451,7 @@
   "@aboutMastodonTitle": {},
   "selectEntry": "Por favor, selecione uma entrada",
   "@selectEntry": {},
-  "noMatchingExerciseFound": "Nenhum exercício correspondente encontrado",
+  "noMatchingExerciseFound": "Sem exercícios correspondentes encontrados",
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
   },
@@ -469,7 +469,7 @@
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
   },
-  "reps": "Reps",
+  "reps": "Repetições",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
   },
@@ -930,5 +930,59 @@
   "biceps": "Bíceps",
   "@biceps": {
     "description": "Generated entry for translation for server strings"
-  }
+  },
+  "useApiToken": "Usar API Token",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "Usar usuário e senha",
+  "@useUsernameAndPassword": {},
+  "apiToken": "API Token",
+  "@apiToken": {},
+  "invalidApiToken": "Por favor, entre com a API key válida",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "A chave API deve ter apenas letras a-f, números 0-9 e ter exatamente 40 caracteres",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "routines": "Rotinas",
+  "@routines": {},
+  "newRoutine": "Nova rotina",
+  "@newRoutine": {},
+  "noRoutines": "Não tens rotinas",
+  "@noRoutines": {},
+  "restTime": "Tempo de descanso",
+  "@restTime": {},
+  "sets": "Conjuntos",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "exerciseNr": "Exercício {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "Superset {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "restDay": "Dia de descanso",
+  "@restDay": {},
+  "isRestDay": "É dia de descanso",
+  "@isRestDay": {},
+  "isRestDayHelp": "Por favor, note que todos os conjuntos e exercícios serão removidos quando marcar um dia como um dia de descanso.",
+  "@isRestDayHelp": {},
+  "needsLogsToAdvance": "Precisa de logs para avançar",
+  "@needsLogsToAdvance": {}
 }
