@@ -13,7 +13,7 @@ jobs:
     steps:
 
       - name: Checkout application
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # needed to push changes
           token: ${{ secrets.GITHUB_TOKEN }}
