@@ -795,5 +795,15 @@
     "description": "Error message when the user enters an invalid API key"
   },
   "useUsernameAndPassword": "استخدم اسم المستخدم وكلمة المرور",
-  "@useUsernameAndPassword": {}
+  "@useUsernameAndPassword": {},
+  "selectAvailablePlates": "اختر من الاطباق المتوفرة",
+  "@selectAvailablePlates": {},
+  "barWeight": "وزن القضيب الحديدي",
+  "@barWeight": {},
+  "useColors": "استخدم الالوان",
+  "@useColors": {},
+  "apiTokenValidChars": "إن مفتاح ال API لا يمكن أن يحتوي غير الأحرف من a-f، أرقام من 0-9، ويحب أن تكون 40 محرف تماما",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  }
 }

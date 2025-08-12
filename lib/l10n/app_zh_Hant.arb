@@ -155,7 +155,7 @@
   "@repetitionUnit": {},
   "dayDescriptionHelp": "描述這一天做了什麼（例如：拉力日）或訓練了哪些部位（例如：胸部和肩膀）",
   "@dayDescriptionHelp": {},
-  "comment": "註釋",
+  "comment": "註解",
   "@comment": {
     "description": "Comment, additional information"
   },
@@ -938,5 +938,11 @@
   "ingredientLogged": "食材已紀錄到日記",
   "@ingredientLogged": {},
   "selectMealToLog": "選擇要紀錄到日記的餐點",
-  "@selectMealToLog": {}
+  "@selectMealToLog": {},
+  "errorCouldNotConnectToServerDetails": "無法連接到伺服器",
+  "@errorCouldNotConnectToServerDetails": {},
+  "copyToClipboard": "複製到剪貼簿",
+  "@copyToClipboard": {},
+  "aboutWhySupportTitle": "開源且免費使用❤️",
+  "@aboutWhySupportTitle": {}
 }
