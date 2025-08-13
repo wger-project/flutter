@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
@@ -85,9 +86,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   }
 
   void loadEvents() async {
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
     // Process weight entries
-    final BodyWeightProvider weightProvider =
-        Provider.of<BodyWeightProvider>(context, listen: false);
+    final weightProvider = context.read<BodyWeightProvider>();
     for (final entry in weightProvider.items) {
       final date = DateFormatLists.format(entry.date);
 
@@ -96,12 +98,11 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       }
 
       // Add events to lists
-      _events[date]!.add(Event(EventType.weight, '${entry.weight} kg'));
+      _events[date]!.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
     }
 
     // Process measurements
-    final MeasurementProvider measurementProvider =
-        Provider.of<MeasurementProvider>(context, listen: false);
+    final measurementProvider = context.read<MeasurementProvider>();
     for (final category in measurementProvider.categories) {
       for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
@@ -112,7 +113,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
         _events[date]!.add(Event(
           EventType.measurement,
-          '${category.name}: ${entry.value} ${category.unit}',
+          '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
         ));
       }
     }

@@ -78,13 +78,16 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       touchTooltipData: LineTouchTooltipData(
         getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItems: (touchedSpots) {
+          final numberFormat =
+              NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
           return touchedSpots.map((touchedSpot) {
             final DateTime date = DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
             final dateStr =
                 DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
 
             return LineTooltipItem(
-              '$dateStr: ${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
+              '$dateStr: ${numberFormat.format(touchedSpot.y)} ${widget._unit}',
               TextStyle(color: touchedSpot.bar.color),
             );
           }).toList();
@@ -94,6 +97,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
   }
 
   LineChartData mainData() {
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
     return LineChartData(
       lineTouchData: tooltipData(),
       gridData: FlGridData(
@@ -158,7 +163,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 return const Text('');
               }
 
-              return Text('${value.toStringAsFixed(1)} ${widget._unit}');
+              return Text('${numberFormat.format(value)} ${widget._unit}');
             },
           ),
         ),
