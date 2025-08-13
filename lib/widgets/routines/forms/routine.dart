@@ -126,7 +126,7 @@ class _RoutineFormState extends State<RoutineForm> {
             context: context,
             initialDate: startDate,
             firstDate: DateTime(DateTime.now().year - 10),
-            lastDate: DateTime.now(),
+            lastDate: DateTime(DateTime.now().year + 2),
           );
 
           if (picked == null) {
@@ -163,7 +163,7 @@ class _RoutineFormState extends State<RoutineForm> {
             context: context,
             initialDate: endDate,
             firstDate: DateTime(DateTime.now().year - 10),
-            lastDate: DateTime.now(),
+            lastDate: DateTime(DateTime.now().year + 2),
           );
 
           if (picked == null) {
