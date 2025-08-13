@@ -82,7 +82,6 @@ void main() async {
   _setupLogging();
 
   final logger = Logger('main');
-  //zx.setLogEnabled(kDebugMode);
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
@@ -97,9 +96,7 @@ void main() async {
   if (kReleaseMode) {
     FlutterError.onError = (FlutterErrorDetails details) {
       final stack = details.stack ?? StackTrace.empty;
-      // if (kDebugMode) {
-      //   FlutterError.dumpErrorToConsole(details);
-      // }
+      FlutterError.dumpErrorToConsole(details);
 
       // Don't show the full error dialog for network image loading errors.
       if (details.exception is NetworkImageLoadException) {
