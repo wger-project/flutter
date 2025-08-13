@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -42,6 +43,26 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
     return SliverList(
       delegate: SliverChildListDelegate(
         [
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              _nutritionalPlan.endDate != null
+                  ? 'from ${DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(_nutritionalPlan.startDate)} to ${DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(_nutritionalPlan.endDate!)}'
+                  : 'from ${DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(_nutritionalPlan.startDate)} (${AppLocalizations.of(context).openEnded})',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 8),
           SizedBox(
             width: 300,
             child: Padding(

@@ -79,12 +79,17 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItems: (touchedSpots) {
           return touchedSpots.map((touchedSpot) {
-            final DateTime date = DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
+            final msSinceEpoch = touchedSpot.x.toInt();
+            final DateTime date = DateTime.fromMillisecondsSinceEpoch(msSinceEpoch);
             final dateStr =
                 DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
 
+            // Check if this is an interpolated point (milliseconds ending with 123)
+            final bool isInterpolated = msSinceEpoch % 1000 == 123;
+            final String interpolatedMarker = isInterpolated ? ' (interpolated)' : '';
+
             return LineTooltipItem(
-              '$dateStr: ${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
+              '$dateStr: ${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}$interpolatedMarker',
               TextStyle(color: touchedSpot.bar.color),
             );
           }).toList();
