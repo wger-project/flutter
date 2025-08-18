@@ -51,7 +51,7 @@ dependencies:
   freezed_annotation: ^3.0.0
   get_it: ^8.2.0
   http: ^1.5.0
-  image_picker: ^1.1.0
+  image_picker: ^1.2.0
   intl: ^0.20.0
   json_annotation: ^4.8.1
   multi_select_flutter: ^4.1.3
