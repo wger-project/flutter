@@ -59,7 +59,7 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigRepetitions = 'repetitions-config';
   static const _routineConfigMaxRepetitions = 'max-repetitions-config';
   static const _routineConfigRir = 'rir-config';
-  static const _routineConfigMaxRir = 'rest-config';
+  static const _routineConfigMaxRir = 'max-rir-config';
   static const _routineConfigRestTime = 'rest-config';
   static const _routineConfigMaxRestTime = 'max-rest-config';
 
