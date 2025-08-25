@@ -93,9 +93,11 @@ void main() async {
   //
   // NOTE: it seems this sometimes makes problems and even freezes the flutter
   //       process when widgets overflow, so it is disabled in dev mode.
-  if (kReleaseMode) {
+  if (!kDebugMode) {
     FlutterError.onError = (FlutterErrorDetails details) {
       final stack = details.stack ?? StackTrace.empty;
+      logger.severe('Error caught by FlutterError.onError: ${details.exception}');
+
       FlutterError.dumpErrorToConsole(details);
 
       // Don't show the full error dialog for network image loading errors.
@@ -110,15 +112,13 @@ void main() async {
 
   // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
   PlatformDispatcher.instance.onError = (error, stack) {
-    if (kDebugMode) {
-      logger.warning('Caught error by PlatformDispatcher: $error');
-      logger.warning('Stack trace: $stack');
-    }
+    logger.severe('Error caught by PlatformDispatcher.instance.onError: $error');
+    logger.severe('Stack trace: $stack');
+
     if (error is WgerHttpException) {
       showHttpExceptionErrorDialog(error);
     } else {
       showGeneralErrorDialog(error, stack);
-      // throw error;
     }
 
     // Return true to indicate that the error has been handled.
