@@ -225,7 +225,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           TableCalendar<Event>(
             locale: Localizations.localeOf(context).languageCode,
             firstDay: DateTime.now().subtract(const Duration(days: 1000)),
-            lastDay: DateTime.now().add(const Duration(days: 112)),
+            lastDay: DateTime.now().add(const Duration(days: 365)),
             focusedDay: _focusedDay,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             rangeStartDay: _rangeStart,
