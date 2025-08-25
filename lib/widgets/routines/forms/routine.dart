@@ -163,7 +163,7 @@ class _RoutineFormState extends State<RoutineForm> {
             context: context,
             initialDate: endDate,
             firstDate: DateTime(DateTime.now().year - 10),
-            lastDate: DateTime.now(),
+            lastDate: DateTime.now().add(const Duration(days: 365)),
           );
 
           if (picked == null) {
