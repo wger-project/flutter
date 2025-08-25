@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -214,6 +213,252 @@ class _$ExerciseApiDataCopyWithImpl<$Res> implements $ExerciseApiDataCopyWith<$R
           : authorsGlobal // ignore: cast_nullable_to_non_nullable
               as List<String>,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [ExerciseApiData].
+extension ExerciseApiDataPatterns on ExerciseApiData {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ExerciseBaseData value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseBaseData() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ExerciseBaseData value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseBaseData():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_ExerciseBaseData value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseBaseData() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            int id,
+            String uuid,
+            @JsonKey(name: 'variations') int? variationId,
+            @JsonKey(name: 'created') DateTime created,
+            @JsonKey(name: 'last_update') DateTime lastUpdate,
+            @JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal,
+            ExerciseCategory category,
+            List<Muscle> muscles,
+            @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
+            List<Equipment> equipment,
+            @JsonKey(name: 'translations', defaultValue: []) List<Translation> translations,
+            List<ExerciseImage> images,
+            List<Video> videos,
+            @JsonKey(name: 'author_history') List<String> authors,
+            @JsonKey(name: 'total_authors_history') List<String> authorsGlobal)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseBaseData() when $default != null:
+        return $default(
+            _that.id,
+            _that.uuid,
+            _that.variationId,
+            _that.created,
+            _that.lastUpdate,
+            _that.lastUpdateGlobal,
+            _that.category,
+            _that.muscles,
+            _that.musclesSecondary,
+            _that.equipment,
+            _that.translations,
+            _that.images,
+            _that.videos,
+            _that.authors,
+            _that.authorsGlobal);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            int id,
+            String uuid,
+            @JsonKey(name: 'variations') int? variationId,
+            @JsonKey(name: 'created') DateTime created,
+            @JsonKey(name: 'last_update') DateTime lastUpdate,
+            @JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal,
+            ExerciseCategory category,
+            List<Muscle> muscles,
+            @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
+            List<Equipment> equipment,
+            @JsonKey(name: 'translations', defaultValue: []) List<Translation> translations,
+            List<ExerciseImage> images,
+            List<Video> videos,
+            @JsonKey(name: 'author_history') List<String> authors,
+            @JsonKey(name: 'total_authors_history') List<String> authorsGlobal)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseBaseData():
+        return $default(
+            _that.id,
+            _that.uuid,
+            _that.variationId,
+            _that.created,
+            _that.lastUpdate,
+            _that.lastUpdateGlobal,
+            _that.category,
+            _that.muscles,
+            _that.musclesSecondary,
+            _that.equipment,
+            _that.translations,
+            _that.images,
+            _that.videos,
+            _that.authors,
+            _that.authorsGlobal);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            int id,
+            String uuid,
+            @JsonKey(name: 'variations') int? variationId,
+            @JsonKey(name: 'created') DateTime created,
+            @JsonKey(name: 'last_update') DateTime lastUpdate,
+            @JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal,
+            ExerciseCategory category,
+            List<Muscle> muscles,
+            @JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary,
+            List<Equipment> equipment,
+            @JsonKey(name: 'translations', defaultValue: []) List<Translation> translations,
+            List<ExerciseImage> images,
+            List<Video> videos,
+            @JsonKey(name: 'author_history') List<String> authors,
+            @JsonKey(name: 'total_authors_history') List<String> authorsGlobal)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseBaseData() when $default != null:
+        return $default(
+            _that.id,
+            _that.uuid,
+            _that.variationId,
+            _that.created,
+            _that.lastUpdate,
+            _that.lastUpdateGlobal,
+            _that.category,
+            _that.muscles,
+            _that.musclesSecondary,
+            _that.equipment,
+            _that.translations,
+            _that.images,
+            _that.videos,
+            _that.authors,
+            _that.authorsGlobal);
+      case _:
+        return null;
+    }
   }
 }
 
@@ -642,6 +887,183 @@ class _$ExerciseSearchDetailsCopyWithImpl<$Res> implements $ExerciseSearchDetail
   }
 }
 
+/// Adds pattern-matching-related methods to [ExerciseSearchDetails].
+extension ExerciseSearchDetailsPatterns on ExerciseSearchDetails {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ExerciseSearchDetails value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchDetails() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ExerciseSearchDetails value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchDetails():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_ExerciseSearchDetails value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchDetails() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            @JsonKey(name: 'id') int translationId,
+            @JsonKey(name: 'base_id') int exerciseId,
+            String name,
+            String category,
+            String? image,
+            @JsonKey(name: 'image_thumbnail') String? imageThumbnail)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchDetails() when $default != null:
+        return $default(_that.translationId, _that.exerciseId, _that.name, _that.category,
+            _that.image, _that.imageThumbnail);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            @JsonKey(name: 'id') int translationId,
+            @JsonKey(name: 'base_id') int exerciseId,
+            String name,
+            String category,
+            String? image,
+            @JsonKey(name: 'image_thumbnail') String? imageThumbnail)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchDetails():
+        return $default(_that.translationId, _that.exerciseId, _that.name, _that.category,
+            _that.image, _that.imageThumbnail);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            @JsonKey(name: 'id') int translationId,
+            @JsonKey(name: 'base_id') int exerciseId,
+            String name,
+            String category,
+            String? image,
+            @JsonKey(name: 'image_thumbnail') String? imageThumbnail)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchDetails() when $default != null:
+        return $default(_that.translationId, _that.exerciseId, _that.name, _that.category,
+            _that.image, _that.imageThumbnail);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 @JsonSerializable()
 class _ExerciseSearchDetails implements ExerciseSearchDetails {
@@ -864,6 +1286,159 @@ class _$ExerciseSearchEntryCopyWithImpl<$Res> implements $ExerciseSearchEntryCop
   }
 }
 
+/// Adds pattern-matching-related methods to [ExerciseSearchEntry].
+extension ExerciseSearchEntryPatterns on ExerciseSearchEntry {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ExerciseSearchEntry value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchEntry() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ExerciseSearchEntry value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchEntry():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_ExerciseSearchEntry value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchEntry() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(String value, ExerciseSearchDetails data)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchEntry() when $default != null:
+        return $default(_that.value, _that.data);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(String value, ExerciseSearchDetails data) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchEntry():
+        return $default(_that.value, _that.data);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(String value, ExerciseSearchDetails data)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseSearchEntry() when $default != null:
+        return $default(_that.value, _that.data);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 @JsonSerializable()
 class _ExerciseSearchEntry implements ExerciseSearchEntry {
@@ -1023,6 +1598,159 @@ class _$ExerciseApiSearchCopyWithImpl<$Res> implements $ExerciseApiSearchCopyWit
           : suggestions // ignore: cast_nullable_to_non_nullable
               as List<ExerciseSearchEntry>,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [ExerciseApiSearch].
+extension ExerciseApiSearchPatterns on ExerciseApiSearch {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ExerciseApiSearch value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseApiSearch() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ExerciseApiSearch value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseApiSearch():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_ExerciseApiSearch value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseApiSearch() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(List<ExerciseSearchEntry> suggestions)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseApiSearch() when $default != null:
+        return $default(_that.suggestions);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(List<ExerciseSearchEntry> suggestions) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseApiSearch():
+        return $default(_that.suggestions);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(List<ExerciseSearchEntry> suggestions)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ExerciseApiSearch() when $default != null:
+        return $default(_that.suggestions);
+      case _:
+        return null;
+    }
   }
 }
 
