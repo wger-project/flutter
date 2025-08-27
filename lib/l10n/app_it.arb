@@ -161,7 +161,7 @@
     "@impression": {
         "description": "General impression (e.g. for a workout session) such as good, bad, etc."
     },
-    "comment": "Commento",
+    "comment": "Comment",
     "@comment": {
         "description": "Comment, additional information"
     },
@@ -992,5 +992,53 @@
     "needsLogsToAdvanceHelp": "Seleziona se desideri che la routine proceda al giorno programmato successivo solo se hai registrato un allenamento per quel giorno",
     "@needsLogsToAdvanceHelp": {},
     "routineDays": "Giorni di routine",
-    "@routineDays": {}
+    "@routineDays": {},
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Il tuo attuale piano nutrizionale non ha pasti definiti",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Per aggiungere pasti al piano, vai ai dettagli del piano nutrizionale",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "errorInfoDescription": "Ci dispiace, ma si è verificato un problema. Puoi aiutarci a risolverlo segnalando il problema su GitHub.",
+    "@errorInfoDescription": {},
+    "errorInfoDescription2": "Puoi continuare a utilizzare l'app, ma alcune funzionalità potrebbero non funzionare.",
+    "@errorInfoDescription2": {},
+    "errorViewDetails": "Technical details",
+    "@errorViewDetails": {},
+    "errorCouldNotConnectToServer": "Impossibile connettersi al server",
+    "@errorCouldNotConnectToServer": {},
+    "errorCouldNotConnectToServerDetails": "L'applicazione non è riuscita a connettersi al server. Controlla la tua connessione Internet o l'URL del server e riprova. Se il problema persiste, contatta l'amministratore del server.",
+    "@errorCouldNotConnectToServerDetails": {},
+    "copyToClipboard": "Copia negli appunti",
+    "@copyToClipboard": {},
+    "aboutTranslationListTitle": "Tradurre l'applicazione",
+    "@aboutTranslationListTitle": {},
+    "aboutSourceListTitle": "Visualizza il codice sorgente",
+    "@aboutSourceListTitle": {},
+    "aboutJoinCommunityTitle": "Unisciti alla comunità",
+    "@aboutJoinCommunityTitle": {},
+    "others": "Altri",
+    "@others": {},
+    "fitInWeekHelp": "Se abilitata, i giorni si ripeteranno in un ciclo settimanale, altrimenti i giorni si susseguiranno in sequenza, senza tener conto dell'inizio di una nuova settimana.",
+    "@fitInWeekHelp": {},
+    "addSuperset": "Aggiungi superset",
+    "@addSuperset": {},
+    "setHasProgression": "Il set ha una progressione",
+    "@setHasProgression": {},
+    "setHasProgressionWarning": "Si prega di notare che al momento non è possibile modificare tutte le impostazioni di un set sull'applicazione mobile o configurare la progressione automatica. Per ora, si prega di utilizzare l'applicazione web.",
+    "@setHasProgressionWarning": {},
+    "setHasNoExercises": "Questo set non contiene ancora esercizi!",
+    "@setHasNoExercises": {},
+    "simpleMode": "Modalità semplice",
+    "@simpleMode": {},
+    "simpleModeHelp": "Nascondi alcune delle impostazioni più avanzate durante la modifica degli esercizi",
+    "@simpleModeHelp": {},
+    "progressionRules": "Questo esercizio ha delle regole di progressione e non può essere modificato sull'app mobile. Per modificare questo esercizio, utilizza l'applicazione web.",
+    "@progressionRules": {},
+    "resistance_band": "Fascia di resistenza",
+    "@resistance_band": {
+        "description": "Generated entry for translation for server strings"
+    }
 }
