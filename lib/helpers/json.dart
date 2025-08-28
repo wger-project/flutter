@@ -56,7 +56,7 @@ String? dateToYYYYMMDD(DateTime? dateTime) {
 /// Convert a date to UTC and then to an ISO8601 string.
 ///
 /// This makes sure that the serialized data has correct timezone information.
-/// Otherwise the django backend will possible treat the date as local time,
+/// Otherwise the django backend will possibly treat the date as local time,
 /// which will not be correct in most cases.
 String dateToUtcIso8601(DateTime dateTime) {
   return dateTime.toUtc().toIso8601String();
