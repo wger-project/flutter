@@ -15,6 +15,9 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
+      - name: Download iOS 18 Platform
+        run: sudo xcodebuild -downloadPlatform iOS
+
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
 
@@ -40,6 +43,9 @@ jobs:
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
+
+      - name: Download iOS 18 Platform
+        run: sudo xcodebuild -downloadPlatform iOS
 
       - name: Build .xcarchive
         run: |
