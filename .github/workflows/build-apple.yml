@@ -18,9 +18,7 @@ jobs:
       # This seems to be related to https://github.com/actions/runner-images/issues/12758
       - name: Xcode setup
         run: |
-          sudo xcodebuild -license accept
-          sudo xcode-select --install
-          sudo xcodebuild -downloadPlatform iOS
+          sudo xcode-select --switch /Applications/Xcode_16.4.app
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
@@ -51,9 +49,7 @@ jobs:
       # This seems to be related to https://github.com/actions/runner-images/issues/12758
       - name: Xcode setup
         run: |
-          sudo xcodebuild -license accept
-          sudo xcode-select --install
-          sudo xcodebuild -downloadPlatform iOS
+          sudo xcode-select --switch /Applications/Xcode_16.4.app
 
       - name: Build .xcarchive
         run: |
