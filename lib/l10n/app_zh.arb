@@ -91,7 +91,7 @@
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
-  "comment": "备注",
+  "comment": "评论",
   "@comment": {
     "description": "Comment, additional information"
   },
@@ -519,7 +519,7 @@
   "@logged": {
     "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
   },
-  "userProfile": "账户",
+  "userProfile": "个人资料",
   "@userProfile": {},
   "exerciseName": "锻炼名",
   "@exerciseName": {
@@ -706,7 +706,7 @@
   "@biceps": {
     "description": "Generated entry for translation for server strings"
   },
-  "aboutPageTitle": "关于 Wger",
+  "aboutPageTitle": "关于我们&支持",
   "@aboutPageTitle": {},
   "selectEntry": "请选择一项",
   "@selectEntry": {},
@@ -734,9 +734,9 @@
   "@sz_bar": {
     "description": "Generated entry for translation for server strings"
   },
-  "aboutDonateTitle": "捐赠",
+  "aboutDonateTitle": "进行捐赠",
   "@aboutDonateTitle": {},
-  "aboutDonateText": "向我们打赏来支持此项目，给服务器买单，及激励我们",
+  "aboutDonateText": "尽管该项目是免费的，且将始终保持免费，但服务器的运营并非如此！开发工作也需要志愿者投入大量的时间和精力。您的捐赠将直接用于支付这些成本，助力维持服务的稳定可靠。",
   "@aboutDonateText": {},
   "none__bodyweight_exercise_": "无（自重动作）",
   "@none__bodyweight_exercise_": {
@@ -924,6 +924,7 @@
     "description": "Generated entry for translation for server strings"
   },
   "aboutMastodonTitle": "长毛象",
+  "@aboutMastodonTitle": {},
   "routines": "训练计划",
   "@routines": {},
   "newRoutine": "新计划",
@@ -995,5 +996,71 @@
   "lightMode": "总是亮色模式",
   "@lightMode": {},
   "systemMode": "系统设置",
-  "@systemMode": {}
+  "@systemMode": {},
+  "barWeight": "杠铃重量",
+  "@barWeight": {},
+  "useColors": "使用颜色",
+  "@useColors": {},
+  "useApiToken": "使用API密钥",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "使用用户名与密码",
+  "@useUsernameAndPassword": {},
+  "apiToken": "API密钥",
+  "@apiToken": {},
+  "invalidApiToken": "请输入有效API值",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "API 密钥只能包含字母 a-f、数字 0-9，长度为 40 个字符",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "selectAvailablePlates": "选择可用的杠片",
+  "@selectAvailablePlates": {},
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "你当前的营养计划中没有设定任何餐食",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "若要为营养计划添加餐食，请前往营养计划详情页面",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  },
+  "errorInfoDescription": "很抱歉，出现了一些问题。您可以通过在 GitHub 上报告此问题来帮助我们修复它。",
+  "@errorInfoDescription": {},
+  "errorInfoDescription2": "您可以继续使用这款应用，但部分功能可能无法正常运行。",
+  "@errorInfoDescription2": {},
+  "errorViewDetails": "错误技术详情",
+  "@errorViewDetails": {},
+  "errorCouldNotConnectToServer": "无法连接到服务器",
+  "@errorCouldNotConnectToServer": {},
+  "errorCouldNotConnectToServerDetails": "应用程序无法连接到服务器。请检查您的网络连接或服务器网址，然后重试。如果问题持续存在，请联系服务器管理员。",
+  "@errorCouldNotConnectToServerDetails": {},
+  "copyToClipboard": "复制",
+  "@copyToClipboard": {},
+  "aboutWhySupportTitle": "开源 & 免费使用",
+  "@aboutWhySupportTitle": {},
+  "aboutContributeTitle": "贡献",
+  "@aboutContributeTitle": {},
+  "aboutContributeText": "我们鼓励各种形式的贡献。无论您是开发者、翻译人员，还是单纯热爱健身的人士，每一份支持都值得我们由衷感谢！",
+  "@aboutContributeText": {},
+  "aboutBugsListTitle": "报告问题或提出功能建议",
+  "@aboutBugsListTitle": {},
+  "aboutTranslationListTitle": "翻译此软件",
+  "@aboutTranslationListTitle": {},
+  "aboutSourceListTitle": "查看源代码",
+  "@aboutSourceListTitle": {},
+  "aboutJoinCommunityTitle": "加入社区",
+  "@aboutJoinCommunityTitle": {},
+  "aboutDiscordTitle": "Discord",
+  "@aboutDiscordTitle": {},
+  "others": "其他",
+  "@others": {},
+  "fitInWeek": "一周健身计划",
+  "@fitInWeek": {},
+  "resistance_band": "弹力带",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "resultingRoutine": "最终生成的训练计划",
+  "@resultingRoutine": {}
 }

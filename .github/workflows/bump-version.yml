@@ -13,13 +13,16 @@ jobs:
     steps:
 
       - name: Checkout application
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # needed to push changes
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
 
       - name: Validate version
         run: |
@@ -39,11 +42,16 @@ jobs:
           NEXT_BUILD=$(( (CURRENT_BUILD / 10 + 1) * 10 ))
           flutter pub run cider version ${{ inputs.app_version }}+${NEXT_BUILD}
 
+      - name: Bump flatpak version
+        run: |
+          cd flatpak
+          uv run bump-flatpak-version.py ${{ inputs.app_version }}
+
       - name: Tag release and commit pubspec
         run: |
           git config user.name Github-Actions
           git config user.email github-actions@github.com
-          git add pubspec.yaml
-          git commit -m "Bump version to $( flutter pub run cider version )"
+          git add pubspec.yaml flatpak/de.wger.flutter.metainfo.xml
+          git commit -m "Bump version to ${{ inputs.app_version }}"
           git tag ${{ inputs.app_version }}
           git push origin HEAD:master --tags

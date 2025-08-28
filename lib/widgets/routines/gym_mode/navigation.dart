@@ -52,7 +52,7 @@ class NavigationFooter extends StatelessWidget {
           const SizedBox(width: 48),
         Expanded(
           child: LinearProgressIndicator(
-            minHeight: 1.5,
+            minHeight: 3,
             value: _ratioCompleted,
             valueColor: const AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
           ),

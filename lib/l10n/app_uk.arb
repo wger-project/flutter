@@ -385,7 +385,7 @@
   },
   "saturatedFat": "Насичені жири",
   "@saturatedFat": {},
-  "fiber": "Волокна",
+  "fiber": "Волокон",
   "@fiber": {},
   "sodium": "Натрій",
   "@sodium": {},
@@ -521,7 +521,7 @@
   },
   "miles": "Милі",
   "@miles": {},
-  "aboutPageTitle": "Про Wger",
+  "aboutPageTitle": "Про нас та підтримка",
   "@aboutPageTitle": {},
   "noMeasurementEntries": "У вас немає записів вимірювання",
   "@noMeasurementEntries": {},
@@ -698,7 +698,7 @@
   "@kg": {
     "description": "Generated entry for translation for server strings"
   },
-  "kilometers_per_hour": "Кілометрів на годину",
+  "kilometers_per_hour": "Кілометри на годину",
   "@kilometers_per_hour": {
     "description": "Generated entry for translation for server strings"
   },
@@ -845,9 +845,9 @@
   "@today": {},
   "loggedToday": "Зареєстровано сьогодні",
   "@loggedToday": {},
-  "aboutDonateTitle": "Пожертвуйте",
+  "aboutDonateTitle": "Зробіть пожертву",
   "@aboutDonateTitle": {},
-  "aboutDonateText": "Купіть нам каву, щоб допомогти проекту, оплатити витрати на сервер і підтримати нас",
+  "aboutDonateText": "Хоча проект є безкоштовним і завжди ним залишатиметься, запуск сервера - ні! Розвиток також вимагає значного часу і зусиль від волонтерів. Ваш внесок безпосередньо підтримує ці витрати, допомагаючи підтримувати надійність сервісу.",
   "@aboutDonateText": {},
   "surplus": "надлишок",
   "@surplus": {
@@ -866,6 +866,7 @@
   "selectMealToLog": "Виберіть страву, щоб записати в щоденник",
   "@selectMealToLog": {},
   "aboutMastodonTitle": "Мастодонт",
+  "@aboutMastodonTitle": {},
   "settingsCacheTitle": "Кеш",
   "@settingsCacheTitle": {},
   "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
@@ -957,5 +958,55 @@
   "errorInfoDescription": "Вибачте, але щось пішло не так. Ви можете допомогти нам виправити це, повідомивши про проблему на GitHub.",
   "@errorInfoDescription": {},
   "copyToClipboard": "Копіювати в буфер обміну",
-  "@copyToClipboard": {}
+  "@copyToClipboard": {},
+  "aboutWhySupportTitle": "Відкритий код та безкоштовний у використанні ❤️",
+  "@aboutWhySupportTitle": {},
+  "aboutJoinCommunityTitle": "Приєднуйтесь до спільноти",
+  "@aboutJoinCommunityTitle": {},
+  "aboutDiscordTitle": "Дискорд",
+  "@aboutDiscordTitle": {},
+  "aboutBugsListTitle": "Повідомити про проблему або запропонувати функцію",
+  "@aboutBugsListTitle": {},
+  "aboutSourceListTitle": "Переглянути вихідний код",
+  "@aboutSourceListTitle": {},
+  "aboutContributeTitle": "Зробити внесок",
+  "@aboutContributeTitle": {},
+  "aboutContributeText": "Ми вітаємо будь-які види внесків. Незалежно від того, чи ви розробник, перекладач, чи просто захоплений фітнесом, ми цінуємо будь-яку підтримку!",
+  "@aboutContributeText": {},
+  "aboutTranslationListTitle": "Перекласти програму",
+  "@aboutTranslationListTitle": {},
+  "others": "Інші",
+  "@others": {},
+  "apiToken": "Токен API",
+  "@apiToken": {},
+  "useApiToken": "Використовувати токен API",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "Використовуйте ім'я користувача та пароль",
+  "@useUsernameAndPassword": {},
+  "invalidApiToken": "Будь ласка, введіть дійсний ключ API",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "Ключ API може містити лише літери a-f, цифри 0-9 та мати довжину рівно 40 символів",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "resistance_band": "Еспандер",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "selectAvailablePlates": "Виберіть доступні тарілки",
+  "@selectAvailablePlates": {},
+  "barWeight": "Вага штанги",
+  "@barWeight": {},
+  "useColors": "Використовуйте кольори",
+  "@useColors": {},
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "У вашому поточному плані харчування не визначено жодного прийому їжі",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "Щоб додати страви до плану, перейдіть до деталей плану харчування",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  }
 }

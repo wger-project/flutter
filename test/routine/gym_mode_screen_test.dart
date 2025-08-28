@@ -22,6 +22,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -50,6 +52,10 @@ void main() {
   final mockExerciseProvider = MockExercisesProvider();
   final testRoutine = getTestRoutine();
   final testExercises = getTestExercises();
+
+  setUp(() {
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+  });
 
   Widget renderGymMode({locale = 'en'}) {
     return ChangeNotifierProvider<RoutinesProvider>(
@@ -93,9 +99,11 @@ void main() {
     )).thenReturn([]);
 
     await tester.pumpWidget(renderGymMode());
+    //await tester.pumpWidget(createHomeScreen());
     await tester.tap(find.byType(TextButton));
+    //print(find.byType(TextButton));
     await tester.pumpAndSettle();
-
+    //await tester.ensureVisible(find.byKey(Key(key as String)));
     //
     // Start page
     //
@@ -128,6 +136,7 @@ void main() {
     expect(find.text('Bench press'), findsOneWidget);
     expect(find.byType(LogPage), findsOneWidget);
     expect(find.byType(Form), findsOneWidget);
+    // print(find.byType(Form));
     expect(find.byType(ListTile), findsNWidgets(3), reason: 'Two logs and the switch tile');
     expect(find.text('10 × 10 kg  (1.5 RiR)'), findsOneWidget);
     expect(find.text('12 × 10 kg  (2 RiR)'), findsOneWidget);

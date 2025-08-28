@@ -1,8 +1,0 @@
-name: flatpak_generator
-version: 1.0.0
-
-environment:
-  sdk: '>=2.18.5'
-
-dependencies:
-  http: ^1.4.0

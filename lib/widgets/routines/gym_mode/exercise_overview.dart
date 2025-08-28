@@ -42,7 +42,6 @@ class ExerciseOverview extends StatelessWidget {
           _controller,
           exercisePages: _exercisePages,
         ),
-        const Divider(),
         Expanded(
           child: SingleChildScrollView(
             child: Padding(

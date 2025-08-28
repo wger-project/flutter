@@ -37,6 +37,9 @@
   "@passwordTooShort": {
     "description": "Error message when the user a password that is too short"
   },
+  "selectAvailablePlates": "Select available plates",
+  "barWeight": "Bar weight",
+  "useColors": "Use colors",
   "password": "Password",
   "@password": {},
   "confirmPassword": "Confirm password",
@@ -308,6 +311,14 @@
     "description": "The goal for macronutrients"
   },
   "selectMealToLog": "Select a meal to log to diary",
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Your current nutrition plan has no meals defined",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "To add meals to the plan, go to the nutritional plan details",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  },
   "goalEnergy": "Energy goal",
   "goalProtein": "Protein goal",
   "goalCarbohydrates": "Carbohydrates goal",

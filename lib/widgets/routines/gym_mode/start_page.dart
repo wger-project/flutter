@@ -21,7 +21,6 @@ class StartPage extends StatelessWidget {
           _controller,
           exercisePages: _exercisePages,
         ),
-        const Divider(),
         Expanded(
           child: ListView(
             children: [

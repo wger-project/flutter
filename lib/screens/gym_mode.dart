@@ -47,6 +47,8 @@ class GymModeScreen extends StatelessWidget {
         .first;
 
     return Scaffold(
+      // backgroundColor: Theme.of(context).cardColor,
+      // primary: false,
       body: SafeArea(
         child: Consumer<RoutinesProvider>(
           builder: (context, value, child) => GymMode(dayDataGym, dayDataDisplay, args.iteration),

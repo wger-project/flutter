@@ -88,28 +88,23 @@ class NutritionalDiaryTable extends StatelessWidget {
           DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
         ),
         Text(
-          style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.end,
           values.energy.toStringAsFixed(0),
         ),
         if (goals.energy != null)
           Text(
-            style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.end,
             (values.energy - goals.energy!).toStringAsFixed(0),
           ),
         Text(
-          style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.end,
           values.protein.toStringAsFixed(0),
         ),
         Text(
-          style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.end,
           values.carbohydrates.toStringAsFixed(0),
         ),
         Text(
-          style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.end,
           values.fat.toStringAsFixed(0),
         ),

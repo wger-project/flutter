@@ -17,7 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
@@ -157,7 +159,7 @@ class MeasurementEntryForm extends StatelessWidget {
     }
 
     _dateController.text = dateToYYYYMMDD(_entryData['date'])!;
-    _valueController.text = _entryData['value']!.toString();
+    _valueController.text = '';
     _notesController.text = _entryData['notes']!;
   }
 
@@ -168,12 +170,25 @@ class MeasurementEntryForm extends StatelessWidget {
       (category) => category.id == _categoryId,
     );
 
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
+    // If the value is not empty, format it
+    if (_valueController.text.isEmpty && _entryData['value'] != null && _entryData['value'] != '') {
+      _valueController.text = numberFormat.format(_entryData['value']);
+    }
+
     return Form(
       key: _form,
       child: Column(
         children: [
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).date,
+              suffixIcon: const Icon(
+                Icons.calendar_today,
+                key: Key('calendarIcon'),
+              ),
+            ),
             readOnly: true,
             // Hide text cursor
             controller: _dateController,
@@ -198,7 +213,7 @@ class MeasurementEntryForm extends StatelessWidget {
                 },
               );
 
-              _dateController.text = dateToYYYYMMDD(pickedDate)!;
+              _dateController.text = pickedDate == null ? '' : dateToYYYYMMDD(pickedDate)!;
             },
             onSaved: (newValue) {
               _entryData['date'] = DateTime.parse(newValue!);
@@ -218,20 +233,20 @@ class MeasurementEntryForm extends StatelessWidget {
               suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
             ),
             controller: _valueController,
-            keyboardType: TextInputType.number,
+            keyboardType: textInputTypeDecimal,
             validator: (value) {
               if (value!.isEmpty) {
                 return AppLocalizations.of(context).enterValue;
               }
               try {
-                double.parse(value);
+                numberFormat.parse(value);
               } catch (error) {
                 return AppLocalizations.of(context).enterValidNumber;
               }
               return null;
             },
             onSaved: (newValue) {
-              _entryData['value'] = double.parse(newValue!);
+              _entryData['value'] = numberFormat.parse(newValue!);
             },
           ),
           // Value

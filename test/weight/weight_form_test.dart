@@ -56,7 +56,7 @@ void main() {
     expect(find.text('79.9'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('quickPlusSmall')));
-    expect(find.text('80.0'), findsOneWidget);
+    expect(find.text('80'), findsOneWidget);
   });
 
   testWidgets("Entering garbage doesn't break the quick-change", (WidgetTester tester) async {

@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
@@ -237,6 +238,8 @@ class IngredientFormState extends State<IngredientForm> {
     final queryLower = _searchQuery.toLowerCase();
     final suggestions =
         widget.recent.where((e) => e.ingredient.name.toLowerCase().contains(queryLower)).toList();
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -262,7 +265,7 @@ class IngredientFormState extends State<IngredientForm> {
                       labelText: AppLocalizations.of(context).weight,
                     ),
                     controller: _amountController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: textInputTypeDecimal,
                     onChanged: (value) {
                       setState(() {
                         final v = double.tryParse(value);
@@ -272,11 +275,11 @@ class IngredientFormState extends State<IngredientForm> {
                       });
                     },
                     onSaved: (value) {
-                      _mealItem.amount = double.parse(value!);
+                      _mealItem.amount = numberFormat.parse(value!);
                     },
                     validator: (value) {
                       try {
-                        double.parse(value!);
+                        numberFormat.parse(value!);
                       } catch (error) {
                         return AppLocalizations.of(context).enterValidNumber;
                       }
@@ -699,22 +702,24 @@ class GoalMacros extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
     return TextFormField(
       initialValue: val ?? '',
       decoration: InputDecoration(labelText: label, suffixText: suffix),
-      keyboardType: TextInputType.number,
+      keyboardType: textInputTypeDecimal,
       onSaved: (newValue) {
         if (newValue == null || newValue == '') {
           return;
         }
-        onSave(double.parse(newValue));
+        onSave(numberFormat.parse(newValue) as double);
       },
       validator: (value) {
         if (value == '') {
           return null;
         }
         try {
-          double.parse(value!);
+          numberFormat.parse(value!);
         } catch (error) {
           return AppLocalizations.of(context).enterValidNumber;
         }

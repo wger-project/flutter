@@ -39,11 +39,10 @@ class ExercisesProvider with ChangeNotifier {
   final _logger = Logger('ExercisesProvider');
 
   final WgerBaseProvider baseProvider;
-  late ExerciseDatabase database;
+  ExerciseDatabase database;
 
-  ExercisesProvider(this.baseProvider, {ExerciseDatabase? database}) {
-    this.database = database ?? locator<ExerciseDatabase>();
-  }
+  ExercisesProvider(this.baseProvider, {ExerciseDatabase? database})
+      : database = database ?? locator<ExerciseDatabase>();
 
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 4;

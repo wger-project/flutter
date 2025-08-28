@@ -59,7 +59,6 @@ class SessionPage extends StatelessWidget {
           _controller,
           exercisePages: _exercisePages,
         ),
-        const Divider(),
         Expanded(child: Container()),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),

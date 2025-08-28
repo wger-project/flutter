@@ -23,6 +23,7 @@ import 'package:logging/logging.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -59,12 +60,12 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigRepetitions = 'repetitions-config';
   static const _routineConfigMaxRepetitions = 'max-repetitions-config';
   static const _routineConfigRir = 'rir-config';
-  static const _routineConfigMaxRir = 'rest-config';
+  static const _routineConfigMaxRir = 'max-rir-config';
   static const _routineConfigRestTime = 'rest-config';
   static const _routineConfigMaxRestTime = 'max-rest-config';
 
   Routine? activeRoutine;
-  late ExercisesProvider _exerciseProvider;
+  final ExercisesProvider _exerciseProvider;
   final WgerBaseProvider baseProvider;
   List<Routine> _routines = [];
   List<WeightUnit> _weightUnits = [];
@@ -72,12 +73,11 @@ class RoutinesProvider with ChangeNotifier {
 
   RoutinesProvider(
     this.baseProvider,
-    ExercisesProvider exercises,
+    this._exerciseProvider,
     List<Routine> entries, {
     List<WeightUnit>? weightUnits,
     List<RepetitionUnit>? repetitionUnits,
   }) {
-    _exerciseProvider = exercises;
     _routines = entries;
     _weightUnits = weightUnits ?? [];
     _repetitionUnits = repetitionUnits ?? [];
@@ -185,11 +185,18 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setExercisesAndUnits(List<DayData> entries) async {
+  Future<void> setExercisesAndUnits(List<DayData> entries, {Map<int, Exercise>? exercises}) async {
+    exercises ??= {};
+
     for (final entry in entries) {
       for (final slot in entry.slots) {
         for (final setConfig in slot.setConfigs) {
-          setConfig.exercise = (await _exerciseProvider.fetchAndSetExercise(setConfig.exerciseId))!;
+          final exerciseId = setConfig.exerciseId;
+          if (!exercises.containsKey(exerciseId)) {
+            _logger.fine('Fetching exercise $exerciseId for routine set config');
+            exercises[exerciseId] = (await _exerciseProvider.fetchAndSetExercise(exerciseId))!;
+          }
+          setConfig.exercise = exercises[exerciseId]!;
 
           setConfig.repetitionsUnit = _repetitionUnits.firstWhere(
             (e) => e.id == setConfig.repetitionsUnitId,
@@ -262,11 +269,15 @@ class RoutinesProvider with ChangeNotifier {
      *
      * note that setExercisesAndUnits modifies the list in-place
      */
+
+    /// Temporary cache to avoid fetching the same exercise multiple times
+    final Map<int, Exercise> exercises = {};
+
     final dayDataEntriesDisplay = dayData.map((entry) => DayData.fromJson(entry)).toList();
-    await setExercisesAndUnits(dayDataEntriesDisplay);
+    await setExercisesAndUnits(dayDataEntriesDisplay, exercises: exercises);
 
     final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
-    await setExercisesAndUnits(dayDataEntriesGym);
+    await setExercisesAndUnits(dayDataEntriesGym, exercises: exercises);
 
     final sessionDataEntries =
         sessionData.map((entry) => WorkoutSessionApi.fromJson(entry)).toList();
@@ -274,13 +285,18 @@ class RoutinesProvider with ChangeNotifier {
     for (final day in routine.days) {
       for (final slot in day.slots) {
         for (final slotEntry in slot.entries) {
-          slotEntry.exerciseObj =
-              (await _exerciseProvider.fetchAndSetExercise(slotEntry.exerciseId))!;
+          final exerciseId = slotEntry.exerciseId;
+          if (!exercises.containsKey(exerciseId)) {
+            exercises[exerciseId] = (await _exerciseProvider.fetchAndSetExercise(exerciseId))!;
+          }
+          slotEntry.exerciseObj = exercises[exerciseId]!;
+
           if (slotEntry.repetitionUnitId != null) {
             slotEntry.repetitionUnitObj = _repetitionUnits.firstWhere(
               (e) => e.id == slotEntry.repetitionUnitId,
             );
           }
+
           if (slotEntry.weightUnitId != null) {
             slotEntry.weightUnitObj = _weightUnits.firstWhere(
               (e) => e.id == slotEntry.weightUnitId,
@@ -300,10 +316,17 @@ class RoutinesProvider with ChangeNotifier {
         if (log.weightUnitId != null) {
           log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
         }
+
         if (log.repetitionsUnitId != null) {
           log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.repetitionsUnitId);
         }
-        log.exerciseBase = (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
+
+        if (!exercises.containsKey(log.exerciseId)) {
+          exercises[log.exerciseId] =
+              (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
+        }
+
+        log.exerciseBase = exercises[log.exerciseId]!;
       }
     }
 
@@ -568,10 +591,10 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> handleConfig(SlotEntry entry, String input, ConfigType type) async {
+  Future<void> handleConfig(SlotEntry entry, num? value, ConfigType type) async {
     final configs = entry.getConfigsByType(type);
     final config = configs.isNotEmpty ? configs.first : null;
-    final value = input.isNotEmpty ? num.parse(input) : null;
+    // final value = input.isNotEmpty ? num.parse(input) : null;
 
     if (value == null && config != null) {
       // Value removed, delete entry

@@ -112,7 +112,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
                   : DateTime.now(),
               widget._data.containsKey(widget._data.keys.last) &&
                       widget._data[widget._data.keys.last]!.isNotEmpty
-                  ? widget._data[widget._data.keys.last]!.first.date
+                  ? widget._data[widget._data.keys.last]!.last.date
                   : DateTime.now(),
               // widget._data[widget._data.keys.first]!.first.date,
               // widget._data[widget._data.keys.last]!.first.date,

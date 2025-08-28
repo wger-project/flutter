@@ -11,27 +11,63 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout application
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref }}
+
+      # This seems to be related to https://github.com/actions/runner-images/issues/12758
+      - name: Xcode setup
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_16.4.app
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
 
       - name: Build .app
-        run: flutter build ios --release --no-codesign
+        run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos
+          zip -r Runner.app.zip Runner.app
 
       - uses: actions/upload-artifact@v4
         with:
           name: builds-ios
           path: build/ios/iphoneos/Runner.app
 
+  build_ipa:
+    name: IPA
+    runs-on: macos-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      # This seems to be related to https://github.com/actions/runner-images/issues/12758
+      - name: Xcode setup
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_16.4.app
+
+      - name: Build .xcarchive
+        run: |
+          flutter build ipa --release --no-codesign
+          cd build/ios/archive
+          zip -r Runner.xcarchive.zip Runner.xcarchive
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-ipa
+          path: build/ios/archive/Runner.xcarchive.zip
+
   build_macos:
     name: macOS
     runs-on: macos-latest
     steps:
       - name: Checkout application
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref }}
 
@@ -39,9 +75,12 @@ jobs:
         uses: ./.github/actions/flutter-common
 
       - name: Build .app
-        run: flutter build macos --release
+        run: |
+          flutter build macos --release
+          cd build/macos/Build/Products/Release
+          zip -r wger.app.zip wger.app
 
       - uses: actions/upload-artifact@v4
         with:
           name: builds-macos
-          path: build/macos/Build/Products/Release/wger.app
+          path: build/macos/Build/Products/Release/wger.app.zip

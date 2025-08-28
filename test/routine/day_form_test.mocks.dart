@@ -4,10 +4,11 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i13;
-import 'dart:ui' as _i16;
+import 'dart:ui' as _i17;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i15;
+import 'package:mockito/src/dummies.dart' as _i16;
+import 'package:wger/models/exercises/exercise.dart' as _i15;
 import 'package:wger/models/workouts/base_config.dart' as _i9;
 import 'package:wger/models/workouts/day.dart' as _i6;
 import 'package:wger/models/workouts/day_data.dart' as _i14;
@@ -323,10 +324,15 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  _i13.Future<void> setExercisesAndUnits(List<_i14.DayData>? entries) => (super.noSuchMethod(
+  _i13.Future<void> setExercisesAndUnits(
+    List<_i14.DayData>? entries, {
+    Map<int, _i15.Exercise>? exercises,
+  }) =>
+      (super.noSuchMethod(
         Invocation.method(
           #setExercisesAndUnits,
           [entries],
+          {#exercises: exercises},
         ),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
@@ -613,7 +619,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
           #getConfigUrl,
           [type],
         ),
-        returnValue: _i15.dummyValue<String>(
+        returnValue: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #getConfigUrl,
@@ -692,7 +698,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
   @override
   _i13.Future<void> handleConfig(
     _i8.SlotEntry? entry,
-    String? input,
+    num? value,
     _i8.ConfigType? type,
   ) =>
       (super.noSuchMethod(
@@ -700,7 +706,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
           #handleConfig,
           [
             entry,
-            input,
+            value,
             type,
           ],
         ),
@@ -790,7 +796,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as _i13.Future<void>);
 
   @override
-  void addListener(_i16.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i17.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -799,7 +805,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       );
 
   @override
-  void removeListener(_i16.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i17.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],

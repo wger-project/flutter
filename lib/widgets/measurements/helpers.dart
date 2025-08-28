@@ -78,13 +78,15 @@ List<Widget> getOverviewWidgetsSeries(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Indicator(
-            color: Theme.of(context).colorScheme.primary,
-            text: AppLocalizations.of(context).indicatorRaw,
-            isSquare: true),
+          color: Theme.of(context).colorScheme.primary,
+          text: AppLocalizations.of(context).indicatorRaw,
+          isSquare: true,
+        ),
         Indicator(
-            color: Theme.of(context).colorScheme.tertiary,
-            text: AppLocalizations.of(context).indicatorAvg,
-            isSquare: true),
+          color: Theme.of(context).colorScheme.tertiary,
+          text: AppLocalizations.of(context).indicatorAvg,
+          isSquare: true,
+        ),
       ],
     ),
   ];

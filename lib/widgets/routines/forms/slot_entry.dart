@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -120,6 +121,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final languageCode = Localizations.localeOf(context).languageCode;
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     final provider = context.read<RoutinesProvider>();
 
@@ -206,10 +208,10 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               Flexible(
                 child: TextFormField(
                   controller: weightController,
-                  keyboardType: TextInputType.number,
+                  keyboardType: textInputTypeDecimal,
                   decoration: InputDecoration(labelText: i18n.weight),
                   validator: (value) {
-                    if (value != null && value != '' && double.tryParse(value) == null) {
+                    if (value != null && value != '' && numberFormat.tryParse(value) == null) {
                       return i18n.enterValidNumber;
                     }
                     return null;
@@ -220,10 +222,10 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 Flexible(
                   child: TextFormField(
                     controller: maxWeightController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: textInputTypeDecimal,
                     decoration: InputDecoration(labelText: i18n.max),
                     validator: (value) {
-                      if (value != null && value != '' && double.tryParse(value) == null) {
+                      if (value != null && value != '' && numberFormat.tryParse(value) == null) {
                         return i18n.enterValidNumber;
                       }
                       return null;
@@ -245,10 +247,10 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               Flexible(
                 child: TextFormField(
                   controller: repetitionsController,
-                  keyboardType: TextInputType.number,
+                  keyboardType: textInputTypeDecimal,
                   decoration: InputDecoration(labelText: i18n.repetitions),
                   validator: (value) {
-                    if (value != null && value != '' && int.tryParse(value) == null) {
+                    if (value != null && value != '' && numberFormat.tryParse(value) == null) {
                       return i18n.enterValidNumber;
                     }
                     return null;
@@ -259,10 +261,10 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 Flexible(
                   child: TextFormField(
                     controller: maxRepetitionsController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: textInputTypeDecimal,
                     decoration: InputDecoration(labelText: i18n.max),
                     validator: (value) {
-                      if (value != null && value != '' && int.tryParse(value) == null) {
+                      if (value != null && value != '' && numberFormat.tryParse(value) == null) {
                         return i18n.enterValidNumber;
                       }
                       return null;
@@ -325,42 +327,42 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                       await Future.wait([
                         provider.handleConfig(
                           widget.entry,
-                          setsSliderValue == 0 ? '' : setsSliderValue.round().toString(),
+                          setsSliderValue == 0 ? null : setsSliderValue.round(),
                           ConfigType.sets,
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          weightController.text,
+                          numberFormat.tryParse(weightController.text),
                           ConfigType.weight,
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          maxWeightController.text,
+                          numberFormat.tryParse(maxWeightController.text),
                           ConfigType.maxWeight,
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          repetitionsController.text,
+                          numberFormat.tryParse(repetitionsController.text),
                           ConfigType.repetitions,
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          maxRepetitionsController.text,
+                          numberFormat.tryParse(maxRepetitionsController.text),
                           ConfigType.maxRepetitions,
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          restController.text,
+                          numberFormat.tryParse(restController.text),
                           ConfigType.rest,
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          maxRestController.text,
+                          numberFormat.tryParse(maxRestController.text),
                           ConfigType.maxRest,
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          rirController.text,
+                          numberFormat.tryParse(rirController.text),
                           ConfigType.rir,
                         ),
                       ]);

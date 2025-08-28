@@ -1,0 +1,1054 @@
+{
+  "apiTokenValidChars": "API 키값은 영소문자(a-f), 숫자(0-9), 40자 이어야 합니다",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
+  },
+  "userProfile": "환경설정",
+  "@userProfile": {},
+  "success": "성공",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "login": "로그인",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "dayDescriptionHelp": "이 날에 무엇을 하는지에 대한 설명(예: '풀 데이') 또는 어떤 신체 부위를 훈련하는지에 대한 설명(예: '가슴과 어깨')",
+  "@dayDescriptionHelp": {},
+  "successfullySaved": "저장",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "customServerHint": "서버 주소를 입력하세요 미입력시 기본 주소가 사용됩니다",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "register": "등록",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "labelDashboard": "대시보드",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "logout": "로그아웃",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "useDefaultServer": "기본 서버 정보",
+  "@useDefaultServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "useCustomServer": "커스텀 서버 정보",
+  "@useCustomServer": {
+    "description": "Toggle button allowing users to switch between the default and a custom wger server"
+  },
+  "invalidUrl": "올바른 URL 정보를 입력하세요",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "usernameValidChars": "사용자명은 문자, 숫자, '@, +, ., -, _' 만 가능합니다",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "passwordTooShort": "비밀번호가 너무 짧습니다",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "password": "비밀번호",
+  "@password": {},
+  "confirmPassword": "비밀번호 확인",
+  "@confirmPassword": {},
+  "invalidEmail": "올바른 이메일 주소를 입력하세요",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "email": "이메일 주소",
+  "@email": {},
+  "username": "사용자명",
+  "@username": {},
+  "invalidUsername": "올바른 사용자명을 입력하세요",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "useApiToken": "API 토큰값 사용",
+  "@useApiToken": {},
+  "useUsernameAndPassword": "사용자명, 비밀번호 사용",
+  "@useUsernameAndPassword": {},
+  "apiToken": "API 토큰값",
+  "@apiToken": {},
+  "invalidApiToken": "올바른 API 토큰값을 입력하세요",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "customServerUrl": "wger 인스턴스의 URL",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "reset": "초기화",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "registerInstead": "계정이 없나요? 지금 등록하세요",
+  "@registerInstead": {},
+  "loginInstead": "이미 계정이 있으신가요? 로그인하세요",
+  "@loginInstead": {},
+  "labelBottomNavWorkout": "운동",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelWorkoutLogs": "트레이닝 이력",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "noIngredientsDefined": "아직 정의된 성분이 없어요",
+  "@noIngredientsDefined": {},
+  "exerciseList": "예시 목록",
+  "@exerciseList": {},
+  "exercise": "예시",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "exercises": "운동",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "예시명",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "searchExercise": "추가할 예시 검색",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "noMatchingExerciseFound": "예시를 찾을 수 없어요",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "searchNamesInEnglish": "영어 이름도 검색해 보세요",
+  "@searchNamesInEnglish": {},
+  "equipment": "장비",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "muscles": "근육",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "musclesSecondary": "이차 근육",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "category": "카테고리",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "routines": "루틴",
+  "@routines": {},
+  "newRoutine": "새로운 루틴",
+  "@newRoutine": {},
+  "noRoutines": "루틴이 없어요",
+  "@noRoutines": {},
+  "reps": "랩스",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "restTime": "휴식 시간",
+  "@restTime": {},
+  "sets": "세트",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "rir": "RiR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "useMetric": "체중에는 미터법 단위를 사용하세요",
+  "@useMetric": {},
+  "weightUnit": "체중",
+  "@weightUnit": {},
+  "repetitionUnit": "반복단위",
+  "@repetitionUnit": {},
+  "set": "세트",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "exerciseNr": "예시 {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "슈퍼세트 {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "labelWorkoutPlan": "운동 계획",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "passwordsDontMatch": "비밀번호가 불일치 합니다",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "labelBottomNavNutrition": "영양물 섭취",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "successfullyDeleted": "삭제",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "rirNotUsed": "RiR 미사용",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "todaysWorkout": "오늘 운동",
+  "@todaysWorkout": {},
+  "logHelpEntriesUnits": "무게 단위(kg 또는 lb)와 반복 횟수가 있는 항목만 차트에 표시되며, 시간이나 실패할 때까지의 시간 등의 다른 조합은 여기서는 무시됩니다.",
+  "@logHelpEntriesUnits": {},
+  "description": "설명",
+  "@description": {},
+  "mealLogged": "식사 기록이 일기에 기록됨",
+  "@mealLogged": {},
+  "ingredientLogged": "일기에 기록된 재료",
+  "@ingredientLogged": {},
+  "logMeal": "영양 일지에 식사 기록하기",
+  "@logMeal": {},
+  "addIngredient": "성분 추가",
+  "@addIngredient": {},
+  "nutritionalPlan": "영양 계획",
+  "@nutritionalPlan": {},
+  "nutritionalDiary": "영양 일기",
+  "@nutritionalDiary": {},
+  "nutritionalPlans": "영양 계획",
+  "@nutritionalPlans": {},
+  "goalMacro": "거시적 목표",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "goalCarbohydrates": "탄수화물 목표",
+  "@goalCarbohydrates": {},
+  "goalFat": "지방 목표",
+  "@goalFat": {},
+  "goalFiber": "섬유질 목표",
+  "@goalFiber": {},
+  "errorInfoDescription2": "앱을 계속 사용할 수 있지만 일부 기능이 작동하지 않을 수 있습니다.",
+  "@errorInfoDescription2": {},
+  "errorViewDetails": "기술적인 세부사항",
+  "@errorViewDetails": {},
+  "errorCouldNotConnectToServer": "서버에 연결할 수 없습니다",
+  "@errorCouldNotConnectToServer": {},
+  "copyToClipboard": "클립보드에 복사",
+  "@copyToClipboard": {},
+  "weight": "체중",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "min": "최소",
+  "@min": {},
+  "chart30DaysTitle": "{name} 지난 30일",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} 영양 계획 {planName} 중",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "measurements": "측정",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "measurementCategoriesHelpText": "'이두근'이나 '체지방'과 같은 측정 범주",
+  "@measurementCategoriesHelpText": {},
+  "measurementEntriesHelpText": "'cm' 또는 '%'와 같이 범주를 측정하는 데 사용되는 단위",
+  "@measurementEntriesHelpText": {},
+  "date": "일자",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "value": "값",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "timeStart": "시작 시간",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "timeEnd": "종료 시간",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "logged": "기록됨",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "weekAverage": "7일 평균",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "deficit": "부족",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "percentEnergy": "에너지 비율",
+  "@percentEnergy": {},
+  "confirmDelete": "'{toDelete}'을 삭제하시겠습니까?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutWhySupportTitle": "오픈 소스 & 무료로 사용 가능 ❤️",
+  "@aboutWhySupportTitle": {},
+  "aboutDescription": "wger를 이용해 주셔서 감사합니다! wger는 전 세계 피트니스 애호가들이 만든 협업 오픈 소스 프로젝트입니다.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "aboutDonateTitle": "기부하기",
+  "@aboutDonateTitle": {},
+  "aboutBugsListTitle": "문제를 보고하거나 기능을 제안하세요",
+  "@aboutBugsListTitle": {},
+  "aboutTranslationListTitle": "어플리케이션 번역",
+  "@aboutTranslationListTitle": {},
+  "aboutSourceListTitle": "소스코드 보기",
+  "@aboutSourceListTitle": {},
+  "aboutJoinCommunityTitle": "커뮤니티에 가입하세요",
+  "@aboutJoinCommunityTitle": {},
+  "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
+  "aboutDiscordTitle": "Discord",
+  "@aboutDiscordTitle": {},
+  "calendar": "달력",
+  "@calendar": {},
+  "goToToday": "오늘로 이동",
+  "@goToToday": {
+    "description": "Label on button to jump back to 'today' in the calendar widget"
+  },
+  "selectExercise": "운동을 선택해주세요",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "nrOfSets": "운동당 세트: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {
+        "type": "String"
+      }
+    }
+  },
+  "setUnitsAndRir": "단위 및 RiR 설정",
+  "@setUnitsAndRir": {
+    "description": "Label shown on the slider where the user can toggle showing units and RiR",
+    "type": "text"
+  },
+  "enterValidNumber": "유효한 숫자를 입력하세요",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "selectImage": "이미지를 선택하세요",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "optionsLabel": "옵션",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "takePicture": "사진을 찍으세요",
+  "@takePicture": {},
+  "gallery": "갤러리",
+  "@gallery": {},
+  "appUpdateTitle": "업데이트 필요",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "이 버전의 앱은 서버와 호환되지 않습니다. 애플리케이션을 업데이트하세요.",
+  "@appUpdateContent": {},
+  "productFound": "제품 발견",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productNotFound": "제품을 찾을 수 없습니다",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "scanBarcode": "바코드 스캔",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "닫기",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "verifiedEmail": "확인된 이메일",
+  "@verifiedEmail": {},
+  "unVerifiedEmail": "확인되지 않은 이메일",
+  "@unVerifiedEmail": {},
+  "verifiedEmailReason": "연습문제에 참여하려면 이메일을 확인해야 합니다",
+  "@verifiedEmailReason": {},
+  "previous": "이전",
+  "@previous": {},
+  "next": "다음",
+  "@next": {},
+  "images": "이미지",
+  "@images": {},
+  "language": "언어",
+  "@language": {},
+  "fitInWeek": "일주일에 맞춰",
+  "@fitInWeek": {},
+  "addSuperset": "슈퍼세트 추가",
+  "@addSuperset": {},
+  "setHasProgression": "세트 진행 상황",
+  "@setHasProgression": {},
+  "setHasProgressionWarning": "현재 모바일 앱에서는 세트의 모든 설정을 편집하거나 자동 진행을 설정할 수 없습니다. 당분간은 웹 앱을 이용해 주세요.",
+  "@setHasProgressionWarning": {},
+  "setHasNoExercises": "이 세트에는 아직 운동이 없습니다!",
+  "@setHasNoExercises": {},
+  "contributeExercise": "운동에 기여하다",
+  "@contributeExercise": {},
+  "translation": "번역",
+  "@translation": {},
+  "translateExercise": "지금 이 운동을 번역하세요",
+  "@translateExercise": {},
+  "baseData": "영어를 기본으로",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "settingsExerciseCacheDescription": "운동 캐시",
+  "@settingsExerciseCacheDescription": {},
+  "simpleMode": "단순 모드",
+  "@simpleMode": {},
+  "simpleModeHelp": "운동 편집 시 고급 설정 중 일부를 숨깁니다",
+  "@simpleModeHelp": {},
+  "back": "뒤로",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "arms": "팔",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "body_weight": "체중",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "장딴지",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "심장강화",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "엉덩이",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "체육관 매트",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "햄스트링",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "케틀벨",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "Lats",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "다리",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "최대 랩스",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "플레이트",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "풀업 바",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "쿼드",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "repetitions": "반복",
+  "@repetitions": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "resistance_band": "저항밴드",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "SZ-바",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "초",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "실패할 때까지",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "없음(체중 운동)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goalTypeBasic": "기본",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "indicatorRaw": "raw",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "평균",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "themeMode": "테마 모드",
+  "@themeMode": {},
+  "lightMode": "항상 라이트 모드",
+  "@lightMode": {},
+  "systemMode": "시스템 설정",
+  "@systemMode": {},
+  "enterValue": "값을 입력하세요",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "pause": "중지",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "errorInfoDescription": "죄송합니다. 문제가 발생했습니다. GitHub에 문제를 신고해 주시면 문제 해결에 도움이 됩니다.",
+  "@errorInfoDescription": {},
+  "difference": "차이점",
+  "@difference": {},
+  "kJ": "kJ",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "sugars": "설탕",
+  "@sugars": {},
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "timeStartAhead": "시작 시간은 종료 시간보다 앞설 수 없습니다",
+  "@timeStartAhead": {},
+  "saturatedFat": "포화지방",
+  "@saturatedFat": {},
+  "newEntry": "신규 항목",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "addSet": "세트 추가",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  "selectExercises": "슈퍼세트를 하고 싶다면 여러 운동을 검색하면 운동이 그룹화됩니다",
+  "@selectExercises": {},
+  "restDay": "휴일",
+  "@restDay": {},
+  "workoutSession": "운동 세션",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "gymMode": "체육관 모드",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "save": "저장",
+  "@save": {},
+  "isRestDayHelp": "휴식일로 표시하면 모든 세트와 운동이 삭제됩니다.",
+  "@isRestDayHelp": {},
+  "plateCalculator": "플레이트",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "needsLogsToAdvanceHelp": "운동을 기록한 경우에만 다음 예정된 날짜로 루틴을 진행하려면 선택하십시오",
+  "@needsLogsToAdvanceHelp": {},
+  "routineDays": "일상적인 루틴",
+  "@routineDays": {},
+  "name": "이름",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
+  "addMeal": "식사 추가",
+  "@addMeal": {},
+  "jumpTo": "다음으로 이동",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "useColors": "색상 사용",
+  "@useColors": {},
+  "newSet": "새 세트",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "selectAvailablePlates": "사용 가능한 플레이트 선택",
+  "@selectAvailablePlates": {},
+  "isRestDay": "쉬는 날인가",
+  "@isRestDay": {},
+  "logHelpEntries": "같은 날에 반복 횟수는 같지만 가중치가 다른 항목이 두 개 이상 있는 경우 다이어그램에는 가중치가 더 높은 항목만 표시됩니다.",
+  "@logHelpEntries": {},
+  "needsLogsToAdvance": "진행하려면 로그가 필요합니다",
+  "@needsLogsToAdvance": {},
+  "barWeight": "바 무게",
+  "@barWeight": {},
+  "anErrorOccurred": "오류가 발생했습니다!",
+  "@anErrorOccurred": {},
+  "onlyLoggingHelpText": "칼로리만 기록하고 특정 식사에 대한 자세한 영양 계획을 세우고 싶지 않은 경우 상자를 체크하세요",
+  "@onlyLoggingHelpText": {},
+  "measurement": "측정",
+  "@measurement": {},
+  "chartAllTimeTitle": "{name} 역대",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "energy": "에너지",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "g": "g",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "logIngredient": "영양 일지에 재료 기록하기",
+  "@logIngredient": {},
+  "gPerBodyKg": "g 몸당 kg",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "onlyLogging": "칼로리만 추적 가능합니다",
+  "@onlyLogging": {},
+  "searchIngredient": "성분 검색",
+  "@searchIngredient": {
+    "description": "Label on ingredient search form"
+  },
+  "plateCalculatorNotDivisible": "사용 가능한 플레이트로는 무게에 도달할 수 없습니다",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "goalEnergy": "에너지 목표",
+  "@goalEnergy": {},
+  "goalProtein": "단백질 목표",
+  "@goalProtein": {},
+  "ingredient": "재료",
+  "@ingredient": {},
+  "noMeasurementEntries": "측정 항목이 없습니다",
+  "@noMeasurementEntries": {},
+  "time": "시간",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "newNutritionalPlan": "새로운 영양 계획",
+  "@newNutritionalPlan": {},
+  "verify": "확인",
+  "@verify": {},
+  "energyShort": "E",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "aboutContributeTitle": "기여하다",
+  "@aboutContributeTitle": {},
+  "productNotFoundDescription": "스캔된 바코드 {barcode}가 있는 제품을 wger 데이터베이스에서 찾을 수 없습니다",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutPageTitle": "회사 소개 및 지원",
+  "@aboutPageTitle": {},
+  "biceps": "이두근",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "abs": "복근",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "add_exercise_image_license": "이미지는 CC BY SA 라이선스를 준수해야 합니다. 확실하지 않은 경우 직접 촬영한 사진만 업로드하세요.",
+  "@add_exercise_image_license": {},
+  "fitInWeekHelp": "이 기능을 활성화하면 요일이 주 단위로 반복되고, 활성화하지 않으면 새로운 주가 시작되는지 여부와 관계없이 요일이 순차적으로 반복됩니다.",
+  "@fitInWeekHelp": {},
+  "textPromptTitle": "시작할 준비가 되셨나요?",
+  "@textPromptTitle": {},
+  "resultingRoutine": "결과 루틴",
+  "@resultingRoutine": {},
+  "noNutritionalPlans": "영양 계획이 없습니다",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "selectMealToLog": "일기에 기록할 식사를 선택하세요",
+  "@selectMealToLog": {},
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "macronutrients": "다량 영양소",
+  "@macronutrients": {},
+  "surplus": "여분",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "carbohydrates": "탄수화물",
+  "@carbohydrates": {},
+  "toggleDetails": "세부정보 전환",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "errorCouldNotConnectToServerDetails": "애플리케이션이 서버에 연결할 수 없습니다. 인터넷 연결이나 서버 URL을 확인하고 다시 시도해 주세요. 문제가 지속되면 서버 관리자에게 문의하세요.",
+  "@errorCouldNotConnectToServerDetails": {},
+  "max": "최대",
+  "@max": {},
+  "protein": "단백질",
+  "@protein": {},
+  "proteinShort": "P",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "start": "시작",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "planned": "예정",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "total": "총",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "recentlyUsedIngredients": "최근 추가된 성분",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "carbohydratesShort": "C",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "unit": "단위",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "goToDetailPage": "상세페이지로 이동",
+  "@goToDetailPage": {},
+  "aboutDonateText": "이 프로젝트는 무료이며 앞으로도 계속 무료일 것이지만, 서버 운영은 그렇지 않습니다! 개발에는 자원봉사자들의 상당한 시간과 노력이 필요합니다. 여러분의 기부는 이러한 비용을 직접적으로 지원하여 서비스의 안정성을 유지하는 데 도움이 됩니다.",
+  "@aboutDonateText": {},
+  "amount": "양",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "delete": "삭제",
+  "@delete": {},
+  "fat": "지방",
+  "@fat": {},
+  "fiber": "섬유질",
+  "@fiber": {},
+  "sodium": "나트륨",
+  "@sodium": {},
+  "noWeightEntries": "무게 항목이 없습니다",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "loadingText": "로딩...",
+  "@loadingText": {
+    "description": "Text to show when entries are being loaded in the background: Loading..."
+  },
+  "fatShort": "F",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "moreMeasurementEntries": "새 측정 추가",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "edit": "편집",
+  "@edit": {},
+  "chooseFromLibrary": "사진 라이브러리에서 선택",
+  "@chooseFromLibrary": {},
+  "oneNamePerLine": "한 줄에 하나의 이름",
+  "@oneNamePerLine": {},
+  "settingsCacheTitle": "캐쉬",
+  "@settingsCacheTitle": {},
+  "aboutContributeText": "모든 유형의 기여를 환영합니다. 개발자, 번역가, 또는 단순히 피트니스에 열정이 있는 분이라면 누구든 환영합니다!",
+  "@aboutContributeText": {},
+  "selectEntry": "항목을 선택하세요",
+  "@selectEntry": {},
+  "enterMinCharacters": "최소 {min}자 이상 입력해주세요",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "enterCharacters": "{min}~{max}자 사이로 입력해 주세요",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "dataCopied": "새 항목에 데이터가 복사되었습니다",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "baseNameEnglish": "모든 운동에는 영어로 된 기본 이름이 필요합니다",
+  "@baseNameEnglish": {},
+  "addExercise": "운동 추가",
+  "@addExercise": {},
+  "settingsIngredientCacheDescription": "재료 캐시",
+  "@settingsIngredientCacheDescription": {},
+  "cacheWarning": "캐싱으로 인해 변경 사항이 애플리케이션 전체에 표시될 때까지 시간이 걸릴 수 있습니다.",
+  "@cacheWarning": {},
+  "selectIngredient": "성분을 선택해주세요",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "addImage": "이미지 추가",
+  "@addImage": {},
+  "verifiedEmailInfo": "{email}로 확인 이메일이 전송되었습니다",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "productFoundDescription": "바코드는 {productName} 제품에 해당합니다. 계속하시겠습니까?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      }
+    }
+  },
+  "variations": "변형",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "별칭으로도 알려짐: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {
+        "type": "String"
+      }
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "whatVariationsExist": "이 운동에는 어떤 변형이 있나요?",
+  "@whatVariationsExist": {},
+  "alternativeNames": "대체 이름",
+  "@alternativeNames": {},
+  "settingsCacheDeletedSnackbar": "캐시가 성공적으로 지워졌습니다",
+  "@settingsCacheDeletedSnackbar": {},
+  "lower_back": "허리 아래",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "분",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "settingsTitle": "설정",
+  "@settingsTitle": {},
+  "contributeExerciseWarning": "계정이 {days}일 이상 경과하고 이메일을 인증한 경우에만 운동에 참여할 수 있습니다",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "incline_bench": "인클라인 벤치",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "벤치프레스",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "overallChangeWeight": "전반적인 변화",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "식사부터",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "progressionRules": "이 운동에는 진행 규칙이 있으며 모바일 앱에서는 편집할 수 없습니다. 웹 애플리케이션을 사용하여 연습을 편집하세요.",
+  "@progressionRules": {},
+  "textPromptSubheading": "시작하려면 작업 버튼을 누르세요",
+  "@textPromptSubheading": {},
+  "barbell": "바벨",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "가슴",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "덤벨",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "킬로미터",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "km/h",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "log": "로그",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "miles_per_hour": "mi/h",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "done": "완료",
+  "@done": {},
+  "triceps": "삼두근",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "마일스",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "스위스볼",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "darkMode": "항상 다크 모드",
+  "@darkMode": {},
+  "shoulders": "어깨",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "goalTypeAdvanced": "고급",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "sameRepetitions": "모든 세트에 동일한 반복 횟수와 중량을 적용하는 경우 한 줄만 입력하면 됩니다. 예를 들어 4세트를 하는 경우 반복 횟수에 10을 입력하면 자동으로 \"4 x 10\"이 됩니다.",
+  "@sameRepetitions": {},
+  "comment": "댓글",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "impression": "인상",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "notes": "메모",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "newDay": "새로운 날",
+  "@newDay": {},
+  "today": "오늘",
+  "@today": {},
+  "loggedToday": "오늘 기록",
+  "@loggedToday": {},
+  "others": "기타",
+  "@others": {}
+}

@@ -37,6 +37,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/auth_screen.dart';
+import 'package:wger/screens/configure_plates_screen.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/screens/exercises_screen.dart';
@@ -81,7 +82,6 @@ void main() async {
   _setupLogging();
 
   final logger = Logger('main');
-  //zx.setLogEnabled(kDebugMode);
 
   // Locator to initialize exerciseDB
   await ServiceLocator().configure();
@@ -90,26 +90,31 @@ void main() async {
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
 
   // Catch errors from Flutter itself (widget build, layout, paint, etc.)
-  FlutterError.onError = (FlutterErrorDetails details) {
-    final stack = details.stack ?? StackTrace.empty;
-    if (kDebugMode) {
+  //
+  // NOTE: it seems this sometimes makes problems and even freezes the flutter
+  //       process when widgets overflow, so it is disabled in dev mode.
+  if (!kDebugMode) {
+    FlutterError.onError = (FlutterErrorDetails details) {
+      final stack = details.stack ?? StackTrace.empty;
+      logger.severe('Error caught by FlutterError.onError: ${details.exception}');
+
       FlutterError.dumpErrorToConsole(details);
-    }
 
-    // Don't show the full error dialog for network image loading errors.
-    if (details.exception is NetworkImageLoadException) {
-      return;
-    }
+      // Don't show the full error dialog for network image loading errors.
+      if (details.exception is NetworkImageLoadException) {
+        return;
+      }
 
-    showGeneralErrorDialog(details.exception, stack);
-  };
+      showGeneralErrorDialog(details.exception, stack);
+      // throw details.exception;
+    };
+  }
 
   // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
   PlatformDispatcher.instance.onError = (error, stack) {
-    if (kDebugMode) {
-      logger.warning('Caught error by PlatformDispatcher: $error');
-      logger.warning('Stack trace: $stack');
-    }
+    logger.severe('Error caught by PlatformDispatcher.instance.onError: $error');
+    logger.severe('Stack trace: $stack');
+
     if (error is WgerHttpException) {
       showHttpExceptionErrorDialog(error);
     } else {
@@ -242,6 +247,7 @@ class MainApp extends StatelessWidget {
               AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
               AboutPage.routeName: (ctx) => const AboutPage(),
               SettingsPage.routeName: (ctx) => const SettingsPage(),
+              ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
             },
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,

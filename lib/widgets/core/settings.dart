@@ -23,6 +23,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
+import 'package:wger/screens/configure_plates_screen.dart';
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
@@ -110,6 +111,13 @@ class SettingsPage extends StatelessWidget {
                 );
               }).toList(),
             ),
+          ),
+          ListTile(
+            title: Text(i18n.selectAvailablePlates),
+            onTap: () {
+              Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
+            },
+            trailing: const Icon(Icons.chevron_right),
           ),
         ],
       ),

@@ -155,7 +155,7 @@
   "@repetitionUnit": {},
   "dayDescriptionHelp": "描述這一天做了什麼（例如：拉力日）或訓練了哪些部位（例如：胸部和肩膀）",
   "@dayDescriptionHelp": {},
-  "comment": "註釋",
+  "comment": "註解",
   "@comment": {
     "description": "Comment, additional information"
   },
@@ -786,6 +786,7 @@
   "aboutDonateText": "請我們喝杯咖啡來支持專案、支付伺服器費用，讓我們持續前進",
   "@aboutDonateText": {},
   "aboutMastodonTitle": "Mastodon",
+  "@aboutMastodonTitle": {},
   "aboutDonateTitle": "贊助",
   "@aboutDonateTitle": {},
   "goToToday": "回到今天",
@@ -937,5 +938,11 @@
   "ingredientLogged": "食材已紀錄到日記",
   "@ingredientLogged": {},
   "selectMealToLog": "選擇要紀錄到日記的餐點",
-  "@selectMealToLog": {}
+  "@selectMealToLog": {},
+  "errorCouldNotConnectToServerDetails": "無法連接到伺服器",
+  "@errorCouldNotConnectToServerDetails": {},
+  "copyToClipboard": "複製到剪貼簿",
+  "@copyToClipboard": {},
+  "aboutWhySupportTitle": "開源且免費使用❤️",
+  "@aboutWhySupportTitle": {}
 }

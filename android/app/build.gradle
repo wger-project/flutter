@@ -24,7 +24,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "de.wger.flutter"
     compileSdkVersion 35
-    ndkVersion "26.3.11579264"
+    ndkVersion "27.0.12077973"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -32,14 +32,16 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = '11'
     }
 
 
     defaultConfig {
         // Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "de.wger.flutter"
-        minSdk = flutter.minSdkVersion
+        // NOTE: manually setting the minSdk to 23 instead of "flutter.minSdkVersion"
+        //       because flutter_zxing requires a higher minSdkVersion.
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
