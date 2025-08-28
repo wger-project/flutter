@@ -15,8 +15,12 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
-      - name: Download iOS 18 Platform
-        run: sudo xcodebuild -downloadPlatform iOS
+      # This seems to be related to https://github.com/actions/runner-images/issues/12758
+      - name: Xcode setup
+        run: |
+          sudo xcodebuild -license accept
+          sudo xcode-select --install
+          sudo xcodebuild -downloadPlatform iOS
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
@@ -44,8 +48,12 @@ jobs:
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
 
-      - name: Download iOS 18 Platform
-        run: sudo xcodebuild -downloadPlatform iOS
+      # This seems to be related to https://github.com/actions/runner-images/issues/12758
+      - name: Xcode setup
+        run: |
+          sudo xcodebuild -license accept
+          sudo xcode-select --install
+          sudo xcodebuild -downloadPlatform iOS
 
       - name: Build .xcarchive
         run: |
