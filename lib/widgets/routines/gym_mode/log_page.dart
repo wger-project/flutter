@@ -227,15 +227,18 @@ class _LogPageState extends ConsumerState<LogPage> {
                         context,
                         listen: false,
                       ).addLog(widget._log);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: const Duration(seconds: 2), // default is 4
-                          content: Text(
-                            AppLocalizations.of(context).successfullySaved,
-                            textAlign: TextAlign.center,
+
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 2), // default is 4
+                            content: Text(
+                              AppLocalizations.of(context).successfullySaved,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                       widget._controller.nextPage(
                         duration: DEFAULT_ANIMATION_DURATION,
                         curve: DEFAULT_ANIMATION_CURVE,

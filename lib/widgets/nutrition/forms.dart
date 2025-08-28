@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -114,7 +115,7 @@ class MealForm extends StatelessWidget {
   }
 }
 
-Widget MealItemForm(
+Widget getMealItemForm(
   Meal meal,
   List<MealItem> recent, [
   String? barcode,
@@ -133,7 +134,7 @@ Widget MealItemForm(
   );
 }
 
-Widget IngredientLogForm(NutritionalPlan plan) {
+Widget getIngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
     recent: plan.dedupDiaryEntries,
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
@@ -397,16 +398,11 @@ class IngredientFormState extends State<IngredientForm> {
                 _form.currentState!.save();
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
-                var date = DateTime.parse(_dateController.text);
-                final tod = stringToTime(_timeController.text);
-                date = DateTime(
-                  date.year,
-                  date.month,
-                  date.day,
-                  tod.hour,
-                  tod.minute,
+                final loggedDate = getDateTimeFromDateAndTime(
+                  _dateController.text,
+                  _timeController.text,
                 );
-                widget.onSave(context, _mealItem, date);
+                widget.onSave(context, _mealItem, loggedDate);
 
                 Navigator.of(context).pop();
               },
