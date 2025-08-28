@@ -47,7 +47,7 @@ function(APPLY_STANDARD_SETTINGS TARGET)
     # * https://github.com/wger-project/flutter/issues/577 / https://github.com/rive-app/rive-flutter/issues/390
     # * https://github.com/rive-app/rive-flutter/issues/482
     #target_compile_options(${TARGET} PRIVATE -Wall -Werror) -- original options
-    target_compile_options(${TARGET} PRIVATE -Wall -Werror -Wno-error=nontrivial-memcall -Wno-unused-variable -Wno-unused-function)
+    target_compile_options(${TARGET} PRIVATE -Wall -Werror -Wno-error=nontrivial-memaccess -Wno-unused-variable -Wno-unused-function)
     target_compile_options(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>")
     target_compile_definitions(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:NDEBUG>")
 endfunction()
