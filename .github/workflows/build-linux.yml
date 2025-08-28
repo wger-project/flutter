@@ -62,8 +62,8 @@ jobs:
 
       - name: Bump version and update manifest
         run: |
-          pip install pyyaml toml
-          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.7.0 ../flatpak-flutter
+          pip install pyyaml toml packaging
+          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.7.2 ../flatpak-flutter
           python bump-wger-version.py ${{ inputs.ref }}
           ../flatpak-flutter/flatpak-flutter.py --app-module wger flatpak-flutter.json
 
