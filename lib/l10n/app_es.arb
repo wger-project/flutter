@@ -166,7 +166,7 @@
     "@nutritionalPlan": {},
     "addIngredient": "Agregar ingrediente",
     "@addIngredient": {},
-    "logMeal": "Registar esta comida",
+    "logMeal": "Registrar esta comida",
     "@logMeal": {},
     "mealLogged": "Comida registrada en el diario",
     "@mealLogged": {},
@@ -214,7 +214,7 @@
     },
     "sameRepetitions": "Si haces las mismas repeticiones y el mismo peso para todas las series, solo puedes completar una fila. Por ejemplo, para 4 series solo ingrese 10 para las repeticiones, esto automáticamente se convierte en \"4 x 10\".",
     "@sameRepetitions": {},
-    "comment": "Comentario",
+    "comment": "Comentar",
     "@comment": {
         "description": "Comment, additional information"
     },
@@ -440,7 +440,7 @@
     "@fatShort": {
         "description": "The first letter or short name of the word 'Fat', used in overviews"
     },
-    "logIngredient": "Guardar en el diario nutricional",
+    "logIngredient": "Registrar en el diario nutricional",
     "@logIngredient": {},
     "plateCalculatorNotDivisible": "No se puede obtener el peso con las placas disponbles",
     "@plateCalculatorNotDivisible": {
@@ -809,5 +809,23 @@
     "isRestDayHelp": "Favor de considerar que todos los sets y ejercicios se eliminarán al marcar el día como descanso.",
     "@isRestDayHelp": {},
     "needsLogsToAdvance": "Necesita registros para avanzar",
-    "@needsLogsToAdvance": {}
+    "@needsLogsToAdvance": {},
+    "needsLogsToAdvanceHelp": "Seleccione esta opción si desea que la rutina avance al siguiente día programado solo si ha registrado un entrenamiento para ese día",
+    "@needsLogsToAdvanceHelp": {},
+    "routineDays": "Días en rutina",
+    "@routineDays": {},
+    "resultingRoutine": "Rutina resultante",
+    "@resultingRoutine": {},
+    "ingredientLogged": "Ingrediente registrado en el diario",
+    "@ingredientLogged": {},
+    "onlyLogging": "Solo registrar las calorías",
+    "@onlyLogging": {},
+    "onlyLoggingHelpText": "Marque la casilla si solo desea registrar sus calorías y no desea configurar un plan nutricional detallado con comidas específicas",
+    "@onlyLoggingHelpText": {},
+    "goalMacro": "Meta de Macros",
+    "@goalMacro": {
+        "description": "The goal for macronutrients"
+    },
+    "selectMealToLog": "Selecciona una comida para registrar en el diario",
+    "@selectMealToLog": {}
 }
