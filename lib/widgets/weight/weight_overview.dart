@@ -37,6 +37,7 @@ class WeightOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final plans = Provider.of<NutritionPlansProvider>(context, listen: false).items;
 
     final entriesAll = _provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
@@ -78,7 +79,8 @@ class WeightOverview extends StatelessWidget {
                 final currentEntry = _provider.items[index];
                 return Card(
                   child: ListTile(
-                    title: Text('${currentEntry.weight} ${weightUnit(profile.isMetric, context)}'),
+                    title: Text(
+                        '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}'),
                     subtitle: Text(
                       DateFormat.yMd(
                         Localizations.localeOf(context).languageCode,

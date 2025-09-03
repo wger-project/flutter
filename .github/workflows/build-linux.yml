@@ -25,7 +25,7 @@ jobs:
         #   runner: ubuntu-24.04-arm
     steps:
       - name: Checkout application
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref }}
 
@@ -56,14 +56,14 @@ jobs:
     steps:
 
       - name: Checkout flatpak-flathub repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: wger-project/de.wger.flutter
 
       - name: Bump version and update manifest
         run: |
-          pip install pyyaml toml
-          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.7.0 ../flatpak-flutter
+          pip install pyyaml toml packaging
+          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.7.2 ../flatpak-flutter
           python bump-wger-version.py ${{ inputs.ref }}
           ../flatpak-flutter/flatpak-flutter.py --app-module wger flatpak-flutter.json
 

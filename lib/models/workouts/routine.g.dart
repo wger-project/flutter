@@ -31,7 +31,7 @@ Routine _$RoutineFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$RoutineToJson(Routine instance) => <String, dynamic>{
-      'created': instance.created.toIso8601String(),
+      'created': dateToUtcIso8601(instance.created),
       'name': instance.name,
       'description': instance.description,
       'fit_in_week': instance.fitInWeek,

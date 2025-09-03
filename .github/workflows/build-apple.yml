@@ -11,9 +11,14 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout application
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref }}
+
+      # This seems to be related to https://github.com/actions/runner-images/issues/12758
+      - name: Xcode setup
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_16.4.app
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
@@ -34,12 +39,17 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout application
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref }}
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
+
+      # This seems to be related to https://github.com/actions/runner-images/issues/12758
+      - name: Xcode setup
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_16.4.app
 
       - name: Build .xcarchive
         run: |
@@ -57,7 +67,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout application
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref }}
 

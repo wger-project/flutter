@@ -101,7 +101,7 @@ void main() {
         home: Scaffold(
           body: Scrollable(
             viewportBuilder: (BuildContext context, ViewportOffset position) =>
-                MealItemForm(meal, const [], code, test),
+                getMealItemForm(meal, const [], code, test),
           ),
         ),
         routes: {

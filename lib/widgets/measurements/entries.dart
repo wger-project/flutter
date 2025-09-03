@@ -37,6 +37,8 @@ class EntriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final plans = Provider.of<NutritionPlansProvider>(context, listen: false).items;
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
     final entriesAll =
         _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
@@ -58,11 +60,10 @@ class EntriesList extends StatelessWidget {
           itemCount: _category.entries.length,
           itemBuilder: (context, index) {
             final currentEntry = _category.entries[index];
-            final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
             return Card(
               child: ListTile(
-                title: Text('${currentEntry.value} ${_category.unit}'),
+                title: Text('${numberFormat.format(currentEntry.value)} ${_category.unit}'),
                 subtitle: Text(
                   DateFormat.yMd(Localizations.localeOf(context).languageCode)
                       .format(currentEntry.date),

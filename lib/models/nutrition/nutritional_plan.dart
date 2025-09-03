@@ -38,7 +38,7 @@ class NutritionalPlan {
   @JsonKey(required: true)
   late String description;
 
-  @JsonKey(required: true, name: 'creation_date', toJson: dateToYYYYMMDD)
+  @JsonKey(required: true, name: 'creation_date', toJson: dateToUtcIso8601)
   late DateTime creationDate;
 
   @JsonKey(required: true, name: 'start', toJson: dateToYYYYMMDD)

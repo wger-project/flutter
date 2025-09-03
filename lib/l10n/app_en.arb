@@ -155,6 +155,8 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
+  "endDate": "End date",
+  "startDate": "Start date",
   "routines": "Routines",
   "newRoutine": "New routine",
   "noRoutines": "You have no routines",

@@ -439,7 +439,7 @@ class NutritionPlansProvider with ChangeNotifier {
   ]) async {
     final plan = findById(planId);
     mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
-    final Log log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
+    final log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
 
     final data = await baseProvider.post(
       log.toJson(),

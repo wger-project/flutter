@@ -17,8 +17,8 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -42,7 +42,7 @@ class Routine {
   @JsonKey(required: true, includeToJson: false)
   int? id;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, toJson: dateToUtcIso8601)
   late DateTime created;
 
   @JsonKey(required: true, name: 'name')

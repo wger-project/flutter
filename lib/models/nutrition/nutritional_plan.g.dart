@@ -41,7 +41,7 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) => <String, dynamic>{
       'id': instance.id,
       'description': instance.description,
-      'creation_date': dateToYYYYMMDD(instance.creationDate),
+      'creation_date': dateToUtcIso8601(instance.creationDate),
       'start': dateToYYYYMMDD(instance.startDate),
       'end': dateToYYYYMMDD(instance.endDate),
       'only_logging': instance.onlyLogging,

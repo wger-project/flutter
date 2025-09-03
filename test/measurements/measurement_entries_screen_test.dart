@@ -83,7 +83,7 @@ void main() {
     expect(find.text('body fat'), findsOneWidget);
 
     // Entries
-    expect(find.text('15.0 %'), findsNWidgets(1));
+    expect(find.text('15 %'), findsNWidgets(1));
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {

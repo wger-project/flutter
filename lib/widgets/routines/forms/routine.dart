@@ -108,8 +108,8 @@ class _RoutineFormState extends State<RoutineForm> {
           }
           return null;
         },
-        decoration: const InputDecoration(
-          labelText: 'Start date',
+        decoration: InputDecoration(
+          labelText: i18n.startDate,
           suffixIcon: Icon(
             Icons.calendar_today,
             key: Key('calendarIcon'),
@@ -145,8 +145,8 @@ class _RoutineFormState extends State<RoutineForm> {
         key: const Key('field-end-date'),
         // Stop keyboard from appearing
         readOnly: true,
-        decoration: const InputDecoration(
-          labelText: 'End date',
+        decoration: InputDecoration(
+          labelText: i18n.endDate,
           suffixIcon: Icon(
             Icons.calendar_today,
             key: Key('calendarIcon'),
@@ -163,7 +163,7 @@ class _RoutineFormState extends State<RoutineForm> {
             context: context,
             initialDate: endDate,
             firstDate: DateTime(DateTime.now().year - 10),
-            lastDate: DateTime.now(),
+            lastDate: DateTime.now().add(const Duration(days: 365)),
           );
 
           if (picked == null) {
