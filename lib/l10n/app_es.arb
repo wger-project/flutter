@@ -827,5 +827,41 @@
         "description": "The goal for macronutrients"
     },
     "selectMealToLog": "Selecciona una comida para registrar en el diario",
-    "@selectMealToLog": {}
+    "@selectMealToLog": {},
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Tu plan de nutrición no tiene comidas definidas",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Para añadir comidas al plan, ve a los detalles del plan de nutrición",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "goalEnergy": "Objetivo energético",
+    "@goalEnergy": {},
+    "goalProtein": "Objetivo de proteina",
+    "@goalProtein": {},
+    "goalCarbohydrates": "Objetivo de carbohidratos",
+    "@goalCarbohydrates": {},
+    "goalFat": "Objetivo de grasas",
+    "@goalFat": {},
+    "goalFiber": "Objetivo de fibra",
+    "@goalFiber": {},
+    "errorInfoDescription": "Lo sentimos pero algo no ha funcionado como esperábamos. Puedes ayudarnos a arreglarlo reportando el problema en GitHub.",
+    "@errorInfoDescription": {},
+    "errorInfoDescription2": "Puedes seguir utilizando la aplicación pero algunas características pueden no funcionar.",
+    "@errorInfoDescription2": {},
+    "errorViewDetails": "Detalles técnicos",
+    "@errorViewDetails": {},
+    "errorCouldNotConnectToServer": "No se pudo conectar con el servidor",
+    "@errorCouldNotConnectToServer": {},
+    "errorCouldNotConnectToServerDetails": "La aplicación no se pudo conectar con el servidor. Por favor, comprueba to conexión a internet o la URL del servidor y prueba de nuevo. Si el problema no se soluciona, contacta con el administrador del servidor.",
+    "@errorCouldNotConnectToServerDetails": {},
+    "copyToClipboard": "Copiar al portapapeles",
+    "@copyToClipboard": {},
+    "max": "Máximo",
+    "@max": {},
+    "aboutContributeTitle": "Contribuye",
+    "@aboutContributeTitle": {},
+    "aboutContributeText": "Todos los tipos de contribuciones  son bien recibidas. Ya seas desarrollador, traductor o un apasionado por el deporte, toda ayuda es bien recibida.",
+    "@aboutContributeText": {}
 }
