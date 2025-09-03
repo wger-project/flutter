@@ -49,7 +49,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? co
     return;
   }
 
-  final errorList = formatErrors(extractErrors(exception.errors));
+  final errorList = formatApiErrors(extractErrors(exception.errors));
 
   showDialog(
     context: dialogContext,
@@ -104,6 +104,15 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
   } else if (error is SocketException) {
     isNetworkError = true;
   }
+  /*
+  else if (error is PlatformException) {
+    errorTitle = 'Problem with media';
+    errorMessage =
+        'There was a problem loading the media. This can be a e.g. problem with the codec that'
+        'is not supported by your device. Original error message: ${error.message}';
+  }
+
+   */
 
   final String fullStackTrace = stackTrace?.toString() ?? 'No stack trace available.';
 
@@ -115,13 +124,13 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
     builder: (BuildContext context) {
       return AlertDialog(
         title: Row(
+          spacing: 8,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               isNetworkError ? Icons.signal_wifi_connected_no_internet_4_outlined : Icons.error,
               color: Theme.of(context).colorScheme.error,
             ),
-            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 isNetworkError ? i18n.errorCouldNotConnectToServer : i18n.anErrorOccurred,
@@ -309,7 +318,7 @@ List<ApiError> extractErrors(Map<String, dynamic> errors) {
 }
 
 /// Processes the error messages from the server and returns a list of widgets
-List<Widget> formatErrors(List<ApiError> errors, {Color? color}) {
+List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
   final textColor = color ?? Colors.black;
 
   final List<Widget> errorList = [];
@@ -328,6 +337,26 @@ List<Widget> formatErrors(List<ApiError> errors, {Color? color}) {
   return errorList;
 }
 
+/// Processes the error messages from the server and returns a list of widgets
+List<Widget> formatTextErrors(List<String> errors, {String? title, Color? color}) {
+  final textColor = color ?? Colors.black;
+
+  final List<Widget> errorList = [];
+
+  if (title != null) {
+    errorList.add(
+      Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
+    );
+  }
+
+  for (final message in errors) {
+    errorList.add(Text(message, style: TextStyle(color: textColor)));
+  }
+  errorList.add(const SizedBox(height: 8));
+
+  return errorList;
+}
+
 class FormHttpErrorsWidget extends StatelessWidget {
   final WgerHttpException exception;
 
@@ -338,8 +367,29 @@ class FormHttpErrorsWidget extends StatelessWidget {
     return Column(
       children: [
         Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
-        ...formatErrors(
+        ...formatApiErrors(
           extractErrors(exception.errors),
+          color: Theme.of(context).colorScheme.error,
+        ),
+      ],
+    );
+  }
+}
+
+class GeneralErrorsWidget extends StatelessWidget {
+  final String? title;
+  final List<String> widgets;
+
+  const GeneralErrorsWidget(this.widgets, {this.title, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
+        ...formatTextErrors(
+          widgets,
+          title: title,
           color: Theme.of(context).colorScheme.error,
         ),
       ],
