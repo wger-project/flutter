@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:wger/helpers/misc.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
 extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
