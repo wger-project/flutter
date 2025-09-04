@@ -66,13 +66,31 @@ class NutritionPlansProvider with ChangeNotifier {
     ingredients = [];
   }
 
-  /// Returns the current active nutritional plan. At the moment this is just
-  /// the latest, but this might change in the future.
+  /// Returns the current active nutritional plan.
+  /// A plan is considered active if:
+  /// - Its start date is before now
+  /// - Its end date is after now or not set
+  /// If multiple plans match these criteria, the one with the most recent creation date is returned.
   NutritionalPlan? get currentPlan {
-    if (_plans.isNotEmpty) {
-      return _plans.first;
+    if (_plans.isEmpty) {
+      return null;
     }
-    return null;
+
+    final now = DateTime.now();
+    final activePlans = _plans.where((plan) {
+      final isAfterStart = plan.startDate.isBefore(now);
+      final isBeforeEnd = plan.endDate == null || plan.endDate!.isAfter(now);
+      return isAfterStart && isBeforeEnd;
+    }).toList();
+
+    if (activePlans.isEmpty) {
+      return null;
+    }
+
+    // Sort by creation date (newest first) and return the first one
+    // TODO: this should already be done on _plans. this whole function can be a firstWhere() ?
+    activePlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+    return activePlans.first;
   }
 
   NutritionalPlan findById(int id) {

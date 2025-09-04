@@ -504,6 +504,8 @@ class _PlanFormState extends State<PlanForm> {
   GoalType _goalType = GoalType.meals;
 
   final _descriptionController = TextEditingController();
+  final _startDateController = TextEditingController();
+  final _endDateController = TextEditingController();
   final TextEditingController colorController = TextEditingController();
 
   GoalType? selectedGoal;
@@ -514,6 +516,11 @@ class _PlanFormState extends State<PlanForm> {
 
     _onlyLogging = widget._plan.onlyLogging;
     _descriptionController.text = widget._plan.description;
+    _startDateController.text = dateToYYYYMMDD(widget._plan.startDate)!;
+    // ignore invalid enddates should the server gives us one
+    if (widget._plan.endDate != null && widget._plan.endDate!.isAfter(widget._plan.startDate)) {
+      _endDateController.text = dateToYYYYMMDD(widget._plan.endDate)!;
+    }
     if (widget._plan.hasAnyAdvancedGoals) {
       _goalType = GoalType.advanced;
     } else if (widget._plan.hasAnyGoals) {
@@ -526,6 +533,8 @@ class _PlanFormState extends State<PlanForm> {
   @override
   void dispose() {
     _descriptionController.dispose();
+    _startDateController.dispose();
+    _endDateController.dispose();
     colorController.dispose();
     super.dispose();
   }
@@ -546,6 +555,88 @@ class _PlanFormState extends State<PlanForm> {
             onSaved: (newValue) {
               widget._plan.description = newValue!;
             },
+          ),
+          // Start Date
+          TextFormField(
+            key: const Key('field-start-date'),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).start,
+              hintText: 'YYYY-MM-DD',
+            ),
+            controller: _startDateController,
+            readOnly: true,
+            onTap: () async {
+              // Stop keyboard from appearing
+              FocusScope.of(context).requestFocus(FocusNode());
+
+              // Open date picker
+              final pickedDate = await showDatePicker(
+                context: context,
+                initialDate: widget._plan.startDate,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+              );
+
+              if (pickedDate != null) {
+                setState(() {
+                  _startDateController.text = dateToYYYYMMDD(pickedDate)!;
+                  widget._plan.startDate = pickedDate;
+                });
+              }
+            },
+          ),
+          // End Date
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  key: const Key('field-end-date'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).endDate,
+                    hintText: 'YYYY-MM-DD',
+                    helperText:
+                        'Tip: only for athletes with contest deadlines.  Most users benefit from flexibility',
+                  ),
+                  controller: _endDateController,
+                  readOnly: true,
+                  onTap: () async {
+                    // Stop keyboard from appearing
+                    FocusScope.of(context).requestFocus(FocusNode());
+
+                    // Open date picker
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      // if somehow the server has an invalid end date, default to null
+                      initialDate: (widget._plan.endDate != null &&
+                              widget._plan.endDate!.isAfter(widget._plan.startDate))
+                          ? widget._plan.endDate!
+                          : null,
+                      firstDate: widget._plan.startDate
+                          .add(const Duration(days: 1)), // end must be after start
+                      lastDate: DateTime(2100),
+                    );
+
+                    if (pickedDate != null) {
+                      setState(() {
+                        _endDateController.text = dateToYYYYMMDD(pickedDate)!;
+                        widget._plan.endDate = pickedDate;
+                      });
+                    }
+                  },
+                ),
+              ),
+              if (_endDateController.text.isNotEmpty)
+                IconButton(
+                  icon: const Icon(Icons.clear),
+                  tooltip: 'Clear end date',
+                  onPressed: () {
+                    setState(() {
+                      _endDateController.text = '';
+                      widget._plan.endDate = null;
+                    });
+                  },
+                ),
+            ],
           ),
           SwitchListTile(
             title: Text(AppLocalizations.of(context).onlyLogging),
