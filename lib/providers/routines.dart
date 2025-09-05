@@ -153,13 +153,14 @@ class RoutinesProvider with ChangeNotifier {
   /// Fetches and sets all workout plans fully, i.e. with all corresponding child
   /// attributes
   Future<void> fetchAndSetAllRoutinesFull() async {
-    final data = await baseProvider.fetch(
+    _logger.fine('Fetching all routines fully');
+    final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(
         _routinesUrlPath,
         query: {'ordering': '-creation_date', 'limit': API_MAX_PAGE_SIZE, 'is_template': 'false'},
       ),
     );
-    for (final entry in data['results']) {
+    for (final entry in data) {
       await fetchAndSetRoutineFull(entry['id']);
     }
 
@@ -169,6 +170,7 @@ class RoutinesProvider with ChangeNotifier {
   /// Fetches all routines sparsely, i.e. only with the data on the object itself
   /// and no child attributes
   Future<void> fetchAndSetAllRoutinesSparse() async {
+    _logger.fine('Fetching all routines sparsely');
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
         _routinesUrlPath,

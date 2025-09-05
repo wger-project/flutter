@@ -47,6 +47,7 @@ class ExercisesProvider with ChangeNotifier {
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 4;
 
+  static const exerciseUrlPath = 'exercise';
   static const exerciseInfoUrlPath = 'exerciseinfo';
   static const exerciseSearchPath = 'exercise/search';
 
@@ -274,6 +275,18 @@ class ExercisesProvider with ChangeNotifier {
     }
   }
 
+  Future<void> fetchAndSetAllExercises() async {
+    _logger.info('Loading all exercises from API');
+    final exerciseData = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(exerciseUrlPath, query: {'limit': API_MAX_PAGE_SIZE}),
+    );
+    final exerciseIds = exerciseData.map<int>((e) => e['id'] as int).toSet();
+
+    for (final exerciseId in exerciseIds) {
+      await handleUpdateExerciseFromApi(database, exerciseId);
+    }
+  }
+
   /// Returns the exercise with the given ID
   ///
   /// If the exercise is not known locally, it is fetched from the server.
@@ -291,6 +304,7 @@ class ExercisesProvider with ChangeNotifier {
 
       return exercise;
     } on NoSuchEntryException {
+      // _logger.finer('Exercise not found locally, fetching from the API');
       return handleUpdateExerciseFromApi(database, exerciseId);
     }
   }
