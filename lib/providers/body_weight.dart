@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -69,7 +70,7 @@ class BodyWeightProvider with ChangeNotifier {
     // Process the response
     final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(
       BODY_WEIGHT_URL,
-      query: {'ordering': '-date', 'limit': '100'},
+      query: {'ordering': '-date', 'limit': API_MAX_PAGE_SIZE},
     ));
     _entries = [];
     for (final entry in data) {

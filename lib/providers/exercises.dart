@@ -460,7 +460,7 @@ class ExercisesProvider with ChangeNotifier {
   /// Updates the exercise database with *all* the exercises from the server
   Future<void> updateExerciseCache(ExerciseDatabase database) async {
     final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': '999'}),
+      baseProvider.makeUrl(exerciseInfoUrlPath, query: {'limit': API_MAX_PAGE_SIZE}),
     );
     exercises = data.map((e) => Exercise.fromApiDataJson(e, _languages)).toList();
 

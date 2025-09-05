@@ -6,6 +6,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -13,8 +14,6 @@ import 'package:wger/providers/measurement.dart';
 
 import '../fixtures/fixture_reader.dart';
 import 'measurement_provider_test.mocks.dart';
-
-// class MockWgerBaseProvider extends Mock implements WgerBaseProvider {}
 
 @GenerateMocks([WgerBaseProvider])
 void main() {
@@ -48,16 +47,17 @@ void main() {
     measurementProvider = MeasurementProvider(mockWgerBaseProvider);
 
     when(mockWgerBaseProvider.makeUrl(any)).thenReturn(tCategoryUri);
-    when(mockWgerBaseProvider.makeUrl(any, id: anyNamed('id'))).thenReturn(tCategoryUri);
-    when(mockWgerBaseProvider.fetch(any))
-        .thenAnswer((realInvocation) => Future.value(tMeasurementCategoriesMap));
+    when(mockWgerBaseProvider.makeUrl(any, id: anyNamed('id'), query: anyNamed('query')))
+        .thenReturn(tCategoryUri);
+    when(mockWgerBaseProvider.fetchPaginated(any))
+        .thenAnswer((realInvocation) => Future.value(tMeasurementCategoriesMap['results']));
 
     when(mockWgerBaseProvider.makeUrl(entryUrl, query: anyNamed('query')))
         .thenReturn(tCategoryEntriesUri);
     when(mockWgerBaseProvider.makeUrl(entryUrl, id: anyNamed('id'), query: anyNamed('query')))
         .thenReturn(tCategoryEntriesUri);
-    when(mockWgerBaseProvider.fetch(tCategoryEntriesUri))
-        .thenAnswer((realInvocation) => Future.value(tMeasurementCategoryMap));
+    when(mockWgerBaseProvider.fetchPaginated(tCategoryEntriesUri))
+        .thenAnswer((realInvocation) => Future.value(tMeasurementCategoryMap['results']));
   });
 
   group('clear()', () {
@@ -100,7 +100,7 @@ void main() {
       await measurementProvider.fetchAndSetCategories();
 
       // assert
-      verify(mockWgerBaseProvider.makeUrl(categoryUrl));
+      verify(mockWgerBaseProvider.makeUrl(categoryUrl, query: {'limit': API_MAX_PAGE_SIZE}));
     });
 
     test('should fetch data from api', () async {
@@ -108,7 +108,7 @@ void main() {
       await measurementProvider.fetchAndSetCategories();
 
       // assert
-      verify(mockWgerBaseProvider.fetch(tCategoryUri));
+      verify(mockWgerBaseProvider.fetchPaginated(tCategoryUri));
     });
 
     test('should set categories', () async {
@@ -130,7 +130,10 @@ void main() {
       await measurementProvider.fetchAndSetCategoryEntries(tCategoryId);
 
       // assert
-      verify(mockWgerBaseProvider.makeUrl(entryUrl, query: {'category': tCategoryId.toString()}));
+      verify(mockWgerBaseProvider.makeUrl(
+        entryUrl,
+        query: {'category': tCategoryId.toString(), 'limit': API_MAX_PAGE_SIZE},
+      ));
     });
 
     test('should fetch categories entries for id', () async {
@@ -138,7 +141,7 @@ void main() {
       await measurementProvider.fetchAndSetCategoryEntries(tCategoryId);
 
       // assert
-      verify(mockWgerBaseProvider.fetch(tCategoryEntriesUri));
+      verify(mockWgerBaseProvider.fetchPaginated(tCategoryEntriesUri));
     });
 
     test('should add entries to category in list', () async {

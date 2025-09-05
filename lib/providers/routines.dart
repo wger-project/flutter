@@ -156,7 +156,7 @@ class RoutinesProvider with ChangeNotifier {
     final data = await baseProvider.fetch(
       baseProvider.makeUrl(
         _routinesUrlPath,
-        query: {'ordering': '-creation_date', 'limit': '1000', 'is_template': 'false'},
+        query: {'ordering': '-creation_date', 'limit': API_MAX_PAGE_SIZE, 'is_template': 'false'},
       ),
     );
     for (final entry in data['results']) {
@@ -170,7 +170,10 @@ class RoutinesProvider with ChangeNotifier {
   /// and no child attributes
   Future<void> fetchAndSetAllRoutinesSparse() async {
     final data = await baseProvider.fetch(
-      baseProvider.makeUrl(_routinesUrlPath, query: {'limit': '1000', 'is_template': 'false'}),
+      baseProvider.makeUrl(
+        _routinesUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE, 'is_template': 'false'},
+      ),
     );
     _routines = [];
     for (final workoutPlanData in data['results']) {
@@ -210,7 +213,7 @@ class RoutinesProvider with ChangeNotifier {
   /// and no child attributes
   Future<Routine> fetchAndSetRoutineSparse(int planId) async {
     final fullPlanData = await baseProvider.fetch(
-      baseProvider.makeUrl(_routinesUrlPath, id: planId),
+      baseProvider.makeUrl(_routinesUrlPath, id: planId, query: {'limit': API_MAX_PAGE_SIZE}),
     );
     final routine = Routine.fromJson(fullPlanData);
     _routines.add(routine);

@@ -96,7 +96,7 @@ class NutritionPlansProvider with ChangeNotifier {
   /// object itself and no child attributes
   Future<void> fetchAndSetAllPlansSparse() async {
     final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': '1000'}),
+      baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': API_MAX_PAGE_SIZE}),
     );
     _plans = [];
     for (final planData in data) {
@@ -109,7 +109,10 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
   Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(_nutritionalPlansPath));
+    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(
+      _nutritionalPlansPath,
+      query: {'limit': API_MAX_PAGE_SIZE},
+    ));
     await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
   }
 
@@ -448,7 +451,7 @@ class NutritionPlansProvider with ChangeNotifier {
         _nutritionDiaryPath,
         query: {
           'plan': plan.id?.toString(),
-          'limit': '999',
+          'limit': API_MAX_PAGE_SIZE,
           'ordering': 'datetime',
         },
       ),
