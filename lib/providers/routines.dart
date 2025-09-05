@@ -83,6 +83,15 @@ class RoutinesProvider with ChangeNotifier {
     _repetitionUnits = repetitionUnits ?? [];
   }
 
+  /// Returns the current active nutritional plan. At the moment this is just
+  /// the latest, but this might change in the future.
+  Routine? get currentRoutine {
+    if (_routines.isNotEmpty) {
+      return _routines.first;
+    }
+    return null;
+  }
+
   List<Routine> get items {
     return [..._routines];
   }
@@ -97,7 +106,6 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Clears all lists
   void clear() {
-    activeRoutine = null;
     _routines = [];
     _weightUnits = [];
     _repetitionUnits = [];
@@ -138,16 +146,6 @@ class RoutinesProvider with ChangeNotifier {
     return _routines.indexWhere((routine) => routine.id == id);
   }
 
-  /// Sets the current active routine. At the moment this is just the latest,
-  /// but this might change in the future.
-  void setActiveRoutine() {
-    if (_routines.isNotEmpty) {
-      activeRoutine = _routines.first;
-    } else {
-      activeRoutine = null;
-    }
-  }
-
   /*
    * Routines
    */
@@ -165,7 +163,6 @@ class RoutinesProvider with ChangeNotifier {
       await fetchAndSetRoutineFull(entry['id']);
     }
 
-    setActiveRoutine();
     notifyListeners();
   }
 
@@ -181,7 +178,6 @@ class RoutinesProvider with ChangeNotifier {
       _routines.add(plan);
     }
 
-    setActiveRoutine();
     notifyListeners();
   }
 
@@ -220,7 +216,6 @@ class RoutinesProvider with ChangeNotifier {
     _routines.add(routine);
     _routines.sort((a, b) => b.created.compareTo(a.created));
 
-    setActiveRoutine();
     notifyListeners();
     return routine;
   }
@@ -338,7 +333,6 @@ class RoutinesProvider with ChangeNotifier {
       _routines.add(routine);
     }
 
-    setActiveRoutine();
     notifyListeners();
     return routine;
   }

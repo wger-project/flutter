@@ -116,8 +116,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
       // Current routine
       widget._logger.info('Loading current routine');
-      if (routinesProvider.activeRoutine != null) {
-        final planId = routinesProvider.activeRoutine!.id!;
+      if (routinesProvider.currentRoutine != null) {
+        final planId = routinesProvider.currentRoutine!.id!;
         await routinesProvider.fetchAndSetRoutineFull(planId);
       }
     }

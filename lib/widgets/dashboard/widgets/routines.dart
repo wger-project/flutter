@@ -44,7 +44,7 @@ class _DashboardRoutineWidgetState extends State<DashboardRoutineWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final routine = context.watch<RoutinesProvider>().activeRoutine;
+    final routine = context.watch<RoutinesProvider>().currentRoutine;
     _hasContent = routine != null;
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
 
