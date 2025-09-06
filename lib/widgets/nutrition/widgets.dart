@@ -113,6 +113,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
       children: [
         TypeAheadField<IngredientApiSearchEntry>(
           controller: widget._ingredientController,
+          debounceDuration: const Duration(milliseconds: 500),
           builder: (context, controller, focusNode) {
             return TextFormField(
               controller: controller,
@@ -123,11 +124,6 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                   return AppLocalizations.of(context).selectIngredient;
                 }
                 return null;
-              },
-              onChanged: (value) {
-                widget.updateSearchQuery(value);
-                // unselect to start a new search
-                widget.unSelectIngredient();
               },
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
@@ -141,6 +137,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             if (pattern == '' || widget._ingredientIdController.text.isNotEmpty) {
               return null;
             }
+
+            widget.updateSearchQuery(pattern);
+            // unselect to start a new search
+            widget.unSelectIngredient();
 
             return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
               pattern,
