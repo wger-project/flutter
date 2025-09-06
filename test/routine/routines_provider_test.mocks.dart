@@ -581,6 +581,16 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
       ) as _i11.Future<void>);
 
   @override
+  _i11.Future<void> fetchAndSetAllExercises() => (super.noSuchMethod(
+        Invocation.method(
+          #fetchAndSetAllExercises,
+          [],
+        ),
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
+
+  @override
   _i11.Future<_i6.Exercise?> fetchAndSetExercise(int? exerciseId) => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetExercise,

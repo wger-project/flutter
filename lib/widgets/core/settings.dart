@@ -20,10 +20,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/configure_plates_screen.dart';
+import 'package:wger/widgets/core/settings/exercise_cache.dart';
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
@@ -33,7 +33,6 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
     final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context);
 
@@ -47,24 +46,7 @@ class SettingsPage extends StatelessWidget {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
-          ListTile(
-            title: Text(i18n.settingsExerciseCacheDescription),
-            trailing: IconButton(
-              key: const ValueKey('cacheIconExercises'),
-              icon: const Icon(Icons.delete),
-              onPressed: () async {
-                await exerciseProvider.clearAllCachesAndPrefs();
-
-                if (context.mounted) {
-                  final snackBar = SnackBar(
-                    content: Text(i18n.settingsCacheDeletedSnackbar),
-                  );
-
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                }
-              },
-            ),
-          ),
+          const SettingsExerciseCache(),
           ListTile(
             title: Text(i18n.settingsIngredientCacheDescription),
             trailing: IconButton(
@@ -81,6 +63,12 @@ class SettingsPage extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
+            ),
+          ),
+          ListTile(
+            title: Text(
+              i18n.others,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
           ListTile(
