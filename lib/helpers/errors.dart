@@ -363,14 +363,19 @@ class FormHttpErrorsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
-        ...formatApiErrors(
-          extractErrors(exception.errors),
-          color: Theme.of(context).colorScheme.error,
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 250),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
+            ...formatApiErrors(
+              extractErrors(exception.errors),
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -383,15 +388,20 @@ class GeneralErrorsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
-        ...formatTextErrors(
-          widgets,
-          title: title,
-          color: Theme.of(context).colorScheme.error,
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 250),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
+            ...formatTextErrors(
+              widgets,
+              title: title,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
