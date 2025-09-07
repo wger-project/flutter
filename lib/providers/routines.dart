@@ -619,7 +619,7 @@ class RoutinesProvider with ChangeNotifier {
    */
   Future<List<WorkoutSession>> fetchSessionData() async {
     final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(_sessionUrlPath),
+      baseProvider.makeUrl(_sessionUrlPath, query: {'limit': API_MAX_PAGE_SIZE}),
     );
     final sessions = data.map((entry) => WorkoutSession.fromJson(entry)).toList();
 
