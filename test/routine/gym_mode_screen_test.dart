@@ -44,28 +44,31 @@ import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
 import 'gym_mode_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider, ExercisesProvider])
+@GenerateMocks([WgerBaseProvider, ExercisesProvider, RoutinesProvider])
 void main() {
-  final mockBaseProvider = MockWgerBaseProvider();
   final key = GlobalKey<NavigatorState>();
 
+  final mockRoutinesProvider = MockRoutinesProvider();
   final mockExerciseProvider = MockExercisesProvider();
   final testRoutine = getTestRoutine();
   final testExercises = getTestExercises();
 
   setUp(() {
+    when(mockRoutinesProvider.findById(any)).thenReturn(testRoutine);
+    when(mockRoutinesProvider.items).thenReturn([testRoutine]);
+    when(mockRoutinesProvider.repetitionUnits).thenReturn(testRepetitionUnits);
+    when(mockRoutinesProvider.findRepetitionUnitById(1)).thenReturn(testRepetitionUnit1);
+    when(mockRoutinesProvider.weightUnits).thenReturn(testWeightUnits);
+    when(mockRoutinesProvider.findWeightUnitById(1)).thenReturn(testWeightUnit1);
+    when(mockRoutinesProvider.fetchAndSetRoutineFull(any))
+        .thenAnswer((_) => Future.value(testRoutine));
+
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
   });
 
   Widget renderGymMode({locale = 'en'}) {
     return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => RoutinesProvider(
-        mockBaseProvider,
-        mockExerciseProvider,
-        [testRoutine],
-        repetitionUnits: testRepetitionUnits,
-        weightUnits: testWeightUnits,
-      ),
+      create: (context) => mockRoutinesProvider,
       child: ChangeNotifierProvider<ExercisesProvider>(
         create: (context) => mockExerciseProvider,
         child: riverpod.ProviderScope(
