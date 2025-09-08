@@ -79,7 +79,7 @@ dev_dependencies:
   drift_dev: ^2.28.1
   flutter_lints: ^6.0.0
   freezed: ^3.2.0
-  json_serializable: ^6.11.0
+  json_serializable: ^6.11.1
   mockito: ^5.4.6
   network_image_mock: ^2.1.1
   shared_preferences_platform_interface: ^2.0.0
