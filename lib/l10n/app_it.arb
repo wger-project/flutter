@@ -161,7 +161,7 @@
     "@impression": {
         "description": "General impression (e.g. for a workout session) such as good, bad, etc."
     },
-    "comment": "Comment",
+    "comment": "Commento",
     "@comment": {
         "description": "Comment, additional information"
     },
@@ -722,7 +722,7 @@
     "@lats": {
         "description": "Generated entry for translation for server strings"
     },
-    "aboutPageTitle": "A proposito di Wger",
+    "aboutPageTitle": "Chi siamo & Supporto",
     "@aboutPageTitle": {},
     "contributeExerciseWarning": "Puoi contribuire agli esercizi solo se il tuo account è più vecchio di {days} giorni e hai verificato la tua email",
     "@contributeExerciseWarning": {
@@ -796,9 +796,9 @@
     "@log": {
         "description": "Log a specific meal (imperative form)"
     },
-    "aboutDonateTitle": "Donare",
+    "aboutDonateTitle": "Fai una donazione",
     "@aboutDonateTitle": {},
-    "aboutDonateText": "Offrici un caffè per aiutare il progetto, pagare i costi del server e mantenerci alimentati",
+    "aboutDonateText": "Mentre il progetto è gratuito e lo sarà sempre, tenere il server attivo no! Lo sviluppo richiede molto tempo e sforzo dai volontari. Il tuo contributo supporta direttamente questi costi, aiutando a tenere il servizio affidabile.",
     "@aboutDonateText": {},
     "settingsTitle": "Impostazioni",
     "@settingsTitle": {},
@@ -931,7 +931,7 @@
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
     },
-    "chartAllTimeTitle": "{name} per tutto il periodo",
+    "chartAllTimeTitle": "{name} totale",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
         "type": "text",
@@ -1005,7 +1005,7 @@
     "@errorInfoDescription": {},
     "errorInfoDescription2": "Puoi continuare a utilizzare l'app, ma alcune funzionalità potrebbero non funzionare.",
     "@errorInfoDescription2": {},
-    "errorViewDetails": "Technical details",
+    "errorViewDetails": "Dettagli Tecnici",
     "@errorViewDetails": {},
     "errorCouldNotConnectToServer": "Impossibile connettersi al server",
     "@errorCouldNotConnectToServer": {},
@@ -1040,5 +1040,41 @@
     "resistance_band": "Fascia di resistenza",
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
-    }
+    },
+    "endDate": "Data di fine",
+    "@endDate": {},
+    "startDate": "Data di inizio",
+    "@startDate": {},
+    "sets": "Serie",
+    "@sets": {
+        "description": "The number of sets to be done for one exercise"
+    },
+    "supersetNr": "Serie combinata{nr }",
+    "@supersetNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "resultingRoutine": "Risultato Routine",
+    "@resultingRoutine": {},
+    "min": "Min",
+    "@min": {},
+    "max": "Max",
+    "@max": {},
+    "aboutWhySupportTitle": "Open Source & uso gratuito ❤️",
+    "@aboutWhySupportTitle": {},
+    "aboutContributeTitle": "Contribuisci",
+    "@aboutContributeTitle": {},
+    "aboutContributeText": "Incoraggiamo ogni tipo di contributo. Che tu sia uno sviluppatore, un traduttore, o semplicemente appassionato di fitness, ogni piccolo supporto verrà apprezzato!",
+    "@aboutContributeText": {},
+    "aboutBugsListTitle": "Segnala un problema o suggerisci una funzionalità",
+    "@aboutBugsListTitle": {},
+    "aboutDiscordTitle": "Discord",
+    "@aboutDiscordTitle": {},
+    "fitInWeek": "Settimana Fit in",
+    "@fitInWeek": {}
 }
