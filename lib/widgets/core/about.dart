@@ -25,6 +25,8 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
+import 'log_overview.dart';
+
 class AboutPage extends StatelessWidget {
   static String routeName = '/AboutPage';
 
@@ -159,12 +161,14 @@ class AboutPage extends StatelessWidget {
             _buildSectionHeader(context, i18n.aboutJoinCommunityTitle),
             ListTile(
               leading: const FaIcon(FontAwesomeIcons.discord),
+              trailing: const Icon(Icons.arrow_outward),
               title: Text(i18n.aboutDiscordTitle),
               contentPadding: EdgeInsets.zero,
               onTap: () => launchURL(DISCORD_URL, context),
             ),
             ListTile(
               leading: const FaIcon(FontAwesomeIcons.mastodon),
+              trailing: const Icon(Icons.arrow_outward),
               title: Text(i18n.aboutMastodonTitle),
               contentPadding: EdgeInsets.zero,
               onTap: () => launchURL(MASTODON_URL, context),
@@ -175,6 +179,16 @@ class AboutPage extends StatelessWidget {
 
             ListTile(
               leading: const Icon(Icons.article),
+              trailing: const Icon(Icons.chevron_right),
+              title: Text(i18n.applicationLogs),
+              contentPadding: EdgeInsets.zero,
+              onTap: () {
+                Navigator.of(context).pushNamed(LogOverviewPage.routeName);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.article),
+              trailing: const Icon(Icons.chevron_right),
               title: const Text('View Licenses'),
               contentPadding: EdgeInsets.zero,
               onTap: () {

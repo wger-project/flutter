@@ -33,6 +33,7 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/routines.dart';
 
 import 'consts.dart';
+import 'logs.dart';
 
 void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? context}) {
   final logger = Logger('showHttpExceptionErrorDialog');
@@ -115,6 +116,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
   }
 
   final String fullStackTrace = stackTrace?.toString() ?? 'No stack trace available.';
+  final applicationLogs = InMemoryLogStore().formattedLogs;
 
   showDialog(
     context: dialogContext,
@@ -163,32 +165,32 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  TextButton.icon(
-                    icon: const Icon(Icons.copy_all_outlined, size: 18),
-                    label: Text(i18n.copyToClipboard),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    onPressed: () {
-                      final String clipboardText = 'Error Title: $issueTitle\n'
-                          'Error Message: $issueErrorMessage\n\n'
-                          'Stack Trace:\n$fullStackTrace';
-                      Clipboard.setData(ClipboardData(text: clipboardText)).then((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Error details copied to clipboard!')),
-                        );
-                      }).catchError((copyError) {
-                        if (kDebugMode) {
-                          logger.fine('Error copying to clipboard: $copyError');
-                        }
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Could not copy details.')),
-                        );
-                      });
-                    },
+                  CopyToClipboardButton(
+                    text: 'Error Title: $issueTitle\n'
+                        'Error Message: $issueErrorMessage\n\n'
+                        'Stack Trace:\n$fullStackTrace',
                   ),
+                  const SizedBox(height: 8),
+                  Text(
+                    i18n.applicationLogs,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    constraints: const BoxConstraints(maxHeight: 250),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ...applicationLogs.map((entry) => Text(
+                                entry,
+                                style: TextStyle(fontSize: 12.0, color: Colors.grey[700]),
+                              ))
+                        ],
+                      ),
+                    ),
+                  ),
+                  CopyToClipboardButton(text: applicationLogs.join('\n')),
                 ],
               ),
             ],
@@ -199,6 +201,9 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
             TextButton(
               child: const Text('Report issue'),
               onPressed: () async {
+                final logText = applicationLogs.isEmpty
+                    ? '-- No logs available --'
+                    : applicationLogs.join('\n');
                 final description = Uri.encodeComponent(
                   '## Description\n\n'
                   '[Please describe what you were doing when the error occurred.]\n\n'
@@ -206,7 +211,9 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                   'Error title: $issueTitle\n'
                   'Error message: $issueErrorMessage\n'
                   'Stack trace:\n'
-                  '```\n$stackTrace\n```',
+                  '```\n$stackTrace\n```\n\n'
+                  'App logs (last ${applicationLogs.length} entries):\n'
+                  '```\n$logText\n```',
                 );
                 final githubIssueUrl = '$GITHUB_ISSUES_BUG_URL'
                     '&title=$issueTitle'
@@ -235,6 +242,47 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
       );
     },
   );
+}
+
+class CopyToClipboardButton extends StatelessWidget {
+  final logger = Logger('CopyToClipboardButton');
+  final String text;
+
+  CopyToClipboardButton({
+    required this.text,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    return TextButton.icon(
+      icon: const Icon(Icons.copy_all_outlined, size: 18),
+      label: Text(i18n.copyToClipboard),
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      onPressed: () {
+        Clipboard.setData(ClipboardData(text: text)).then((_) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Details copied to clipboard!')),
+            );
+          }
+        }).catchError((copyError) {
+          logger.warning('Error copying to clipboard: $copyError');
+
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Could not copy details.')),
+            );
+          }
+        });
+      },
+    );
+  }
 }
 
 void showDeleteDialog(BuildContext context, String confirmDeleteName, Log log) async {
