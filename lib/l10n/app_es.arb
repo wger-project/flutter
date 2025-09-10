@@ -626,7 +626,7 @@
     "@quads": {},
     "arms": "Brazos",
     "@arms": {},
-    "aboutPageTitle": "Acerca de Wger",
+    "aboutPageTitle": "Acerca de Wger y soporte",
     "@aboutPageTitle": {},
     "userProfile": "Tu perfil",
     "@userProfile": {},
@@ -744,9 +744,9 @@
     "@aboutMastodonTitle": {},
     "settingsExerciseCacheDescription": "Cache de ejercicios",
     "@settingsExerciseCacheDescription": {},
-    "aboutDonateTitle": "Donar",
+    "aboutDonateTitle": "Realizar una donación",
     "@aboutDonateTitle": {},
-    "aboutDonateText": "Invítanos un café para ayudar al proyecto, cubrir los costos del servidor y mantenernos activos",
+    "aboutDonateText": "Si bien el proyecto es gratuito y siempre lo seguirá siendo, ¡ejecutar el servidor no lo es! El desarrollo también requiere mucho tiempo y esfuerzo por parte de los voluntarios. Su contribución respalda directamente estos costos, lo que ayuda a mantener el servicio confiable.",
     "@aboutDonateText": {},
     "selectAvailablePlates": "Elige los discos disponibles",
     "@selectAvailablePlates": {},
@@ -862,6 +862,143 @@
     "@max": {},
     "aboutContributeTitle": "Contribuye",
     "@aboutContributeTitle": {},
-    "aboutContributeText": "Todos los tipos de contribuciones  son bien recibidas. Ya seas desarrollador, traductor o un apasionado por el deporte, toda ayuda es bien recibida.",
-    "@aboutContributeText": {}
+    "aboutContributeText": "Todos los tipos de contribuciones son bien recibidas. Ya seas desarrollador, traductor o un apasionado por el deporte, toda ayuda es bien recibida.",
+    "@aboutContributeText": {},
+    "endDate": "Fecha de finalización",
+    "@endDate": {},
+    "startDate": "Fecha de inicio",
+    "@startDate": {},
+    "min": "Mínimo",
+    "@min": {},
+    "chart30DaysTitle": "{name} ultimos 30 días",
+    "@chart30DaysTitle": {
+        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chartDuringPlanTitle": "{chartName} durante el plan nutricional {planName}",
+    "@chartDuringPlanTitle": {
+        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+        "type": "text",
+        "placeholders": {
+            "chartName": {
+                "type": "String"
+            },
+            "planName": {
+                "type": "String"
+            }
+        }
+    },
+    "today": "Hoy",
+    "@today": {},
+    "loggedToday": "Registrado hoy",
+    "@loggedToday": {},
+    "surplus": "exceso calórico",
+    "@surplus": {
+        "description": "Caloric surplus (either planned or unplanned)"
+    },
+    "deficit": "déficit calórico",
+    "@deficit": {
+        "description": "Caloric deficit (either planned or unplanned)"
+    },
+    "kcalValue": "{value} kcal",
+    "@kcalValue": {
+        "description": "A value in kcal, e.g. 500 kcal",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "gValue": "{value} g",
+    "@gValue": {
+        "description": "A value in grams, e.g. 5 g",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "percentValue": "{value} %",
+    "@percentValue": {
+        "description": "A value in percent, e.g. 10 %",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "aboutWhySupportTitle": "Código abierto y de uso gratuito ❤️",
+    "@aboutWhySupportTitle": {},
+    "aboutBugsListTitle": "Informar un problema o sugerir una característica",
+    "@aboutBugsListTitle": {},
+    "aboutTranslationListTitle": "Traducir la aplicación",
+    "@aboutTranslationListTitle": {},
+    "aboutSourceListTitle": "Ver código fuente",
+    "@aboutSourceListTitle": {},
+    "aboutJoinCommunityTitle": "Unirse a la comunidad",
+    "@aboutJoinCommunityTitle": {},
+    "aboutDiscordTitle": "Discord",
+    "@aboutDiscordTitle": {},
+    "others": "Otros",
+    "@others": {},
+    "fitInWeek": "En forma en una semana",
+    "@fitInWeek": {},
+    "fitInWeekHelp": "Si está activado, los días se repetirán en un ciclo semanal, de la otra manera, los días serán secuenciales sin importar el inicio de una nueva semana.",
+    "@fitInWeekHelp": {},
+    "addSuperset": "Añadir superserie",
+    "@addSuperset": {},
+    "setHasNoExercises": "¡Esta rutina no tiene ejercicios!",
+    "@setHasNoExercises": {},
+    "settingsIngredientCacheDescription": "Cache de ingredientes",
+    "@settingsIngredientCacheDescription": {},
+    "simpleMode": "Modo simple",
+    "@simpleMode": {},
+    "simpleModeHelp": "Ocultar ajustes avanzados cuando se editan los ejercicios",
+    "@simpleModeHelp": {},
+    "progressionRules": "Este ejercicio tiene reglas de progresión y no puede ser editado en la aplicación móvil. Por favor, usa la aplicación web para editarlo.",
+    "@progressionRules": {},
+    "resistance_band": "Banda de resistencia",
+    "@resistance_band": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "overallChangeWeight": "Cambio general",
+    "@overallChangeWeight": {
+        "description": "Overall change in weight, added for localization"
+    },
+    "goalTypeMeals": "De las comidas",
+    "@goalTypeMeals": {
+        "description": "added for localization of Class GoalType's filed meals"
+    },
+    "goalTypeBasic": "Básico",
+    "@goalTypeBasic": {
+        "description": "added for localization of Class GoalType's filed basic"
+    },
+    "goalTypeAdvanced": "Avanzado",
+    "@goalTypeAdvanced": {
+        "description": "added for localization of Class GoalType's filed advanced"
+    },
+    "indicatorRaw": "raw",
+    "@indicatorRaw": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "indicatorAvg": "medio",
+    "@indicatorAvg": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "themeMode": "Modo del tema",
+    "@themeMode": {},
+    "darkMode": "Siempre en modo oscuro",
+    "@darkMode": {},
+    "lightMode": "Siempre en modo claro",
+    "@lightMode": {},
+    "systemMode": "Configuracion del sistema",
+    "@systemMode": {}
 }
