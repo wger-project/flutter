@@ -18,6 +18,7 @@
 
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/locator.dart';
@@ -66,13 +67,19 @@ class NutritionPlansProvider with ChangeNotifier {
     ingredients = [];
   }
 
-  /// Returns the current active nutritional plan. At the moment this is just
-  /// the latest, but this might change in the future.
+  /// Returns the current active nutritional plan.
+  /// A plan is considered active if:
+  /// - Its start date is before now
+  /// - Its end date is after now or not set
+  /// If multiple plans match these criteria, the one with the most recent creation date is returned.
   NutritionalPlan? get currentPlan {
-    if (_plans.isNotEmpty) {
-      return _plans.first;
-    }
-    return null;
+    final now = DateTime.now();
+    return _plans
+        .where((plan) =>
+            plan.startDate.isBefore(now) && (plan.endDate == null || plan.endDate!.isAfter(now)))
+        .toList()
+        .sorted((a, b) => b.creationDate.compareTo(a.creationDate))
+        .firstOrNull;
   }
 
   NutritionalPlan findById(int id) {
