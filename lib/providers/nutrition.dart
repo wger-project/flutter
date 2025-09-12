@@ -18,6 +18,7 @@
 
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/locator.dart';
@@ -72,25 +73,13 @@ class NutritionPlansProvider with ChangeNotifier {
   /// - Its end date is after now or not set
   /// If multiple plans match these criteria, the one with the most recent creation date is returned.
   NutritionalPlan? get currentPlan {
-    if (_plans.isEmpty) {
-      return null;
-    }
-
     final now = DateTime.now();
-    final activePlans = _plans.where((plan) {
-      final isAfterStart = plan.startDate.isBefore(now);
-      final isBeforeEnd = plan.endDate == null || plan.endDate!.isAfter(now);
-      return isAfterStart && isBeforeEnd;
-    }).toList();
-
-    if (activePlans.isEmpty) {
-      return null;
-    }
-
-    // Sort by creation date (newest first) and return the first one
-    // TODO: this should already be done on _plans. this whole function can be a firstWhere() ?
-    activePlans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
-    return activePlans.first;
+    return _plans
+        .where((plan) =>
+            plan.startDate.isBefore(now) && (plan.endDate == null || plan.endDate!.isAfter(now)))
+        .toList()
+        .sorted((a, b) => b.creationDate.compareTo(a.creationDate))
+        .firstOrNull;
   }
 
   NutritionalPlan findById(int id) {

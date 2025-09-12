@@ -74,7 +74,7 @@ class NutritionalPlan {
   NutritionalPlan({
     this.id,
     required this.description,
-    required this.creationDate,
+    DateTime? creationDate,
     required this.startDate,
     this.endDate,
     this.onlyLogging = false,
@@ -85,7 +85,7 @@ class NutritionalPlan {
     this.goalFiber,
     List<Meal>? meals,
     List<Log>? diaryEntries,
-  }) {
+  }) : creationDate = creationDate ?? DateTime.now() {
     this.meals = meals ?? [];
     this.diaryEntries = diaryEntries ?? [];
   }
