@@ -20,6 +20,7 @@ import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
@@ -34,6 +35,8 @@ part 'exercise.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Exercise extends Equatable {
+  final _logger = Logger('ExerciseModel');
+
   @JsonKey(required: true)
   late final int? id;
 
@@ -198,7 +201,13 @@ class Exercise extends Equatable {
       (e) => e.languageObj.shortName == languageCode,
       orElse: () => translations.firstWhere(
         (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
-        orElse: () => translations.first,
+        orElse: () {
+          _logger.info(
+            'Could not find fallback english translation for exercise-ID ${id}, returning '
+            'first language (${translations.first.languageObj.shortName}) instead.',
+          );
+          return translations.first;
+        },
       ),
     );
   }
