@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
@@ -54,18 +55,20 @@ class ScanReader extends StatelessWidget {
 }
 
 class IngredientTypeahead extends StatefulWidget {
+  final _logger = Logger('IngredientTypeahead');
+
   final TextEditingController _ingredientController;
   final TextEditingController _ingredientIdController;
 
   final String barcode;
-  final bool? test;
+  final bool test;
   final bool showScanner;
 
   final Function(int id, String name, num? amount) selectIngredient;
   final Function() unSelectIngredient;
   final Function(String query) updateSearchQuery;
 
-  const IngredientTypeahead(
+  IngredientTypeahead(
     this._ingredientIdController,
     this._ingredientController, {
     this.showScanner = true,
@@ -90,19 +93,21 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
     barcode = widget.barcode; // for unit tests
   }
 
-  Future<String> readerscan(BuildContext context) async {
+  Future<String> openBarcodeScan(BuildContext context) async {
     try {
       final code = await Navigator.of(context)
           .push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
+
       if (code == null) {
         return '';
       }
 
-      if (code.compareTo('-1') == 0) {
+      if (code == '-1') {
         return '';
       }
       return code;
-    } on PlatformException {
+    } on PlatformException catch (e) {
+      widget._logger.warning('PlatformException during barcode scan: $e');
       return '';
     }
   }
@@ -113,6 +118,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
       children: [
         TypeAheadField<IngredientApiSearchEntry>(
           controller: widget._ingredientController,
+          debounceDuration: const Duration(milliseconds: 500),
           builder: (context, controller, focusNode) {
             return TextFormField(
               controller: controller,
@@ -123,11 +129,6 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                   return AppLocalizations.of(context).selectIngredient;
                 }
                 return null;
-              },
-              onChanged: (value) {
-                widget.updateSearchQuery(value);
-                // unselect to start a new search
-                widget.unSelectIngredient();
               },
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
@@ -141,6 +142,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             if (pattern == '' || widget._ingredientIdController.text.isNotEmpty) {
               return null;
             }
+
+            widget.updateSearchQuery(pattern);
+            // unselect to start a new search
+            widget.unSelectIngredient();
 
             return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
               pattern,
@@ -202,8 +207,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
       key: const Key('scan-button'),
       icon: const FaIcon(FontAwesomeIcons.barcode),
       onPressed: () async {
-        if (!widget.test!) {
-          barcode = await readerscan(context);
+        if (!widget.test) {
+          barcode = await openBarcodeScan(context);
         }
 
         if (!mounted) {

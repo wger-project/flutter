@@ -25,23 +25,10 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/log.dart';
 
-class WorkoutLogs extends StatefulWidget {
+class WorkoutLogs extends StatelessWidget {
   final Routine _routine;
 
   const WorkoutLogs(this._routine);
-
-  @override
-  _WorkoutLogsState createState() => _WorkoutLogsState();
-}
-
-class _WorkoutLogsState extends State<WorkoutLogs> {
-  final dayController = TextEditingController();
-
-  @override
-  void dispose() {
-    dayController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +49,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
         ),
         SizedBox(
           width: double.infinity,
-          child: WorkoutLogCalendar(widget._routine),
+          child: WorkoutLogCalendar(_routine),
         ),
       ],
     );

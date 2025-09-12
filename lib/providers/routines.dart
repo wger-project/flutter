@@ -83,6 +83,15 @@ class RoutinesProvider with ChangeNotifier {
     _repetitionUnits = repetitionUnits ?? [];
   }
 
+  /// Returns the current active nutritional plan. At the moment this is just
+  /// the latest, but this might change in the future.
+  Routine? get currentRoutine {
+    if (_routines.isNotEmpty) {
+      return _routines.first;
+    }
+    return null;
+  }
+
   List<Routine> get items {
     return [..._routines];
   }
@@ -97,7 +106,6 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Clears all lists
   void clear() {
-    activeRoutine = null;
     _routines = [];
     _weightUnits = [];
     _repetitionUnits = [];
@@ -138,16 +146,6 @@ class RoutinesProvider with ChangeNotifier {
     return _routines.indexWhere((routine) => routine.id == id);
   }
 
-  /// Sets the current active routine. At the moment this is just the latest,
-  /// but this might change in the future.
-  void setActiveRoutine() {
-    if (_routines.isNotEmpty) {
-      activeRoutine = _routines.first;
-    } else {
-      activeRoutine = null;
-    }
-  }
-
   /*
    * Routines
    */
@@ -155,25 +153,29 @@ class RoutinesProvider with ChangeNotifier {
   /// Fetches and sets all workout plans fully, i.e. with all corresponding child
   /// attributes
   Future<void> fetchAndSetAllRoutinesFull() async {
-    final data = await baseProvider.fetch(
+    _logger.fine('Fetching all routines fully');
+    final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(
         _routinesUrlPath,
-        query: {'ordering': '-creation_date', 'limit': '1000', 'is_template': 'false'},
+        query: {'ordering': '-creation_date', 'limit': API_MAX_PAGE_SIZE, 'is_template': 'false'},
       ),
     );
-    for (final entry in data['results']) {
+    for (final entry in data) {
       await fetchAndSetRoutineFull(entry['id']);
     }
 
-    setActiveRoutine();
     notifyListeners();
   }
 
   /// Fetches all routines sparsely, i.e. only with the data on the object itself
   /// and no child attributes
   Future<void> fetchAndSetAllRoutinesSparse() async {
+    _logger.fine('Fetching all routines sparsely');
     final data = await baseProvider.fetch(
-      baseProvider.makeUrl(_routinesUrlPath, query: {'limit': '1000', 'is_template': 'false'}),
+      baseProvider.makeUrl(
+        _routinesUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE, 'is_template': 'false'},
+      ),
     );
     _routines = [];
     for (final workoutPlanData in data['results']) {
@@ -181,7 +183,6 @@ class RoutinesProvider with ChangeNotifier {
       _routines.add(plan);
     }
 
-    setActiveRoutine();
     notifyListeners();
   }
 
@@ -214,13 +215,12 @@ class RoutinesProvider with ChangeNotifier {
   /// and no child attributes
   Future<Routine> fetchAndSetRoutineSparse(int planId) async {
     final fullPlanData = await baseProvider.fetch(
-      baseProvider.makeUrl(_routinesUrlPath, id: planId),
+      baseProvider.makeUrl(_routinesUrlPath, id: planId, query: {'limit': API_MAX_PAGE_SIZE}),
     );
     final routine = Routine.fromJson(fullPlanData);
     _routines.add(routine);
     _routines.sort((a, b) => b.created.compareTo(a.created));
 
-    setActiveRoutine();
     notifyListeners();
     return routine;
   }
@@ -338,7 +338,6 @@ class RoutinesProvider with ChangeNotifier {
       _routines.add(routine);
     }
 
-    setActiveRoutine();
     notifyListeners();
     return routine;
   }
@@ -620,7 +619,7 @@ class RoutinesProvider with ChangeNotifier {
    */
   Future<List<WorkoutSession>> fetchSessionData() async {
     final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(_sessionUrlPath),
+      baseProvider.makeUrl(_sessionUrlPath, query: {'limit': API_MAX_PAGE_SIZE}),
     );
     final sessions = data.map((entry) => WorkoutSession.fromJson(entry)).toList();
 

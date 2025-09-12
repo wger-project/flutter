@@ -53,8 +53,6 @@ class _RoutinesListState extends State<RoutinesList> {
                 return Card(
                   child: ListTile(
                     onTap: () async {
-                      widget._routineProvider.activeRoutine = currentRoutine;
-
                       setState(() {
                         _loadingRoutine = currentRoutine.id;
                       });

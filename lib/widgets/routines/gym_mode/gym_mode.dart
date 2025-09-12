@@ -72,6 +72,14 @@ class _GymModeState extends ConsumerState<GymMode> {
   }
 
   Future<int> _loadGymState() async {
+    // Re-fetch the current routine data to ensure we have the latest session
+    // data since it is possible that the user created or deleted it from the
+    // web interface.
+    await context
+        .read<RoutinesProvider>()
+        .fetchAndSetRoutineFull(widget._dayDataGym.day!.routineId);
+    widget._logger.fine('Refreshed routine data');
+
     final validUntil = ref.read(gymStateProvider).validUntil;
     final currentPage = ref.read(gymStateProvider).currentPage;
     final savedDayId = ref.read(gymStateProvider).dayId;

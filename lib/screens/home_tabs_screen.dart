@@ -86,6 +86,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       final measurementProvider = context.read<MeasurementProvider>();
       final userProvider = context.read<UserProvider>();
 
+      //
       // Base data
       widget._logger.info('Loading base data');
       await Future.wait([
@@ -95,7 +96,18 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         nutritionPlansProvider.fetchIngredientsFromCache(),
         exercisesProvider.fetchAndSetInitialData(),
       ]);
+      exercisesProvider.fetchAndSetAllExercises();
 
+      // Workaround for https://github.com/wger-project/flutter/issues/901
+      // It seems that it can happen that sometimes the units were not loaded properly
+      // so now we check and try again if necessary. We might need a better general
+      // solution since this could potentially happen with other data as well.
+      if (routinesProvider.repetitionUnits.isEmpty || routinesProvider.weightUnits.isEmpty) {
+        widget._logger.info('Routine units are empty, fetching again');
+        await routinesProvider.fetchAndSetUnits();
+      }
+
+      //
       // Plans, weight and gallery
       widget._logger.info('Loading routines, weight, measurements and gallery');
       await Future.wait([
@@ -107,6 +119,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         measurementProvider.fetchAndSetAllCategoriesAndEntries(),
       ]);
 
+      //
       // Current nutritional plan
       widget._logger.info('Loading current nutritional plan');
       if (nutritionPlansProvider.currentPlan != null) {
@@ -114,10 +127,11 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
       }
 
+      //
       // Current routine
       widget._logger.info('Loading current routine');
-      if (routinesProvider.activeRoutine != null) {
-        final planId = routinesProvider.activeRoutine!.id!;
+      if (routinesProvider.currentRoutine != null) {
+        final planId = routinesProvider.currentRoutine!.id!;
         await routinesProvider.fetchAndSetRoutineFull(planId);
       }
     }

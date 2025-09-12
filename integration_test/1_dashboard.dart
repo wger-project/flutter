@@ -24,8 +24,7 @@ import '../test_data/routines.dart';
 
 Widget createDashboardScreen({locale = 'en'}) {
   final mockWorkoutProvider = MockRoutinesProvider();
-  when(mockWorkoutProvider.activeRoutine)
-      .thenReturn(getTestRoutine(exercises: getScreenshotExercises()));
+  when(mockWorkoutProvider.items).thenReturn([getTestRoutine(exercises: getScreenshotExercises())]);
 
   when(mockWorkoutProvider.fetchSessionData()).thenAnswer((a) => Future.value([
         WorkoutSession(

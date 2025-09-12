@@ -295,15 +295,6 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
       ) as int);
 
   @override
-  void setActiveRoutine() => super.noSuchMethod(
-        Invocation.method(
-          #setActiveRoutine,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   _i13.Future<void> fetchAndSetAllRoutinesFull() => (super.noSuchMethod(
         Invocation.method(
           #fetchAndSetAllRoutinesFull,

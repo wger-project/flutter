@@ -135,3 +135,5 @@ enum WeightUnitEnum { kg, lb }
 
 /// TextInputType for decimal numbers
 const textInputTypeDecimal = TextInputType.numberWithOptions(decimal: true);
+
+const String API_MAX_PAGE_SIZE = '999';

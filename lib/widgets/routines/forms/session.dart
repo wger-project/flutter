@@ -18,6 +18,7 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -28,6 +29,7 @@ import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/routines.dart';
 
 class SessionForm extends StatefulWidget {
+  final _logger = Logger('SessionForm');
   final WorkoutSession _session;
   final int _routineId;
   final Function()? _onSaved;
@@ -215,11 +217,18 @@ class _SessionFormState extends State<SessionForm> {
               }
               _form.currentState!.save();
 
+              // Reset any previous error message
+              setState(() {
+                errorMessage = const SizedBox.shrink();
+              });
+
               // Save the entry on the server
               try {
                 if (widget._session.id == null) {
+                  widget._logger.fine('Adding new session');
                   await routinesProvider.addSession(widget._session, widget._routineId);
                 } else {
+                  widget._logger.fine('Editing existing session with id ${widget._session.id}');
                   await routinesProvider.editSession(widget._session);
                 }
 
@@ -231,6 +240,7 @@ class _SessionFormState extends State<SessionForm> {
                   widget._onSaved!();
                 }
               } on WgerHttpException catch (error) {
+                widget._logger.warning('Could not save session: $error');
                 if (context.mounted) {
                   setState(() {
                     errorMessage = FormHttpErrorsWidget(error);

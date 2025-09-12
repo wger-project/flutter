@@ -30,6 +30,7 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
       children: [
         TypeAheadField<Exercise>(
           key: const Key('field-typeahead'),
+          debounceDuration: const Duration(milliseconds: 500),
           decorationBuilder: (context, child) {
             return Material(
               type: MaterialType.card,

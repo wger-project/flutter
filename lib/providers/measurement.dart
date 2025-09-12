@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -54,10 +55,10 @@ class MeasurementProvider with ChangeNotifier {
   /// Fetches and sets the categories from the server (no entries)
   Future<void> fetchAndSetCategories() async {
     // Process the response
-    final requestUrl = baseProvider.makeUrl(_categoryUrl);
-    final data = await baseProvider.fetch(requestUrl);
+    final requestUrl = baseProvider.makeUrl(_categoryUrl, query: {'limit': API_MAX_PAGE_SIZE});
+    final data = await baseProvider.fetchPaginated(requestUrl);
     final List<MeasurementCategory> loadedEntries = [];
-    for (final entry in data['results']) {
+    for (final entry in data) {
       loadedEntries.add(MeasurementCategory.fromJson(entry));
     }
 
@@ -71,10 +72,13 @@ class MeasurementProvider with ChangeNotifier {
     final categoryIndex = _categories.indexOf(category);
 
     // Process the response
-    final requestUrl = baseProvider.makeUrl(_entryUrl, query: {'category': category.id.toString()});
-    final data = await baseProvider.fetch(requestUrl);
+    final requestUrl = baseProvider.makeUrl(
+      _entryUrl,
+      query: {'category': category.id.toString(), 'limit': API_MAX_PAGE_SIZE},
+    );
+    final data = await baseProvider.fetchPaginated(requestUrl);
     final List<MeasurementEntry> loadedEntries = [];
-    for (final entry in data['results']) {
+    for (final entry in data) {
       loadedEntries.add(MeasurementEntry.fromJson(entry));
     }
     final MeasurementCategory editedCategory = category.copyWith(entries: loadedEntries);

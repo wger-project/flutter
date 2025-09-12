@@ -32,6 +32,8 @@ class Video {
   @JsonKey(name: 'video', required: true)
   final String url;
 
+  Uri get uri => Uri.parse(url);
+
   @JsonKey(name: 'exercise', required: true)
   final int exerciseId;
 

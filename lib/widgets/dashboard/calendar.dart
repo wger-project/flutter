@@ -87,6 +87,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
   void loadEvents() async {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final i18n = AppLocalizations.of(context);
 
     // Process weight entries
     final weightProvider = context.read<BodyWeightProvider>();
@@ -98,7 +99,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       }
 
       // Add events to lists
-      _events[date]!.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
+      _events[date]?.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
     }
 
     // Process measurements
@@ -111,7 +112,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
 
-        _events[date]!.add(Event(
+        _events[date]?.add(Event(
           EventType.measurement,
           '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
         ));
@@ -130,9 +131,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
 
         // Add events to lists
-        _events[date]!.add(Event(
+        _events[date]?.add(Event(
           EventType.session,
-          '${AppLocalizations.of(context).impression}: ${session.impressionAsString} $time',
+          '${i18n.impression}: ${session.impressionAsString} $time',
         ));
       }
     });
@@ -148,15 +149,15 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         }
 
         // Add events to lists
-        _events[date]!.add(Event(
+        _events[date]?.add(Event(
           EventType.caloriesDiary,
-          AppLocalizations.of(context).kcalValue(entry.value.energy.toStringAsFixed(0)),
+          i18n.kcalValue(entry.value.energy.toStringAsFixed(0)),
         ));
       }
     }
 
     // Add initial selected day to events list
-    _selectedEvents.value = _getEventsForDay(_selectedDay!);
+    _selectedEvents.value = _selectedDay != null ? _getEventsForDay(_selectedDay!) : [];
   }
 
   @override

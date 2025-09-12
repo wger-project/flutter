@@ -54,11 +54,12 @@ void main() {
   });
 
   group('test the workout routine provider', () {
-    test('Test fetching and setting a plan', () async {
+    test('Test fetching and setting a routine', () async {
       final exercisesProvider = ExercisesProvider(mockBaseProvider);
 
       final uri = Uri.https('localhost', 'api/v2/routine/325397/');
-      when(mockBaseProvider.makeUrl('routine', id: 325397)).thenReturn(uri);
+      when(mockBaseProvider.makeUrl('routine', id: 325397, query: {'limit': API_MAX_PAGE_SIZE}))
+          .thenReturn(uri);
       when(mockBaseProvider.fetch(uri)).thenAnswer(
         (_) async => Future.value({
           'id': 325397,

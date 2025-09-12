@@ -49,7 +49,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? co
     return;
   }
 
-  final errorList = formatErrors(extractErrors(exception.errors));
+  final errorList = formatApiErrors(extractErrors(exception.errors));
 
   showDialog(
     context: dialogContext,
@@ -87,27 +87,34 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
     return;
   }
 
+  final i18n = AppLocalizations.of(dialogContext);
+
   // If possible, determine the error title and message based on the error type.
-  bool isNetworkError = false;
-  String errorTitle = 'An error occurred';
-  String errorMessage = error.toString();
+  // (Note that issue titles and error messages are not localized)
+  bool allowReportIssue = true;
+  String issueTitle = 'An error occurred';
+  String issueErrorMessage = error.toString();
+  String errorTitle = i18n.anErrorOccurred;
+  String errorDescription = i18n.errorInfoDescription;
+  var icon = Icons.error;
 
   if (error is TimeoutException) {
-    errorTitle = 'Network Timeout';
-    errorMessage =
-        'The connection to the server timed out. Please check your internet connection and try again.';
+    issueTitle = 'Network Timeout';
+    issueErrorMessage = 'The connection to the server timed out. Please check your '
+        'internet connection and try again.';
   } else if (error is FlutterErrorDetails) {
-    errorTitle = 'Application Error';
-    errorMessage = error.exceptionAsString();
+    issueTitle = 'Application Error';
+    issueErrorMessage = error.exceptionAsString();
   } else if (error is MissingRequiredKeysException) {
-    errorTitle = 'Missing Required Key';
+    issueTitle = 'Missing Required Key';
   } else if (error is SocketException) {
-    isNetworkError = true;
+    allowReportIssue = false;
+    icon = Icons.signal_wifi_connected_no_internet_4_outlined;
+    errorTitle = i18n.errorCouldNotConnectToServer;
+    errorDescription = i18n.errorCouldNotConnectToServerDetails;
   }
 
   final String fullStackTrace = stackTrace?.toString() ?? 'No stack trace available.';
-
-  final i18n = AppLocalizations.of(dialogContext);
 
   showDialog(
     context: dialogContext,
@@ -115,16 +122,16 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
     builder: (BuildContext context) {
       return AlertDialog(
         title: Row(
+          spacing: 8,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              isNetworkError ? Icons.signal_wifi_connected_no_internet_4_outlined : Icons.error,
+              icon,
               color: Theme.of(context).colorScheme.error,
             ),
-            const SizedBox(width: 8),
             Expanded(
               child: Text(
-                isNetworkError ? i18n.errorCouldNotConnectToServer : i18n.anErrorOccurred,
+                errorTitle,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
@@ -133,11 +140,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
         content: SingleChildScrollView(
           child: ListBody(
             children: [
-              Text(
-                isNetworkError
-                    ? i18n.errorCouldNotConnectToServerDetails
-                    : i18n.errorInfoDescription,
-              ),
+              Text(errorDescription),
               const SizedBox(height: 8),
               Text(i18n.errorInfoDescription2),
               const SizedBox(height: 10),
@@ -146,7 +149,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                 title: Text(i18n.errorViewDetails),
                 children: [
                   Text(
-                    errorMessage,
+                    issueErrorMessage,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Container(
@@ -169,14 +172,17 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     onPressed: () {
-                      final String clipboardText =
-                          'Error Title: $errorTitle\nError Message: $errorMessage\n\nStack Trace:\n$fullStackTrace';
+                      final String clipboardText = 'Error Title: $issueTitle\n'
+                          'Error Message: $issueErrorMessage\n\n'
+                          'Stack Trace:\n$fullStackTrace';
                       Clipboard.setData(ClipboardData(text: clipboardText)).then((_) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Error details copied to clipboard!')),
                         );
                       }).catchError((copyError) {
-                        if (kDebugMode) logger.fine('Error copying to clipboard: $copyError');
+                        if (kDebugMode) {
+                          logger.fine('Error copying to clipboard: $copyError');
+                        }
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Could not copy details.')),
                         );
@@ -189,7 +195,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
           ),
         ),
         actions: [
-          if (!isNetworkError)
+          if (allowReportIssue)
             TextButton(
               child: const Text('Report issue'),
               onPressed: () async {
@@ -197,20 +203,22 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                   '## Description\n\n'
                   '[Please describe what you were doing when the error occurred.]\n\n'
                   '## Error details\n\n'
-                  'Error title: $errorTitle\n'
-                  'Error message: $errorMessage\n'
+                  'Error title: $issueTitle\n'
+                  'Error message: $issueErrorMessage\n'
                   'Stack trace:\n'
                   '```\n$stackTrace\n```',
                 );
                 final githubIssueUrl = '$GITHUB_ISSUES_BUG_URL'
-                    '&title=$errorTitle'
+                    '&title=$issueTitle'
                     '&description=$description';
                 final Uri reportUri = Uri.parse(githubIssueUrl);
 
                 try {
                   await launchUrl(reportUri, mode: LaunchMode.externalApplication);
                 } catch (e) {
-                  if (kDebugMode) logger.warning('Error launching URL: $e');
+                  if (kDebugMode) {
+                    logger.warning('Error launching URL: $e');
+                  }
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Error opening issue tracker: $e')),
                   );
@@ -309,7 +317,7 @@ List<ApiError> extractErrors(Map<String, dynamic> errors) {
 }
 
 /// Processes the error messages from the server and returns a list of widgets
-List<Widget> formatErrors(List<ApiError> errors, {Color? color}) {
+List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
   final textColor = color ?? Colors.black;
 
   final List<Widget> errorList = [];
@@ -328,6 +336,26 @@ List<Widget> formatErrors(List<ApiError> errors, {Color? color}) {
   return errorList;
 }
 
+/// Processes the error messages from the server and returns a list of widgets
+List<Widget> formatTextErrors(List<String> errors, {String? title, Color? color}) {
+  final textColor = color ?? Colors.black;
+
+  final List<Widget> errorList = [];
+
+  if (title != null) {
+    errorList.add(
+      Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
+    );
+  }
+
+  for (final message in errors) {
+    errorList.add(Text(message, style: TextStyle(color: textColor)));
+  }
+  errorList.add(const SizedBox(height: 8));
+
+  return errorList;
+}
+
 class FormHttpErrorsWidget extends StatelessWidget {
   final WgerHttpException exception;
 
@@ -335,14 +363,45 @@ class FormHttpErrorsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
-        ...formatErrors(
-          extractErrors(exception.errors),
-          color: Theme.of(context).colorScheme.error,
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 250),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
+            ...formatApiErrors(
+              extractErrors(exception.errors),
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ],
         ),
-      ],
+      ),
+    );
+  }
+}
+
+class GeneralErrorsWidget extends StatelessWidget {
+  final String? title;
+  final List<String> widgets;
+
+  const GeneralErrorsWidget(this.widgets, {this.title, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 250),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
+            ...formatTextErrors(
+              widgets,
+              title: title,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

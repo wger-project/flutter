@@ -39,7 +39,7 @@ import 'settings_test.mocks.dart';
   WgerBaseProvider,
   SharedPreferencesAsync,
 ])
-void main() async {
+void main() {
   final mockExerciseProvider = MockExercisesProvider();
   final mockNutritionProvider = MockNutritionPlansProvider();
   final mockSharedPreferences = MockSharedPreferencesAsync();
@@ -68,10 +68,20 @@ void main() async {
   group('Cache', () {
     testWidgets('Test resetting the exercise cache', (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());
-      await tester.tap(find.byKey(const ValueKey('cacheIconExercises')));
+      await tester.tap(find.byKey(const ValueKey('cacheIconExercisesDelete')));
       await tester.pumpAndSettle();
 
       verify(mockExerciseProvider.clearAllCachesAndPrefs());
+    });
+
+    testWidgets('Test refreshing the exercise cache', (WidgetTester tester) async {
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.tap(find.byKey(const ValueKey('cacheIconExercisesRefresh')));
+      await tester.pumpAndSettle();
+
+      verify(mockExerciseProvider.clearAllCachesAndPrefs());
+      verify(mockExerciseProvider.fetchAndSetInitialData());
+      verify(mockExerciseProvider.fetchAndSetAllExercises());
     });
 
     testWidgets('Test resetting the ingredient cache', (WidgetTester tester) async {
