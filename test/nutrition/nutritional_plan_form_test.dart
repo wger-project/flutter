@@ -38,6 +38,7 @@ void main() {
     id: 1,
     creationDate: DateTime(2021, 1, 1),
     startDate: DateTime(2021, 1, 1),
+    endDate: DateTime(2021, 2, 10),
     description: 'test plan 1',
   );
   final plan2 = NutritionalPlan.empty();
@@ -80,11 +81,10 @@ void main() {
     await tester.pumpWidget(createHomeScreen(plan1));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('test plan 1'),
-      findsOneWidget,
-      reason: 'Description of existing nutritional plan is filled in',
-    );
+    expect(find.text('test plan 1'), findsOneWidget, reason: 'Description is filled in');
+    expect(find.text('1/1/2021'), findsOneWidget, reason: 'Start date is filled in');
+    expect(find.text('2/10/2021'), findsOneWidget, reason: 'End date is filled in');
+
     await tester.enterText(find.byKey(const Key('field-description')), 'New description');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 

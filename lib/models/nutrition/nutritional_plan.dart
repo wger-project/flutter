@@ -19,6 +19,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -32,6 +33,8 @@ part 'nutritional_plan.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class NutritionalPlan {
+  final _logger = Logger('NutritionalPlan Model');
+
   @JsonKey(required: true)
   int? id;
 
@@ -88,6 +91,14 @@ class NutritionalPlan {
   }) : creationDate = creationDate ?? DateTime.now() {
     this.meals = meals ?? [];
     this.diaryEntries = diaryEntries ?? [];
+
+    if (endDate != null && endDate!.isBefore(startDate)) {
+      _logger.warning(
+        'The end date of a nutritional plan is before the start. Setting to null! '
+        'PlanId: $id, startDate: $startDate, endDate: $endDate',
+      );
+      endDate = null;
+    }
   }
 
   NutritionalPlan.empty() {

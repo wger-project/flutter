@@ -110,7 +110,7 @@ class _RoutineFormState extends State<RoutineForm> {
         },
         decoration: InputDecoration(
           labelText: i18n.startDate,
-          suffixIcon: Icon(
+          suffixIcon: const Icon(
             Icons.calendar_today,
             key: Key('calendarIcon'),
           ),
