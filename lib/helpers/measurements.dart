@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
@@ -95,8 +96,15 @@ MeasurementChartEntry interpolateBetween(
 
   // Create a special DateTime with milliseconds ending in 123 to mark it as interpolated
   // which we leverage in the UI
-  final markedDate =
-      DateTime(date.year, date.month, date.day, date.hour, date.minute, date.second, 123);
+  final markedDate = DateTime(
+    date.year,
+    date.month,
+    date.day,
+    date.hour,
+    date.minute,
+    date.second,
+    INTERPOLATION_MARKER,
+  );
 
   return MeasurementChartEntry(
     before.value + (after.value - before.value) * (startDuration / totalDuration),

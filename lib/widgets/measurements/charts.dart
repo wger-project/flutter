@@ -88,7 +88,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
 
             // Check if this is an interpolated point (milliseconds ending with 123)
-            final bool isInterpolated = msSinceEpoch % 1000 == 123;
+            final bool isInterpolated = msSinceEpoch % 1000 == INTERPOLATION_MARKER;
             final String interpolatedMarker = isInterpolated ? ' (interpolated)' : '';
 
             return LineTooltipItem(
