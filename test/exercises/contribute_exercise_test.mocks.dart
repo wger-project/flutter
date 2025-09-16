@@ -38,6 +38,7 @@ import 'package:wger/providers/user.dart' as _i17;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(
@@ -233,19 +234,19 @@ class MockAddExerciseProvider extends _i1.Mock implements _i13.AddExerciseProvid
       ) as List<_i11.Muscle>);
 
   @override
-  set language(_i12.Language? _language) => super.noSuchMethod(
+  set language(_i12.Language? value) => super.noSuchMethod(
         Invocation.setter(
           #language,
-          _language,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set category(_i9.ExerciseCategory? _category) => super.noSuchMethod(
+  set category(_i9.ExerciseCategory? value) => super.noSuchMethod(
         Invocation.setter(
           #category,
-          _category,
+          value,
         ),
         returnValueForMissingStub: null,
       );
@@ -551,28 +552,28 @@ class MockUserProvider extends _i1.Mock implements _i17.UserProvider {
       ) as _i7.SharedPreferencesAsync);
 
   @override
-  set themeMode(_i18.ThemeMode? _themeMode) => super.noSuchMethod(
+  set themeMode(_i18.ThemeMode? value) => super.noSuchMethod(
         Invocation.setter(
           #themeMode,
-          _themeMode,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set prefs(_i7.SharedPreferencesAsync? _prefs) => super.noSuchMethod(
+  set prefs(_i7.SharedPreferencesAsync? value) => super.noSuchMethod(
         Invocation.setter(
           #prefs,
-          _prefs,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set profile(_i19.Profile? _profile) => super.noSuchMethod(
+  set profile(_i19.Profile? value) => super.noSuchMethod(
         Invocation.setter(
           #profile,
-          _profile,
+          value,
         ),
         returnValueForMissingStub: null,
       );
@@ -737,19 +738,19 @@ class MockExercisesProvider extends _i1.Mock implements _i20.ExercisesProvider {
       ) as List<_i12.Language>);
 
   @override
-  set database(_i8.ExerciseDatabase? _database) => super.noSuchMethod(
+  set database(_i8.ExerciseDatabase? value) => super.noSuchMethod(
         Invocation.setter(
           #database,
-          _database,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set exercises(List<_i3.Exercise>? _exercises) => super.noSuchMethod(
+  set exercises(List<_i3.Exercise>? value) => super.noSuchMethod(
         Invocation.setter(
           #exercises,
-          _exercises,
+          value,
         ),
         returnValueForMissingStub: null,
       );

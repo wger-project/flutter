@@ -29,6 +29,7 @@ import 'package:wger/providers/nutrition.dart' as _i8;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(
@@ -129,19 +130,19 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
       ) as List<_i4.NutritionalPlan>);
 
   @override
-  set database(_i3.IngredientDatabase? _database) => super.noSuchMethod(
+  set database(_i3.IngredientDatabase? value) => super.noSuchMethod(
         Invocation.setter(
           #database,
-          _database,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set ingredients(List<_i7.Ingredient>? _ingredients) => super.noSuchMethod(
+  set ingredients(List<_i7.Ingredient>? value) => super.noSuchMethod(
         Invocation.setter(
           #ingredients,
-          _ingredients,
+          value,
         ),
         returnValueForMissingStub: null,
       );

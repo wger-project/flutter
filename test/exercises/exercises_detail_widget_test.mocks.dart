@@ -29,6 +29,7 @@ import 'package:wger/providers/exercises.dart' as _i9;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(
@@ -169,19 +170,19 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
       ) as List<_i8.Language>);
 
   @override
-  set database(_i3.ExerciseDatabase? _database) => super.noSuchMethod(
+  set database(_i3.ExerciseDatabase? value) => super.noSuchMethod(
         Invocation.setter(
           #database,
-          _database,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set exercises(List<_i4.Exercise>? _exercises) => super.noSuchMethod(
+  set exercises(List<_i4.Exercise>? value) => super.noSuchMethod(
         Invocation.setter(
           #exercises,
-          _exercises,
+          value,
         ),
         returnValueForMissingStub: null,
       );

@@ -65,7 +65,7 @@ class _SessionInfoState extends State<SessionInfo> {
           ),
           if (editMode)
             SessionForm(
-              widget._session.routineId,
+              widget._session.routineId!,
               onSaved: () => setState(() => editMode = false),
               session: widget._session,
             )
