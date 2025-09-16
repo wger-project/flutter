@@ -45,8 +45,8 @@ class SessionPage extends StatelessWidget {
                 routineId: _routine.id!,
                 impression: DEFAULT_IMPRESSION,
                 date: clock.now(),
-                timeEnd: TimeOfDay.now(),
                 timeStart: start,
+                timeEnd: TimeOfDay.fromDateTime(clock.now()),
               ),
             );
 

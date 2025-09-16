@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
@@ -26,7 +27,7 @@ class GymState {
       DateTime? validUntil,
       TimeOfDay? startTime}) {
     this.validUntil = validUntil ?? DateTime.now().add(DEFAULT_DURATION);
-    this.startTime = startTime ?? TimeOfDay.now();
+    this.startTime = startTime ?? TimeOfDay.fromDateTime(clock.now());
   }
 
   GymState copyWith({

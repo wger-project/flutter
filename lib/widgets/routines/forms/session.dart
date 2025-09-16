@@ -44,8 +44,8 @@ class SessionForm extends StatefulWidget {
               dayId: dayId,
               impression: DEFAULT_IMPRESSION,
               date: clock.now(),
-              timeEnd: TimeOfDay.now(),
-              timeStart: TimeOfDay.now(),
+              timeEnd: TimeOfDay.fromDateTime(clock.now()),
+              timeStart: null,
             );
 
   @override
@@ -68,8 +68,10 @@ class _SessionFormState extends State<SessionForm> {
   void initState() {
     super.initState();
 
-    timeStartController.text = timeToString(widget._session.timeStart) ?? '';
-    timeEndController.text = timeToString(widget._session.timeEnd) ?? '';
+    timeStartController.text =
+        widget._session.timeStart == null ? '' : timeToString(widget._session.timeStart)!;
+    timeEndController.text =
+        widget._session.timeEnd == null ? '' : timeToString(widget._session.timeEnd)!;
     notesController.text = widget._session.notes;
 
     selectedImpression[widget._session.impression - 1] = true;
@@ -129,6 +131,7 @@ class _SessionFormState extends State<SessionForm> {
             },
           ),
           Row(
+            spacing: 10,
             children: [
               Flexible(
                 child: TextFormField(
@@ -163,16 +166,19 @@ class _SessionFormState extends State<SessionForm> {
                     if (timeStartController.text.isEmpty && timeEndController.text.isEmpty) {
                       return null;
                     }
-                    final TimeOfDay startTime = stringToTime(timeStartController.text);
-                    final TimeOfDay endTime = stringToTime(timeEndController.text);
-                    if (startTime.isAfter(endTime)) {
-                      return AppLocalizations.of(context).timeStartAhead;
+
+                    if (timeStartController.text.isNotEmpty && timeEndController.text.isNotEmpty) {
+                      final TimeOfDay startTime = stringToTime(timeStartController.text);
+                      final TimeOfDay endTime = stringToTime(timeEndController.text);
+                      if (startTime.isAfter(endTime)) {
+                        return AppLocalizations.of(context).timeStartAhead;
+                      }
                     }
+
                     return null;
                   },
                 ),
               ),
-              const SizedBox(width: 10),
               Flexible(
                 child: TextFormField(
                   key: const ValueKey('time-end'),
