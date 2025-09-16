@@ -61,14 +61,17 @@ import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
+import 'package:wger/widgets/core/log_overview.dart';
 import 'package:wger/widgets/core/settings.dart';
 
+import 'helpers/logs.dart';
 import 'providers/auth.dart';
 
 void _setupLogging() {
   Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
   Logger.root.onRecord.listen((record) {
     print('${record.level.name}: ${record.time} [${record.loggerName}] ${record.message}');
+    InMemoryLogStore().add(record);
   });
 }
 
@@ -247,6 +250,7 @@ class MainApp extends StatelessWidget {
               AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
               AboutPage.routeName: (ctx) => const AboutPage(),
               SettingsPage.routeName: (ctx) => const SettingsPage(),
+              LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
               ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
             },
             localizationsDelegates: AppLocalizations.localizationsDelegates,
