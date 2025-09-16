@@ -628,14 +628,17 @@ class RoutinesProvider with ChangeNotifier {
     return sessions;
   }
 
-  Future<WorkoutSession> addSession(WorkoutSession session, int routineId) async {
+  Future<WorkoutSession> addSession(WorkoutSession session, int? routineId) async {
     final data = await baseProvider.post(
       session.toJson(),
       baseProvider.makeUrl(_sessionUrlPath),
     );
     final newSession = WorkoutSession.fromJson(data);
-    final routine = findById(routineId);
-    routine.sessions.add(WorkoutSessionApi(session: newSession));
+
+    if (routineId != null) {
+      final routine = findById(routineId);
+      routine.sessions.add(WorkoutSessionApi(session: newSession));
+    }
 
     notifyListeners();
     return newSession;

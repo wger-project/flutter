@@ -31,7 +31,7 @@ class WorkoutSession {
   int? id;
 
   @JsonKey(required: true, name: 'routine')
-  late int routineId;
+  late int? routineId;
 
   @JsonKey(required: true, name: 'day')
   int? dayId;

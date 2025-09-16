@@ -31,7 +31,7 @@ import 'package:wger/providers/routines.dart';
 class SessionForm extends StatefulWidget {
   final _logger = Logger('SessionForm');
   final WorkoutSession _session;
-  final int _routineId;
+  final int? _routineId;
   final Function()? _onSaved;
 
   static const SLIDER_START = -0.5;
