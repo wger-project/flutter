@@ -1012,5 +1012,7 @@
     "endDate": "Дата завершення",
     "@endDate": {},
     "startDate": "Дата початку",
-    "@startDate": {}
+    "@startDate": {},
+    "applicationLogs": "Журнали програм",
+    "@applicationLogs": {}
 }
