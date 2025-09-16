@@ -140,7 +140,7 @@
     "@time": {
         "description": "The time of a meal or workout"
     },
-    "start": "Iniciar",
+    "start": "Comenzar",
     "@start": {
         "description": "Label on button to start the gym mode (i.e., an imperative)"
     },
@@ -260,7 +260,7 @@
     "@successfullySaved": {
         "description": "Message when an item was successfully saved"
     },
-    "successfullyDeleted": "Borrado correctamente",
+    "successfullyDeleted": "Borrado",
     "@successfullyDeleted": {
         "description": "Message when an item was successfully deleted"
     },
@@ -292,7 +292,7 @@
     "@customServerUrl": {
         "description": "Label in the form where the users can enter their own wger instance"
     },
-    "invalidUsername": "Por favor ingrese un nombre de usuario válido",
+    "invalidUsername": "Por favor, ingrese un nombre de usuario válido",
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
     },
@@ -300,7 +300,7 @@
     "@username": {},
     "email": "Dirección de correo electrónico",
     "@email": {},
-    "invalidEmail": "Por favor ingrese una dirección de correo electrónico válida",
+    "invalidEmail": "Por favor, introduce una dirección de correo electrónico válida",
     "@invalidEmail": {
         "description": "Error message when the user enters an invalid email"
     },
@@ -316,15 +316,15 @@
     "@passwordsDontMatch": {
         "description": "Error message when the user enters two different passwords during registration"
     },
-    "invalidUrl": "Por favor ingrese una URL válida",
+    "invalidUrl": "Por favor, introduzca una URL válida",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
     },
-    "useCustomServer": "Usar servidor personalizado",
+    "useCustomServer": "Utilizar un servidor personalizado",
     "@useCustomServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
-    "useDefaultServer": "Usar servidor por defecto",
+    "useDefaultServer": "Usar el servidor predeterminado",
     "@useDefaultServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
@@ -386,7 +386,7 @@
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
     },
-    "usernameValidChars": "El nombre de usuario sólo puede contener letras, dígitos y los caracteres @, +, ., - y _",
+    "usernameValidChars": "Un nombre de usuario solo puede contener letras, dígitos y los caracteres @, +, ., - y _",
     "@usernameValidChars": {
         "description": "Error message when the user tries to register a username with forbidden characters"
     },
@@ -754,17 +754,17 @@
     "@barWeight": {},
     "useColors": "Usar colores",
     "@useColors": {},
-    "useApiToken": "Usar API Token",
+    "useApiToken": "Usar tokens API",
     "@useApiToken": {},
     "useUsernameAndPassword": "Utilizar usuario y contraseña",
     "@useUsernameAndPassword": {},
-    "apiToken": "API Token",
+    "apiToken": "Token API",
     "@apiToken": {},
-    "invalidApiToken": "Por favor ingrese una API key válida",
+    "invalidApiToken": "Por favor, Introduzca una clave API válida",
     "@invalidApiToken": {
         "description": "Error message when the user enters an invalid API key"
     },
-    "apiTokenValidChars": "Una API key puede solo contener letras de la a a la f, números del 0 al 9 y ser exactamente de 40 caracteres de longitud",
+    "apiTokenValidChars": "Una clave API solo puede contener las letras a-f, números 0-9 y tener exactamente 40 caracteres de longitud",
     "@apiTokenValidChars": {
         "description": "Error message when the user tries to input a API key with forbidden characters"
     },
@@ -832,7 +832,7 @@
     "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
         "description": "Message shown when a nutrition plan doesn't have any meals"
     },
-    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Para añadir comidas al plan, ve a los detalles del plan de nutrición",
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Para agregar comidas al plan, vaya a los detalles del plan nutricional",
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
@@ -860,7 +860,7 @@
     "@copyToClipboard": {},
     "max": "Máximo",
     "@max": {},
-    "aboutContributeTitle": "Contribuye",
+    "aboutContributeTitle": "Contribuir",
     "@aboutContributeTitle": {},
     "aboutContributeText": "Todos los tipos de contribuciones son bien recibidas. Ya seas desarrollador, traductor o un apasionado por el deporte, toda ayuda es bien recibida.",
     "@aboutContributeText": {},
@@ -1000,5 +1000,19 @@
     "lightMode": "Siempre en modo claro",
     "@lightMode": {},
     "systemMode": "Configuracion del sistema",
-    "@systemMode": {}
+    "@systemMode": {},
+    "chartAllTimeTitle": "Histórico {name}",
+    "@chartAllTimeTitle": {
+        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "setHasProgression": "Set con progresión",
+    "@setHasProgression": {},
+    "setHasProgressionWarning": "Tenga en cuenta que, por el momento, no es posible editar todos los ajustes de un set en la aplicación móvil ni configurar la progresión automática. Por ahora, utilice la aplicación web.",
+    "@setHasProgressionWarning": {}
 }
