@@ -222,11 +222,11 @@
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
     },
-    "useCustomServer": "Benutzerdefinierten Server verwenden",
+    "useCustomServer": "Verwende Benutzerdefinierten Server",
     "@useCustomServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
-    "useDefaultServer": "Standard-Server verwenden",
+    "useDefaultServer": "Verwende Standard-Server",
     "@useDefaultServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
@@ -311,7 +311,7 @@
     "@reps": {
         "description": "Shorthand for repetitions, used when space constraints are tighter"
     },
-    "start": "Starten",
+    "start": "Beginne",
     "@start": {
         "description": "Label on button to start the gym mode (i.e., an imperative)"
     },
@@ -685,7 +685,7 @@
     "@whatVariationsExist": {},
     "previous": "Vorherige",
     "@previous": {},
-    "next": "Weiter",
+    "next": "Nächste",
     "@next": {},
     "swiss_ball": "Gymnastikball",
     "@swiss_ball": {},
@@ -1015,5 +1015,11 @@
     "toAddMealsToThePlanGoToNutritionalPlanDetails": "Gehe zum Ernährungsplaner um Gerichte hinzuzufügen",
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
-    }
+    },
+    "endDate": "Enddatum",
+    "@endDate": {},
+    "startDate": "Anfangsdatum",
+    "@startDate": {},
+    "applicationLogs": "Anwendungsprotokolle",
+    "@applicationLogs": {}
 }
