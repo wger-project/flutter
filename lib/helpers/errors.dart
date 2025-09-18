@@ -340,28 +340,43 @@ class ApiError {
 }
 
 /// Extracts error messages from the server response
+/// Extracts error messages from the server response,
+/// including nested error structures.
 List<ApiError> extractErrors(Map<String, dynamic> errors) {
   final List<ApiError> errorList = [];
-
-  for (final key in errors.keys) {
-    // Header
-    var header = key[0].toUpperCase() + key.substring(1, key.length);
-    header = header.replaceAll('_', ' ');
-    final error = ApiError(key: header);
-
-    final messages = errors[key];
-
-    // Messages
-    if (messages is String) {
-      error.errorMessages = List.of(error.errorMessages)..add(messages);
-    } else {
-      error.errorMessages = [...error.errorMessages, ...messages];
-    }
-
-    errorList.add(error);
-  }
-
+  _extractErrorsRecursive(errors, errorList);
   return errorList;
+}
+
+void _extractErrorsRecursive(Map<String, dynamic> errors, List<ApiError> errorList,
+    [String? parentKey]) {
+  for (final key in errors.keys) {
+    final value = errors[key];
+    final fullKey = parentKey != null ? '$parentKey | ${_formatHeader(key)}' : key;
+
+    if (value is Map<String, dynamic>) {
+      // Nested structure, recursive call
+      _extractErrorsRecursive(value, errorList, fullKey);
+    } else {
+      // Endpoint, put everything together
+      final header = _formatHeader(fullKey);
+      final error = ApiError(key: header);
+
+      if (value is String) {
+        error.errorMessages = [value];
+      } else if (value is List) {
+        error.errorMessages = value.cast<String>();
+      }
+
+      errorList.add(error);
+    }
+  }
+}
+
+String _formatHeader(String key) {
+  var header = key[0].toUpperCase() + key.substring(1, key.length);
+  header = header.replaceAll('_', ' ');
+  return header.replaceAll('.', ' ');
 }
 
 /// Processes the error messages from the server and returns a list of widgets

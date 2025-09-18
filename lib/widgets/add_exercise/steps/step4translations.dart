@@ -49,7 +49,7 @@ class _Step4TranslationState extends State<Step4Translation> {
                   title: '${AppLocalizations.of(context).language}*',
                   displayName: (Language l) => l.fullName,
                   callback: (Language newValue) {
-                    addExerciseProvider.language = newValue;
+                    addExerciseProvider.languageTranslation = newValue;
                   },
                   validator: (Language? language) {
                     if (language == null) {

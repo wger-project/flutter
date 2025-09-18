@@ -38,6 +38,23 @@ void main() {
       expect(result[0].errorMessages[1], 'Error 2');
     });
 
+    testWidgets('Processes nested list values correctly', (WidgetTester tester) async {
+      // Arrange
+      final errors = {
+        'validation_error': {
+          'subkey': ['Error 1', 'Error 2']
+        },
+      };
+
+      // Act
+      final result = extractErrors(errors);
+
+      // Assert
+      expect(result[0].key, 'Validation error | Subkey');
+      expect(result[0].errorMessages[0], 'Error 1');
+      expect(result[0].errorMessages[1], 'Error 2');
+    });
+
     testWidgets('Processes multiple error types correctly', (WidgetTester tester) async {
       // Arrange
       final errors = {

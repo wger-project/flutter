@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/exercises/forms.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -25,6 +26,11 @@ class Step1Basics extends StatelessWidget {
     final categories = exerciseProvider.categories;
     final muscles = exerciseProvider.muscles;
     final equipment = exerciseProvider.equipment;
+
+    // There mus be a better way to ensure this...
+    addExerciseProvider.languageEn = exerciseProvider.languages.firstWhere(
+      (l) => l.shortName == LANGUAGE_SHORT_ENGLISH,
+    );
 
     return Form(
       key: formkey,

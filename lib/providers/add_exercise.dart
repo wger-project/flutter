@@ -2,15 +2,12 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/exercise_submission.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/variation.dart';
 
 import 'base_provider.dart';
@@ -28,7 +25,8 @@ class AddExerciseProvider with ChangeNotifier {
   String? _descriptionTranslation;
   int? _variationId;
   int? _newVariationForExercise;
-  Language? language;
+  Language? languageEn;
+  Language? languageTranslation;
   List<String> _alternativeNamesEn = [];
   List<String> _alternativeNamesTranslation = [];
   ExerciseCategory? category;
@@ -37,15 +35,11 @@ class AddExerciseProvider with ChangeNotifier {
   List<Muscle> _primaryMuscles = [];
   List<Muscle> _secondaryMuscles = [];
 
-  static const _exerciseUrlPath = 'exercise';
-  static const _imagesUrlPath = 'exerciseimage';
-  static const _exerciseTranslationUrlPath = 'exercise-translation';
-  static const _exerciseAliasPath = 'exercisealias';
-  static const _exerciseVariationPath = 'variation';
+  static const _exerciseSubmissionUrlPath = 'exercise-submission';
 
   void clear() {
     _exerciseImages = [];
-    language = null;
+    languageTranslation = null;
     category = null;
     _nameEn = null;
     _nameTranslation = null;
@@ -93,32 +87,6 @@ class AddExerciseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Exercise get exercise {
-    return Exercise(
-      category: category,
-      equipment: _equipment,
-      muscles: _primaryMuscles,
-      musclesSecondary: _secondaryMuscles,
-      variationId: _variationId,
-    );
-  }
-
-  Translation get translationEn {
-    return Translation(
-      name: _nameEn!,
-      description: _descriptionEn!,
-      language: const Language(id: 2, fullName: 'English', shortName: 'en'),
-    );
-  }
-
-  Translation get translation {
-    return Translation(
-      name: _nameTranslation!,
-      description: _descriptionTranslation!,
-      language: language,
-    );
-  }
-
   Variation get variation {
     return Variation(id: _variationId!);
   }
@@ -135,6 +103,43 @@ class AddExerciseProvider with ChangeNotifier {
   set secondaryMuscles(List<Muscle> muscles) {
     _secondaryMuscles = muscles;
     notifyListeners();
+  }
+
+  ExerciseSubmissionApi get exerciseApiObject {
+    return ExerciseSubmissionApi(
+      author: '',
+      //variation: variationId,
+      category: category!.id,
+      muscles: _primaryMuscles.map((e) => e.id).toList(),
+      musclesSecondary: _secondaryMuscles.map((e) => e.id).toList(),
+      equipment: _equipment.map((e) => e.id).toList(),
+      translations: [
+        // Base language (English)
+        ExerciseTranslationSubmissionApi(
+          author: '',
+          language: languageEn!.id,
+          name: _nameEn!,
+          description: _descriptionEn!,
+          aliases: _alternativeNamesEn
+              .where((element) => element.isNotEmpty)
+              .map((e) => ExerciseAliasSubmissionApi(alias: e))
+              .toList(),
+        ),
+
+        // Optional translation
+        if (languageTranslation != null)
+          ExerciseTranslationSubmissionApi(
+            author: '',
+            language: languageTranslation!.id,
+            name: _nameTranslation!,
+            description: _descriptionTranslation!,
+            aliases: _alternativeNamesTranslation
+                .where((element) => element.isNotEmpty)
+                .map((e) => ExerciseAliasSubmissionApi(alias: e))
+                .toList(),
+          ),
+      ],
+    );
   }
 
   void addExerciseImages(List<File> exercises) {
@@ -162,7 +167,7 @@ class AddExerciseProvider with ChangeNotifier {
 
     log('');
     log('Language specific...');
-    log('Language: ${language?.shortName}');
+    log('Language: ${languageTranslation?.shortName}');
     log('Name: en/$_nameEn translation/$_nameTranslation');
     log('Description: en/$_descriptionEn translation/$_descriptionTranslation');
     log('Alternate names: en/$_alternativeNamesEn translation/$_alternativeNamesTranslation');
@@ -172,57 +177,37 @@ class AddExerciseProvider with ChangeNotifier {
     printValues();
 
     // Create the variations if needed
-    if (newVariation) {
-      await addVariation();
-    }
+    // if (newVariation) {
+    //   await addVariation();
+    // }
 
     // Create the exercise
-    final exercise = await addExerciseBase();
-
-    // Create the base description in English
-    Translation exerciseTranslationEn = translationEn;
-    exerciseTranslationEn.exercise = exercise;
-    exerciseTranslationEn = await addExerciseTranslation(exerciseTranslationEn);
-    for (final alias in _alternativeNamesEn) {
-      if (alias.isNotEmpty) {
-        exerciseTranslationEn.aliases.add(await addExerciseAlias(alias, exerciseTranslationEn.id!));
-      }
-    }
-
-    // Create the translations
-    if (language != null) {
-      Translation exerciseTranslationLang = translation;
-      exerciseTranslationLang.exercise = exercise;
-      exerciseTranslationLang = await addExerciseTranslation(exerciseTranslationLang);
-      for (final alias in _alternativeNamesTranslation) {
-        if (alias.isNotEmpty) {
-          exerciseTranslationLang.aliases.add(
-            await addExerciseAlias(alias, exerciseTranslationLang.id!),
-          );
-        }
-      }
-      await addExerciseTranslation(exerciseTranslationLang);
-    }
-
-    // Create the images
-    await addImages(exercise);
+    final exerciseId = await addExerciseSubmission();
 
     // Clear everything
     clear();
 
     // Return exercise ID
-    return exercise.id!;
+    return exerciseId;
   }
 
-  Future<Exercise> addExerciseBase() async {
-    final Uri postUri = baseProvider.makeUrl(_exerciseUrlPath);
-
-    final Map<String, dynamic> newBaseMap = await baseProvider.post(exercise.toJson(), postUri);
-    final Exercise newExercise = Exercise.fromJson(newBaseMap);
+  Future<int> addExerciseSubmission() async {
+    final Map<String, dynamic> result = await baseProvider.post(
+      exerciseApiObject.toJson(),
+      baseProvider.makeUrl(_exerciseSubmissionUrlPath),
+    );
     notifyListeners();
 
-    return newExercise;
+    return result['id'];
   }
+
+/*
+    Note: all this logic is not needed now since we are using the /exercise-submission
+    endpoint,however, if we ever want to implement editing of exercises, we will
+    need basically all of it again, so this is kept here for reference.
+
+
+
 
   Future<Variation> addVariation() async {
     final Uri postUri = baseProvider.makeUrl(_exerciseVariationPath);
@@ -269,4 +254,6 @@ class AddExerciseProvider with ChangeNotifier {
 
     return newAlias;
   }
+
+   */
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -42,6 +45,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseStepper.STEPS_IN_FORM - 1;
   bool _isLoading = false;
+  Widget errorWidget = const SizedBox.shrink();
 
   final List<GlobalKey<FormState>> _keys = [
     GlobalKey<FormState>(),
@@ -55,6 +59,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
     return Column(
       children: [
         const SizedBox(height: 10),
+        errorWidget,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -62,6 +67,8 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
               onPressed: details.onStepCancel,
               child: Text(AppLocalizations.of(context).previous),
             ),
+
+            // Submit button on last step
             if (_currentStep == lastStepIndex)
               ElevatedButton(
                 onPressed: _isLoading
@@ -69,21 +76,54 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                     : () async {
                         setState(() {
                           _isLoading = true;
+                          errorWidget = const SizedBox.shrink();
                         });
                         final addExerciseProvider = context.read<AddExerciseProvider>();
                         final exerciseProvider = context.read<ExercisesProvider>();
 
-                        final exerciseId = await addExerciseProvider.addExercise();
-                        final exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
-                        final name = exercise!
+                        Exercise? exercise;
+                        try {
+                          final exerciseId = await addExerciseProvider.addExercise();
+                          exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
+                        } on WgerHttpException catch (error) {
+                          if (context.mounted) {
+                            setState(() {
+                              errorWidget = FormHttpErrorsWidget(error);
+                            });
+                          }
+                        }
+
+                        if (exercise == null) {
+                          if (mounted) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          }
+                          if (!context.mounted) {
+                            return;
+                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Could not fetch the created exercise.'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final name = exercise
                             .getTranslation(Localizations.localeOf(context).languageCode)
                             .name;
 
-                        setState(() {
-                          _isLoading = false;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        }
 
-                        if (!context.mounted) return;
+                        if (!context.mounted) {
+                          return;
+                        }
+
                         return showDialog(
                           context: context,
                           builder: (BuildContext context) {
