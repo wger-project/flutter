@@ -1,1 +1,322 @@
-{}
+{
+    "userProfile": "Váš profil",
+    "@userProfile": {},
+    "login": "Prihlásiť sa",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "logout": "Odhlásiť sa",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "register": "Registrovať sa",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "useDefaultServer": "Použiť predvolený server",
+    "@useDefaultServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "useCustomServer": "Použiť vlastný server",
+    "@useCustomServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "invalidUrl": "Zadajte platnú URL adresu",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "usernameValidChars": "Používateľské meno môže obsahovať iba písmená, číslice a znaky @, +, ., -, a _",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "passwordsDontMatch": "Heslá sa nezhodujú",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "passwordTooShort": "Heslo je príliš krátke",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "selectAvailablePlates": "Vyberte dostupné platne",
+    "@selectAvailablePlates": {},
+    "barWeight": "Hmotnosť tyče",
+    "@barWeight": {},
+    "useColors": "Používajte farby",
+    "@useColors": {},
+    "password": "Heslo",
+    "@password": {},
+    "confirmPassword": "Potvrďte heslo",
+    "@confirmPassword": {},
+    "invalidEmail": "Zadajte platnú e-mailovú adresu",
+    "@invalidEmail": {
+        "description": "Error message when the user enters an invalid email"
+    },
+    "email": "E-mailová adresa",
+    "@email": {},
+    "username": "Používateľské meno",
+    "@username": {},
+    "invalidUsername": "Zadajte platné používateľské meno",
+    "@invalidUsername": {
+        "description": "Error message when the user enters an invalid username"
+    },
+    "useApiToken": "Použite token API",
+    "@useApiToken": {},
+    "useUsernameAndPassword": "Použite používateľské meno a heslo",
+    "@useUsernameAndPassword": {},
+    "apiToken": "API token",
+    "@apiToken": {},
+    "invalidApiToken": "Zadajte platný kľúč API",
+    "@invalidApiToken": {
+        "description": "Error message when the user enters an invalid API key"
+    },
+    "apiTokenValidChars": "Kľúč API môže obsahovať iba písmená a-f, číslice 0-9 a musí mať presne 40 znakov",
+    "@apiTokenValidChars": {
+        "description": "Error message when the user tries to input a API key with forbidden characters"
+    },
+    "customServerUrl": "URL inštancie wger",
+    "@customServerUrl": {
+        "description": "Label in the form where the users can enter their own wger instance"
+    },
+    "customServerHint": "Zadajte adresu svojho vlastného servera, inak sa použije predvolená adresa",
+    "@customServerHint": {
+        "description": "Hint text for the form where the users can enter their own wger instance"
+    },
+    "reset": "Reset",
+    "@reset": {
+        "description": "Button text allowing the user to reset the entered values to the default"
+    },
+    "registerInstead": "Nemáte účet? Zaregistrujte sa teraz",
+    "@registerInstead": {},
+    "loginInstead": "Už máte účet? Prihláste sa",
+    "@loginInstead": {},
+    "labelBottomNavWorkout": "Tréning",
+    "@labelBottomNavWorkout": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelBottomNavNutrition": "Výživa",
+    "@labelBottomNavNutrition": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelWorkoutLogs": "Tréninkové denníky",
+    "@labelWorkoutLogs": {
+        "description": "(Workout) logs"
+    },
+    "labelWorkoutPlan": "Plán tréningu",
+    "@labelWorkoutPlan": {
+        "description": "Title for screen workout plan"
+    },
+    "labelDashboard": "Ovládací panel",
+    "@labelDashboard": {
+        "description": "Title for screen dashboard"
+    },
+    "success": "Úspech",
+    "@success": {
+        "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "successfullyDeleted": "Odstránené",
+    "@successfullyDeleted": {
+        "description": "Message when an item was successfully deleted"
+    },
+    "successfullySaved": "Uložené",
+    "@successfullySaved": {
+        "description": "Message when an item was successfully saved"
+    },
+    "exerciseList": "Zoznam cvičení",
+    "@exerciseList": {},
+    "exercise": "Cvičenie",
+    "@exercise": {
+        "description": "An exercise for a workout"
+    },
+    "exercises": "Cvičenia",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    },
+    "exerciseName": "Názov cvičenia",
+    "@exerciseName": {
+        "description": "Label for the name of a workout exercise"
+    },
+    "searchExercise": "Vyhľadávacie cvičenie na pridanie",
+    "@searchExercise": {
+        "description": "Label on set form. Selected exercises are added to the set"
+    },
+    "noIngredientsDefined": "Žiadne ingrediencie zatiaľ neboli definované",
+    "@noIngredientsDefined": {},
+    "noMatchingExerciseFound": "Nenašli sa žiadne zodpovedajúce cvičenia",
+    "@noMatchingExerciseFound": {
+        "description": "Message returned if no exercises match the searched string"
+    },
+    "searchNamesInEnglish": "Hľadať aj mená v angličtine",
+    "@searchNamesInEnglish": {},
+    "equipment": "Vybavenie",
+    "@equipment": {
+        "description": "Equipment needed to perform an exercise"
+    },
+    "muscles": "Svaly",
+    "@muscles": {
+        "description": "(main) muscles trained by an exercise"
+    },
+    "musclesSecondary": "Sekundárne svaly",
+    "@musclesSecondary": {
+        "description": "secondary muscles trained by an exercise"
+    },
+    "category": "Kategória",
+    "@category": {
+        "description": "Category for an exercise, ingredient, etc."
+    },
+    "endDate": "Dátum ukončenia",
+    "@endDate": {},
+    "startDate": "Dátum začatia",
+    "@startDate": {},
+    "routines": "Rutiny",
+    "@routines": {},
+    "newRoutine": "Nová rutina",
+    "@newRoutine": {},
+    "noRoutines": "Nemáte žiadne rutiny",
+    "@noRoutines": {},
+    "restTime": "Čas odpočinku",
+    "@restTime": {},
+    "sets": "Sety",
+    "@sets": {
+        "description": "The number of sets to be done for one exercise"
+    },
+    "rir": "RiR",
+    "@rir": {
+        "description": "Shorthand for Repetitions In Reserve"
+    },
+    "rirNotUsed": "RiR sa nepoužíva",
+    "@rirNotUsed": {
+        "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+    },
+    "useMetric": "Používať metrické jednotky pre telesnú hmotnosť",
+    "@useMetric": {},
+    "weightUnit": "Jednotka hmotnosti",
+    "@weightUnit": {},
+    "repetitionUnit": "Opakovacie jednotky",
+    "@repetitionUnit": {},
+    "dayDescriptionHelp": "Popis toho, čo sa v tento deň robí (napr. „ťahací deň“) alebo ktoré časti tela sa trénujú (napr. „hrudník a ramená“)",
+    "@dayDescriptionHelp": {},
+    "sameRepetitions": "",
+    "@sameRepetitions": {},
+    "comment": "Komentár",
+    "@comment": {
+        "description": "Comment, additional information"
+    },
+    "impression": "Dojem",
+    "@impression": {
+        "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+    },
+    "notes": "Poznámky",
+    "@notes": {
+        "description": "Personal notes, e.g. for a workout session"
+    },
+    "restDay": "Deň odpočinku",
+    "@restDay": {},
+    "isRestDay": "Je deň odpočinku",
+    "@isRestDay": {},
+    "isRestDayHelp": "Upozorňujeme, že všetky sady a cvičenia budú odstránené, keď označíte deň ako deň odpočinku.",
+    "@isRestDayHelp": {},
+    "needsLogsToAdvance": "Na postup sú potrebné protokoly",
+    "@needsLogsToAdvance": {},
+    "needsLogsToAdvanceHelp": "Vyberte, či chcete, aby rutina pokračovala do nasledujúceho naplánovaného dňa len v prípade, že ste zaznamenali tréning za daný deň",
+    "@needsLogsToAdvanceHelp": {},
+    "routineDays": "Dni v rutine",
+    "@routineDays": {},
+    "resultingRoutine": "Výsledná rutina",
+    "@resultingRoutine": {},
+    "newDay": "Nový deň",
+    "@newDay": {},
+    "newSet": "Nová séria",
+    "@newSet": {
+        "description": "Header when adding a new set to a workout day"
+    },
+    "selectExercises": "Ak chcete urobiť superset, môžete vyhľadať niekoľko cvikov, ktoré budú zoskupené dohromady",
+    "@selectExercises": {},
+    "gymMode": "Režim posilňovňa",
+    "@gymMode": {
+        "description": "Label when starting the gym mode"
+    },
+    "plateCalculator": "Kotúče",
+    "@plateCalculator": {
+        "description": "Label used for the plate calculator in the gym mode"
+    },
+    "plateCalculatorNotDivisible": "Nie je možné dosiahnuť hmotnosť s dostupnými platňami",
+    "@plateCalculatorNotDivisible": {
+        "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+    },
+    "pause": "Pauza",
+    "@pause": {
+        "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+    },
+    "jumpTo": "Preskočiť na",
+    "@jumpTo": {
+        "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+    },
+    "todaysWorkout": "Tvoj dnešný tréning",
+    "@todaysWorkout": {},
+    "logHelpEntries": "Ak je v jeden deň viac ako jeden záznam s rovnakým počtom opakovaní, ale s rôznymi váhami, v grafe sa zobrazí len záznam s vyššou váhou.",
+    "@logHelpEntries": {},
+    "logHelpEntriesUnits": "Upozorňujeme, že zaznamenávajú sa iba záznamy s jednotkou hmotnosti (kg alebo lb) a opakovaním, ostatné kombinácie, ako napríklad čas alebo do zlyhania, sa tu ignorujú.",
+    "@logHelpEntriesUnits": {},
+    "description": "Popis",
+    "@description": {},
+    "name": "Názov",
+    "@name": {
+        "description": "Name for a workout or nutritional plan"
+    },
+    "save": "Uložiť",
+    "@save": {},
+    "verify": "Overiť",
+    "@verify": {},
+    "addSet": "Pridať sériu",
+    "@addSet": {
+        "description": "Label for the button that adds a set (to a workout day)"
+    },
+    "addMeal": "Pridať jedlo",
+    "@addMeal": {},
+    "mealLogged": "Jedlo zaznamenané do denníka",
+    "@mealLogged": {},
+    "ingredientLogged": "Ingrediencia zaznamenaná do denníka",
+    "@ingredientLogged": {},
+    "logMeal": "Zapíšte si jedlo do denníka výživy",
+    "@logMeal": {},
+    "addIngredient": "Pridať ingredienciu",
+    "@addIngredient": {},
+    "logIngredient": "Zapíšte zložku do výživového denníka",
+    "@logIngredient": {},
+    "searchIngredient": "Vyhľadávanie ingrediencie",
+    "@searchIngredient": {
+        "description": "Label on ingredient search form"
+    },
+    "nutritionalPlan": "Výživový plán",
+    "@nutritionalPlan": {},
+    "nutritionalDiary": "Deník stravovania",
+    "@nutritionalDiary": {},
+    "nutritionalPlans": "Výživové plány",
+    "@nutritionalPlans": {},
+    "noNutritionalPlans": "Nemáte žiadne výživové plány",
+    "@noNutritionalPlans": {
+        "description": "Message shown when the user has no nutritional plans"
+    },
+    "onlyLogging": "Sledujte iba kalórie",
+    "@onlyLogging": {},
+    "onlyLoggingHelpText": "Zaškrtnite políčko, ak chcete zaznamenávať len kalórie a nechcete vytvárať podrobný výživový plán s konkrétnymi jedlami",
+    "@onlyLoggingHelpText": {},
+    "goalMacro": "Makro ciele",
+    "@goalMacro": {
+        "description": "The goal for macronutrients"
+    },
+    "selectMealToLog": "Vyberte jedlo, ktoré chcete zaznamenať do denníka",
+    "@selectMealToLog": {},
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Váš aktuálny výživový plán neobsahuje žiadne definované jedlá",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Ak chcete pridať jedlá do plánu, prejdite do podrobností výživového plánu",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "goalEnergy": "Energetický cieľ",
+    "@goalEnergy": {},
+    "goalProtein": "Cieľ bielkovín",
+    "@goalProtein": {}
+}
