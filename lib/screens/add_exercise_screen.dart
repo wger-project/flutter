@@ -14,6 +14,7 @@ import 'package:wger/widgets/add_exercise/steps/step2variations.dart';
 import 'package:wger/widgets/add_exercise/steps/step3description.dart';
 import 'package:wger/widgets/add_exercise/steps/step4translations.dart';
 import 'package:wger/widgets/add_exercise/steps/step5images.dart';
+import 'package:wger/widgets/add_exercise/steps/step6Overview.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/user/forms.dart';
 
@@ -35,7 +36,7 @@ class AddExerciseScreen extends StatelessWidget {
 class AddExerciseStepper extends StatefulWidget {
   const AddExerciseStepper({super.key});
 
-  static const STEPS_IN_FORM = 5;
+  static const STEPS_IN_FORM = 6;
 
   @override
   _AddExerciseStepperState createState() => _AddExerciseStepperState();
@@ -53,13 +54,14 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
   ];
 
   Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
     return Column(
       children: [
         const SizedBox(height: 10),
-        errorWidget,
+        if (_currentStep == lastStepIndex) errorWidget,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -99,14 +101,6 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                               _isLoading = false;
                             });
                           }
-                          if (!context.mounted) {
-                            return;
-                          }
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Could not fetch the created exercise.'),
-                            ),
-                          );
                           return;
                         }
 
@@ -194,6 +188,10 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
           Step(
             title: Text(AppLocalizations.of(context).images),
             content: Step5Images(formkey: _keys[4]),
+          ),
+          Step(
+            title: Text(AppLocalizations.of(context).overview),
+            content: Step6Overview(),
           ),
         ],
         currentStep: _currentStep,

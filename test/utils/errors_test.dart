@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/helpers/errors.dart';
 
@@ -53,6 +71,28 @@ void main() {
       expect(result[0].key, 'Validation error | Subkey');
       expect(result[0].errorMessages[0], 'Error 1');
       expect(result[0].errorMessages[1], 'Error 2');
+    });
+
+    testWidgets('Processes nested lists correctly', (WidgetTester tester) async {
+      // Arrange
+      final errors = {
+        'validation_error': [
+          {
+            'subkey': ['Error 1', 'Error 2']
+          },
+          {'otherKey': 'foo'}
+        ],
+      };
+
+      // Act
+      final result = extractErrors(errors);
+
+      // Assert
+      expect(result[0].key, 'Validation error | Subkey');
+      expect(result[0].errorMessages[0], 'Error 1');
+      expect(result[0].errorMessages[1], 'Error 2');
+      expect(result[1].key, 'Validation error | OtherKey');
+      expect(result[1].errorMessages[0], 'foo');
     });
 
     testWidgets('Processes multiple error types correctly', (WidgetTester tester) async {

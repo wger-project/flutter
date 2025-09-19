@@ -566,6 +566,7 @@
   },
   "newNutritionalPlan": "New nutritional plan",
   "@newNutritionalPlan": {},
+  "overview": "Overview",
   "toggleDetails": "Toggle details",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
@@ -714,6 +715,8 @@
   "@close": {
     "description": "Translation for close"
   },
+  "identicalExercisePleaseDiscard": "If you notice an exercise that is identical to the one you're adding, please discard your draft and edit that exercise instead.",
+  "checkInformationBeforeSubmitting": "Please check that the information you entered is correct before submitting the exercise",
   "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
   "variations": "Variations",
   "@variations": {
@@ -760,6 +763,7 @@
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
   },
+  "enterTextInLanguage": "Please enter the text in the correct language!",
   "settingsTitle": "Settings",
   "settingsCacheTitle": "Cache",
   "settingsExerciseCacheDescription": "Exercise cache",

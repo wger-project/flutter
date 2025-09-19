@@ -19,16 +19,16 @@ class AddExerciseProvider with ChangeNotifier {
 
   List<File> get exerciseImages => [..._exerciseImages];
   List<File> _exerciseImages = [];
-  String? _nameEn;
-  String? _nameTranslation;
-  String? _descriptionEn;
-  String? _descriptionTranslation;
+  String? exerciseNameEn;
+  String? exerciseNameTrans;
+  String? descriptionEn;
+  String? descriptionTrans;
   int? _variationId;
   int? _newVariationForExercise;
   Language? languageEn;
   Language? languageTranslation;
-  List<String> _alternativeNamesEn = [];
-  List<String> _alternativeNamesTranslation = [];
+  List<String> alternateNamesEn = [];
+  List<String> alternateNamesTrans = [];
   ExerciseCategory? category;
   List<Exercise> _variations = [];
   List<Equipment> _equipment = [];
@@ -36,34 +36,23 @@ class AddExerciseProvider with ChangeNotifier {
   List<Muscle> _secondaryMuscles = [];
 
   static const _exerciseSubmissionUrlPath = 'exercise-submission';
+  static const _checkLanguageUrlPath = 'check-language';
 
   void clear() {
     _exerciseImages = [];
     languageTranslation = null;
     category = null;
-    _nameEn = null;
-    _nameTranslation = null;
-    _descriptionEn = null;
-    _descriptionTranslation = null;
-    _alternativeNamesEn = [];
-    _alternativeNamesTranslation = [];
+    exerciseNameEn = null;
+    exerciseNameTrans = null;
+    descriptionEn = null;
+    descriptionTrans = null;
+    alternateNamesEn = [];
+    alternateNamesTrans = [];
     _variations = [];
     _equipment = [];
     _primaryMuscles = [];
     _secondaryMuscles = [];
   }
-
-  set exerciseNameEn(String name) => _nameEn = name;
-
-  set exerciseNameTrans(String name) => _nameTranslation = name;
-
-  set descriptionEn(String description) => _descriptionEn = description;
-
-  set descriptionTrans(String description) => _descriptionTranslation = description;
-
-  set alternateNamesEn(List<String> names) => _alternativeNamesEn = names;
-
-  set alternateNamesTrans(List<String> names) => _alternativeNamesTranslation = names;
 
   set equipment(List<Equipment> equipment) => _equipment = equipment;
 
@@ -118,9 +107,9 @@ class AddExerciseProvider with ChangeNotifier {
         ExerciseTranslationSubmissionApi(
           author: '',
           language: languageEn!.id,
-          name: _nameEn!,
-          description: _descriptionEn!,
-          aliases: _alternativeNamesEn
+          name: exerciseNameEn!,
+          description: descriptionEn!,
+          aliases: alternateNamesEn
               .where((element) => element.isNotEmpty)
               .map((e) => ExerciseAliasSubmissionApi(alias: e))
               .toList(),
@@ -131,9 +120,9 @@ class AddExerciseProvider with ChangeNotifier {
           ExerciseTranslationSubmissionApi(
             author: '',
             language: languageTranslation!.id,
-            name: _nameTranslation!,
-            description: _descriptionTranslation!,
-            aliases: _alternativeNamesTranslation
+            name: exerciseNameTrans!,
+            description: descriptionTrans!,
+            aliases: alternateNamesTrans
                 .where((element) => element.isNotEmpty)
                 .map((e) => ExerciseAliasSubmissionApi(alias: e))
                 .toList(),
@@ -168,9 +157,9 @@ class AddExerciseProvider with ChangeNotifier {
     log('');
     log('Language specific...');
     log('Language: ${languageTranslation?.shortName}');
-    log('Name: en/$_nameEn translation/$_nameTranslation');
-    log('Description: en/$_descriptionEn translation/$_descriptionTranslation');
-    log('Alternate names: en/$_alternativeNamesEn translation/$_alternativeNamesTranslation');
+    log('Name: en/$exerciseNameEn translation/$exerciseNameTrans');
+    log('Description: en/$descriptionEn translation/$descriptionTrans');
+    log('Alternate names: en/$alternateNamesEn translation/$alternateNamesTrans');
   }
 
   Future<int> addExercise() async {
@@ -201,9 +190,20 @@ class AddExerciseProvider with ChangeNotifier {
     return result['id'];
   }
 
+  Future<bool> validateLanguage(String input, String languageCode) async {
+    final Map<String, dynamic> result = await baseProvider.post(
+      {'input': input, 'language_code': languageCode},
+      baseProvider.makeUrl(_checkLanguageUrlPath),
+    );
+    notifyListeners();
+    print(result);
+
+    return false;
+  }
+
 /*
     Note: all this logic is not needed now since we are using the /exercise-submission
-    endpoint,however, if we ever want to implement editing of exercises, we will
+    endpoint, however, if we ever want to implement editing of exercises, we will
     need basically all of it again, so this is kept here for reference.
 
 

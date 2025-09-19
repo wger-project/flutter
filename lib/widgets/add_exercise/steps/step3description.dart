@@ -13,6 +13,7 @@ class Step3Description extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final addExerciseProvider = context.read<AddExerciseProvider>();
+    final i18n = AppLocalizations.of(context);
 
     return Form(
       key: formkey,
@@ -20,10 +21,11 @@ class Step3Description extends StatelessWidget {
         children: [
           AddExerciseTextArea(
             onChange: (value) => {},
-            title: '${AppLocalizations.of(context).description}*',
+            title: '${i18n.description}*',
+            helperText: i18n.enterTextInLanguage,
             isRequired: true,
             isMultiline: true,
-            validator: (name) => validateDescription(name, context),
+            validator: (name) => validateExerciseDescription(name, context),
             onSaved: (String? description) => addExerciseProvider.descriptionEn = description!,
           ),
         ],

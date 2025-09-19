@@ -339,7 +339,6 @@ class ApiError {
   }
 }
 
-/// Extracts error messages from the server response
 /// Extracts error messages from the server response,
 /// including nested error structures.
 List<ApiError> extractErrors(Map<String, dynamic> errors) {
@@ -348,28 +347,29 @@ List<ApiError> extractErrors(Map<String, dynamic> errors) {
   return errorList;
 }
 
-void _extractErrorsRecursive(Map<String, dynamic> errors, List<ApiError> errorList,
-    [String? parentKey]) {
-  for (final key in errors.keys) {
-    final value = errors[key];
-    final fullKey = parentKey != null ? '$parentKey | ${_formatHeader(key)}' : key;
-
-    if (value is Map<String, dynamic>) {
-      // Nested structure, recursive call
+void _extractErrorsRecursive(dynamic errors, List<ApiError> errorList, [String? parentKey]) {
+  if (errors is Map<String, dynamic>) {
+    for (final key in errors.keys) {
+      final value = errors[key];
+      final fullKey = parentKey != null ? '$parentKey | ${_formatHeader(key)}' : key;
       _extractErrorsRecursive(value, errorList, fullKey);
-    } else {
-      // Endpoint, put everything together
-      final header = _formatHeader(fullKey);
-      final error = ApiError(key: header);
-
-      if (value is String) {
-        error.errorMessages = [value];
-      } else if (value is List) {
-        error.errorMessages = value.cast<String>();
+    }
+  } else if (errors is List) {
+    // List of Maps (nested errors)
+    if (errors.isNotEmpty && errors.first is Map<String, dynamic>) {
+      for (final item in errors) {
+        _extractErrorsRecursive(item, errorList, parentKey);
       }
-
+    } else {
+      // List of Strings
+      final header = _formatHeader(parentKey ?? '');
+      final error = ApiError(key: header, errorMessages: errors.cast<String>());
       errorList.add(error);
     }
+  } else if (errors is String) {
+    final header = _formatHeader(parentKey ?? '');
+    final error = ApiError(key: header, errorMessages: [errors]);
+    errorList.add(error);
   }
 }
 
@@ -390,6 +390,7 @@ List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
       Text(error.key, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
     );
 
+    print(error.errorMessages);
     for (final message in error.errorMessages) {
       errorList.add(Text(message, style: TextStyle(color: textColor)));
     }
