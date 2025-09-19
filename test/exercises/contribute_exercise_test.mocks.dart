@@ -154,6 +154,18 @@ class MockAddExerciseProvider extends _i1.Mock implements _i11.AddExerciseProvid
       ) as List<_i12.File>);
 
   @override
+  List<String> get alternateNamesEn => (super.noSuchMethod(
+        Invocation.getter(#alternateNamesEn),
+        returnValue: <String>[],
+      ) as List<String>);
+
+  @override
+  List<String> get alternateNamesTrans => (super.noSuchMethod(
+        Invocation.getter(#alternateNamesTrans),
+        returnValue: <String>[],
+      ) as List<String>);
+
+  @override
   List<_i8.Equipment> get equipment => (super.noSuchMethod(
         Invocation.getter(#equipment),
         returnValue: <_i8.Equipment>[],
@@ -196,6 +208,42 @@ class MockAddExerciseProvider extends _i1.Mock implements _i11.AddExerciseProvid
       ) as _i13.ExerciseSubmissionApi);
 
   @override
+  set exerciseNameEn(String? value) => super.noSuchMethod(
+        Invocation.setter(
+          #exerciseNameEn,
+          value,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set exerciseNameTrans(String? value) => super.noSuchMethod(
+        Invocation.setter(
+          #exerciseNameTrans,
+          value,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set descriptionEn(String? value) => super.noSuchMethod(
+        Invocation.setter(
+          #descriptionEn,
+          value,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set descriptionTrans(String? value) => super.noSuchMethod(
+        Invocation.setter(
+          #descriptionTrans,
+          value,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   set languageEn(_i10.Language? value) => super.noSuchMethod(
         Invocation.setter(
           #languageEn,
@@ -214,64 +262,28 @@ class MockAddExerciseProvider extends _i1.Mock implements _i11.AddExerciseProvid
       );
 
   @override
-  set category(_i7.ExerciseCategory? value) => super.noSuchMethod(
+  set alternateNamesEn(List<String>? value) => super.noSuchMethod(
         Invocation.setter(
-          #category,
+          #alternateNamesEn,
           value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set exerciseNameEn(String? name) => super.noSuchMethod(
-        Invocation.setter(
-          #exerciseNameEn,
-          name,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set exerciseNameTrans(String? name) => super.noSuchMethod(
-        Invocation.setter(
-          #exerciseNameTrans,
-          name,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set descriptionEn(String? description) => super.noSuchMethod(
-        Invocation.setter(
-          #descriptionEn,
-          description,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set descriptionTrans(String? description) => super.noSuchMethod(
-        Invocation.setter(
-          #descriptionTrans,
-          description,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set alternateNamesEn(List<String>? names) => super.noSuchMethod(
-        Invocation.setter(
-          #alternateNamesEn,
-          names,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set alternateNamesTrans(List<String>? names) => super.noSuchMethod(
+  set alternateNamesTrans(List<String>? value) => super.noSuchMethod(
         Invocation.setter(
           #alternateNamesTrans,
-          names,
+          value,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set category(_i7.ExerciseCategory? value) => super.noSuchMethod(
+        Invocation.setter(
+          #category,
+          value,
         ),
         returnValueForMissingStub: null,
       );
@@ -380,6 +392,32 @@ class MockAddExerciseProvider extends _i1.Mock implements _i11.AddExerciseProvid
         ),
         returnValue: _i15.Future<int>.value(0),
       ) as _i15.Future<int>);
+
+  @override
+  _i15.Future<void> addImages(int? exerciseId) => (super.noSuchMethod(
+        Invocation.method(
+          #addImages,
+          [exerciseId],
+        ),
+        returnValue: _i15.Future<void>.value(),
+        returnValueForMissingStub: _i15.Future<void>.value(),
+      ) as _i15.Future<void>);
+
+  @override
+  _i15.Future<bool> validateLanguage(
+    String? input,
+    String? languageCode,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #validateLanguage,
+          [
+            input,
+            languageCode,
+          ],
+        ),
+        returnValue: _i15.Future<bool>.value(false),
+      ) as _i15.Future<bool>);
 
   @override
   void addListener(_i16.VoidCallback? listener) => super.noSuchMethod(

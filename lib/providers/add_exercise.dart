@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -36,6 +38,7 @@ class AddExerciseProvider with ChangeNotifier {
   List<Muscle> _secondaryMuscles = [];
 
   static const _exerciseSubmissionUrlPath = 'exercise-submission';
+  static const _imagesUrlPath = 'exerciseimage';
   static const _checkLanguageUrlPath = 'check-language';
 
   void clear() {
@@ -188,6 +191,21 @@ class AddExerciseProvider with ChangeNotifier {
     notifyListeners();
 
     return result['id'];
+  }
+
+  Future<void> addImages(int exerciseId) async {
+    for (final image in _exerciseImages) {
+      final request = http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
+      request.headers.addAll(baseProvider.getDefaultHeaders(includeAuth: true));
+
+      request.files.add(await http.MultipartFile.fromPath('image', image.path));
+      request.fields['exercise'] = exerciseId.toString();
+      request.fields['style'] = EXERCISE_IMAGE_ART_STYLE.PHOTO.index.toString();
+
+      await request.send();
+    }
+
+    notifyListeners();
   }
 
   Future<bool> validateLanguage(String input, String languageCode) async {

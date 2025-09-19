@@ -50,7 +50,6 @@ abstract mixin class $ExerciseAliasSubmissionApiCopyWith<$Res> {
   factory $ExerciseAliasSubmissionApiCopyWith(
           ExerciseAliasSubmissionApi value, $Res Function(ExerciseAliasSubmissionApi) _then) =
       _$ExerciseAliasSubmissionApiCopyWithImpl;
-
   @useResult
   $Res call({String alias});
 }
@@ -236,7 +235,6 @@ extension ExerciseAliasSubmissionApiPatterns on ExerciseAliasSubmissionApi {
 @JsonSerializable()
 class _ExerciseAliasSubmissionApi implements ExerciseAliasSubmissionApi {
   const _ExerciseAliasSubmissionApi({required this.alias});
-
   factory _ExerciseAliasSubmissionApi.fromJson(Map<String, dynamic> json) =>
       _$ExerciseAliasSubmissionApiFromJson(json);
 
@@ -282,7 +280,6 @@ abstract mixin class _$ExerciseAliasSubmissionApiCopyWith<$Res>
   factory _$ExerciseAliasSubmissionApiCopyWith(
           _ExerciseAliasSubmissionApi value, $Res Function(_ExerciseAliasSubmissionApi) _then) =
       __$ExerciseAliasSubmissionApiCopyWithImpl;
-
   @override
   @useResult
   $Res call({String alias});
@@ -350,7 +347,6 @@ abstract mixin class $ExerciseCommentSubmissionApiCopyWith<$Res> {
   factory $ExerciseCommentSubmissionApiCopyWith(
           ExerciseCommentSubmissionApi value, $Res Function(ExerciseCommentSubmissionApi) _then) =
       _$ExerciseCommentSubmissionApiCopyWithImpl;
-
   @useResult
   $Res call({String alias});
 }
@@ -536,7 +532,6 @@ extension ExerciseCommentSubmissionApiPatterns on ExerciseCommentSubmissionApi {
 @JsonSerializable()
 class _ExerciseCommentSubmissionApi implements ExerciseCommentSubmissionApi {
   const _ExerciseCommentSubmissionApi({required this.alias});
-
   factory _ExerciseCommentSubmissionApi.fromJson(Map<String, dynamic> json) =>
       _$ExerciseCommentSubmissionApiFromJson(json);
 
@@ -582,7 +577,6 @@ abstract mixin class _$ExerciseCommentSubmissionApiCopyWith<$Res>
   factory _$ExerciseCommentSubmissionApiCopyWith(
           _ExerciseCommentSubmissionApi value, $Res Function(_ExerciseCommentSubmissionApi) _then) =
       __$ExerciseCommentSubmissionApiCopyWithImpl;
-
   @override
   @useResult
   $Res call({String alias});
@@ -615,16 +609,11 @@ class __$ExerciseCommentSubmissionApiCopyWithImpl<$Res>
 /// @nodoc
 mixin _$ExerciseTranslationSubmissionApi {
   String get name;
-
   String get description;
-
   int get language;
-
   @JsonKey(name: 'license_author')
   String get author;
-
   List<ExerciseAliasSubmissionApi> get aliases;
-
   List<ExerciseCommentSubmissionApi> get comments;
 
   /// Create a copy of ExerciseTranslationSubmissionApi
@@ -667,7 +656,6 @@ abstract mixin class $ExerciseTranslationSubmissionApiCopyWith<$Res> {
   factory $ExerciseTranslationSubmissionApiCopyWith(ExerciseTranslationSubmissionApi value,
           $Res Function(ExerciseTranslationSubmissionApi) _then) =
       _$ExerciseTranslationSubmissionApiCopyWithImpl;
-
   @useResult
   $Res call(
       {String name,
@@ -916,7 +904,6 @@ class _ExerciseTranslationSubmissionApi implements ExerciseTranslationSubmission
       final List<ExerciseCommentSubmissionApi> comments = const []})
       : _aliases = aliases,
         _comments = comments;
-
   factory _ExerciseTranslationSubmissionApi.fromJson(Map<String, dynamic> json) =>
       _$ExerciseTranslationSubmissionApiFromJson(json);
 
@@ -930,7 +917,6 @@ class _ExerciseTranslationSubmissionApi implements ExerciseTranslationSubmission
   @JsonKey(name: 'license_author')
   final String author;
   final List<ExerciseAliasSubmissionApi> _aliases;
-
   @override
   @JsonKey()
   List<ExerciseAliasSubmissionApi> get aliases {
@@ -940,7 +926,6 @@ class _ExerciseTranslationSubmissionApi implements ExerciseTranslationSubmission
   }
 
   final List<ExerciseCommentSubmissionApi> _comments;
-
   @override
   @JsonKey()
   List<ExerciseCommentSubmissionApi> get comments {
@@ -1001,7 +986,6 @@ abstract mixin class _$ExerciseTranslationSubmissionApiCopyWith<$Res>
   factory _$ExerciseTranslationSubmissionApiCopyWith(_ExerciseTranslationSubmissionApi value,
           $Res Function(_ExerciseTranslationSubmissionApi) _then) =
       __$ExerciseTranslationSubmissionApiCopyWithImpl;
-
   @override
   @useResult
   $Res call(
@@ -1065,20 +1049,14 @@ class __$ExerciseTranslationSubmissionApiCopyWithImpl<$Res>
 /// @nodoc
 mixin _$ExerciseSubmissionApi {
   int get category;
-
   List<int> get muscles;
-
   @JsonKey(name: 'muscles_secondary')
   List<int> get musclesSecondary;
-
   List<int> get equipment;
-
   @JsonKey(name: 'license_author')
   String get author;
-
   @JsonKey(includeToJson: false)
   int? get variation;
-
   List<ExerciseTranslationSubmissionApi> get translations;
 
   /// Create a copy of ExerciseSubmissionApi
@@ -1129,7 +1107,6 @@ abstract mixin class $ExerciseSubmissionApiCopyWith<$Res> {
   factory $ExerciseSubmissionApiCopyWith(
           ExerciseSubmissionApi value, $Res Function(ExerciseSubmissionApi) _then) =
       _$ExerciseSubmissionApiCopyWithImpl;
-
   @useResult
   $Res call(
       {int category,
@@ -1389,14 +1366,12 @@ class _ExerciseSubmissionApi implements ExerciseSubmissionApi {
         _musclesSecondary = musclesSecondary,
         _equipment = equipment,
         _translations = translations;
-
   factory _ExerciseSubmissionApi.fromJson(Map<String, dynamic> json) =>
       _$ExerciseSubmissionApiFromJson(json);
 
   @override
   final int category;
   final List<int> _muscles;
-
   @override
   List<int> get muscles {
     if (_muscles is EqualUnmodifiableListView) return _muscles;
@@ -1405,7 +1380,6 @@ class _ExerciseSubmissionApi implements ExerciseSubmissionApi {
   }
 
   final List<int> _musclesSecondary;
-
   @override
   @JsonKey(name: 'muscles_secondary')
   List<int> get musclesSecondary {
@@ -1415,7 +1389,6 @@ class _ExerciseSubmissionApi implements ExerciseSubmissionApi {
   }
 
   final List<int> _equipment;
-
   @override
   List<int> get equipment {
     if (_equipment is EqualUnmodifiableListView) return _equipment;
@@ -1430,7 +1403,6 @@ class _ExerciseSubmissionApi implements ExerciseSubmissionApi {
   @JsonKey(includeToJson: false)
   final int? variation;
   final List<ExerciseTranslationSubmissionApi> _translations;
-
   @override
   List<ExerciseTranslationSubmissionApi> get translations {
     if (_translations is EqualUnmodifiableListView) return _translations;
@@ -1491,7 +1463,6 @@ abstract mixin class _$ExerciseSubmissionApiCopyWith<$Res>
   factory _$ExerciseSubmissionApiCopyWith(
           _ExerciseSubmissionApi value, $Res Function(_ExerciseSubmissionApi) _then) =
       __$ExerciseSubmissionApiCopyWithImpl;
-
   @override
   @useResult
   $Res call(

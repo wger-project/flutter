@@ -86,37 +86,30 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         Exercise? exercise;
                         try {
                           final exerciseId = await addExerciseProvider.addExercise();
+                          await addExerciseProvider.addImages(exerciseId);
                           exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
+                          addExerciseProvider.clear();
                         } on WgerHttpException catch (error) {
                           if (context.mounted) {
                             setState(() {
                               errorWidget = FormHttpErrorsWidget(error);
                             });
                           }
-                        }
-
-                        if (exercise == null) {
+                        } finally {
                           if (mounted) {
                             setState(() {
                               _isLoading = false;
                             });
                           }
+                        }
+
+                        if (exercise == null || !context.mounted) {
                           return;
                         }
 
                         final name = exercise
                             .getTranslation(Localizations.localeOf(context).languageCode)
                             .name;
-
-                        if (mounted) {
-                          setState(() {
-                            _isLoading = false;
-                          });
-                        }
-
-                        if (!context.mounted) {
-                          return;
-                        }
 
                         return showDialog(
                           context: context,
