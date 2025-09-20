@@ -311,7 +311,7 @@
     "@reps": {
         "description": "Shorthand for repetitions, used when space constraints are tighter"
     },
-    "start": "Beginne",
+    "start": "Start",
     "@start": {
         "description": "Label on button to start the gym mode (i.e., an imperative)"
     },
