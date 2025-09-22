@@ -22,7 +22,12 @@ enum DeviceType {
 
 final destination = DeviceType.phoneScreenshots.name;
 
-Future<void> takeScreenshot(tester, binding, String language, String name) async {
+Future<void> takeScreenshot(
+  WidgetTester tester,
+  IntegrationTestWidgetsFlutterBinding binding,
+  String language,
+  String name,
+) async {
   if (Platform.isAndroid) {
     await tester.pumpAndSettle();
     await binding.convertFlutterSurfaceToImage();
