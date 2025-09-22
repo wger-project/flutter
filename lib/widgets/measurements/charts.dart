@@ -82,12 +82,17 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
               NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
           return touchedSpots.map((touchedSpot) {
+            final msSinceEpoch = touchedSpot.x.toInt();
             final DateTime date = DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
             final dateStr =
                 DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
 
+            // Check if this is an interpolated point (milliseconds ending with 123)
+            final bool isInterpolated = msSinceEpoch % 1000 == INTERPOLATION_MARKER;
+            final String interpolatedMarker = isInterpolated ? ' (interpolated)' : '';
+
             return LineTooltipItem(
-              '$dateStr: ${numberFormat.format(touchedSpot.y)} ${widget._unit}',
+              '$dateStr: ${numberFormat.format(touchedSpot.y)} ${widget._unit}$interpolatedMarker',
               TextStyle(color: touchedSpot.bar.color),
             );
           }).toList();

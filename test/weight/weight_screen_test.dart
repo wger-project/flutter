@@ -50,6 +50,7 @@ void main() {
 
     mockNutritionPlansProvider = MockNutritionPlansProvider();
     when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
+    when(mockNutritionPlansProvider.items).thenReturn([]);
   });
 
   Widget createWeightScreen({locale = 'en'}) {

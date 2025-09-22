@@ -500,20 +500,13 @@ class PlanForm extends StatefulWidget {
 class _PlanFormState extends State<PlanForm> {
   final _form = GlobalKey<FormState>();
 
-  bool _onlyLogging = true;
   GoalType _goalType = GoalType.meals;
-
-  final _descriptionController = TextEditingController();
-  final TextEditingController colorController = TextEditingController();
-
   GoalType? selectedGoal;
 
   @override
   void initState() {
     super.initState();
 
-    _onlyLogging = widget._plan.onlyLogging;
-    _descriptionController.text = widget._plan.description;
     if (widget._plan.hasAnyAdvancedGoals) {
       _goalType = GoalType.advanced;
     } else if (widget._plan.hasAnyGoals) {
@@ -524,14 +517,9 @@ class _PlanFormState extends State<PlanForm> {
   }
 
   @override
-  void dispose() {
-    _descriptionController.dispose();
-    colorController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+
     return Form(
       key: _form,
       child: ListView(
@@ -542,20 +530,116 @@ class _PlanFormState extends State<PlanForm> {
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).description,
             ),
-            controller: _descriptionController,
+            controller: TextEditingController(
+              text: widget._plan.description,
+            ),
             onSaved: (newValue) {
               widget._plan.description = newValue!;
             },
           ),
+          // Start Date
+          TextFormField(
+            key: const Key('field-start-date'),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).startDate,
+              suffixIcon: const Icon(
+                Icons.calendar_today,
+                key: Key('calendarIcon'),
+              ),
+            ),
+            controller: TextEditingController(
+              text: dateFormat.format(widget._plan.startDate),
+            ),
+            readOnly: true,
+            onTap: () async {
+              // Stop keyboard from appearing
+              FocusScope.of(context).requestFocus(FocusNode());
+
+              // Open date picker
+              final pickedDate = await showDatePicker(
+                context: context,
+                initialDate: widget._plan.startDate,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+              );
+
+              if (pickedDate != null) {
+                setState(() {
+                  widget._plan.startDate = pickedDate;
+                });
+              }
+            },
+            validator: (value) {
+              if (widget._plan.endDate != null &&
+                  widget._plan.endDate!.isBefore(widget._plan.startDate)) {
+                return 'End date must be after start date';
+              }
+
+              return null;
+            },
+          ),
+          // End Date
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  key: const Key('field-end-date'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).endDate,
+                    helperText:
+                        'Tip: only for athletes with contest deadlines.  Most users benefit from flexibility',
+                    suffixIcon: widget._plan.endDate == null
+                        ? const Icon(
+                            Icons.calendar_today,
+                            key: Key('calendarIcon'),
+                          )
+                        : IconButton(
+                            icon: const Icon(Icons.clear),
+                            tooltip: 'Clear end date',
+                            onPressed: () {
+                              setState(() {
+                                widget._plan.endDate = null;
+                              });
+                            },
+                          ),
+                  ),
+                  controller: TextEditingController(
+                    text: widget._plan.endDate == null
+                        ? ''
+                        : dateFormat.format(widget._plan.endDate!),
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    // Stop keyboard from appearing
+                    FocusScope.of(context).requestFocus(FocusNode());
+
+                    // Open date picker
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: widget._plan.endDate,
+                      // end must be after start
+                      firstDate: widget._plan.startDate.add(const Duration(days: 1)),
+                      lastDate: DateTime(2100),
+                    );
+
+                    if (pickedDate != null) {
+                      setState(() {
+                        widget._plan.endDate = pickedDate;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
           SwitchListTile(
             title: Text(AppLocalizations.of(context).onlyLogging),
             subtitle: Text(AppLocalizations.of(context).onlyLoggingHelpText),
-            value: _onlyLogging,
+            value: widget._plan.onlyLogging,
             onChanged: (value) {
               setState(() {
-                _onlyLogging = !_onlyLogging;
+                widget._plan.onlyLogging = value;
               });
-              widget._plan.onlyLogging = value;
             },
           ),
           Row(
@@ -567,7 +651,7 @@ class _PlanFormState extends State<PlanForm> {
               const SizedBox(width: 8),
               Expanded(
                 child: DropdownButtonFormField<GoalType>(
-                  value: _goalType,
+                  initialValue: _goalType,
                   items: GoalType.values
                       .map(
                         (e) => DropdownMenuItem<GoalType>(
@@ -675,9 +759,6 @@ class _PlanFormState extends State<PlanForm> {
                   );
                 }
               }
-
-              // Saving was successful, reset the data
-              _descriptionController.clear();
             },
           ),
         ],

@@ -18,15 +18,73 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 
 class NutritionalPlansList extends StatelessWidget {
   final NutritionPlansProvider _nutritionProvider;
 
   const NutritionalPlansList(this._nutritionProvider);
+
+  /// Builds the weight change information for a nutritional plan period
+  Widget _buildWeightChangeInfo(BuildContext context, DateTime startDate, DateTime? endDate) {
+    final provider = Provider.of<BodyWeightProvider>(context, listen: false);
+
+    final entriesAll = provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);
+    if (entries7dAvg.length < 2) {
+      return const SizedBox.shrink();
+    }
+
+    // Calculate weight change
+    final firstWeight = entries7dAvg.first;
+    final lastWeight = entries7dAvg.last;
+    final weightDifference = lastWeight.value - firstWeight.value;
+
+    // Format the weight change text and determine color
+    final String weightChangeText;
+    final Color weightChangeColor;
+    final profile = context.read<UserProvider>().profile;
+
+    final unit = weightUnit(profile!.isMetric, context);
+
+    if (weightDifference > 0) {
+      weightChangeText = '+${weightDifference.toStringAsFixed(1)} $unit';
+      weightChangeColor = Colors.red;
+    } else if (weightDifference < 0) {
+      weightChangeText = '${weightDifference.toStringAsFixed(1)} $unit';
+      weightChangeColor = Colors.green;
+    } else {
+      weightChangeText = '0 $unit';
+      weightChangeColor = Colors.grey;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: Row(
+        children: [
+          Text(
+            '${AppLocalizations.of(context).weight} change: ',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          Text(
+            weightChangeText,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: weightChangeColor,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +106,22 @@ class NutritionalPlansList extends StatelessWidget {
                       );
                     },
                     title: Text(currentPlan.getLabel(context)),
-                    subtitle: Text(
-                      DateFormat.yMd(
-                        Localizations.localeOf(context).languageCode,
-                      ).format(currentPlan.creationDate),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          currentPlan.endDate != null
+                              ? 'from ${DateFormat.yMd(
+                                  Localizations.localeOf(context).languageCode,
+                                ).format(currentPlan.startDate)} to ${DateFormat.yMd(
+                                  Localizations.localeOf(context).languageCode,
+                                ).format(currentPlan.endDate!)}'
+                              : 'from ${DateFormat.yMd(
+                                  Localizations.localeOf(context).languageCode,
+                                ).format(currentPlan.startDate)} (open ended)',
+                        ),
+                        _buildWeightChangeInfo(context, currentPlan.startDate, currentPlan.endDate),
+                      ],
                     ),
                     trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                       const VerticalDivider(),

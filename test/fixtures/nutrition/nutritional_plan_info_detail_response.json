@@ -2,6 +2,8 @@
     "id": 92547,
     "creation_date": "2024-04-01",
     "description": "first real cut",
+    "start": "2024-04-01",
+    "end": null,
     "only_logging": false,
     "goal_energy": 1600,
     "goal_protein": 150,
