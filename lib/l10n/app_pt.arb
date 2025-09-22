@@ -861,7 +861,7 @@
     "@goalTypeAdvanced": {
         "description": "added for localization of Class GoalType's filed advanced"
     },
-    "indicatorRaw": "Crua",
+    "indicatorRaw": "Crú",
     "@indicatorRaw": {
         "description": "added for localization of Class Indicator's field text"
     },
@@ -877,7 +877,7 @@
     "@themeMode": {},
     "darkMode": "Modo sempre escuro",
     "@darkMode": {},
-    "settingsIngredientCacheDescription": "Princípio de cache",
+    "settingsIngredientCacheDescription": "Armazém de ingredientes",
     "@settingsIngredientCacheDescription": {},
     "routines": "Rotinas",
     "@routines": {},
@@ -1010,5 +1010,19 @@
     "setHasProgressionWarning": "Por favor, nota que, de momento, não é possível editar todos os valores para uma série na aplicação móvel ou configurar a progressão automática. Por agora, por favor, usa a aplicação web.",
     "@setHasProgressionWarning": {},
     "startDate": "Data de início",
-    "@startDate": {}
+    "@startDate": {},
+    "endDate": "Data de término",
+    "@endDate": {
+        "description": "The End date of a nutritional plan"
+    },
+    "applicationLogs": "Registos da aplicação",
+    "@applicationLogs": {},
+    "creationDate": "Data de início",
+    "@creationDate": {
+        "description": "The Start date of a nutritional plan"
+    },
+    "openEnded": "Sem fim definido",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    }
 }
