@@ -1034,5 +1034,13 @@
     "startDate": "Дата початку",
     "@startDate": {},
     "applicationLogs": "Журнали програм",
-    "@applicationLogs": {}
+    "@applicationLogs": {},
+    "creationDate": "Дата початку",
+    "@creationDate": {
+        "description": "The Start date of a nutritional plan"
+    },
+    "openEnded": "Відкритий",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    }
 }
