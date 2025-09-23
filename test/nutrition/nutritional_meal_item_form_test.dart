@@ -10,7 +10,6 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -79,10 +78,7 @@ void main() {
       languageCode: anyNamed('languageCode'),
       searchEnglish: anyNamed('searchEnglish'),
     )).thenAnswer(
-      (_) => Future.value(
-        IngredientApiSearch.fromJson(json.decode(fixture('nutrition/ingredient_suggestions')))
-            .suggestions,
-      ),
+      (_) => Future.value([ingredient1, ingredient2]),
     );
 
     when(mockNutrition.addMealItem(any, meal1)).thenAnswer((_) => Future.value(mealItem));
@@ -115,7 +111,7 @@ void main() {
     await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
     await tester.pumpAndSettle();
 
-    expect(find.byType(TypeAheadField<IngredientApiSearchEntry>), findsOneWidget);
+    expect(find.byType(TypeAheadField<Ingredient>), findsOneWidget);
     expect(find.byType(TextFormField), findsWidgets);
     expect(find.byKey(const Key('scan-button')), findsOneWidget);
     expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);

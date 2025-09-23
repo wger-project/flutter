@@ -27,7 +27,6 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
@@ -116,7 +115,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TypeAheadField<IngredientApiSearchEntry>(
+        TypeAheadField<Ingredient>(
           controller: widget._ingredientController,
           debounceDuration: const Duration(milliseconds: 500),
           builder: (context, controller, focusNode) {
@@ -153,26 +152,28 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               searchEnglish: _searchEnglish,
             );
           },
-          itemBuilder: (context, suggestion) {
-            final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
+          itemBuilder: (context, ingredient) {
             return ListTile(
-              leading: suggestion.data.image != null
+              leading: ingredient.image != null
                   ? CircleAvatar(
-                      backgroundImage: NetworkImage(url! + suggestion.data.image!),
+                      backgroundImage: NetworkImage(ingredient.thumbnails!.medium),
                     )
                   : const CircleIconAvatar(
                       Icon(Icons.image, color: Colors.grey),
                     ),
-              title: Text(suggestion.value),
-              // subtitle: Text(suggestion.data.id.toString()),
+              title: Text(
+                ingredient.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
               trailing: IconButton(
                 icon: const Icon(Icons.info_outline),
                 onPressed: () {
                   showIngredientDetails(
                     context,
-                    suggestion.data.id,
+                    ingredient.id,
                     select: () {
-                      widget.selectIngredient(suggestion.data.id, suggestion.value, null);
+                      widget.selectIngredient(ingredient.id, ingredient.name, null);
                     },
                   );
                 },
@@ -184,7 +185,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             child: child,
           ),
           onSelected: (suggestion) {
-            widget.selectIngredient(suggestion.data.id, suggestion.value, null);
+            widget.selectIngredient(suggestion.id, suggestion.name, null);
           },
         ),
         if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
@@ -239,7 +240,7 @@ class IngredientAvatar extends StatelessWidget {
     return ingredient.image != null
         ? GestureDetector(
             child: CircleAvatar(
-              backgroundImage: NetworkImage(ingredient.image!.image),
+              backgroundImage: NetworkImage(ingredient.image!.url),
             ),
             onTap: () async {
               if (ingredient.image!.objectUrl != '') {

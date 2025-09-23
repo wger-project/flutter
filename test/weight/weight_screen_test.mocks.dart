@@ -11,7 +11,6 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:shared_preferences/shared_preferences.dart' as _i4;
 import 'package:wger/database/ingredients/ingredients_database.dart' as _i5;
 import 'package:wger/models/body_weight/weight_entry.dart' as _i3;
-import 'package:wger/models/exercises/ingredient_api.dart' as _i17;
 import 'package:wger/models/nutrition/ingredient.dart' as _i9;
 import 'package:wger/models/nutrition/meal.dart' as _i7;
 import 'package:wger/models/nutrition/meal_item.dart' as _i8;
@@ -720,7 +719,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
       ) as _i11.Future<void>);
 
   @override
-  _i11.Future<List<_i17.IngredientApiSearchEntry>> searchIngredient(
+  _i11.Future<List<_i9.Ingredient>> searchIngredient(
     String? name, {
     String? languageCode = 'en',
     bool? searchEnglish = false,
@@ -734,15 +733,14 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
             #searchEnglish: searchEnglish,
           },
         ),
-        returnValue: _i11.Future<List<_i17.IngredientApiSearchEntry>>.value(
-            <_i17.IngredientApiSearchEntry>[]),
-      ) as _i11.Future<List<_i17.IngredientApiSearchEntry>>);
+        returnValue: _i11.Future<List<_i9.Ingredient>>.value(<_i9.Ingredient>[]),
+      ) as _i11.Future<List<_i9.Ingredient>>);
 
   @override
-  _i11.Future<_i9.Ingredient?> searchIngredientWithCode(String? code) => (super.noSuchMethod(
+  _i11.Future<_i9.Ingredient?> searchIngredientWithCode(String? barcode) => (super.noSuchMethod(
         Invocation.method(
           #searchIngredientWithCode,
-          [code],
+          [barcode],
         ),
         returnValue: _i11.Future<_i9.Ingredient?>.value(),
       ) as _i11.Future<_i9.Ingredient?>);

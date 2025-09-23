@@ -26,7 +26,6 @@ import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -43,7 +42,6 @@ class NutritionPlansProvider with ChangeNotifier {
   static const _mealPath = 'meal';
   static const _mealItemPath = 'mealitem';
   static const _ingredientInfoPath = 'ingredientinfo';
-  static const _ingredientSearchPath = 'ingredient/search';
   static const _nutritionDiaryPath = 'nutritiondiary';
 
   final WgerBaseProvider baseProvider;
@@ -362,7 +360,7 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
-  Future<List<IngredientApiSearchEntry>> searchIngredient(
+  Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',
     bool searchEnglish = false,
@@ -379,24 +377,29 @@ class NutritionPlansProvider with ChangeNotifier {
     // Send the request
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
-        _ingredientSearchPath,
-        query: {'term': name, 'language': languages.join(',')},
+        _ingredientInfoPath,
+        query: {
+          'name__search': name,
+          'language__code': languages.join(','),
+          'limit': API_RESULTS_PAGE_SIZE,
+        },
       ),
     );
 
-    // Process the response
-    return IngredientApiSearch.fromJson(response).suggestions;
+    return (response['results'] as List)
+        .map((ingredientData) => Ingredient.fromJson(ingredientData as Map<String, dynamic>))
+        .toList();
   }
 
-  /// Searches for an ingredient with code
-  Future<Ingredient?> searchIngredientWithCode(String code) async {
-    if (code.isEmpty) {
+  /// Searches for an ingredient with bar code
+  Future<Ingredient?> searchIngredientWithCode(String barcode) async {
+    if (barcode.isEmpty) {
       return null;
     }
 
     // Send the request
     final data = await baseProvider.fetch(
-      baseProvider.makeUrl(_ingredientInfoPath, query: {'code': code}),
+      baseProvider.makeUrl(_ingredientInfoPath, query: {'code': barcode}),
     );
 
     if (data['count'] == 0) {
