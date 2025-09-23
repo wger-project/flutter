@@ -16,6 +16,8 @@ jobs:
           ref: ${{ inputs.ref }}
 
       # This seems to be related to https://github.com/actions/runner-images/issues/12758
+      # Select appropriate Xcode version from
+      # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md#xcode
       - name: Xcode setup
         run: |
           sudo xcode-select --switch /Applications/Xcode_16.4.app
@@ -32,7 +34,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: builds-ios
-          path: build/ios/iphoneos/Runner.app
+          path: build/ios/iphoneos/Runner.app.zip
 
   build_ipa:
     name: IPA
@@ -47,6 +49,8 @@ jobs:
         uses: ./.github/actions/flutter-common
 
       # This seems to be related to https://github.com/actions/runner-images/issues/12758
+      # Select appropriate Xcode version from
+      # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md#xcode
       - name: Xcode setup
         run: |
           sudo xcode-select --switch /Applications/Xcode_16.4.app
