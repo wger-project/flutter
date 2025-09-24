@@ -392,7 +392,7 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient with bar code
-  Future<Ingredient?> searchIngredientWithCode(String barcode) async {
+  Future<Ingredient?> searchIngredientWithBarcode(String barcode) async {
     if (barcode.isEmpty) {
       return null;
     }
@@ -406,7 +406,6 @@ class NutritionPlansProvider with ChangeNotifier {
       return null;
     }
     // TODO we should probably add it to ingredient cache.
-    // TODO: we could also use the ingredient cache for code searches
     return Ingredient.fromJson(data['results'][0]);
   }
 

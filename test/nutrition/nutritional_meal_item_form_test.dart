@@ -70,9 +70,10 @@ void main() {
     final MealItem mealItem = MealItem(ingredientId: ingredient.id, amount: 2);
     mockNutrition = MockNutritionPlansProvider();
 
-    when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingredient));
-    when(mockNutrition.searchIngredientWithCode('')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredientWithCode('222')).thenAnswer((_) => Future.value(null));
+    when(mockNutrition.searchIngredientWithBarcode('123'))
+        .thenAnswer((_) => Future.value(ingredient));
+    when(mockNutrition.searchIngredientWithBarcode('')).thenAnswer((_) => Future.value(null));
+    when(mockNutrition.searchIngredientWithBarcode('222')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredient(
       any,
       languageCode: anyNamed('languageCode'),

@@ -64,8 +64,8 @@ class IngredientTypeahead extends StatefulWidget {
   final bool showScanner;
 
   final Function(int id, String name, num? amount) selectIngredient;
-  final Function() unSelectIngredient;
-  final Function(String query) updateSearchQuery;
+  final Function() onDeselectIngredient;
+  final Function(String query) onUpdateSearchQuery;
 
   IngredientTypeahead(
     this._ingredientIdController,
@@ -74,8 +74,8 @@ class IngredientTypeahead extends StatefulWidget {
     this.test = false,
     this.barcode = '',
     required this.selectIngredient,
-    required this.unSelectIngredient,
-    required this.updateSearchQuery,
+    required this.onDeselectIngredient,
+    required this.onUpdateSearchQuery,
   });
 
   @override
@@ -142,9 +142,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               return null;
             }
 
-            widget.updateSearchQuery(pattern);
-            // unselect to start a new search
-            widget.unSelectIngredient();
+            widget.onUpdateSearchQuery(pattern);
+            widget.onDeselectIngredient();
 
             return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
               pattern,
@@ -219,7 +218,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           context: context,
           builder: (context) => FutureBuilder<Ingredient?>(
             future: Provider.of<NutritionPlansProvider>(context, listen: false)
-                .searchIngredientWithCode(barcode),
+                .searchIngredientWithBarcode(barcode),
             builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
               return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
             },

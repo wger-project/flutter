@@ -1007,7 +1007,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i20.NutritionPlans
       ) as _i18.Future<List<_i13.Ingredient>>);
 
   @override
-  _i18.Future<_i13.Ingredient?> searchIngredientWithCode(String? barcode) => (super.noSuchMethod(
+  _i18.Future<_i13.Ingredient?> searchIngredientWithBarcode(String? barcode) => (super.noSuchMethod(
         Invocation.method(
           #searchIngredientWithCode,
           [barcode],
