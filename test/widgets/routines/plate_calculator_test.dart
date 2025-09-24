@@ -34,7 +34,6 @@ void main() {
   testWidgets('Smoke test for ConfigureAvailablePlates', (WidgetTester tester) async {
     await pumpWidget(tester);
 
-    debugDumpApp();
     expect(find.text('Unit'), findsWidgets);
     expect(find.text('Bar weight'), findsWidgets);
     expect(find.byType(SwitchListTile), findsOneWidget);
