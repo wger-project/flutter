@@ -252,8 +252,8 @@ class IngredientFormState extends State<IngredientForm> {
               barcode: widget.barcode,
               test: widget.test,
               selectIngredient: selectIngredient,
-              unSelectIngredient: unSelectIngredient,
-              updateSearchQuery: updateSearchQuery,
+              onDeselectIngredient: unSelectIngredient,
+              onUpdateSearchQuery: updateSearchQuery,
             ),
             Row(
               children: [

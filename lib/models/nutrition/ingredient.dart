@@ -18,6 +18,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
+import 'package:wger/models/nutrition/ingredient_image_thumbnails.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'ingredient.g.dart';
@@ -90,6 +91,8 @@ class Ingredient {
 
   IngredientImage? image;
 
+  IngredientImageThumbnails? thumbnails;
+
   Ingredient({
     required this.remoteId,
     required this.sourceName,
@@ -108,6 +111,7 @@ class Ingredient {
     required this.fiber,
     required this.sodium,
     this.image,
+    this.thumbnails,
   });
 
   // Boilerplate

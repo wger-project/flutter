@@ -48,6 +48,9 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     image: json['image'] == null
         ? null
         : IngredientImage.fromJson(json['image'] as Map<String, dynamic>),
+    thumbnails: json['thumbnails'] == null
+        ? null
+        : IngredientImageThumbnails.fromJson(json['thumbnails'] as Map<String, dynamic>),
   );
 }
 
@@ -69,4 +72,5 @@ Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic
       'fiber': numToString(instance.fiber),
       'sodium': numToString(instance.sodium),
       'image': instance.image,
+      'thumbnails': instance.thumbnails,
     };

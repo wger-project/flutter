@@ -33,8 +33,8 @@ class IngredientImage {
   final int ingredientId;
 
   /// URL of the image on the server
-  @JsonKey(required: true)
-  final String image;
+  @JsonKey(required: true, name: 'image')
+  final String url;
 
   /// Size in bytes
   @JsonKey(required: true)
@@ -70,7 +70,7 @@ class IngredientImage {
     required this.id,
     required this.uuid,
     required this.ingredientId,
-    required this.image,
+    required this.url,
     required this.size,
     required this.licenseId,
     required this.author,
