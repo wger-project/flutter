@@ -11,29 +11,29 @@ IngredientImageThumbnails _$IngredientImageThumbnailsFromJson(Map<String, dynami
     json,
     requiredKeys: const [
       'small',
-      'smallCropped',
+      'small_cropped',
       'medium',
-      'mediumCropped',
+      'medium_cropped',
       'large',
-      'largeCropped'
+      'large_cropped'
     ],
   );
   return IngredientImageThumbnails(
     small: json['small'] as String,
-    smallCropped: json['smallCropped'] as String,
+    smallCropped: json['small_cropped'] as String,
     medium: json['medium'] as String,
-    mediumCropped: json['mediumCropped'] as String,
+    mediumCropped: json['medium_cropped'] as String,
     large: json['large'] as String,
-    largeCropped: json['largeCropped'] as String,
+    largeCropped: json['large_cropped'] as String,
   );
 }
 
 Map<String, dynamic> _$IngredientImageThumbnailsToJson(IngredientImageThumbnails instance) =>
     <String, dynamic>{
       'small': instance.small,
-      'smallCropped': instance.smallCropped,
+      'small_cropped': instance.smallCropped,
       'medium': instance.medium,
-      'mediumCropped': instance.mediumCropped,
+      'medium_cropped': instance.mediumCropped,
       'large': instance.large,
-      'largeCropped': instance.largeCropped,
+      'large_cropped': instance.largeCropped,
     };

@@ -24,19 +24,19 @@ class IngredientImageThumbnails {
   @JsonKey(required: true)
   final String small;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'small_cropped')
   final String smallCropped;
 
   @JsonKey(required: true)
   final String medium;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'medium_cropped')
   final String mediumCropped;
 
   @JsonKey(required: true)
   final String large;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'large_cropped')
   final String largeCropped;
 
   const IngredientImageThumbnails({
