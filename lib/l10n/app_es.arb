@@ -1036,5 +1036,13 @@
     "setHasProgressionWarning": "Tenga en cuenta que, por el momento, no es posible editar todos los ajustes de un set en la aplicación móvil ni configurar la progresión automática. Por ahora, utilice la aplicación web.",
     "@setHasProgressionWarning": {},
     "applicationLogs": "Registro de la aplicación",
-    "@applicationLogs": {}
+    "@applicationLogs": {},
+    "creationDate": "Fecha de comienzo",
+    "@creationDate": {
+        "description": "The Start date of a nutritional plan"
+    },
+    "openEnded": "Indefinido",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    }
 }
