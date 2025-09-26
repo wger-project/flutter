@@ -43,7 +43,6 @@ void main() {
   setUp(() {
     mockWeightProvider = MockBodyWeightProvider();
     when(mockWeightProvider.items).thenReturn(getWeightEntries());
-    when(mockWeightProvider.getNewestEntry()).thenReturn(null);
 
     mockUserProvider = MockUserProvider();
     when(mockUserProvider.profile).thenReturn(tProfile1);
