@@ -84,7 +84,7 @@ class WeightOverview extends StatelessWidget {
                     subtitle: Text(
                       DateFormat.yMd(
                         Localizations.localeOf(context).languageCode,
-                      ).format(currentEntry.date),
+                      ).add_Hm().format(currentEntry.date),
                     ),
                     trailing: PopupMenuButton(
                       itemBuilder: (BuildContext context) {

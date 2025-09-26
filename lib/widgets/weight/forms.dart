@@ -21,38 +21,41 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/date.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
 
 class WeightForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
-  final dateController = TextEditingController();
-  final weightController = TextEditingController();
+  final dateController = TextEditingController(text: '');
+  final timeController = TextEditingController(text: '');
+  final weightController = TextEditingController(text: '');
 
-  late final WeightEntry _weightEntry;
+  final WeightEntry _weightEntry;
 
-  WeightForm([WeightEntry? weightEntry]) {
-    _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
-    weightController.text = '';
-    dateController.text = dateToYYYYMMDD(_weightEntry.date)!;
-  }
+  WeightForm([WeightEntry? weightEntry])
+      : _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
 
   @override
   Widget build(BuildContext context) {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
 
     if (weightController.text.isEmpty && _weightEntry.weight != 0) {
       weightController.text = numberFormat.format(_weightEntry.weight);
+    }
+    if (dateController.text.isEmpty) {
+      dateController.text = dateFormat.format(_weightEntry.date);
+    }
+    if (timeController.text.isEmpty) {
+      timeController.text = TimeOfDay.fromDateTime(_weightEntry.date).format(context);
     }
 
     return Form(
       key: _form,
       child: Column(
         children: [
-          // Weight date
           TextFormField(
             key: const Key('dateInput'),
             // Stop keyboard from appearing
@@ -72,24 +75,51 @@ class WeightForm extends StatelessWidget {
                 initialDate: _weightEntry.date,
                 firstDate: DateTime(DateTime.now().year - 10),
                 lastDate: DateTime.now(),
-                selectableDayPredicate: (day) {
-                  // Always allow the current initial date
-                  if (day.isSameDayAs(_weightEntry.date)) {
-                    return true;
-                  }
-
-                  // if the date is known, don't allow it
-                  return Provider.of<BodyWeightProvider>(context, listen: false).findByDate(day) ==
-                      null;
-                },
               );
 
               if (pickedDate != null) {
-                dateController.text = dateToYYYYMMDD(pickedDate)!;
+                dateController.text = dateFormat.format(pickedDate);
               }
             },
             onSaved: (newValue) {
-              _weightEntry.date = DateTime.parse(newValue!);
+              final date = dateFormat.parse(newValue!);
+              _weightEntry.date = _weightEntry.date.copyWith(
+                year: date.year,
+                month: date.month,
+                day: date.day,
+              );
+            },
+          ),
+          TextFormField(
+            key: const Key('timeInput'),
+            // Stop keyboard from appearing
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).time,
+              suffixIcon: const Icon(
+                Icons.access_time_outlined,
+                key: Key('clockIcon'),
+              ),
+            ),
+            enableInteractiveSelection: false,
+            controller: timeController,
+            onTap: () async {
+              final pickedTime = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.fromDateTime(_weightEntry.date),
+              );
+
+              if (pickedTime != null) {
+                timeController.text = pickedTime.format(context);
+              }
+            },
+            onSaved: (newValue) {
+              final time = timeFormat.parse(newValue!);
+              _weightEntry.date = _weightEntry.date.copyWith(
+                hour: time.hour,
+                minute: time.minute,
+                second: time.second,
+              );
             },
           ),
 

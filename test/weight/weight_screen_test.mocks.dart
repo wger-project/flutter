@@ -739,7 +739,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
   @override
   _i11.Future<_i9.Ingredient?> searchIngredientWithBarcode(String? barcode) => (super.noSuchMethod(
         Invocation.method(
-          #searchIngredientWithCode,
+          #searchIngredientWithBarcode,
           [barcode],
         ),
         returnValue: _i11.Future<_i9.Ingredient?>.value(),
