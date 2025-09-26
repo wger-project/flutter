@@ -38,6 +38,17 @@ enum AuthMode {
   Login,
 }
 
+/// Ensures the server URL has a protocol. Defaults to https:// if none is specified.
+String normalizeServerUrl(String url) {
+  if (url.isEmpty) return url;
+  url = url.trim();
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  // Default to https if no protocol is specified
+  return 'https://$url';
+}
+
 class AuthScreen extends StatelessWidget {
   const AuthScreen();
 
@@ -327,7 +338,7 @@ class _AuthCardState extends State<AuthCard> {
                         if (value!.lastIndexOf('/') == (value.length - 1)) {
                           value = value.substring(0, value.lastIndexOf('/'));
                         }
-                        _authData['serverUrl'] = value;
+                        _authData['serverUrl'] = normalizeServerUrl(value);
                       },
                     ),
                   ),
