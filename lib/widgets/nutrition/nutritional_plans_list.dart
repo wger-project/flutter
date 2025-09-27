@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -48,8 +49,14 @@ class NutritionalPlansList extends StatelessWidget {
     final lastWeight = entries7dAvg.last;
     final weightDifference = lastWeight.value - firstWeight.value;
 
+    // Calculate the time period in weeks
+    final timeDifference = lastWeight.date.difference(firstWeight.date);
+    final weeklyRate =
+        weightDifference / (timeDifference.inDays == 0 ? 1 : timeDifference.inDays) * 7;
+
     // Format the weight change text and determine color
     final String weightChangeText;
+    final String weeklyRateText;
     final Color weightChangeColor;
     final profile = context.read<UserProvider>().profile;
 
@@ -57,12 +64,15 @@ class NutritionalPlansList extends StatelessWidget {
 
     if (weightDifference > 0) {
       weightChangeText = '+${weightDifference.toStringAsFixed(1)} $unit';
+      weeklyRateText = '+${weeklyRate.toStringAsFixed(2)} $unit';
       weightChangeColor = Colors.red;
     } else if (weightDifference < 0) {
       weightChangeText = '${weightDifference.toStringAsFixed(1)} $unit';
+      weeklyRateText = '${weeklyRate.toStringAsFixed(2)} $unit';
       weightChangeColor = Colors.green;
     } else {
       weightChangeText = '0 $unit';
+      weeklyRateText = '0 $unit';
       weightChangeColor = Colors.grey;
     }
 
@@ -71,15 +81,11 @@ class NutritionalPlansList extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            '${AppLocalizations.of(context).weight} change: ',
-            style: Theme.of(context).textTheme.bodySmall,
+            '${AppLocalizations.of(context).weight}: ',
           ),
           Text(
-            weightChangeText,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: weightChangeColor,
-                ),
+            '$weightChangeText ($weeklyRateText/week)',
+            style: TextStyle(color: weightChangeColor),
           ),
         ],
       ),
@@ -110,13 +116,17 @@ class NutritionalPlansList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
+                          humanDuration(
+                              currentPlan.startDate, currentPlan.endDate ?? DateTime.now()),
+                        ),
+                        Text(
                           currentPlan.endDate != null
-                              ? 'from ${DateFormat.yMd(
+                              ? 'From: ${DateFormat.yMd(
                                   Localizations.localeOf(context).languageCode,
-                                ).format(currentPlan.startDate)} to ${DateFormat.yMd(
+                                ).format(currentPlan.startDate)} To: ${DateFormat.yMd(
                                   Localizations.localeOf(context).languageCode,
                                 ).format(currentPlan.endDate!)}'
-                              : 'from ${DateFormat.yMd(
+                              : 'From: ${DateFormat.yMd(
                                   Localizations.localeOf(context).languageCode,
                                 ).format(currentPlan.startDate)} (open ended)',
                         ),
