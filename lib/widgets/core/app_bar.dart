@@ -26,6 +26,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/health_settings_screen.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
 import 'package:wger/widgets/user/forms.dart';
@@ -50,9 +51,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   title: Text(AppLocalizations.of(context).optionsLabel),
                   actions: [
                     TextButton(
-                      child: Text(
-                        MaterialLocalizations.of(context).closeButtonLabel,
-                      ),
+                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
@@ -69,9 +68,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).userProfile,
-                            UserProfileForm(
-                              context.read<UserProvider>().profile!,
-                            ),
+                            UserProfileForm(context.read<UserProvider>().profile!),
                           ),
                         ),
                       ),
@@ -84,6 +81,12 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                         leading: const Icon(Icons.info),
                         onTap: () => Navigator.of(context).pushNamed(AboutPage.routeName),
                         title: Text(AppLocalizations.of(context).aboutPageTitle),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.health_and_safety_outlined),
+                        onTap: () =>
+                            Navigator.of(context).pushNamed(HealthSettingsScreen.routeName),
+                        title: Text('health connect'),
                       ),
                       const Divider(),
                       ListTile(

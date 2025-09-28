@@ -12,6 +12,18 @@ subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 
+subprojects {
+    afterEvaluate { project ->
+        if (project.name == "flutter_keyboard_visibility" && project.hasProperty("android")) {
+            project.android.compileSdkVersion = 36
+            project.logger.error(
+                    "Warning: Overriding compileSdkVersion for flutter_keyboard_visibility"
+            )
+        }
+    }
+}
+
+
 // Workaround for APK builds - https://github.com/flutter/flutter/issues/153281
 subprojects {
     afterEvaluate { project ->
@@ -29,7 +41,7 @@ subprojects {
                                 + " to increase their compileSdk to the latest (otherwise try updating to the latest version)."
                 )
                 project.android {
-                    compileSdk 34
+                    compileSdk 36
                 }
             }
         }

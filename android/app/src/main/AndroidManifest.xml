@@ -9,19 +9,14 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Health Permissions -->
+    <!-- Health Permissions, see https://pub.dev/packages/health -->
     <uses-permission android:name="android.permission.health.READ_STEPS" />
     <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
     <uses-permission android:name="android.permission.health.READ_ACTIVE_ENERGY_BURNED" />
-    <uses-permission android:name="android.permission.health.READ_SLEEP" />
-    <uses-permission android:name="android.permission.health.READ_DISTANCE" />
+    <uses-permission android:name="android.permission.health.READ_WEIGHT" />
+    <uses-permission android:name="android.permission.health.READ_WATER" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
-    <!-- Health Connect SDK Intent Declaration -->
-    <queries>
-        <intent>
-            <action android:name="android.health.connect.action.HEALTH_CONNECT_SETTINGS" />
-        </intent>
-    </queries>
 
     <queries>
         <intent>
@@ -58,11 +53,26 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
+            </intent-filter>
         </activity>
+
+        <activity-alias
+            android:name="ViewPermissionUsageActivity"
+            android:exported="true"
+            android:permission="android.permission.START_VIEW_PERMISSION_USAGE"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+            </intent-filter>
+        </activity-alias>
 
 
         <!-- Don't delete the meta-data below.
@@ -71,4 +81,22 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <!--
+        Required to query activities that can process text, see:
+        https://developer.android.com/training/package-visibility and
+        https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+        In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin.
+     -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
+        <package android:name="com.google.android.apps.healthdata" />
+        <intent>
+            <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
+        </intent>
+    </queries>
 </manifest>
