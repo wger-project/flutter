@@ -30,9 +30,7 @@ part 'exercise_submission.g.dart';
 /// Alias part of an exercise submission
 @freezed
 sealed class ExerciseAliasSubmissionApi with _$ExerciseAliasSubmissionApi {
-  const factory ExerciseAliasSubmissionApi({
-    required String alias,
-  }) = _ExerciseAliasSubmissionApi;
+  const factory ExerciseAliasSubmissionApi({required String alias}) = _ExerciseAliasSubmissionApi;
 
   factory ExerciseAliasSubmissionApi.fromJson(Map<String, dynamic> json) =>
       _$ExerciseAliasSubmissionApiFromJson(json);
@@ -41,9 +39,8 @@ sealed class ExerciseAliasSubmissionApi with _$ExerciseAliasSubmissionApi {
 /// Comment part of an exercise submission
 @freezed
 sealed class ExerciseCommentSubmissionApi with _$ExerciseCommentSubmissionApi {
-  const factory ExerciseCommentSubmissionApi({
-    required String alias,
-  }) = _ExerciseCommentSubmissionApi;
+  const factory ExerciseCommentSubmissionApi({required String alias}) =
+      _ExerciseCommentSubmissionApi;
 
   factory ExerciseCommentSubmissionApi.fromJson(Map<String, dynamic> json) =>
       _$ExerciseCommentSubmissionApiFromJson(json);
@@ -74,7 +71,8 @@ sealed class ExerciseSubmissionApi with _$ExerciseSubmissionApi {
     @JsonKey(name: 'muscles_secondary') required List<int> musclesSecondary,
     required List<int> equipment,
     @JsonKey(name: 'license_author') required String author,
-    @JsonKey(includeToJson: false) int? variation,
+    @JsonKey(includeToJson: true) int? variation,
+    @JsonKey(includeToJson: true, name: 'variations_connect_to') int? variationConnectTo,
     required List<ExerciseTranslationSubmissionApi> translations,
   }) = _ExerciseSubmissionApi;
 

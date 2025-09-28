@@ -116,9 +116,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(AppLocalizations.of(context).success),
-                              content: Text(
-                                AppLocalizations.of(context).cacheWarning,
-                              ),
+                              content: Text(AppLocalizations.of(context).cacheWarning),
                               actions: [
                                 TextButton(
                                   child: Text(name),
@@ -137,11 +135,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         );
                       },
                 child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(),
-                      )
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator())
                     : Text(AppLocalizations.of(context).save),
               )
             else
@@ -182,10 +176,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
             title: Text(AppLocalizations.of(context).images),
             content: Step5Images(formkey: _keys[4]),
           ),
-          Step(
-            title: Text(AppLocalizations.of(context).overview),
-            content: Step6Overview(),
-          ),
+          Step(title: Text(AppLocalizations.of(context).overview), content: Step6Overview()),
         ],
         currentStep: _currentStep,
         onStepContinue: () {
@@ -236,8 +227,11 @@ class EmailNotVerified extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.warning),
                   title: Text(AppLocalizations.of(context).unVerifiedEmail),
-                  subtitle: Text(AppLocalizations.of(context)
-                      .contributeExerciseWarning(MIN_ACCOUNT_AGE.toString())),
+                  subtitle: Text(
+                    AppLocalizations.of(
+                      context,
+                    ).contributeExerciseWarning(MIN_ACCOUNT_AGE.toString()),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

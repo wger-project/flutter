@@ -27,9 +27,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
           ),
           Consumer<AddExerciseProvider>(
             builder: (ctx, provider, __) => provider.exerciseImages.isNotEmpty
-                ? PreviewExerciseImages(
-                    selectedImages: provider.exerciseImages,
-                  )
+                ? PreviewExerciseImages(selectedImages: provider.exerciseImages)
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

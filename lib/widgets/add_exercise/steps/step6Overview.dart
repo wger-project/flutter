@@ -14,22 +14,11 @@ class Step6Overview extends StatelessWidget {
       builder: (ctx, provider, __) => Column(
         spacing: 8,
         children: [
-          Text(
-            i18n.baseData,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
+          Text(i18n.baseData, style: Theme.of(context).textTheme.headlineSmall),
           Table(
-            columnWidths: const {
-              0: FlexColumnWidth(2),
-              1: FlexColumnWidth(3),
-            },
+            columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(3)},
             children: [
-              TableRow(
-                children: [
-                  Text(i18n.name),
-                  Text(provider.exerciseNameEn ?? '...'),
-                ],
-              ),
+              TableRow(children: [Text(i18n.name), Text(provider.exerciseNameEn ?? '...')]),
               TableRow(
                 children: [
                   Text(i18n.alternativeNames),
@@ -40,18 +29,8 @@ class Step6Overview extends StatelessWidget {
                   ),
                 ],
               ),
-              TableRow(
-                children: [
-                  Text(i18n.description),
-                  Text(provider.descriptionEn ?? '...'),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Text(i18n.category),
-                  Text(provider.category?.name ?? '...'),
-                ],
-              ),
+              TableRow(children: [Text(i18n.description), Text(provider.descriptionEn ?? '...')]),
+              TableRow(children: [Text(i18n.category), Text(provider.category?.name ?? '...')]),
               TableRow(
                 children: [
                   Text(i18n.muscles),
@@ -82,24 +61,25 @@ class Step6Overview extends StatelessWidget {
                   ),
                 ],
               ),
-            ],
-          ),
-          Text(
-            i18n.translation,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          Table(
-            columnWidths: const {
-              0: FlexColumnWidth(2),
-              1: FlexColumnWidth(3),
-            },
-            children: [
               TableRow(
                 children: [
-                  Text(i18n.name),
-                  Text(provider.exerciseNameTrans ?? '...'),
+                  Text(i18n.variations),
+                  Text(
+                    provider.variationId != null
+                        ? 'Using variation ID ${provider.variationId}'
+                        : provider.variationConnectToExercise != null
+                        ? 'Connecting to exercise ${provider.variationConnectToExercise}'
+                        : '',
+                  ),
                 ],
               ),
+            ],
+          ),
+          Text(i18n.translation, style: Theme.of(context).textTheme.headlineSmall),
+          Table(
+            columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(3)},
+            children: [
+              TableRow(children: [Text(i18n.name), Text(provider.exerciseNameTrans ?? '...')]),
               TableRow(
                 children: [
                   Text(i18n.alternativeNames),
@@ -111,10 +91,7 @@ class Step6Overview extends StatelessWidget {
                 ],
               ),
               TableRow(
-                children: [
-                  Text(i18n.description),
-                  Text(provider.descriptionTrans ?? '...'),
-                ],
+                children: [Text(i18n.description), Text(provider.descriptionTrans ?? '...')],
               ),
               TableRow(
                 children: [
@@ -125,11 +102,8 @@ class Step6Overview extends StatelessWidget {
             ],
           ),
           if (provider.exerciseImages.isNotEmpty)
-            PreviewExerciseImages(
-              selectedImages: provider.exerciseImages,
-              allowEdit: false,
-            ),
-          InfoCard(text: i18n.checkInformationBeforeSubmitting)
+            PreviewExerciseImages(selectedImages: provider.exerciseImages, allowEdit: false),
+          InfoCard(text: i18n.checkInformationBeforeSubmitting),
         ],
       ),
     );

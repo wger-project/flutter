@@ -26,7 +26,7 @@ class AddExerciseProvider with ChangeNotifier {
   String? descriptionEn;
   String? descriptionTrans;
   int? _variationId;
-  int? _newVariationForExercise;
+  int? _variationConnectToExercise;
   Language? languageEn;
   Language? languageTranslation;
   List<String> alternateNamesEn = [];
@@ -61,12 +61,12 @@ class AddExerciseProvider with ChangeNotifier {
 
   List<Equipment> get equipment => [..._equipment];
 
-  bool get newVariation => _newVariationForExercise != null;
+  bool get newVariation => _variationConnectToExercise != null;
 
-  int? get newVariationForExercise => _newVariationForExercise;
+  int? get variationConnectToExercise => _variationConnectToExercise;
 
-  set newVariationForExercise(int? value) {
-    _newVariationForExercise = value;
+  set variationConnectToExercise(int? value) {
+    _variationConnectToExercise = value;
     _variationId = null;
     notifyListeners();
   }
@@ -75,7 +75,7 @@ class AddExerciseProvider with ChangeNotifier {
 
   set variationId(int? variation) {
     _variationId = variation;
-    _newVariationForExercise = null;
+    _variationConnectToExercise = null;
     notifyListeners();
   }
 
@@ -100,7 +100,8 @@ class AddExerciseProvider with ChangeNotifier {
   ExerciseSubmissionApi get exerciseApiObject {
     return ExerciseSubmissionApi(
       author: '',
-      //variation: variationId,
+      variation: _variationId,
+      variationConnectTo: _variationConnectToExercise,
       category: category!.id,
       muscles: _primaryMuscles.map((e) => e.id).toList(),
       musclesSecondary: _secondaryMuscles.map((e) => e.id).toList(),
@@ -209,17 +210,17 @@ class AddExerciseProvider with ChangeNotifier {
   }
 
   Future<bool> validateLanguage(String input, String languageCode) async {
-    final Map<String, dynamic> result = await baseProvider.post(
-      {'input': input, 'language_code': languageCode},
-      baseProvider.makeUrl(_checkLanguageUrlPath),
-    );
+    final Map<String, dynamic> result = await baseProvider.post({
+      'input': input,
+      'language_code': languageCode,
+    }, baseProvider.makeUrl(_checkLanguageUrlPath));
     notifyListeners();
     print(result);
 
     return false;
   }
 
-/*
+  /*
     Note: all this logic is not needed now since we are using the /exercise-submission
     endpoint, however, if we ever want to implement editing of exercises, we will
     need basically all of it again, so this is kept here for reference.
