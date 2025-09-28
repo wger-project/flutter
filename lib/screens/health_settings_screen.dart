@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wger/screens/health_service.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/health_sync_provider.dart';
+import '../../providers/measurement.dart';
+import '../../screens/health_service.dart';
 
 class HealthSettingsScreen extends StatefulWidget {
   static const routeName = '/health-settings';
@@ -11,41 +15,63 @@ class HealthSettingsScreen extends StatefulWidget {
 }
 
 class _HealthSettingsScreenState extends State<HealthSettingsScreen> {
-  final healthService = HealthService();
+  late HealthService healthService;
 
-  /// Shows a SnackBar with the given message
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  @override
+  void initState() {
+    super.initState();
+    // HealthService will be initialized in build with provider
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Health Data Connection')),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Text('describe what is happening here'),
-            Center(
-              child: ElevatedButton(
-                child: const Text('Connect to Health Data'),
-                onPressed: () async {
-                  final granted = await healthService.requestPermissions();
-                  // Print result to debug console
-                  print('Permissions granted: $granted');
-                  if (!granted) {
-                    // Show user-facing message if Health Connect is not available
-                    _showMessage(
-                      'Health Connect is not available on this device. Please install it from the Play Store.',
-                    );
-                  }
-                },
+    return ChangeNotifierProvider(
+      create: (_) => HealthSyncProvider(),
+      child: Consumer<HealthSyncProvider>(
+        builder: (context, provider, _) {
+          final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
+          healthService = HealthService(provider, measurementProvider);
+          return Scaffold(
+            appBar: AppBar(title: const Text('Health Data Connection')),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 220,
+                    height: 48,
+                    child: ElevatedButton(
+                      onPressed: provider.isLoading || provider.isConnected
+                          ? null
+                          : () async {
+                              await healthService.requestPermissions();
+                            },
+                      child: provider.isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : Text(provider.isConnected ? 'Connected' : 'Connect to Health Data'),
+                    ),
+                  ),
+                  if (provider.errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        provider.errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                ],
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
