@@ -9,7 +9,16 @@ part of 'measurement_entry.dart';
 MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['id', 'category', 'date', 'value', 'notes'],
+    requiredKeys: const [
+      'id',
+      'uuid',
+      'source',
+      'category',
+      'created',
+      'date',
+      'value',
+      'notes',
+    ],
   );
   return MeasurementEntry(
     id: (json['id'] as num?)?.toInt(),
@@ -17,13 +26,22 @@ MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) {
     date: DateTime.parse(json['date'] as String),
     value: json['value'] as num,
     notes: json['notes'] as String? ?? '',
+    created: json['created'] == null
+        ? null
+        : DateTime.parse(json['created'] as String),
+    source: json['source'] as String?,
+    uuid: json['uuid'] as String?,
   );
 }
 
-Map<String, dynamic> _$MeasurementEntryToJson(MeasurementEntry instance) => <String, dynamic>{
+Map<String, dynamic> _$MeasurementEntryToJson(MeasurementEntry instance) =>
+    <String, dynamic>{
       'id': instance.id,
+      'uuid': instance.uuid,
+      'source': instance.source,
       'category': instance.category,
-      'date': dateToYYYYMMDD(instance.date),
+      'created': instance.created.toIso8601String(),
+      'date': instance.date.toIso8601String(),
       'value': instance.value,
       'notes': instance.notes,
     };

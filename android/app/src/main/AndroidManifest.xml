@@ -9,6 +9,20 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Health Permissions -->
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
+    <uses-permission android:name="android.permission.health.READ_ACTIVE_ENERGY_BURNED" />
+    <uses-permission android:name="android.permission.health.READ_SLEEP" />
+    <uses-permission android:name="android.permission.health.READ_DISTANCE" />
+
+    <!-- Health Connect SDK Intent Declaration -->
+    <queries>
+        <intent>
+            <action android:name="android.health.connect.action.HEALTH_CONNECT_SETTINGS" />
+        </intent>
+    </queries>
+
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />

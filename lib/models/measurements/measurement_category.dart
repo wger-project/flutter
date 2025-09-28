@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:uuid/uuid.dart';
 import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
@@ -11,36 +12,49 @@ class MeasurementCategory extends Equatable {
   final int? id;
 
   @JsonKey(required: true)
+  final String? uuid;
+
+  @JsonKey(required: true)
   final String name;
 
   @JsonKey(required: true)
   final String unit;
 
+  @JsonKey(required: true)
+  final String source;
+
   @JsonKey(defaultValue: [], toJson: _nullValue)
   final List<MeasurementEntry> entries;
 
-  const MeasurementCategory({
+  MeasurementCategory({
     required this.id,
     required this.name,
     required this.unit,
     this.entries = const [],
-  });
+    String? source,
+    String? uuid,
+  }) : uuid = uuid ?? const Uuid().v7(),
+       source = source ?? 'manual';
 
   MeasurementCategory copyWith({
     int? id,
+    String? uuid,
     String? name,
     String? unit,
+    String? source,
     List<MeasurementEntry>? entries,
   }) {
     return MeasurementCategory(
       id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
       name: name ?? this.name,
       unit: unit ?? this.unit,
+      source: source ?? this.source,
       entries: entries ?? this.entries,
     );
   }
 
-  MeasurementEntry findEntryById(entryId) {
+  MeasurementEntry findEntryById(int entryId) {
     return entries.firstWhere(
       (entry) => entry.id == entryId,
       orElse: () => throw const NoSuchEntryException(),

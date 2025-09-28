@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSHealthShareUsageDescription</key>
+    <string>This app needs access to your health data to enable synchronization and analysis.</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>This app needs permission to read and synchronize your health data.</string>
+
 	<key>NSCameraUsageDescription</key>
 	<string>Workout photos</string>
 	<key>CFBundleDevelopmentRegion</key>
