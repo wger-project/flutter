@@ -22,6 +22,7 @@ class _Step4TranslationState extends State<Step4Translation> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     final addExerciseProvider = context.read<AddExerciseProvider>();
     final exerciseProvider = context.read<ExercisesProvider>();
     final languages = exerciseProvider.languages;
@@ -31,8 +32,8 @@ class _Step4TranslationState extends State<Step4Translation> {
       child: Column(
         children: [
           SwitchListTile(
-            title: Text(AppLocalizations.of(context).translation),
-            subtitle: Text(AppLocalizations.of(context).translateExercise),
+            title: Text(i18n.translation),
+            subtitle: Text(i18n.translateExercise),
             value: translate,
             onChanged: (_) {
               setState(() {
@@ -46,36 +47,36 @@ class _Step4TranslationState extends State<Step4Translation> {
                 ExerciseCategoryInputWidget<Language>(
                   key: const Key('language-dropdown'),
                   entries: languages,
-                  title: '${AppLocalizations.of(context).language}*',
+                  title: '${i18n.language}*',
                   displayName: (Language l) => l.fullName,
                   callback: (Language newValue) {
-                    addExerciseProvider.language = newValue;
+                    addExerciseProvider.languageTranslation = newValue;
                   },
                   validator: (Language? language) {
                     if (language == null) {
-                      return AppLocalizations.of(context).selectEntry;
+                      return i18n.selectEntry;
                     }
                   },
                 ),
                 AddExerciseTextArea(
                   onChange: (value) => {},
-                  title: '${AppLocalizations.of(context).name}*',
+                  title: '${i18n.name}*',
                   isRequired: true,
                   validator: (name) => validateName(name, context),
                   onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
                 ),
                 AddExerciseTextArea(
                   onChange: (value) => {},
-                  title: AppLocalizations.of(context).alternativeNames,
+                  title: i18n.alternativeNames,
                   isMultiline: true,
-                  helperText: AppLocalizations.of(context).oneNamePerLine,
+                  helperText: i18n.oneNamePerLine,
                   validator: (alternateNames) {
                     // check that each line (name) is at least MIN_CHARACTERS_NAME long
                     if (alternateNames?.isNotEmpty == true) {
                       final names = alternateNames!.split('\n');
                       for (final name in names) {
                         if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
-                          return AppLocalizations.of(context).enterCharacters(
+                          return i18n.enterCharacters(
                             MIN_CHARS_NAME.toString(),
                             MAX_CHARS_NAME.toString(),
                           );
@@ -87,14 +88,17 @@ class _Step4TranslationState extends State<Step4Translation> {
                   onSaved: (String? alternateName) =>
                       addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
                 ),
-                AddExerciseTextArea(
-                  onChange: (value) => {},
-                  title: '${AppLocalizations.of(context).description}*',
-                  isRequired: true,
-                  isMultiline: true,
-                  validator: (name) => validateDescription(name, context),
-                  onSaved: (String? description) =>
-                      addExerciseProvider.descriptionTrans = description!,
+                Consumer<AddExerciseProvider>(
+                  builder: (ctx, provider, __) => AddExerciseTextArea(
+                    onChange: (value) => {},
+                    title: '${i18n.description}*',
+                    helperText: i18n.enterTextInLanguage,
+                    isRequired: true,
+                    isMultiline: true,
+                    validator: (name) => validateExerciseDescription(name, context),
+                    onSaved: (String? description) =>
+                        addExerciseProvider.descriptionTrans = description!,
+                  ),
                 ),
               ],
             ),

@@ -23,7 +23,7 @@ String? validateName(String? name, BuildContext context) {
   return null;
 }
 
-String? validateDescription(String? name, BuildContext context) {
+String? validateExerciseDescription(String? name, BuildContext context) {
   if (name!.isEmpty) {
     return AppLocalizations.of(context).enterValue;
   }

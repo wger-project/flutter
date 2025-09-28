@@ -81,7 +81,7 @@ void main() {
     when(mockAddExerciseProvider.equipment).thenReturn([]);
     when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
-    when(mockAddExerciseProvider.newVariationForExercise).thenReturn(null);
+    when(mockAddExerciseProvider.variationConnectToExercise).thenReturn(null);
 
     // Act
     await tester.pumpWidget(createExerciseScreen());

@@ -339,29 +339,44 @@ class ApiError {
   }
 }
 
-/// Extracts error messages from the server response
+/// Extracts error messages from the server response,
+/// including nested error structures.
 List<ApiError> extractErrors(Map<String, dynamic> errors) {
   final List<ApiError> errorList = [];
+  _extractErrorsRecursive(errors, errorList);
+  return errorList;
+}
 
-  for (final key in errors.keys) {
-    // Header
-    var header = key[0].toUpperCase() + key.substring(1, key.length);
-    header = header.replaceAll('_', ' ');
-    final error = ApiError(key: header);
-
-    final messages = errors[key];
-
-    // Messages
-    if (messages is String) {
-      error.errorMessages = List.of(error.errorMessages)..add(messages);
-    } else {
-      error.errorMessages = [...error.errorMessages, ...messages];
+void _extractErrorsRecursive(dynamic errors, List<ApiError> errorList, [String? parentKey]) {
+  if (errors is Map<String, dynamic>) {
+    for (final key in errors.keys) {
+      final value = errors[key];
+      final fullKey = parentKey != null ? '$parentKey | ${_formatHeader(key)}' : key;
+      _extractErrorsRecursive(value, errorList, fullKey);
     }
-
+  } else if (errors is List) {
+    // List of Maps (nested errors)
+    if (errors.isNotEmpty && errors.first is Map<String, dynamic>) {
+      for (final item in errors) {
+        _extractErrorsRecursive(item, errorList, parentKey);
+      }
+    } else {
+      // List of Strings
+      final header = _formatHeader(parentKey ?? '');
+      final error = ApiError(key: header, errorMessages: errors.cast<String>());
+      errorList.add(error);
+    }
+  } else if (errors is String) {
+    final header = _formatHeader(parentKey ?? '');
+    final error = ApiError(key: header, errorMessages: [errors]);
     errorList.add(error);
   }
+}
 
-  return errorList;
+String _formatHeader(String key) {
+  var header = key[0].toUpperCase() + key.substring(1, key.length);
+  header = header.replaceAll('_', ' ');
+  return header.replaceAll('.', ' ');
 }
 
 /// Processes the error messages from the server and returns a list of widgets
@@ -375,6 +390,7 @@ List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
       Text(error.key, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
     );
 
+    print(error.errorMessages);
     for (final message in error.errorMessages) {
       errorList.add(Text(message, style: TextStyle(color: textColor)));
     }
