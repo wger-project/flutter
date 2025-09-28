@@ -1042,5 +1042,13 @@
     "openEnded": "Відкритий",
     "@openEnded": {
         "description": "When a nutrition plan has no pre-defined end date"
-    }
+    },
+    "overview": "Огляд",
+    "@overview": {},
+    "identicalExercisePleaseDiscard": "Якщо ви помітили вправу, ідентичну тій, яку ви додаєте, будь ласка, відкиньте свій чернетку та відредагуйте цю вправу.",
+    "@identicalExercisePleaseDiscard": {},
+    "checkInformationBeforeSubmitting": "Будь ласка, перевірте правильність введеної вами інформації, перш ніж надсилати вправу",
+    "@checkInformationBeforeSubmitting": {},
+    "enterTextInLanguage": "Будь ласка, введіть текст правильною мовою!",
+    "@enterTextInLanguage": {}
 }
