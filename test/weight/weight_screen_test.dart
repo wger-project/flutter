@@ -43,13 +43,13 @@ void main() {
   setUp(() {
     mockWeightProvider = MockBodyWeightProvider();
     when(mockWeightProvider.items).thenReturn(getWeightEntries());
-    when(mockWeightProvider.getNewestEntry()).thenReturn(null);
 
     mockUserProvider = MockUserProvider();
     when(mockUserProvider.profile).thenReturn(tProfile1);
 
     mockNutritionPlansProvider = MockNutritionPlansProvider();
     when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
+    when(mockNutritionPlansProvider.items).thenReturn([]);
   });
 
   Widget createWeightScreen({locale = 'en'}) {

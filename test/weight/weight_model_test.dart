@@ -22,11 +22,15 @@ import 'package:wger/models/body_weight/weight_entry.dart';
 void main() {
   group('fetchPost', () {
     test('Test that the weight entries are correctly converted to json', () {
-      WeightEntry weightEntry = WeightEntry(id: 1, weight: 80, date: DateTime(2020, 12, 31));
-      expect(weightEntry.toJson(), {'id': 1, 'weight': '80', 'date': '2020-12-31'});
+      expect(
+        WeightEntry(id: 1, weight: 80, date: DateTime(2020, 12, 31, 12, 34)).toJson(),
+        {'id': 1, 'weight': '80', 'date': '2020-12-31T12:34:00.000'},
+      );
 
-      weightEntry = WeightEntry(id: 2, weight: 70.2, date: DateTime(2020, 12, 01));
-      expect(weightEntry.toJson(), {'id': 2, 'weight': '70.2', 'date': '2020-12-01'});
+      expect(
+        WeightEntry(id: 2, weight: 70.2, date: DateTime(2020, 12, 01)).toJson(),
+        {'id': 2, 'weight': '70.2', 'date': '2020-12-01T00:00:00.000'},
+      );
     });
 
     test('Test that the weight entries are correctly converted from json', () {

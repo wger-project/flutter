@@ -137,3 +137,9 @@ enum WeightUnitEnum { kg, lb }
 const textInputTypeDecimal = TextInputType.numberWithOptions(decimal: true);
 
 const String API_MAX_PAGE_SIZE = '999';
+
+const String API_RESULTS_PAGE_SIZE = '100';
+
+/// Marker used for identifying interpolated values in a list, e.g. for measurements
+/// the milliseconds in the entry date are set to this value
+const INTERPOLATION_MARKER = 123;

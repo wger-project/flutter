@@ -17,8 +17,11 @@ Widget createGymModeScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
   final exercises = getTestExercises();
   final routine = getTestRoutine(exercises: getScreenshotExercises());
-  final mockBaseProvider = MockWgerBaseProvider();
+  final mockRoutinesProvider = MockRoutinesProvider();
   final mockExerciseProvider = MockExercisesProvider();
+
+  when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) async => routine);
+  when(mockRoutinesProvider.findById(1)).thenAnswer((_) => routine);
 
   when(mockExerciseProvider.findExerciseById(1)).thenReturn(exercises[0]); // bench press
   when(mockExerciseProvider.findExerciseById(6)).thenReturn(exercises[5]); // side raises
@@ -29,11 +32,7 @@ Widget createGymModeScreen({locale = 'en'}) {
     child: MultiProvider(
       providers: [
         ChangeNotifierProvider<RoutinesProvider>(
-          create: (context) => RoutinesProvider(
-            mockBaseProvider,
-            mockExerciseProvider,
-            [routine],
-          ),
+          create: (context) => mockRoutinesProvider,
         ),
         ChangeNotifierProvider<ExercisesProvider>(
           create: (context) => mockExerciseProvider,
