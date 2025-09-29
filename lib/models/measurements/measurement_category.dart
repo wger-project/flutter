@@ -17,6 +17,9 @@ class MeasurementCategory extends Equatable {
   @JsonKey(required: true)
   final String name;
 
+  @JsonKey(required: true, name: 'internal_name')
+  final String? internalName;
+
   @JsonKey(required: true)
   final String unit;
 
@@ -27,19 +30,20 @@ class MeasurementCategory extends Equatable {
   final List<MeasurementEntry> entries;
 
   MeasurementCategory({
-    required this.id,
+    this.id,
     required this.name,
     required this.unit,
     this.entries = const [],
-    String? source,
+    this.internalName,
+    this.source = 'manual',
     String? uuid,
-  }) : uuid = uuid ?? const Uuid().v7(),
-       source = source ?? 'manual';
+  }) : uuid = uuid ?? const Uuid().v7();
 
   MeasurementCategory copyWith({
     int? id,
     String? uuid,
     String? name,
+    String? internalName,
     String? unit,
     String? source,
     List<MeasurementEntry>? entries,
@@ -48,6 +52,7 @@ class MeasurementCategory extends Equatable {
       id: id ?? this.id,
       uuid: uuid ?? this.uuid,
       name: name ?? this.name,
+      internalName: internalName ?? this.internalName,
       unit: unit ?? this.unit,
       source: source ?? this.source,
       entries: entries ?? this.entries,
@@ -60,6 +65,10 @@ class MeasurementCategory extends Equatable {
       orElse: () => throw const NoSuchEntryException(),
     );
   }
+
+  bool get isExternal => source != 'manual';
+
+  bool get isInternal => source == 'manual';
 
   // Boilerplate
   factory MeasurementCategory.fromJson(Map<String, dynamic> json) =>

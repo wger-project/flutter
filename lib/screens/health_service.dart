@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:health/health.dart';
 import 'package:logging/logging.dart';
-
-import '../models/measurements/measurement_entry.dart';
-import '../providers/health_sync_provider.dart';
-import '../providers/measurement.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/models/measurements/measurement_entry.dart';
+import 'package:wger/providers/health_sync_provider.dart';
+import 'package:wger/providers/measurement.dart';
 
 class HealthService {
   final _logger = Logger('HealthService');
@@ -12,19 +14,21 @@ class HealthService {
   final HealthSyncProvider provider;
   final MeasurementProvider measurementProvider;
 
+  final types = [
+    HealthDataType.HEART_RATE,
+    HealthDataType.STEPS,
+    HealthDataType.ACTIVE_ENERGY_BURNED,
+    HealthDataType.WEIGHT,
+    HealthDataType.WATER,
+  ];
+
   HealthService(this.provider, this.measurementProvider);
 
   /// Requests permissions for health data types. Updates provider state accordingly.
   Future<bool> requestPermissions() async {
     provider.setLoading(true);
     provider.setError(null);
-    final types = [
-      HealthDataType.HEART_RATE,
-      HealthDataType.STEPS,
-      HealthDataType.ACTIVE_ENERGY_BURNED,
-      HealthDataType.WEIGHT,
-      HealthDataType.WATER,
-    ];
+
     final permissions = types.map((_) => HealthDataAccess.READ).toList();
     try {
       final granted = await health.requestAuthorization(types, permissions: permissions);
@@ -55,6 +59,75 @@ class HealthService {
     }
   }
 
+  String internalNameForType(HealthDataType type) {
+    return type.toString().split('.').last.toLowerCase();
+  }
+
+  /// Ensures all required categories for the given HealthDataTypes exist in MeasurementProvider
+  Future<void> _ensureCategoriesExist(List<HealthDataType> types) async {
+    // Only run on Android and iOS
+    if (!(Platform.isAndroid || Platform.isIOS)) {
+      return;
+    }
+    await measurementProvider.fetchAndSetCategories();
+    final existingCategories = measurementProvider.categories;
+
+    String displayNameForType(HealthDataType type) {
+      switch (type) {
+        case HealthDataType.HEART_RATE:
+          return 'Heart Rate';
+        case HealthDataType.STEPS:
+          return 'Steps';
+        case HealthDataType.ACTIVE_ENERGY_BURNED:
+          return 'Active Energy Burned';
+        case HealthDataType.SLEEP_ASLEEP:
+          return 'Sleep Asleep';
+        case HealthDataType.DISTANCE_DELTA:
+          return 'Distance';
+        default:
+          return internalNameForType(type);
+      }
+    }
+
+    String unitForType(HealthDataType type) {
+      switch (type) {
+        case HealthDataType.HEART_RATE:
+          return 'bpm';
+        case HealthDataType.STEPS:
+          return 'steps';
+        case HealthDataType.ACTIVE_ENERGY_BURNED:
+          return 'kcal';
+        case HealthDataType.SLEEP_ASLEEP:
+          return 'minutes';
+        case HealthDataType.DISTANCE_DELTA:
+          return 'm';
+        default:
+          return '';
+      }
+    }
+
+    String sourceForPlatform() {
+      if (Platform.isAndroid) return 'google_health';
+      if (Platform.isIOS) return 'apple_health';
+      return '';
+    }
+
+    for (final type in types) {
+      final internalName = internalNameForType(type);
+      final exists = existingCategories.any((cat) => cat.internalName == internalName);
+      if (!exists) {
+        await measurementProvider.addCategory(
+          MeasurementCategory(
+            name: displayNameForType(type),
+            internalName: internalName,
+            unit: unitForType(type),
+            source: sourceForPlatform(),
+          ),
+        );
+      }
+    }
+  }
+
   /// Fetch historical health data for the last 30 days
   Future<void> _syncHistoricalData() async {
     final now = DateTime.now();
@@ -67,13 +140,11 @@ class HealthService {
       HealthDataType.DISTANCE_DELTA,
     ];
 
-    final Map<HealthDataType, int> categoryMap = {
-      HealthDataType.HEART_RATE: 1,
-      HealthDataType.STEPS: 2,
-      HealthDataType.ACTIVE_ENERGY_BURNED: 3,
-      HealthDataType.SLEEP_ASLEEP: 4,
-      HealthDataType.DISTANCE_DELTA: 5,
-    };
+    // Ensure all required categories exist before syncing
+    await _ensureCategoriesExist(types);
+    await measurementProvider.fetchAndSetCategories();
+    final updatedCategories = measurementProvider.categories;
+
     try {
       final dataPoints = await health.getHealthDataFromTypes(
         startTime: startTime,
@@ -101,19 +172,25 @@ class HealthService {
           default:
             unit = point.unitString ?? '';
         }
+        // Kategorie-ID dynamisch suchen
+        final internalName = internalNameForType(point.type);
+        final category = updatedCategories.firstWhere(
+          (cat) => cat.internalName == internalName,
+          orElse: () => throw Exception('No category for $internalName'),
+        );
         return MeasurementEntry(
           id: null,
-          category: categoryMap[point.type] ?? 0,
+          category: category.id!,
           date: point.dateFrom,
           value: 3,
-          //point.value,
+          // value: point.value,
           notes: unit,
           source: point.sourceName ?? 'health_platform',
           uuid: point.uuid ?? null,
           created: DateTime.now(),
         );
       }).toList();
-      //await measurementProvider.addEntries(entries);
+      await measurementProvider.addEntries(entries);
     } catch (e) {
       _logger.warning('Error syncing historical health data: $e');
       provider.setError('Error syncing historical health data: $e');

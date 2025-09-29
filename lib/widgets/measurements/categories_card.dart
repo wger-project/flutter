@@ -28,19 +28,16 @@ class CategoriesCard extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 5),
-              child: Text(
-                currentCategory.name,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              child: Text(currentCategory.name, style: Theme.of(context).textTheme.titleLarge),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Text('Externally synchronized', style: Theme.of(context).textTheme.titleSmall),
             ),
             Container(
               padding: const EdgeInsets.all(10),
               height: 220,
-              child: MeasurementChartWidgetFl(
-                entriesAll,
-                currentCategory.unit,
-                avgs: entries7dAvg,
-              ),
+              child: MeasurementChartWidgetFl(entriesAll, currentCategory.unit, avgs: entries7dAvg),
             ),
             if (entries7dAvg.isNotEmpty)
               MeasurementOverallChangeWidget(
@@ -62,19 +59,20 @@ class CategoriesCard extends StatelessWidget {
                     );
                   },
                 ),
-                IconButton(
-                  onPressed: () async {
-                    await Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        AppLocalizations.of(context).newEntry,
-                        MeasurementEntryForm(currentCategory.id!),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.add),
-                ),
+                if (currentCategory.isInternal)
+                  IconButton(
+                    onPressed: () async {
+                      await Navigator.pushNamed(
+                        context,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context).newEntry,
+                          MeasurementEntryForm(currentCategory.id!),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
               ],
             ),
           ],
