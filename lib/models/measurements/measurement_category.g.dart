@@ -7,7 +7,10 @@ part of 'measurement_category.dart';
 // **************************************************************************
 
 MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'uuid', 'name', 'internal_name', 'unit', 'source']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['id', 'name', 'internal_name', 'unit', 'externally_synced'],
+  );
   return MeasurementCategory(
     id: (json['id'] as num?)?.toInt(),
     name: json['name'] as String,
@@ -16,19 +19,17 @@ MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
         (json['entries'] as List<dynamic>?)
             ?.map((e) => MeasurementEntry.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     internalName: json['internal_name'] as String?,
-    source: json['source'] as String? ?? 'manual',
-    uuid: json['uuid'] as String?,
+    externallySynced: json['externally_synced'] as bool? ?? false,
   );
 }
 
 Map<String, dynamic> _$MeasurementCategoryToJson(MeasurementCategory instance) => <String, dynamic>{
   'id': instance.id,
-  'uuid': instance.uuid,
   'name': instance.name,
   'internal_name': instance.internalName,
   'unit': instance.unit,
-  'source': instance.source,
+  'externally_synced': instance.externallySynced,
   'entries': MeasurementCategory._nullValue(instance.entries),
 };

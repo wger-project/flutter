@@ -146,7 +146,7 @@ class MeasurementProvider with ChangeNotifier {
     final Uri postUri = baseProvider.makeUrl(_entryUrl);
 
     final Map<String, dynamic> newEntryMap = await baseProvider.post(entry.toJson(), postUri);
-    final MeasurementEntry newEntry = MeasurementEntry.fromJson(newEntryMap);
+    final newEntry = MeasurementEntry.fromJson(newEntryMap);
 
     final MeasurementCategory category = findCategoryById(newEntry.category);
 

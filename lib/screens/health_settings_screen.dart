@@ -32,19 +32,47 @@ class _HealthSettingsScreenState extends State<HealthSettingsScreen> {
           final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
           healthService = HealthService(provider, measurementProvider);
           return Scaffold(
-            appBar: AppBar(title: const Text('Health Data Connection')),
+            appBar: AppBar(title: const Text('Health Connect')),
             body: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 8,
                 children: [
-                  SizedBox(
-                    width: 220,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: provider.isLoading || provider.isConnected
+                  const Icon(Icons.sync, size: 50),
+                  Text(
+                    'Sync your health data with wger',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const Text(
+                    'You can sync data from Android Health or Apple Health to wger, the '
+                    'data will be imported as measurements. You can choose which data to '
+                    'sync in the next step.',
+                  ),
+                  const Text('To stop syncing, disconnect in the settings.'),
+                  ElevatedButton(
+                    onPressed: provider.isLoading || provider.isConnected
+                        ? null
+                        : () async {
+                            await healthService.requestPermissions();
+                          },
+                    child: provider.isLoading
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : Text(provider.isConnected ? 'Connected' : 'Connect to Health Data'),
+                  ),
+                  if (provider.isConnected)
+                    ElevatedButton(
+                      onPressed: provider.isLoading
                           ? null
                           : () async {
-                              await healthService.requestPermissions();
+                              await healthService.syncHistoricalData();
                             },
                       child: provider.isLoading
                           ? const SizedBox(
@@ -55,9 +83,8 @@ class _HealthSettingsScreenState extends State<HealthSettingsScreen> {
                                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
-                          : Text(provider.isConnected ? 'Connected' : 'Connect to Health Data'),
+                          : Text('Fetch data'),
                     ),
-                  ),
                   if (provider.errorMessage != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),

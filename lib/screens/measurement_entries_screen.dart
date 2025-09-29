@@ -114,7 +114,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: category.isInternal
+      floatingActionButton: category.externallySynced
           ? FloatingActionButton(
               child: const Icon(Icons.add, color: Colors.white),
               onPressed: () {

@@ -10,8 +10,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Health Permissions, see https://pub.dev/packages/health -->
-    <uses-permission android:name="android.permission.health.READ_STEPS" />
     <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
     <uses-permission android:name="android.permission.health.READ_ACTIVE_ENERGY_BURNED" />
     <uses-permission android:name="android.permission.health.READ_WEIGHT" />
     <uses-permission android:name="android.permission.health.READ_WATER" />

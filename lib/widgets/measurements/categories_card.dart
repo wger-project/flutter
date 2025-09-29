@@ -30,10 +30,14 @@ class CategoriesCard extends StatelessWidget {
               padding: const EdgeInsets.only(top: 5),
               child: Text(currentCategory.name, style: Theme.of(context).textTheme.titleLarge),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: Text('Externally synchronized', style: Theme.of(context).textTheme.titleSmall),
-            ),
+            if (currentCategory.externallySynced)
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text(
+                  'Externally synchronized',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
             Container(
               padding: const EdgeInsets.all(10),
               height: 220,
@@ -59,7 +63,7 @@ class CategoriesCard extends StatelessWidget {
                     );
                   },
                 ),
-                if (currentCategory.isInternal)
+                if (!currentCategory.externallySynced)
                   IconButton(
                     onPressed: () async {
                       await Navigator.pushNamed(

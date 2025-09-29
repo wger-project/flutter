@@ -33,7 +33,7 @@ class HealthService {
     try {
       final granted = await health.requestAuthorization(types, permissions: permissions);
       if (granted) {
-        await _syncHistoricalData();
+        await syncHistoricalData();
       }
       provider.setConnected(granted);
       provider.setLoading(false);
@@ -59,8 +59,54 @@ class HealthService {
     }
   }
 
-  String internalNameForType(HealthDataType type) {
+  static String internalNameForType(HealthDataType type) {
     return type.toString().split('.').last.toLowerCase();
+  }
+
+  // TODO: i18n
+  String displayNameForType(HealthDataType type) {
+    switch (type) {
+      case HealthDataType.HEART_RATE:
+        return 'Heart Rate';
+      case HealthDataType.STEPS:
+        return 'Steps';
+      case HealthDataType.ACTIVE_ENERGY_BURNED:
+        return 'Active Energy Burned';
+      case HealthDataType.SLEEP_ASLEEP:
+        return 'Sleep Asleep';
+      case HealthDataType.DISTANCE_DELTA:
+        return 'Distance';
+      default:
+        return internalNameForType(type);
+    }
+  }
+
+  // TODO: i18n
+  String unitForType(HealthDataType type) {
+    switch (type) {
+      case HealthDataType.HEART_RATE:
+        return 'bpm';
+      case HealthDataType.STEPS:
+        return 'steps';
+      case HealthDataType.ACTIVE_ENERGY_BURNED:
+        return 'kcal';
+      case HealthDataType.SLEEP_ASLEEP:
+        return 'minutes';
+      case HealthDataType.DISTANCE_DELTA:
+        return 'm';
+      default:
+        return '';
+    }
+  }
+
+  String sourceForPlatform() {
+    if (Platform.isAndroid) {
+      return 'google_health';
+    }
+    if (Platform.isIOS) {
+      return 'apple_health';
+    }
+    return '';
   }
 
   /// Ensures all required categories for the given HealthDataTypes exist in MeasurementProvider
@@ -72,46 +118,6 @@ class HealthService {
     await measurementProvider.fetchAndSetCategories();
     final existingCategories = measurementProvider.categories;
 
-    String displayNameForType(HealthDataType type) {
-      switch (type) {
-        case HealthDataType.HEART_RATE:
-          return 'Heart Rate';
-        case HealthDataType.STEPS:
-          return 'Steps';
-        case HealthDataType.ACTIVE_ENERGY_BURNED:
-          return 'Active Energy Burned';
-        case HealthDataType.SLEEP_ASLEEP:
-          return 'Sleep Asleep';
-        case HealthDataType.DISTANCE_DELTA:
-          return 'Distance';
-        default:
-          return internalNameForType(type);
-      }
-    }
-
-    String unitForType(HealthDataType type) {
-      switch (type) {
-        case HealthDataType.HEART_RATE:
-          return 'bpm';
-        case HealthDataType.STEPS:
-          return 'steps';
-        case HealthDataType.ACTIVE_ENERGY_BURNED:
-          return 'kcal';
-        case HealthDataType.SLEEP_ASLEEP:
-          return 'minutes';
-        case HealthDataType.DISTANCE_DELTA:
-          return 'm';
-        default:
-          return '';
-      }
-    }
-
-    String sourceForPlatform() {
-      if (Platform.isAndroid) return 'google_health';
-      if (Platform.isIOS) return 'apple_health';
-      return '';
-    }
-
     for (final type in types) {
       final internalName = internalNameForType(type);
       final exists = existingCategories.any((cat) => cat.internalName == internalName);
@@ -121,7 +127,7 @@ class HealthService {
             name: displayNameForType(type),
             internalName: internalName,
             unit: unitForType(type),
-            source: sourceForPlatform(),
+            externallySynced: true,
           ),
         );
       }
@@ -129,9 +135,12 @@ class HealthService {
   }
 
   /// Fetch historical health data for the last 30 days
-  Future<void> _syncHistoricalData() async {
+  Future<void> syncHistoricalData() async {
+    provider.setLoading(true);
+    provider.setError(null);
+
     final now = DateTime.now();
-    final startTime = now.subtract(const Duration(days: 30));
+    final startTime = now.subtract(const Duration(days: 5));
     final types = [
       HealthDataType.HEART_RATE,
       HealthDataType.STEPS,
@@ -152,48 +161,38 @@ class HealthService {
         types: types,
       );
       final entries = dataPoints.map((point) {
-        String unit;
-        switch (point.type) {
-          case HealthDataType.HEART_RATE:
-            unit = 'bpm';
-            break;
-          case HealthDataType.STEPS:
-            unit = 'steps';
-            break;
-          case HealthDataType.ACTIVE_ENERGY_BURNED:
-            unit = 'kcal';
-            break;
-          case HealthDataType.SLEEP_ASLEEP:
-            unit = 'minutes';
-            break;
-          case HealthDataType.DISTANCE_DELTA:
-            unit = 'm';
-            break;
-          default:
-            unit = point.unitString ?? '';
-        }
-        // Kategorie-ID dynamisch suchen
+        final unit = unitForType(point.type);
         final internalName = internalNameForType(point.type);
         final category = updatedCategories.firstWhere(
           (cat) => cat.internalName == internalName,
           orElse: () => throw Exception('No category for $internalName'),
         );
+        final value = point.value is NumericHealthValue
+            ? (point.value as NumericHealthValue).numericValue
+            : 0;
+        if (value is! NumericHealthValue) {
+          _logger.warning('Skipping non-numeric value for ${point.type}: ${point.value}');
+        }
+        //final value = point.value is NumericHealthValue ? point.value : 0;
         return MeasurementEntry(
           id: null,
           category: category.id!,
           date: point.dateFrom,
-          value: 3,
-          // value: point.value,
+          value: value,
           notes: unit,
           source: point.sourceName ?? 'health_platform',
           uuid: point.uuid ?? null,
           created: DateTime.now(),
         );
       }).toList();
+      _logger.info('Created ${entries.length} entries');
       await measurementProvider.addEntries(entries);
-    } catch (e) {
+    } catch (e, stackTrace) {
       _logger.warning('Error syncing historical health data: $e');
+      _logger.warning(stackTrace);
       provider.setError('Error syncing historical health data: $e');
+    } finally {
+      provider.setLoading(false);
     }
   }
 }
