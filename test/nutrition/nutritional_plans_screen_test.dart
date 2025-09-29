@@ -152,15 +152,15 @@ void main() {
     await tester.pumpWidget(createHomeScreen());
 
 // note .. "(open ended)" at the time, depending on localisation strings
-    expect(find.textContaining('from 1/1/2021 ('), findsOneWidget);
-    expect(find.textContaining('from 1/10/2021 ('), findsOneWidget);
+    expect(find.textContaining('From: 1/1/2021 ('), findsOneWidget);
+    expect(find.textContaining('From: 1/10/2021 ('), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
 // note .. "(open ended)" at the time, depending on localisation strings
 
-    expect(find.textContaining('from 1.1.2021 ('), findsOneWidget);
-    expect(find.textContaining('from 10.1.2021 ('), findsOneWidget);
+    expect(find.textContaining('From: 1.1.2021 ('), findsOneWidget);
+    expect(find.textContaining('From: 10.1.2021 ('), findsOneWidget);
   });
 }
