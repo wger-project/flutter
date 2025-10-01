@@ -950,7 +950,7 @@
     "@simpleModeHelp": {},
     "isRestDayHelp": "Bitte beachten Sie, dass alle Sätze und Übungen entfernt werden, wenn Sie einen Tag als Ruhetag markieren.",
     "@isRestDayHelp": {},
-    "needsLogsToAdvance": "Benötigt Eintrag, um fortzufahren",
+    "needsLogsToAdvance": "Benötigt Logeinträge, um fortzufahren",
     "@needsLogsToAdvance": {},
     "needsLogsToAdvanceHelp": "Wählen Sie aus, ob die Routine nur dann zum nächsten geplanten Tag fortgesetzt werden soll, wenn Sie für diesen Tag ein Training protokolliert haben",
     "@needsLogsToAdvanceHelp": {},
