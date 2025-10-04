@@ -71,9 +71,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
 
       if (!isFileValid) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(errorMessage)),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
         }
         return;
       }
@@ -161,9 +159,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                   // Show preview of images that have been added with metadata
                   return Column(
                     children: [
-                      PreviewExerciseImages(
-                        selectedImages: provider.exerciseImages,
-                      ),
+                      PreviewExerciseImages(selectedImages: provider.exerciseImages),
                       const SizedBox(height: 16),
                       ElevatedButton.icon(
                         onPressed: () => _pickAndShowImageDetails(context),
@@ -178,17 +174,13 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                 return Column(
                   children: [
                     const SizedBox(height: 20),
-                    Icon(
-                      Icons.add_photo_alternate,
-                      size: 80,
-                      color: Colors.grey.shade400,
-                    ),
+                    Icon(Icons.add_photo_alternate, size: 80, color: Colors.grey.shade400),
                     const SizedBox(height: 16),
                     Text(
                       'No images selected',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
                     ),
                     const SizedBox(height: 24),
                     // Camera and Gallery buttons
@@ -196,17 +188,11 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton.icon(
-                          onPressed: () => _pickAndShowImageDetails(
-                            context,
-                            pickFromCamera: true,
-                          ),
+                          onPressed: () => _pickAndShowImageDetails(context, pickFromCamera: true),
                           icon: const Icon(Icons.camera_alt),
                           label: const Text('Camera'),
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -215,10 +201,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                           icon: const Icon(Icons.collections),
                           label: const Text('Gallery'),
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           ),
                         ),
                       ],
@@ -228,9 +211,9 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'Only JPEG, PNG and WEBP files below 20 MB are supported',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey.shade600,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
                         textAlign: TextAlign.center,
                       ),
                     ),

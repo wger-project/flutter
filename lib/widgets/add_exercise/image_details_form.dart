@@ -105,9 +105,9 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             children: [
               Text(
                 'Image details',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
 
@@ -177,20 +177,14 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
   Widget _buildImagePreview() {
     return Center(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 300,
-          maxHeight: 200,
-        ),
+        constraints: const BoxConstraints(maxWidth: 300, maxHeight: 200),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.grey.shade300),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.file(
-            widget.imageFile,
-            fit: BoxFit.contain,
-          ),
+          child: Image.file(widget.imageFile, fit: BoxFit.contain),
         ),
       ),
     );
@@ -205,26 +199,15 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hint,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           ),
         ),
       ],
@@ -246,19 +229,12 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.info_outline,
-            size: 20,
-            color: Colors.blue.shade700,
-          ),
+          Icon(Icons.info_outline, size: 20, color: Colors.blue.shade700),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               'Note that a derivative work is one which is not only based on a previous work, but which also contains sufficient new, creative content to entitle it to its own copyright.',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.blue.shade900,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.blue.shade900),
             ),
           ),
         ],
@@ -274,13 +250,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Image Type',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        const Text('Image Type', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
         const SizedBox(height: 12),
         Wrap(
           spacing: 8,
@@ -348,19 +318,12 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.info_outline,
-            size: 20,
-            color: Colors.amber.shade900,
-          ),
+          Icon(Icons.info_outline, size: 20, color: Colors.amber.shade900),
           const SizedBox(width: 8),
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.amber.shade900,
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.amber.shade900),
                 children: [
                   const TextSpan(
                     text: 'By submitting this image, you agree to release it under the ',
@@ -385,7 +348,8 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
                     ),
                   ),
                   const TextSpan(
-                    text: ' license. The image must be either your own work or the author must have released it under a license compatible with CC BY-SA 4.0.',
+                    text:
+                        ' license. The image must be either your own work or the author must have released it under a license compatible with CC BY-SA 4.0.',
                   ),
                 ],
               ),
@@ -400,19 +364,14 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        TextButton(
-          onPressed: widget.onCancel,
-          child: const Text('CANCEL'),
-        ),
+        TextButton(onPressed: widget.onCancel, child: const Text('CANCEL')),
         const SizedBox(width: 8),
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               // Build details map with API field names
               // Style is always included, other fields only if non-empty
-              final details = <String, String>{
-                'style': _getStyleValue(),
-              };
+              final details = <String, String>{'style': _getStyleValue()};
 
               // Add optional fields only if user provided values
               final title = _titleController.text.trim();
@@ -447,17 +406,11 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColor,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 32,
-              vertical: 12,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
           ),
           child: const Text(
             'ADD',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
       ],

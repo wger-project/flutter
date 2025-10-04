@@ -150,21 +150,19 @@ class AddExerciseProvider with ChangeNotifier {
   /// [derivativeSourceUrl] - Derivative source URL
   /// [style] - Image style: 1=PHOTO, 2=3D, 3=LINE, 4=LOW-POLY, 5=OTHER
   void addExerciseImages(
-      List<File> images, {
-        String? title,
-        String? author,
-        String? authorUrl,
-        String? sourceUrl,
-        String? derivativeSourceUrl,
-        String style = '1',
-      }) {
+    List<File> images, {
+    String? title,
+    String? author,
+    String? authorUrl,
+    String? sourceUrl,
+    String? derivativeSourceUrl,
+    String style = '1',
+  }) {
     _exerciseImages.addAll(images);
 
     // Store metadata for each image
     for (final image in images) {
-      final details = <String, String>{
-        'style': style,
-      };
+      final details = <String, String>{'style': style};
 
       // Only add non-empty fields
       if (title != null && title.isNotEmpty) {
@@ -353,7 +351,8 @@ class AddExerciseProvider with ChangeNotifier {
             }
 
             if (details.containsKey('license_derivative_source_url') &&
-                responseData['license_derivative_source_url'] != details['license_derivative_source_url']) {
+                responseData['license_derivative_source_url'] !=
+                    details['license_derivative_source_url']) {
               print('WARNING: license_derivative_source_url mismatch!');
               allFieldsMatch = false;
             }
@@ -364,7 +363,6 @@ class AddExerciseProvider with ChangeNotifier {
               print('SOME LICENSE FIELDS NOT SAVED CORRECTLY!');
             }
           }
-
         } else {
           log('Failed to upload image: ${response.statusCode}');
           log('Response body: ${response.body}');
@@ -390,7 +388,7 @@ class AddExerciseProvider with ChangeNotifier {
     return false;
   }
 
-/*
+  /*
     Note: all this logic is not needed now since we are using the /exercise-submission
     endpoint, however, if we ever want to implement editing of exercises, we will
     need basically all of it again, so this is kept here for reference.

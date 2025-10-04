@@ -79,10 +79,7 @@ void main() {
       final styles = ['1', '2', '3', '4', '5'];
 
       for (var i = 0; i < styles.length; i++) {
-        provider.addExerciseImages(
-          [File('image_$i.jpg')],
-          style: styles[i],
-        );
+        provider.addExerciseImages([File('image_$i.jpg')], style: styles[i]);
       }
 
       expect(provider.exerciseImages.length, 5);
@@ -131,10 +128,7 @@ void main() {
     /// Attempting to remove a non-existent image should throw StateError
     /// (from firstWhere with no orElse)
     test('should handle removing non-existent image gracefully', () {
-      expect(
-            () => provider.removeExercise('nonexistent.jpg'),
-        throwsStateError,
-      );
+      expect(() => provider.removeExercise('nonexistent.jpg'), throwsStateError);
     });
 
     /// clear() should reset all state including images and metadata
@@ -177,11 +171,7 @@ void main() {
     /// Multiple images can be added in a single call with shared metadata
     /// Useful for bulk uploads from the same source
     test('should handle batch adding multiple images at once', () {
-      final files = [
-        File('batch1.jpg'),
-        File('batch2.jpg'),
-        File('batch3.jpg'),
-      ];
+      final files = [File('batch1.jpg'), File('batch2.jpg'), File('batch3.jpg')];
 
       provider.addExerciseImages(files, title: 'Batch Upload', style: '3');
 
