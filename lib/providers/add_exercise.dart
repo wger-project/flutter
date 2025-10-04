@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -16,6 +16,7 @@ import 'base_provider.dart';
 
 class AddExerciseProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
+  static final _logger = Logger('AddExerciseProvider');
 
   AddExerciseProvider(this.baseProvider);
 
@@ -47,7 +48,7 @@ class AddExerciseProvider with ChangeNotifier {
 
   void clear() {
     _exerciseImages = [];
-    _imageDetails.clear(); // Also clear image metadata
+    _imageDetails.clear();
     languageTranslation = null;
     category = null;
     exerciseNameEn = null;
@@ -150,14 +151,14 @@ class AddExerciseProvider with ChangeNotifier {
   /// [derivativeSourceUrl] - Derivative source URL
   /// [style] - Image style: 1=PHOTO, 2=3D, 3=LINE, 4=LOW-POLY, 5=OTHER
   void addExerciseImages(
-    List<File> images, {
-    String? title,
-    String? author,
-    String? authorUrl,
-    String? sourceUrl,
-    String? derivativeSourceUrl,
-    String style = '1',
-  }) {
+      List<File> images, {
+        String? title,
+        String? author,
+        String? authorUrl,
+        String? sourceUrl,
+        String? derivativeSourceUrl,
+        String style = '1',
+      }) {
     _exerciseImages.addAll(images);
 
     // Store metadata for each image
@@ -190,31 +191,8 @@ class AddExerciseProvider with ChangeNotifier {
   void removeExercise(String path) {
     final file = _exerciseImages.where((element) => element.path == path).first;
     _exerciseImages.remove(file);
-    _imageDetails.remove(path); // Also remove associated metadata
+    _imageDetails.remove(path);
     notifyListeners();
-  }
-
-  // Debug method to print all collected exercise data
-  void printValues() {
-    log('Collected exercise data');
-    log('------------------------');
-
-    log('Base data...');
-    log('Target area : $category');
-    log('Primary muscles: $_primaryMuscles');
-    log('Secondary muscles: $_secondaryMuscles');
-    log('Equipment: $_equipment');
-    log('Variations: $_variations');
-
-    log('');
-    log('Language specific...');
-    log('Language: ${languageTranslation?.shortName}');
-    log('Name: en/$exerciseNameEn translation/$exerciseNameTrans');
-    log('Description: en/$descriptionEn translation/$descriptionTrans');
-    log('Alternate names: en/$alternateNamesEn translation/$alternateNamesTrans');
-
-    log('');
-    log('Images: ${_exerciseImages.length} images with details');
   }
 
   /// Main method to submit exercise with images
@@ -222,20 +200,15 @@ class AddExerciseProvider with ChangeNotifier {
   /// Returns the ID of the created exercise
   /// Throws exception if submission fails
   Future<int> addExercise() async {
-    printValues();
-
     try {
       // 1. Create the exercise
       final exerciseId = await addExerciseSubmission();
-      print('Exercise created with ID: $exerciseId');
+
 
       // 2. Upload images if any exist
       if (_exerciseImages.isNotEmpty) {
-        print('Uploading ${_exerciseImages.length} images...');
         await addImages(exerciseId);
-        print('Images uploaded successfully');
-      } else {
-        print('ℹ No images to upload');
+
       }
 
       // 3. Clear all data after successful upload
@@ -243,7 +216,7 @@ class AddExerciseProvider with ChangeNotifier {
 
       return exerciseId;
     } catch (e) {
-      print('Error adding exercise: $e');
+
       // Don't clear on error so user can retry
       rethrow;
     }
@@ -264,14 +237,8 @@ class AddExerciseProvider with ChangeNotifier {
   /// For each image:
   /// - Sends multipart request with image file
   /// - Includes license fields from _imageDetails map
-  /// - Validates server response contains all submitted fields
   Future<void> addImages(int exerciseId) async {
-    print('Starting image upload for exercise ID: $exerciseId');
-    print('Number of images to upload: ${_exerciseImages.length}');
-
     for (final image in _exerciseImages) {
-      print('Processing image: ${image.path}');
-
       final request = http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
       request.headers.addAll(baseProvider.getDefaultHeaders(includeAuth: true));
 
@@ -281,95 +248,22 @@ class AddExerciseProvider with ChangeNotifier {
       request.fields['is_main'] = 'false';
 
       final details = _imageDetails[image.path];
-      print('Image details to send: $details');
-
       if (details != null && details.isNotEmpty) {
         request.fields.addAll(details);
-        print('Request fields: ${request.fields}');
       } else {
         request.fields['style'] = '1';
       }
 
       try {
-        print('Sending request...');
         final streamedResponse = await request.send();
-        print('Response status: ${streamedResponse.statusCode}');
 
-        // Read response body to verify upload success
-        final response = await http.Response.fromStream(streamedResponse);
-
-        if (response.statusCode == 201 || response.statusCode == 200) {
-          final responseData = jsonDecode(response.body);
-
-          log('Image uploaded successfully!');
-          log('Response body: ${response.body}');
-
-          // Debug: Print all fields from server response
-          print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-          print('SERVER RESPONSE:');
-          print('ID: ${responseData['id']}');
-          print('UUID: ${responseData['uuid']}');
-          print('Image URL: ${responseData['image']}');
-          print('Exercise: ${responseData['exercise']}');
-          print('Style: ${responseData['style']}');
-          print('License: ${responseData['license']}');
-          print('License Title: ${responseData['license_title']}');
-          print('License Author: ${responseData['license_author']}');
-          print('License Author URL: ${responseData['license_author_url']}');
-          print('License Object URL: ${responseData['license_object_url']}');
-          print('License Derivative: ${responseData['license_derivative_source_url']}');
-          print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-
-          // Validate that license fields were saved correctly
-          if (details != null) {
-            bool allFieldsMatch = true;
-
-            if (details.containsKey('license_title') &&
-                responseData['license_title'] != details['license_title']) {
-              print('WARNING: license_title mismatch!');
-              print('Sent: ${details['license_title']}');
-              print('Received: ${responseData['license_title']}');
-              allFieldsMatch = false;
-            }
-
-            if (details.containsKey('license_author') &&
-                responseData['license_author'] != details['license_author']) {
-              print('WARNING: license_author mismatch!');
-              allFieldsMatch = false;
-            }
-
-            if (details.containsKey('license_author_url') &&
-                responseData['license_author_url'] != details['license_author_url']) {
-              print('WARNING: license_author_url mismatch!');
-              allFieldsMatch = false;
-            }
-
-            if (details.containsKey('license_object_url') &&
-                responseData['license_object_url'] != details['license_object_url']) {
-              print('WARNING: license_object_url mismatch!');
-              allFieldsMatch = false;
-            }
-
-            if (details.containsKey('license_derivative_source_url') &&
-                responseData['license_derivative_source_url'] !=
-                    details['license_derivative_source_url']) {
-              print('WARNING: license_derivative_source_url mismatch!');
-              allFieldsMatch = false;
-            }
-
-            if (allFieldsMatch) {
-              print('ALL LICENSE FIELDS SAVED CORRECTLY!');
-            } else {
-              print('SOME LICENSE FIELDS NOT SAVED CORRECTLY!');
-            }
-          }
+        if (streamedResponse.statusCode == 201 || streamedResponse.statusCode == 200) {
+          _logger.fine('Image uploaded successfully');
         } else {
-          log('Failed to upload image: ${response.statusCode}');
-          log('Response body: ${response.body}');
-          throw Exception('Upload failed: ${response.statusCode}');
+          final response = await http.Response.fromStream(streamedResponse);
+          throw Exception('Upload failed: ${streamedResponse.statusCode}');
         }
       } catch (e) {
-        log('Error uploading image: $e');
         rethrow;
       }
     }
@@ -383,64 +277,7 @@ class AddExerciseProvider with ChangeNotifier {
       'language_code': languageCode,
     }, baseProvider.makeUrl(_checkLanguageUrlPath));
     notifyListeners();
-    print(result);
 
     return false;
   }
-
-  /*
-    Note: all this logic is not needed now since we are using the /exercise-submission
-    endpoint, however, if we ever want to implement editing of exercises, we will
-    need basically all of it again, so this is kept here for reference.
-
-
-
-
-  Future<Variation> addVariation() async {
-    final Uri postUri = baseProvider.makeUrl(_exerciseVariationPath);
-
-    // We send an empty dictionary since at the moment the variations only have an ID
-    final Map<String, dynamic> variationMap = await baseProvider.post({}, postUri);
-    final Variation newVariation = Variation.fromJson(variationMap);
-    _variationId = newVariation.id;
-    notifyListeners();
-    return newVariation;
-  }
-
-  Future<void> addImages(Exercise exercise) async {
-    for (final image in _exerciseImages) {
-      final request = http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
-      request.headers.addAll(baseProvider.getDefaultHeaders(includeAuth: true));
-
-      request.files.add(await http.MultipartFile.fromPath('image', image.path));
-      request.fields['exercise'] = exercise.id!.toString();
-      request.fields['style'] = EXERCISE_IMAGE_ART_STYLE.PHOTO.index.toString();
-
-      await request.send();
-    }
-
-    notifyListeners();
-  }
-
-  Future<Translation> addExerciseTranslation(Translation exercise) async {
-    final Uri postUri = baseProvider.makeUrl(_exerciseTranslationUrlPath);
-
-    final Map<String, dynamic> newTranslation = await baseProvider.post(exercise.toJson(), postUri);
-    final Translation newExercise = Translation.fromJson(newTranslation);
-    notifyListeners();
-
-    return newExercise;
-  }
-
-  Future<Alias> addExerciseAlias(String name, int exerciseId) async {
-    final alias = Alias(translationId: exerciseId, alias: name);
-    final Uri postUri = baseProvider.makeUrl(_exerciseAliasPath);
-
-    final Alias newAlias = Alias.fromJson(await baseProvider.post(alias.toJson(), postUri));
-    notifyListeners();
-
-    return newAlias;
-  }
-
-   */
 }
