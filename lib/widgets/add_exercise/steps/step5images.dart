@@ -32,6 +32,39 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
   /// When non-null, ImageDetailsForm is displayed instead of image picker
   File? _currentImageToAdd;
 
+  /// Show dialog to choose between Camera and Gallery
+  Future<void> _showImageSourceDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context).selectImage),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: Text(AppLocalizations.of(context).takePicture),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickAndShowImageDetails(context, pickFromCamera: true);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.collections),
+                title: Text(AppLocalizations.of(context).gallery),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickAndShowImageDetails(context, pickFromCamera: false);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   /// Pick image from camera or gallery and show metadata collection form
   ///
   /// Validates file format (jpg, jpeg, png, webp) and size (<20MB) before
@@ -105,18 +138,10 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
       style: details['style'] ?? '1',
     );
 
-    // Reset form state
+    // Reset form state - image is now visible in preview list
     setState(() {
       _currentImageToAdd = null;
     });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Image added with details'),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
-      ),
-    );
   }
 
   /// Cancel metadata input and return to image picker
@@ -159,12 +184,15 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                   // Show preview of images that have been added with metadata
                   return Column(
                     children: [
-                      PreviewExerciseImages(selectedImages: provider.exerciseImages),
+                      PreviewExerciseImages(
+                        selectedImages: provider.exerciseImages,
+                        onAddMore: () => _showImageSourceDialog(context),
+                      ),
                       const SizedBox(height: 16),
                       ElevatedButton.icon(
-                        onPressed: () => _pickAndShowImageDetails(context),
+                        onPressed: () => _showImageSourceDialog(context),
                         icon: const Icon(Icons.add_photo_alternate),
-                        label: const Text('Add Another Image'),
+                        label: Text(AppLocalizations.of(context).addImage),
                       ),
                     ],
                   );
@@ -190,7 +218,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                         ElevatedButton.icon(
                           onPressed: () => _pickAndShowImageDetails(context, pickFromCamera: true),
                           icon: const Icon(Icons.camera_alt),
-                          label: const Text('Camera'),
+                          label: Text(AppLocalizations.of(context).takePicture),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           ),
@@ -199,7 +227,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                         ElevatedButton.icon(
                           onPressed: () => _pickAndShowImageDetails(context),
                           icon: const Icon(Icons.collections),
-                          label: const Text('Gallery'),
+                          label: Text(AppLocalizations.of(context).gallery),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           ),
