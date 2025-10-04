@@ -8,6 +8,17 @@ import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
 import 'package:wger/widgets/add_exercise/image_details_form.dart';
 
+/// Step 5 of exercise creation wizard - Image upload with license metadata
+///
+/// This step allows users to add exercise images with proper CC BY-SA 4.0 license
+/// attribution. Unlike the previous implementation that uploaded images directly,
+/// this version collects license metadata (title, author, URLs) before adding images.
+///
+/// Flow:
+/// 1. User picks image from camera/gallery
+/// 2. ImageDetailsForm is shown to collect license metadata
+/// 3. Image + metadata is stored in AddExerciseProvider
+/// 4. Final upload happens in Step 6 when user clicks "Submit"
 class Step5Images extends StatefulWidget {
   final GlobalKey<FormState> formkey;
   const Step5Images({required this.formkey});
@@ -17,9 +28,16 @@ class Step5Images extends StatefulWidget {
 }
 
 class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin {
+  /// Currently selected image waiting for metadata input
+  /// When non-null, ImageDetailsForm is displayed instead of image picker
   File? _currentImageToAdd;
 
-  /// Pick image and show details form for license metadata
+  /// Pick image from camera or gallery and show metadata collection form
+  ///
+  /// Validates file format (jpg, jpeg, png, webp) and size (<20MB) before
+  /// showing the form. Invalid files are rejected with a snackbar message.
+  ///
+  /// [pickFromCamera] - If true, opens camera; otherwise opens gallery
   void _pickAndShowImageDetails(BuildContext context, {bool pickFromCamera = false}) async {
     final imagePicker = ImagePicker();
 
@@ -33,7 +51,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
     if (selectedImage != null) {
       final imageFile = File(selectedImage.path);
 
-      // Validate file type and size
+      // Validate file type - only common image formats accepted
       bool isFileValid = true;
       String errorMessage = '';
 
@@ -44,6 +62,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
         errorMessage = "Select only 'jpg', 'jpeg', 'png', 'webp' files";
       }
 
+      // Validate file size - 20MB limit matches server-side restriction
       final fileSizeInMB = imageFile.lengthSync() / 1024 / 1024;
       if (fileSizeInMB > 20) {
         isFileValid = false;
@@ -59,17 +78,25 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
         return;
       }
 
-      // Show details form for valid image
+      // Show metadata collection form for valid image
       setState(() {
         _currentImageToAdd = imageFile;
       });
     }
   }
 
-  /// Add image with license metadata to provider
+  /// Add image with its license metadata to the provider
+  ///
+  /// Called when user clicks "ADD" in ImageDetailsForm. The image and metadata
+  /// are stored locally in AddExerciseProvider and will be uploaded together
+  /// when the exercise is submitted in Step 6.
+  ///
+  /// [image] - The image file to add
+  /// [details] - Map containing license fields (license_title, license_author, etc.)
   void _addImageWithDetails(File image, Map<String, String> details) {
     final provider = context.read<AddExerciseProvider>();
 
+    // Store image with metadata - actual upload happens in addExercise()
     provider.addExerciseImages(
       [image],
       title: details['license_title'],
@@ -80,6 +107,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
       style: details['style'] ?? '1',
     );
 
+    // Reset form state
     setState(() {
       _currentImageToAdd = null;
     });
@@ -93,6 +121,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
     );
   }
 
+  /// Cancel metadata input and return to image picker
   void _cancelImageAdd() {
     setState(() {
       _currentImageToAdd = null;
@@ -105,7 +134,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
       key: widget.formkey,
       child: Column(
         children: [
-          // Show license notice when not adding image
+          // License notice - shown when not entering metadata
           if (_currentImageToAdd == null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -116,7 +145,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
               ),
             ),
 
-          // Show image details form when image is selected
+          // Metadata collection form - shown when image is selected
           if (_currentImageToAdd != null)
             ImageDetailsForm(
               imageFile: _currentImageToAdd!,
@@ -124,12 +153,12 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
               onCancel: _cancelImageAdd,
             ),
 
-          // Show image picker or preview when no image is being added
+          // Image picker or preview - shown when not entering metadata
           if (_currentImageToAdd == null)
             Consumer<AddExerciseProvider>(
               builder: (ctx, provider, __) {
                 if (provider.exerciseImages.isNotEmpty) {
-                  // Show preview of existing images
+                  // Show preview of images that have been added with metadata
                   return Column(
                     children: [
                       PreviewExerciseImages(
@@ -145,7 +174,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                   );
                 }
 
-                // Show empty state with camera/gallery buttons
+                // Empty state - no images added yet
                 return Column(
                   children: [
                     const SizedBox(height: 20),
@@ -162,6 +191,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
                       ),
                     ),
                     const SizedBox(height: 24),
+                    // Camera and Gallery buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

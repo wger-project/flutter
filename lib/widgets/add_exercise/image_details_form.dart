@@ -1,10 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-/// Form for collecting image metadata including license information
+/// Form for collecting CC BY-SA 4.0 license metadata for exercise images
 ///
-/// Displayed after image selection in Step 5 of exercise creation
-/// Collects: title, source URL, author info, derivative work info, and image style
+/// This form is displayed after image selection in Step 5 of exercise creation.
+/// It collects all required and optional license attribution fields:
+///
+/// Required by CC BY-SA 4.0:
+/// - Author name
+/// - License type (implicitly CC BY-SA 4.0)
+///
+/// Optional but recommended:
+/// - Title (helps identify the image)
+/// - Source URL (where image was found)
+/// - Author URL (author's website/profile)
+/// - Derivative source URL (if modified from another work)
+/// - Image style (PHOTO, 3D, LINE, LOW-POLY, OTHER)
+///
+/// All metadata is sent to the API's /exerciseimage endpoint along with
+/// the image file when the exercise is submitted.
 class ImageDetailsForm extends StatefulWidget {
   final File imageFile;
   final Function(File image, Map<String, String> details) onAdd;
@@ -24,12 +38,15 @@ class ImageDetailsForm extends StatefulWidget {
 class _ImageDetailsFormState extends State<ImageDetailsForm> {
   final _formKey = GlobalKey<FormState>();
 
+  // Text controllers for license metadata fields
   final _titleController = TextEditingController();
-  final _sourceLinkController = TextEditingController();
-  final _authorController = TextEditingController();
-  final _authorLinkController = TextEditingController();
-  final _originalSourceController = TextEditingController();
+  final _sourceLinkController = TextEditingController(); // license_object_url in API
+  final _authorController = TextEditingController(); // license_author in API
+  final _authorLinkController = TextEditingController(); // license_author_url in API
+  final _originalSourceController = TextEditingController(); // license_derivative_source_url in API
 
+  /// Currently selected image type
+  /// Maps to API 'style' field: PHOTO=1, 3D=2, LINE=3, LOW-POLY=4, OTHER=5
   String _selectedImageType = 'PHOTO';
 
   final List<Map<String, dynamic>> _imageTypes = [
@@ -50,8 +67,14 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     super.dispose();
   }
 
-  /// Maps UI image type selection to API style value
-  /// PHOTO=1, 3D=2, LINE=3, LOW-POLY=4, OTHER=5
+  /// Maps UI image type selection to API 'style' field value
+  ///
+  /// API expects numeric string:
+  /// - PHOTO = '1'
+  /// - 3D = '2'
+  /// - LINE = '3'
+  /// - LOW-POLY = '4'
+  /// - OTHER = '5'
   String _getStyleValue() {
     switch (_selectedImageType) {
       case 'PHOTO':
@@ -65,7 +88,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
       case 'OTHER':
         return '5';
       default:
-        return '1';
+        return '1'; // Default to PHOTO if unknown
     }
   }
 
@@ -90,6 +113,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               _buildImagePreview(),
               const SizedBox(height: 24),
 
+              // License title field - helps identify the image
               _buildTextField(
                 controller: _titleController,
                 label: 'Title',
@@ -97,6 +121,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               ),
               const SizedBox(height: 16),
 
+              // Source URL - where the image was found (license_object_url in API)
               _buildTextField(
                 controller: _sourceLinkController,
                 label: 'Link to the source website, if available',
@@ -105,6 +130,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               ),
               const SizedBox(height: 16),
 
+              // Author name - required for proper CC BY-SA attribution
               _buildTextField(
                 controller: _authorController,
                 label: 'Author(s)',
@@ -112,6 +138,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               ),
               const SizedBox(height: 16),
 
+              // Author's website/profile URL
               _buildTextField(
                 controller: _authorLinkController,
                 label: 'Link to author website or profile, if available',
@@ -120,6 +147,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               ),
               const SizedBox(height: 16),
 
+              // Original source if this is a derivative work (modified from another image)
               _buildTextField(
                 controller: _originalSourceController,
                 label: 'Link to the original source, if this is a derivative work',
@@ -202,7 +230,10 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     );
   }
 
-  /// Info box explaining what constitutes a derivative work
+  /// Informational box explaining what constitutes a derivative work
+  ///
+  /// Important for CC BY-SA compliance - users need to understand when
+  /// they must cite the original work they modified
   Widget _buildDerivativeWorkNote() {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -234,7 +265,10 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     );
   }
 
-  /// Selector for image style (PHOTO, 3D, LINE, LOW-POLY, OTHER)
+  /// Visual selector for image style/type
+  ///
+  /// Allows user to categorize the image as PHOTO, 3D render, LINE drawing,
+  /// LOW-POLY art, or OTHER. This helps users find appropriate exercise images.
   Widget _buildImageTypeSelector() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,7 +332,10 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     );
   }
 
-  /// Warning box about CC BY-SA 4.0 license requirements
+  /// Legal notice about CC BY-SA 4.0 license
+  ///
+  /// Critical for compliance - informs user that by uploading, they're
+  /// releasing the image under CC BY-SA 4.0 and must have rights to do so
   Widget _buildLicenseInfo() {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -359,11 +396,12 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               // Build details map with API field names
+              // Style is always included, other fields only if non-empty
               final details = <String, String>{
                 'style': _getStyleValue(),
               };
 
-              // Add only non-empty fields
+              // Add optional fields only if user provided values
               final title = _titleController.text.trim();
               if (title.isNotEmpty) {
                 details['license_title'] = title;
@@ -389,6 +427,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
                 details['license_derivative_source_url'] = derivativeUrl;
               }
 
+              // Pass image and metadata back to parent
               widget.onAdd(widget.imageFile, details);
             }
           },
