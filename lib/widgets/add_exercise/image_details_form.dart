@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/widgets/add_exercise/license_info_widget.dart';
 
 /// Form for collecting CC BY-SA 4.0 license metadata for exercise images
 ///
@@ -68,6 +69,34 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     super.dispose();
   }
 
+  /// Validates URL format
+  ///
+  /// Returns error message if URL is invalid, null if valid or empty
+  String? _validateUrl(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return null; // Empty is OK (optional field)
+    }
+
+    final trimmedValue = value.trim();
+
+    // Check if starts with http:// or https://
+    if (!trimmedValue.startsWith('http://') && !trimmedValue.startsWith('https://')) {
+      return AppLocalizations.of(context).invalidUrl;
+    }
+
+    // Try to parse as URI
+    try {
+      final uri = Uri.parse(trimmedValue);
+      if (!uri.hasScheme || !uri.hasAuthority) {
+        return AppLocalizations.of(context).invalidUrl;
+      }
+    } catch (e) {
+      return AppLocalizations.of(context).invalidUrl;
+    }
+
+    return null;
+  }
+
   /// Maps UI image type selection to API 'style' field value
   ///
   /// API expects numeric string:
@@ -104,10 +133,8 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Image details',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                AppLocalizations.of(context).imageDetailsTitle,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
 
@@ -117,53 +144,55 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               // License title field - helps identify the image
               _buildTextField(
                 controller: _titleController,
-                label: 'Title',
-                hint: 'Enter image title',
+                label: AppLocalizations.of(context).imageDetailsLicenseTitle,
+                hint: AppLocalizations.of(context).imageDetailsLicenseTitleHint,
               ),
               const SizedBox(height: 16),
 
               // Source URL - where the image was found (license_object_url in API)
               _buildTextField(
                 controller: _sourceLinkController,
-                label: 'Link to the source website, if available',
-                hint: 'https://example.com',
+                label: AppLocalizations.of(context).imageDetailsSourceLink,
+                hint: AppLocalizations.of(context).imageDetailsSourceLinkHint,
                 keyboardType: TextInputType.url,
+                validator: _validateUrl,
               ),
               const SizedBox(height: 16),
 
               // Author name - required for proper CC BY-SA attribution
               _buildTextField(
                 controller: _authorController,
-                label: 'Author(s)',
-                hint: 'Enter author name',
+                label: AppLocalizations.of(context).imageDetailsAuthor,
+                hint: AppLocalizations.of(context).imageDetailsAuthorHint,
               ),
               const SizedBox(height: 16),
 
               // Author's website/profile URL
               _buildTextField(
                 controller: _authorLinkController,
-                label: 'Link to author website or profile, if available',
-                hint: 'https://example.com/author',
+                label: AppLocalizations.of(context).imageDetailsAuthorLink,
+                hint: AppLocalizations.of(context).imageDetailsAuthorLinkHint,
                 keyboardType: TextInputType.url,
+                validator: _validateUrl,
               ),
               const SizedBox(height: 16),
 
               // Original source if this is a derivative work (modified from another image)
               _buildTextField(
                 controller: _originalSourceController,
-                label: 'Link to the original source, if this is a derivative work',
-                hint: 'https://example.com/original',
+                label: AppLocalizations.of(context).imageDetailsDerivativeSource,
+                hint: AppLocalizations.of(context).imageDetailsDerivativeSourceHint,
                 keyboardType: TextInputType.url,
+                helperText: AppLocalizations.of(context).imageDetailsDerivativeHelp,
+                validator: _validateUrl,
               ),
-              const SizedBox(height: 8),
-
-              _buildDerivativeWorkNote(),
               const SizedBox(height: 24),
 
               _buildImageTypeSelector(),
               const SizedBox(height: 24),
 
-              _buildLicenseInfo(),
+              // License info as separate widget for better optimization
+              const LicenseInfoWidget(),
               const SizedBox(height: 24),
 
               _buildButtons(),
@@ -195,6 +224,8 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     required String label,
     String? hint,
     TextInputType? keyboardType,
+    String? helperText,
+    String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,41 +235,16 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
+          validator: validator,
           decoration: InputDecoration(
             hintText: hint,
+            helperText: helperText,
+            helperMaxLines: 3,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           ),
         ),
       ],
-    );
-  }
-
-  /// Informational box explaining what constitutes a derivative work
-  ///
-  /// Important for CC BY-SA compliance - users need to understand when
-  /// they must cite the original work they modified
-  Widget _buildDerivativeWorkNote() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.blue.shade200),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.info_outline, size: 20, color: Colors.blue.shade700),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              'Note that a derivative work is one which is not only based on a previous work, but which also contains sufficient new, creative content to entitle it to its own copyright.',
-              style: TextStyle(fontSize: 12, color: Colors.blue.shade900),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -250,7 +256,10 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Image Type', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+        Text(
+          AppLocalizations.of(context).imageDetailsImageType,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
         const SizedBox(height: 12),
         Wrap(
           spacing: 8,
@@ -303,68 +312,14 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     );
   }
 
-  /// Legal notice about CC BY-SA 4.0 license
-  ///
-  /// Critical for compliance - informs user that by uploading, they're
-  /// releasing the image under CC BY-SA 4.0 and must have rights to do so
-  Widget _buildLicenseInfo() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.amber.shade50,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.amber.shade200),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.info_outline, size: 20, color: Colors.amber.shade900),
-          const SizedBox(width: 8),
-          Expanded(
-            child: RichText(
-              text: TextSpan(
-                style: TextStyle(fontSize: 12, color: Colors.amber.shade900),
-                children: [
-                  const TextSpan(
-                    text: 'By submitting this image, you agree to release it under the ',
-                  ),
-                  WidgetSpan(
-                    child: GestureDetector(
-                      onTap: () async {
-                        final url = Uri.parse('https://creativecommons.org/licenses/by-sa/4.0/');
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url, mode: LaunchMode.externalApplication);
-                        }
-                      },
-                      child: Text(
-                        'CC BY-SA 4.0',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.amber.shade900,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const TextSpan(
-                    text:
-                        ' license. The image must be either your own work or the author must have released it under a license compatible with CC BY-SA 4.0.',
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        TextButton(onPressed: widget.onCancel, child: const Text('CANCEL')),
+        TextButton(
+          onPressed: widget.onCancel,
+          child: Text(AppLocalizations.of(context).imageDetailsCancel),
+        ),
         const SizedBox(width: 8),
         ElevatedButton(
           onPressed: () {
@@ -408,9 +363,9 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
           ),
-          child: const Text(
-            'ADD',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          child: Text(
+            AppLocalizations.of(context).imageDetailsAdd,
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
       ],
