@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Form for collecting CC BY-SA 4.0 license metadata for exercise images
 ///
@@ -360,18 +361,30 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
                   fontSize: 12,
                   color: Colors.amber.shade900,
                 ),
-                children: const [
-                  TextSpan(
+                children: [
+                  const TextSpan(
                     text: 'By submitting this image, you agree to release it under the ',
                   ),
-                  TextSpan(
-                    text: 'CC BY-SA 4.0',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
+                  WidgetSpan(
+                    child: GestureDetector(
+                      onTap: () async {
+                        final url = Uri.parse('https://creativecommons.org/licenses/by-sa/4.0/');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        }
+                      },
+                      child: Text(
+                        'CC BY-SA 4.0',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.amber.shade900,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
                     ),
                   ),
-                  TextSpan(
+                  const TextSpan(
                     text: ' license. The image must be either your own work or the author must have released it under a license compatible with CC BY-SA 4.0.',
                   ),
                 ],
@@ -433,6 +446,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(
               horizontal: 32,
               vertical: 12,
@@ -442,6 +456,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             'ADD',
             style: TextStyle(
               fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
         ),
