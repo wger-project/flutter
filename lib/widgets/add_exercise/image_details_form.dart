@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/widgets/add_exercise/license_info_widget.dart';
 
 /// Form for collecting CC BY-SA 4.0 license metadata for exercise images
@@ -23,13 +22,13 @@ import 'package:wger/widgets/add_exercise/license_info_widget.dart';
 /// All metadata is sent to the API's /exerciseimage endpoint along with
 /// the image file when the exercise is submitted.
 class ImageDetailsForm extends StatefulWidget {
-  final File imageFile;
-  final Function(File image, Map<String, String> details) onAdd;
+  final Function(ExerciseSubmissionImage image) onAdd;
   final VoidCallback onCancel;
+  final ExerciseSubmissionImage submissionImage;
 
   const ImageDetailsForm({
     super.key,
-    required this.imageFile,
+    required this.submissionImage,
     required this.onAdd,
     required this.onCancel,
   });
@@ -43,22 +42,13 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
 
   // Text controllers for license metadata fields
   final _titleController = TextEditingController();
-  final _sourceLinkController = TextEditingController(); // license_object_url in API
-  final _authorController = TextEditingController(); // license_author in API
-  final _authorLinkController = TextEditingController(); // license_author_url in API
-  final _originalSourceController = TextEditingController(); // license_derivative_source_url in API
+  final _sourceLinkController = TextEditingController();
+  final _authorController = TextEditingController();
+  final _authorLinkController = TextEditingController();
+  final _originalSourceController = TextEditingController();
 
   /// Currently selected image type
-  /// Maps to API 'style' field: PHOTO=1, 3D=2, LINE=3, LOW-POLY=4, OTHER=5
-  String _selectedImageType = 'PHOTO';
-
-  final List<Map<String, dynamic>> _imageTypes = [
-    {'type': 'PHOTO', 'icon': Icons.photo_camera, 'label': 'PHOTO'},
-    {'type': '3D', 'icon': Icons.view_in_ar, 'label': '3D'},
-    {'type': 'LINE', 'icon': Icons.show_chart, 'label': 'LINE'},
-    {'type': 'LOW-POLY', 'icon': Icons.filter_vintage, 'label': 'LOW-POLY'},
-    {'type': 'OTHER', 'icon': Icons.more_horiz, 'label': 'OTHER'},
-  ];
+  ImageType _selectedImageType = ImageType.photo;
 
   @override
   void dispose() {
@@ -216,7 +206,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.file(widget.imageFile, fit: BoxFit.contain),
+          child: Image.file(widget.submissionImage.imageFile, fit: BoxFit.contain),
         ),
       ),
     );
@@ -269,12 +259,12 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: _imageTypes.map((type) {
-            final isSelected = _selectedImageType == type['type'];
+          children: ImageType.values.map((type) {
+            final isSelected = _selectedImageType == type;
             return InkWell(
               onTap: () {
                 setState(() {
-                  _selectedImageType = type['type'];
+                  _selectedImageType = type;
                 });
               },
               borderRadius: BorderRadius.circular(4),
@@ -291,7 +281,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      type['icon'],
+                      type.icon,
                       size: 32,
                       color: isSelected
                           ? theme.buttonTheme.colorScheme!.onPrimary
@@ -299,7 +289,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      type['label'],
+                      type.label,
                       style: TextStyle(
                         fontSize: 11,
                         color: isSelected ? Colors.blue : Colors.grey.shade700,
@@ -328,40 +318,42 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
         const SizedBox(width: 8),
         ElevatedButton(
           onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              // Build details map with API field names
-              // Style is always included, other fields only if non-empty
-              final details = <String, String>{'style': _getStyleValue()};
-
-              // Add optional fields only if user provided values
-              final title = _titleController.text.trim();
-              if (title.isNotEmpty) {
-                details['license_title'] = title;
-              }
-
-              final author = _authorController.text.trim();
-              if (author.isNotEmpty) {
-                details['license_author'] = author;
-              }
-
-              final sourceUrl = _sourceLinkController.text.trim();
-              if (sourceUrl.isNotEmpty) {
-                details['license_object_url'] = sourceUrl;
-              }
-
-              final authorUrl = _authorLinkController.text.trim();
-              if (authorUrl.isNotEmpty) {
-                details['license_author_url'] = authorUrl;
-              }
-
-              final derivativeUrl = _originalSourceController.text.trim();
-              if (derivativeUrl.isNotEmpty) {
-                details['license_derivative_source_url'] = derivativeUrl;
-              }
-
-              // Pass image and metadata back to parent
-              widget.onAdd(widget.imageFile, details);
+            if (!_formKey.currentState!.validate()) {
+              return;
             }
+
+            // Build details map with API field names
+            // Style is always included, other fields only if non-empty
+            final details = <String, String>{'style': _getStyleValue()};
+
+            // Add optional fields only if user provided values
+            final title = _titleController.text.trim();
+            if (title.isNotEmpty) {
+              widget.submissionImage.title = title;
+            }
+
+            final author = _authorController.text.trim();
+            if (author.isNotEmpty) {
+              widget.submissionImage.author = author;
+            }
+
+            final sourceUrl = _sourceLinkController.text.trim();
+            if (sourceUrl.isNotEmpty) {
+              widget.submissionImage.sourceUrl = sourceUrl;
+            }
+
+            final authorUrl = _authorLinkController.text.trim();
+            if (authorUrl.isNotEmpty) {
+              widget.submissionImage.authorUrl = authorUrl;
+            }
+
+            final derivativeUrl = _originalSourceController.text.trim();
+            if (derivativeUrl.isNotEmpty) {
+              widget.submissionImage.derivativeSourceUrl = derivativeUrl;
+            }
+
+            // Pass image and metadata back to parent
+            widget.onAdd(widget.submissionImage);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColor,

@@ -85,10 +85,8 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
 
                         Exercise? exercise;
                         try {
-                          final exerciseId = await addExerciseProvider.addExercise();
-                          await addExerciseProvider.addImages(exerciseId);
+                          final exerciseId = await addExerciseProvider.postExerciseToServer();
                           exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
-                          addExerciseProvider.clear();
                         } on WgerHttpException catch (error) {
                           if (context.mounted) {
                             setState(() {

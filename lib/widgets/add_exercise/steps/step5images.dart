@@ -1,12 +1,14 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/providers/add_exercise.dart';
+import 'package:wger/widgets/add_exercise/image_details_form.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
-import 'package:wger/widgets/add_exercise/image_details_form.dart';
 
 /// Step 5 of exercise creation wizard - Image upload with license metadata
 ///
@@ -21,6 +23,7 @@ import 'package:wger/widgets/add_exercise/image_details_form.dart';
 /// 4. Final upload happens in Step 6 when user clicks "Submit"
 class Step5Images extends StatefulWidget {
   final GlobalKey<FormState> formkey;
+
   const Step5Images({required this.formkey});
 
   @override
@@ -30,7 +33,7 @@ class Step5Images extends StatefulWidget {
 class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin {
   /// Currently selected image waiting for metadata input
   /// When non-null, ImageDetailsForm is displayed instead of image picker
-  File? _currentImageToAdd;
+  ExerciseSubmissionImage? _currentImageToAddNew;
 
   /// Show dialog to choose between Camera and Gallery
   Future<void> _showImageSourceDialog(BuildContext context) async {
@@ -111,7 +114,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
 
       // Show metadata collection form for valid image
       setState(() {
-        _currentImageToAdd = imageFile;
+        _currentImageToAddNew = ExerciseSubmissionImage(imageFile: imageFile);
       });
     }
   }
@@ -124,30 +127,22 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
   ///
   /// [image] - The image file to add
   /// [details] - Map containing license fields (license_title, license_author, etc.)
-  void _addImageWithDetails(File image, Map<String, String> details) {
+  void _addImageWithDetails(ExerciseSubmissionImage image) {
     final provider = context.read<AddExerciseProvider>();
 
     // Store image with metadata - actual upload happens in addExercise()
-    provider.addExerciseImages(
-      [image],
-      title: details['license_title'],
-      author: details['license_author'],
-      authorUrl: details['license_author_url'],
-      sourceUrl: details['license_object_url'],
-      derivativeSourceUrl: details['license_derivative_source_url'],
-      style: details['style'] ?? '1',
-    );
+    provider.addExerciseImages([image]);
 
     // Reset form state - image is now visible in preview list
     setState(() {
-      _currentImageToAdd = null;
+      _currentImageToAddNew = null;
     });
   }
 
   /// Cancel metadata input and return to image picker
   void _cancelImageAdd() {
     setState(() {
-      _currentImageToAdd = null;
+      _currentImageToAddNew = null;
     });
   }
 
@@ -158,7 +153,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
       child: Column(
         children: [
           // License notice - shown when not entering metadata
-          if (_currentImageToAdd == null)
+          if (_currentImageToAddNew == null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(
@@ -169,15 +164,15 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
             ),
 
           // Metadata collection form - shown when image is selected
-          if (_currentImageToAdd != null)
+          if (_currentImageToAddNew != null)
             ImageDetailsForm(
-              imageFile: _currentImageToAdd!,
+              submissionImage: _currentImageToAddNew!,
               onAdd: _addImageWithDetails,
               onCancel: _cancelImageAdd,
             ),
 
           // Image picker or preview - shown when not entering metadata
-          if (_currentImageToAdd == null)
+          if (_currentImageToAddNew == null)
             Consumer<AddExerciseProvider>(
               builder: (ctx, provider, __) {
                 if (provider.exerciseImages.isNotEmpty) {
