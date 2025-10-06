@@ -730,6 +730,62 @@
   "identicalExercisePleaseDiscard": "If you notice an exercise that is identical to the one you're adding, please discard your draft and edit that exercise instead.",
   "checkInformationBeforeSubmitting": "Please check that the information you entered is correct before submitting the exercise",
   "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
+  "imageDetailsTitle": "Image details",
+  "@imageDetailsTitle": {
+    "description": "Title for image details form"
+  },
+  "imageDetailsLicenseTitle": "Title",
+  "@imageDetailsLicenseTitle": {
+    "description": "Label for image title field"
+  },
+  "imageDetailsLicenseTitleHint": "Enter image title",
+  "@imageDetailsLicenseTitleHint": {
+    "description": "Hint text for image title field"
+  },
+  "imageDetailsSourceLink": "Link to the source website, if available",
+  "@imageDetailsSourceLink": {
+    "description": "Label for source link field"
+  },
+  "imageDetailsAuthor": "Author(s)",
+  "@imageDetailsAuthor": {
+    "description": "Label for author field"
+  },
+  "imageDetailsAuthorHint": "Enter author name",
+  "@imageDetailsAuthorHint": {
+    "description": "Hint text for author field"
+  },
+  "imageDetailsAuthorLink": "Link to author website or profile, if available",
+  "@imageDetailsAuthorLink": {
+    "description": "Label for author link field"
+  },
+  "imageDetailsDerivativeSource": "Link to the original source, if this is a derivative work",
+  "@imageDetailsDerivativeSource": {
+    "description": "Label for derivative source field"
+  },
+  "imageDetailsDerivativeHelp": "A derivative work is based on a previous work but contains sufficient new, creative content to entitle it to its own copyright.",
+  "@imageDetailsDerivativeHelp": {
+    "description": "Helper text explaining derivative works"
+  },
+  "imageDetailsImageType": "Image Type",
+  "@imageDetailsImageType": {
+    "description": "Label for image type selector"
+  },
+  "imageDetailsLicenseNoticePrefix": "By submitting this image, you agree to release it under the ",
+  "@imageDetailsLicenseNoticePrefix": {
+    "description": "First part of license notice text"
+  },
+  "imageDetailsLicenseNoticeSuffix": " The image must be either your own work or the author must have released it under a license compatible with CC BY-SA 4.0.",
+  "@imageDetailsLicenseNoticeSuffix": {
+    "description": "Second part of license notice text"
+  },
+  "imageDetailsCancel": "CANCEL",
+  "@imageDetailsCancel": {
+    "description": "Cancel button text"
+  },
+  "imageDetailsAdd": "ADD",
+  "@imageDetailsAdd": {
+    "description": "Add button text"
+  },
   "variations": "Variations",
   "@variations": {
     "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"

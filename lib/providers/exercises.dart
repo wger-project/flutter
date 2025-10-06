@@ -42,7 +42,7 @@ class ExercisesProvider with ChangeNotifier {
   ExerciseDatabase database;
 
   ExercisesProvider(this.baseProvider, {ExerciseDatabase? database})
-      : database = database ?? locator<ExerciseDatabase>();
+    : database = database ?? locator<ExerciseDatabase>();
 
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 4;
@@ -118,17 +118,13 @@ class ExercisesProvider with ChangeNotifier {
         exerciseCategories: FilterCategory(
           title: 'Category',
           items: Map.fromEntries(
-            _categories.map(
-              (category) => MapEntry<ExerciseCategory, bool>(category, false),
-            ),
+            _categories.map((category) => MapEntry<ExerciseCategory, bool>(category, false)),
           ),
         ),
         equipment: FilterCategory(
           title: 'Equipment',
           items: Map.fromEntries(
-            _equipment.map(
-              (singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false),
-            ),
+            _equipment.map((singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false)),
           ),
         ),
       ),
@@ -191,10 +187,7 @@ class ExercisesProvider with ChangeNotifier {
   /// returned exercises. Since this is typically called by one exercise, we are
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
-  List<Exercise> findExercisesByVariationId(
-    int? variationId, {
-    int? exerciseIdToExclude,
-  }) {
+  List<Exercise> findExercisesByVariationId(int? variationId, {int? exerciseIdToExclude}) {
     if (variationId == null) {
       return [];
     }
@@ -317,18 +310,16 @@ class ExercisesProvider with ChangeNotifier {
   /// -> yes: Do we need to re-fetch?
   ///    -> no: just return what we have in the DB
   ///    -> yes: fetch data and update if necessary
-  Future<Exercise> handleUpdateExerciseFromApi(
-    ExerciseDatabase database,
-    int exerciseId,
-  ) async {
+  Future<Exercise> handleUpdateExerciseFromApi(ExerciseDatabase database, int exerciseId) async {
     Exercise exercise;
 
     // NOTE: this should not be necessary anymore. We had a bug that would
     //       create duplicate entries in the database and should be fixed now.
     //       However, we keep it here for now to be on the safe side.
     //       In the future this can be replaced by a .getSingleOrNull()
-    final exerciseResult =
-        await (database.select(database.exercises)..where((e) => e.id.equals(exerciseId))).get();
+    final exerciseResult = await (database.select(
+      database.exercises,
+    )..where((e) => e.id.equals(exerciseId))).get();
 
     ExerciseTable? exerciseDb;
     if (exerciseResult.isNotEmpty) {
@@ -383,7 +374,9 @@ class ExercisesProvider with ChangeNotifier {
       exercise = Exercise.fromApiDataJson(exerciseData, _languages);
 
       if (exerciseDb == null) {
-        await database.into(database.exercises).insert(
+        await database
+            .into(database.exercises)
+            .insert(
               ExercisesCompanion.insert(
                 id: exercise.id!,
                 data: jsonEncode(exerciseData),
@@ -426,6 +419,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   Future<void> clearAllCachesAndPrefs() async {
+    clear();
     await database.deleteEverything();
     await initCacheTimesLocalPrefs(forceInit: true);
   }
@@ -480,13 +474,15 @@ class ExercisesProvider with ChangeNotifier {
 
     // Insert new entries and update ones that have been edited
     Future.forEach(data, (exerciseData) async {
-      final exercise = await (database.select(database.exercises)
-            ..where((e) => e.id.equals(exerciseData['id'])))
-          .getSingleOrNull();
+      final exercise = await (database.select(
+        database.exercises,
+      )..where((e) => e.id.equals(exerciseData['id']))).getSingleOrNull();
 
       // New exercise, insert
       if (exercise == null) {
-        database.into(database.exercises).insert(
+        database
+            .into(database.exercises)
+            .insert(
               ExercisesCompanion.insert(
                 id: exerciseData['id'],
                 data: jsonEncode(exerciseData),
@@ -537,15 +533,10 @@ class ExercisesProvider with ChangeNotifier {
     await fetchAndSetMusclesFromApi();
     await database.delete(database.muscles).go();
     await Future.forEach(_muscles, (e) async {
-      await database.into(database.muscles).insert(
-            MusclesCompanion.insert(id: e.id, data: e),
-          );
+      await database.into(database.muscles).insert(MusclesCompanion.insert(id: e.id, data: e));
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
-    await prefs.setString(
-      PREFS_LAST_UPDATED_MUSCLES,
-      validTill.toIso8601String(),
-    );
+    await prefs.setString(PREFS_LAST_UPDATED_MUSCLES, validTill.toIso8601String());
     _logger.fine('Saved ${_muscles.length} muscles to cache (valid till $validTill)');
   }
 
@@ -571,15 +562,12 @@ class ExercisesProvider with ChangeNotifier {
     await fetchAndSetCategoriesFromApi();
     await database.delete(database.categories).go();
     await Future.forEach(_categories, (e) async {
-      await database.into(database.categories).insert(
-            CategoriesCompanion.insert(id: e.id, data: e),
-          );
+      await database
+          .into(database.categories)
+          .insert(CategoriesCompanion.insert(id: e.id, data: e));
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
-    await prefs.setString(
-      PREFS_LAST_UPDATED_CATEGORIES,
-      validTill.toIso8601String(),
-    );
+    await prefs.setString(PREFS_LAST_UPDATED_CATEGORIES, validTill.toIso8601String());
     _logger.fine('Saved ${_categories.length} categories to cache (valid till $validTill)');
   }
 
@@ -605,16 +593,11 @@ class ExercisesProvider with ChangeNotifier {
     await fetchAndSetLanguagesFromApi();
     await database.delete(database.languages).go();
     await Future.forEach(_languages, (e) async {
-      await database.into(database.languages).insert(
-            LanguagesCompanion.insert(id: e.id, data: e),
-          );
+      await database.into(database.languages).insert(LanguagesCompanion.insert(id: e.id, data: e));
     });
 
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
-    await prefs.setString(
-      PREFS_LAST_UPDATED_LANGUAGES,
-      validTill.toIso8601String(),
-    );
+    await prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, validTill.toIso8601String());
     _logger.info('Saved ${languages.length} languages to cache (valid till $validTill)');
   }
 
@@ -640,15 +623,12 @@ class ExercisesProvider with ChangeNotifier {
     await fetchAndSetEquipmentsFromApi();
     await database.delete(database.equipments).go();
     await Future.forEach(_equipment, (e) async {
-      await database.into(database.equipments).insert(
-            EquipmentsCompanion.insert(id: e.id, data: e),
-          );
+      await database
+          .into(database.equipments)
+          .insert(EquipmentsCompanion.insert(id: e.id, data: e));
     });
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
-    await prefs.setString(
-      PREFS_LAST_UPDATED_EQUIPMENT,
-      validTill.toIso8601String(),
-    );
+    await prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, validTill.toIso8601String());
     _logger.fine('Saved ${_equipment.length} equipment entries to cache (valid till $validTill)');
   }
 
@@ -703,17 +683,9 @@ class FilterCategory<T> {
 
   List<T> get selected => [...items.keys].where((key) => items[key]!).toList();
 
-  FilterCategory({
-    required this.title,
-    required this.items,
-    this.isExpanded = false,
-  });
+  FilterCategory({required this.title, required this.items, this.isExpanded = false});
 
-  FilterCategory<T> copyWith({
-    bool? isExpanded,
-    Map<T, bool>? items,
-    String? title,
-  }) {
+  FilterCategory<T> copyWith({bool? isExpanded, Map<T, bool>? items, String? title}) {
     return FilterCategory(
       isExpanded: isExpanded ?? this.isExpanded,
       items: items ?? this.items,
