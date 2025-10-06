@@ -39,10 +39,7 @@ class SetConfigDataWidget extends StatelessWidget {
 
     return ListTile(
       leading: InkWell(
-        child: SizedBox(
-          width: 45,
-          child: ExerciseImageWidget(image: exercise.getMainImage),
-        ),
+        child: SizedBox(width: 45, child: ExerciseImageWidget(image: exercise.getMainImage)),
         onTap: () {
           showDialog(
             context: context,
@@ -52,9 +49,7 @@ class SetConfigDataWidget extends StatelessWidget {
                 content: ExerciseDetail(exercise),
                 actions: [
                   TextButton(
-                    child: Text(
-                      MaterialLocalizations.of(context).closeButtonLabel,
-                    ),
+                    child: Text(MaterialLocalizations.of(context).closeButtonLabel),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -128,9 +123,9 @@ class DayHeader extends StatelessWidget {
   final bool _viewMode;
 
   const DayHeader({required DayData day, required int routineId, bool viewMode = false})
-      : _dayData = day,
-        _viewMode = viewMode,
-        _routineId = routineId;
+    : _dayData = day,
+      _viewMode = viewMode,
+      _routineId = routineId;
 
   @override
   Widget build(BuildContext context) {
@@ -151,11 +146,15 @@ class DayHeader extends StatelessWidget {
       );
     }
 
+    final dayTypeLabel = _dayData.day!.isSpecialType
+        ? '\n(${_dayData.day!.type.name.toUpperCase()})'
+        : '';
+
     return ListTile(
       tileColor: Theme.of(context).focusColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: Text(
-        _dayData.day!.name,
+        '${_dayData.day!.name}$dayTypeLabel',
         style: Theme.of(context).textTheme.headlineSmall,
         overflow: TextOverflow.ellipsis,
       ),

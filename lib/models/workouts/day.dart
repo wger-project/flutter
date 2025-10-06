@@ -16,10 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/slot.dart';
 
 part 'day.g.dart';
+
+enum DayType { custom, enom, amrap, hiit, tabata, edt, rft, afap }
+
+extension DayTypeExtension on DayType {
+  String i18Label(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    switch (this) {
+      case DayType.custom:
+        return i18n.dayTypeCustom;
+      case DayType.enom:
+        return i18n.dayTypeEnom;
+      case DayType.amrap:
+        return i18n.dayTypeAmrap;
+      case DayType.hiit:
+        return i18n.dayTypeHiit;
+      case DayType.tabata:
+        return i18n.dayTypeTabata;
+      case DayType.edt:
+        return i18n.dayTypeEdt;
+      case DayType.rft:
+        return i18n.dayTypeRft;
+      case DayType.afap:
+        return i18n.dayTypeAfap;
+    }
+  }
+}
 
 @JsonSerializable()
 class Day {
@@ -39,6 +68,9 @@ class Day {
   @JsonKey(required: true)
   late String description;
 
+  @JsonKey(required: true)
+  late DayType type;
+
   @JsonKey(required: true, name: 'is_rest')
   late bool isRest;
 
@@ -46,40 +78,54 @@ class Day {
   late bool needLogsToAdvance;
 
   @JsonKey(required: true)
-  late String type;
-
-  @JsonKey(required: true)
   late num order;
 
   @JsonKey(required: true)
   late Object? config;
 
-  @JsonKey(required: false, defaultValue: [], includeFromJson: true, includeToJson: false)
+  @JsonKey(required: false, includeFromJson: true, includeToJson: false)
   List<Slot> slots = [];
 
   Day({
     this.id,
     required this.routineId,
     required this.name,
-    required this.description,
+    this.description = '',
     this.isRest = false,
     this.needLogsToAdvance = false,
-    this.type = 'custom',
-    this.order = 0,
-    this.config = null,
+    this.type = DayType.custom,
+    this.order = 1,
+    this.config,
     this.slots = const [],
   });
 
-  Day.empty() {
-    name = 'new day';
-    description = '';
-    type = 'custom';
-    isRest = false;
-    needLogsToAdvance = false;
-    order = 0;
-    config = {};
-    slots = [];
+  Day copyWith({
+    int? id,
+    int? routineId,
+    String? name,
+    String? description,
+    DayType? type,
+    bool? isRest,
+    bool? needLogsToAdvance,
+    num? order,
+    Object? config,
+    List<Slot>? slots,
+  }) {
+    return Day(
+      id: id ?? this.id,
+      routineId: routineId ?? this.routineId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      type: type ?? this.type,
+      isRest: isRest ?? this.isRest,
+      needLogsToAdvance: needLogsToAdvance ?? this.needLogsToAdvance,
+      order: order ?? this.order,
+      config: config ?? this.config,
+      slots: slots ?? this.slots,
+    );
   }
+
+  bool get isSpecialType => type != DayType.custom;
 
   // Boilerplate
   factory Day.fromJson(Map<String, dynamic> json) => _$DayFromJson(json);

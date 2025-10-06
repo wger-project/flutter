@@ -155,8 +155,18 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "endDate": "End date",
   "startDate": "Start date",
+  "@startDate": {
+    "description": "The start date of a nutritional plan or routine"
+  },
+  "dayTypeCustom": "Custom",
+  "dayTypeEnom": "Every minute on the minute",
+  "dayTypeAmrap": "As many rounds as possible",
+  "dayTypeHiit": "High intensity interval training",
+  "dayTypeTabata": "Tabata",
+  "dayTypeEdt": "Escalating density training",
+  "dayTypeRft": "Rounds for time",
+  "dayTypeAfap": "As fast as possible",
   "routines": "Routines",
   "newRoutine": "New routine",
   "noRoutines": "You have no routines",
@@ -387,13 +397,9 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
-  "creationDate": "Start date",
-  "@creationDate": {
-    "description": "The Start date of a nutritional plan"
-  },
   "endDate": "End date",
   "@endDate": {
-    "description": "The End date of a nutritional plan"
+    "description": "The End date of a nutritional plan or routine"
   },
   "openEnded": "Open ended",
   "@openEnded": {

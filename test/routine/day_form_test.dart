@@ -47,9 +47,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: SingleChildScrollView(
-            child: DayFormWidget(routineId: 125, day: getTestRoutine().days[0]),
-          ),
+          body: SingleChildScrollView(child: DayFormWidget(day: getTestRoutine().days[0])),
         ),
       ),
     );

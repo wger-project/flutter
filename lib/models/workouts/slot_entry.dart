@@ -26,6 +26,8 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 part 'slot_entry.g.dart';
 
+enum SlotEntryType { normal, dropset, myo, partial, forced, tut, iso, jump }
+
 enum ConfigType {
   weight,
   maxWeight,
@@ -163,9 +165,9 @@ class SlotEntry {
     String? type,
     required Exercise exercise,
     int? weightUnitId,
-    num? weightRounding,
+    this.weightRounding,
     int? repetitionUnitId,
-    num? repetitionRounding,
+    this.repetitionRounding,
   }) {
     this.order = order ?? 1;
     this.comment = comment ?? '';
@@ -174,13 +176,11 @@ class SlotEntry {
     exerciseObj = exercise;
     exerciseId = exercise.id!;
     this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG;
-    this.weightRounding = weightRounding;
 
     this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;
-    this.repetitionRounding = repetitionRounding;
   }
 
-  get rir {
+  String get rir {
     return 'DELETE ME! RIR';
   }
 
