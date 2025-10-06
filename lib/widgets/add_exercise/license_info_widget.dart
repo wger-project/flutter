@@ -15,35 +15,28 @@ class LicenseInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceVariant,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: colorScheme.outline),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.info_outline,
-            size: 20,
-            color: colorScheme.onSurfaceVariant,
-          ),
+          Icon(Icons.info_outline, size: 20, color: colorScheme.onSurfaceVariant),
           const SizedBox(width: 8),
+
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
                 children: [
-                  TextSpan(
-                    text: AppLocalizations.of(context).imageDetailsLicenseNoticePrefix,
-                  ),
+                  TextSpan(text: i18n.imageDetailsLicenseNotice),
                   WidgetSpan(
                     child: GestureDetector(
                       onTap: () async {
@@ -53,7 +46,7 @@ class LicenseInfoWidget extends StatelessWidget {
                         }
                       },
                       child: Text(
-                        'CC BY-SA 4.0',
+                        i18n.imageDetailsLicenseNoticeLinkToLicense,
                         style: TextStyle(
                           fontSize: 12,
                           color: colorScheme.primary,
@@ -62,9 +55,6 @@ class LicenseInfoWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
-                  TextSpan(
-                    text: AppLocalizations.of(context).imageDetailsLicenseNoticeSuffix,
                   ),
                 ],
               ),
