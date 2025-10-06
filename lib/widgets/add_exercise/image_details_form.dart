@@ -323,7 +323,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
       children: [
         TextButton(
           onPressed: widget.onCancel,
-          child: Text(AppLocalizations.of(context).imageDetailsCancel),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
         const SizedBox(width: 8),
         ElevatedButton(
@@ -369,7 +369,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
           ),
           child: Text(
-            AppLocalizations.of(context).imageDetailsAdd,
+            AppLocalizations.of(context).add,
             style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),

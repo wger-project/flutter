@@ -155,7 +155,6 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "endDate": "End date",
   "startDate": "Start date",
   "routines": "Routines",
   "newRoutine": "New routine",
@@ -778,12 +777,8 @@
   "@imageDetailsLicenseNoticeSuffix": {
     "description": "Second part of license notice text"
   },
-  "imageDetailsCancel": "CANCEL",
-  "@imageDetailsCancel": {
-    "description": "Cancel button text"
-  },
-  "imageDetailsAdd": "ADD",
-  "@imageDetailsAdd": {
+  "add": "add",
+  "@add": {
     "description": "Add button text"
   },
   "variations": "Variations",
