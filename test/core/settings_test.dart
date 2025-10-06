@@ -30,6 +30,8 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/core/settings.dart';
 
+import '../../test_data/exercises.dart';
+import '../../test_data/nutritional_plans.dart';
 import 'settings_test.mocks.dart';
 
 @GenerateMocks([
@@ -47,6 +49,8 @@ void main() {
 
   setUp(() {
     when(mockUserProvider.themeMode).thenReturn(ThemeMode.system);
+    when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
+    when(mockNutritionProvider.ingredients).thenReturn([ingredient1, ingredient2]);
   });
 
   Widget createSettingsScreen({locale = 'en'}) {
