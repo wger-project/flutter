@@ -1050,5 +1050,57 @@
     "checkInformationBeforeSubmitting": "Будь ласка, перевірте правильність введеної вами інформації, перш ніж надсилати вправу",
     "@checkInformationBeforeSubmitting": {},
     "enterTextInLanguage": "Будь ласка, введіть текст правильною мовою!",
-    "@enterTextInLanguage": {}
+    "@enterTextInLanguage": {},
+    "imageDetailsTitle": "Деталі зображення",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Назва",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Введіть назву зображення",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Посилання на веб-сайт джерела, якщо є",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "imageDetailsAuthor": "Автор(и)",
+    "@imageDetailsAuthor": {
+        "description": "Label for author field"
+    },
+    "imageDetailsAuthorHint": "Введіть ім'я автора",
+    "@imageDetailsAuthorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Посилання на веб-сайт або профіль автора, якщо є",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Посилання на оригінальне джерело, якщо це похідний твір",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Похідний твір базується на попередньому творі, але містить достатньо нового, творчого контенту, щоб мати право на власне авторське право.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Тип зображення",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNoticePrefix": "Надсилаючи це зображення, ви погоджуєтеся на його публікацію відповідно до ",
+    "@imageDetailsLicenseNoticePrefix": {
+        "description": "First part of license notice text"
+    },
+    "imageDetailsLicenseNoticeSuffix": " Зображення має бути або вашою власною роботою, або автор має опублікувати його за ліцензією, сумісною з CC BY-SA 4.0.",
+    "@imageDetailsLicenseNoticeSuffix": {
+        "description": "Second part of license notice text"
+    },
+    "add": "додати",
+    "@add": {
+        "description": "Add button text"
+    }
 }
