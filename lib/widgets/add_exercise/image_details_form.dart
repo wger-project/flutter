@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/widgets/add_exercise/license_info_widget.dart';
@@ -27,11 +28,11 @@ class ImageDetailsForm extends StatefulWidget {
   final VoidCallback onCancel;
 
   const ImageDetailsForm({
-    Key? key,
+    super.key,
     required this.imageFile,
     required this.onAdd,
     required this.onCancel,
-  }) : super(key: key);
+  });
 
   @override
   State<ImageDetailsForm> createState() => _ImageDetailsFormState();
@@ -134,7 +135,9 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             children: [
               Text(
                 AppLocalizations.of(context).imageDetailsTitle,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
 
@@ -153,7 +156,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               _buildTextField(
                 controller: _sourceLinkController,
                 label: AppLocalizations.of(context).imageDetailsSourceLink,
-                hint: AppLocalizations.of(context).imageDetailsSourceLinkHint,
+                hint: 'https://example.com',
                 keyboardType: TextInputType.url,
                 validator: _validateUrl,
               ),
@@ -171,7 +174,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               _buildTextField(
                 controller: _authorLinkController,
                 label: AppLocalizations.of(context).imageDetailsAuthorLink,
-                hint: AppLocalizations.of(context).imageDetailsAuthorLinkHint,
+                hint: 'https://example.com/author',
                 keyboardType: TextInputType.url,
                 validator: _validateUrl,
               ),
@@ -181,7 +184,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               _buildTextField(
                 controller: _originalSourceController,
                 label: AppLocalizations.of(context).imageDetailsDerivativeSource,
-                hint: AppLocalizations.of(context).imageDetailsDerivativeSourceHint,
+                hint: 'https://example.com/original',
                 keyboardType: TextInputType.url,
                 helperText: AppLocalizations.of(context).imageDetailsDerivativeHelp,
                 validator: _validateUrl,
@@ -253,6 +256,8 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
   /// Allows user to categorize the image as PHOTO, 3D render, LINE drawing,
   /// LOW-POLY art, or OTHER. This helps users find appropriate exercise images.
   Widget _buildImageTypeSelector() {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -277,11 +282,9 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
                 width: 90,
                 height: 90,
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.blue.shade50 : Colors.white,
-                  border: Border.all(
-                    color: isSelected ? Colors.blue : Colors.grey.shade300,
-                    width: isSelected ? 2 : 1,
-                  ),
+                  color: isSelected
+                      ? theme.buttonTheme.colorScheme!.primary
+                      : theme.buttonTheme.colorScheme!.primaryContainer,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Column(
@@ -290,7 +293,9 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
                     Icon(
                       type['icon'],
                       size: 32,
-                      color: isSelected ? Colors.blue : Colors.grey.shade600,
+                      color: isSelected
+                          ? theme.buttonTheme.colorScheme!.onPrimary
+                          : theme.buttonTheme.colorScheme!.primary,
                     ),
                     const SizedBox(height: 8),
                     Text(

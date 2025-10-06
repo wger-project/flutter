@@ -41,14 +41,12 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            title: Text(
-              i18n.settingsCacheTitle,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+            title: Text(i18n.settingsCacheTitle, style: Theme.of(context).textTheme.headlineSmall),
           ),
           const SettingsExerciseCache(),
           ListTile(
             title: Text(i18n.settingsIngredientCacheDescription),
+            subtitle: Text('${nutritionProvider.ingredients.length} cached ingredients'),
             trailing: IconButton(
               key: const ValueKey('cacheIconIngredients'),
               icon: const Icon(Icons.delete),
@@ -56,21 +54,14 @@ class SettingsPage extends StatelessWidget {
                 await nutritionProvider.clearIngredientCache();
 
                 if (context.mounted) {
-                  final snackBar = SnackBar(
-                    content: Text(i18n.settingsCacheDeletedSnackbar),
-                  );
+                  final snackBar = SnackBar(content: Text(i18n.settingsCacheDeletedSnackbar));
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
             ),
           ),
-          ListTile(
-            title: Text(
-              i18n.others,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-          ),
+          ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
           ListTile(
             title: Text(i18n.themeMode),
             trailing: DropdownButton<ThemeMode>(
@@ -93,10 +84,7 @@ class SettingsPage extends StatelessWidget {
                   }
                 })();
 
-                return DropdownMenuItem<ThemeMode>(
-                  value: value,
-                  child: Text(label),
-                );
+                return DropdownMenuItem<ThemeMode>(value: value, child: Text(label));
               }).toList(),
             ),
           ),
