@@ -22,7 +22,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
       'weight',
       'weight_target',
       'weight_unit',
-      'date'
+      'date',
     ],
   );
   return Log(
@@ -44,19 +44,19 @@ Log _$LogFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
-      'id': instance.id,
-      'exercise': instance.exerciseId,
-      'routine': instance.routineId,
-      'session': instance.sessionId,
-      'iteration': instance.iteration,
-      'slot_entry': instance.slotEntryId,
-      'rir': instance.rir,
-      'rir_target': instance.rirTarget,
-      'repetitions': instance.repetitions,
-      'repetitions_target': instance.repetitionsTarget,
-      'repetitions_unit': instance.repetitionsUnitId,
-      'weight': numToString(instance.weight),
-      'weight_target': numToString(instance.weightTarget),
-      'weight_unit': instance.weightUnitId,
-      'date': dateToUtcIso8601(instance.date),
-    };
+  'id': instance.id,
+  'exercise': instance.exerciseId,
+  'routine': instance.routineId,
+  'session': instance.sessionId,
+  'iteration': instance.iteration,
+  'slot_entry': instance.slotEntryId,
+  'rir': instance.rir,
+  'rir_target': instance.rirTarget,
+  'repetitions': instance.repetitions,
+  'repetitions_target': instance.repetitionsTarget,
+  'repetitions_unit': instance.repetitionsUnitId,
+  'weight': numToString(instance.weight),
+  'weight_target': numToString(instance.weightTarget),
+  'weight_unit': instance.weightUnitId,
+  'date': dateToUtcIso8601(instance.date),
+};

@@ -15,7 +15,7 @@ IngredientImageThumbnails _$IngredientImageThumbnailsFromJson(Map<String, dynami
       'medium',
       'medium_cropped',
       'large',
-      'large_cropped'
+      'large_cropped',
     ],
   );
   return IngredientImageThumbnails(

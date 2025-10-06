@@ -19,7 +19,8 @@ WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
     notes: json['notes'] as String? ?? '',
     timeStart: stringToTimeNull(json['time_start'] as String?),
     timeEnd: stringToTimeNull(json['time_end'] as String?),
-    logs: (json['logs'] as List<dynamic>?)
+    logs:
+        (json['logs'] as List<dynamic>?)
             ?.map((e) => Log.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
@@ -28,12 +29,12 @@ WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$WorkoutSessionToJson(WorkoutSession instance) => <String, dynamic>{
-      'id': instance.id,
-      'routine': instance.routineId,
-      'day': instance.dayId,
-      'date': dateToYYYYMMDD(instance.date),
-      'impression': numToString(instance.impression),
-      'notes': instance.notes,
-      'time_start': timeToString(instance.timeStart),
-      'time_end': timeToString(instance.timeEnd),
-    };
+  'id': instance.id,
+  'routine': instance.routineId,
+  'day': instance.dayId,
+  'date': dateToYYYYMMDD(instance.date),
+  'impression': numToString(instance.impression),
+  'notes': instance.notes,
+  'time_start': timeToString(instance.timeStart),
+  'time_end': timeToString(instance.timeEnd),
+};

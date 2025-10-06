@@ -124,6 +124,8 @@ abstract mixin class $ExerciseApiDataCopyWith<$Res> {
   });
 
 
+
+
 }
 /// @nodoc
 class _$ExerciseApiDataCopyWithImpl<$Res>
@@ -536,6 +538,8 @@ abstract mixin class _$ExerciseBaseDataCopyWith<$Res> implements $ExerciseApiDat
   });
 
 
+
+
 }
 /// @nodoc
 class __$ExerciseBaseDataCopyWithImpl<$Res>
@@ -676,6 +680,8 @@ abstract mixin class $ExerciseSearchDetailsCopyWith<$Res> {
         name: 'base_id') int exerciseId, String name, String category, String? image, @JsonKey(
         name: 'image_thumbnail') String? imageThumbnail
   });
+
+
 
 
 }
@@ -945,6 +951,8 @@ abstract mixin class _$ExerciseSearchDetailsCopyWith<$Res>
         name: 'base_id') int exerciseId, String name, String category, String? image, @JsonKey(
         name: 'image_thumbnail') String? imageThumbnail
   });
+
+
 
 
 }
@@ -1517,6 +1525,7 @@ extension ExerciseApiSearchPatterns on ExerciseApiSearch {
 
 /// @nodoc
 @JsonSerializable()
+
 class _ExerciseApiSearch implements ExerciseApiSearch {
   _ExerciseApiSearch({required final List<ExerciseSearchEntry> suggestions})
       : _suggestions = suggestions;

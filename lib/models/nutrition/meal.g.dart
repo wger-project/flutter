@@ -7,14 +7,14 @@ part of 'meal.dart';
 // **************************************************************************
 
 Meal _$MealFromJson(Map<String, dynamic> json) => Meal(
-      id: (json['id'] as num?)?.toInt(),
-      time: stringToTimeNull(json['time'] as String?),
-      name: json['name'] as String?,
-    )..planId = (json['plan'] as num).toInt();
+  id: (json['id'] as num?)?.toInt(),
+  time: stringToTimeNull(json['time'] as String?),
+  name: json['name'] as String?,
+)..planId = (json['plan'] as num).toInt();
 
 Map<String, dynamic> _$MealToJson(Meal instance) => <String, dynamic>{
-      'id': instance.id,
-      'plan': instance.planId,
-      'time': timeToString(instance.time),
-      'name': instance.name,
-    };
+  'id': instance.id,
+  'plan': instance.planId,
+  'time': timeToString(instance.time),
+  'name': instance.name,
+};

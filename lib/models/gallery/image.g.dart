@@ -7,10 +7,7 @@ part of 'image.dart';
 // **************************************************************************
 
 Image _$ImageFromJson(Map<String, dynamic> json) {
-  $checkKeys(
-    json,
-    requiredKeys: const ['id', 'date', 'image'],
-  );
+  $checkKeys(json, requiredKeys: const ['id', 'date', 'image']);
   return Image(
     id: (json['id'] as num?)?.toInt(),
     date: DateTime.parse(json['date'] as String),
@@ -20,8 +17,8 @@ Image _$ImageFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$ImageToJson(Image instance) => <String, dynamic>{
-      'id': instance.id,
-      'date': dateToYYYYMMDD(instance.date),
-      'image': instance.url,
-      'description': instance.description,
-    };
+  'id': instance.id,
+  'date': dateToYYYYMMDD(instance.date),
+  'image': instance.url,
+  'description': instance.description,
+};

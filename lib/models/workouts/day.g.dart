@@ -18,7 +18,7 @@ Day _$DayFromJson(Map<String, dynamic> json) {
       'need_logs_to_advance',
       'type',
       'order',
-      'config'
+      'config',
     ],
   );
   return Day(
@@ -31,7 +31,8 @@ Day _$DayFromJson(Map<String, dynamic> json) {
     type: json['type'] as String? ?? 'custom',
     order: json['order'] as num? ?? 0,
     config: json['config'] ?? null,
-    slots: (json['slots'] as List<dynamic>?)
+    slots:
+        (json['slots'] as List<dynamic>?)
             ?.map((e) => Slot.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
@@ -39,12 +40,12 @@ Day _$DayFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$DayToJson(Day instance) => <String, dynamic>{
-      'routine': instance.routineId,
-      'name': instance.name,
-      'description': instance.description,
-      'is_rest': instance.isRest,
-      'need_logs_to_advance': instance.needLogsToAdvance,
-      'type': instance.type,
-      'order': instance.order,
-      'config': instance.config,
-    };
+  'routine': instance.routineId,
+  'name': instance.name,
+  'description': instance.description,
+  'is_rest': instance.isRest,
+  'need_logs_to_advance': instance.needLogsToAdvance,
+  'type': instance.type,
+  'order': instance.order,
+  'config': instance.config,
+};
