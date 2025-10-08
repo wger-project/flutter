@@ -46,29 +46,12 @@ class ImageDetailsForm extends StatefulWidget {
 class _ImageDetailsFormState extends State<ImageDetailsForm> {
   final _formKey = GlobalKey<FormState>();
 
-  // Text controllers for license metadata fields
-  final _titleController = TextEditingController();
-  final _sourceLinkController = TextEditingController();
-  final _authorController = TextEditingController();
-  final _authorLinkController = TextEditingController();
-  final _originalSourceController = TextEditingController();
-
   /// Currently selected image type
   ImageType _selectedImageType = ImageType.photo;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _sourceLinkController.dispose();
-    _authorController.dispose();
-    _authorLinkController.dispose();
-    _originalSourceController.dispose();
-    super.dispose();
   }
 
   @override
