@@ -1102,5 +1102,9 @@
     "add": "додати",
     "@add": {
         "description": "Add button text"
-    }
+    },
+    "imageDetailsLicenseNotice": "Надсилаючи це зображення, ви погоджуєтеся на його розповсюдження за ліцензією CC-BY-SA-4. Зображення має бути або вашою власною роботою, або автор має опублікувати його за ліцензією, сумісною з нею.",
+    "@imageDetailsLicenseNotice": {},
+    "imageDetailsLicenseNoticeLinkToLicense": "Див. текст ліцензії.",
+    "@imageDetailsLicenseNoticeLinkToLicense": {}
 }
