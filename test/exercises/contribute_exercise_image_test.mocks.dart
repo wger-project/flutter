@@ -8,13 +8,13 @@ import 'dart:ui' as _i15;
 
 import 'package:http/http.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i11;
+import 'package:mockito/src/dummies.dart' as _i8;
 import 'package:wger/models/exercises/category.dart' as _i13;
-import 'package:wger/models/exercises/equipment.dart' as _i8;
-import 'package:wger/models/exercises/exercise_submission.dart' as _i10;
+import 'package:wger/models/exercises/equipment.dart' as _i9;
+import 'package:wger/models/exercises/exercise_submission.dart' as _i11;
 import 'package:wger/models/exercises/exercise_submission_images.dart' as _i7;
 import 'package:wger/models/exercises/language.dart' as _i12;
-import 'package:wger/models/exercises/muscle.dart' as _i9;
+import 'package:wger/models/exercises/muscle.dart' as _i10;
 import 'package:wger/models/exercises/variation.dart' as _i3;
 import 'package:wger/providers/add_exercise.dart' as _i6;
 import 'package:wger/providers/auth.dart' as _i4;
@@ -85,6 +85,14 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
           as List<_i7.ExerciseSubmissionImage>);
 
   @override
+  String get author =>
+      (super.noSuchMethod(
+            Invocation.getter(#author),
+            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#author)),
+          )
+          as String);
+
+  @override
   List<String> get alternateNamesEn =>
       (super.noSuchMethod(Invocation.getter(#alternateNamesEn), returnValue: <String>[])
           as List<String>);
@@ -95,9 +103,9 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
           as List<String>);
 
   @override
-  List<_i8.Equipment> get equipment =>
-      (super.noSuchMethod(Invocation.getter(#equipment), returnValue: <_i8.Equipment>[])
-          as List<_i8.Equipment>);
+  List<_i9.Equipment> get equipment =>
+      (super.noSuchMethod(Invocation.getter(#equipment), returnValue: <_i9.Equipment>[])
+          as List<_i9.Equipment>);
 
   @override
   bool get newVariation =>
@@ -112,25 +120,29 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
           as _i3.Variation);
 
   @override
-  List<_i9.Muscle> get primaryMuscles =>
-      (super.noSuchMethod(Invocation.getter(#primaryMuscles), returnValue: <_i9.Muscle>[])
-          as List<_i9.Muscle>);
+  List<_i10.Muscle> get primaryMuscles =>
+      (super.noSuchMethod(Invocation.getter(#primaryMuscles), returnValue: <_i10.Muscle>[])
+          as List<_i10.Muscle>);
 
   @override
-  List<_i9.Muscle> get secondaryMuscles =>
-      (super.noSuchMethod(Invocation.getter(#secondaryMuscles), returnValue: <_i9.Muscle>[])
-          as List<_i9.Muscle>);
+  List<_i10.Muscle> get secondaryMuscles =>
+      (super.noSuchMethod(Invocation.getter(#secondaryMuscles), returnValue: <_i10.Muscle>[])
+          as List<_i10.Muscle>);
 
   @override
-  _i10.ExerciseSubmissionApi get exerciseApiObject =>
+  _i11.ExerciseSubmissionApi get exerciseApiObject =>
       (super.noSuchMethod(
             Invocation.getter(#exerciseApiObject),
-            returnValue: _i11.dummyValue<_i10.ExerciseSubmissionApi>(
+            returnValue: _i8.dummyValue<_i11.ExerciseSubmissionApi>(
               this,
               Invocation.getter(#exerciseApiObject),
             ),
           )
-          as _i10.ExerciseSubmissionApi);
+          as _i11.ExerciseSubmissionApi);
+
+  @override
+  set author(String? value) =>
+      super.noSuchMethod(Invocation.setter(#author, value), returnValueForMissingStub: null);
 
   @override
   set exerciseNameEn(String? value) => super.noSuchMethod(
@@ -181,7 +193,7 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
       super.noSuchMethod(Invocation.setter(#category, value), returnValueForMissingStub: null);
 
   @override
-  set equipment(List<_i8.Equipment>? equipment) =>
+  set equipment(List<_i9.Equipment>? equipment) =>
       super.noSuchMethod(Invocation.setter(#equipment, equipment), returnValueForMissingStub: null);
 
   @override
@@ -197,13 +209,13 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
   );
 
   @override
-  set primaryMuscles(List<_i9.Muscle>? muscles) => super.noSuchMethod(
+  set primaryMuscles(List<_i10.Muscle>? muscles) => super.noSuchMethod(
     Invocation.setter(#primaryMuscles, muscles),
     returnValueForMissingStub: null,
   );
 
   @override
-  set secondaryMuscles(List<_i9.Muscle>? muscles) => super.noSuchMethod(
+  set secondaryMuscles(List<_i10.Muscle>? muscles) => super.noSuchMethod(
     Invocation.setter(#secondaryMuscles, muscles),
     returnValueForMissingStub: null,
   );

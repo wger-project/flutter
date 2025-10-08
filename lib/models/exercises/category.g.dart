@@ -11,7 +11,7 @@ ExerciseCategory _$ExerciseCategoryFromJson(Map<String, dynamic> json) {
   return ExerciseCategory(id: (json['id'] as num).toInt(), name: json['name'] as String);
 }
 
-ap<String, dynamic> _$ExerciseCategoryToJson(ExerciseCategory instance) => <String, dynamic>{
+Map<String, dynamic> _$ExerciseCategoryToJson(ExerciseCategory instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
 };

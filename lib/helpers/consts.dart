@@ -145,4 +145,4 @@ const String API_RESULTS_PAGE_SIZE = '100';
 const INTERPOLATION_MARKER = 123;
 
 /// Creative Commons license IDs
-const CC_BY_SA_4_ID = 4;
+const CC_BY_SA_4_ID = 2;

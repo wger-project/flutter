@@ -741,19 +741,19 @@
   "@imageDetailsLicenseTitleHint": {
     "description": "Hint text for image title field"
   },
-  "imageDetailsSourceLink": "Link to the source website, if available",
+  "imageDetailsSourceLink": "Link to the source website",
   "@imageDetailsSourceLink": {
     "description": "Label for source link field"
   },
-  "imageDetailsAuthor": "Author(s)",
-  "@imageDetailsAuthor": {
+  "author": "Author(s)",
+  "@Author": {
     "description": "Label for author field"
   },
-  "imageDetailsAuthorHint": "Enter author name",
-  "@imageDetailsAuthorHint": {
+  "authorHint": "Enter author name",
+  "@authorHint": {
     "description": "Hint text for author field"
   },
-  "imageDetailsAuthorLink": "Link to author website or profile, if available",
+  "imageDetailsAuthorLink": "Link to author website or profile",
   "@imageDetailsAuthorLink": {
     "description": "Label for author link field"
   },

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:wger/core/validators.dart';
+import 'package:wger/helpers/exercises/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/widgets/add_exercise/license_info_widget.dart';
+
+import 'add_exercise_text_area.dart';
 
 /// Form for collecting CC BY-SA 4.0 license metadata for exercise images
 ///
@@ -51,6 +55,11 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
   ImageType _selectedImageType = ImageType.photo;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _sourceLinkController.dispose();
@@ -60,137 +69,76 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     super.dispose();
   }
 
-  /// Validates URL format
-  ///
-  /// Returns error message if URL is invalid, null if valid or empty
-  String? _validateUrl(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return null; // Empty is OK (optional field)
-    }
-
-    final trimmedValue = value.trim();
-
-    // Check if starts with http:// or https://
-    if (!trimmedValue.startsWith('http://') && !trimmedValue.startsWith('https://')) {
-      return AppLocalizations.of(context).invalidUrl;
-    }
-
-    // Try to parse as URI
-    try {
-      final uri = Uri.parse(trimmedValue);
-      if (!uri.hasScheme || !uri.hasAuthority) {
-        return AppLocalizations.of(context).invalidUrl;
-      }
-    } catch (e) {
-      return AppLocalizations.of(context).invalidUrl;
-    }
-
-    return null;
-  }
-
-  /// Maps UI image type selection to API 'style' field value
-  ///
-  /// API expects numeric string:
-  /// - PHOTO = '1'
-  /// - 3D = '2'
-  /// - LINE = '3'
-  /// - LOW-POLY = '4'
-  /// - OTHER = '5'
-  String _getStyleValue() {
-    switch (_selectedImageType) {
-      case 'PHOTO':
-        return '1';
-      case '3D':
-        return '2';
-      case 'LINE':
-        return '3';
-      case 'LOW-POLY':
-        return '4';
-      case 'OTHER':
-        return '5';
-      default:
-        return '1'; // Default to PHOTO if unknown
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context).imageDetailsTitle,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          spacing: 8,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppLocalizations.of(context).imageDetailsTitle,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
 
-              _buildImagePreview(),
-              const SizedBox(height: 24),
+            _buildImagePreview(),
+            const SizedBox(height: 8),
 
-              // License title field - helps identify the image
-              _buildTextField(
-                controller: _titleController,
-                label: AppLocalizations.of(context).imageDetailsLicenseTitle,
-                hint: AppLocalizations.of(context).imageDetailsLicenseTitleHint,
-              ),
-              const SizedBox(height: 16),
+            // Author name - required for proper CC BY-SA attribution
+            AddExerciseTextArea(
+              title: '${AppLocalizations.of(context).author}*',
+              initialValue: widget.submissionImage.author,
+              onSaved: (value) => widget.submissionImage.author = value!,
+              validator: (name) => validateAuthorName(name, context),
+            ),
 
-              // Source URL - where the image was found (license_object_url in API)
-              _buildTextField(
-                controller: _sourceLinkController,
-                label: AppLocalizations.of(context).imageDetailsSourceLink,
-                hint: 'https://example.com',
-                keyboardType: TextInputType.url,
-                validator: _validateUrl,
-              ),
-              const SizedBox(height: 16),
+            // License title field - helps identify the image
+            AddExerciseTextArea(
+              title: AppLocalizations.of(context).imageDetailsLicenseTitle,
+              helperText: AppLocalizations.of(context).imageDetailsLicenseTitleHint,
+              initialValue: widget.submissionImage.title,
+              onSaved: (value) => widget.submissionImage.title = value,
+            ),
 
-              // Author name - required for proper CC BY-SA attribution
-              _buildTextField(
-                controller: _authorController,
-                label: AppLocalizations.of(context).imageDetailsAuthor,
-                hint: AppLocalizations.of(context).imageDetailsAuthorHint,
-              ),
-              const SizedBox(height: 16),
+            // Source URL - where the image was found (license_object_url in API)
+            AddExerciseTextArea(
+              title: AppLocalizations.of(context).imageDetailsSourceLink,
+              initialValue: widget.submissionImage.sourceUrl,
+              onSaved: (value) => widget.submissionImage.sourceUrl = value,
+              validator: (value) => validateUrl(value, i18n, required: false),
+            ),
 
-              // Author's website/profile URL
-              _buildTextField(
-                controller: _authorLinkController,
-                label: AppLocalizations.of(context).imageDetailsAuthorLink,
-                hint: 'https://example.com/author',
-                keyboardType: TextInputType.url,
-                validator: _validateUrl,
-              ),
-              const SizedBox(height: 16),
+            // Author's website/profile URL
+            AddExerciseTextArea(
+              title: AppLocalizations.of(context).imageDetailsAuthorLink,
+              initialValue: widget.submissionImage.authorUrl,
+              onSaved: (value) => widget.submissionImage.authorUrl = value,
+              validator: (value) => validateUrl(value, i18n, required: false),
+            ),
 
-              // Original source if this is a derivative work (modified from another image)
-              _buildTextField(
-                controller: _originalSourceController,
-                label: AppLocalizations.of(context).imageDetailsDerivativeSource,
-                hint: 'https://example.com/original',
-                keyboardType: TextInputType.url,
-                helperText: AppLocalizations.of(context).imageDetailsDerivativeHelp,
-                validator: _validateUrl,
-              ),
-              const SizedBox(height: 24),
+            // Original source if this is a derivative work (modified from another image)
+            AddExerciseTextArea(
+              title: AppLocalizations.of(context).imageDetailsDerivativeSource,
+              helperText: AppLocalizations.of(context).imageDetailsDerivativeHelp,
+              initialValue: widget.submissionImage.derivativeSourceUrl,
+              onSaved: (value) => widget.submissionImage.derivativeSourceUrl = value,
+              validator: (value) => validateUrl(value, i18n, required: false),
+            ),
 
-              _buildImageTypeSelector(),
-              const SizedBox(height: 24),
+            _buildImageTypeSelector(),
+            const SizedBox(height: 16),
 
-              // License info as separate widget for better optimization
-              const LicenseInfoWidget(),
-              const SizedBox(height: 24),
+            // License info as separate widget for better optimization
+            const LicenseInfoWidget(),
+            const SizedBox(height: 8),
 
-              _buildButtons(),
-            ],
-          ),
+            _buildButtons(),
+          ],
         ),
       ),
     );
@@ -292,7 +240,9 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
                       type.label,
                       style: TextStyle(
                         fontSize: 11,
-                        color: isSelected ? Colors.blue : Colors.grey.shade700,
+                        color: isSelected
+                            ? theme.buttonTheme.colorScheme!.onPrimary
+                            : theme.buttonTheme.colorScheme!.primary,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                       ),
                       textAlign: TextAlign.center,
@@ -321,10 +271,6 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             if (!_formKey.currentState!.validate()) {
               return;
             }
-
-            // Build details map with API field names
-            // Style is always included, other fields only if non-empty
-            final details = <String, String>{'style': _getStyleValue()};
 
             // Add optional fields only if user provided values
             final title = _titleController.text.trim();

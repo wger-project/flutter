@@ -23,6 +23,7 @@ class AddExerciseProvider with ChangeNotifier {
 
   List<ExerciseSubmissionImage> get exerciseImages => [..._exerciseImages];
 
+  String author = '';
   String? exerciseNameEn;
   String? exerciseNameTrans;
   String? descriptionEn;

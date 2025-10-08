@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/providers/add_exercise.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/add_exercise/image_details_form.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
@@ -33,7 +34,7 @@ class Step5Images extends StatefulWidget {
 class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin {
   /// Currently selected image waiting for metadata input
   /// When non-null, ImageDetailsForm is displayed instead of image picker
-  ExerciseSubmissionImage? _currentImageToAddNew;
+  ExerciseSubmissionImage? _currentImageToAdd;
 
   /// Show dialog to choose between Camera and Gallery
   Future<void> _showImageSourceDialog(BuildContext context) async {
@@ -75,6 +76,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
   ///
   /// [pickFromCamera] - If true, opens camera; otherwise opens gallery
   void _pickAndShowImageDetails(BuildContext context, {bool pickFromCamera = false}) async {
+    final userProvider = context.read<UserProvider>();
     final imagePicker = ImagePicker();
 
     XFile? selectedImage;
@@ -114,7 +116,10 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
 
       // Show metadata collection form for valid image
       setState(() {
-        _currentImageToAddNew = ExerciseSubmissionImage(imageFile: imageFile);
+        _currentImageToAdd = ExerciseSubmissionImage(
+          imageFile: imageFile,
+          author: userProvider.profile?.username ?? '',
+        );
       });
     }
   }
@@ -135,14 +140,14 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
 
     // Reset form state - image is now visible in preview list
     setState(() {
-      _currentImageToAddNew = null;
+      _currentImageToAdd = null;
     });
   }
 
   /// Cancel metadata input and return to image picker
   void _cancelImageAdd() {
     setState(() {
-      _currentImageToAddNew = null;
+      _currentImageToAdd = null;
     });
   }
 
@@ -153,7 +158,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
       child: Column(
         children: [
           // License notice - shown when not entering metadata
-          if (_currentImageToAddNew == null)
+          if (_currentImageToAdd == null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(
@@ -164,15 +169,15 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
             ),
 
           // Metadata collection form - shown when image is selected
-          if (_currentImageToAddNew != null)
+          if (_currentImageToAdd != null)
             ImageDetailsForm(
-              submissionImage: _currentImageToAddNew!,
+              submissionImage: _currentImageToAdd!,
               onAdd: _addImageWithDetails,
               onCancel: _cancelImageAdd,
             ),
 
           // Image picker or preview - shown when not entering metadata
-          if (_currentImageToAddNew == null)
+          if (_currentImageToAdd == null)
             Consumer<AddExerciseProvider>(
               builder: (ctx, provider, __) {
                 if (provider.exerciseImages.isNotEmpty) {

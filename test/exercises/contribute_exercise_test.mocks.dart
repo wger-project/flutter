@@ -8,13 +8,13 @@ import 'dart:ui' as _i16;
 
 import 'package:flutter/material.dart' as _i18;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i14;
+import 'package:mockito/src/dummies.dart' as _i13;
 import 'package:shared_preferences/shared_preferences.dart' as _i4;
 import 'package:wger/database/exercises/exercise_database.dart' as _i5;
 import 'package:wger/models/exercises/category.dart' as _i7;
 import 'package:wger/models/exercises/equipment.dart' as _i8;
 import 'package:wger/models/exercises/exercise.dart' as _i6;
-import 'package:wger/models/exercises/exercise_submission.dart' as _i13;
+import 'package:wger/models/exercises/exercise_submission.dart' as _i14;
 import 'package:wger/models/exercises/exercise_submission_images.dart' as _i12;
 import 'package:wger/models/exercises/language.dart' as _i10;
 import 'package:wger/models/exercises/muscle.dart' as _i9;
@@ -105,6 +105,14 @@ class MockAddExerciseProvider extends _i1.Mock implements _i11.AddExerciseProvid
           as List<_i12.ExerciseSubmissionImage>);
 
   @override
+  String get author =>
+      (super.noSuchMethod(
+            Invocation.getter(#author),
+            returnValue: _i13.dummyValue<String>(this, Invocation.getter(#author)),
+          )
+          as String);
+
+  @override
   List<String> get alternateNamesEn =>
       (super.noSuchMethod(Invocation.getter(#alternateNamesEn), returnValue: <String>[])
           as List<String>);
@@ -142,15 +150,19 @@ class MockAddExerciseProvider extends _i1.Mock implements _i11.AddExerciseProvid
           as List<_i9.Muscle>);
 
   @override
-  _i13.ExerciseSubmissionApi get exerciseApiObject =>
+  _i14.ExerciseSubmissionApi get exerciseApiObject =>
       (super.noSuchMethod(
             Invocation.getter(#exerciseApiObject),
-            returnValue: _i14.dummyValue<_i13.ExerciseSubmissionApi>(
+            returnValue: _i13.dummyValue<_i14.ExerciseSubmissionApi>(
               this,
               Invocation.getter(#exerciseApiObject),
             ),
           )
-          as _i13.ExerciseSubmissionApi);
+          as _i14.ExerciseSubmissionApi);
+
+  @override
+  set author(String? value) =>
+      super.noSuchMethod(Invocation.setter(#author, value), returnValueForMissingStub: null);
 
   @override
   set exerciseNameEn(String? value) => super.noSuchMethod(
