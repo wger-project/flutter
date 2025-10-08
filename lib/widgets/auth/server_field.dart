@@ -1,36 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:wger/core/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class ServerField extends StatelessWidget {
   final TextEditingController controller;
   final Function(String?) onSaved;
 
-  const ServerField({
-    required this.controller,
-    required this.onSaved,
-    super.key,
-  });
+  const ServerField({required this.controller, required this.onSaved, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     return TextFormField(
       key: const Key('inputServer'),
       decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).customServerUrl,
-        helperText: AppLocalizations.of(context).customServerHint,
+        labelText: i18n.customServerUrl,
+        helperText: i18n.customServerHint,
         helperMaxLines: 4,
       ),
       controller: controller,
-      validator: (value) {
-        if (Uri.tryParse(value!) == null) {
-          return AppLocalizations.of(context).invalidUrl;
-        }
-
-        if (value.isEmpty || !value.contains('http')) {
-          return AppLocalizations.of(context).invalidUrl;
-        }
-        return null;
-      },
+      validator: (value) => validateUrl(value, i18n, required: true),
       onSaved: onSaved,
     );
   }
