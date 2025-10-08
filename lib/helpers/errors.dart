@@ -101,7 +101,8 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
 
   if (error is TimeoutException) {
     issueTitle = 'Network Timeout';
-    issueErrorMessage = 'The connection to the server timed out. Please check your '
+    issueErrorMessage =
+        'The connection to the server timed out. Please check your '
         'internet connection and try again.';
   } else if (error is FlutterErrorDetails) {
     issueTitle = 'Application Error';
@@ -116,7 +117,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
   }
 
   final String fullStackTrace = stackTrace?.toString() ?? 'No stack trace available.';
-  final applicationLogs = InMemoryLogStore().formattedLogs;
+  final applicationLogs = InMemoryLogStore().getFormattedLogs();
 
   showDialog(
     context: dialogContext,
@@ -127,15 +128,9 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
           spacing: 8,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: Theme.of(context).colorScheme.error,
-            ),
+            Icon(icon, color: Theme.of(context).colorScheme.error),
             Expanded(
-              child: Text(
-                errorTitle,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
+              child: Text(errorTitle, style: TextStyle(color: Theme.of(context).colorScheme.error)),
             ),
           ],
         ),
@@ -150,10 +145,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                 tilePadding: EdgeInsets.zero,
                 title: Text(i18n.errorViewDetails),
                 children: [
-                  Text(
-                    issueErrorMessage,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  Text(issueErrorMessage, style: const TextStyle(fontWeight: FontWeight.bold)),
                   Container(
                     alignment: Alignment.topLeft,
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -166,15 +158,13 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                     ),
                   ),
                   CopyToClipboardButton(
-                    text: 'Error Title: $issueTitle\n'
+                    text:
+                        'Error Title: $issueTitle\n'
                         'Error Message: $issueErrorMessage\n\n'
                         'Stack Trace:\n$fullStackTrace',
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    i18n.applicationLogs,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  Text(i18n.applicationLogs, style: const TextStyle(fontWeight: FontWeight.bold)),
                   Container(
                     alignment: Alignment.topLeft,
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -182,10 +172,12 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          ...applicationLogs.map((entry) => Text(
-                                entry,
-                                style: TextStyle(fontSize: 12.0, color: Colors.grey[700]),
-                              ))
+                          ...applicationLogs.map(
+                            (entry) => Text(
+                              entry,
+                              style: TextStyle(fontSize: 12.0, color: Colors.grey[700]),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -215,7 +207,8 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                   'App logs (last ${applicationLogs.length} entries):\n'
                   '```\n$logText\n```',
                 );
-                final githubIssueUrl = '$GITHUB_ISSUES_BUG_URL'
+                final githubIssueUrl =
+                    '$GITHUB_ISSUES_BUG_URL'
                     '&title=$issueTitle'
                     '&description=$description';
                 final Uri reportUri = Uri.parse(githubIssueUrl);
@@ -226,9 +219,9 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                   if (kDebugMode) {
                     logger.warning('Error launching URL: $e');
                   }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error opening issue tracker: $e')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Error opening issue tracker: $e')));
                 }
               },
             ),
@@ -248,10 +241,7 @@ class CopyToClipboardButton extends StatelessWidget {
   final logger = Logger('CopyToClipboardButton');
   final String text;
 
-  CopyToClipboardButton({
-    required this.text,
-    super.key,
-  });
+  CopyToClipboardButton({required this.text, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -265,21 +255,23 @@ class CopyToClipboardButton extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       onPressed: () {
-        Clipboard.setData(ClipboardData(text: text)).then((_) {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Details copied to clipboard!')),
-            );
-          }
-        }).catchError((copyError) {
-          logger.warning('Error copying to clipboard: $copyError');
+        Clipboard.setData(ClipboardData(text: text))
+            .then((_) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Details copied to clipboard!')));
+              }
+            })
+            .catchError((copyError) {
+              logger.warning('Error copying to clipboard: $copyError');
 
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Could not copy details.')),
-            );
-          }
-        });
+              if (context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Could not copy details.')));
+              }
+            });
       },
     );
   }
@@ -290,9 +282,7 @@ void showDeleteDialog(BuildContext context, String confirmDeleteName, Log log) a
     context: context,
     builder: (BuildContext contextDialog) {
       return AlertDialog(
-        content: Text(
-          AppLocalizations.of(context).confirmDelete(confirmDeleteName),
-        ),
+        content: Text(AppLocalizations.of(context).confirmDelete(confirmDeleteName)),
         actions: [
           TextButton(
             key: const ValueKey('cancel-button'),
@@ -387,7 +377,10 @@ List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
 
   for (final error in errors) {
     errorList.add(
-      Text(error.key, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
+      Text(
+        error.key,
+        style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+      ),
     );
 
     print(error.errorMessages);
@@ -408,7 +401,10 @@ List<Widget> formatTextErrors(List<String> errors, {String? title, Color? color}
 
   if (title != null) {
     errorList.add(
-      Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
+      Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+      ),
     );
   }
 
@@ -458,11 +454,7 @@ class GeneralErrorsWidget extends StatelessWidget {
         child: Column(
           children: [
             Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
-            ...formatTextErrors(
-              widgets,
-              title: title,
-              color: Theme.of(context).colorScheme.error,
-            ),
+            ...formatTextErrors(widgets, title: title, color: Theme.of(context).colorScheme.error),
           ],
         ),
       ),
