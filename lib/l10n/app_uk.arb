@@ -1063,7 +1063,7 @@
     "@imageDetailsLicenseTitleHint": {
         "description": "Hint text for image title field"
     },
-    "imageDetailsSourceLink": "Посилання на веб-сайт джерела, якщо є",
+    "imageDetailsSourceLink": "Посилання на веб-сайт джерела",
     "@imageDetailsSourceLink": {
         "description": "Label for source link field"
     },
@@ -1075,7 +1075,7 @@
     "@imageDetailsAuthorHint": {
         "description": "Hint text for author field"
     },
-    "imageDetailsAuthorLink": "Посилання на веб-сайт або профіль автора, якщо є",
+    "imageDetailsAuthorLink": "Посилання на веб-сайт або профіль автора",
     "@imageDetailsAuthorLink": {
         "description": "Label for author link field"
     },
@@ -1106,5 +1106,11 @@
     "imageDetailsLicenseNotice": "Надсилаючи це зображення, ви погоджуєтеся на його розповсюдження за ліцензією CC-BY-SA-4. Зображення має бути або вашою власною роботою, або автор має опублікувати його за ліцензією, сумісною з нею.",
     "@imageDetailsLicenseNotice": {},
     "imageDetailsLicenseNoticeLinkToLicense": "Див. текст ліцензії.",
-    "@imageDetailsLicenseNoticeLinkToLicense": {}
+    "@imageDetailsLicenseNoticeLinkToLicense": {},
+    "author": "Автор(и)",
+    "@author": {},
+    "authorHint": "Введіть ім'я автора",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    }
 }
