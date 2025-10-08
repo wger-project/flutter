@@ -9,12 +9,12 @@ import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/exercise_screen.dart';
-import 'package:wger/widgets/add_exercise/steps/step1basics.dart';
-import 'package:wger/widgets/add_exercise/steps/step2variations.dart';
-import 'package:wger/widgets/add_exercise/steps/step3description.dart';
-import 'package:wger/widgets/add_exercise/steps/step4translations.dart';
-import 'package:wger/widgets/add_exercise/steps/step5images.dart';
-import 'package:wger/widgets/add_exercise/steps/step6Overview.dart';
+import 'package:wger/widgets/add_exercise/steps/step_1_basics.dart';
+import 'package:wger/widgets/add_exercise/steps/step_2_variations.dart';
+import 'package:wger/widgets/add_exercise/steps/step_3_description.dart';
+import 'package:wger/widgets/add_exercise/steps/step_4_translations.dart';
+import 'package:wger/widgets/add_exercise/steps/step_5_images.dart';
+import 'package:wger/widgets/add_exercise/steps/step_6_overview.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/user/forms.dart';
 
