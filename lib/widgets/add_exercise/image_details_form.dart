@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:wger/core/validators.dart';
 import 'package:wger/helpers/exercises/validators.dart';
@@ -85,7 +87,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             ),
 
             const SizedBox(height: 8),
-            _buildImagePreview(),
+            ImagePreview(imageFile: widget.submissionImage.imageFile),
             const SizedBox(height: 8),
 
             // Author name - required for proper CC BY-SA attribution
@@ -129,7 +131,14 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               validator: (value) => validateUrl(value, i18n, required: false),
             ),
 
-            _buildImageTypeSelector(),
+            ImageTypeSelector(
+              selectedType: _selectedImageType,
+              onTypeSelected: (type) {
+                setState(() {
+                  _selectedImageType = type;
+                });
+              },
+            ),
             const SizedBox(height: 16),
 
             // License info as separate widget for better optimization
@@ -143,7 +152,47 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
     );
   }
 
-  Widget _buildImagePreview() {
+  Widget _buildButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          onPressed: widget.onCancel,
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+        ),
+        const SizedBox(width: 8),
+        ElevatedButton(
+          onPressed: () {
+            if (!_formKey.currentState!.validate()) {
+              return;
+            }
+            _formKey.currentState?.save();
+
+            // Pass image and metadata back to parent
+            widget.onAdd(widget.submissionImage);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          ),
+          child: Text(
+            AppLocalizations.of(context).add,
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ImagePreview extends StatelessWidget {
+  final File imageFile;
+
+  const ImagePreview({super.key, required this.imageFile});
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 300, maxHeight: 200),
@@ -153,24 +202,28 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.file(widget.submissionImage.imageFile, fit: BoxFit.contain),
+          child: Image.file(imageFile, fit: BoxFit.contain),
         ),
       ),
     );
   }
+}
 
-  /// Visual selector for image style/type
-  ///
-  /// Allows user to categorize the image as PHOTO, 3D render, LINE drawing,
-  /// LOW-POLY art, or OTHER. This helps users find appropriate exercise images.
-  Widget _buildImageTypeSelector() {
+class ImageTypeSelector extends StatelessWidget {
+  final ImageType selectedType;
+  final ValueChanged<ImageType> onTypeSelected;
+
+  const ImageTypeSelector({super.key, required this.selectedType, required this.onTypeSelected});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final i18n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppLocalizations.of(context).imageDetailsImageType,
+          i18n.imageDetailsImageType,
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 12),
@@ -178,13 +231,9 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
           spacing: 8,
           runSpacing: 8,
           children: ImageType.values.map((type) {
-            final isSelected = _selectedImageType == type;
+            final isSelected = selectedType == type;
             return InkWell(
-              onTap: () {
-                setState(() {
-                  _selectedImageType = type;
-                });
-              },
+              onTap: () => onTypeSelected(type),
               borderRadius: BorderRadius.circular(4),
               child: Container(
                 width: 90,
@@ -222,39 +271,6 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
               ),
             );
           }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        TextButton(
-          onPressed: widget.onCancel,
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-        ),
-        const SizedBox(width: 8),
-        ElevatedButton(
-          onPressed: () {
-            if (!_formKey.currentState!.validate()) {
-              return;
-            }
-            _formKey.currentState?.save();
-
-            // Pass image and metadata back to parent
-            widget.onAdd(widget.submissionImage);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-          ),
-          child: Text(
-            AppLocalizations.of(context).add,
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-          ),
         ),
       ],
     );
