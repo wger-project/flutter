@@ -56,12 +56,12 @@ class ExerciseSubmissionImage {
 
   Map<String, String> toJson() {
     return {
-      'title': title ?? '',
-      'author': author ?? '',
-      'author_url': authorUrl ?? '',
-      'source_url': sourceUrl ?? '',
-      'derivative_source_url': derivativeSourceUrl ?? '',
-      'type': type.id.toString(),
+      'license_title': title ?? '',
+      'license_author': author ?? '',
+      'license_author_url': authorUrl ?? '',
+      'license_object_url': sourceUrl ?? '',
+      'license_derivative_source_url': derivativeSourceUrl ?? '',
+      'style': type.id.toString(),
     };
   }
 }

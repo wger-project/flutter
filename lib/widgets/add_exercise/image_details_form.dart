@@ -77,15 +77,14 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
       child: Form(
         key: _formKey,
         child: Column(
-          spacing: 8,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               AppLocalizations.of(context).imageDetailsTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
 
+            const SizedBox(height: 8),
             _buildImagePreview(),
             const SizedBox(height: 8),
 
@@ -93,7 +92,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             AddExerciseTextArea(
               title: '${AppLocalizations.of(context).author}*',
               initialValue: widget.submissionImage.author,
-              onSaved: (value) => widget.submissionImage.author = value!,
+              onSaved: (value) => widget.submissionImage.author = value,
               validator: (name) => validateAuthorName(name, context),
             ),
 
@@ -157,35 +156,6 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
           child: Image.file(widget.submissionImage.imageFile, fit: BoxFit.contain),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    String? hint,
-    TextInputType? keyboardType,
-    String? helperText,
-    String? Function(String?)? validator,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          keyboardType: keyboardType,
-          validator: validator,
-          decoration: InputDecoration(
-            hintText: hint,
-            helperText: helperText,
-            helperMaxLines: 3,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          ),
-        ),
-      ],
     );
   }
 
@@ -271,32 +241,7 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             if (!_formKey.currentState!.validate()) {
               return;
             }
-
-            // Add optional fields only if user provided values
-            final title = _titleController.text.trim();
-            if (title.isNotEmpty) {
-              widget.submissionImage.title = title;
-            }
-
-            final author = _authorController.text.trim();
-            if (author.isNotEmpty) {
-              widget.submissionImage.author = author;
-            }
-
-            final sourceUrl = _sourceLinkController.text.trim();
-            if (sourceUrl.isNotEmpty) {
-              widget.submissionImage.sourceUrl = sourceUrl;
-            }
-
-            final authorUrl = _authorLinkController.text.trim();
-            if (authorUrl.isNotEmpty) {
-              widget.submissionImage.authorUrl = authorUrl;
-            }
-
-            final derivativeUrl = _originalSourceController.text.trim();
-            if (derivativeUrl.isNotEmpty) {
-              widget.submissionImage.derivativeSourceUrl = derivativeUrl;
-            }
+            _formKey.currentState?.save();
 
             // Pass image and metadata back to parent
             widget.onAdd(widget.submissionImage);

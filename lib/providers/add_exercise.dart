@@ -192,7 +192,6 @@ class AddExerciseProvider with ChangeNotifier {
       request.fields['exercise'] = exerciseId.toString();
       request.fields['license'] = CC_BY_SA_4_ID.toString();
       request.fields['is_main'] = 'false';
-      request.fields['style'] = ImageType.photo.id.toString();
 
       final details = image.toJson();
       if (details.isNotEmpty) {
