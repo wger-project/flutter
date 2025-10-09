@@ -10,6 +10,7 @@ import 'package:wger/providers/nutrition.dart';
 
 import '../fixtures/fixture_reader.dart';
 import '../measurements/measurement_provider_test.mocks.dart';
+import '../utils.dart';
 
 void main() {
   final now = DateTime.now();
@@ -21,11 +22,7 @@ void main() {
   setUp(() {
     database = IngredientDatabase.inMemory(NativeDatabase.memory());
     mockWgerBaseProvider = MockWgerBaseProvider();
-    nutritionProvider = NutritionPlansProvider(
-      mockWgerBaseProvider,
-      [],
-      database: database,
-    );
+    nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [], database: database);
 
     const String planInfoUrl = 'nutritionplaninfo';
     const String planUrl = 'nutritionplan';
@@ -41,9 +38,7 @@ void main() {
     final List<dynamic> nutritionDiaryResponse = jsonDecode(
       fixture('nutrition/nutrition_diary_response.json'),
     )['results'];
-    ingredient59887Response = jsonDecode(
-      fixture('nutrition/ingredientinfo_59887.json'),
-    );
+    ingredient59887Response = jsonDecode(fixture('nutrition/ingredientinfo_59887.json'));
     final Map<String, dynamic> ingredient10065Response = jsonDecode(
       fixture('nutrition/ingredientinfo_10065.json'),
     );
@@ -59,21 +54,9 @@ void main() {
 
     nutritionProvider.ingredients = ingredientList;
 
-    final Uri planInfoUri = Uri(
-      scheme: 'http',
-      host: 'localhost',
-      path: 'api/v2/$planInfoUrl/1',
-    );
-    final Uri planUri = Uri(
-      scheme: 'http',
-      host: 'localhost',
-      path: 'api/v2/$planUrl',
-    );
-    final Uri diaryUri = Uri(
-      scheme: 'http',
-      host: 'localhost',
-      path: 'api/v2/$diaryUrl',
-    );
+    final Uri planInfoUri = Uri(scheme: 'http', host: 'localhost', path: 'api/v2/$planInfoUrl/1');
+    final Uri planUri = Uri(scheme: 'http', host: 'localhost', path: 'api/v2/$planUrl');
+    final Uri diaryUri = Uri(scheme: 'http', host: 'localhost', path: 'api/v2/$diaryUrl');
     final Uri ingredientUri = Uri(
       scheme: 'http',
       host: 'localhost',
@@ -82,20 +65,21 @@ void main() {
     when(mockWgerBaseProvider.makeUrl(planInfoUrl, id: anyNamed('id'))).thenReturn(planInfoUri);
     when(mockWgerBaseProvider.makeUrl(planUrl, id: anyNamed('id'))).thenReturn(planUri);
     when(mockWgerBaseProvider.makeUrl(diaryUrl, query: anyNamed('query'))).thenReturn(diaryUri);
-    when(mockWgerBaseProvider.makeUrl(ingredientInfoUrl, id: anyNamed('id')))
-        .thenReturn(ingredientUri);
-    when(mockWgerBaseProvider.fetch(planInfoUri)).thenAnswer(
-      (realInvocation) => Future.value(nutritionalPlanInfoResponse),
-    );
-    when(mockWgerBaseProvider.fetch(planUri)).thenAnswer(
-      (realInvocation) => Future.value(nutritionalPlanDetailResponse),
-    );
-    when(mockWgerBaseProvider.fetchPaginated(diaryUri)).thenAnswer(
-      (realInvocation) => Future.value(nutritionDiaryResponse),
-    );
-    when(mockWgerBaseProvider.fetch(ingredientUri)).thenAnswer(
-      (realInvocation) => Future.value(ingredient10065Response),
-    );
+    when(
+      mockWgerBaseProvider.makeUrl(ingredientInfoUrl, id: anyNamed('id')),
+    ).thenReturn(ingredientUri);
+    when(
+      mockWgerBaseProvider.fetch(planInfoUri),
+    ).thenAnswer((realInvocation) => Future.value(nutritionalPlanInfoResponse));
+    when(
+      mockWgerBaseProvider.fetch(planUri),
+    ).thenAnswer((realInvocation) => Future.value(nutritionalPlanDetailResponse));
+    when(
+      mockWgerBaseProvider.fetchPaginated(diaryUri),
+    ).thenAnswer((realInvocation) => Future.value(nutritionDiaryResponse));
+    when(
+      mockWgerBaseProvider.fetch(ingredientUri),
+    ).thenAnswer((realInvocation) => Future.value(ingredient10065Response));
   });
 
   tearDown(() async {
@@ -140,8 +124,10 @@ void main() {
         endDate: now.add(const Duration(days: 5)),
         creationDate: now.subtract(const Duration(days: 2)),
       );
-      nutritionProvider =
-          NutritionPlansProvider(mockWgerBaseProvider, [olderPlan, newerPlan], database: database);
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
+        olderPlan,
+        newerPlan,
+      ], database: database);
       expect(nutritionProvider.currentPlan, equals(newerPlan));
     });
   });
@@ -192,25 +178,51 @@ void main() {
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
       );
-      nutritionProvider =
-          NutritionPlansProvider(mockWgerBaseProvider, [plan, inactivePlan], database: database);
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
+        plan,
+        inactivePlan,
+      ], database: database);
       expect(nutritionProvider.currentPlan, equals(plan));
     });
 
     test('several active plans exists -> return newest', () {
-      final olderPlan = NutritionalPlan(
-        description: 'Old active plan',
+      // Arrange
+      final tNutritionalPlan1 = NutritionalPlan(
+        id: 1,
+        description: 'Oldest active plan',
+        startDate: now.subtract(const Duration(days: 20)),
+        endDate: now.add(const Duration(days: 20)),
+        creationDate: now.subtract(const Duration(days: 20)),
+      );
+
+      final tNutritionalPlan2 = NutritionalPlan(
+        id: 2,
+        description: 'Middle active plan',
+        startDate: now.subtract(const Duration(days: 15)),
+        endDate: now.add(const Duration(days: 15)),
+        creationDate: now.subtract(const Duration(days: 10)),
+      );
+
+      final tNutritionalPlan3 = NutritionalPlan(
+        id: 3,
+        description: 'Newest active plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
+        creationDate: now.subtract(const Duration(days: 5)),
       );
-      final newerPlan = NutritionalPlan(
-        description: 'Newer active plan',
-        startDate: now.subtract(const Duration(days: 5)),
-        endDate: now.add(const Duration(days: 5)),
-      );
-      nutritionProvider =
-          NutritionPlansProvider(mockWgerBaseProvider, [olderPlan, newerPlan], database: database);
-      expect(nutritionProvider.currentPlan, equals(newerPlan));
+
+      final provider = NutritionPlansProvider(mockWgerBaseProvider, [
+        tNutritionalPlan1,
+        tNutritionalPlan2,
+        tNutritionalPlan3,
+      ], database: database);
+
+      // Act
+      final currentPlan = provider.currentPlan;
+
+      // Assert
+      expect(currentPlan?.id, equals(tNutritionalPlan3.id));
+      expect(currentPlan?.description, equals(tNutritionalPlan3.description));
     });
   });
 
@@ -218,7 +230,9 @@ void main() {
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
       nutritionProvider.ingredients = [];
-      await database.into(database.ingredients).insert(
+      await database
+          .into(database.ingredients)
+          .insert(
             IngredientsCompanion.insert(
               id: ingredient59887Response['id'],
               data: json.encode(ingredient59887Response),
@@ -239,7 +253,9 @@ void main() {
     test('fetching an ingredient not present in the DB, the API is hit', () async {
       // Arrange
       nutritionProvider.ingredients = [];
-      await database.into(database.ingredients).insert(
+      await database
+          .into(database.ingredients)
+          .insert(
             IngredientsCompanion.insert(
               id: ingredient59887Response['id'],
               data: json.encode(ingredient59887Response),
