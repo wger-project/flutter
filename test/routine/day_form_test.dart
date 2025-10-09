@@ -85,6 +85,11 @@ void main() {
       await tester.enterText(descriptionField, '');
       await tester.enterText(descriptionField, 'Day 1 description');
 
+      await tester.tap(find.byKey(const Key('field-day-type')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('day-type-option-hiit')));
+      await tester.pumpAndSettle();
+
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();
 
@@ -92,10 +97,11 @@ void main() {
         mockRoutinesProvider.editDay(
           argThat(
             isA<Day>()
-                .having((d) => d.routineId, 'routineId', 125)
+                .having((d) => d.routineId, 'routineId', 1)
                 .having((d) => d.id, 'id', 1)
                 .having((d) => d.name, 'name', 'Day 1')
-                .having((d) => d.description, 'description', 'Day 1 description'),
+                .having((d) => d.description, 'description', 'Day 1 description')
+                .having((d) => d.type, 'type', DayType.hiit),
           ),
         ),
       );

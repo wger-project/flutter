@@ -23,6 +23,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
@@ -67,6 +68,7 @@ void main() {
 
     expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(Slider), findsOne);
+    expect(find.byType(DropdownButtonFormField), findsNothing);
     expect(find.byType(WeightUnitInputWidget), findsNothing);
     expect(find.byType(RepetitionUnitInputWidget), findsNothing);
     expect(find.byType(RiRInputWidget), findsNothing);
@@ -78,18 +80,80 @@ void main() {
 
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(Slider), findsNWidgets(2));
+    expect(find.byType(DropdownButtonFormField), findsNothing);
     expect(find.byType(WeightUnitInputWidget), findsOne);
     expect(find.byType(RepetitionUnitInputWidget), findsOne);
     expect(find.byType(RiRInputWidget), findsOne);
   });
 
   testWidgets('Correctly updates the values on the server', (WidgetTester tester) async {
-    await tester.pumpWidget(renderWidget(simpleMode: true));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pumpWidget(renderWidget(simpleMode: false));
     await tester.pumpAndSettle();
 
-    verify(mockRoutinesProvider.editSlotEntry(any, any)).called(1);
-    verify(mockRoutinesProvider.handleConfig(any, any, any)).called(8);
+    // Set weight
+    final weightField = find.byKey(const ValueKey('field-weight'));
+    await tester.enterText(weightField, '100');
+
+    final maxWeightField = find.byKey(const ValueKey('field-max-weight'));
+    await tester.enterText(maxWeightField, '110');
+
+    // Set repetitions
+    final repetitionsField = find.byKey(const ValueKey('field-repetitions'));
+    await tester.enterText(repetitionsField, '10');
+    final maxRepetitionsField = find.byKey(const ValueKey('field-max-repetitions'));
+    await tester.enterText(maxRepetitionsField, '12');
+
+    // Set rest time
+    final restField = find.byKey(const ValueKey('field-rest'));
+    await tester.enterText(restField, '90');
+    final maxRestField = find.byKey(const ValueKey('field-max-rest'));
+    await tester.enterText(maxRestField, '100');
+
+    // Set type
+    await tester.tap(find.byKey(const ValueKey('field-slot-entry-type')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('slot-entry-type-option-myo')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('slot-entry-type-option-myo')), warnIfMissed: false);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pumpAndSettle();
+
+    verify(
+      mockRoutinesProvider.editSlotEntry(
+        argThat(
+          isA<SlotEntry>()
+              .having((d) => d.id, 'id', null)
+              .having((d) => d.slotId, 'slotId', 1)
+              .having((d) => d.order, 'order', 1)
+              .having((d) => d.type, 'type', SlotEntryType.myo),
+        ),
+        1,
+      ),
+    );
+
+    final verification = verify(
+      mockRoutinesProvider.handleConfig(captureAny, captureAny, captureAny),
+    );
+    final capturedArgs = verification.captured; // List with 8*3 arguments (3 per call)
+
+    expect(capturedArgs[(0 * 3) + 1], 4);
+    expect(capturedArgs[(0 * 3) + 2], ConfigType.sets);
+
+    expect(capturedArgs[(1 * 3) + 1], 100);
+    expect(capturedArgs[(1 * 3) + 2], ConfigType.weight);
+    expect(capturedArgs[(2 * 3) + 1], 110);
+    expect(capturedArgs[(2 * 3) + 2], ConfigType.maxWeight);
+
+    expect(capturedArgs[(3 * 3) + 1], 10);
+    expect(capturedArgs[(3 * 3) + 2], ConfigType.repetitions);
+    expect(capturedArgs[(4 * 3) + 1], 12);
+    expect(capturedArgs[(4 * 3) + 2], ConfigType.maxRepetitions);
+
+    expect(capturedArgs[(5 * 3) + 1], 90);
+    expect(capturedArgs[(5 * 3) + 2], ConfigType.rest);
+    expect(capturedArgs[(6 * 3) + 1], 100);
+    expect(capturedArgs[(6 * 3) + 2], ConfigType.maxRest);
   });
 }

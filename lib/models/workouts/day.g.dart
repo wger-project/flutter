@@ -35,7 +35,7 @@ Day _$DayFromJson(Map<String, dynamic> json) {
         (json['slots'] as List<dynamic>?)
             ?.map((e) => Slot.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
   );
 }
 

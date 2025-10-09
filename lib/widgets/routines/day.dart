@@ -22,6 +22,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
@@ -82,7 +83,9 @@ class RoutineDayWidget extends StatelessWidget {
         // the one exercise and don't show separate rows for each one.
         ...slotData.setConfigs
             .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
-              acc.putIfAbsent(entry.exercise, () => []).add(entry.textRepr);
+              acc
+                  .putIfAbsent(entry.exercise, () => [])
+                  .add('${entry.textRepr}${entry.type.typeLabel}');
               return acc;
             })
             .entries
@@ -146,15 +149,11 @@ class DayHeader extends StatelessWidget {
       );
     }
 
-    final dayTypeLabel = _dayData.day!.isSpecialType
-        ? '\n(${_dayData.day!.type.name.toUpperCase()})'
-        : '';
-
     return ListTile(
       tileColor: Theme.of(context).focusColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: Text(
-        '${_dayData.day!.name}$dayTypeLabel',
+        '${_dayData.day!.name}${_dayData.day!.typeLabel()}',
         style: Theme.of(context).textTheme.headlineSmall,
         overflow: TextOverflow.ellipsis,
       ),

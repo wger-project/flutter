@@ -85,8 +85,9 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
       repetitionsController.text = widget.entry.repetitionsConfigs.first.value.round().toString();
     }
     if (widget.entry.maxRepetitionsConfigs.isNotEmpty) {
-      maxRepetitionsController.text =
-          widget.entry.maxRepetitionsConfigs.first.value.round().toString();
+      maxRepetitionsController.text = widget.entry.maxRepetitionsConfigs.first.value
+          .round()
+          .toString();
     }
 
     if (widget.entry.restTimeConfigs.isNotEmpty) {
@@ -196,6 +197,24 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             ],
           ),
           if (!widget.simpleMode)
+            DropdownButtonFormField<SlotEntryType>(
+              key: const Key('field-slot-entry-type'),
+              initialValue: widget.entry.type,
+              decoration: const InputDecoration(labelText: 'Typ'),
+              items: SlotEntryType.values.map((type) {
+                return DropdownMenuItem(
+                  key: Key('slot-entry-type-option-${type.name}'),
+                  value: type,
+                  child: Text('${type.name.toUpperCase()} - ${type.i18Label(i18n)}'),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  widget.entry.type = value!;
+                });
+              },
+            ),
+          if (!widget.simpleMode)
             WeightUnitInputWidget(
               widget.entry.weightUnitId,
               onChanged: (value) {
@@ -207,6 +226,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             children: [
               Flexible(
                 child: TextFormField(
+                  key: const ValueKey('field-weight'),
                   controller: weightController,
                   keyboardType: textInputTypeDecimal,
                   decoration: InputDecoration(labelText: i18n.weight),
@@ -221,6 +241,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               if (!widget.simpleMode)
                 Flexible(
                   child: TextFormField(
+                    key: const ValueKey('field-max-weight'),
                     controller: maxWeightController,
                     keyboardType: textInputTypeDecimal,
                     decoration: InputDecoration(labelText: i18n.max),
@@ -246,6 +267,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             children: [
               Flexible(
                 child: TextFormField(
+                  key: const ValueKey('field-repetitions'),
                   controller: repetitionsController,
                   keyboardType: textInputTypeDecimal,
                   decoration: InputDecoration(labelText: i18n.repetitions),
@@ -260,6 +282,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               if (!widget.simpleMode)
                 Flexible(
                   child: TextFormField(
+                    key: const ValueKey('field-max-repetitions'),
                     controller: maxRepetitionsController,
                     keyboardType: textInputTypeDecimal,
                     decoration: InputDecoration(labelText: i18n.max),
@@ -279,6 +302,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               children: [
                 Flexible(
                   child: TextFormField(
+                    key: const ValueKey('field-rest'),
                     controller: restController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: i18n.restTime),
@@ -292,6 +316,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 ),
                 Flexible(
                   child: TextFormField(
+                    key: const ValueKey('field-max-rest'),
                     controller: maxRestController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: i18n.max),
@@ -384,8 +409,9 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                       }
                     }
                   },
-            child:
-                isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
+            child: isSaving
+                ? const FormProgressIndicator()
+                : Text(AppLocalizations.of(context).save),
           ),
           const SizedBox(height: 10),
         ],
@@ -417,9 +443,11 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
     return Column(
       children: [
         errorMessage,
-        ...widget.slot.entries.map((entry) => entry.hasProgressionRules
-            ? ProgressionRulesInfoBox(entry.exerciseObj)
-            : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode)),
+        ...widget.slot.entries.map(
+          (entry) => entry.hasProgressionRules
+              ? ProgressionRulesInfoBox(entry.exerciseObj)
+              : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode),
+        ),
         const SizedBox(height: 10),
         if (_showExerciseSearchBox || widget.slot.entries.isEmpty)
           ExerciseAutocompleter(
@@ -601,20 +629,14 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
           Card(
             child: ListTile(
               leading: isAddingSlot ? const FormProgressIndicator() : const Icon(Icons.add),
-              title: Text(
-                i18n.addExercise,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              title: Text(i18n.addExercise, style: Theme.of(context).textTheme.titleMedium),
               onTap: isAddingSlot
                   ? null
                   : () async {
                       setState(() => isAddingSlot = true);
 
                       final newSlot = await provider.addSlot(
-                        Slot.withData(
-                          day: widget.day.id,
-                          order: widget.slots.length + 1,
-                        ),
+                        Slot.withData(day: widget.day.id, order: widget.slots.length + 1),
                         widget.day.routineId,
                       );
                       if (mounted) {

@@ -19,6 +19,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -27,6 +28,31 @@ import 'package:wger/models/workouts/weight_unit.dart';
 part 'slot_entry.g.dart';
 
 enum SlotEntryType { normal, dropset, myo, partial, forced, tut, iso, jump }
+
+extension SlotEntryTypeExtension on SlotEntryType {
+  String i18Label(AppLocalizations i18n) {
+    switch (this) {
+      case SlotEntryType.normal:
+        return i18n.slotEntryTypeNormal;
+      case SlotEntryType.dropset:
+        return i18n.slotEntryTypeDropset;
+      case SlotEntryType.myo:
+        return i18n.slotEntryTypeMyo;
+      case SlotEntryType.partial:
+        return i18n.slotEntryTypePartial;
+      case SlotEntryType.forced:
+        return i18n.slotEntryTypeForced;
+      case SlotEntryType.tut:
+        return i18n.slotEntryTypeTut;
+      case SlotEntryType.iso:
+        return i18n.slotEntryTypeIso;
+      case SlotEntryType.jump:
+        return i18n.slotEntryTypeJump;
+    }
+  }
+
+  String get typeLabel => this != SlotEntryType.normal ? ' (${name.toUpperCase()})' : '';
+}
 
 enum ConfigType {
   weight,
@@ -61,7 +87,7 @@ class SlotEntry {
   late String comment;
 
   @JsonKey(required: true)
-  late String type;
+  late SlotEntryType type;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   late Exercise exerciseObj;
@@ -123,14 +149,14 @@ class SlotEntry {
   SlotEntry({
     this.id,
     required this.slotId,
-    required this.order,
-    required this.type,
+    this.order = 1,
+    this.type = SlotEntryType.normal,
     required this.exerciseId,
     required this.repetitionUnitId,
     required this.repetitionRounding,
     required this.weightUnitId,
     required this.weightRounding,
-    required this.comment,
+    this.comment = '',
     this.weightConfigs = const [],
     this.maxWeightConfigs = const [],
     this.nrOfSetsConfigs = const [],
@@ -162,7 +188,7 @@ class SlotEntry {
     required this.slotId,
     String? comment,
     int? order,
-    String? type,
+    SlotEntryType? type,
     required Exercise exercise,
     int? weightUnitId,
     this.weightRounding,
@@ -172,7 +198,7 @@ class SlotEntry {
     this.order = order ?? 1;
     this.comment = comment ?? '';
     config = null;
-    this.type = type ?? 'normal';
+    this.type = type ?? SlotEntryType.normal;
     exerciseObj = exercise;
     exerciseId = exercise.id!;
     this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG;

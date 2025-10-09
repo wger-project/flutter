@@ -284,8 +284,9 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             decoration: const InputDecoration(labelText: 'Typ'),
             items: DayType.values.map((type) {
               return DropdownMenuItem(
+                key: Key('day-type-option-${type.name}'),
                 value: type,
-                child: Text('${type.name.toUpperCase()} - ${type.i18Label(context)}'),
+                child: Text('${type.name.toUpperCase()} - ${type.i18Label(i18n)}'),
               );
             }).toList(),
             onChanged: widget.day.isRest

@@ -30,7 +30,7 @@ class StartPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(15),
                     child: Text(
-                      '${_dayData.day!.type.name.toUpperCase()}\n${_dayData.day!.type.i18Label(context)}',
+                      '${_dayData.day!.type.name.toUpperCase()}\n${_dayData.day!.type.i18Label(AppLocalizations.of(context))}',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),

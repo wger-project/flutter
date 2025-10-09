@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/slot.dart';
@@ -26,9 +25,7 @@ part 'day.g.dart';
 enum DayType { custom, enom, amrap, hiit, tabata, edt, rft, afap }
 
 extension DayTypeExtension on DayType {
-  String i18Label(BuildContext context) {
-    final i18n = AppLocalizations.of(context);
-
+  String i18Label(AppLocalizations i18n) {
     switch (this) {
       case DayType.custom:
         return i18n.dayTypeCustom;
@@ -126,6 +123,8 @@ class Day {
   }
 
   bool get isSpecialType => type != DayType.custom;
+
+  String typeLabel() => isSpecialType ? '\n(${type.name.toUpperCase()})' : '';
 
   // Boilerplate
   factory Day.fromJson(Map<String, dynamic> json) => _$DayFromJson(json);
