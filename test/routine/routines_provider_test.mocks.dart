@@ -34,61 +34,50 @@ import 'package:wger/providers/exercises.dart' as _i12;
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeClient_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeUri_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeResponse_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeWgerBaseProvider_4 extends _i1.SmartFake
-    implements _i4.WgerBaseProvider {
+class _FakeWgerBaseProvider_4 extends _i1.SmartFake implements _i4.WgerBaseProvider {
   _FakeWgerBaseProvider_4(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeExerciseDatabase_5 extends _i1.SmartFake
-    implements _i5.ExerciseDatabase {
+class _FakeExerciseDatabase_5 extends _i1.SmartFake implements _i5.ExerciseDatabase {
   _FakeExerciseDatabase_5(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeExercise_6 extends _i1.SmartFake implements _i6.Exercise {
-  _FakeExercise_6(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeExercise_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeExerciseCategory_7 extends _i1.SmartFake
-    implements _i7.ExerciseCategory {
+class _FakeExerciseCategory_7 extends _i1.SmartFake implements _i7.ExerciseCategory {
   _FakeExerciseCategory_7(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeEquipment_8 extends _i1.SmartFake implements _i8.Equipment {
-  _FakeEquipment_8(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeEquipment_8(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeMuscle_9 extends _i1.SmartFake implements _i9.Muscle {
-  _FakeMuscle_9(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeMuscle_9(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeLanguage_10 extends _i1.SmartFake implements _i10.Language {
-  _FakeLanguage_10(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeLanguage_10(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [WgerBaseProvider].
@@ -316,11 +305,10 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
   );
 
   @override
-  set filteredExercises(List<_i6.Exercise>? newFilteredExercises) =>
-      super.noSuchMethod(
-        Invocation.setter(#filteredExercises, newFilteredExercises),
-        returnValueForMissingStub: null,
-      );
+  set filteredExercises(List<_i6.Exercise>? newFilteredExercises) => super.noSuchMethod(
+    Invocation.setter(#filteredExercises, newFilteredExercises),
+    returnValueForMissingStub: null,
+  );
 
   @override
   set languages(List<_i10.Language>? languages) => super.noSuchMethod(
@@ -330,8 +318,7 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   _i11.Future<void> setFilters(_i12.Filters? newFilters) =>
