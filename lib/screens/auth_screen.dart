@@ -182,11 +182,11 @@ class _AuthCardState extends State<AuthCard> {
       late LoginActions res;
       if (_authMode == AuthMode.Login) {
         res = await context.read<AuthProvider>().login(
-              _authData['username']!,
-              _authData['password']!,
-              _authData['serverUrl']!,
-              _authData['apiToken'],
-            );
+          _authData['username']!,
+          _authData['password']!,
+          _authData['serverUrl']!,
+          _authData['apiToken'],
+        );
 
         // Register new user
       } else {
@@ -287,8 +287,9 @@ class _AuthCardState extends State<AuthCard> {
                             labelText: i18n.confirmPassword,
                             prefixIcon: const Icon(Icons.password),
                             suffixIcon: IconButton(
-                              icon:
-                                  Icon(confirmIsObscure ? Icons.visibility_off : Icons.visibility),
+                              icon: Icon(
+                                confirmIsObscure ? Icons.visibility_off : Icons.visibility,
+                              ),
                               onPressed: () {
                                 updateState(() {
                                   confirmIsObscure = !confirmIsObscure;
@@ -374,8 +375,9 @@ class _AuthCardState extends State<AuthCard> {
                   Builder(
                     key: const Key('toggleActionButton'),
                     builder: (context) {
-                      final String text =
-                          _authMode != AuthMode.Register ? i18n.registerInstead : i18n.loginInstead;
+                      final String text = _authMode != AuthMode.Register
+                          ? i18n.registerInstead
+                          : i18n.loginInstead;
 
                       return GestureDetector(
                         onTap: () => _switchAuthMode(),

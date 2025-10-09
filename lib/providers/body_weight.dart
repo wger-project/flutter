@@ -68,10 +68,12 @@ class BodyWeightProvider with ChangeNotifier {
     _logger.info('Fetching all body weight entries');
 
     // Process the response
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(
-      BODY_WEIGHT_URL,
-      query: {'ordering': '-date', 'limit': API_MAX_PAGE_SIZE},
-    ));
+    final data = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        BODY_WEIGHT_URL,
+        query: {'ordering': '-date', 'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
     _entries = [];
     for (final entry in data) {
       _entries.add(WeightEntry.fromJson(entry));

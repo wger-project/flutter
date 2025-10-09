@@ -1,13 +1,11 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_submission.dart';
+import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/variation.dart';
@@ -16,11 +14,16 @@ import 'base_provider.dart';
 
 class AddExerciseProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
+  static final _logger = Logger('AddExerciseProvider');
 
   AddExerciseProvider(this.baseProvider);
 
-  List<File> get exerciseImages => [..._exerciseImages];
-  List<File> _exerciseImages = [];
+  // Images and their metadata (license info, style)
+  final List<ExerciseSubmissionImage> _exerciseImages = [];
+
+  List<ExerciseSubmissionImage> get exerciseImages => [..._exerciseImages];
+
+  String author = '';
   String? exerciseNameEn;
   String? exerciseNameTrans;
   String? descriptionEn;
@@ -32,7 +35,6 @@ class AddExerciseProvider with ChangeNotifier {
   List<String> alternateNamesEn = [];
   List<String> alternateNamesTrans = [];
   ExerciseCategory? category;
-  List<Exercise> _variations = [];
   List<Equipment> _equipment = [];
   List<Muscle> _primaryMuscles = [];
   List<Muscle> _secondaryMuscles = [];
@@ -42,7 +44,7 @@ class AddExerciseProvider with ChangeNotifier {
   static const _checkLanguageUrlPath = 'check-language';
 
   void clear() {
-    _exerciseImages = [];
+    _exerciseImages.clear();
     languageTranslation = null;
     category = null;
     exerciseNameEn = null;
@@ -51,7 +53,6 @@ class AddExerciseProvider with ChangeNotifier {
     descriptionTrans = null;
     alternateNamesEn = [];
     alternateNamesTrans = [];
-    _variations = [];
     _equipment = [];
     _primaryMuscles = [];
     _secondaryMuscles = [];
@@ -135,53 +136,40 @@ class AddExerciseProvider with ChangeNotifier {
     );
   }
 
-  void addExerciseImages(List<File> exercises) {
-    _exerciseImages.addAll(exercises);
+  /// Add images with optional license metadata
+  void addExerciseImages(List<ExerciseSubmissionImage> images) {
+    _exerciseImages.addAll(images);
     notifyListeners();
   }
 
-  void removeExercise(String path) {
-    final file = _exerciseImages.where((element) => element.path == path).first;
+  void removeImage(String path) {
+    final file = _exerciseImages.where((element) => element.imageFile.path == path).first;
     _exerciseImages.remove(file);
     notifyListeners();
   }
 
-  //Just to Debug Provider
-  void printValues() {
-    log('Collected exercise data');
-    log('------------------------');
+  /// Main method to submit exercise with images
+  ///
+  /// Returns the ID of the created exercise
+  /// Throws exception if submission fails
+  Future<int> postExerciseToServer() async {
+    try {
+      // 1. Create the exercise
+      final exerciseId = await addExerciseSubmission();
 
-    log('Base data...');
-    log('Target area : $category');
-    log('Primary muscles: $_primaryMuscles');
-    log('Secondary muscles: $_secondaryMuscles');
-    log('Equipment: $_equipment');
-    log('Variations: $_variations');
+      // 2. Upload images if any exist
+      if (_exerciseImages.isNotEmpty) {
+        await addImages(exerciseId);
+      }
 
-    log('');
-    log('Language specific...');
-    log('Language: ${languageTranslation?.shortName}');
-    log('Name: en/$exerciseNameEn translation/$exerciseNameTrans');
-    log('Description: en/$descriptionEn translation/$descriptionTrans');
-    log('Alternate names: en/$alternateNamesEn translation/$alternateNamesTrans');
-  }
+      // 3. Clear all data after successful upload
+      clear();
 
-  Future<int> addExercise() async {
-    printValues();
-
-    // Create the variations if needed
-    // if (newVariation) {
-    //   await addVariation();
-    // }
-
-    // Create the exercise
-    final exerciseId = await addExerciseSubmission();
-
-    // Clear everything
-    clear();
-
-    // Return exercise ID
-    return exerciseId;
+      return exerciseId;
+    } catch (e) {
+      // Don't clear on error so user can retry
+      rethrow;
+    }
   }
 
   Future<int> addExerciseSubmission() async {
@@ -194,16 +182,34 @@ class AddExerciseProvider with ChangeNotifier {
     return result['id'];
   }
 
+  /// Upload exercise images with license metadata
   Future<void> addImages(int exerciseId) async {
     for (final image in _exerciseImages) {
       final request = http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
       request.headers.addAll(baseProvider.getDefaultHeaders(includeAuth: true));
 
-      request.files.add(await http.MultipartFile.fromPath('image', image.path));
+      request.files.add(await http.MultipartFile.fromPath('image', image.imageFile.path));
       request.fields['exercise'] = exerciseId.toString();
-      request.fields['style'] = EXERCISE_IMAGE_ART_STYLE.PHOTO.index.toString();
+      request.fields['license'] = CC_BY_SA_4_ID.toString();
+      request.fields['is_main'] = 'false';
 
-      await request.send();
+      final details = image.toJson();
+      if (details.isNotEmpty) {
+        request.fields.addAll(details);
+      }
+
+      try {
+        final streamedResponse = await request.send();
+
+        if (streamedResponse.statusCode == 201 || streamedResponse.statusCode == 200) {
+          _logger.fine('Image uploaded successfully');
+        } else {
+          final response = await http.Response.fromStream(streamedResponse);
+          throw Exception('Upload failed: ${streamedResponse.statusCode}');
+        }
+      } catch (e) {
+        rethrow;
+      }
     }
 
     notifyListeners();
@@ -215,64 +221,7 @@ class AddExerciseProvider with ChangeNotifier {
       'language_code': languageCode,
     }, baseProvider.makeUrl(_checkLanguageUrlPath));
     notifyListeners();
-    print(result);
 
     return false;
   }
-
-  /*
-    Note: all this logic is not needed now since we are using the /exercise-submission
-    endpoint, however, if we ever want to implement editing of exercises, we will
-    need basically all of it again, so this is kept here for reference.
-
-
-
-
-  Future<Variation> addVariation() async {
-    final Uri postUri = baseProvider.makeUrl(_exerciseVariationPath);
-
-    // We send an empty dictionary since at the moment the variations only have an ID
-    final Map<String, dynamic> variationMap = await baseProvider.post({}, postUri);
-    final Variation newVariation = Variation.fromJson(variationMap);
-    _variationId = newVariation.id;
-    notifyListeners();
-    return newVariation;
-  }
-
-  Future<void> addImages(Exercise exercise) async {
-    for (final image in _exerciseImages) {
-      final request = http.MultipartRequest('POST', baseProvider.makeUrl(_imagesUrlPath));
-      request.headers.addAll(baseProvider.getDefaultHeaders(includeAuth: true));
-
-      request.files.add(await http.MultipartFile.fromPath('image', image.path));
-      request.fields['exercise'] = exercise.id!.toString();
-      request.fields['style'] = EXERCISE_IMAGE_ART_STYLE.PHOTO.index.toString();
-
-      await request.send();
-    }
-
-    notifyListeners();
-  }
-
-  Future<Translation> addExerciseTranslation(Translation exercise) async {
-    final Uri postUri = baseProvider.makeUrl(_exerciseTranslationUrlPath);
-
-    final Map<String, dynamic> newTranslation = await baseProvider.post(exercise.toJson(), postUri);
-    final Translation newExercise = Translation.fromJson(newTranslation);
-    notifyListeners();
-
-    return newExercise;
-  }
-
-  Future<Alias> addExerciseAlias(String name, int exerciseId) async {
-    final alias = Alias(translationId: exerciseId, alias: name);
-    final Uri postUri = baseProvider.makeUrl(_exerciseAliasPath);
-
-    final Alias newAlias = Alias.fromJson(await baseProvider.post(alias.toJson(), postUri));
-    notifyListeners();
-
-    return newAlias;
-  }
-
-   */
 }

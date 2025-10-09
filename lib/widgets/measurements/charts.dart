@@ -41,8 +41,10 @@ class MeasurementOverallChangeWidget extends StatelessWidget {
     }
 
     // ignore: prefer_interpolation_to_compose_strings
-    return Text(AppLocalizations.of(context).overallChangeWeight +
-        ' $prefix${delta.abs().toStringAsFixed(1)} $_unit');
+    return Text(
+      AppLocalizations.of(context).overallChangeWeight +
+          ' $prefix${delta.abs().toStringAsFixed(1)} $_unit',
+    );
   }
 }
 
@@ -78,14 +80,16 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       touchTooltipData: LineTouchTooltipData(
         getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItems: (touchedSpots) {
-          final numberFormat =
-              NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+          final numberFormat = NumberFormat.decimalPattern(
+            Localizations.localeOf(context).toString(),
+          );
 
           return touchedSpots.map((touchedSpot) {
             final msSinceEpoch = touchedSpot.x.toInt();
             final DateTime date = DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
-            final dateStr =
-                DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
+            final dateStr = DateFormat.Md(
+              Localizations.localeOf(context).languageCode,
+            ).format(date);
 
             // Check if this is an interpolated point (milliseconds ending with 123)
             final bool isInterpolated = msSinceEpoch % 1000 == INTERPOLATION_MARKER;
@@ -180,10 +184,12 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       lineBarsData: [
         LineChartBarData(
           spots: widget._entries
-              .map((e) => FlSpot(
-                    e.date.millisecondsSinceEpoch.toDouble(),
-                    e.value.toDouble(),
-                  ))
+              .map(
+                (e) => FlSpot(
+                  e.date.millisecondsSinceEpoch.toDouble(),
+                  e.value.toDouble(),
+                ),
+              )
               .toList(),
           isCurved: false,
           color: Theme.of(context).colorScheme.primary,
@@ -194,10 +200,12 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         if (widget.avgs != null)
           LineChartBarData(
             spots: widget.avgs!
-                .map((e) => FlSpot(
-                      e.date.millisecondsSinceEpoch.toDouble(),
-                      e.value.toDouble(),
-                    ))
+                .map(
+                  (e) => FlSpot(
+                    e.date.millisecondsSinceEpoch.toDouble(),
+                    e.value.toDouble(),
+                  ),
+                )
                 .toList(),
             isCurved: false,
             color: Theme.of(context).colorScheme.tertiary,

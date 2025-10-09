@@ -279,8 +279,9 @@ class RoutinesProvider with ChangeNotifier {
     final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
     await setExercisesAndUnits(dayDataEntriesGym, exercises: exercises);
 
-    final sessionDataEntries =
-        sessionData.map((entry) => WorkoutSessionApi.fromJson(entry)).toList();
+    final sessionDataEntries = sessionData
+        .map((entry) => WorkoutSessionApi.fromJson(entry))
+        .toList();
 
     for (final day in routine.days) {
       for (final slot in day.slots) {
@@ -322,8 +323,9 @@ class RoutinesProvider with ChangeNotifier {
         }
 
         if (!exercises.containsKey(log.exerciseId)) {
-          exercises[log.exerciseId] =
-              (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
+          exercises[log.exerciseId] = (await _exerciseProvider.fetchAndSetExercise(
+            log.exerciseId,
+          ))!;
         }
 
         log.exerciseBase = exercises[log.exerciseId]!;
@@ -378,8 +380,9 @@ class RoutinesProvider with ChangeNotifier {
 
   /// Fetch and set weight units for workout (kg, lb, plate, etc.)
   Future<void> fetchAndSetRepetitionUnits() async {
-    final response =
-        await baseProvider.fetchPaginated(baseProvider.makeUrl(_repetitionUnitUrlPath));
+    final response = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(_repetitionUnitUrlPath),
+    );
     for (final unit in response) {
       _repetitionUnits.add(RepetitionUnit.fromJson(unit));
     }

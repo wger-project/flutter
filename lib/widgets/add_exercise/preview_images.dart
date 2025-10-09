@@ -2,72 +2,103 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/providers/add_exercise.dart';
 
-import 'mixins/image_picker_mixin.dart';
-
-class PreviewExerciseImages extends StatelessWidget with ExerciseImagePickerMixin {
-  final List<File> selectedImages;
+/// Widget to preview selected exercise images
+///
+/// Displays images in a horizontal scrollable list with thumbnails.
+/// Each image shows a preview thumbnail and optionally a delete button.
+/// Can optionally include an "add more" button at the end of the list.
+class PreviewExerciseImages extends StatelessWidget {
+  final List<ExerciseSubmissionImage> selectedImages;
+  final VoidCallback? onAddMore;
   final bool allowEdit;
 
-  const PreviewExerciseImages({super.key, required this.selectedImages, this.allowEdit = true});
+  const PreviewExerciseImages({
+    super.key,
+    required this.selectedImages,
+    this.onAddMore,
+    this.allowEdit = true,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Calculate item count: images + optional "add more" button
+    final itemCount = selectedImages.length + (allowEdit && onAddMore != null ? 1 : 0);
+
     return SizedBox(
-      height: 300,
-      child: ListView(scrollDirection: Axis.horizontal, children: [
-        ...selectedImages.map(
-          (file) => SizedBox(
-            height: 200,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(
-                children: [
-                  Image.file(file),
-                  if (allowEdit)
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withValues(alpha: 0.5),
-                            borderRadius: const BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: IconButton(
-                            iconSize: 20,
-                            onPressed: () =>
-                                context.read<AddExerciseProvider>().removeExercise(file.path),
-                            color: Colors.white,
-                            icon: const Icon(Icons.delete),
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
+      height: 120,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: itemCount,
+        itemBuilder: (context, index) {
+          // Show "add more" button at the end (only if editing is allowed)
+          if (index == selectedImages.length) {
+            return _buildAddMoreButton(context);
+          }
+
+          // Show image thumbnail
+          final image = selectedImages[index];
+          return _buildImageCard(context, image.imageFile);
+        },
+      ),
+    );
+  }
+
+  Widget _buildImageCard(BuildContext context, File image) {
+    return Container(
+      width: 120,
+      margin: const EdgeInsets.only(right: 8),
+      child: Stack(
+        children: [
+          // Image thumbnail
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.file(image, width: 120, height: 120, fit: BoxFit.cover),
+          ),
+
+          // Delete button overlay (only shown if editing is allowed)
+          if (allowEdit)
+            Positioned(
+              top: 4,
+              right: 4,
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                color: Colors.white,
+                iconSize: 20,
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.black.withOpacity(0.6),
+                  padding: const EdgeInsets.all(4),
+                ),
+                onPressed: () {
+                  context.read<AddExerciseProvider>().removeImage(image.path);
+                },
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddMoreButton(BuildContext context) {
+    return GestureDetector(
+      onTap: onAddMore,
+      child: Container(
+        width: 120,
+        height: 120,
+        margin: const EdgeInsets.only(right: 8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceVariant,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline,
+            width: 2,
+            style: BorderStyle.solid,
           ),
         ),
-        const SizedBox(width: 10),
-        if (allowEdit)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              color: Colors.grey,
-              height: 200,
-              width: 100,
-              child: Center(
-                child: IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () => pickImages(context),
-                ),
-              ),
-            ),
-          ),
-      ]),
+        child: Icon(Icons.add, size: 48, color: Theme.of(context).colorScheme.onSurfaceVariant),
+      ),
     );
   }
 }

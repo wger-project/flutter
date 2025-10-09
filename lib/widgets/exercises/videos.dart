@@ -68,22 +68,22 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
     return hasError
         ? const GeneralErrorsWidget(
             [
-              'An error happened while loading the video. If you can, please check the application logs.'
+              'An error happened while loading the video. If you can, please check the application logs.',
             ],
           )
         : _controller.value.isInitialized
-            ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    VideoPlayer(_controller),
-                    _ControlsOverlay(controller: _controller),
-                    VideoProgressIndicator(_controller, allowScrubbing: true),
-                  ],
-                ),
-              )
-            : Container();
+        ? AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                VideoPlayer(_controller),
+                _ControlsOverlay(controller: _controller),
+                VideoProgressIndicator(_controller, allowScrubbing: true),
+              ],
+            ),
+          )
+        : Container();
   }
 }
 

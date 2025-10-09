@@ -660,6 +660,8 @@ abstract mixin class $ExerciseTranslationSubmissionApiCopyWith<$Res> {
   });
 
 
+
+
 }
 /// @nodoc
 class _$ExerciseTranslationSubmissionApiCopyWithImpl<$Res>
@@ -941,6 +943,8 @@ abstract mixin class _$ExerciseTranslationSubmissionApiCopyWith<$Res>
   });
 
 
+
+
 }
 /// @nodoc
 class __$ExerciseTranslationSubmissionApiCopyWithImpl<$Res>
@@ -1064,6 +1068,8 @@ abstract mixin class $ExerciseSubmissionApiCopyWith<$Res> {
         includeToJson: true, name: 'variations_connect_to') int? variationConnectTo, List<
         ExerciseTranslationSubmissionApi> translations
   });
+
+
 
 
 }
@@ -1383,6 +1389,8 @@ abstract mixin class _$ExerciseSubmissionApiCopyWith<$Res>
         includeToJson: true, name: 'variations_connect_to') int? variationConnectTo, List<
         ExerciseTranslationSubmissionApi> translations
   });
+
+
 
 
 }

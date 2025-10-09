@@ -33,8 +33,9 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
       child: MultiSelectDialogField(
         initialValue: widget.initialItems,
         onSaved: widget.onSaved,
-        items:
-            widget.items.map((item) => MultiSelectItem<T>(item, widget.displayName(item))).toList(),
+        items: widget.items
+            .map((item) => MultiSelectItem<T>(item, widget.displayName(item)))
+            .toList(),
         onConfirm: (value) {
           setState(() {
             _selectedItems = value.cast<T>();

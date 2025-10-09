@@ -92,12 +92,12 @@ class Translation extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        exerciseId,
-        uuid,
-        languageId,
-        created,
-        name,
-        description,
-      ];
+    id,
+    exerciseId,
+    uuid,
+    languageId,
+    created,
+    name,
+    description,
+  ];
 }

@@ -14,10 +14,17 @@ String? validateName(String? name, BuildContext context) {
   }
 
   if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
-    return AppLocalizations.of(context).enterCharacters(
-      MIN_CHARS_NAME.toString(),
-      MAX_CHARS_NAME.toString(),
-    );
+    return AppLocalizations.of(
+      context,
+    ).enterCharacters(MIN_CHARS_NAME.toString(), MAX_CHARS_NAME.toString());
+  }
+
+  return null;
+}
+
+String? validateAuthorName(String? name, BuildContext context) {
+  if (name!.isEmpty) {
+    return AppLocalizations.of(context).enterValue;
   }
 
   return null;

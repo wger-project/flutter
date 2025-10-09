@@ -31,12 +31,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
 
 /// Types of events
-enum EventType {
-  weight,
-  measurement,
-  session,
-  caloriesDiary,
-}
+enum EventType { weight, measurement, session, caloriesDiary }
 
 /// An event in the dashboard calendar
 class Event {
@@ -85,6 +80,22 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     });
   }
 
+  /// Loads and organizes all events from various providers into the calendar.
+  ///
+  /// This method asynchronously fetches and processes data from multiple sources:
+  /// - **Weight entries**: Retrieves weight measurements from [BodyWeightProvider]
+  /// - **Measurements**: Retrieves body measurements from [MeasurementProvider]
+  /// - **Workout sessions**: Fetches workout session data from [RoutinesProvider]
+  /// - **Nutritional plans**: Retrieves calorie diary entries from [NutritionPlansProvider]
+  ///
+  /// Each event is formatted according to the current locale and stored in the
+  /// [_events] map, keyed by date. The date format is determined by [DateFormatLists.format].
+  ///
+  /// After loading all events, the [_selectedEvents] value is updated with events
+  /// for the currently selected day, if any.
+  ///
+  /// **Note**: This method checks if the widget is still mounted before updating
+  /// the state after the async workout session fetch operation.
   void loadEvents() async {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final i18n = AppLocalizations.of(context);
@@ -112,10 +123,12 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
 
-        _events[date]?.add(Event(
-          EventType.measurement,
-          '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
-        ));
+        _events[date]?.add(
+          Event(
+            EventType.measurement,
+            '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
+          ),
+        );
       }
     }
 
@@ -131,16 +144,20 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
 
         // Add events to lists
-        _events[date]?.add(Event(
-          EventType.session,
-          '${i18n.impression}: ${session.impressionAsString} $time',
-        ));
+        _events[date]?.add(
+          Event(EventType.session, '${i18n.impression}: ${session.impressionAsString} $time'),
+        );
       }
     });
+    if (!mounted) {
+      return;
+    }
 
     // Process nutritional plans
-    final NutritionPlansProvider nutritionProvider =
-        Provider.of<NutritionPlansProvider>(context, listen: false);
+    final NutritionPlansProvider nutritionProvider = Provider.of<NutritionPlansProvider>(
+      context,
+      listen: false,
+    );
     for (final plan in nutritionProvider.items) {
       for (final entry in plan.logEntriesValues.entries) {
         final date = DateFormatLists.format(entry.key);
@@ -149,10 +166,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         }
 
         // Add events to lists
-        _events[date]?.add(Event(
-          EventType.caloriesDiary,
-          i18n.kcalValue(entry.value.energy.toStringAsFixed(0)),
-        ));
+        _events[date]?.add(
+          Event(EventType.caloriesDiary, i18n.kcalValue(entry.value.energy.toStringAsFixed(0))),
+        );
       }
     }
 
@@ -250,8 +266,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             valueListenable: _selectedEvents,
             builder: (context, value, _) => Column(
               children: [
-                ...value.map((event) => ListTile(
-                      title: Text((() {
+                ...value.map(
+                  (event) => ListTile(
+                    title: Text(
+                      (() {
                         switch (event.type) {
                           case EventType.caloriesDiary:
                             return AppLocalizations.of(context).nutritionalDiary;
@@ -265,10 +283,12 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
                           case EventType.measurement:
                             return AppLocalizations.of(context).measurement;
                         }
-                      })()),
-                      subtitle: Text(event.description),
-                      //onTap: () => print('$event tapped!'),
-                    )),
+                      })(),
+                    ),
+                    subtitle: Text(event.description),
+                    //onTap: () => print('$event tapped!'),
+                  ),
+                ),
               ],
             ),
           ),

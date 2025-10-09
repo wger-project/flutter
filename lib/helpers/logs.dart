@@ -41,10 +41,16 @@ class InMemoryLogStore {
 
   List<LogRecord> get logs => List.unmodifiable(_logs);
 
-  List<String> get formattedLogs => _logs
-      .map((log) =>
-          '${log.time.toIso8601String()} ${log.level.name} [${log.loggerName}] ${log.message}')
-      .toList();
+  List<String> getFormattedLogs({Level? minLevel}) {
+    final level = minLevel ?? Logger.root.level;
+    return _logs
+        .where((log) => log.level >= level)
+        .map(
+          (log) =>
+              '${log.time.toIso8601String()} ${log.level.name} [${log.loggerName}] ${log.message}',
+        )
+        .toList();
+  }
 
   void clear() => _logs.clear();
 }

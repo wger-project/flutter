@@ -75,9 +75,9 @@ class _GymModeState extends ConsumerState<GymMode> {
     // Re-fetch the current routine data to ensure we have the latest session
     // data since it is possible that the user created or deleted it from the
     // web interface.
-    await context
-        .read<RoutinesProvider>()
-        .fetchAndSetRoutineFull(widget._dayDataGym.day!.routineId);
+    await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
+      widget._dayDataGym.day!.routineId,
+    );
     widget._logger.fine('Refreshed routine data');
 
     final validUntil = ref.read(gymStateProvider).validUntil;
@@ -137,33 +137,39 @@ class _GymModeState extends ConsumerState<GymMode> {
         currentElement++;
 
         if (firstPage && state.showExercisePages) {
-          out.add(ExerciseOverview(
-            _controller,
-            exercise,
-            ratioCompleted,
-            state.exercisePages,
-          ));
+          out.add(
+            ExerciseOverview(
+              _controller,
+              exercise,
+              ratioCompleted,
+              state.exercisePages,
+            ),
+          );
         }
 
-        out.add(LogPage(
-          _controller,
-          config,
-          slotData,
-          exercise,
-          routinesProvider.findById(widget._dayDataGym.day!.routineId),
-          ratioCompleted,
-          state.exercisePages,
-          widget._iteration,
-        ));
+        out.add(
+          LogPage(
+            _controller,
+            config,
+            slotData,
+            exercise,
+            routinesProvider.findById(widget._dayDataGym.day!.routineId),
+            ratioCompleted,
+            state.exercisePages,
+            widget._iteration,
+          ),
+        );
 
         // If there is a rest time, add a countdown timer
         if (config.restTime != null) {
-          out.add(TimerCountdownWidget(
-            _controller,
-            config.restTime!.toInt(),
-            ratioCompleted,
-            state.exercisePages,
-          ));
+          out.add(
+            TimerCountdownWidget(
+              _controller,
+              config.restTime!.toInt(),
+              ratioCompleted,
+              state.exercisePages,
+            ),
+          );
         } else {
           out.add(TimerWidget(_controller, ratioCompleted, state.exercisePages));
         }

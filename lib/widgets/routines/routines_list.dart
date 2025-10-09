@@ -96,8 +96,9 @@ class _RoutinesListState extends State<RoutinesList> {
                                 builder: (BuildContext contextDialog) {
                                   return AlertDialog(
                                     content: Text(
-                                      AppLocalizations.of(context)
-                                          .confirmDelete(currentRoutine.name),
+                                      AppLocalizations.of(
+                                        context,
+                                      ).confirmDelete(currentRoutine.name),
                                     ),
                                     actions: [
                                       TextButton(

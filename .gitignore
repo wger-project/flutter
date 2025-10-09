@@ -30,6 +30,8 @@
 .pub-cache/
 .pub/
 /build/
+/**/build/
+/android/app/.cxx
 **/failures/*.png
 
 
@@ -62,3 +64,4 @@ ios/fastlane/Preview.html
 ios/fastlane/output
 ios/Runner.ipa
 ios/Runner.app.dSYM.zip
+

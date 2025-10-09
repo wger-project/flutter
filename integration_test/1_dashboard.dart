@@ -25,23 +25,27 @@ import '../test_data/routines.dart';
 Widget createDashboardScreen({String locale = 'en'}) {
   final mockWorkoutProvider = MockRoutinesProvider();
   when(mockWorkoutProvider.items).thenReturn([getTestRoutine(exercises: getScreenshotExercises())]);
-  when(mockWorkoutProvider.currentRoutine)
-      .thenReturn(getTestRoutine(exercises: getScreenshotExercises()));
+  when(
+    mockWorkoutProvider.currentRoutine,
+  ).thenReturn(getTestRoutine(exercises: getScreenshotExercises()));
 
-  when(mockWorkoutProvider.fetchSessionData()).thenAnswer((a) => Future.value([
-        WorkoutSession(
-          routineId: 1,
-          date: DateTime.now().add(const Duration(days: -1)),
-          timeStart: const TimeOfDay(hour: 17, minute: 34),
-          timeEnd: const TimeOfDay(hour: 19, minute: 3),
-          impression: 3,
-        ),
-      ]));
+  when(mockWorkoutProvider.fetchSessionData()).thenAnswer(
+    (a) => Future.value([
+      WorkoutSession(
+        routineId: 1,
+        date: DateTime.now().add(const Duration(days: -1)),
+        timeStart: const TimeOfDay(hour: 17, minute: 34),
+        timeEnd: const TimeOfDay(hour: 19, minute: 3),
+        impression: 3,
+      ),
+    ]),
+  );
 
   final mockNutritionProvider = weight.MockNutritionPlansProvider();
 
-  when(mockNutritionProvider.currentPlan)
-      .thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
+  when(
+    mockNutritionProvider.currentPlan,
+  ).thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
   when(mockNutritionProvider.items).thenReturn([getNutritionalPlanScreenshot()]);
 
   final mockWeightProvider = weight.MockBodyWeightProvider();

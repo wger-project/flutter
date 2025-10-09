@@ -81,21 +81,23 @@ class ExerciseDetail extends StatelessWidget {
   }
 
   List<Widget> getVariations(BuildContext context) {
-    final variations =
-        Provider.of<ExercisesProvider>(context, listen: false).findExercisesByVariationId(
-      _exercise.variationId,
-      exerciseIdToExclude: _exercise.id,
-    );
+    final variations = Provider.of<ExercisesProvider>(context, listen: false)
+        .findExercisesByVariationId(
+          _exercise.variationId,
+          exerciseIdToExclude: _exercise.id,
+        );
 
     final List<Widget> out = [];
     if (_exercise.variationId == null) {
       return out;
     }
 
-    out.add(Text(
-      AppLocalizations.of(context).variations,
-      style: Theme.of(context).textTheme.headlineSmall,
-    ));
+    out.add(
+      Text(
+        AppLocalizations.of(context).variations,
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
+    );
     for (final element in variations) {
       out.add(ExerciseListTile(exercise: element));
     }
@@ -110,10 +112,12 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getNotes(BuildContext context) {
     final List<Widget> out = [];
     if (_translation.notes.isNotEmpty) {
-      out.add(Text(
-        AppLocalizations.of(context).notes,
-        style: Theme.of(context).textTheme.headlineSmall,
-      ));
+      out.add(
+        Text(
+          AppLocalizations.of(context).notes,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+      );
       for (final e in _translation.notes) {
         out.add(Text(e.comment));
       }
@@ -125,36 +129,40 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getMuscles(BuildContext context) {
     final List<Widget> out = [];
-    out.add(Text(
-      AppLocalizations.of(context).muscles,
-      style: Theme.of(context).textTheme.headlineSmall,
-    ));
-    out.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PADDING),
-            child: MuscleWidget(
-              muscles: _exercise.muscles,
-              musclesSecondary: _exercise.musclesSecondary,
-              isFront: true,
+    out.add(
+      Text(
+        AppLocalizations.of(context).muscles,
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
+    );
+    out.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: PADDING),
+              child: MuscleWidget(
+                muscles: _exercise.muscles,
+                musclesSecondary: _exercise.musclesSecondary,
+                isFront: true,
+              ),
             ),
           ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: PADDING),
-            child: MuscleWidget(
-              muscles: _exercise.muscles,
-              musclesSecondary: _exercise.musclesSecondary,
-              isFront: false,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: PADDING),
+              child: MuscleWidget(
+                muscles: _exercise.muscles,
+                musclesSecondary: _exercise.musclesSecondary,
+                isFront: false,
+              ),
             ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
 
     out.add(
       Column(
@@ -183,10 +191,12 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getDescription(BuildContext context) {
     final List<Widget> out = [];
-    out.add(Text(
-      AppLocalizations.of(context).description,
-      style: Theme.of(context).textTheme.headlineSmall,
-    ));
+    out.add(
+      Text(
+        AppLocalizations.of(context).description,
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
+    );
     out.add(Html(data: _translation.description));
 
     return out;
@@ -195,9 +205,11 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getImages() {
     final List<Widget> out = [];
     if (_exercise.images.isNotEmpty) {
-      out.add(CarouselImages(
-        images: _exercise.images,
-      ));
+      out.add(
+        CarouselImages(
+          images: _exercise.images,
+        ),
+      );
 
       // out.add(ExerciseImageWidget(
       //   image: _exercise.getMainImage,
@@ -225,14 +237,16 @@ class ExerciseDetail extends StatelessWidget {
     );
     if (_exercise.equipment.isNotEmpty) {
       _exercise.equipment
-          .map((e) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Chip(
-                  label: Text(getTranslation(e.name, context)),
-                  padding: EdgeInsets.zero,
-                  backgroundColor: theme.splashColor,
-                ),
-              ))
+          .map(
+            (e) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Chip(
+                label: Text(getTranslation(e.name, context)),
+                padding: EdgeInsets.zero,
+                backgroundColor: theme.splashColor,
+              ),
+            ),
+          )
           .forEach((element) => out.add(element));
     }
     out.add(const SizedBox(height: PADDING));
@@ -255,11 +269,13 @@ class ExerciseDetail extends StatelessWidget {
   List<Widget> getAliases(BuildContext context) {
     final List<Widget> out = [];
     if (_translation.aliases.isNotEmpty) {
-      out.add(MutedText(
-        AppLocalizations.of(context).alsoKnownAs(
-          _translation.aliases.map((e) => e.alias).toList().join(', '),
+      out.add(
+        MutedText(
+          AppLocalizations.of(context).alsoKnownAs(
+            _translation.aliases.map((e) => e.alias).toList().join(', '),
+          ),
         ),
-      ));
+      );
       out.add(const SizedBox(height: PADDING));
     }
 
@@ -355,9 +371,13 @@ class MuscleWidget extends StatelessWidget {
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
-        ...musclesSecondary.where((m) => !muscles.contains(m)).map((m) => SvgPicture.asset(
-              'assets/images/muscles/secondary/muscle-${m.id}.svg',
-            )),
+        ...musclesSecondary
+            .where((m) => !muscles.contains(m))
+            .map(
+              (m) => SvgPicture.asset(
+                'assets/images/muscles/secondary/muscle-${m.id}.svg',
+              ),
+            ),
       ],
     );
   }

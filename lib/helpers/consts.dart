@@ -143,3 +143,6 @@ const String API_RESULTS_PAGE_SIZE = '100';
 /// Marker used for identifying interpolated values in a list, e.g. for measurements
 /// the milliseconds in the entry date are set to this value
 const INTERPOLATION_MARKER = 123;
+
+/// Creative Commons license IDs
+const CC_BY_SA_4_ID = 2;

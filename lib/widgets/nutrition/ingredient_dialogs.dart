@@ -61,7 +61,7 @@ Widget ingredientImage(String url, BuildContext context) {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -201,8 +201,9 @@ class IngredientScanResultDialog extends StatelessWidget {
               if (ingredient != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child:
-                      Text(AppLocalizations.of(context).productFoundDescription(ingredient.name)),
+                  child: Text(
+                    AppLocalizations.of(context).productFoundDescription(ingredient.name),
+                  ),
                 ),
               if (ingredient?.image?.url != null) ingredientImage(ingredient!.image!.url, context),
               if (snapshot.connectionState != ConnectionState.done && !snapshot.hasError)

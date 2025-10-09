@@ -82,8 +82,9 @@ void main() {
     when(mockWgerBaseProvider.makeUrl(planInfoUrl, id: anyNamed('id'))).thenReturn(planInfoUri);
     when(mockWgerBaseProvider.makeUrl(planUrl, id: anyNamed('id'))).thenReturn(planUri);
     when(mockWgerBaseProvider.makeUrl(diaryUrl, query: anyNamed('query'))).thenReturn(diaryUri);
-    when(mockWgerBaseProvider.makeUrl(ingredientInfoUrl, id: anyNamed('id')))
-        .thenReturn(ingredientUri);
+    when(
+      mockWgerBaseProvider.makeUrl(ingredientInfoUrl, id: anyNamed('id')),
+    ).thenReturn(ingredientUri);
     when(mockWgerBaseProvider.fetch(planInfoUri)).thenAnswer(
       (realInvocation) => Future.value(nutritionalPlanInfoResponse),
     );
@@ -140,8 +141,10 @@ void main() {
         endDate: now.add(const Duration(days: 5)),
         creationDate: now.subtract(const Duration(days: 2)),
       );
-      nutritionProvider =
-          NutritionPlansProvider(mockWgerBaseProvider, [olderPlan, newerPlan], database: database);
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
+        olderPlan,
+        newerPlan,
+      ], database: database);
       expect(nutritionProvider.currentPlan, equals(newerPlan));
     });
   });
@@ -192,8 +195,10 @@ void main() {
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
       );
-      nutritionProvider =
-          NutritionPlansProvider(mockWgerBaseProvider, [plan, inactivePlan], database: database);
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
+        plan,
+        inactivePlan,
+      ], database: database);
       expect(nutritionProvider.currentPlan, equals(plan));
     });
 
@@ -208,8 +213,10 @@ void main() {
         startDate: now.subtract(const Duration(days: 5)),
         endDate: now.add(const Duration(days: 5)),
       );
-      nutritionProvider =
-          NutritionPlansProvider(mockWgerBaseProvider, [olderPlan, newerPlan], database: database);
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
+        olderPlan,
+        newerPlan,
+      ], database: database);
       expect(nutritionProvider.currentPlan, equals(newerPlan));
     });
   });
@@ -218,7 +225,9 @@ void main() {
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
       nutritionProvider.ingredients = [];
-      await database.into(database.ingredients).insert(
+      await database
+          .into(database.ingredients)
+          .insert(
             IngredientsCompanion.insert(
               id: ingredient59887Response['id'],
               data: json.encode(ingredient59887Response),
@@ -239,7 +248,9 @@ void main() {
     test('fetching an ingredient not present in the DB, the API is hit', () async {
       // Arrange
       nutritionProvider.ingredients = [];
-      await database.into(database.ingredients).insert(
+      await database
+          .into(database.ingredients)
+          .insert(
             IngredientsCompanion.insert(
               id: ingredient59887Response['id'],
               data: json.encode(ingredient59887Response),

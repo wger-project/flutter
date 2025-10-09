@@ -25,7 +25,7 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
       'fat',
       'fat_saturated',
       'fiber',
-      'sodium'
+      'sodium',
     ],
   );
   return Ingredient(
@@ -55,22 +55,22 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic>{
-      'id': instance.id,
-      'remote_id': instance.remoteId,
-      'source_name': instance.sourceName,
-      'source_url': instance.sourceUrl,
-      'license_object_url': instance.licenseObjectURl,
-      'code': instance.code,
-      'name': instance.name,
-      'created': instance.created.toIso8601String(),
-      'energy': instance.energy,
-      'carbohydrates': numToString(instance.carbohydrates),
-      'carbohydrates_sugar': numToString(instance.carbohydratesSugar),
-      'protein': numToString(instance.protein),
-      'fat': numToString(instance.fat),
-      'fat_saturated': numToString(instance.fatSaturated),
-      'fiber': numToString(instance.fiber),
-      'sodium': numToString(instance.sodium),
-      'image': instance.image,
-      'thumbnails': instance.thumbnails,
-    };
+  'id': instance.id,
+  'remote_id': instance.remoteId,
+  'source_name': instance.sourceName,
+  'source_url': instance.sourceUrl,
+  'license_object_url': instance.licenseObjectURl,
+  'code': instance.code,
+  'name': instance.name,
+  'created': instance.created.toIso8601String(),
+  'energy': instance.energy,
+  'carbohydrates': numToString(instance.carbohydrates),
+  'carbohydrates_sugar': numToString(instance.carbohydratesSugar),
+  'protein': numToString(instance.protein),
+  'fat': numToString(instance.fat),
+  'fat_saturated': numToString(instance.fatSaturated),
+  'fiber': numToString(instance.fiber),
+  'sodium': numToString(instance.sodium),
+  'image': instance.image,
+  'thumbnails': instance.thumbnails,
+};

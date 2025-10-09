@@ -25,11 +25,11 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
     return where((e) => e.date.isAfter(start) && (end == null || e.date.isBefore(end))).toList();
   }
 
-// assures values on the start (and optionally end) dates exist, by interpolating if needed
-// this is used for when you are looking at a specific time frame (e.g. for a nutrition plan)
-// while gaps in the middle of a chart can be "visually interpolated", it's good to have a clearer
-// explicit interpolation for the start and end dates (if needed)
-// this also helps with computing delta's across the entire window
+  // assures values on the start (and optionally end) dates exist, by interpolating if needed
+  // this is used for when you are looking at a specific time frame (e.g. for a nutrition plan)
+  // while gaps in the middle of a chart can be "visually interpolated", it's good to have a clearer
+  // explicit interpolation for the start and end dates (if needed)
+  // this also helps with computing delta's across the entire window
   List<MeasurementChartEntry> whereDateWithInterpolation(DateTime start, DateTime? end) {
     // Make sure our list is sorted by date
     sort((a, b) => a.date.compareTo(b.date));
@@ -90,7 +90,10 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
 
 // caller needs to make sure that before.date < date < after.date
 MeasurementChartEntry interpolateBetween(
-    MeasurementChartEntry before, MeasurementChartEntry after, DateTime date) {
+  MeasurementChartEntry before,
+  MeasurementChartEntry after,
+  DateTime date,
+) {
   final totalDuration = after.date.difference(before.date).inMilliseconds;
   final startDuration = date.difference(before.date).inMilliseconds;
 

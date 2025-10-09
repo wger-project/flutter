@@ -85,13 +85,13 @@ class NutritionDiaryTable extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     Widget columnHeader(bool left, String title) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: tablePadding),
-          child: Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-            textAlign: left ? TextAlign.left : TextAlign.right,
-          ),
-        );
+      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+      child: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+        textAlign: left ? TextAlign.left : TextAlign.right,
+      ),
+    );
 
     TableRow macroRow(int indent, bool g, String title, double Function(NutritionalValues nv) get) {
       final valFn = g ? loc.gValue : loc.kcalValue;
@@ -115,12 +115,14 @@ class NutritionDiaryTable extends StatelessWidget {
       ),
       columnWidths: const {0: FractionColumnWidth(0.4)},
       children: [
-        TableRow(children: [
-          columnHeader(true, loc.macronutrients),
-          columnHeader(false, loc.planned),
-          columnHeader(false, loc.logged),
-          columnHeader(false, loc.difference),
-        ]),
+        TableRow(
+          children: [
+            columnHeader(true, loc.macronutrients),
+            columnHeader(false, loc.planned),
+            columnHeader(false, loc.logged),
+            columnHeader(false, loc.difference),
+          ],
+        ),
         macroRow(0, false, loc.energy, (NutritionalValues nv) => nv.energy),
         macroRow(0, true, loc.protein, (NutritionalValues nv) => nv.protein),
         macroRow(0, true, loc.carbohydrates, (NutritionalValues nv) => nv.carbohydrates),

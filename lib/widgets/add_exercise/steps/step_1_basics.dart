@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/exercises/forms.dart';
+import 'package:wger/helpers/exercises/validators.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/category.dart';
@@ -9,6 +9,7 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
@@ -21,6 +22,7 @@ class Step1Basics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = context.read<UserProvider>();
     final addExerciseProvider = context.read<AddExerciseProvider>();
     final exerciseProvider = context.read<ExercisesProvider>();
     final categories = exerciseProvider.categories;
@@ -38,20 +40,24 @@ class Step1Basics extends StatelessWidget {
         builder: (context, provider, child) => Column(
           children: [
             AddExerciseTextArea(
-              onChange: (value) => {},
               title: '${AppLocalizations.of(context).name}*',
               helperText: AppLocalizations.of(context).baseNameEnglish,
-              isRequired: true,
               validator: (name) => validateName(name, context),
-              onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name!,
+              onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name,
             ),
             AddExerciseTextArea(
-              onChange: (value) => {},
               title: AppLocalizations.of(context).alternativeNames,
               isMultiline: true,
               helperText: AppLocalizations.of(context).oneNamePerLine,
               onSaved: (String? alternateName) =>
                   addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
+            ),
+            AddExerciseTextArea(
+              title: '${AppLocalizations.of(context).author}*',
+              isMultiline: false,
+              validator: (name) => validateAuthorName(name, context),
+              initialValue: userProvider.profile!.username,
+              onSaved: (String? author) => addExerciseProvider.author = author!,
             ),
             ExerciseCategoryInputWidget<ExerciseCategory>(
               key: const Key('category-dropdown'),

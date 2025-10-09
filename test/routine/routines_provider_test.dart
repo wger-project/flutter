@@ -58,8 +58,9 @@ void main() {
       final exercisesProvider = ExercisesProvider(mockBaseProvider);
 
       final uri = Uri.https('localhost', 'api/v2/routine/325397/');
-      when(mockBaseProvider.makeUrl('routine', id: 325397, query: {'limit': API_MAX_PAGE_SIZE}))
-          .thenReturn(uri);
+      when(
+        mockBaseProvider.makeUrl('routine', id: 325397, query: {'limit': API_MAX_PAGE_SIZE}),
+      ).thenReturn(uri);
       when(mockBaseProvider.fetch(uri)).thenAnswer(
         (_) async => Future.value({
           'id': 325397,
@@ -115,8 +116,9 @@ void main() {
       final uri = Uri.https('localhost', 'api/v2/setting-repetitionunit/');
       final tRepetitionUnits = jsonDecode(fixture('routines/repetition_units.json'));
       when(mockBaseProvider.makeUrl('setting-repetitionunit')).thenReturn(uri);
-      when(mockBaseProvider.fetchPaginated(uri))
-          .thenAnswer((_) => Future.value(tRepetitionUnits['results']));
+      when(
+        mockBaseProvider.fetchPaginated(uri),
+      ).thenAnswer((_) => Future.value(tRepetitionUnits['results']));
 
       // Load the entries
       final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
@@ -130,8 +132,9 @@ void main() {
       final uri = Uri.https('localhost', 'api/v2/setting-weightunit/');
       when(mockBaseProvider.makeUrl('setting-weightunit')).thenReturn(uri);
       final tWeightUnits = jsonDecode(fixture('routines/weight_units.json'));
-      when(mockBaseProvider.fetchPaginated(uri))
-          .thenAnswer((_) => Future.value(tWeightUnits['results']));
+      when(
+        mockBaseProvider.fetchPaginated(uri),
+      ).thenAnswer((_) => Future.value(tWeightUnits['results']));
 
       final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
 
@@ -148,14 +151,16 @@ void main() {
       final weightUri = Uri.https('localhost', 'api/v2/setting-weightunit/');
       when(mockBaseProvider.makeUrl('setting-weightunit')).thenReturn(weightUri);
       final tWeightUnits = jsonDecode(fixture('routines/weight_units.json'));
-      when(mockBaseProvider.fetchPaginated(weightUri))
-          .thenAnswer((_) => Future.value(tWeightUnits['results']));
+      when(
+        mockBaseProvider.fetchPaginated(weightUri),
+      ).thenAnswer((_) => Future.value(tWeightUnits['results']));
 
       final repUnit = Uri.https('localhost', 'api/v2/setting-repetitionunit/');
       final tRepetitionUnits = jsonDecode(fixture('routines/repetition_units.json'));
       when(mockBaseProvider.makeUrl('setting-repetitionunit')).thenReturn(repUnit);
-      when(mockBaseProvider.fetchPaginated(repUnit))
-          .thenAnswer((_) => Future.value(tRepetitionUnits['results']));
+      when(
+        mockBaseProvider.fetchPaginated(repUnit),
+      ).thenAnswer((_) => Future.value(tRepetitionUnits['results']));
 
       final exercisesProvider = ExercisesProvider(mockBaseProvider);
       WidgetsFlutterBinding.ensureInitialized();
@@ -176,32 +181,45 @@ void main() {
     test('Smoke test fetchAndSetRoutineFull', () async {
       //Arrange
       final structureUri = Uri.https('localhost', 'api/v2/routine/101/structure/');
-      when(mockBaseProvider.makeUrl('routine', objectMethod: 'structure', id: 101))
-          .thenReturn(structureUri);
-      when(mockBaseProvider.fetch(structureUri)).thenAnswer((_) async => Future.value(
-            jsonDecode(fixture('routines/routine_structure.json')),
-          ));
+      when(
+        mockBaseProvider.makeUrl('routine', objectMethod: 'structure', id: 101),
+      ).thenReturn(structureUri);
+      when(mockBaseProvider.fetch(structureUri)).thenAnswer(
+        (_) async => Future.value(
+          jsonDecode(fixture('routines/routine_structure.json')),
+        ),
+      );
 
-      final dateSequenceDisplayUri =
-          Uri.https('localhost', 'api/v2/routine/101/date-sequence-display/');
-      when(mockBaseProvider.makeUrl('routine', objectMethod: 'date-sequence-display', id: 101))
-          .thenReturn(dateSequenceDisplayUri);
-      when(mockBaseProvider.fetch(dateSequenceDisplayUri)).thenAnswer((_) async => Future.value(
-            jsonDecode(fixture('routines/routine_date_sequence_display.json')),
-          ));
+      final dateSequenceDisplayUri = Uri.https(
+        'localhost',
+        'api/v2/routine/101/date-sequence-display/',
+      );
+      when(
+        mockBaseProvider.makeUrl('routine', objectMethod: 'date-sequence-display', id: 101),
+      ).thenReturn(dateSequenceDisplayUri);
+      when(mockBaseProvider.fetch(dateSequenceDisplayUri)).thenAnswer(
+        (_) async => Future.value(
+          jsonDecode(fixture('routines/routine_date_sequence_display.json')),
+        ),
+      );
 
       final dateSequenceGymUri = Uri.https('localhost', 'api/v2/routine/101/date-sequence-gym/');
-      when(mockBaseProvider.makeUrl('routine', objectMethod: 'date-sequence-gym', id: 101))
-          .thenReturn(dateSequenceGymUri);
-      when(mockBaseProvider.fetch(dateSequenceGymUri)).thenAnswer((_) async => Future.value(
-            jsonDecode(fixture('routines/routine_date_sequence_gym.json')),
-          ));
+      when(
+        mockBaseProvider.makeUrl('routine', objectMethod: 'date-sequence-gym', id: 101),
+      ).thenReturn(dateSequenceGymUri);
+      when(mockBaseProvider.fetch(dateSequenceGymUri)).thenAnswer(
+        (_) async => Future.value(
+          jsonDecode(fixture('routines/routine_date_sequence_gym.json')),
+        ),
+      );
 
       final logsUri = Uri.https('localhost', 'api/v2/routine/101/logs/');
       when(mockBaseProvider.makeUrl('routine', objectMethod: 'logs', id: 101)).thenReturn(logsUri);
-      when(mockBaseProvider.fetch(logsUri)).thenAnswer((_) async => Future.value(
-            jsonDecode(fixture('routines/routine_logs.json')),
-          ));
+      when(mockBaseProvider.fetch(logsUri)).thenAnswer(
+        (_) async => Future.value(
+          jsonDecode(fixture('routines/routine_logs.json')),
+        ),
+      );
 
       final mockExercisesProvider = MockExercisesProvider();
       when(mockExercisesProvider.fetchAndSetExercise(76)).thenAnswer(
