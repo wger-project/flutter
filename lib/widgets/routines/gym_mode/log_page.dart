@@ -282,11 +282,9 @@ class _LogPageState extends ConsumerState<LogPage> {
             ),
           ),
         ),
+        if (widget._log.exercise.showPlateCalculator) const LogsPlatesWidget(),
         if (widget._slotData.comment.isNotEmpty)
           Text(widget._slotData.comment, textAlign: TextAlign.center),
-        // Only show calculator for barbell
-        if (widget._log.exercise.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
-          const LogsPlatesWidget(),
         const SizedBox(height: 10),
         Expanded(
           child: (widget._workoutPlan.filterLogsByExercise(widget._exercise.id!).isNotEmpty)

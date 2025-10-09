@@ -144,6 +144,8 @@ class Exercise extends Equatable {
     this.authorsGlobal = authorsGlobal ?? [];
   }
 
+  bool get showPlateCalculator => equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL);
+
   Exercise.fromApiDataString(String baseData, List<Language> languages)
     : this.fromApiData(ExerciseApiData.fromString(baseData), languages);
 
