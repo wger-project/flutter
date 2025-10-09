@@ -28,6 +28,7 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/configure_plates_screen.dart';
@@ -261,6 +262,8 @@ class _LogPageState extends ConsumerState<LogPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         NavigationHeader(
@@ -270,15 +273,27 @@ class _LogPageState extends ConsumerState<LogPage> {
         ),
 
         Container(
-          color: Theme.of(context).colorScheme.onInverseSurface,
+          color: theme.colorScheme.onInverseSurface,
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Center(
-            child: Text(
-              widget._configData.textRepr,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.primary),
-              textAlign: TextAlign.center,
+            child: Column(
+              children: [
+                Text(
+                  widget._configData.textRepr,
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                if (widget._configData.type != SlotEntryType.normal)
+                  Text(
+                    widget._configData.type.name.toUpperCase(),
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+              ],
             ),
           ),
         ),

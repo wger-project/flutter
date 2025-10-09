@@ -43,6 +43,8 @@ class SetConfigData {
   @JsonKey(required: true, name: 'text_repr')
   late String textRepr;
 
+  String get textReprWithType => '$textRepr${type.typeLabel}';
+
   @JsonKey(required: true, name: 'sets')
   late num? nrOfSets;
 

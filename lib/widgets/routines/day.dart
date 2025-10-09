@@ -22,7 +22,6 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
-import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
@@ -83,9 +82,7 @@ class RoutineDayWidget extends StatelessWidget {
         // the one exercise and don't show separate rows for each one.
         ...slotData.setConfigs
             .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
-              acc
-                  .putIfAbsent(entry.exercise, () => [])
-                  .add('${entry.textRepr}${entry.type.typeLabel}');
+              acc.putIfAbsent(entry.exercise, () => []).add(entry.textReprWithType);
               return acc;
             })
             .entries

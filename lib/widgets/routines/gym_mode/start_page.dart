@@ -41,7 +41,7 @@ class StartPage extends StatelessWidget {
                   children: [
                     ...slotData.setConfigs
                         .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
-                          acc.putIfAbsent(entry.exercise, () => []).add(entry.textRepr);
+                          acc.putIfAbsent(entry.exercise, () => []).add(entry.textReprWithType);
                           return acc;
                         })
                         .entries
