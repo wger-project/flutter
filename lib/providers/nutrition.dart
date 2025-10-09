@@ -111,7 +111,7 @@ class NutritionPlansProvider with ChangeNotifier {
     for (final planData in data) {
       final plan = NutritionalPlan.fromJson(planData);
       _plans.add(plan);
-      _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+      _plans.sort((a, b) => a.startDate.compareTo(b.startDate));
     }
     notifyListeners();
   }
