@@ -38,12 +38,15 @@ class PlateWeight extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: Colors.black, width: isSelected ? 2 : 0),
           ),
-          child: Text(
-            value.toString(),
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: isSelected ? Colors.black : Colors.black87,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value.toString(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isSelected ? Colors.black : Colors.black87,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
             ),
           ),
         ),
