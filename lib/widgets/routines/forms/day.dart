@@ -309,8 +309,10 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                     setState(() => isSaving = true);
 
                     try {
-                      await Provider.of<RoutinesProvider>(context, listen: false)
-                          .editDay(widget.day);
+                      await Provider.of<RoutinesProvider>(
+                        context,
+                        listen: false,
+                      ).editDay(widget.day);
                       if (context.mounted) {
                         setState(() {
                           errorMessage = const SizedBox.shrink();
@@ -330,8 +332,9 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                       }
                     }
                   },
-            child:
-                isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
+            child: isSaving
+                ? const FormProgressIndicator()
+                : Text(AppLocalizations.of(context).save),
           ),
           const SizedBox(height: 5),
           ReorderableSlotList(widget.day.slots, widget.day),

@@ -70,15 +70,18 @@ void main() {
     final MealItem mealItem = MealItem(ingredientId: ingredient.id, amount: 2);
     mockNutrition = MockNutritionPlansProvider();
 
-    when(mockNutrition.searchIngredientWithBarcode('123'))
-        .thenAnswer((_) => Future.value(ingredient));
+    when(
+      mockNutrition.searchIngredientWithBarcode('123'),
+    ).thenAnswer((_) => Future.value(ingredient));
     when(mockNutrition.searchIngredientWithBarcode('')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredientWithBarcode('222')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredient(
-      any,
-      languageCode: anyNamed('languageCode'),
-      searchEnglish: anyNamed('searchEnglish'),
-    )).thenAnswer(
+    when(
+      mockNutrition.searchIngredient(
+        any,
+        languageCode: anyNamed('languageCode'),
+        searchEnglish: anyNamed('searchEnglish'),
+      ),
+    ).thenAnswer(
       (_) => Future.value([ingredient1, ingredient2]),
     );
 
@@ -311,9 +314,11 @@ void main() {
         await tester.enterText(find.byKey(const Key('field-weight')), '2');
 
         // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
-        when(mockNutrition.fetchIngredient(1)).thenAnswer((_) => Future.value(
-              Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
-            ));
+        when(mockNutrition.fetchIngredient(1)).thenAnswer(
+          (_) => Future.value(
+            Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
+          ),
+        );
         await mockNetworkImagesFor(() => tester.pumpAndSettle());
 
         expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);

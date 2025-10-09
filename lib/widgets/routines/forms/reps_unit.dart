@@ -59,15 +59,15 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
           widget.onChanged(newValue.id);
         });
       },
-      items: Provider.of<RoutinesProvider>(context, listen: false)
-          .repetitionUnits
+      items: Provider.of<RoutinesProvider>(context, listen: false).repetitionUnits
           .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
-        return DropdownMenuItem<RepetitionUnit>(
-          key: Key(value.id.toString()),
-          value: value,
-          child: Text(value.name),
-        );
-      }).toList(),
+            return DropdownMenuItem<RepetitionUnit>(
+              key: Key(value.id.toString()),
+              value: value,
+              child: Text(value.name),
+            );
+          })
+          .toList(),
     );
   }
 }

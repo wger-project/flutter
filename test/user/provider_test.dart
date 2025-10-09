@@ -36,8 +36,9 @@ void main() {
   late MockWgerBaseProvider mockWgerBaseProvider;
 
   const String profileUrl = 'userprofile';
-  final Map<String, dynamic> tUserProfileMap =
-      jsonDecode(fixture('user/userprofile_response.json'));
+  final Map<String, dynamic> tUserProfileMap = jsonDecode(
+    fixture('user/userprofile_response.json'),
+  );
   final Uri tProfileUri = Uri(
     scheme: 'http',
     host: 'localhost',
@@ -56,10 +57,12 @@ void main() {
     userProvider = UserProvider(mockWgerBaseProvider);
 
     when(mockWgerBaseProvider.makeUrl(any)).thenReturn(tProfileUri);
-    when(mockWgerBaseProvider.makeUrl(any, objectMethod: 'verify-email'))
-        .thenReturn(tEmailVerifyUri);
-    when(mockWgerBaseProvider.fetch(any))
-        .thenAnswer((realInvocation) => Future.value(tUserProfileMap));
+    when(
+      mockWgerBaseProvider.makeUrl(any, objectMethod: 'verify-email'),
+    ).thenReturn(tEmailVerifyUri);
+    when(
+      mockWgerBaseProvider.fetch(any),
+    ).thenAnswer((realInvocation) => Future.value(tUserProfileMap));
   });
 
   group('house keeping', () {

@@ -53,9 +53,11 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
     return Column(
       children: [
         errorMessage,
-        ...widget.slot.entries.map((entry) => entry.hasProgressionRules
-            ? ProgressionRulesInfoBox(entry.exerciseObj)
-            : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode)),
+        ...widget.slot.entries.map(
+          (entry) => entry.hasProgressionRules
+              ? ProgressionRulesInfoBox(entry.exerciseObj)
+              : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode),
+        ),
         const SizedBox(height: 10),
         if (_showExerciseSearchBox || widget.slot.entries.isEmpty)
           ExerciseAutocompleter(

@@ -80,7 +80,8 @@ class WeightOverview extends StatelessWidget {
                 return Card(
                   child: ListTile(
                     title: Text(
-                        '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}'),
+                      '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
+                    ),
                     subtitle: Text(
                       DateFormat.yMd(
                         Localizations.localeOf(context).languageCode,

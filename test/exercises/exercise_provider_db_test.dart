@@ -101,22 +101,26 @@ void main() {
 
     // Mock categories
     when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
-    when(mockBaseProvider.fetchPaginated(tCategoryEntriesUri))
-        .thenAnswer((_) => Future.value(tCategoryMap['results']));
+    when(
+      mockBaseProvider.fetchPaginated(tCategoryEntriesUri),
+    ).thenAnswer((_) => Future.value(tCategoryMap['results']));
 
     // Mock muscles
     when(mockBaseProvider.makeUrl(muscleUrl)).thenReturn(tMuscleEntriesUri);
-    when(mockBaseProvider.fetchPaginated(tMuscleEntriesUri))
-        .thenAnswer((_) => Future.value(tMuscleMap['results']));
+    when(
+      mockBaseProvider.fetchPaginated(tMuscleEntriesUri),
+    ).thenAnswer((_) => Future.value(tMuscleMap['results']));
 
     // Mock equipment
     when(mockBaseProvider.makeUrl(equipmentUrl)).thenReturn(tEquipmentEntriesUri);
-    when(mockBaseProvider.fetchPaginated(tEquipmentEntriesUri))
-        .thenAnswer((_) => Future.value(tEquipmentMap['results']));
+    when(
+      mockBaseProvider.fetchPaginated(tEquipmentEntriesUri),
+    ).thenAnswer((_) => Future.value(tEquipmentMap['results']));
 
     // Mock languages
-    when(mockBaseProvider.makeUrl(languageUrl, query: anyNamed('query')))
-        .thenReturn(tLanguageEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(languageUrl, query: anyNamed('query')),
+    ).thenReturn(tLanguageEntriesUri);
     when(mockBaseProvider.fetchPaginated(tLanguageEntriesUri)).thenAnswer(
       (_) => Future.value(tLanguageMap['results']),
     );
@@ -394,7 +398,9 @@ void main() {
       final valid = DateTime.now().add(const Duration(days: 1));
       prefs.setString(PREFS_LAST_UPDATED_LANGUAGES, valid.toIso8601String());
 
-      await database.into(database.exercises).insert(
+      await database
+          .into(database.exercises)
+          .insert(
             ExercisesCompanion.insert(
               id: tExerciseInfoMap['id'],
               data: json.encode(tExerciseInfoMap),
@@ -426,7 +432,9 @@ void main() {
     test('fetching a known exercise - no API refresh', () async {
       // Arrange
       provider.languages = testLanguages;
-      await database.into(database.exercises).insert(
+      await database
+          .into(database.exercises)
+          .insert(
             ExercisesCompanion.insert(
               id: tExerciseInfoMap['id'],
               data: json.encode(tExerciseInfoMap),
@@ -451,7 +459,9 @@ void main() {
     test('fetching a known exercise - needed API refresh - no new data', () async {
       // Arrange
       provider.languages = testLanguages;
-      await database.into(database.exercises).insert(
+      await database
+          .into(database.exercises)
+          .insert(
             ExercisesCompanion.insert(
               id: tExerciseInfoMap['id'],
               data: json.encode(tExerciseInfoMap),
@@ -465,8 +475,9 @@ void main() {
 
       // Act
       await provider.handleUpdateExerciseFromApi(database, 9);
-      final exerciseDb = await (database.select(database.exercises)..where((e) => e.id.equals(9)))
-          .getSingleOrNull();
+      final exerciseDb = await (database.select(
+        database.exercises,
+      )..where((e) => e.id.equals(9))).getSingleOrNull();
 
       // Assert
       verify(mockBaseProvider.fetch(any));
@@ -482,7 +493,9 @@ void main() {
       final newData = Map.from(tExerciseInfoMap);
       newData['uuid'] = 'bf6d5557-1c49-48fd-922e-75d11f81d4eb';
 
-      await database.into(database.exercises).insert(
+      await database
+          .into(database.exercises)
+          .insert(
             ExercisesCompanion.insert(
               id: newData['id'],
               data: json.encode(newData),
@@ -496,8 +509,9 @@ void main() {
 
       // Act
       await provider.handleUpdateExerciseFromApi(database, 9);
-      final exerciseDb = await (database.select(database.exercises)..where((e) => e.id.equals(9)))
-          .getSingleOrNull();
+      final exerciseDb = await (database.select(
+        database.exercises,
+      )..where((e) => e.id.equals(9))).getSingleOrNull();
       final exerciseData = ExerciseApiData.fromString(exerciseDb!.data);
 
       // Assert

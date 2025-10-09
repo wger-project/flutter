@@ -57,7 +57,8 @@ class NutritionalGoals {
           (energy! - protein! * ENERGY_PROTEIN - fat! * ENERGY_FAT) / ENERGY_CARBOHYDRATES;
       assert(carbohydrates! > 0);
     } else if (fat == null && protein != null && carbohydrates != null) {
-      fat = (energy! - protein! * ENERGY_PROTEIN - carbohydrates! * ENERGY_CARBOHYDRATES) /
+      fat =
+          (energy! - protein! * ENERGY_PROTEIN - carbohydrates! * ENERGY_CARBOHYDRATES) /
           ENERGY_FAT;
       assert(fat! > 0);
     }
@@ -141,15 +142,15 @@ class NutritionalGoals {
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hash(
-        energy,
-        protein,
-        carbohydrates,
-        carbohydratesSugar,
-        fat,
-        fatSaturated,
-        fiber,
-        sodium,
-      );
+    energy,
+    protein,
+    carbohydrates,
+    carbohydratesSugar,
+    fat,
+    fatSaturated,
+    fiber,
+    sodium,
+  );
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes

@@ -32,9 +32,9 @@ class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvi
     Object parent,
     Invocation parentInvocation,
   ) : super(
-          parent,
-          parentInvocation,
-        );
+        parent,
+        parentInvocation,
+      );
 }
 
 class _FakeMeasurementCategory_1 extends _i1.SmartFake implements _i3.MeasurementCategory {
@@ -42,9 +42,9 @@ class _FakeMeasurementCategory_1 extends _i1.SmartFake implements _i3.Measuremen
     Object parent,
     Invocation parentInvocation,
   ) : super(
-          parent,
-          parentInvocation,
-        );
+        parent,
+        parentInvocation,
+      );
 }
 
 /// A class which mocks [MeasurementProvider].
@@ -56,99 +56,117 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
   }
 
   @override
-  _i2.WgerBaseProvider get baseProvider => (super.noSuchMethod(
-        Invocation.getter(#baseProvider),
-        returnValue: _FakeWgerBaseProvider_0(
-          this,
-          Invocation.getter(#baseProvider),
-        ),
-      ) as _i2.WgerBaseProvider);
+  _i2.WgerBaseProvider get baseProvider =>
+      (super.noSuchMethod(
+            Invocation.getter(#baseProvider),
+            returnValue: _FakeWgerBaseProvider_0(
+              this,
+              Invocation.getter(#baseProvider),
+            ),
+          )
+          as _i2.WgerBaseProvider);
 
   @override
-  List<_i3.MeasurementCategory> get categories => (super.noSuchMethod(
-        Invocation.getter(#categories),
-        returnValue: <_i3.MeasurementCategory>[],
-      ) as List<_i3.MeasurementCategory>);
+  List<_i3.MeasurementCategory> get categories =>
+      (super.noSuchMethod(
+            Invocation.getter(#categories),
+            returnValue: <_i3.MeasurementCategory>[],
+          )
+          as List<_i3.MeasurementCategory>);
 
   @override
-  bool get hasListeners => (super.noSuchMethod(
-        Invocation.getter(#hasListeners),
-        returnValue: false,
-      ) as bool);
+  bool get hasListeners =>
+      (super.noSuchMethod(
+            Invocation.getter(#hasListeners),
+            returnValue: false,
+          )
+          as bool);
 
   @override
   void clear() => super.noSuchMethod(
-        Invocation.method(
-          #clear,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(
+      #clear,
+      [],
+    ),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  _i3.MeasurementCategory findCategoryById(int? id) => (super.noSuchMethod(
-        Invocation.method(
-          #findCategoryById,
-          [id],
-        ),
-        returnValue: _FakeMeasurementCategory_1(
-          this,
-          Invocation.method(
-            #findCategoryById,
-            [id],
-          ),
-        ),
-      ) as _i3.MeasurementCategory);
+  _i3.MeasurementCategory findCategoryById(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #findCategoryById,
+              [id],
+            ),
+            returnValue: _FakeMeasurementCategory_1(
+              this,
+              Invocation.method(
+                #findCategoryById,
+                [id],
+              ),
+            ),
+          )
+          as _i3.MeasurementCategory);
 
   @override
-  _i5.Future<void> fetchAndSetCategories() => (super.noSuchMethod(
-        Invocation.method(
-          #fetchAndSetCategories,
-          [],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+  _i5.Future<void> fetchAndSetCategories() =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #fetchAndSetCategories,
+              [],
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
-  _i5.Future<void> fetchAndSetCategoryEntries(int? id) => (super.noSuchMethod(
-        Invocation.method(
-          #fetchAndSetCategoryEntries,
-          [id],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+  _i5.Future<void> fetchAndSetCategoryEntries(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #fetchAndSetCategoryEntries,
+              [id],
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
-  _i5.Future<void> fetchAndSetAllCategoriesAndEntries() => (super.noSuchMethod(
-        Invocation.method(
-          #fetchAndSetAllCategoriesAndEntries,
-          [],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+  _i5.Future<void> fetchAndSetAllCategoriesAndEntries() =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #fetchAndSetAllCategoriesAndEntries,
+              [],
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
-  _i5.Future<void> addCategory(_i3.MeasurementCategory? category) => (super.noSuchMethod(
-        Invocation.method(
-          #addCategory,
-          [category],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+  _i5.Future<void> addCategory(_i3.MeasurementCategory? category) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #addCategory,
+              [category],
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
-  _i5.Future<void> deleteCategory(int? id) => (super.noSuchMethod(
-        Invocation.method(
-          #deleteCategory,
-          [id],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+  _i5.Future<void> deleteCategory(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #deleteCategory,
+              [id],
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
   _i5.Future<void> editCategory(
@@ -157,27 +175,30 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
     String? newUnit,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #editCategory,
-          [
-            id,
-            newName,
-            newUnit,
-          ],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+            Invocation.method(
+              #editCategory,
+              [
+                id,
+                newName,
+                newUnit,
+              ],
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
-  _i5.Future<void> addEntry(_i6.MeasurementEntry? entry) => (super.noSuchMethod(
-        Invocation.method(
-          #addEntry,
-          [entry],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+  _i5.Future<void> addEntry(_i6.MeasurementEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #addEntry,
+              [entry],
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
   _i5.Future<void> deleteEntry(
@@ -185,16 +206,17 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
     int? categoryId,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #deleteEntry,
-          [
-            id,
-            categoryId,
-          ],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+            Invocation.method(
+              #deleteEntry,
+              [
+                id,
+                categoryId,
+              ],
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
   _i5.Future<void> editEntry(
@@ -205,53 +227,54 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
     DateTime? newDate,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #editEntry,
-          [
-            id,
-            categoryId,
-            newValue,
-            newNotes,
-            newDate,
-          ],
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+            Invocation.method(
+              #editEntry,
+              [
+                id,
+                categoryId,
+                newValue,
+                newNotes,
+                newDate,
+              ],
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
   void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #addListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(
+      #addListener,
+      [listener],
+    ),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #removeListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(
+      #removeListener,
+      [listener],
+    ),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(
+      #dispose,
+      [],
+    ),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void notifyListeners() => super.noSuchMethod(
-        Invocation.method(
-          #notifyListeners,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(
+      #notifyListeners,
+      [],
+    ),
+    returnValueForMissingStub: null,
+  );
 }

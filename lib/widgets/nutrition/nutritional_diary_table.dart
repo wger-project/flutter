@@ -82,41 +82,44 @@ class NutritionalDiaryTable extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: Colors.grey[300]!)),
       ),
-      children: [
-        Text(
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: LIST_OF_COLORS3.first),
-          DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
-        ),
-        Text(
-          textAlign: TextAlign.end,
-          values.energy.toStringAsFixed(0),
-        ),
-        if (goals.energy != null)
-          Text(
-            textAlign: TextAlign.end,
-            (values.energy - goals.energy!).toStringAsFixed(0),
-          ),
-        Text(
-          textAlign: TextAlign.end,
-          values.protein.toStringAsFixed(0),
-        ),
-        Text(
-          textAlign: TextAlign.end,
-          values.carbohydrates.toStringAsFixed(0),
-        ),
-        Text(
-          textAlign: TextAlign.end,
-          values.fat.toStringAsFixed(0),
-        ),
-      ].map((element) {
-        return GestureDetector(
-          onTap: () => Navigator.of(context).pushNamed(
-            NutritionalDiaryScreen.routeName,
-            arguments: NutritionalDiaryArguments(plan, date),
-          ),
-          child: element,
-        );
-      }).toList(),
+      children:
+          [
+            Text(
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: LIST_OF_COLORS3.first),
+              DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
+            ),
+            Text(
+              textAlign: TextAlign.end,
+              values.energy.toStringAsFixed(0),
+            ),
+            if (goals.energy != null)
+              Text(
+                textAlign: TextAlign.end,
+                (values.energy - goals.energy!).toStringAsFixed(0),
+              ),
+            Text(
+              textAlign: TextAlign.end,
+              values.protein.toStringAsFixed(0),
+            ),
+            Text(
+              textAlign: TextAlign.end,
+              values.carbohydrates.toStringAsFixed(0),
+            ),
+            Text(
+              textAlign: TextAlign.end,
+              values.fat.toStringAsFixed(0),
+            ),
+          ].map((element) {
+            return GestureDetector(
+              onTap: () => Navigator.of(context).pushNamed(
+                NutritionalDiaryScreen.routeName,
+                arguments: NutritionalDiaryArguments(plan, date),
+              ),
+              child: element,
+            );
+          }).toList(),
     );
   }
 }

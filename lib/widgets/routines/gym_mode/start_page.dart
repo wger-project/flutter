@@ -42,9 +42,11 @@ class StartPage extends StatelessWidget {
                                   width: 45,
                                   child: ExerciseImageWidget(image: exercise.getMainImage),
                                 ),
-                                title: Text(exercise
-                                    .getTranslation(Localizations.localeOf(context).languageCode)
-                                    .name),
+                                title: Text(
+                                  exercise
+                                      .getTranslation(Localizations.localeOf(context).languageCode)
+                                      .name,
+                                ),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: entry.value.map((text) => Text(text)).toList(),

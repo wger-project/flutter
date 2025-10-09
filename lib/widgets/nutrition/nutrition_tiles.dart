@@ -82,8 +82,10 @@ class DiaryEntryTile extends StatelessWidget {
           : IconButton(
               tooltip: AppLocalizations.of(context).delete,
               onPressed: () {
-                Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
+                Provider.of<NutritionPlansProvider>(
+                  context,
+                  listen: false,
+                ).deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
               },
               icon: const Icon(Icons.delete_outline),
               iconSize: ICON_SIZE_SMALL,

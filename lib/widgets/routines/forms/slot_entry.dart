@@ -85,8 +85,9 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
       repetitionsController.text = widget.entry.repetitionsConfigs.first.value.round().toString();
     }
     if (widget.entry.maxRepetitionsConfigs.isNotEmpty) {
-      maxRepetitionsController.text =
-          widget.entry.maxRepetitionsConfigs.first.value.round().toString();
+      maxRepetitionsController.text = widget.entry.maxRepetitionsConfigs.first.value
+          .round()
+          .toString();
     }
 
     if (widget.entry.restTimeConfigs.isNotEmpty) {
@@ -384,8 +385,9 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                       }
                     }
                   },
-            child:
-                isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
+            child: isSaving
+                ? const FormProgressIndicator()
+                : Text(AppLocalizations.of(context).save),
           ),
           const SizedBox(height: 10),
         ],
@@ -417,9 +419,11 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
     return Column(
       children: [
         errorMessage,
-        ...widget.slot.entries.map((entry) => entry.hasProgressionRules
-            ? ProgressionRulesInfoBox(entry.exerciseObj)
-            : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode)),
+        ...widget.slot.entries.map(
+          (entry) => entry.hasProgressionRules
+              ? ProgressionRulesInfoBox(entry.exerciseObj)
+              : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode),
+        ),
         const SizedBox(height: 10),
         if (_showExerciseSearchBox || widget.slot.entries.isEmpty)
           ExerciseAutocompleter(

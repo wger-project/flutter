@@ -128,9 +128,9 @@ class DayHeader extends StatelessWidget {
   final bool _viewMode;
 
   const DayHeader({required DayData day, required int routineId, bool viewMode = false})
-      : _dayData = day,
-        _viewMode = viewMode,
-        _routineId = routineId;
+    : _dayData = day,
+      _viewMode = viewMode,
+      _routineId = routineId;
 
   @override
   Widget build(BuildContext context) {

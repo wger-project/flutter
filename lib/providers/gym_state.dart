@@ -8,8 +8,8 @@ const DEFAULT_DURATION = Duration(hours: 5);
 
 final StateNotifierProvider<GymStateNotifier, GymState> gymStateProvider =
     StateNotifierProvider<GymStateNotifier, GymState>((ref) {
-  return GymStateNotifier();
-});
+      return GymStateNotifier();
+    });
 
 class GymState {
   final Map<Exercise, int> exercisePages;
@@ -19,13 +19,14 @@ class GymState {
   late TimeOfDay startTime;
   late DateTime validUntil;
 
-  GymState(
-      {this.exercisePages = const {},
-      this.showExercisePages = true,
-      this.currentPage = 0,
-      this.dayId,
-      DateTime? validUntil,
-      TimeOfDay? startTime}) {
+  GymState({
+    this.exercisePages = const {},
+    this.showExercisePages = true,
+    this.currentPage = 0,
+    this.dayId,
+    DateTime? validUntil,
+    TimeOfDay? startTime,
+  }) {
     this.validUntil = validUntil ?? DateTime.now().add(DEFAULT_DURATION);
     this.startTime = startTime ?? TimeOfDay.fromDateTime(clock.now());
   }

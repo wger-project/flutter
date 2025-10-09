@@ -30,18 +30,22 @@ void main() {
     test('Test that fetch and set gallery', () async {
       final client = MockClient();
 
-      when(client.get(
-        Uri.https('localhost', 'api/v2/gallery/'),
-        headers: anyNamed('headers'),
-      )).thenAnswer((_) async => http.Response(
-            '{"count":1,"next":null,"previous":null,"results":['
-            '{"id":58,'
-            '"date":"2022-01-09",'
-            '"image":"https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg",'
-            '"description":"eggsaddjujuit\'ddayhadIforcanview",'
-            '"height":1280,"width":960}]}',
-            200,
-          ));
+      when(
+        client.get(
+          Uri.https('localhost', 'api/v2/gallery/'),
+          headers: anyNamed('headers'),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response(
+          '{"count":1,"next":null,"previous":null,"results":['
+          '{"id":58,'
+          '"date":"2022-01-09",'
+          '"image":"https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg",'
+          '"description":"eggsaddjujuit\'ddayhadIforcanview",'
+          '"height":1280,"width":960}]}',
+          200,
+        ),
+      );
 
       final galleryProvider = GalleryProvider(testAuthProvider, [], client);
 
@@ -54,17 +58,21 @@ void main() {
     test('Test that delete gallery photo', () async {
       final client = MockClient();
 
-      when(client.delete(
-        Uri.https('localhost', 'api/v2/gallery/58/'),
-        headers: anyNamed('headers'),
-      )).thenAnswer((_) async => http.Response(
-            '{"id":58,'
-            '"date":"2022-01-09",'
-            '"image":"https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg",'
-            '"description":"eggsaddjujuit\'ddayhadIforcanview",'
-            '"height":1280,"width":960}',
-            200,
-          ));
+      when(
+        client.delete(
+          Uri.https('localhost', 'api/v2/gallery/58/'),
+          headers: anyNamed('headers'),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response(
+          '{"id":58,'
+          '"date":"2022-01-09",'
+          '"image":"https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg",'
+          '"description":"eggsaddjujuit\'ddayhadIforcanview",'
+          '"height":1280,"width":960}',
+          200,
+        ),
+      );
 
       final galleryProvider = GalleryProvider(testAuthProvider, [], client);
 

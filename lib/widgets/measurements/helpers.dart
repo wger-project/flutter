@@ -25,8 +25,8 @@ List<Widget> getOverviewWidgets(
               child: Text(
                 'No data available',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
-                    ),
+                  color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
+                ),
               ),
             )
           : MeasurementChartWidgetFl(raw, unit, avgs: avg),

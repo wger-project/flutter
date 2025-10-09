@@ -131,9 +131,11 @@ void main() {
     testWidgets('shows server side error messages', (WidgetTester tester) async {
       // Arrange
       await pumpSessionForm(tester);
-      when(mockRoutinesProvider.addSession(any, any)).thenThrow(WgerHttpException.fromMap({
-        'name': ['The name is not valid'],
-      }));
+      when(mockRoutinesProvider.addSession(any, any)).thenThrow(
+        WgerHttpException.fromMap({
+          'name': ['The name is not valid'],
+        }),
+      );
 
       // Act
       await tester.tap(find.byKey(const ValueKey('save-button')));

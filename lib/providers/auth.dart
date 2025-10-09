@@ -251,7 +251,7 @@ class AuthProvider with ChangeNotifier {
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         HttpHeaders.userAgentHeader: getAppNameHeader(),
-        HttpHeaders.authorizationHeader: 'Token $token'
+        HttpHeaders.authorizationHeader: 'Token $token',
       },
     );
     if (response.statusCode != 200) {
@@ -294,7 +294,8 @@ class AuthProvider with ChangeNotifier {
   String getAppNameHeader() {
     String out = '';
     if (applicationVersion != null) {
-      out = '/${applicationVersion!.version} '
+      out =
+          '/${applicationVersion!.version} '
           '(${applicationVersion!.packageName}; '
           'build: ${applicationVersion!.buildNumber})'
           ' - https://github.com/wger-project';

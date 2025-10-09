@@ -56,15 +56,15 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
           widget.onChanged(newValue.id);
         });
       },
-      items: Provider.of<RoutinesProvider>(context, listen: false)
-          .weightUnits
+      items: Provider.of<RoutinesProvider>(context, listen: false).weightUnits
           .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
-        return DropdownMenuItem<WeightUnit>(
-          key: Key(value.id.toString()),
-          value: value,
-          child: Text(value.name),
-        );
-      }).toList(),
+            return DropdownMenuItem<WeightUnit>(
+              key: Key(value.id.toString()),
+              value: value,
+              child: Text(value.name),
+            );
+          })
+          .toList(),
     );
   }
 }

@@ -59,8 +59,8 @@ class LogPage extends ConsumerStatefulWidget {
     this._exercisePages,
     int? iteration,
   ) : _log = Log.fromSetConfigData(_configData)
-          ..routineId = _workoutPlan.id!
-          ..iteration = iteration;
+        ..routineId = _workoutPlan.id!
+        ..iteration = iteration;
 
   @override
   _LogPageState createState() => _LogPageState();
@@ -250,8 +250,9 @@ class _LogPageState extends ConsumerState<LogPage> {
                       rethrow;
                     }
                   },
-            child:
-                _isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
+            child: _isSaving
+                ? const FormProgressIndicator()
+                : Text(AppLocalizations.of(context).save),
           ),
         ],
       ),
@@ -274,10 +275,9 @@ class _LogPageState extends ConsumerState<LogPage> {
           child: Center(
             child: Text(
               widget._configData.textRepr,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(color: Theme.of(context).colorScheme.primary),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.primary),
               textAlign: TextAlign.center,
             ),
           ),
@@ -499,7 +499,9 @@ class LogsWeightWidget extends ConsumerWidget {
                 setStateCallback(() {
                   log.weight = newValue;
                   controller.text = numberFormat.format(newValue);
-                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                  ref
+                      .read(plateCalculatorProvider.notifier)
+                      .setWeight(
                         controller.text == '' ? 0 : newValue,
                       );
                 });
@@ -519,7 +521,9 @@ class LogsWeightWidget extends ConsumerWidget {
                 final newValue = numberFormat.parse(value);
                 setStateCallback(() {
                   log.weight = newValue;
-                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                  ref
+                      .read(plateCalculatorProvider.notifier)
+                      .setWeight(
                         controller.text == '' ? 0 : numberFormat.parse(controller.text),
                       );
                 });
@@ -548,7 +552,9 @@ class LogsWeightWidget extends ConsumerWidget {
               setStateCallback(() {
                 log.weight = newValue;
                 controller.text = numberFormat.format(newValue);
-                ref.read(plateCalculatorProvider.notifier).setWeight(
+                ref
+                    .read(plateCalculatorProvider.notifier)
+                    .setWeight(
                       controller.text == '' ? 0 : newValue,
                     );
               });
@@ -601,10 +607,12 @@ class LogsPastLogsWidget extends StatelessWidget {
               onTap: () {
                 setStateCallback(() {
                   // Text field
-                  repetitionsController.text =
-                      pastLog.repetitions != null ? numberFormat.format(pastLog.repetitions) : '';
-                  weightController.text =
-                      pastLog.weight != null ? numberFormat.format(pastLog.weight) : '';
+                  repetitionsController.text = pastLog.repetitions != null
+                      ? numberFormat.format(pastLog.repetitions)
+                      : '';
+                  weightController.text = pastLog.weight != null
+                      ? numberFormat.format(pastLog.weight)
+                      : '';
 
                   // Drop downs
                   log.rir = pastLog.rir;
@@ -612,9 +620,11 @@ class LogsPastLogsWidget extends StatelessWidget {
                   log.weightUnit = pastLog.weightUnitObj;
 
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(AppLocalizations.of(context).dataCopied),
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context).dataCopied),
+                    ),
+                  );
                 });
               },
               contentPadding: const EdgeInsets.symmetric(horizontal: 40),

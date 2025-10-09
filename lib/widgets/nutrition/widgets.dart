@@ -38,19 +38,19 @@ class ScanReader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: ReaderWidget(
-          onScan: (result) {
-            // notes:
-            // 1. even if result.isValid, result.error is always non-null (and set to "")
-            // 2. i've never encountered scan errors to see when they occur, and
-            //    i wouldn't know what to do about them anyway, so we simply return
-            //    result.text in such case (which presumably will be null, or "")
-            // 3. when user cancels (swipe left / back button) this code is no longer
-            //    run and the caller receives null
-            Navigator.pop(context, result.text);
-          },
-        ),
-      );
+    body: ReaderWidget(
+      onScan: (result) {
+        // notes:
+        // 1. even if result.isValid, result.error is always non-null (and set to "")
+        // 2. i've never encountered scan errors to see when they occur, and
+        //    i wouldn't know what to do about them anyway, so we simply return
+        //    result.text in such case (which presumably will be null, or "")
+        // 3. when user cancels (swipe left / back button) this code is no longer
+        //    run and the caller receives null
+        Navigator.pop(context, result.text);
+      },
+    ),
+  );
 }
 
 class IngredientTypeahead extends StatefulWidget {
@@ -94,8 +94,9 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
 
   Future<String> openBarcodeScan(BuildContext context) async {
     try {
-      final code = await Navigator.of(context)
-          .push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
+      final code = await Navigator.of(
+        context,
+      ).push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
 
       if (code == null) {
         return '';
@@ -217,8 +218,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
         showDialog(
           context: context,
           builder: (context) => FutureBuilder<Ingredient?>(
-            future: Provider.of<NutritionPlansProvider>(context, listen: false)
-                .searchIngredientWithBarcode(barcode),
+            future: Provider.of<NutritionPlansProvider>(
+              context,
+              listen: false,
+            ).searchIngredientWithBarcode(barcode),
             builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
               return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
             },

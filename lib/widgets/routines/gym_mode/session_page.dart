@@ -38,17 +38,19 @@ class SessionPage extends StatelessWidget {
     TimeOfDay start,
     this._exercisePages, {
     int? dayId,
-  }) : _session = _routine.sessions.map((sessionApi) => sessionApi.session).firstWhere(
-              (session) => session.date.isSameDayAs(clock.now()),
-              orElse: () => WorkoutSession(
-                dayId: dayId,
-                routineId: _routine.id!,
-                impression: DEFAULT_IMPRESSION,
-                date: clock.now(),
-                timeStart: start,
-                timeEnd: TimeOfDay.fromDateTime(clock.now()),
-              ),
-            );
+  }) : _session = _routine.sessions
+           .map((sessionApi) => sessionApi.session)
+           .firstWhere(
+             (session) => session.date.isSameDayAs(clock.now()),
+             orElse: () => WorkoutSession(
+               dayId: dayId,
+               routineId: _routine.id!,
+               impression: DEFAULT_IMPRESSION,
+               date: clock.now(),
+               timeStart: start,
+               timeEnd: TimeOfDay.fromDateTime(clock.now()),
+             ),
+           );
 
   @override
   Widget build(BuildContext context) {

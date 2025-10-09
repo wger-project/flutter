@@ -195,7 +195,8 @@ class AboutPage extends StatelessWidget {
                 showLicensePage(
                   context: context,
                   applicationName: 'wger',
-                  applicationVersion: 'App: ${authProvider.applicationVersion?.version ?? 'N/A'} '
+                  applicationVersion:
+                      'App: ${authProvider.applicationVersion?.version ?? 'N/A'} '
                       'Server: ${authProvider.serverVersion ?? 'N/A'}',
                   applicationLegalese: '\u{a9} ${today.year} wger contributors',
                   applicationIcon: Padding(

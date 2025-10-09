@@ -142,8 +142,13 @@ class Log {
 
   /// Returns the text representation for a single setting, used in the gym mode
   String get singleLogRepTextNoNl {
-    return repText(repetitions, repetitionsUnitObj, weight, weightUnitObj, rir)
-        .replaceAll('\n', '');
+    return repText(
+      repetitions,
+      repetitionsUnitObj,
+      weight,
+      weightUnitObj,
+      rir,
+    ).replaceAll('\n', '');
   }
 
   /// Override the equals operator

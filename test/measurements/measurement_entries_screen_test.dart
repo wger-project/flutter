@@ -37,10 +37,21 @@ void main() {
   setUp(() {
     mockMeasurementProvider = MockMeasurementProvider();
     when(mockMeasurementProvider.findCategoryById(any)).thenReturn(
-      MeasurementCategory(id: 1, name: 'body fat', unit: '%', entries: [
-        MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 8, 1), value: 10.2, notes: ''),
-        MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 8, 10), value: 18.1, notes: 'a'),
-      ]),
+      MeasurementCategory(
+        id: 1,
+        name: 'body fat',
+        unit: '%',
+        entries: [
+          MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 8, 1), value: 10.2, notes: ''),
+          MeasurementEntry(
+            id: 1,
+            category: 1,
+            date: DateTime(2021, 8, 10),
+            value: 18.1,
+            notes: 'a',
+          ),
+        ],
+      ),
     );
 
     mockNutritionPlansProvider = MockNutritionPlansProvider();

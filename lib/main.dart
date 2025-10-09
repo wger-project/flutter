@@ -146,8 +146,8 @@ class MainApp extends StatelessWidget {
           future: auth.tryAutoLogin(),
           builder: (ctx, authResultSnapshot) =>
               authResultSnapshot.connectionState == ConnectionState.waiting
-                  ? const SplashScreen()
-                  : const AuthScreen(),
+              ? const SplashScreen()
+              : const AuthScreen(),
         );
     }
   }

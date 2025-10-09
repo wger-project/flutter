@@ -138,8 +138,10 @@ Widget getIngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
     recent: plan.dedupDiaryEntries,
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
-      Provider.of<NutritionPlansProvider>(context, listen: false)
-          .logIngredientToDiary(mealItem, plan.id!, dt);
+      Provider.of<NutritionPlansProvider>(
+        context,
+        listen: false,
+      ).logIngredientToDiary(mealItem, plan.id!, dt);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -236,8 +238,9 @@ class IngredientFormState extends State<IngredientForm> {
   Widget build(BuildContext context) {
     final String unit = AppLocalizations.of(context).g;
     final queryLower = _searchQuery.toLowerCase();
-    final suggestions =
-        widget.recent.where((e) => e.ingredient.name.toLowerCase().contains(queryLower)).toList();
+    final suggestions = widget.recent
+        .where((e) => e.ingredient.name.toLowerCase().contains(queryLower))
+        .toList();
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     return Container(
@@ -359,31 +362,32 @@ class IngredientFormState extends State<IngredientForm> {
                         context,
                         listen: false,
                       ).fetchIngredient(_mealItem.ingredientId),
-                      builder: (
-                        BuildContext context,
-                        AsyncSnapshot<Ingredient> snapshot,
-                      ) {
-                        if (snapshot.hasData) {
-                          _mealItem.ingredient = snapshot.data!;
-                          return MealItemValuesTile(
-                            ingredient: _mealItem.ingredient,
-                            nutritionalValues: _mealItem.nutritionalValues,
-                          );
-                        } else if (snapshot.hasError) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Text(
-                              'Ingredient lookup error: ${snapshot.error}',
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          );
-                        }
-                        return const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(),
-                        );
-                      },
+                      builder:
+                          (
+                            BuildContext context,
+                            AsyncSnapshot<Ingredient> snapshot,
+                          ) {
+                            if (snapshot.hasData) {
+                              _mealItem.ingredient = snapshot.data!;
+                              return MealItemValuesTile(
+                                ingredient: _mealItem.ingredient,
+                                nutritionalValues: _mealItem.nutritionalValues,
+                              );
+                            } else if (snapshot.hasError) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: Text(
+                                  'Ingredient lookup error: ${snapshot.error}',
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              );
+                            }
+                            return const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(),
+                            );
+                          },
                     ),
                   ],
                 ),
@@ -432,10 +436,12 @@ class IngredientFormState extends State<IngredientForm> {
                       title: Text(
                         '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
                       ),
-                      subtitle: Text(getShortNutritionValues(
-                        suggestions[index].ingredient.nutritionalValues,
-                        context,
-                      )),
+                      subtitle: Text(
+                        getShortNutritionValues(
+                          suggestions[index].ingredient.nutritionalValues,
+                          context,
+                        ),
+                      ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
