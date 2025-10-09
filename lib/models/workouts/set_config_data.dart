@@ -21,6 +21,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
 part 'set_config_data.g.dart';
@@ -37,7 +38,7 @@ class SetConfigData {
   late int slotEntryId;
 
   @JsonKey(required: true)
-  late String type;
+  late SlotEntryType type;
 
   @JsonKey(required: true, name: 'text_repr')
   late String textRepr;
@@ -99,17 +100,17 @@ class SetConfigData {
   SetConfigData({
     required this.exerciseId,
     required this.slotEntryId,
-    this.type = 'normal',
+    this.type = SlotEntryType.normal,
     required this.nrOfSets,
     this.maxNrOfSets,
     required this.weight,
     this.maxWeight,
     this.weightUnitId = WEIGHT_UNIT_KG,
-    this.weightRounding = null,
+    this.weightRounding,
     required this.repetitions,
     this.maxRepetitions,
     this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
-    this.repetitionsRounding = null,
+    this.repetitionsRounding,
     required this.rir,
     this.maxRir,
     required this.rpe,

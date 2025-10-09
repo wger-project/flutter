@@ -26,14 +26,14 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
   return SlotEntry(
     id: (json['id'] as num?)?.toInt(),
     slotId: (json['slot'] as num).toInt(),
-    order: (json['order'] as num).toInt(),
-    type: json['type'] as String,
+    order: (json['order'] as num?)?.toInt() ?? 1,
+    type: $enumDecodeNullable(_$SlotEntryTypeEnumMap, json['type']) ?? SlotEntryType.normal,
     exerciseId: (json['exercise'] as num).toInt(),
     repetitionUnitId: (json['repetition_unit'] as num?)?.toInt(),
     repetitionRounding: stringToNumNull(json['repetition_rounding'] as String?),
     weightUnitId: (json['weight_unit'] as num?)?.toInt(),
     weightRounding: stringToNumNull(json['weight_rounding'] as String?),
-    comment: json['comment'] as String,
+    comment: json['comment'] as String? ?? '',
     weightConfigs:
         (json['weight_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
@@ -91,11 +91,22 @@ Map<String, dynamic> _$SlotEntryToJson(SlotEntry instance) => <String, dynamic>{
   'slot': instance.slotId,
   'order': instance.order,
   'comment': instance.comment,
-  'type': instance.type,
+  'type': _$SlotEntryTypeEnumMap[instance.type]!,
   'exercise': instance.exerciseId,
   'repetition_unit': instance.repetitionUnitId,
   'repetition_rounding': instance.repetitionRounding,
   'weight_unit': instance.weightUnitId,
   'weight_rounding': instance.weightRounding,
   'config': instance.config,
+};
+
+const _$SlotEntryTypeEnumMap = {
+  SlotEntryType.normal: 'normal',
+  SlotEntryType.dropset: 'dropset',
+  SlotEntryType.myo: 'myo',
+  SlotEntryType.partial: 'partial',
+  SlotEntryType.forced: 'forced',
+  SlotEntryType.tut: 'tut',
+  SlotEntryType.iso: 'iso',
+  SlotEntryType.jump: 'jump',
 };

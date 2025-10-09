@@ -53,10 +53,7 @@ class _RoutineEditState extends State<RoutineEdit> {
           children: [
             RoutineForm(widget._routine, useListView: false),
             Container(height: 10),
-            Text(
-              i18n.routineDays,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(i18n.routineDays, style: Theme.of(context).textTheme.titleLarge),
             ReorderableDaysList(
               routineId: widget._routine.id!,
               days: widget._routine.days.where((day) => day.id != null).toList(),
@@ -71,17 +68,9 @@ class _RoutineEditState extends State<RoutineEdit> {
                 });
               },
             ),
-            if (selectedDay != null)
-              DayFormWidget(
-                key: ValueKey(selectedDayId),
-                day: selectedDay,
-                routineId: widget._routine.id!,
-              ),
+            if (selectedDay != null) DayFormWidget(key: ValueKey(selectedDayId), day: selectedDay),
             const SizedBox(height: 25),
-            Text(
-              i18n.resultingRoutine,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(i18n.resultingRoutine, style: Theme.of(context).textTheme.titleLarge),
             const Divider(),
             RoutineDetail(widget._routine, viewMode: true),
           ],

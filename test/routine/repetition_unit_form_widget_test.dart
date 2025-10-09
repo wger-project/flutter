@@ -41,8 +41,6 @@ void main() {
 
   final slotEntry = SlotEntry(
     slotId: 1,
-    type: 'normal',
-    order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
@@ -70,9 +68,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: RepetitionUnitInputWidget(1, onChanged: (value) => result = value)),
-        routes: {
-          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-        },
+        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
   }

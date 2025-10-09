@@ -41,8 +41,6 @@ void main() {
 
   final slotEntry = SlotEntry(
     slotId: 1,
-    type: 'normal',
-    order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
