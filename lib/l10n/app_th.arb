@@ -1,1 +1,128 @@
-{}
+{
+    "userProfile": "โปรไฟล์ของคุณ",
+    "@userProfile": {},
+    "login": "เข้าสู่ระบบ",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "logout": "ออกจากระบบ",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "register": "ลงทะเบียน",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "useDefaultServer": "ใช้เซิร์ฟเวอร์เริ่มต้น",
+    "@useDefaultServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "useCustomServer": "ใช้เซิร์ฟเวอร์ที่กำหนดเอง",
+    "@useCustomServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "invalidUrl": "กรุณาป้อน URL ที่ถูกต้อง",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "usernameValidChars": "ชื่อผู้ใช้สามารถประกอบด้วยตัวอักษร ตัวเลข และอักขระ @, +, ., - และ _ เท่านั้น",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "passwordsDontMatch": "รหัสผ่านไม่ตรงกัน",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "passwordTooShort": "รหัสผ่านสั้นเกินไป",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "selectAvailablePlates": "เลือกแผ่นน้ำหนักที่มี",
+    "@selectAvailablePlates": {},
+    "barWeight": "น้ำหนัก Bar",
+    "@barWeight": {},
+    "password": "รหัสผ่าน",
+    "@password": {},
+    "confirmPassword": "ยืนยันรหัสผ่าน",
+    "@confirmPassword": {},
+    "invalidEmail": "กรุณากรอกที่อยู่อีเมลที่ถูกต้อง",
+    "@invalidEmail": {
+        "description": "Error message when the user enters an invalid email"
+    },
+    "email": "ที่อยู่อีเมล",
+    "@email": {},
+    "username": "ชื่อผู้ใช้",
+    "@username": {},
+    "invalidUsername": "กรุณากรอกชื่อผู้ใช้ที่ถูกต้อง",
+    "@invalidUsername": {
+        "description": "Error message when the user enters an invalid username"
+    },
+    "useApiToken": "ใช้โทเค็น API",
+    "@useApiToken": {},
+    "useUsernameAndPassword": "ใช้ชื่อผู้ใช้และรหัสผ่าน",
+    "@useUsernameAndPassword": {},
+    "apiToken": "โทเค็น API",
+    "@apiToken": {},
+    "invalidApiToken": "กรุณาป้อนรหัส API ที่ถูกต้อง",
+    "@invalidApiToken": {
+        "description": "Error message when the user enters an invalid API key"
+    },
+    "apiTokenValidChars": "คีย์ API จะต้องประกอบด้วยตัวอักษร a-f, ตัวเลข 0-9 และมีความยาว 40 อักขระเท่านั้น",
+    "@apiTokenValidChars": {
+        "description": "Error message when the user tries to input a API key with forbidden characters"
+    },
+    "customServerHint": "กรอกที่อยู่เซิร์ฟเวอร์ของคุณ มิฉะนั้นจะใช้ค่าเริ่มต้น",
+    "@customServerHint": {
+        "description": "Hint text for the form where the users can enter their own wger instance"
+    },
+    "reset": "รีเซ็ต",
+    "@reset": {
+        "description": "Button text allowing the user to reset the entered values to the default"
+    },
+    "registerInstead": "ยังไม่มีบัญชีใช่ไหม? ลงทะเบียนเลย",
+    "@registerInstead": {},
+    "loginInstead": "มีบัญชีอยู่แล้ว? เข้าสู่ระบบ",
+    "@loginInstead": {},
+    "labelBottomNavWorkout": "การออกกำลังกาย",
+    "@labelBottomNavWorkout": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelBottomNavNutrition": "โภชนาการ",
+    "@labelBottomNavNutrition": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelWorkoutLogs": "ข้อมูลการออกกำลังกาย",
+    "@labelWorkoutLogs": {
+        "description": "(Workout) logs"
+    },
+    "labelWorkoutPlan": "แผนการออกกำลังกาย",
+    "@labelWorkoutPlan": {
+        "description": "Title for screen workout plan"
+    },
+    "labelDashboard": "แดชบอร์ด",
+    "@labelDashboard": {
+        "description": "Title for screen dashboard"
+    },
+    "success": "สำเร็จ",
+    "@success": {
+        "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "successfullyDeleted": "ลบเรียบร้อย",
+    "@successfullyDeleted": {
+        "description": "Message when an item was successfully deleted"
+    },
+    "successfullySaved": "บันทึกสำเร็จ",
+    "@successfullySaved": {
+        "description": "Message when an item was successfully saved"
+    },
+    "exerciseList": "รายการการออกกำลังกาย",
+    "@exerciseList": {},
+    "exercise": "ออกกำลังกาย",
+    "@exercise": {
+        "description": "An exercise for a workout"
+    },
+    "exercises": "ออกกำลังกาย",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    }
+}
