@@ -508,6 +508,10 @@
   "@takePicture": {},
   "gallery": "Galerie",
   "@gallery": {},
+  "galleryAvifNotSupported": "AVIF není podporován",
+  "@galleryAvifNotSupported": {},
+  "galleryAvifNotSupportedDetail": "Obrazy AVIF zatím nejsou podporovány.",
+  "@galleryAvifNotSupportedDetail": {},
   "productFound": "Produkt nalezen",
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"
