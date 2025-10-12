@@ -1112,5 +1112,21 @@
     "authorHint": "Введіть ім'я автора",
     "@authorHint": {
         "description": "Hint text for author field"
+    },
+    "galleryImageTypeNotSupported": "Зображення типу {imageType} наразі не підтримуються на цій платформі.",
+    "@galleryImageTypeNotSupported": {
+        "placeholders": {
+            "imageType": {
+                "type": "String"
+            }
+        }
+    },
+    "galleryImageTypeNotSupportedDetail": "Це зображення у форматі {imageType}, який наразі не підтримується на цій платформі.",
+    "@galleryImageTypeNotSupportedDetail": {
+        "placeholders": {
+            "imageType": {
+                "type": "String"
+            }
+        }
     }
 }
