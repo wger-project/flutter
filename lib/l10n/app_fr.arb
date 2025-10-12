@@ -354,10 +354,26 @@
     "@addImage": {},
     "gallery": "Galerie",
     "@gallery": {},
-    "galleryAvifNotSupported": "AVIF non pris en charge",
-    "@galleryAvifNotSupported": {},
-    "galleryAvifNotSupportedDetail": "AVIF non pris en charge",
-    "@galleryAvifNotSupportedDetail": {},
+    "imageFormatNotSupported": "{imageFormat} non pris en charge",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "{imageFormat} non pris en charge",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
     "chooseFromLibrary": "Choisir depuis la bibliothèque",
     "@chooseFromLibrary": {},
     "takePicture": "Prendre une photo",

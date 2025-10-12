@@ -471,10 +471,26 @@
   },
   "gallery": "Galeria",
   "@gallery": {},
-  "galleryAvifNotSupported": "AVIF no és compatible",
-  "@galleryAvifNotSupported": {},
-  "galleryAvifNotSupportedDetail": "Les imatges AVIF encara no són compatibles.",
-  "@galleryAvifNotSupportedDetail": {},
+  "imageFormatNotSupported": "{imageFormat} no és compatible",
+  "@imageFormatNotSupported": {
+      "description": "Label shown on the error container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "imageFormatNotSupportedDetail": "Les imatges {imageFormat} encara no són compatibles.",
+  "@imageFormatNotSupportedDetail": {
+      "description": "Label shown on the image preview container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
   "addImage": "Afegeix imatge",
   "@addImage": {},
   "dataCopied": "Dades copiades a una nova entrada",

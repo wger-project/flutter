@@ -344,10 +344,26 @@
     "@addImage": {},
     "gallery": "Galería",
     "@gallery": {},
-    "galleryAvifNotSupported": "AVIF no compatible",
-    "@galleryAvifNotSupported": {},
-    "galleryAvifNotSupportedDetail": "Las imágenes AVIF aún no son compatibles.",
-    "@galleryAvifNotSupportedDetail": {},
+    "imageFormatNotSupported": "{imageFormat} no compatible",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "Las imágenes {imageFormat} aún no son compatibles.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
     "chooseFromLibrary": "Elije de la biblioteca de fotos",
     "@chooseFromLibrary": {},
     "takePicture": "Toma una foto",
