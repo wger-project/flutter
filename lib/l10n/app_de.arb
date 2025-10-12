@@ -357,6 +357,26 @@
     "@addImage": {},
     "gallery": "Galerie",
     "@gallery": {},
+    "imageFormatNotSupported": "{imageFormat} wird nicht unterstützt",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "{imageFormat}-Bilder werden noch nicht unterstützt.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
     "chooseFromLibrary": "Wähle aus der Bibliothek",
     "@chooseFromLibrary": {},
     "takePicture": "Bild aufnehmen",
