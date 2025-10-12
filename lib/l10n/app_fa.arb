@@ -351,5 +351,39 @@
     "energy": "انرژی",
     "@energy": {
         "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+    },
+    "barWeight": "وزن میله",
+    "@barWeight": {},
+    "exercise": "تمرین",
+    "@exercise": {
+        "description": "An exercise for a workout"
+    },
+    "unit": "واحد",
+    "@unit": {
+        "description": "The unit used for a repetition (kg, time, etc.)"
+    },
+    "exercises": "تمرین ها",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    },
+    "exerciseName": "نام تمرین",
+    "@exerciseName": {
+        "description": "Label for the name of a workout exercise"
+    },
+    "searchExercise": "تمرین را برای افزودن جستجو کنید",
+    "@searchExercise": {
+        "description": "Label on set form. Selected exercises are added to the set"
+    },
+    "noIngredientsDefined": "هنوز هیچ مواد تشکیل دهنده ای تعریف نشده",
+    "@noIngredientsDefined": {},
+    "noMatchingExerciseFound": "هیچ تمرین مطابقی پیدا نشد",
+    "@noMatchingExerciseFound": {
+        "description": "Message returned if no exercises match the searched string"
+    },
+    "searchNamesInEnglish": "اسامی را به زبان انگلیسی هم جستجو کنید",
+    "@searchNamesInEnglish": {},
+    "equipment": "تجهیزات",
+    "@equipment": {
+        "description": "Equipment needed to perform an exercise"
     }
 }
