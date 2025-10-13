@@ -1051,21 +1051,5 @@
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
-  "systemMode": "System settings",
-  "galleryImageTypeNotSupported": "{imageType} images are currently not supported on this platform.",
-  "@galleryImageTypeNotSupported": {
-    "placeholders": {
-      "imageType": {
-        "type": "String"
-      }
-    }
-  },
-  "galleryImageTypeNotSupportedDetail": "This image is in {imageType} format, which is currently not supported on this platform.",
-  "@galleryImageTypeNotSupportedDetail": {
-    "placeholders": {
-      "imageType": {
-        "type": "String"
-      }
-    }
-  }
+  "systemMode": "System settings"
 }
