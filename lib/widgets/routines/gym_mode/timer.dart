@@ -28,11 +28,13 @@ class TimerWidget extends StatefulWidget {
   final PageController _controller;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
+  final _totalPages;
 
   const TimerWidget(
     this._controller,
     this._ratioCompleted,
     this._exercisePages,
+    this._totalPages
   );
 
   @override
@@ -72,6 +74,7 @@ class _TimerWidgetState extends State<TimerWidget> {
         NavigationHeader(
           AppLocalizations.of(context).pause,
           widget._controller,
+          widget._totalPages,
           exercisePages: widget._exercisePages,
         ),
         Expanded(
@@ -93,12 +96,14 @@ class TimerCountdownWidget extends StatefulWidget {
   final double _ratioCompleted;
   final int _seconds;
   final Map<Exercise, int> _exercisePages;
+  final int _totalPages;
 
   const TimerCountdownWidget(
     this._controller,
     this._seconds,
     this._ratioCompleted,
     this._exercisePages,
+    this._totalPages
   );
 
   @override
@@ -137,6 +142,7 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
         NavigationHeader(
           AppLocalizations.of(context).pause,
           widget._controller,
+          widget._totalPages,
           exercisePages: widget._exercisePages,
         ),
         Expanded(

@@ -9,8 +9,9 @@ class StartPage extends StatelessWidget {
   final PageController _controller;
   final DayData _dayData;
   final Map<Exercise, int> _exercisePages;
+  final int _totalPages;
 
-  const StartPage(this._controller, this._dayData, this._exercisePages);
+  const StartPage(this._controller, this._dayData, this._exercisePages, this._totalPages);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,9 @@ class StartPage extends StatelessWidget {
         NavigationHeader(
           AppLocalizations.of(context).todaysWorkout,
           _controller,
+          _totalPages,
           exercisePages: _exercisePages,
+          hideEndWorkoutButton: true,
         ),
         Expanded(
           child: ListView(

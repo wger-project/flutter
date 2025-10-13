@@ -46,6 +46,7 @@ class GymMode extends ConsumerStatefulWidget {
 
 class _GymModeState extends ConsumerState<GymMode> {
   var _totalElements = 1;
+  var _totalPages = 1;
   late Future<int> _initData;
   bool _initialPageJumped = false;
 
@@ -103,6 +104,12 @@ class _GymModeState extends ConsumerState<GymMode> {
   void _calculatePages() {
     for (final slot in widget._dayDataGym.slots) {
       _totalElements += slot.setConfigs.length;
+      // add 1 for each exercise
+      _totalPages += 1;
+      for (final config in slot.setConfigs) {
+        // add nrOfSets * 2, 1 for log page and 1 for timer
+        _totalPages += (config.nrOfSets! * 2).toInt();
+      }
     }
     _exercisePages.clear();
     var currentPage = 1;
@@ -128,7 +135,7 @@ class _GymModeState extends ConsumerState<GymMode> {
     final routinesProvider = context.read<RoutinesProvider>();
     var currentElement = 1;
     final List<Widget> out = [];
-
+    
     for (final slotData in widget._dayDataGym.slots) {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
@@ -143,10 +150,11 @@ class _GymModeState extends ConsumerState<GymMode> {
               exercise,
               ratioCompleted,
               state.exercisePages,
+              _totalPages
             ),
           );
         }
-
+        
         out.add(
           LogPage(
             _controller,
@@ -156,7 +164,8 @@ class _GymModeState extends ConsumerState<GymMode> {
             routinesProvider.findById(widget._dayDataGym.day!.routineId),
             ratioCompleted,
             state.exercisePages,
-            widget._iteration,
+            _totalPages,
+            widget._iteration
           ),
         );
 
@@ -168,16 +177,16 @@ class _GymModeState extends ConsumerState<GymMode> {
               config.restTime!.toInt(),
               ratioCompleted,
               state.exercisePages,
+              _totalPages
             ),
           );
         } else {
-          out.add(TimerWidget(_controller, ratioCompleted, state.exercisePages));
+          out.add(TimerWidget(_controller, ratioCompleted, state.exercisePages, _totalPages));
         }
 
         firstPage = false;
       }
     }
-
     return out;
   }
 
@@ -201,13 +210,14 @@ class _GymModeState extends ConsumerState<GymMode> {
         });
 
         final List<Widget> children = [
-          StartPage(_controller, widget._dayDataDisplay, _exercisePages),
+          StartPage(_controller, widget._dayDataDisplay, _exercisePages, _totalPages),
           ...getContent(),
           SessionPage(
             context.read<RoutinesProvider>().findById(widget._dayDataGym.day!.routineId),
             _controller,
             ref.read(gymStateProvider).startTime,
             _exercisePages,
+            _totalPages,
             dayId: widget._dayDataGym.day!.id!,
           ),
         ];

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import 'package:flutter/material.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -78,14 +79,32 @@ class NavigationHeader extends StatelessWidget {
   final PageController _controller;
   final String _title;
   final Map<Exercise, int> exercisePages;
+  final int _totalPages;
+  final bool hideEndWorkoutButton;
 
   const NavigationHeader(
     this._title,
-    this._controller, {
-    required this.exercisePages,
+    this._controller,
+    this._totalPages, {
+      required this.exercisePages,
+      this.hideEndWorkoutButton = false
   });
 
   Widget getDialog(BuildContext context) {
+    final TextButton? endWorkoutButton = !hideEndWorkoutButton ? 
+      TextButton(
+        child: Text(AppLocalizations.of(context).endWorkout),
+        onPressed: () {
+          _controller.animateToPage(
+            _totalPages, 
+            duration: DEFAULT_ANIMATION_DURATION,
+            curve: DEFAULT_ANIMATION_CURVE,
+          );
+          
+          Navigator.of(context).pop();
+        },
+      ) : null;
+
     return AlertDialog(
       title: Text(
         AppLocalizations.of(context).jumpTo,
@@ -113,6 +132,7 @@ class NavigationHeader extends StatelessWidget {
         ),
       ),
       actions: [
+        ?endWorkoutButton,
         TextButton(
           child: Text(MaterialLocalizations.of(context).closeButtonLabel),
           onPressed: () {

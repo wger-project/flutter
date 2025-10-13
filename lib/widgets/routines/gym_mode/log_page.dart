@@ -48,6 +48,7 @@ class LogPage extends ConsumerStatefulWidget {
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
   final Log _log;
+  final int _totalPages;
 
   LogPage(
     this._controller,
@@ -57,6 +58,7 @@ class LogPage extends ConsumerStatefulWidget {
     this._workoutPlan,
     this._ratioCompleted,
     this._exercisePages,
+    this._totalPages,
     int? iteration,
   ) : _log = Log.fromSetConfigData(_configData)
         ..routineId = _workoutPlan.id!
@@ -266,6 +268,7 @@ class _LogPageState extends ConsumerState<LogPage> {
         NavigationHeader(
           widget._exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           widget._controller,
+          widget._totalPages,
           exercisePages: widget._exercisePages,
         ),
 
