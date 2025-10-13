@@ -30,12 +30,7 @@ class TimerWidget extends StatefulWidget {
   final Map<Exercise, int> _exercisePages;
   final _totalPages;
 
-  const TimerWidget(
-    this._controller,
-    this._ratioCompleted,
-    this._exercisePages,
-    this._totalPages
-  );
+  const TimerWidget(this._controller, this._ratioCompleted, this._exercisePages, this._totalPages);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -103,7 +98,7 @@ class TimerCountdownWidget extends StatefulWidget {
     this._seconds,
     this._ratioCompleted,
     this._exercisePages,
-    this._totalPages
+    this._totalPages,
   );
 
   @override

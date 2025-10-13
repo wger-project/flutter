@@ -37,7 +37,7 @@ class SessionPage extends StatelessWidget {
     this._routine,
     this._controller,
     TimeOfDay start,
-    this._exercisePages, 
+    this._exercisePages,
     this._totalElements, {
     int? dayId,
   }) : _session = _routine.sessions

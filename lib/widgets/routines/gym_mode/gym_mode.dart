@@ -135,7 +135,7 @@ class _GymModeState extends ConsumerState<GymMode> {
     final routinesProvider = context.read<RoutinesProvider>();
     var currentElement = 1;
     final List<Widget> out = [];
-    
+
     for (final slotData in widget._dayDataGym.slots) {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
@@ -150,11 +150,11 @@ class _GymModeState extends ConsumerState<GymMode> {
               exercise,
               ratioCompleted,
               state.exercisePages,
-              _totalPages
+              _totalPages,
             ),
           );
         }
-        
+
         out.add(
           LogPage(
             _controller,
@@ -165,7 +165,7 @@ class _GymModeState extends ConsumerState<GymMode> {
             ratioCompleted,
             state.exercisePages,
             _totalPages,
-            widget._iteration
+            widget._iteration,
           ),
         );
 
@@ -177,7 +177,7 @@ class _GymModeState extends ConsumerState<GymMode> {
               config.restTime!.toInt(),
               ratioCompleted,
               state.exercisePages,
-              _totalPages
+              _totalPages,
             ),
           );
         } else {

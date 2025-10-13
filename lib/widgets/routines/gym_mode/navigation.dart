@@ -86,24 +86,25 @@ class NavigationHeader extends StatelessWidget {
     this._title,
     this._controller,
     this._totalPages, {
-      required this.exercisePages,
-      this.hideEndWorkoutButton = false
+    required this.exercisePages,
+    this.hideEndWorkoutButton = false,
   });
 
   Widget getDialog(BuildContext context) {
-    final TextButton? endWorkoutButton = !hideEndWorkoutButton ? 
-      TextButton(
-        child: Text(AppLocalizations.of(context).endWorkout),
-        onPressed: () {
-          _controller.animateToPage(
-            _totalPages, 
-            duration: DEFAULT_ANIMATION_DURATION,
-            curve: DEFAULT_ANIMATION_CURVE,
-          );
-          
-          Navigator.of(context).pop();
-        },
-      ) : null;
+    final TextButton? endWorkoutButton = !hideEndWorkoutButton
+        ? TextButton(
+            child: Text(AppLocalizations.of(context).endWorkout),
+            onPressed: () {
+              _controller.animateToPage(
+                _totalPages,
+                duration: DEFAULT_ANIMATION_DURATION,
+                curve: DEFAULT_ANIMATION_CURVE,
+              );
+
+              Navigator.of(context).pop();
+            },
+          )
+        : null;
 
     return AlertDialog(
       title: Text(
