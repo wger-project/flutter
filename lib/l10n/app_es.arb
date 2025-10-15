@@ -1044,5 +1044,75 @@
     "openEnded": "Indefinido",
     "@openEnded": {
         "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "overview": "Descripción general",
+    "@overview": {},
+    "identicalExercisePleaseDiscard": "Si observa un ejercicio idéntico al que está agregando, descarte el borrador y edítelo en su lugar.",
+    "@identicalExercisePleaseDiscard": {},
+    "checkInformationBeforeSubmitting": "Por favor verifique que la información que ingresó sea correcta antes de enviar el ejercicio",
+    "@checkInformationBeforeSubmitting": {},
+    "imageDetailsTitle": "Detalles de la imagen",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Título",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Introduce el título de la imagen",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Enlace al sitio web de origen",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Autor(es)",
+    "@author": {},
+    "authorHint": "Introduce el nombre del autor",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Enlace al sitio web o perfil del autor",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Enlace a la fuente original, si se trata de un trabajo derivado",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Un trabajo derivado se basa en un trabajo anterior, pero contiene suficiente contenido nuevo y creativo para darle derecho a sus propios derechos de autor.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Tipo de imagen",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "Al enviar esta imagen, acepta divulgarla según la licencia CC-BY-SA-4. La imagen debe ser obra propia o el autor debe haberla publicado bajo una licencia compatible con ella.",
+    "@imageDetailsLicenseNotice": {},
+    "imageDetailsLicenseNoticeLinkToLicense": "Ver texto de licencia.",
+    "@imageDetailsLicenseNoticeLinkToLicense": {},
+    "add": "agregar",
+    "@add": {
+        "description": "Add button text"
+    },
+    "enterTextInLanguage": "¡Por favor ingrese el texto en el idioma correcto!",
+    "@enterTextInLanguage": {},
+    "galleryImageTypeNotSupported": "Las imágenes {imageType} actualmente no son compatibles con esta plataforma.",
+    "@galleryImageTypeNotSupported": {
+        "placeholders": {
+            "imageType": {
+                "type": "String"
+            }
+        }
+    },
+    "galleryImageTypeNotSupportedDetail": "Esta imagen está en formato {imageType}, que actualmente no es compatible con esta plataforma.",
+    "@galleryImageTypeNotSupportedDetail": {
+        "placeholders": {
+            "imageType": {
+                "type": "String"
+            }
+        }
     }
 }
