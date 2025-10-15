@@ -35,6 +35,8 @@ class Gallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<GalleryProvider>(context);
+    final i18n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(5),
@@ -63,6 +65,23 @@ class Gallery extends StatelessWidget {
                       image: NetworkImage(currentImage.url!),
                       fit: BoxFit.cover,
                       imageSemanticLabel: currentImage.description,
+                      imageErrorBuilder: (context, error, stackTrace) {
+                        final imageFormat = currentImage.url!.split('.').last.toUpperCase();
+                        return AspectRatio(
+                          aspectRatio: 1,
+                          child: Container(
+                            color: theme.colorScheme.errorContainer,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              spacing: 8,
+                              children: [
+                                Icon(Icons.broken_image),
+                                Text(i18n.imageFormatNotSupported(imageFormat)), 
+                              ]
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
@@ -82,6 +101,8 @@ class ImageDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
     return Container(
       key: Key('image-${image.id!}-detail'),
       padding: const EdgeInsets.all(10),
@@ -92,7 +113,25 @@ class ImageDetail extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           Expanded(
-            child: Image.network(image.url!, semanticLabel: image.description),
+            child: Image.network(
+              image.url!,
+              semanticLabel: image.description,
+              errorBuilder: (context, error, stackTrace) {
+                final imageFormat = image.url!.split('.').last.toUpperCase();
+
+                return Container(
+                  color: theme.colorScheme.errorContainer,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 8,
+                    children: [
+                      Icon(Icons.broken_image),
+                      Text(i18n.imageFormatNotSupportedDetail(imageFormat))
+                    ]
+                  ),
+                );
+              },
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),

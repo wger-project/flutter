@@ -508,6 +508,26 @@
   "@takePicture": {},
   "gallery": "Galerie",
   "@gallery": {},
+  "imageFormatNotSupported": "{imageFormat} není podporován",
+  "@imageFormatNotSupported": {
+      "description": "Label shown on the error container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "imageFormatNotSupportedDetail": "Obrazy {imageFormat} zatím nejsou podporovány.",
+  "@imageFormatNotSupportedDetail": {
+      "description": "Label shown on the image preview container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
   "productFound": "Produkt nalezen",
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"

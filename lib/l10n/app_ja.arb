@@ -473,6 +473,26 @@
     "@chooseFromLibrary": {},
     "gallery": "Gallery",
     "@gallery": {},
+    "imageFormatNotSupported": "{imageFormat}はサポートされていません",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "{imageFormat}形式の画像はまだサポートされていません。",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
     "addImage": "Add image",
     "@addImage": {},
     "dataCopied": "Data copied to new entry",

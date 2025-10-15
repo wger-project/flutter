@@ -479,6 +479,26 @@
     "@chooseFromLibrary": {},
     "gallery": "Галерея",
     "@gallery": {},
+    "imageFormatNotSupported": "{imageFormat} не підтримується",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "Зображення {imageFormat} поки що не підтримуються.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
     "addImage": "Додати зображення",
     "@addImage": {},
     "dataCopied": "Дані скопійовано до нового запису",
