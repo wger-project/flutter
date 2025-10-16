@@ -112,7 +112,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final slotEntryBenchPress = SlotEntry(
     slotId: 1,
-    type: 'normal',
+    type: SlotEntryType.normal,
     order: 1,
     exerciseId: 1,
     repetitionUnitId: 1,
@@ -123,12 +123,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     repetitionUnit: testRepetitionUnit1,
     weightUnit: testWeightUnit1,
     exercise: testExercises[0],
-    nrOfSetsConfigs: [
-      BaseConfig.firstIteration(4, 1),
-    ],
-    repetitionsConfigs: [
-      BaseConfig.firstIteration(3, 1),
-    ],
+    nrOfSetsConfigs: [BaseConfig.firstIteration(4, 1)],
+    repetitionsConfigs: [BaseConfig.firstIteration(3, 1)],
     weightConfigs: [
       BaseConfig.firstIteration(100, 1),
       BaseConfig(
@@ -144,18 +140,13 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     ],
   );
 
-  final slotBenchPress = Slot.withData(
-    id: 1,
-    day: 1,
-    order: 1,
-    comment: 'Make sure to warm up',
-  );
+  final slotBenchPress = Slot.withData(id: 1, day: 1, order: 1, comment: 'Make sure to warm up');
   slotBenchPress.addExerciseBase(testExercises[0]);
   slotBenchPress.entries.add(slotEntryBenchPress);
 
   final slotEntrySquat = SlotEntry(
     slotId: 2,
-    type: 'normal',
+    type: SlotEntryType.normal,
     order: 1,
     exerciseId: 8,
     repetitionUnitId: 1,
@@ -166,15 +157,9 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     repetitionUnit: testRepetitionUnit1,
     weightUnit: testWeightUnit1,
     exercise: testExercises[4],
-    weightConfigs: [
-      BaseConfig.firstIteration(80, 1),
-    ],
-    repetitionsConfigs: [
-      BaseConfig.firstIteration(5, 1),
-    ],
-    nrOfSetsConfigs: [
-      BaseConfig.firstIteration(3, 1),
-    ],
+    weightConfigs: [BaseConfig.firstIteration(80, 1)],
+    repetitionsConfigs: [BaseConfig.firstIteration(5, 1)],
+    nrOfSetsConfigs: [BaseConfig.firstIteration(3, 1)],
   );
 
   final slotSquat = Slot.withData(id: 2, day: 1, order: 1);
@@ -183,7 +168,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final slotEntrySideRaises = SlotEntry(
     slotId: 2,
-    type: 'normal',
+    type: SlotEntryType.normal,
     order: 1,
     exerciseId: 8,
     repetitionUnitId: 1,
@@ -194,15 +179,9 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     repetitionUnit: testRepetitionUnit1,
     weightUnit: testWeightUnit1,
     exercise: testExercises[5],
-    nrOfSetsConfigs: [
-      BaseConfig.firstIteration(4, 1),
-    ],
-    repetitionsConfigs: [
-      BaseConfig.firstIteration(12, 1),
-    ],
-    weightConfigs: [
-      BaseConfig.firstIteration(10, 1),
-    ],
+    nrOfSetsConfigs: [BaseConfig.firstIteration(4, 1)],
+    repetitionsConfigs: [BaseConfig.firstIteration(12, 1)],
+    weightConfigs: [BaseConfig.firstIteration(10, 1)],
   );
   // settingSideRaises.weight = 6;
 

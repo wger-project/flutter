@@ -29,7 +29,7 @@ class WeightUnitInputWidget extends StatefulWidget {
   late int? selectedWeightUnit;
   final ValueChanged<int?> onChanged;
 
-  WeightUnitInputWidget(initialValue, {required this.onChanged}) {
+  WeightUnitInputWidget(int? initialValue, {required this.onChanged}) {
     selectedWeightUnit = initialValue;
   }
 

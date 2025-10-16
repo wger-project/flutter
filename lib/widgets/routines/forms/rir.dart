@@ -30,11 +30,11 @@ class RiRInputWidget extends StatefulWidget {
   static const SLIDER_START = -0.5;
 
   RiRInputWidget(this._initialValue, {required this.onChanged}) {
-    dropdownValue = _initialValue != null ? _initialValue!.toString() : SlotEntry.DEFAULT_RIR;
+    dropdownValue = _initialValue != null ? _initialValue.toString() : SlotEntry.DEFAULT_RIR;
 
     // Read string RiR into a double
     if (_initialValue != null) {
-      _currentSetSliderValue = _initialValue!.toDouble();
+      _currentSetSliderValue = _initialValue.toDouble();
     } else {
       _currentSetSliderValue = SLIDER_START;
     }

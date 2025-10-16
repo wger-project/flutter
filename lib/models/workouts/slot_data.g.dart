@@ -7,7 +7,10 @@ part of 'slot_data.dart';
 // **************************************************************************
 
 SlotData _$SlotDataFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['comment', 'is_superset', 'exercises', 'sets']);
+  $checkKeys(
+    json,
+    requiredKeys: const ['comment', 'is_superset', 'exercises', 'sets'],
+  );
   return SlotData(
     comment: json['comment'] as String,
     isSuperset: json['is_superset'] as bool,

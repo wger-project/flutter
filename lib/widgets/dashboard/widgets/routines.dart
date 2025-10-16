@@ -130,7 +130,7 @@ class DetailContentWidget extends StatelessWidget {
                       child: Text(
                         dayData.day == null || dayData.day!.isRest
                             ? AppLocalizations.of(context).restDay
-                            : dayData.day!.name,
+                            : dayData.day!.nameWithType,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                         overflow: TextOverflow.ellipsis,
                       ),

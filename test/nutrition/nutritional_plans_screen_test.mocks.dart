@@ -31,53 +31,24 @@ import 'package:wger/providers/base_provider.dart' as _i8;
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeClient_0 extends _i1.SmartFake implements _i2.Client {
-  _FakeClient_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-        parent,
-        parentInvocation,
-      );
+  _FakeClient_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeAuthProvider_1 extends _i1.SmartFake implements _i3.AuthProvider {
-  _FakeAuthProvider_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-        parent,
-        parentInvocation,
-      );
+  _FakeAuthProvider_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-        parent,
-        parentInvocation,
-      );
+  _FakeUri_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeResponse_3 extends _i1.SmartFake implements _i2.Response {
-  _FakeResponse_3(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-        parent,
-        parentInvocation,
-      );
+  _FakeResponse_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeStreamedResponse_4 extends _i1.SmartFake implements _i2.StreamedResponse {
-  _FakeStreamedResponse_4(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-        parent,
-        parentInvocation,
-      );
+  _FakeStreamedResponse_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AuthProvider].
@@ -90,134 +61,71 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
 
   @override
   Map<String, String> get metadata =>
-      (super.noSuchMethod(
-            Invocation.getter(#metadata),
-            returnValue: <String, String>{},
-          )
+      (super.noSuchMethod(Invocation.getter(#metadata), returnValue: <String, String>{})
           as Map<String, String>);
 
   @override
   _i3.AuthState get state =>
-      (super.noSuchMethod(
-            Invocation.getter(#state),
-            returnValue: _i3.AuthState.updateRequired,
-          )
+      (super.noSuchMethod(Invocation.getter(#state), returnValue: _i3.AuthState.updateRequired)
           as _i3.AuthState);
 
   @override
   _i2.Client get client =>
       (super.noSuchMethod(
             Invocation.getter(#client),
-            returnValue: _FakeClient_0(
-              this,
-              Invocation.getter(#client),
-            ),
+            returnValue: _FakeClient_0(this, Invocation.getter(#client)),
           )
           as _i2.Client);
 
   @override
   bool get dataInit =>
-      (super.noSuchMethod(
-            Invocation.getter(#dataInit),
-            returnValue: false,
-          )
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#dataInit), returnValue: false) as bool);
 
   @override
-  bool get isAuth =>
-      (super.noSuchMethod(
-            Invocation.getter(#isAuth),
-            returnValue: false,
-          )
-          as bool);
+  bool get isAuth => (super.noSuchMethod(Invocation.getter(#isAuth), returnValue: false) as bool);
 
   @override
-  set token(String? value) => super.noSuchMethod(
-    Invocation.setter(
-      #token,
-      value,
-    ),
-    returnValueForMissingStub: null,
-  );
+  set token(String? value) =>
+      super.noSuchMethod(Invocation.setter(#token, value), returnValueForMissingStub: null);
 
   @override
-  set serverUrl(String? value) => super.noSuchMethod(
-    Invocation.setter(
-      #serverUrl,
-      value,
-    ),
-    returnValueForMissingStub: null,
-  );
+  set serverUrl(String? value) =>
+      super.noSuchMethod(Invocation.setter(#serverUrl, value), returnValueForMissingStub: null);
 
   @override
-  set serverVersion(String? value) => super.noSuchMethod(
-    Invocation.setter(
-      #serverVersion,
-      value,
-    ),
-    returnValueForMissingStub: null,
-  );
+  set serverVersion(String? value) =>
+      super.noSuchMethod(Invocation.setter(#serverVersion, value), returnValueForMissingStub: null);
 
   @override
   set applicationVersion(_i4.PackageInfo? value) => super.noSuchMethod(
-    Invocation.setter(
-      #applicationVersion,
-      value,
-    ),
+    Invocation.setter(#applicationVersion, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set metadata(Map<String, String>? value) => super.noSuchMethod(
-    Invocation.setter(
-      #metadata,
-      value,
-    ),
-    returnValueForMissingStub: null,
-  );
+  set metadata(Map<String, String>? value) =>
+      super.noSuchMethod(Invocation.setter(#metadata, value), returnValueForMissingStub: null);
 
   @override
-  set state(_i3.AuthState? value) => super.noSuchMethod(
-    Invocation.setter(
-      #state,
-      value,
-    ),
-    returnValueForMissingStub: null,
-  );
+  set state(_i3.AuthState? value) =>
+      super.noSuchMethod(Invocation.setter(#state, value), returnValueForMissingStub: null);
 
   @override
-  set client(_i2.Client? value) => super.noSuchMethod(
-    Invocation.setter(
-      #client,
-      value,
-    ),
-    returnValueForMissingStub: null,
-  );
+  set client(_i2.Client? value) =>
+      super.noSuchMethod(Invocation.setter(#client, value), returnValueForMissingStub: null);
 
   @override
-  set dataInit(bool? value) => super.noSuchMethod(
-    Invocation.setter(
-      #dataInit,
-      value,
-    ),
-    returnValueForMissingStub: null,
-  );
+  set dataInit(bool? value) =>
+      super.noSuchMethod(Invocation.setter(#dataInit, value), returnValueForMissingStub: null);
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(
-            Invocation.getter(#hasListeners),
-            returnValue: false,
-          )
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   _i5.Future<void> setServerVersion() =>
       (super.noSuchMethod(
-            Invocation.method(
-              #setServerVersion,
-              [],
-            ),
+            Invocation.method(#setServerVersion, []),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )
@@ -226,10 +134,7 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
   @override
   _i5.Future<void> setApplicationVersion() =>
       (super.noSuchMethod(
-            Invocation.method(
-              #setApplicationVersion,
-              [],
-            ),
+            Invocation.method(#setApplicationVersion, []),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )
@@ -238,10 +143,7 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
   @override
   _i5.Future<void> initVersions(String? serverUrl) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #initVersions,
-              [serverUrl],
-            ),
+            Invocation.method(#initVersions, [serverUrl]),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )
@@ -250,10 +152,7 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
   @override
   _i5.Future<bool> applicationUpdateRequired([String? version]) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #applicationUpdateRequired,
-              [version],
-            ),
+            Invocation.method(#applicationUpdateRequired, [version]),
             returnValue: _i5.Future<bool>.value(false),
           )
           as _i5.Future<bool>);
@@ -267,17 +166,13 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
     String? locale = 'en',
   }) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #register,
-              [],
-              {
-                #username: username,
-                #password: password,
-                #email: email,
-                #serverUrl: serverUrl,
-                #locale: locale,
-              },
-            ),
+            Invocation.method(#register, [], {
+              #username: username,
+              #password: password,
+              #email: email,
+              #serverUrl: serverUrl,
+              #locale: locale,
+            }),
             returnValue: _i5.Future<_i3.LoginActions>.value(_i3.LoginActions.update),
           )
           as _i5.Future<_i3.LoginActions>);
@@ -290,15 +185,7 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
     String? apiToken,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #login,
-              [
-                username,
-                password,
-                serverUrl,
-                apiToken,
-              ],
-            ),
+            Invocation.method(#login, [username, password, serverUrl, apiToken]),
             returnValue: _i5.Future<_i3.LoginActions>.value(_i3.LoginActions.update),
           )
           as _i5.Future<_i3.LoginActions>);
@@ -306,18 +193,9 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
   @override
   _i5.Future<String> getServerUrlFromPrefs() =>
       (super.noSuchMethod(
-            Invocation.method(
-              #getServerUrlFromPrefs,
-              [],
-            ),
+            Invocation.method(#getServerUrlFromPrefs, []),
             returnValue: _i5.Future<String>.value(
-              _i6.dummyValue<String>(
-                this,
-                Invocation.method(
-                  #getServerUrlFromPrefs,
-                  [],
-                ),
-              ),
+              _i6.dummyValue<String>(this, Invocation.method(#getServerUrlFromPrefs, [])),
             ),
           )
           as _i5.Future<String>);
@@ -325,10 +203,7 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
   @override
   _i5.Future<void> tryAutoLogin() =>
       (super.noSuchMethod(
-            Invocation.method(
-              #tryAutoLogin,
-              [],
-            ),
+            Invocation.method(#tryAutoLogin, []),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )
@@ -337,11 +212,7 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
   @override
   _i5.Future<void> logout({bool? shouldNotify = true}) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #logout,
-              [],
-              {#shouldNotify: shouldNotify},
-            ),
+            Invocation.method(#logout, [], {#shouldNotify: shouldNotify}),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )
@@ -350,55 +221,30 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
   @override
   String getAppNameHeader() =>
       (super.noSuchMethod(
-            Invocation.method(
-              #getAppNameHeader,
-              [],
-            ),
-            returnValue: _i6.dummyValue<String>(
-              this,
-              Invocation.method(
-                #getAppNameHeader,
-                [],
-              ),
-            ),
+            Invocation.method(#getAppNameHeader, []),
+            returnValue: _i6.dummyValue<String>(this, Invocation.method(#getAppNameHeader, [])),
           )
           as String);
 
   @override
   void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(
-      #addListener,
-      [listener],
-    ),
+    Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
   void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(
-      #removeListener,
-      [listener],
-    ),
+    Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(
-      #dispose,
-      [],
-    ),
-    returnValueForMissingStub: null,
-  );
+  void dispose() =>
+      super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
 
   @override
-  void notifyListeners() => super.noSuchMethod(
-    Invocation.method(
-      #notifyListeners,
-      [],
-    ),
-    returnValueForMissingStub: null,
-  );
+  void notifyListeners() =>
+      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
 }
 
 /// A class which mocks [WgerBaseProvider].
@@ -413,10 +259,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i8.WgerBaseProvider {
   _i3.AuthProvider get auth =>
       (super.noSuchMethod(
             Invocation.getter(#auth),
-            returnValue: _FakeAuthProvider_1(
-              this,
-              Invocation.getter(#auth),
-            ),
+            returnValue: _FakeAuthProvider_1(this, Invocation.getter(#auth)),
           )
           as _i3.AuthProvider);
 
@@ -424,70 +267,40 @@ class MockWgerBaseProvider extends _i1.Mock implements _i8.WgerBaseProvider {
   _i2.Client get client =>
       (super.noSuchMethod(
             Invocation.getter(#client),
-            returnValue: _FakeClient_0(
-              this,
-              Invocation.getter(#client),
-            ),
+            returnValue: _FakeClient_0(this, Invocation.getter(#client)),
           )
           as _i2.Client);
 
   @override
-  set auth(_i3.AuthProvider? value) => super.noSuchMethod(
-    Invocation.setter(
-      #auth,
-      value,
-    ),
-    returnValueForMissingStub: null,
-  );
+  set auth(_i3.AuthProvider? value) =>
+      super.noSuchMethod(Invocation.setter(#auth, value), returnValueForMissingStub: null);
 
   @override
-  set client(_i2.Client? value) => super.noSuchMethod(
-    Invocation.setter(
-      #client,
-      value,
-    ),
-    returnValueForMissingStub: null,
-  );
+  set client(_i2.Client? value) =>
+      super.noSuchMethod(Invocation.setter(#client, value), returnValueForMissingStub: null);
 
   @override
   Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #getDefaultHeaders,
-              [],
-              {#includeAuth: includeAuth},
-            ),
+            Invocation.method(#getDefaultHeaders, [], {#includeAuth: includeAuth}),
             returnValue: <String, String>{},
           )
           as Map<String, String>);
 
   @override
-  Uri makeUrl(
-    String? path, {
-    int? id,
-    String? objectMethod,
-    Map<String, dynamic>? query,
-  }) =>
+  Uri makeUrl(String? path, {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
       (super.noSuchMethod(
             Invocation.method(
               #makeUrl,
               [path],
-              {
-                #id: id,
-                #objectMethod: objectMethod,
-                #query: query,
-              },
+              {#id: id, #objectMethod: objectMethod, #query: query},
             ),
             returnValue: _FakeUri_2(
               this,
               Invocation.method(
                 #makeUrl,
                 [path],
-                {
-                  #id: id,
-                  #objectMethod: objectMethod,
-                  #query: query,
-                },
+                {#id: id, #objectMethod: objectMethod, #query: query},
               ),
             ),
           )
@@ -496,10 +309,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i8.WgerBaseProvider {
   @override
   _i5.Future<dynamic> fetch(Uri? uri) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #fetch,
-              [uri],
-            ),
+            Invocation.method(#fetch, [uri]),
             returnValue: _i5.Future<dynamic>.value(),
           )
           as _i5.Future<dynamic>);
@@ -507,72 +317,33 @@ class MockWgerBaseProvider extends _i1.Mock implements _i8.WgerBaseProvider {
   @override
   _i5.Future<List<dynamic>> fetchPaginated(Uri? uri) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #fetchPaginated,
-              [uri],
-            ),
+            Invocation.method(#fetchPaginated, [uri]),
             returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
           )
           as _i5.Future<List<dynamic>>);
 
   @override
-  _i5.Future<Map<String, dynamic>> post(
-    Map<String, dynamic>? data,
-    Uri? uri,
-  ) =>
+  _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #post,
-              [
-                data,
-                uri,
-              ],
-            ),
+            Invocation.method(#post, [data, uri]),
             returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
           )
           as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<Map<String, dynamic>> patch(
-    Map<String, dynamic>? data,
-    Uri? uri,
-  ) =>
+  _i5.Future<Map<String, dynamic>> patch(Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #patch,
-              [
-                data,
-                uri,
-              ],
-            ),
+            Invocation.method(#patch, [data, uri]),
             returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
           )
           as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<_i2.Response> deleteRequest(
-    String? url,
-    int? id,
-  ) =>
+  _i5.Future<_i2.Response> deleteRequest(String? url, int? id) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #deleteRequest,
-              [
-                url,
-                id,
-              ],
-            ),
+            Invocation.method(#deleteRequest, [url, id]),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_3(
-                this,
-                Invocation.method(
-                  #deleteRequest,
-                  [
-                    url,
-                    id,
-                  ],
-                ),
-              ),
+              _FakeResponse_3(this, Invocation.method(#deleteRequest, [url, id])),
             ),
           )
           as _i5.Future<_i2.Response>);
@@ -587,49 +358,21 @@ class MockClient extends _i1.Mock implements _i2.Client {
   }
 
   @override
-  _i5.Future<_i2.Response> head(
-    Uri? url, {
-    Map<String, String>? headers,
-  }) =>
+  _i5.Future<_i2.Response> head(Uri? url, {Map<String, String>? headers}) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #head,
-              [url],
-              {#headers: headers},
-            ),
+            Invocation.method(#head, [url], {#headers: headers}),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_3(
-                this,
-                Invocation.method(
-                  #head,
-                  [url],
-                  {#headers: headers},
-                ),
-              ),
+              _FakeResponse_3(this, Invocation.method(#head, [url], {#headers: headers})),
             ),
           )
           as _i5.Future<_i2.Response>);
 
   @override
-  _i5.Future<_i2.Response> get(
-    Uri? url, {
-    Map<String, String>? headers,
-  }) =>
+  _i5.Future<_i2.Response> get(Uri? url, {Map<String, String>? headers}) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #get,
-              [url],
-              {#headers: headers},
-            ),
+            Invocation.method(#get, [url], {#headers: headers}),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_3(
-                this,
-                Invocation.method(
-                  #get,
-                  [url],
-                  {#headers: headers},
-                ),
-              ),
+              _FakeResponse_3(this, Invocation.method(#get, [url], {#headers: headers})),
             ),
           )
           as _i5.Future<_i2.Response>);
@@ -642,26 +385,14 @@ class MockClient extends _i1.Mock implements _i2.Client {
     _i9.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #post,
-              [url],
-              {
-                #headers: headers,
-                #body: body,
-                #encoding: encoding,
-              },
-            ),
+            Invocation.method(#post, [url], {#headers: headers, #body: body, #encoding: encoding}),
             returnValue: _i5.Future<_i2.Response>.value(
               _FakeResponse_3(
                 this,
                 Invocation.method(
                   #post,
                   [url],
-                  {
-                    #headers: headers,
-                    #body: body,
-                    #encoding: encoding,
-                  },
+                  {#headers: headers, #body: body, #encoding: encoding},
                 ),
               ),
             ),
@@ -676,26 +407,14 @@ class MockClient extends _i1.Mock implements _i2.Client {
     _i9.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #put,
-              [url],
-              {
-                #headers: headers,
-                #body: body,
-                #encoding: encoding,
-              },
-            ),
+            Invocation.method(#put, [url], {#headers: headers, #body: body, #encoding: encoding}),
             returnValue: _i5.Future<_i2.Response>.value(
               _FakeResponse_3(
                 this,
                 Invocation.method(
                   #put,
                   [url],
-                  {
-                    #headers: headers,
-                    #body: body,
-                    #encoding: encoding,
-                  },
+                  {#headers: headers, #body: body, #encoding: encoding},
                 ),
               ),
             ),
@@ -710,26 +429,14 @@ class MockClient extends _i1.Mock implements _i2.Client {
     _i9.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #patch,
-              [url],
-              {
-                #headers: headers,
-                #body: body,
-                #encoding: encoding,
-              },
-            ),
+            Invocation.method(#patch, [url], {#headers: headers, #body: body, #encoding: encoding}),
             returnValue: _i5.Future<_i2.Response>.value(
               _FakeResponse_3(
                 this,
                 Invocation.method(
                   #patch,
                   [url],
-                  {
-                    #headers: headers,
-                    #body: body,
-                    #encoding: encoding,
-                  },
+                  {#headers: headers, #body: body, #encoding: encoding},
                 ),
               ),
             ),
@@ -747,11 +454,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
             Invocation.method(
               #delete,
               [url],
-              {
-                #headers: headers,
-                #body: body,
-                #encoding: encoding,
-              },
+              {#headers: headers, #body: body, #encoding: encoding},
             ),
             returnValue: _i5.Future<_i2.Response>.value(
               _FakeResponse_3(
@@ -759,11 +462,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
                 Invocation.method(
                   #delete,
                   [url],
-                  {
-                    #headers: headers,
-                    #body: body,
-                    #encoding: encoding,
-                  },
+                  {#headers: headers, #body: body, #encoding: encoding},
                 ),
               ),
             ),
@@ -771,40 +470,19 @@ class MockClient extends _i1.Mock implements _i2.Client {
           as _i5.Future<_i2.Response>);
 
   @override
-  _i5.Future<String> read(
-    Uri? url, {
-    Map<String, String>? headers,
-  }) =>
+  _i5.Future<String> read(Uri? url, {Map<String, String>? headers}) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #read,
-              [url],
-              {#headers: headers},
-            ),
+            Invocation.method(#read, [url], {#headers: headers}),
             returnValue: _i5.Future<String>.value(
-              _i6.dummyValue<String>(
-                this,
-                Invocation.method(
-                  #read,
-                  [url],
-                  {#headers: headers},
-                ),
-              ),
+              _i6.dummyValue<String>(this, Invocation.method(#read, [url], {#headers: headers})),
             ),
           )
           as _i5.Future<String>);
 
   @override
-  _i5.Future<_i10.Uint8List> readBytes(
-    Uri? url, {
-    Map<String, String>? headers,
-  }) =>
+  _i5.Future<_i10.Uint8List> readBytes(Uri? url, {Map<String, String>? headers}) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #readBytes,
-              [url],
-              {#headers: headers},
-            ),
+            Invocation.method(#readBytes, [url], {#headers: headers}),
             returnValue: _i5.Future<_i10.Uint8List>.value(_i10.Uint8List(0)),
           )
           as _i5.Future<_i10.Uint8List>);
@@ -812,28 +490,14 @@ class MockClient extends _i1.Mock implements _i2.Client {
   @override
   _i5.Future<_i2.StreamedResponse> send(_i2.BaseRequest? request) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #send,
-              [request],
-            ),
+            Invocation.method(#send, [request]),
             returnValue: _i5.Future<_i2.StreamedResponse>.value(
-              _FakeStreamedResponse_4(
-                this,
-                Invocation.method(
-                  #send,
-                  [request],
-                ),
-              ),
+              _FakeStreamedResponse_4(this, Invocation.method(#send, [request])),
             ),
           )
           as _i5.Future<_i2.StreamedResponse>);
 
   @override
-  void close() => super.noSuchMethod(
-    Invocation.method(
-      #close,
-      [],
-    ),
-    returnValueForMissingStub: null,
-  );
+  void close() =>
+      super.noSuchMethod(Invocation.method(#close, []), returnValueForMissingStub: null);
 }
