@@ -25,6 +25,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/widgets/core/image.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
 import 'forms.dart';
@@ -75,9 +76,9 @@ class Gallery extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               spacing: 8,
                               children: [
-                                Icon(Icons.broken_image),
-                                Text(i18n.imageFormatNotSupported(imageFormat)), 
-                              ]
+                                const Icon(Icons.broken_image),
+                                Text(i18n.imageFormatNotSupported(imageFormat)),
+                              ],
                             ),
                           ),
                         );
@@ -102,7 +103,6 @@ class ImageDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     return Container(
       key: Key('image-${image.id!}-detail'),
       padding: const EdgeInsets.all(10),
@@ -119,16 +119,8 @@ class ImageDetail extends StatelessWidget {
               errorBuilder: (context, error, stackTrace) {
                 final imageFormat = image.url!.split('.').last.toUpperCase();
 
-                return Container(
-                  color: theme.colorScheme.errorContainer,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 8,
-                    children: [
-                      Icon(Icons.broken_image),
-                      Text(i18n.imageFormatNotSupportedDetail(imageFormat))
-                    ]
-                  ),
+                return ImageFormatNotSupported(
+                  i18n.imageFormatNotSupported(imageFormat),
                 );
               },
             ),
