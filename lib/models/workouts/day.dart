@@ -124,7 +124,7 @@ class Day {
 
   bool get isSpecialType => type != DayType.custom;
 
-  String typeLabel() => isSpecialType ? '\n(${type.name.toUpperCase()})' : '';
+  String get nameWithType => isSpecialType ? '${type.name.toUpperCase()} - $name' : name;
 
   // Boilerplate
   factory Day.fromJson(Map<String, dynamic> json) => _$DayFromJson(json);

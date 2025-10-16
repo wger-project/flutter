@@ -150,7 +150,7 @@ class DayHeader extends StatelessWidget {
       tileColor: Theme.of(context).focusColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: Text(
-        '${_dayData.day!.name}${_dayData.day!.typeLabel()}',
+        _dayData.day!.nameWithType,
         style: Theme.of(context).textTheme.headlineSmall,
         overflow: TextOverflow.ellipsis,
       ),
