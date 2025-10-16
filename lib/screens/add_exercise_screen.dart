@@ -29,8 +29,7 @@ class AddExerciseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
 
-    // return profile!.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
-    return const AddExerciseStepper();
+    return profile!.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
   }
 }
 
