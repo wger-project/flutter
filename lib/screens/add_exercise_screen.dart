@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import  'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -29,7 +29,10 @@ class AddExerciseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
 
-    return profile!.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
+
+   // return profile!.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
+    return const AddExerciseStepper();
+
   }
 }
 
