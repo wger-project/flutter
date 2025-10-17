@@ -210,14 +210,13 @@ class _GymModeState extends ConsumerState<GymMode> {
         });
 
         final List<Widget> children = [
-          StartPage(_controller, widget._dayDataDisplay, _exercisePages, _totalPages),
+          StartPage(_controller, widget._dayDataDisplay, _exercisePages),
           ...getContent(),
           SessionPage(
             context.read<RoutinesProvider>().findById(widget._dayDataGym.day!.routineId),
             _controller,
             ref.read(gymStateProvider).startTime,
             _exercisePages,
-            _totalPages,
             dayId: widget._dayDataGym.day!.id!,
           ),
         ];

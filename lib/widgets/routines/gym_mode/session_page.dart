@@ -31,14 +31,12 @@ class SessionPage extends StatelessWidget {
   final WorkoutSession _session;
   final PageController _controller;
   final Map<Exercise, int> _exercisePages;
-  final int _totalPages;
 
   SessionPage(
     this._routine,
     this._controller,
     TimeOfDay start,
-    this._exercisePages,
-    this._totalPages, {
+    this._exercisePages, {
     int? dayId,
   }) : _session = _routine.sessions
            .map((sessionApi) => sessionApi.session)
@@ -61,9 +59,8 @@ class SessionPage extends StatelessWidget {
         NavigationHeader(
           AppLocalizations.of(context).workoutSession,
           _controller,
-          _totalPages,
+          null,
           exercisePages: _exercisePages,
-          hideEndWorkoutButton: true,
         ),
         Expanded(child: Container()),
         Padding(

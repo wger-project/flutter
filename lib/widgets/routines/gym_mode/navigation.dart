@@ -79,24 +79,22 @@ class NavigationHeader extends StatelessWidget {
   final PageController _controller;
   final String _title;
   final Map<Exercise, int> exercisePages;
-  final int _totalPages;
-  final bool hideEndWorkoutButton;
+  final int ?_totalPages;
 
   const NavigationHeader(
     this._title,
     this._controller,
     this._totalPages, {
-    required this.exercisePages,
-    this.hideEndWorkoutButton = false,
+    required this.exercisePages
   });
 
   Widget getDialog(BuildContext context) {
-    final TextButton? endWorkoutButton = !hideEndWorkoutButton
+    final TextButton? endWorkoutButton = _totalPages != null
         ? TextButton(
             child: Text(AppLocalizations.of(context).endWorkout),
             onPressed: () {
               _controller.animateToPage(
-                _totalPages,
+                _totalPages!,
                 duration: DEFAULT_ANIMATION_DURATION,
                 curve: DEFAULT_ANIMATION_CURVE,
               );
