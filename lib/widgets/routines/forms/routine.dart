@@ -125,8 +125,8 @@ class _RoutineFormState extends State<RoutineForm> {
           final picked = await showDatePicker(
             context: context,
             initialDate: startDate,
-            firstDate: DateTime(DateTime.now().year - 10),
-            lastDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(const Duration(days: 365)),
+            lastDate: DateTime.now().add(const Duration(days: 365)),
           );
 
           if (picked == null) {
@@ -147,7 +147,7 @@ class _RoutineFormState extends State<RoutineForm> {
         readOnly: true,
         decoration: InputDecoration(
           labelText: i18n.endDate,
-          suffixIcon: Icon(
+          suffixIcon: const Icon(
             Icons.calendar_today,
             key: Key('calendarIcon'),
           ),
@@ -162,7 +162,7 @@ class _RoutineFormState extends State<RoutineForm> {
           final picked = await showDatePicker(
             context: context,
             initialDate: endDate,
-            firstDate: DateTime(DateTime.now().year - 10),
+            firstDate: DateTime.now().subtract(const Duration(days: 365)),
             lastDate: DateTime.now().add(const Duration(days: 365)),
           );
 
