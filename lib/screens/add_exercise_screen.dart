@@ -48,7 +48,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
   bool _isLoading = false;
   bool _isValidating = false;
   Widget errorWidget = const SizedBox.shrink();
-  String? _validationError;
+  WgerHttpException? _validationError;
 
   final List<GlobalKey<FormState>> _keys = [
     GlobalKey<FormState>(),
@@ -84,14 +84,14 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
     } on WgerHttpException catch (error) {
       if (mounted) {
         setState(() {
-          _validationError = error.toString();
+          _validationError = error;
         });
       }
       return false;
     } catch (error) {
       if (mounted) {
         setState(() {
-          _validationError = error.toString();
+          _validationError = WgerHttpException({'error': [error.toString()]});
         });
       }
       return false;
@@ -106,11 +106,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
         if (_validationError != null && _currentStep != lastStepIndex)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              _validationError!,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-              textAlign: TextAlign.center,
-            ),
+            child: FormHttpErrorsWidget(_validationError!),
           ),
 
         if (_currentStep == lastStepIndex) errorWidget,
