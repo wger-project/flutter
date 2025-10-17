@@ -1128,5 +1128,37 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "dayTypeCustom": "Користувацька",
+    "@dayTypeCustom": {},
+    "dayTypeEnom": "Кожну хвилину за хвилиною",
+    "@dayTypeEnom": {},
+    "dayTypeAmrap": "Якомога більше раундів",
+    "@dayTypeAmrap": {},
+    "dayTypeHiit": "Високоінтенсивне інтервальне тренування",
+    "@dayTypeHiit": {},
+    "dayTypeTabata": "Табата",
+    "@dayTypeTabata": {},
+    "dayTypeEdt": "Збільшення щільності навчання",
+    "@dayTypeEdt": {},
+    "dayTypeRft": "Раунди на час",
+    "@dayTypeRft": {},
+    "dayTypeAfap": "Якомога швидше",
+    "@dayTypeAfap": {},
+    "slotEntryTypeNormal": "Звичайний",
+    "@slotEntryTypeNormal": {},
+    "slotEntryTypeDropset": "Дропсет",
+    "@slotEntryTypeDropset": {},
+    "slotEntryTypeMyo": "Міо",
+    "@slotEntryTypeMyo": {},
+    "slotEntryTypePartial": "Часткове",
+    "@slotEntryTypePartial": {},
+    "slotEntryTypeForced": "Примусово",
+    "@slotEntryTypeForced": {},
+    "slotEntryTypeTut": "Час під Напругою",
+    "@slotEntryTypeTut": {},
+    "slotEntryTypeIso": "Ізометричне утримання",
+    "@slotEntryTypeIso": {},
+    "slotEntryTypeJump": "Стрибок",
+    "@slotEntryTypeJump": {}
 }
