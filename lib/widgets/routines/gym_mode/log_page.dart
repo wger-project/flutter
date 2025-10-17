@@ -45,7 +45,7 @@ class LogPage extends ConsumerStatefulWidget {
   final SetConfigData _configData;
   final SlotData _slotData;
   final Exercise _exercise;
-  final Routine _workoutPlan;
+  final Routine _routine;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
   final Log _log;
@@ -56,13 +56,13 @@ class LogPage extends ConsumerStatefulWidget {
     this._configData,
     this._slotData,
     this._exercise,
-    this._workoutPlan,
+    this._routine,
     this._ratioCompleted,
     this._exercisePages,
     this._totalPages,
     int? iteration,
   ) : _log = Log.fromSetConfigData(_configData)
-        ..routineId = _workoutPlan.id!
+        ..routineId = _routine.id!
         ..iteration = iteration;
 
   @override
@@ -129,10 +129,10 @@ class _LogPageState extends ConsumerState<LogPage> {
           Text(widget._slotData.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._workoutPlan.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
+          child: (widget._routine.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
               ? LogsPastLogsWidget(
                   log: widget._log,
-                  pastLogs: widget._workoutPlan.filterLogsByExercise(widget._exercise.id!),
+                  pastLogs: widget._routine.filterLogsByExercise(widget._exercise.id!),
                   onCopy: (pastLog) {
                     _logFormKey.currentState?.copyFromPastLog(pastLog);
                   },
@@ -281,7 +281,6 @@ class LogsRepsWidget extends StatelessWidget {
               _logger.info('Saving new reps value: $newValue');
               setStateCallback(() {
                 log.repetitions = numberFormat.parse(newValue!);
-                // focusNode.unfocus();
               });
             },
             validator: (value) {
