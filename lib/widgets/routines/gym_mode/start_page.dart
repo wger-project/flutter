@@ -19,7 +19,6 @@ class StartPage extends StatelessWidget {
         NavigationHeader(
           AppLocalizations.of(context).todaysWorkout,
           _controller,
-          null,
           exercisePages: _exercisePages,
         ),
         Expanded(

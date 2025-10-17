@@ -69,7 +69,7 @@ class _TimerWidgetState extends State<TimerWidget> {
         NavigationHeader(
           AppLocalizations.of(context).pause,
           widget._controller,
-          widget._totalPages,
+          totalPages: widget._totalPages,
           exercisePages: widget._exercisePages,
         ),
         Expanded(
@@ -137,7 +137,7 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
         NavigationHeader(
           AppLocalizations.of(context).pause,
           widget._controller,
-          widget._totalPages,
+          totalPages: widget._totalPages,
           exercisePages: widget._exercisePages,
         ),
         Expanded(

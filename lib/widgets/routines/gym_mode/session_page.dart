@@ -59,7 +59,6 @@ class SessionPage extends StatelessWidget {
         NavigationHeader(
           AppLocalizations.of(context).workoutSession,
           _controller,
-          null,
           exercisePages: _exercisePages,
         ),
         Expanded(child: Container()),

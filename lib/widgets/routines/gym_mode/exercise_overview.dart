@@ -42,7 +42,7 @@ class ExerciseOverview extends StatelessWidget {
         NavigationHeader(
           _exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           _controller,
-          _totalPages,
+          totalPages: _totalPages,
           exercisePages: _exercisePages,
         ),
         Expanded(

@@ -268,7 +268,7 @@ class _LogPageState extends ConsumerState<LogPage> {
         NavigationHeader(
           widget._exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           widget._controller,
-          widget._totalPages,
+          totalPages: widget._totalPages,
           exercisePages: widget._exercisePages,
         ),
 
