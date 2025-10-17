@@ -25,12 +25,14 @@ class ExerciseOverview extends StatelessWidget {
   final Exercise _exercise;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
+  final int _totalPages;
 
   const ExerciseOverview(
     this._controller,
     this._exercise,
     this._ratioCompleted,
     this._exercisePages,
+    this._totalPages,
   );
 
   @override
@@ -40,6 +42,7 @@ class ExerciseOverview extends StatelessWidget {
         NavigationHeader(
           _exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           _controller,
+          totalPages: _totalPages,
           exercisePages: _exercisePages,
         ),
         Expanded(

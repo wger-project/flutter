@@ -1063,6 +1063,7 @@
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
   },
+  "endWorkout": "End Workout",
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
