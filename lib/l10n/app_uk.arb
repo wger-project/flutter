@@ -1155,10 +1155,12 @@
     "@slotEntryTypePartial": {},
     "slotEntryTypeForced": "Примусово",
     "@slotEntryTypeForced": {},
-    "slotEntryTypeTut": "Час під Напругою",
+    "slotEntryTypeTut": "Час під Напруги",
     "@slotEntryTypeTut": {},
     "slotEntryTypeIso": "Ізометричне утримання",
     "@slotEntryTypeIso": {},
     "slotEntryTypeJump": "Стрибок",
-    "@slotEntryTypeJump": {}
+    "@slotEntryTypeJump": {},
+    "endWorkout": "Закінчити тренування",
+    "@endWorkout": {}
 }
