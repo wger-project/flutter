@@ -1,1 +1,389 @@
-{}
+{
+    "userProfile": "پروفایل شما",
+    "@userProfile": {},
+    "login": "ورود",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "logout": "خروج",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "date": "تاریخ",
+    "@date": {
+        "description": "The date of a workout log or body weight entry"
+    },
+    "register": "ثبت نام",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "useDefaultServer": "استفاده از سرور پیش فرض",
+    "@useDefaultServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "useCustomServer": "استفاده از سرور سفارشی (خصوصی)",
+    "@useCustomServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "edit": "ویرایش",
+    "@edit": {},
+    "invalidUrl": "لطفا یک لینک معتبر وارد کنید",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "usernameValidChars": "نام کاربری فقط میتواند شامل حروف انگلیسی، اعداد انگلیسی و این کاراکتر ها @ + . - _ باشد",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "delete": "حذف",
+    "@delete": {},
+    "passwordsDontMatch": "رمزهای عبور مطابقت ندارند",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "passwordTooShort": "رمز عبور خیلی کوتاه است",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "selectAvailablePlates": "بشقاب‌های غذایی موجود را انتخاب کنید",
+    "@selectAvailablePlates": {},
+    "close": "بستن",
+    "@close": {
+        "description": "Translation for close"
+    },
+    "difference": "تفاوت",
+    "@difference": {},
+    "useColors": "استفاده از رنگ ها",
+    "@useColors": {},
+    "password": "رمزعبور",
+    "@password": {},
+    "confirmPassword": "تأیید رمز عبور",
+    "@confirmPassword": {},
+    "invalidEmail": "لطفا یک آدرس ایمیل معتبر وارد کنید",
+    "@invalidEmail": {
+        "description": "Error message when the user enters an invalid email"
+    },
+    "email": "آدرس ایمیل",
+    "@email": {},
+    "username": "نام کاربری",
+    "@username": {},
+    "invalidUsername": "لطفا یک نام کاربری معتبر وارد کنید",
+    "@invalidUsername": {
+        "description": "Error message when the user enters an invalid username"
+    },
+    "start": "شروع",
+    "@start": {
+        "description": "Label on button to start the gym mode (i.e., an imperative)"
+    },
+    "useApiToken": "استفاده از توکن API",
+    "@useApiToken": {},
+    "useUsernameAndPassword": "استفاده از نام کاربری و رمز عبور",
+    "@useUsernameAndPassword": {},
+    "comment": "نظر",
+    "@comment": {
+        "description": "Comment, additional information"
+    },
+    "apiToken": "توکن API",
+    "@apiToken": {},
+    "invalidApiToken": "لطفا یک کلید API معتبر وارد کنید",
+    "@invalidApiToken": {
+        "description": "Error message when the user enters an invalid API key"
+    },
+    "apiTokenValidChars": "یک کلید API می‌تواند فقط شامل حروف انگلیسی a تا f، اعداد انگلیسی 0 تا 9 و دقیقاً 40 کاراکتر باشد",
+    "@apiTokenValidChars": {
+        "description": "Error message when the user tries to input a API key with forbidden characters"
+    },
+    "customServerUrl": "آدرس اینترنتی (URL) به منبع WGER",
+    "@customServerUrl": {
+        "description": "Label in the form where the users can enter their own wger instance"
+    },
+    "customServerHint": "آدرس سرور خودتان را وارد کنید، در غیر این صورت آدرس پیش‌فرض استفاده خواهد شد",
+    "@customServerHint": {
+        "description": "Hint text for the form where the users can enter their own wger instance"
+    },
+    "reset": "تنظیم مجدد",
+    "@reset": {
+        "description": "Button text allowing the user to reset the entered values to the default"
+    },
+    "registerInstead": "حساب کاربری ندارید؟ همین حالا ثبت نام کنید",
+    "@registerInstead": {},
+    "loginInstead": "حساب کاربری دارید؟ وارد شوید",
+    "@loginInstead": {},
+    "nutritionalPlan": "برنامه غذایی",
+    "@nutritionalPlan": {},
+    "labelBottomNavWorkout": "تمرین ورزشی",
+    "@labelBottomNavWorkout": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelBottomNavNutrition": "تغذیه",
+    "@labelBottomNavNutrition": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelWorkoutLogs": "گزارش تمرینات",
+    "@labelWorkoutLogs": {
+        "description": "(Workout) logs"
+    },
+    "labelWorkoutPlan": "برنامه تمرین ورزشی",
+    "@labelWorkoutPlan": {
+        "description": "Title for screen workout plan"
+    },
+    "labelDashboard": "داشبورد",
+    "@labelDashboard": {
+        "description": "Title for screen dashboard"
+    },
+    "success": "موفقیت",
+    "@success": {
+        "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "successfullyDeleted": "حذف شده",
+    "@successfullyDeleted": {
+        "description": "Message when an item was successfully deleted"
+    },
+    "successfullySaved": "ذخیره شده",
+    "@successfullySaved": {
+        "description": "Message when an item was successfully saved"
+    },
+    "notes": "یادداشت‌ها",
+    "@notes": {
+        "description": "Personal notes, e.g. for a workout session"
+    },
+    "exerciseList": "لیست تمرینات",
+    "@exerciseList": {},
+    "value": "مقدار",
+    "@value": {
+        "description": "The value of a measurement entry"
+    },
+    "newDay": "روز جدید",
+    "@newDay": {},
+    "newSet": "مجموعه جدید",
+    "@newSet": {
+        "description": "Header when adding a new set to a workout day"
+    },
+    "selectExercises": "اگر می‌خواهید مجموعه ای از حرکات را انجام دهید، می‌توانید چندین تمرین را جستجو کنید، آنها در یک گروه قرار می‌گیرند",
+    "@selectExercises": {},
+    "gymMode": "حالت باشگاه",
+    "@gymMode": {
+        "description": "Label when starting the gym mode"
+    },
+    "plateCalculator": "دیسک ها",
+    "@plateCalculator": {
+        "description": "Label used for the plate calculator in the gym mode"
+    },
+    "plateCalculatorNotDivisible": "با دیسک های موجود نمی‌توان به وزن دلخواه رسید",
+    "@plateCalculatorNotDivisible": {
+        "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+    },
+    "pause": "توقف",
+    "@pause": {
+        "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+    },
+    "jumpTo": "برو به",
+    "@jumpTo": {
+        "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+    },
+    "todaysWorkout": "تمرین ورزشی امروز شما",
+    "@todaysWorkout": {},
+    "logHelpEntries": "اگر در یک روز واحد بیش از یک ورودی با همان تعداد تکرارها وجود داشته باشد ، اما وزنهای مختلف ، فقط ورودی با وزن بالاتر در نمودار نشان داده می شود.",
+    "@logHelpEntries": {},
+    "logHelpEntriesUnits": "توجه داشته باشید که فقط ورودی هایی با واحد وزنی (کیلوگرم یا پوند) و تکرارها نمودار می شوند ، ترکیبات دیگری مانند زمان یا تا زمان خستگی در اینجا نادیده گرفته می شوند.",
+    "@logHelpEntriesUnits": {},
+    "description": "توضیحات",
+    "@description": {},
+    "name": "نام",
+    "@name": {
+        "description": "Name for a workout or nutritional plan"
+    },
+    "save": "ذخیره",
+    "@save": {},
+    "verify": "تأیید کردن",
+    "@verify": {},
+    "addSet": "افزودن مجموعه",
+    "@addSet": {
+        "description": "Label for the button that adds a set (to a workout day)"
+    },
+    "addMeal": "افزودن وعده",
+    "@addMeal": {},
+    "mealLogged": "غذا به دفتر گزارشات وارد شد",
+    "@mealLogged": {},
+    "ingredientLogged": "مواد به دفتر گزارشات وارد شد",
+    "@ingredientLogged": {},
+    "logMeal": "افزودن وعده به دفتر گزارشات غذایی",
+    "@logMeal": {},
+    "addIngredient": "افزودن مواد تشکیل دهنده",
+    "@addIngredient": {},
+    "logIngredient": "افزودن مواد تشکیل دهنده به دفتر گزارشات غذایی",
+    "@logIngredient": {},
+    "searchIngredient": "جستجو مواد تشکیل دهنده",
+    "@searchIngredient": {
+        "description": "Label on ingredient search form"
+    },
+    "nutritionalDiary": "دفتر گزارشات غذایی",
+    "@nutritionalDiary": {},
+    "nutritionalPlans": "برنامه های غذایی",
+    "@nutritionalPlans": {},
+    "noNutritionalPlans": "شما هیچ برنامه غذایی ندارید",
+    "@noNutritionalPlans": {
+        "description": "Message shown when the user has no nutritional plans"
+    },
+    "onlyLogging": "فقط کالری را شمارش کردن",
+    "@onlyLogging": {},
+    "onlyLoggingHelpText": "اگر فقط می خواهید کالری خود را گزارش کنید و نمی خواهید یک برنامه غذایی دقیق را با وعده های غذایی خاص تنظیم کنید ، کادر را تیک بزنید",
+    "@onlyLoggingHelpText": {},
+    "goalMacro": "اهداف مواد مغذی",
+    "@goalMacro": {
+        "description": "The goal for macronutrients"
+    },
+    "selectMealToLog": "یک وعده انتخاب کنید تا به گزارشات اضافه شود",
+    "@selectMealToLog": {},
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "در برنامه غذایی فعلی شما هیچ وعده ای تعریف نشده است",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "برای افزودن وعده های غذایی به برنامه ، به جزئیات برنامه غذایی بروید",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "goalEnergy": "هدف انرژی",
+    "@goalEnergy": {},
+    "goalProtein": "هدف پروتئینی",
+    "@goalProtein": {},
+    "goalCarbohydrates": "هدف کربوهیدراتی",
+    "@goalCarbohydrates": {},
+    "goalFat": "هدف چربی",
+    "@goalFat": {},
+    "goalFiber": "هدف فیبری",
+    "@goalFiber": {},
+    "anErrorOccurred": "خطایی رخ داد!",
+    "@anErrorOccurred": {},
+    "errorInfoDescription": "متأسفیم ، اما مشکلی پیش آمد. شما می توانید با گزارش آن در GitHub به ما در رفع این مشکل کمک کنید.",
+    "@errorInfoDescription": {},
+    "errorInfoDescription2": "شما می توانید به استفاده از برنامه ادامه دهید ، اما برخی از ویژگی ها ممکن است کار نکند.",
+    "@errorInfoDescription2": {},
+    "errorViewDetails": "جزئیات فنی",
+    "@errorViewDetails": {},
+    "applicationLogs": "گزارشات اپلیکیشن",
+    "@applicationLogs": {},
+    "errorCouldNotConnectToServer": "اتصال به سرور امکان پذیر نیست",
+    "@errorCouldNotConnectToServer": {},
+    "errorCouldNotConnectToServerDetails": "برنامه نمی تواند به سرور وصل شود. لطفاً اتصال اینترنت یا URL سرور خود را بررسی کرده و دوباره امتحان کنید. اگر مشکل ادامه پیدا کرد، با مدیر سرور تماس بگیرید.",
+    "@errorCouldNotConnectToServerDetails": {},
+    "copyToClipboard": "کپی در کلیپ بورد",
+    "@copyToClipboard": {},
+    "weight": "وزن",
+    "@weight": {
+        "description": "The weight of a workout log or body weight entry"
+    },
+    "min": "حداقل",
+    "@min": {},
+    "max": "حداکثر",
+    "@max": {},
+    "chartAllTimeTitle": "نمودار کلی {name}",
+    "@chartAllTimeTitle": {
+        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chart30DaysTitle": "نمودار 30 روزه {name}",
+    "@chart30DaysTitle": {
+        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chartDuringPlanTitle": "نمودار {chartName} در برنامه {planName}",
+    "@chartDuringPlanTitle": {
+        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+        "type": "text",
+        "placeholders": {
+            "chartName": {
+                "type": "String"
+            },
+            "planName": {
+                "type": "String"
+            }
+        }
+    },
+    "measurement": "اندازه گیری",
+    "@measurement": {},
+    "measurements": "اندازه گیری ها",
+    "@measurements": {
+        "description": "Categories for the measurements such as biceps size, body fat, etc."
+    },
+    "measurementCategoriesHelpText": "دسته اندازه گیری ، مانند \"دوسر\" یا \"چربی بدن\"",
+    "@measurementCategoriesHelpText": {},
+    "measurementEntriesHelpText": "واحد مورد استفاده برای اندازه گیری دسته مانند \"سانتی متر\" یا \"٪\"",
+    "@measurementEntriesHelpText": {},
+    "creationDate": "تاریخ شروع",
+    "@creationDate": {
+        "description": "The Start date of a nutritional plan"
+    },
+    "endDate": "تاریخ پایان",
+    "@endDate": {
+        "description": "The End date of a nutritional plan"
+    },
+    "openEnded": "پایان باز",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "time": "زمان",
+    "@time": {
+        "description": "The time of a meal or workout"
+    },
+    "timeStart": "زمان شروع",
+    "@timeStart": {
+        "description": "The starting time of a workout"
+    },
+    "timeEnd": "زمان پایان",
+    "@timeEnd": {
+        "description": "The end time of a workout"
+    },
+    "timeStartAhead": "زمان شروع نمیتواند جلوتر از زمان پایان باشد",
+    "@timeStartAhead": {},
+    "ingredient": "مواد تشکیل دهنده",
+    "@ingredient": {},
+    "energy": "انرژی",
+    "@energy": {
+        "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+    },
+    "barWeight": "وزن میله",
+    "@barWeight": {},
+    "exercise": "تمرین",
+    "@exercise": {
+        "description": "An exercise for a workout"
+    },
+    "unit": "واحد",
+    "@unit": {
+        "description": "The unit used for a repetition (kg, time, etc.)"
+    },
+    "exercises": "تمرین ها",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    },
+    "exerciseName": "نام تمرین",
+    "@exerciseName": {
+        "description": "Label for the name of a workout exercise"
+    },
+    "searchExercise": "تمرین را برای افزودن جستجو کنید",
+    "@searchExercise": {
+        "description": "Label on set form. Selected exercises are added to the set"
+    },
+    "noIngredientsDefined": "هنوز هیچ مواد تشکیل دهنده ای تعریف نشده",
+    "@noIngredientsDefined": {},
+    "noMatchingExerciseFound": "هیچ تمرین مطابقی پیدا نشد",
+    "@noMatchingExerciseFound": {
+        "description": "Message returned if no exercises match the searched string"
+    },
+    "searchNamesInEnglish": "اسامی را به زبان انگلیسی هم جستجو کنید",
+    "@searchNamesInEnglish": {},
+    "equipment": "تجهیزات",
+    "@equipment": {
+        "description": "Equipment needed to perform an exercise"
+    }
+}
