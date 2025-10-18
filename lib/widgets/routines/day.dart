@@ -101,9 +101,20 @@ class RoutineDayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final borderShape = _dayData.date.isSameDayAs(DateTime.now())
+        ? RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.scrim,
+              width: 1,
+            ),
+          )
+        : null;
+
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8, bottom: 12),
       child: Card(
+        shape: borderShape,
         margin: EdgeInsets.zero,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

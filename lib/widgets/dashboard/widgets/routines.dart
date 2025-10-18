@@ -79,7 +79,8 @@ class _DashboardRoutineWidgetState extends State<DashboardRoutineWidget> {
           ),
           if (_hasContent) ...[
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.zero,
+              // padding: const EdgeInsets.symmetric(horizontal: 10),
               child: DetailContentWidget(routine!.dayDataCurrentIteration, _showDetail),
             ),
             Row(
@@ -121,86 +122,105 @@ class DetailContentWidget extends StatelessWidget {
         ...dayDataList.where((dayData) => dayData.day != null).map((dayData) {
           return Column(
             children: [
-              SizedBox(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    if (dayData.date.isSameDayAs(DateTime.now())) const Icon(Icons.today),
-                    Expanded(
-                      child: Text(
-                        dayData.day == null || dayData.day!.isRest
-                            ? AppLocalizations.of(context).restDay
-                            : dayData.day!.nameWithType,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Expanded(
-                      child: MutedText(
-                        dayData.day != null ? dayData.day!.description : '',
-                        textAlign: TextAlign.right,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (dayData.day == null || dayData.day!.isRest)
-                      const Icon(Icons.hotel)
-                    else
-                      IconButton(
-                        icon: const Icon(Icons.play_arrow),
-                        color: wgerPrimaryButtonColor,
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(
-                            GymModeScreen.routeName,
-                            arguments: GymModeArguments(
-                              dayData.day!.routineId,
-                              dayData.day!.id!,
-                              dayData.iteration,
-                            ),
-                          );
-                        },
-                      ),
-                  ],
-                ),
-              ),
-              ...dayData.slots.map(
-                (slotData) => SizedBox(
+              Container(
+                decoration: dayData.date.isSameDayAs(DateTime.now())
+                    ? BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceDim,
+                        // border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1),
+                        // borderRadius: BorderRadius.circular(5),
+                      )
+                    : null,
+                child: SizedBox(
                   width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      ...slotData.setConfigs.map(
-                        (s) => showDetail
-                            ? Column(
-                                children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        s.exercise
-                                            .getTranslation(
-                                              Localizations.localeOf(context).languageCode,
-                                            )
-                                            .name,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: MutedText(
-                                          s.textRepr,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                ],
-                              )
-                            : Container(),
+                      const SizedBox(width: 8),
+                      if (dayData.date.isSameDayAs(DateTime.now()))
+                        const Padding(
+                          padding: EdgeInsets.only(right: 8.0),
+                          child: Icon(Icons.today),
+                        ),
+                      Expanded(
+                        child: Text(
+                          dayData.day == null || dayData.day!.isRest
+                              ? AppLocalizations.of(context).restDay
+                              : dayData.day!.nameWithType,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
+                      Expanded(
+                        child: MutedText(
+                          dayData.day != null ? dayData.day!.description : '',
+                          textAlign: TextAlign.right,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (dayData.day == null || dayData.day!.isRest)
+                        const Icon(Icons.hotel)
+                      else
+                        IconButton(
+                          icon: const Icon(Icons.play_arrow),
+                          color: wgerPrimaryButtonColor,
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(
+                              GymModeScreen.routeName,
+                              arguments: GymModeArguments(
+                                dayData.day!.routineId,
+                                dayData.day!.id!,
+                                dayData.iteration,
+                              ),
+                            );
+                          },
+                        ),
+                      const SizedBox(width: 8),
                     ],
                   ),
                 ),
               ),
-              const Divider(),
+              ...dayData.slots.map(
+                (slotData) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ...slotData.setConfigs.map(
+                          (s) => showDetail
+                              ? Column(
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          s.exercise
+                                              .getTranslation(
+                                                Localizations.localeOf(context).languageCode,
+                                              )
+                                              .name,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: MutedText(
+                                            s.textRepr,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                  ],
+                                )
+                              : Container(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // const Divider(),
+              const SizedBox(height: 10),
             ],
           );
         }),
