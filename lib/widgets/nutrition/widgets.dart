@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; //import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,6 +26,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -38,19 +38,19 @@ class ScanReader extends StatelessWidget {
   const ScanReader();
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: ReaderWidget(
-          onScan: (result) {
-            // notes:
-            // 1. even if result.isValid, result.error is always non-null (and set to "")
-            // 2. i've never encountered scan errors to see when they occur, and
-            //    i wouldn't know what to do about them anyway, so we simply return
-            //    result.text in such case (which presumably will be null, or "")
-            // 3. when user cancels (swipe left / back button) this code is no longer
-            //    run and the caller receives null
-            Navigator.pop(context, result.text);
-          },
-        ),
-      );
+    body: ReaderWidget(
+      onScan: (result) {
+        // notes:
+        // 1. even if result.isValid, result.error is always non-null (and set to "")
+        // 2. i've never encountered scan errors to see when they occur, and
+        //    i wouldn't know what to do about them anyway, so we simply return
+        //    result.text in such case (which presumably will be null, or "")
+        // 3. when user cancels (swipe left / back button) this code is no longer
+        //    run and the caller receives null
+        Navigator.pop(context, result.text);
+      },
+    ),
+  );
 }
 
 class IngredientTypeahead extends StatefulWidget {
@@ -92,8 +92,9 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
 
   Future<String> readerscan(BuildContext context) async {
     try {
-      final code = await Navigator.of(context)
-          .push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
+      final code = await Navigator.of(
+        context,
+      ).push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
       if (code == null) {
         return '';
       }
@@ -152,12 +153,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
             return ListTile(
               leading: suggestion.data.image != null
-                  ? CircleAvatar(
-                      backgroundImage: NetworkImage(url! + suggestion.data.image!),
-                    )
-                  : const CircleIconAvatar(
-                      Icon(Icons.image, color: Colors.grey),
-                    ),
+                  ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion.data.image!))
+                  : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
               title: Text(suggestion.value),
               // subtitle: Text(suggestion.data.id.toString()),
               trailing: IconButton(
@@ -217,8 +214,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
         showDialog(
           context: context,
           builder: (context) => FutureBuilder<Ingredient?>(
-            future: Provider.of<NutritionPlansProvider>(context, listen: false)
-                .searchIngredientWithCode(barcode),
+            future: Provider.of<NutritionPlansProvider>(
+              context,
+              listen: false,
+            ).searchIngredientWithCode(barcode),
             builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
               return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
             },
@@ -238,9 +237,7 @@ class IngredientAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ingredient.image != null
         ? GestureDetector(
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(ingredient.image!.image),
-            ),
+            child: CircleAvatar(backgroundImage: NetworkImage(ingredient.image!.image)),
             onTap: () async {
               if (ingredient.image!.objectUrl != '') {
                 return launchURL(ingredient.image!.objectUrl, context);

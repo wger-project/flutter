@@ -7,7 +7,7 @@ library;
 /// probably better ways to do this, but that's the way it is right now).
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 String getTranslation(String value, BuildContext context) {
   switch (value) {

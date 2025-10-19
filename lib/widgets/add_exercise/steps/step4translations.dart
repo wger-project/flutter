@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/exercises/forms.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
@@ -74,10 +74,9 @@ class _Step4TranslationState extends State<Step4Translation> {
                       final names = alternateNames!.split('\n');
                       for (final name in names) {
                         if (name.length < MIN_CHARS_NAME || name.length > MAX_CHARS_NAME) {
-                          return AppLocalizations.of(context).enterCharacters(
-                            MIN_CHARS_NAME,
-                            MAX_CHARS_NAME,
-                          );
+                          return AppLocalizations.of(
+                            context,
+                          ).enterCharacters(MIN_CHARS_NAME, MAX_CHARS_NAME);
                         }
                       }
                     }

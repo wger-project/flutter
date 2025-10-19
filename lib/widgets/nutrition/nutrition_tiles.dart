@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -18,11 +18,7 @@ class MealItemValuesTile extends StatelessWidget {
   final Ingredient ingredient;
   final NutritionalValues nutritionalValues;
 
-  const MealItemValuesTile({
-    super.key,
-    required this.ingredient,
-    required this.nutritionalValues,
-  });
+  const MealItemValuesTile({super.key, required this.ingredient, required this.nutritionalValues});
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +49,7 @@ class DiaryheaderTile extends StatelessWidget {
 
 /// a NutritionTitle showing diary entries
 class DiaryEntryTile extends StatelessWidget {
-  const DiaryEntryTile({
-    super.key,
-    required this.diaryEntry,
-    this.nutritionalPlan,
-  });
+  const DiaryEntryTile({super.key, required this.diaryEntry, this.nutritionalPlan});
 
   final Log diaryEntry;
   final NutritionalPlan? nutritionalPlan;
@@ -82,8 +74,10 @@ class DiaryEntryTile extends StatelessWidget {
           : IconButton(
               tooltip: AppLocalizations.of(context).delete,
               onPressed: () {
-                Provider.of<NutritionPlansProvider>(context, listen: false)
-                    .deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
+                Provider.of<NutritionPlansProvider>(
+                  context,
+                  listen: false,
+                ).deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
               },
               icon: const Icon(Icons.delete_outline),
               iconSize: ICON_SIZE_SMALL,

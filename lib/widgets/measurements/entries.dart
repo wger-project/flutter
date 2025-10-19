@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -38,82 +38,80 @@ class EntriesList extends StatelessWidget {
   Widget build(BuildContext context) {
     final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
 
-    final entriesAll =
-        _category.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
+    final entriesAll = _category.entries
+        .map((e) => MeasurementChartEntry(e.value, e.date))
+        .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
-    return Column(children: [
-      ...getOverviewWidgetsSeries(
-        _category.name,
-        entriesAll,
-        entries7dAvg,
-        plan,
-        _category.unit,
-        context,
-      ),
-      SizedBox(
-        height: 300,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(10.0),
-          itemCount: _category.entries.length,
-          itemBuilder: (context, index) {
-            final currentEntry = _category.entries[index];
-            final provider = Provider.of<MeasurementProvider>(context, listen: false);
+    return Column(
+      children: [
+        ...getOverviewWidgetsSeries(
+          _category.name,
+          entriesAll,
+          entries7dAvg,
+          plan,
+          _category.unit,
+          context,
+        ),
+        SizedBox(
+          height: 300,
+          child: ListView.builder(
+            padding: const EdgeInsets.all(10.0),
+            itemCount: _category.entries.length,
+            itemBuilder: (context, index) {
+              final currentEntry = _category.entries[index];
+              final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-            return Card(
-              child: ListTile(
-                title: Text('${currentEntry.value} ${_category.unit}'),
-                subtitle: Text(
-                  DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(currentEntry.date),
-                ),
-                trailing: PopupMenuButton(
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      PopupMenuItem(
-                        child: Text(AppLocalizations.of(context).edit),
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).edit,
-                            MeasurementEntryForm(
-                              currentEntry.category,
-                              currentEntry,
+              return Card(
+                child: ListTile(
+                  title: Text('${currentEntry.value} ${_category.unit}'),
+                  subtitle: Text(
+                    DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(currentEntry.date),
+                  ),
+                  trailing: PopupMenuButton(
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem(
+                          child: Text(AppLocalizations.of(context).edit),
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).edit,
+                              MeasurementEntryForm(currentEntry.category, currentEntry),
                             ),
                           ),
                         ),
-                      ),
-                      PopupMenuItem(
-                        child: Text(AppLocalizations.of(context).delete),
-                        onTap: () async {
-                          // Delete entry from DB
-                          await provider.deleteEntry(
-                            currentEntry.id!,
-                            currentEntry.category,
-                          );
+                        PopupMenuItem(
+                          child: Text(AppLocalizations.of(context).delete),
+                          onTap: () async {
+                            // Delete entry from DB
+                            await provider.deleteEntry(currentEntry.id!, currentEntry.category);
 
-                          // and inform the user
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  AppLocalizations.of(context).successfullyDeleted,
-                                  textAlign: TextAlign.center,
+                            // and inform the user
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    AppLocalizations.of(context).successfullyDeleted,
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ];
-                  },
+                              );
+                            }
+                          },
+                        ),
+                      ];
+                    },
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }

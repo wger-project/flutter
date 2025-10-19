@@ -17,12 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
@@ -45,8 +45,9 @@ void main() {
   setUp(() {
     mockWorkoutPlans = MockWorkoutPlansProvider();
     when(mockWorkoutPlans.editWorkout(any)).thenAnswer((_) => Future.value(existingPlan));
-    when(mockWorkoutPlans.fetchAndSetWorkoutPlanFull(any))
-        .thenAnswer((_) => Future.value(existingPlan));
+    when(
+      mockWorkoutPlans.fetchAndSetWorkoutPlanFull(any),
+    ).thenAnswer((_) => Future.value(existingPlan));
   });
 
   Widget createHomeScreen(WorkoutPlan workoutPlan, {locale = 'en'}) {
@@ -60,9 +61,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: WorkoutForm(workoutPlan)),
-        routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
-        },
+        routes: {WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen()},
       ),
     );
   }
@@ -79,11 +78,7 @@ void main() {
     await tester.pumpWidget(createHomeScreen(existingPlan));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('test 1'),
-      findsOneWidget,
-      reason: 'Name of existing workout plan',
-    );
+    expect(find.text('test 1'), findsOneWidget, reason: 'Name of existing workout plan');
     expect(
       find.text('description 1'),
       findsOneWidget,

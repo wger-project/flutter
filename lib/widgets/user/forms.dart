@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/theme/theme.dart';
@@ -132,9 +132,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
               context.read<UserProvider>().saveProfile();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(AppLocalizations.of(context).successfullySaved),
-                ),
+                SnackBar(content: Text(AppLocalizations.of(context).successfullySaved)),
               );
             },
             child: Text(AppLocalizations.of(context).save),

@@ -20,6 +20,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/l10n/generatedapp_localizations.dart';
 import 'package:wger/models/muscle.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
@@ -90,9 +91,8 @@ class _DashboardMuscleWidgetState extends State<DashboardMuscleWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.brown,
-        child: Column(
-          children: [Text('muscles'), ..._data.map((e) => Text(e.name)).toList()],
-        ));
+      color: Colors.brown,
+      child: Column(children: [Text('muscles'), ..._data.map((e) => Text(e.name)).toList()]),
+    );
   }
 }

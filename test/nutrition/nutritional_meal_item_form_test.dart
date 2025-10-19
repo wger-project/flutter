@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +9,7 @@ import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -74,14 +74,17 @@ void main() {
     when(mockNutrition.searchIngredientWithCode('123')).thenAnswer((_) => Future.value(ingredient));
     when(mockNutrition.searchIngredientWithCode('')).thenAnswer((_) => Future.value(null));
     when(mockNutrition.searchIngredientWithCode('222')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredient(
-      any,
-      languageCode: anyNamed('languageCode'),
-      searchEnglish: anyNamed('searchEnglish'),
-    )).thenAnswer(
+    when(
+      mockNutrition.searchIngredient(
+        any,
+        languageCode: anyNamed('languageCode'),
+        searchEnglish: anyNamed('searchEnglish'),
+      ),
+    ).thenAnswer(
       (_) => Future.value(
-        IngredientApiSearch.fromJson(json.decode(fixture('nutrition/ingredient_suggestions')))
-            .suggestions,
+        IngredientApiSearch.fromJson(
+          json.decode(fixture('nutrition/ingredient_suggestions')),
+        ).suggestions,
       ),
     );
 
@@ -104,9 +107,7 @@ void main() {
                 MealItemForm(meal, const [], code, test),
           ),
         ),
-        routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-        },
+        routes: {NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen()},
       ),
     );
   }
@@ -294,40 +295,41 @@ void main() {
       expect(find.text('Please enter a valid number'), findsOneWidget);
     });
 
-    testWidgets(
-      'save complete ingredient with correct weight input type',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
+    testWidgets('save complete ingredient with correct weight input type', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
-        final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
 
-        await tester.tap(find.byKey(const Key('scan-button')));
-        await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('scan-button')));
+      await tester.pumpAndSettle();
 
-        expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
 
-        await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
-        await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
+      await tester.pumpAndSettle();
 
-        expect(formState.ingredientIdController.text, '1');
+      expect(formState.ingredientIdController.text, '1');
 
-        await tester.enterText(find.byKey(const Key('field-weight')), '2');
+      await tester.enterText(find.byKey(const Key('field-weight')), '2');
 
-        // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
-        when(mockNutrition.fetchIngredient(1)).thenAnswer((_) => Future.value(
-              Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
-            ));
-        await mockNetworkImagesFor(() => tester.pumpAndSettle());
+      // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
+      when(mockNutrition.fetchIngredient(1)).thenAnswer(
+        (_) => Future.value(
+          Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
+        ),
+      );
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
 
-        expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
+      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
 
-        await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-        await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.pumpAndSettle();
 
-        expect(formState.mealItem.amount, 2);
+      expect(formState.mealItem.amount, 2);
 
-        verify(mockNutrition.addMealItem(any, meal1));
-      },
-    );
+      verify(mockNutrition.addMealItem(any, meal1));
+    });
   });
 }

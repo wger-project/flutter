@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -26,11 +26,7 @@ Widget createGymModeScreen({locale = 'en'}) {
   //when(mockExerciseProvider.findExerciseBaseById(3)).thenReturn(bases[2]); // dead lift
 
   return ChangeNotifierProvider<WorkoutPlansProvider>(
-    create: (context) => WorkoutPlansProvider(
-      mockBaseProvider,
-      mockExerciseProvider,
-      [workout],
-    ),
+    create: (context) => WorkoutPlansProvider(mockBaseProvider, mockExerciseProvider, [workout]),
     child: ChangeNotifierProvider<ExercisesProvider>(
       create: (context) => mockExerciseProvider,
       child: MaterialApp(
@@ -49,9 +45,7 @@ Widget createGymModeScreen({locale = 'en'}) {
           ),
           child: const SizedBox(),
         ),
-        routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
-        },
+        routes: {WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen()},
       ),
     ),
   );

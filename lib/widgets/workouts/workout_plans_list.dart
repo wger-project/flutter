@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
@@ -46,10 +46,9 @@ class WorkoutPlansList extends StatelessWidget {
                     onTap: () {
                       _workoutProvider.setCurrentPlan(currentWorkout.id!);
 
-                      Navigator.of(context).pushNamed(
-                        WorkoutPlanScreen.routeName,
-                        arguments: currentWorkout,
-                      );
+                      Navigator.of(
+                        context,
+                      ).pushNamed(WorkoutPlanScreen.routeName, arguments: currentWorkout);
                     },
                     title: Text(currentWorkout.name),
                     subtitle: Text(
@@ -57,62 +56,65 @@ class WorkoutPlansList extends StatelessWidget {
                         Localizations.localeOf(context).languageCode,
                       ).format(currentWorkout.creationDate),
                     ),
-                    trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const VerticalDivider(),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        tooltip: AppLocalizations.of(context).delete,
-                        onPressed: () async {
-                          // Delete workout from DB
-                          await showDialog(
-                            context: context,
-                            builder: (BuildContext contextDialog) {
-                              return AlertDialog(
-                                content: Text(
-                                  AppLocalizations.of(context).confirmDelete(currentWorkout.name),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    child: Text(
-                                      MaterialLocalizations.of(context).cancelButtonLabel,
-                                    ),
-                                    onPressed: () => Navigator.of(contextDialog).pop(),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const VerticalDivider(),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          tooltip: AppLocalizations.of(context).delete,
+                          onPressed: () async {
+                            // Delete workout from DB
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext contextDialog) {
+                                return AlertDialog(
+                                  content: Text(
+                                    AppLocalizations.of(context).confirmDelete(currentWorkout.name),
                                   ),
-                                  TextButton(
-                                    child: Text(
-                                      AppLocalizations.of(context).delete,
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.error,
+                                  actions: [
+                                    TextButton(
+                                      child: Text(
+                                        MaterialLocalizations.of(context).cancelButtonLabel,
                                       ),
+                                      onPressed: () => Navigator.of(contextDialog).pop(),
                                     ),
-                                    onPressed: () {
-                                      // Confirmed, delete the workout
-                                      Provider.of<WorkoutPlansProvider>(
-                                        context,
-                                        listen: false,
-                                      ).deleteWorkout(currentWorkout.id!);
-
-                                      // Close the popup
-                                      Navigator.of(contextDialog).pop();
-
-                                      // and inform the user
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            AppLocalizations.of(context).successfullyDeleted,
-                                            textAlign: TextAlign.center,
-                                          ),
+                                    TextButton(
+                                      child: Text(
+                                        AppLocalizations.of(context).delete,
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.error,
                                         ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ]),
+                                      ),
+                                      onPressed: () {
+                                        // Confirmed, delete the workout
+                                        Provider.of<WorkoutPlansProvider>(
+                                          context,
+                                          listen: false,
+                                        ).deleteWorkout(currentWorkout.id!);
+
+                                        // Close the popup
+                                        Navigator.of(contextDialog).pop();
+
+                                        // and inform the user
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              AppLocalizations.of(context).successfullyDeleted,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

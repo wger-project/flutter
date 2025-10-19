@@ -20,11 +20,11 @@ import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -66,8 +66,10 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
   @override
   void initState() {
     super.initState();
-    final stream =
-        Provider.of<NutritionPlansProvider>(context, listen: false).watchNutritionPlanLast();
+    final stream = Provider.of<NutritionPlansProvider>(
+      context,
+      listen: false,
+    ).watchNutritionPlanLast();
     _subscription = stream.listen((plan) {
       if (!context.mounted) {
         return;
@@ -97,8 +99,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             ),
             subtitle: Text(
               _hasContent
-                  ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_plan!.creationDate)
+                  ? DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(_plan!.creationDate)
                   : '',
             ),
             leading: Icon(
@@ -127,17 +130,14 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      NutritionalPlanScreen.routeName,
-                      arguments: _plan!.id,
-                    );
+                    Navigator.of(
+                      context,
+                    ).pushNamed(NutritionalPlanScreen.routeName, arguments: _plan!.id);
                   },
                 ),
                 Expanded(child: Container()),
                 IconButton(
-                  icon: const SvgIcon(
-                    icon: SvgIconData('assets/icons/ingredient-diary.svg'),
-                  ),
+                  icon: const SvgIcon(icon: SvgIconData('assets/icons/ingredient-diary.svg')),
                   tooltip: AppLocalizations.of(context).logIngredient,
                   onPressed: () {
                     Navigator.pushNamed(
@@ -152,9 +152,7 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   },
                 ),
                 IconButton(
-                  icon: const SvgIcon(
-                    icon: SvgIconData('assets/icons/meal-diary.svg'),
-                  ),
+                  icon: const SvgIcon(icon: SvgIconData('assets/icons/meal-diary.svg')),
                   tooltip: AppLocalizations.of(context).logMeal,
                   onPressed: () {
                     Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: _plan);
@@ -223,9 +221,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
-                            child: Text(
-                              AppLocalizations.of(context).goToDetailPage,
-                            ),
+                            child: Text(AppLocalizations.of(context).goToDetailPage),
                             onPressed: () {
                               Navigator.of(context).pushNamed(WeightScreen.routeName);
                             },
@@ -238,9 +234,12 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                                 FormScreen.routeName,
                                 arguments: FormScreenArguments(
                                   AppLocalizations.of(context).newEntry,
-                                  WeightForm(weightProvider
-                                      .getNewestEntry()
-                                      ?.copyWith(id: null, date: DateTime.now())),
+                                  WeightForm(
+                                    weightProvider.getNewestEntry()?.copyWith(
+                                      id: null,
+                                      date: DateTime.now(),
+                                    ),
+                                  ),
                                 ),
                               );
                             },
@@ -279,8 +278,9 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    final items =
-        provider.categories.map<Widget>((item) => CategoriesCard(item, elevation: 0)).toList();
+    final items = provider.categories
+        .map<Widget>((item) => CategoriesCard(item, elevation: 0))
+        .toList();
     if (items.isNotEmpty) {
       items.add(
         NothingFound(
@@ -309,10 +309,8 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
               // maybe we should just add a "Go to all" at the bottom of the widget
               trailing: IconButton(
                 icon: const Icon(Icons.arrow_forward),
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  MeasurementCategoriesScreen.routeName,
-                ),
+                onPressed: () =>
+                    Navigator.pushNamed(context, MeasurementCategoriesScreen.routeName),
               ),
             ),
             Column(
@@ -346,16 +344,11 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                               child: Container(
                                 width: 12.0,
                                 height: 12.0,
-                                margin: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 4.0,
-                                ),
+                                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color:
-                                      Theme.of(context).textTheme.headlineSmall!.color!.withOpacity(
-                                            _current == entry.key ? 0.9 : 0.4,
-                                          ),
+                                  color: Theme.of(context).textTheme.headlineSmall!.color!
+                                      .withOpacity(_current == entry.key ? 0.9 : 0.4),
                                 ),
                               ),
                             );
@@ -407,61 +400,63 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
     }
 
     for (final day in _workoutPlan!.days) {
-      out.add(SizedBox(
-        width: double.infinity,
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                day.description,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Expanded(
-              child: MutedText(day.getDaysText, textAlign: TextAlign.right),
-            ),
-            IconButton(
-              icon: const Icon(Icons.play_arrow),
-              color: wgerPrimaryButtonColor,
-              onPressed: () {
-                Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
-              },
-            ),
-          ],
-        ),
-      ));
-
-      for (final set in day.sets) {
-        out.add(SizedBox(
+      out.add(
+        SizedBox(
           width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              ...set.settingsFiltered.map((s) {
-                return _showDetail
-                    ? Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(s.exerciseObj
-                                  .getExercise(Localizations.localeOf(context).languageCode)
-                                  .name),
-                              const SizedBox(width: 10),
-                              MutedText(
-                                set.getSmartRepr(s.exerciseObj).join('\n'),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                        ],
-                      )
-                    : Container();
-              }),
+              Expanded(
+                child: Text(
+                  day.description,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Expanded(child: MutedText(day.getDaysText, textAlign: TextAlign.right)),
+              IconButton(
+                icon: const Icon(Icons.play_arrow),
+                color: wgerPrimaryButtonColor,
+                onPressed: () {
+                  Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: day);
+                },
+              ),
             ],
           ),
-        ));
+        ),
+      );
+
+      for (final set in day.sets) {
+        out.add(
+          SizedBox(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...set.settingsFiltered.map((s) {
+                  return _showDetail
+                      ? Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  s.exerciseObj
+                                      .getExercise(Localizations.localeOf(context).languageCode)
+                                      .name,
+                                ),
+                                const SizedBox(width: 10),
+                                MutedText(set.getSmartRepr(s.exerciseObj).join('\n')),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        )
+                      : Container();
+                }),
+              ],
+            ),
+          ),
+        );
       }
       out.add(const Divider());
     }
@@ -481,8 +476,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
             ),
             subtitle: Text(
               _hasContent
-                  ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_workoutPlan!.creationDate)
+                  ? DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(_workoutPlan!.creationDate)
                   : '',
             ),
             leading: Icon(
@@ -519,10 +515,9 @@ class _DashboardWorkoutWidgetState extends State<DashboardWorkoutWidget> {
                 TextButton(
                   child: Text(AppLocalizations.of(context).goToDetailPage),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      WorkoutPlanScreen.routeName,
-                      arguments: _workoutPlan,
-                    );
+                    Navigator.of(
+                      context,
+                    ).pushNamed(WorkoutPlanScreen.routeName, arguments: _workoutPlan);
                   },
                 ),
               ],
@@ -555,11 +550,7 @@ class NothingFound extends StatelessWidget {
               Navigator.pushNamed(
                 context,
                 FormScreen.routeName,
-                arguments: FormScreenArguments(
-                  _titleForm,
-                  hasListView: true,
-                  _form,
-                ),
+                arguments: FormScreenArguments(_titleForm, hasListView: true, _form),
               );
             },
           ),

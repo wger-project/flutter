@@ -18,13 +18,13 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -61,9 +61,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: MealForm("1", meal)),
-        routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-        },
+        routes: {NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen()},
       ),
     );
   }
@@ -81,11 +79,7 @@ void main() {
     await tester.pumpWidget(createFormScreen(meal1));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('17:00'),
-      findsOneWidget,
-      reason: 'Time of existing meal is filled in',
-    );
+    expect(find.text('17:00'), findsOneWidget, reason: 'Time of existing meal is filled in');
 
     expect(
       find.text('Initial Name 1'),

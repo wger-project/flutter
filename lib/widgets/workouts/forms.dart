@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -72,9 +72,7 @@ class WorkoutForm extends StatelessWidget {
           ),
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).description,
-            ),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             minLines: 3,
             maxLines: 10,
             controller: workoutDescriptionController,
@@ -113,10 +111,9 @@ class WorkoutForm extends StatelessWidget {
                   listen: false,
                 ).addWorkout(_plan);
                 if (context.mounted) {
-                  Navigator.of(context).pushReplacementNamed(
-                    WorkoutPlanScreen.routeName,
-                    arguments: newPlan,
-                  );
+                  Navigator.of(
+                    context,
+                  ).pushReplacementNamed(WorkoutPlanScreen.routeName, arguments: newPlan);
                 }
               }
             },
@@ -142,10 +139,9 @@ class _DayCheckboxState extends State<DayCheckbox> {
   Widget build(BuildContext context) {
     return CheckboxListTile(
       key: Key('field-checkbox-${widget._dayNr}'),
-      title: Text(widget._day.getDayTranslated(
-        widget._dayNr,
-        Localizations.localeOf(context).languageCode,
-      )),
+      title: Text(
+        widget._day.getDayTranslated(widget._dayNr, Localizations.localeOf(context).languageCode),
+      ),
       value: widget._day.daysOfWeek.contains(widget._dayNr),
       onChanged: (bool? newValue) {
         setState(() {
@@ -223,14 +219,12 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
               try {
                 if (widget._day.id == null) {
-                  Provider.of<WorkoutPlansProvider>(context, listen: false).addDay(
-                    widget._day,
-                    widget.workout,
-                  );
+                  Provider.of<WorkoutPlansProvider>(
+                    context,
+                    listen: false,
+                  ).addDay(widget._day, widget.workout);
                 } else {
-                  Provider.of<WorkoutPlansProvider>(context, listen: false).editDay(
-                    widget._day,
-                  );
+                  Provider.of<WorkoutPlansProvider>(context, listen: false).editDay(widget._day);
                 }
 
                 widget.dayController.clear();
@@ -442,22 +436,16 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                             return null;
                           }
                           return context.read<ExercisesProvider>().searchExercise(
-                                pattern,
-                                languageCode: Localizations.localeOf(context).languageCode,
-                                searchEnglish: _searchEnglish,
-                              );
+                            pattern,
+                            languageCode: Localizations.localeOf(context).languageCode,
+                            searchEnglish: _searchEnglish,
+                          );
                         },
-                        itemBuilder: (
-                          BuildContext context,
-                          Exercise exerciseSuggestion,
-                        ) =>
-                            ListTile(
+                        itemBuilder: (BuildContext context, Exercise exerciseSuggestion) => ListTile(
                           key: Key('exercise-${exerciseSuggestion.id}'),
                           leading: SizedBox(
                             width: 45,
-                            child: ExerciseImageWidget(
-                              image: exerciseSuggestion.getMainImage,
-                            ),
+                            child: ExerciseImageWidget(image: exerciseSuggestion.getMainImage),
                           ),
                           title: Text(
                             exerciseSuggestion
@@ -487,10 +475,7 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                           );
                         },
                         transitionBuilder: (context, animation, child) => FadeTransition(
-                          opacity: CurvedAnimation(
-                            parent: animation,
-                            curve: Curves.fastOutSlowIn,
-                          ),
+                          opacity: CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
                           child: child,
                         ),
                         onSelected: (Exercise exerciseSuggestion) {
@@ -538,8 +523,9 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                   final index = entry.key;
                   final exercise = entry.value;
                   final showSupersetInfo = (index + 1) < widget._set.exerciseBasesObj.length;
-                  final settings =
-                      widget._set.settings.where((e) => e.exerciseObj.id == exercise.id).toList();
+                  final settings = widget._set.settings
+                      .where((e) => e.exerciseObj.id == exercise.id)
+                      .toList();
 
                   return Column(
                     children: [
@@ -551,16 +537,10 @@ class _SetFormWidgetState extends State<SetFormWidget> {
                         removeExerciseBase,
                       ),
                       if (showSupersetInfo)
-                        const Padding(
-                          padding: EdgeInsets.all(3.0),
-                          child: Text('+'),
-                        ),
+                        const Padding(padding: EdgeInsets.all(3.0), child: Text('+')),
                       if (showSupersetInfo) Text(AppLocalizations.of(context).supersetWith),
                       if (showSupersetInfo)
-                        const Padding(
-                          padding: EdgeInsets.all(3.0),
-                          child: Text('+'),
-                        ),
+                        const Padding(padding: EdgeInsets.all(3.0), child: Text('+')),
                     ],
                   );
                 }),
@@ -648,29 +628,17 @@ class ExerciseSetting extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Flexible(
-                    flex: 2,
-                    child: RepsInputWidget(setting, _detailed),
-                  ),
+                  Flexible(flex: 2, child: RepsInputWidget(setting, _detailed)),
                   const SizedBox(width: 4),
-                  Flexible(
-                    flex: 3,
-                    child: RepetitionUnitInputWidget(setting),
-                  ),
+                  Flexible(flex: 3, child: RepetitionUnitInputWidget(setting)),
                 ],
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Flexible(
-                    flex: 2,
-                    child: WeightInputWidget(setting, _detailed),
-                  ),
+                  Flexible(flex: 2, child: WeightInputWidget(setting, _detailed)),
                   const SizedBox(width: 4),
-                  Flexible(
-                    flex: 3,
-                    child: WeightUnitInputWidget(setting, key: Key(i.toString())),
-                  ),
+                  Flexible(flex: 3, child: WeightUnitInputWidget(setting, key: Key(i.toString()))),
                 ],
               ),
               Flexible(flex: 2, child: RiRInputWidget(setting)),
@@ -919,15 +887,15 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
           widget._setting.weightUnit = newValue;
         });
       },
-      items: Provider.of<WorkoutPlansProvider>(context, listen: false)
-          .weightUnits
+      items: Provider.of<WorkoutPlansProvider>(context, listen: false).weightUnits
           .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
-        return DropdownMenuItem<WeightUnit>(
-          key: Key(value.id.toString()),
-          value: value,
-          child: Text(value.name),
-        );
-      }).toList(),
+            return DropdownMenuItem<WeightUnit>(
+              key: Key(value.id.toString()),
+              value: value,
+              child: Text(value.name),
+            );
+          })
+          .toList(),
     );
   }
 }
@@ -951,9 +919,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
 
     return DropdownButtonFormField(
       value: selectedWeightUnit,
-      decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).repetitionUnit,
-      ),
+      decoration: InputDecoration(labelText: AppLocalizations.of(context).repetitionUnit),
       isDense: true,
       onChanged: (RepetitionUnit? newValue) {
         setState(() {
@@ -961,15 +927,15 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
           widget._setting.repetitionUnit = newValue;
         });
       },
-      items: Provider.of<WorkoutPlansProvider>(context, listen: false)
-          .repetitionUnits
+      items: Provider.of<WorkoutPlansProvider>(context, listen: false).repetitionUnits
           .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
-        return DropdownMenuItem<RepetitionUnit>(
-          key: Key(value.id.toString()),
-          value: value,
-          child: Text(value.name),
-        );
-      }).toList(),
+            return DropdownMenuItem<RepetitionUnit>(
+              key: Key(value.id.toString()),
+              value: value,
+              child: Text(value.name),
+            );
+          })
+          .toList(),
     );
   }
 }

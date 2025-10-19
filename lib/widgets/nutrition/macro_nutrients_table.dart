@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
 
 class MacronutrientsTable extends StatelessWidget {
@@ -22,13 +22,13 @@ class MacronutrientsTable extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     Widget columnHeader(bool left, String title) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: tablePadding),
-          child: Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-            textAlign: left ? TextAlign.left : TextAlign.right,
-          ),
-        );
+      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+      child: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+        textAlign: left ? TextAlign.left : TextAlign.right,
+      ),
+    );
 
     TableRow macroRow(int indent, bool g, String title, double? Function(NutritionalGoals ng) get) {
       final goal = get(nutritionalGoals);
@@ -53,10 +53,7 @@ class MacronutrientsTable extends StatelessWidget {
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       border: TableBorder(
-        horizontalInside: BorderSide(
-          width: 1,
-          color: Theme.of(context).colorScheme.outline,
-        ),
+        horizontalInside: BorderSide(width: 1, color: Theme.of(context).colorScheme.outline),
       ),
       columnWidths: const {0: FractionColumnWidth(0.4)},
       children: [

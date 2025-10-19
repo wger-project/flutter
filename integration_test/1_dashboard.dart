@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -42,8 +42,9 @@ Widget createDashboardScreen({locale = 'en'}) {
 
   final mockNutritionProvider = MockNutritionPlansProvider();
 
-  when(mockNutritionProvider.currentPlan)
-      .thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
+  when(
+    mockNutritionProvider.currentPlan,
+  ).thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
   when(mockNutritionProvider.items).thenReturn([getNutritionalPlanScreenshot()]);
 
   final mockWeightProvider = MockBodyWeightProvider();
@@ -57,21 +58,11 @@ Widget createDashboardScreen({locale = 'en'}) {
 
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<UserProvider>(
-        create: (context) => mockUserProvider,
-      ),
-      ChangeNotifierProvider<WorkoutPlansProvider>(
-        create: (context) => mockWorkoutProvider,
-      ),
-      ChangeNotifierProvider<NutritionPlansProvider>(
-        create: (context) => mockNutritionProvider,
-      ),
-      ChangeNotifierProvider<BodyWeightProvider>(
-        create: (context) => mockWeightProvider,
-      ),
-      ChangeNotifierProvider<MeasurementProvider>(
-        create: (context) => mockMeasurementProvider,
-      ),
+      ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
+      ChangeNotifierProvider<WorkoutPlansProvider>(create: (context) => mockWorkoutProvider),
+      ChangeNotifierProvider<NutritionPlansProvider>(create: (context) => mockNutritionProvider),
+      ChangeNotifierProvider<BodyWeightProvider>(create: (context) => mockWeightProvider),
+      ChangeNotifierProvider<MeasurementProvider>(create: (context) => mockMeasurementProvider),
     ],
     child: MaterialApp(
       locale: Locale(locale),

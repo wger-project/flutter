@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/gallery.dart';
@@ -50,9 +50,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   title: Text(AppLocalizations.of(context).optionsLabel),
                   actions: [
                     TextButton(
-                      child: Text(
-                        MaterialLocalizations.of(context).closeButtonLabel,
-                      ),
+                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
@@ -69,9 +67,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).userProfile,
-                            UserProfileForm(
-                              context.read<UserProvider>().profile!,
-                            ),
+                            UserProfileForm(context.read<UserProvider>().profile!),
                           ),
                         ),
                       ),

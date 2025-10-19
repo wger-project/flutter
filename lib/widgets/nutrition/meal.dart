@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -36,7 +36,7 @@ import 'package:wger/widgets/nutrition/widgets.dart';
 enum viewMode {
   base, // just highlevel meal info (name, time)
   withIngredients, // + ingredients
-  withAllDetails // + nutritional breakdown of ingredients, + logged today
+  withAllDetails, // + nutritional breakdown of ingredients, + logged today
 }
 
 class MealWidget extends StatefulWidget {
@@ -45,12 +45,7 @@ class MealWidget extends StatefulWidget {
   final bool popTwice;
   final bool readOnly;
 
-  const MealWidget(
-    this._meal,
-    this._recentMealItems,
-    this.popTwice,
-    this.readOnly,
-  );
+  const MealWidget(this._meal, this._recentMealItems, this.popTwice, this.readOnly);
 
   @override
   _MealWidgetState createState() => _MealWidgetState();
@@ -173,8 +168,9 @@ class _MealWidgetState extends State<MealWidget> {
                   ),
                 )
               else
-                ...widget._meal.mealItems
-                    .map((item) => MealItemEditableFullTile(item, _viewMode, _editing)),
+                ...widget._meal.mealItems.map(
+                  (item) => MealItemEditableFullTile(item, _viewMode, _editing),
+                ),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               const Divider(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
@@ -201,12 +197,12 @@ class _MealWidgetState extends State<MealWidget> {
                       planned: widget._meal.plannedNutritionalValues,
                       logged: widget._meal.loggedNutritionalValuesToday,
                     ),
-                  ...widget._meal.diaryEntriesToday.map((item) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [DiaryEntryTile(diaryEntry: item)],
-                        ),
-                      )),
+                  ...widget._meal.diaryEntriesToday.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(children: [DiaryEntryTile(diaryEntry: item)]),
+                    ),
+                  ),
                 ],
               ),
           ],
@@ -293,11 +289,11 @@ class MealHeader extends StatelessWidget {
     required viewMode viewMode,
     required Function() toggleEditing,
     required Function() toggleViewMode,
-  })  : _meal = meal,
-        _editing = editing,
-        _viewMode = viewMode,
-        _toggleViewMode = toggleViewMode,
-        _toggleEditing = toggleEditing;
+  }) : _meal = meal,
+       _editing = editing,
+       _viewMode = viewMode,
+       _toggleViewMode = toggleViewMode,
+       _toggleEditing = toggleEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -306,35 +302,34 @@ class MealHeader extends StatelessWidget {
       children: [
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          title: Row(children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _meal.name,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  Row(
-                    children: [
-                      if (_meal.time != null)
+          title: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(_meal.name, style: Theme.of(context).textTheme.titleLarge),
+                    Row(
+                      children: [
+                        if (_meal.time != null)
+                          Text(
+                            _meal.time!.format(context),
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        if (_meal.time != null) const SizedBox(width: 12),
                         Text(
-                          _meal.time!.format(context),
+                          _meal.isRealMeal
+                              ? getKcalConsumedVsPlanned(_meal, context)
+                              : getKcalConsumed(_meal, context),
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
-                      if (_meal.time != null) const SizedBox(width: 12),
-                      Text(
-                        _meal.isRealMeal
-                            ? getKcalConsumedVsPlanned(_meal, context)
-                            : getKcalConsumed(_meal, context),
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ]),
+            ],
+          ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

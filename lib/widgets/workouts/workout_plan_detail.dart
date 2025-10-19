@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
@@ -50,17 +50,11 @@ class _WorkoutPlanDetailState extends State<WorkoutPlanDetail> {
                 }
               },
               isSelected: const [true, false],
-              children: const [
-                Icon(Icons.table_chart),
-                Icon(Icons.show_chart),
-              ],
+              children: const [Icon(Icons.table_chart), Icon(Icons.show_chart)],
             ),
           ),
         if (widget._workoutPlan.description != '')
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Text(widget._workoutPlan.description),
-          ),
+          Padding(padding: const EdgeInsets.all(15), child: Text(widget._workoutPlan.description)),
         ...widget._workoutPlan.days.map((workoutDay) => WorkoutDayWidget(workoutDay)),
         Column(
           children: [

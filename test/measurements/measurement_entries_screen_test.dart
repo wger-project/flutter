@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/measurement.dart';
@@ -37,10 +37,21 @@ void main() {
   setUp(() {
     mockMeasurementProvider = MockMeasurementProvider();
     when(mockMeasurementProvider.findCategoryById(any)).thenReturn(
-      MeasurementCategory(id: 1, name: 'body fat', unit: '%', entries: [
-        MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 8, 1), value: 10.2, notes: ''),
-        MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 8, 10), value: 18.1, notes: 'a'),
-      ]),
+      MeasurementCategory(
+        id: 1,
+        name: 'body fat',
+        unit: '%',
+        entries: [
+          MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 8, 1), value: 10.2, notes: ''),
+          MeasurementEntry(
+            id: 1,
+            category: 1,
+            date: DateTime(2021, 8, 10),
+            value: 18.1,
+            notes: 'a',
+          ),
+        ],
+      ),
     );
 
     mockNutritionPlansProvider = MockNutritionPlansProvider();

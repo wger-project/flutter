@@ -18,9 +18,9 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementOverallChangeWidget extends StatelessWidget {
   final MeasurementChartEntry _first;
@@ -34,8 +34,8 @@ class MeasurementOverallChangeWidget extends StatelessWidget {
     final prefix = delta > 0
         ? '+'
         : delta < 0
-            ? '-'
-            : '';
+        ? '-'
+        : '';
 
     return Text('overall change $prefix ${delta.abs().toStringAsFixed(1)} $_unit');
   }
@@ -61,10 +61,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.70,
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: LineChart(mainData()),
-      ),
+      child: Padding(padding: const EdgeInsets.all(4), child: LineChart(mainData())),
     );
   }
 
@@ -75,15 +72,13 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         getTooltipItems: (touchedSpots) {
           return touchedSpots.map((touchedSpot) {
             final DateTime date = DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
-            final dateStr =
-                DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
+            final dateStr = DateFormat.Md(
+              Localizations.localeOf(context).languageCode,
+            ).format(date);
 
             return LineTooltipItem(
               '$dateStr: ${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
-              TextStyle(
-                color: touchedSpot.bar.color,
-                fontWeight: FontWeight.bold,
-              ),
+              TextStyle(color: touchedSpot.bar.color, fontWeight: FontWeight.bold),
             );
           }).toList();
         },
@@ -108,12 +103,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
@@ -132,15 +123,10 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                   DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
                 );
               }
-              return Text(
-                DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
-              );
+              return Text(DateFormat.Md(Localizations.localeOf(context).languageCode).format(date));
             },
             interval: widget._entries.isNotEmpty
-                ? chartGetInterval(
-                    widget._entries.last.date,
-                    widget._entries.first.date,
-                  )
+                ? chartGetInterval(widget._entries.last.date, widget._entries.first.date)
                 : 1000,
           ),
         ),
@@ -168,10 +154,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       lineBarsData: [
         LineChartBarData(
           spots: widget._entries
-              .map((e) => FlSpot(
-                    e.date.millisecondsSinceEpoch.toDouble(),
-                    e.value.toDouble(),
-                  ))
+              .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
               .toList(),
           isCurved: false,
           color: Theme.of(context).colorScheme.primary,
@@ -182,10 +165,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         if (widget.avgs != null)
           LineChartBarData(
             spots: widget.avgs!
-                .map((e) => FlSpot(
-                      e.date.millisecondsSinceEpoch.toDouble(),
-                      e.value.toDouble(),
-                    ))
+                .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
                 .toList(),
             isCurved: false,
             color: Theme.of(context).colorScheme.tertiary,

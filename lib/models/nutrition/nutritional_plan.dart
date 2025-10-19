@@ -18,11 +18,11 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -128,10 +128,7 @@ class NutritionalPlan {
   }
 
   Future<NutritionalPlan> loadChildren() async {
-    return copyWith(
-      diaryEntries: await Log.readByPlanId(id!),
-      meals: await Meal.readByPlanId(id!),
-    );
+    return copyWith(diaryEntries: await Log.readByPlanId(id!), meals: await Meal.readByPlanId(id!));
   }
 
   NutritionalPlan.empty() {
@@ -186,10 +183,7 @@ class NutritionalPlan {
       return NutritionalGoals();
     }
     // otherwise, add up all the nutritional values of the meals and use that as goals
-    final sumValues = meals.fold(
-      NutritionalValues(),
-      (a, b) => a + b.plannedNutritionalValues,
-    );
+    final sumValues = meals.fold(NutritionalValues(), (a, b) => a + b.plannedNutritionalValues);
     return NutritionalGoals(
       energy: sumValues.energy,
       fat: sumValues.fat,
@@ -304,21 +298,21 @@ class NutritionalPlan {
     return NutritionalPlan.fromRow(row).loadChildren();
   }
 
-// this is a bit complicated.
-// what we need at the end of the day, is a stream of List<NutritionPlan>, where
-// a new value is emitted any time a plan is changed. But the plan is not just the plan record
-// we need to load data for Logs and Meals corresponding to the plan also.
-// so our options are:
-// 1) db.watch with a select query on plans; and extra dart code to load the logs/meals stuff,
-//    but this only triggers for updates on the plans table, and misses logs/meals updates
-// 2) db.watch with a huge join query across all tables from which we need info,
-//    so we have all the data in our resultset to create the datastructures with, but:
-//    - this creates long rows with lots of duplicated data (e.g. all the plan data) for every row
-//       which would only differ for e.g. the meal or the log item
-//    - it would probably get a bit messy to parse the resultset into the datastructures
-// 3) the best of both worlds: load the data we need in dart at runtime, but explicitly
-//    trigger our code execution when *any* of the relevant tables changes
-//
+  // this is a bit complicated.
+  // what we need at the end of the day, is a stream of List<NutritionPlan>, where
+  // a new value is emitted any time a plan is changed. But the plan is not just the plan record
+  // we need to load data for Logs and Meals corresponding to the plan also.
+  // so our options are:
+  // 1) db.watch with a select query on plans; and extra dart code to load the logs/meals stuff,
+  //    but this only triggers for updates on the plans table, and misses logs/meals updates
+  // 2) db.watch with a huge join query across all tables from which we need info,
+  //    so we have all the data in our resultset to create the datastructures with, but:
+  //    - this creates long rows with lots of duplicated data (e.g. all the plan data) for every row
+  //       which would only differ for e.g. the meal or the log item
+  //    - it would probably get a bit messy to parse the resultset into the datastructures
+  // 3) the best of both worlds: load the data we need in dart at runtime, but explicitly
+  //    trigger our code execution when *any* of the relevant tables changes
+  //
   static Stream<List<NutritionalPlan>> watchNutritionPlans() {
     return db.onChange([tableNutritionPlans, tableLogItems, tableMeals]).asyncMap((event) async {
       final data = await db.getAll('SELECT * FROM $tableNutritionPlans ORDER BY creation_date');
@@ -336,15 +330,16 @@ class NutritionalPlan {
 
   static Stream<NutritionalPlan?> watchNutritionPlanLast() {
     return db.onChange([tableNutritionPlans, tableLogItems, tableMeals]).asyncMap((event) async {
-      final res =
-          await db.getAll('SELECT * FROM $tableNutritionPlans ORDER BY creation_date DESC LIMIT 1');
+      final res = await db.getAll(
+        'SELECT * FROM $tableNutritionPlans ORDER BY creation_date DESC LIMIT 1',
+      );
       if (res.isEmpty) {
         return null;
       }
       return NutritionalPlan.fromRow(res.first).loadChildren();
     });
   }
-/*
+  /*
   static Stream<List<NutritionalPlan>> watchNutritionPlan(int id) {
     return db
         .watch('SELECT * FROM $tableNutritionPlans WHERE id = ?', parameters: [id]).map((results) {

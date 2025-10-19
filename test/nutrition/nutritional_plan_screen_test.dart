@@ -18,13 +18,13 @@
 
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -54,11 +54,7 @@ void main() {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(
-            mockBaseProvider,
-            [],
-            database: database,
-          ),
+          create: (context) => NutritionPlansProvider(mockBaseProvider, [], database: database),
         ),
         ChangeNotifierProvider<BodyWeightProvider>(
           create: (context) => BodyWeightProvider(mockBaseProvider),
@@ -82,64 +78,59 @@ void main() {
     );
   }
 
-  testGoldens(
-    'Test the widgets on the nutritional plan screen',
-    (tester) async {
-      await loadAppFonts();
-      final globalKey = GlobalKey();
-      await tester.pumpWidgetBuilder(
-        Material(key: globalKey),
-        wrapper: materialAppWrapper(
-          localizations: [AppLocalizations.delegate],
-        ),
-        surfaceSize: const Size(500, 1000),
-      );
-      await tester.pumpWidget(createNutritionalPlan());
-      await tester.tap(find.byType(TextButton));
-      await tester.pumpAndSettle();
+  testGoldens('Test the widgets on the nutritional plan screen', (tester) async {
+    await loadAppFonts();
+    final globalKey = GlobalKey();
+    await tester.pumpWidgetBuilder(
+      Material(key: globalKey),
+      wrapper: materialAppWrapper(localizations: [AppLocalizations.delegate]),
+      surfaceSize: const Size(500, 1000),
+    );
+    await tester.pumpWidget(createNutritionalPlan());
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
 
-      await screenMatchesGolden(tester, 'nutritional_plan_1_default_view');
+    await screenMatchesGolden(tester, 'nutritional_plan_1_default_view');
 
-      // Default view shows plan description, info button, and no ingredients
-      expect(find.text('Less fat, more protein'), findsOneWidget);
-      expect(find.byIcon(Icons.info_outline), findsNWidgets(3)); // 2 meals, 1 "other logs"
-      expect(find.byIcon(Icons.info), findsNothing);
-      expect(find.text('100g Water'), findsNothing);
-      expect(find.text('75g Burger soup'), findsNothing);
+    // Default view shows plan description, info button, and no ingredients
+    expect(find.text('Less fat, more protein'), findsOneWidget);
+    expect(find.byIcon(Icons.info_outline), findsNWidgets(3)); // 2 meals, 1 "other logs"
+    expect(find.byIcon(Icons.info), findsNothing);
+    expect(find.text('100g Water'), findsNothing);
+    expect(find.text('75g Burger soup'), findsNothing);
 
-      // tap the first info button changes it and reveals ingredients for the first meal
-      var infoOutlineButtons = find.byIcon(Icons.info_outline);
-      await tester.tap(infoOutlineButtons.first); // 2nd button shows up also, but is off-screen
-      await tester.pumpAndSettle();
-      await screenMatchesGolden(tester, 'nutritional_plan_2_one_meal_with_ingredients');
+    // tap the first info button changes it and reveals ingredients for the first meal
+    var infoOutlineButtons = find.byIcon(Icons.info_outline);
+    await tester.tap(infoOutlineButtons.first); // 2nd button shows up also, but is off-screen
+    await tester.pumpAndSettle();
+    await screenMatchesGolden(tester, 'nutritional_plan_2_one_meal_with_ingredients');
 
-      // Ingredients show up now
-      expect(find.text('100g Water'), findsOneWidget);
-      expect(find.text('75g Burger soup'), findsOneWidget);
+    // Ingredients show up now
+    expect(find.text('100g Water'), findsOneWidget);
+    expect(find.text('75g Burger soup'), findsOneWidget);
 
-      // .. and the button icon has changed
-      expect(find.byIcon(Icons.info_outline), findsNWidgets(2));
-      expect(find.byIcon(Icons.info), findsOneWidget);
+    // .. and the button icon has changed
+    expect(find.byIcon(Icons.info_outline), findsNWidgets(2));
+    expect(find.byIcon(Icons.info), findsOneWidget);
 
-      // the goals widget pushes this content down a bit.
-      // let's first find our icon (note: the previous icon no longer matches)
-      infoOutlineButtons = find.byIcon(Icons.info_outline);
+    // the goals widget pushes this content down a bit.
+    // let's first find our icon (note: the previous icon no longer matches)
+    infoOutlineButtons = find.byIcon(Icons.info_outline);
 
-      await tester.scrollUntilVisible(infoOutlineButtons.first, 30);
-      expect(find.text('300g Broccoli cake'), findsNothing);
+    await tester.scrollUntilVisible(infoOutlineButtons.first, 30);
+    expect(find.text('300g Broccoli cake'), findsNothing);
 
-      await tester.tap(infoOutlineButtons.first);
-      await tester.pumpAndSettle();
-      await screenMatchesGolden(tester, 'nutritional_plan_3_both_meals_with_ingredients');
-      expect(find.byIcon(Icons.info_outline), findsOneWidget);
-      expect(find.byIcon(Icons.info), findsNWidgets(2));
+    await tester.tap(infoOutlineButtons.first);
+    await tester.pumpAndSettle();
+    await screenMatchesGolden(tester, 'nutritional_plan_3_both_meals_with_ingredients');
+    expect(find.byIcon(Icons.info_outline), findsOneWidget);
+    expect(find.byIcon(Icons.info), findsNWidgets(2));
 
-      await tester.scrollUntilVisible(find.text('300g Broccoli cake'), 30);
-      expect(find.text('300g Broccoli cake'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('300g Broccoli cake'), 30);
+    expect(find.text('300g Broccoli cake'), findsOneWidget);
 
-      expect(find.byType(Card), findsNWidgets(3));
-    },
-  );
+    expect(find.byType(Card), findsNWidgets(3));
+  });
 
   testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createNutritionalPlan());

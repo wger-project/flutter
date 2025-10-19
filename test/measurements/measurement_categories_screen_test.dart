@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/measurement.dart';
@@ -37,14 +37,24 @@ void main() {
   setUp(() {
     mockMeasurementProvider = MockMeasurementProvider();
     when(mockMeasurementProvider.categories).thenReturn([
-      MeasurementCategory(id: 1, name: 'body fat', unit: '%', entries: [
-        MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 9, 1), value: 10, notes: ''),
-        MeasurementEntry(id: 2, category: 1, date: DateTime(2021, 9, 5), value: 11, notes: ''),
-      ]),
-      MeasurementCategory(id: 2, name: 'biceps', unit: 'cm', entries: [
-        MeasurementEntry(id: 3, category: 2, date: DateTime(2021, 9, 1), value: 30, notes: ''),
-        MeasurementEntry(id: 4, category: 2, date: DateTime(2021, 9, 5), value: 40, notes: ''),
-      ]),
+      MeasurementCategory(
+        id: 1,
+        name: 'body fat',
+        unit: '%',
+        entries: [
+          MeasurementEntry(id: 1, category: 1, date: DateTime(2021, 9, 1), value: 10, notes: ''),
+          MeasurementEntry(id: 2, category: 1, date: DateTime(2021, 9, 5), value: 11, notes: ''),
+        ],
+      ),
+      MeasurementCategory(
+        id: 2,
+        name: 'biceps',
+        unit: 'cm',
+        entries: [
+          MeasurementEntry(id: 3, category: 2, date: DateTime(2021, 9, 1), value: 30, notes: ''),
+          MeasurementEntry(id: 4, category: 2, date: DateTime(2021, 9, 5), value: 40, notes: ''),
+        ],
+      ),
     ]);
   });
 

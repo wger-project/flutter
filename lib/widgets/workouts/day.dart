@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
@@ -57,15 +57,15 @@ class SettingWidget extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text(setting.exerciseObj
-                    .getExercise(Localizations.localeOf(context).languageCode)
-                    .name),
+                title: Text(
+                  setting.exerciseObj
+                      .getExercise(Localizations.localeOf(context).languageCode)
+                      .name,
+                ),
                 content: ExerciseDetail(setting.exerciseObj),
                 actions: [
                   TextButton(
-                    child: Text(
-                      MaterialLocalizations.of(context).closeButtonLabel,
-                    ),
+                    child: Text(MaterialLocalizations.of(context).closeButtonLabel),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -81,9 +81,7 @@ class SettingWidget extends StatelessWidget {
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ...set.getSmartRepr(setting.exerciseObj).map((e) => Text(e)),
-        ],
+        children: [...set.getSmartRepr(setting.exerciseObj).map((e) => Text(e))],
       ),
     );
   }
@@ -149,10 +147,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
         if (_editing)
           ReorderableDragStartListener(
             index: index,
-            child: const IconButton(
-              icon: Icon(Icons.drag_handle),
-              onPressed: null,
-            ),
+            child: const IconButton(icon: Icon(Icons.drag_handle), onPressed: null),
           ),
       ],
     );
@@ -167,11 +162,7 @@ class _WorkoutDayWidgetState extends State<WorkoutDayWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DayHeader(
-              day: widget._day,
-              expanded: _editing,
-              toggle: _toggleExpanded,
-            ),
+            DayHeader(day: widget._day, expanded: _editing, toggle: _toggleExpanded),
             if (_editing)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
@@ -265,13 +256,10 @@ class DayHeader extends StatelessWidget {
   final bool _editing;
   final Function _toggle;
 
-  const DayHeader({
-    required Day day,
-    required bool expanded,
-    required Function toggle,
-  })  : _day = day,
-        _editing = expanded,
-        _toggle = toggle;
+  const DayHeader({required Day day, required bool expanded, required Function toggle})
+    : _day = day,
+      _editing = expanded,
+      _toggle = toggle;
 
   @override
   Widget build(BuildContext context) {
@@ -285,22 +273,24 @@ class DayHeader extends StatelessWidget {
       subtitle: Text(_day.getDaysTextTranslated(Localizations.localeOf(context).languageCode)),
       leading: const Icon(Icons.play_arrow),
       minLeadingWidth: 8,
-      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-        const SizedBox(height: 40, width: 1, child: VerticalDivider()),
-        const SizedBox(width: 10),
-        IconButton(
-          icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
-          tooltip: _editing ? AppLocalizations.of(context).done : AppLocalizations.of(context).edit,
-          onPressed: () {
-            _toggle();
-          },
-        ),
-      ]),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 40, width: 1, child: VerticalDivider()),
+          const SizedBox(width: 10),
+          IconButton(
+            icon: _editing ? const Icon(Icons.done) : const Icon(Icons.edit),
+            tooltip: _editing
+                ? AppLocalizations.of(context).done
+                : AppLocalizations.of(context).edit,
+            onPressed: () {
+              _toggle();
+            },
+          ),
+        ],
+      ),
       onTap: () {
-        Navigator.of(context).pushNamed(
-          GymModeScreen.routeName,
-          arguments: _day,
-        );
+        Navigator.of(context).pushNamed(GymModeScreen.routeName, arguments: _day);
       },
     );
   }

@@ -19,9 +19,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -29,10 +29,7 @@ import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
-enum NutritionalPlanOptions {
-  edit,
-  delete,
-}
+enum NutritionalPlanOptions { edit, delete }
 
 class NutritionalPlanScreen extends StatefulWidget {
   const NutritionalPlanScreen();
@@ -52,8 +49,10 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
     final id = ModalRoute.of(context)!.settings.arguments as String;
     //final id = 111;
 
-    final stream =
-        Provider.of<NutritionPlansProvider>(context, listen: false).watchNutritionPlan(id);
+    final stream = Provider.of<NutritionPlansProvider>(
+      context,
+      listen: false,
+    ).watchNutritionPlan(id);
     _subscription = stream.listen((plan) {
       if (!context.mounted) {
         return;
@@ -105,10 +104,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                   heroTag: null,
                   tooltip: AppLocalizations.of(context).logMeal,
                   onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      LogMealsScreen.routeName,
-                      arguments: _plan,
-                    );
+                    Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: _plan);
                   },
                   child: const SvgIcon(
                     icon: SvgIconData('assets/icons/meal-diary.svg'),
@@ -128,9 +124,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                   actions: [
                     if (!_plan!.onlyLogging)
                       IconButton(
-                        icon: const SvgIcon(
-                          icon: SvgIconData('assets/icons/meal-add.svg'),
-                        ),
+                        icon: const SvgIcon(icon: SvgIconData('assets/icons/meal-add.svg')),
                         onPressed: () {
                           Navigator.pushNamed(
                             context,
@@ -158,8 +152,10 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                             );
                             break;
                           case NutritionalPlanOptions.delete:
-                            Provider.of<NutritionPlansProvider>(context, listen: false)
-                                .deletePlan(_plan!.id!);
+                            Provider.of<NutritionPlansProvider>(
+                              context,
+                              listen: false,
+                            ).deletePlan(_plan!.id!);
                             Navigator.of(context).pop();
                             break;
                         }
@@ -189,8 +185,9 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                     titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
                     title: Text(
                       _plan!.getLabel(context),
-                      style:
-                          Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge?.copyWith(color: appBarForeground),
                     ),
                   ),
                 ),
@@ -198,22 +195,17 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                   future: NutritionalPlan.read(_plan!.id!),
                   builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
                       snapshot.connectionState == ConnectionState.waiting
-                          ? SliverList(
-                              delegate: SliverChildListDelegate(
-                                [
-                                  const SizedBox(
-                                    height: 200,
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Consumer<NutritionPlansProvider>(
-                              builder: (context, value, child) =>
-                                  NutritionalPlanDetailWidget(_plan!),
+                      ? SliverList(
+                          delegate: SliverChildListDelegate([
+                            const SizedBox(
+                              height: 200,
+                              child: Center(child: CircularProgressIndicator()),
                             ),
+                          ]),
+                        )
+                      : Consumer<NutritionPlansProvider>(
+                          builder: (context, value, child) => NutritionalPlanDetailWidget(_plan!),
+                        ),
                 ),
               ],
             ),

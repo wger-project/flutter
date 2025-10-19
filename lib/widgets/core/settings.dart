@@ -18,8 +18,8 @@
 
 //import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
 
@@ -34,9 +34,7 @@ class SettingsPage extends StatelessWidget {
     final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).settingsTitle),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).settingsTitle)),
       body: ListView(
         children: [
           ListTile(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wger/helpers/misc.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
@@ -143,15 +143,14 @@ class IngredientScanResultDialog extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done && ingredient == null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(barcode),
-                  ),
+                  child: Text(AppLocalizations.of(context).productNotFoundDescription(barcode)),
                 ),
               if (ingredient != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child:
-                      Text(AppLocalizations.of(context).productFoundDescription(ingredient.name)),
+                  child: Text(
+                    AppLocalizations.of(context).productFoundDescription(ingredient.name),
+                  ),
                 ),
               if (ingredient?.image?.image != null)
                 ingredientImage(ingredient!.image!.image, context),

@@ -18,13 +18,13 @@
 
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
@@ -49,23 +49,15 @@ void main() {
   });
 
   Widget createHomeScreen({locale = 'en'}) {
-    final uri = Uri(
-      scheme: 'https',
-      host: 'localhost',
-      path: 'api/v2/workout/',
-    );
+    final uri = Uri(scheme: 'https', host: 'localhost', path: 'api/v2/workout/');
     when(mockBaseProvider.makeUrl('workout', query: anyNamed('query'))).thenReturn(uri);
     when(mockBaseProvider.deleteRequest(any, any)).thenAnswer((_) async => http.Response('', 204));
 
     return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(
-        mockBaseProvider,
-        testExercisesProvider,
-        [
-          WorkoutPlan(id: 1, creationDate: DateTime(2021, 01, 01), name: 'test 1'),
-          WorkoutPlan(id: 2, creationDate: DateTime(2021, 02, 12), name: 'test 2'),
-        ],
-      ),
+      create: (context) => WorkoutPlansProvider(mockBaseProvider, testExercisesProvider, [
+        WorkoutPlan(id: 1, creationDate: DateTime(2021, 01, 01), name: 'test 1'),
+        WorkoutPlan(id: 2, creationDate: DateTime(2021, 02, 12), name: 'test 2'),
+      ]),
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

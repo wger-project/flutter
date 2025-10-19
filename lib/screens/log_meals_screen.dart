@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
@@ -37,17 +37,11 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
     final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).selectMealToLog),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).selectMealToLog)),
       body: ListView.builder(
         itemCount: nutritionalPlan.meals.length,
-        itemBuilder: (context, index) => MealWidget(
-          nutritionalPlan.meals[index],
-          nutritionalPlan.dedupMealItems,
-          true,
-          true,
-        ),
+        itemBuilder: (context, index) =>
+            MealWidget(nutritionalPlan.meals[index], nutritionalPlan.dedupMealItems, true, true),
       ),
     );
   }

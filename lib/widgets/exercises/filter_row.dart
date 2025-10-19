@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
@@ -59,9 +59,7 @@ class _FilterRowState extends State<FilterRow> {
               decoration: InputDecoration(
                 hintText: '${AppLocalizations.of(context).exerciseName}...',
                 contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
-                ),
+                border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
               ),
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -22,12 +22,8 @@ Widget createWeightScreen({locale = 'en'}) {
 
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<UserProvider>(
-        create: (context) => mockUserProvider,
-      ),
-      ChangeNotifierProvider<BodyWeightProvider>(
-        create: (context) => mockWeightProvider,
-      ),
+      ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
+      ChangeNotifierProvider<BodyWeightProvider>(create: (context) => mockWeightProvider),
     ],
     child: MaterialApp(
       locale: Locale(locale),

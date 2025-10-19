@@ -17,12 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/set.dart';
 import 'package:wger/models/workouts/setting.dart';
@@ -51,11 +51,8 @@ void main() {
 
   Widget createHomeScreen({locale = 'en'}) {
     return ChangeNotifierProvider<WorkoutPlansProvider>(
-      create: (context) => WorkoutPlansProvider(
-        mockBaseProvider,
-        mockExerciseProvider,
-        [workoutPlan],
-      ),
+      create: (context) =>
+          WorkoutPlansProvider(mockBaseProvider, mockExerciseProvider, [workoutPlan]),
       child: ChangeNotifierProvider<ExercisesProvider>(
         create: (context) => mockExerciseProvider,
         child: MaterialApp(
@@ -84,11 +81,13 @@ void main() {
     when(mockWorkoutPlans.addSet(any)).thenAnswer((_) => Future.value(Set.empty()));
     when(mockWorkoutPlans.addSetting(any)).thenAnswer((_) => Future.value(Setting.empty()));
     when(mockWorkoutPlans.fetchSmartText(any, any)).thenAnswer((_) => Future.value('2 x 10'));
-    when(mockExerciseProvider.searchExercise(
-      any,
-      languageCode: anyNamed('languageCode'),
-      searchEnglish: anyNamed('searchEnglish'),
-    )).thenAnswer((_) => Future.value([getTestExercises().first]));
+    when(
+      mockExerciseProvider.searchExercise(
+        any,
+        languageCode: anyNamed('languageCode'),
+        searchEnglish: anyNamed('searchEnglish'),
+      ),
+    ).thenAnswer((_) => Future.value([getTestExercises().first]));
 
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();

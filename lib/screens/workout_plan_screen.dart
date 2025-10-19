@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/workout_plan.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -27,15 +27,9 @@ import 'package:wger/widgets/workouts/forms.dart';
 import 'package:wger/widgets/workouts/workout_logs.dart';
 import 'package:wger/widgets/workouts/workout_plan_detail.dart';
 
-enum WorkoutScreenMode {
-  workout,
-  log,
-}
+enum WorkoutScreenMode { workout, log }
 
-enum WorkoutOptions {
-  edit,
-  delete,
-}
+enum WorkoutOptions { edit, delete }
 
 class WorkoutPlanScreen extends StatefulWidget {
   const WorkoutPlanScreen();
@@ -55,8 +49,10 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
   }
 
   Future<WorkoutPlan> _loadFullWorkout(BuildContext context, int planId) {
-    return Provider.of<WorkoutPlansProvider>(context, listen: false)
-        .fetchAndSetWorkoutPlanFull(planId);
+    return Provider.of<WorkoutPlansProvider>(
+      context,
+      listen: false,
+    ).fetchAndSetWorkoutPlanFull(planId);
   }
 
   Widget getBody(WorkoutPlan plan) {
@@ -105,8 +101,10 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
 
                     // Delete
                   } else if (value == WorkoutOptions.delete) {
-                    Provider.of<WorkoutPlansProvider>(context, listen: false)
-                        .deleteWorkout(workoutPlan.id!);
+                    Provider.of<WorkoutPlansProvider>(
+                      context,
+                      listen: false,
+                    ).deleteWorkout(workoutPlan.id!);
                     Navigator.of(context).pop();
 
                     // Toggle Mode
@@ -131,19 +129,14 @@ class _WorkoutPlanScreenState extends State<WorkoutPlanScreen> {
           FutureBuilder(
             future: _loadFullWorkout(context, workoutPlan.id!),
             builder: (context, AsyncSnapshot<WorkoutPlan> snapshot) => SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  if (snapshot.connectionState == ConnectionState.waiting)
-                    const SizedBox(
-                      height: 200,
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  else
-                    Consumer<WorkoutPlansProvider>(
-                      builder: (context, value, child) => getBody(workoutPlan),
-                    ),
-                ],
-              ),
+              delegate: SliverChildListDelegate([
+                if (snapshot.connectionState == ConnectionState.waiting)
+                  const SizedBox(height: 200, child: Center(child: CircularProgressIndicator()))
+                else
+                  Consumer<WorkoutPlansProvider>(
+                    builder: (context, value, child) => getBody(workoutPlan),
+                  ),
+              ]),
             ),
           ),
         ],

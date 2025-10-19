@@ -18,10 +18,10 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
 import 'package:wger/helpers/colors.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 class LogChartWidgetFl extends StatefulWidget {
   final Map _data;
@@ -79,12 +79,8 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
@@ -116,10 +112,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
           ),
         ),
       ),
-      borderData: FlBorderData(
-        show: true,
-        border: Border.all(color: const Color(0xff37434d)),
-      ),
+      borderData: FlBorderData(show: true, border: Border.all(color: const Color(0xff37434d))),
       lineBarsData: [
         ...widget._data['chart_data'].map((e) {
           colors.moveNext();
@@ -138,11 +131,8 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
             isStrokeCapRound: true,
             dotData: FlDotData(
               show: true,
-              getDotPainter: (p0, p1, p2, p3) => FlDotCirclePainter(
-                radius: 2,
-                color: Colors.black,
-                strokeWidth: 0,
-              ),
+              getDotPainter: (p0, p1, p2, p3) =>
+                  FlDotCirclePainter(radius: 2, color: Colors.black, strokeWidth: 0),
             ),
           );
         }),

@@ -18,7 +18,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -27,8 +26,8 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/gym_mode.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -83,8 +82,10 @@ class _GymModeState extends State<GymMode> {
     for (final set in widget._workoutDay.sets) {
       var firstPage = true;
       for (final setting in set.settingsComputed) {
-        final exerciseBase = Provider.of<ExercisesProvider>(context, listen: false)
-            .findExerciseById(setting.exerciseId);
+        final exerciseBase = Provider.of<ExercisesProvider>(
+          context,
+          listen: false,
+        ).findExerciseById(setting.exerciseId);
 
         if (firstPage) {
           _exercisePages[exerciseBase] = currentPage;
@@ -116,23 +117,20 @@ class _GymModeState extends State<GymMode> {
         currentElement++;
 
         if (firstPage) {
-          out.add(ExerciseOverview(
-            _controller,
-            exerciseBase,
-            ratioCompleted,
-            _exercisePages,
-          ));
+          out.add(ExerciseOverview(_controller, exerciseBase, ratioCompleted, _exercisePages));
         }
 
-        out.add(LogPage(
-          _controller,
-          setting,
-          set,
-          exerciseBase,
-          workoutProvider.findById(widget._workoutDay.workoutId),
-          ratioCompleted,
-          _exercisePages,
-        ));
+        out.add(
+          LogPage(
+            _controller,
+            setting,
+            set,
+            exerciseBase,
+            workoutProvider.findById(widget._workoutDay.workoutId),
+            ratioCompleted,
+            _exercisePages,
+          ),
+        );
         out.add(TimerWidget(_controller, ratioCompleted, _exercisePages));
         firstPage = false;
       }
@@ -149,8 +147,10 @@ class _GymModeState extends State<GymMode> {
         StartPage(_controller, widget._workoutDay, _exercisePages),
         ...getContent(),
         SessionPage(
-          Provider.of<WorkoutPlansProvider>(context, listen: false)
-              .findById(widget._workoutDay.workoutId),
+          Provider.of<WorkoutPlansProvider>(
+            context,
+            listen: false,
+          ).findById(widget._workoutDay.workoutId),
           _controller,
           widget._start,
           _exercisePages,
@@ -298,9 +298,7 @@ class _LogPageState extends State<LogPage> {
         ),
         Expanded(
           child: TextFormField(
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).repetitions,
-            ),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).repetitions),
             enabled: true,
             controller: _repsController,
             keyboardType: TextInputType.number,
@@ -353,9 +351,7 @@ class _LogPageState extends State<LogPage> {
         ),
         Expanded(
           child: TextFormField(
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).weight,
-            ),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
             controller: _weightController,
             keyboardType: TextInputType.number,
             onFieldSubmitted: (_) {},
@@ -512,9 +508,9 @@ class _LogPageState extends State<LogPage> {
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
-        ...widget._workoutPlan
-            .filterLogsByExerciseBase(widget._exerciseBase, unique: true)
-            .map((log) {
+        ...widget._workoutPlan.filterLogsByExerciseBase(widget._exerciseBase, unique: true).map((
+          log,
+        ) {
           return ListTile(
             title: Text(log.singleLogRepTextNoNl),
             subtitle: Text(
@@ -533,9 +529,9 @@ class _LogPageState extends State<LogPage> {
                 widget._log.weightUnit = log.weightUnitObj;
 
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(AppLocalizations.of(context).dataCopied),
-                ));
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).dataCopied)));
               });
             },
             contentPadding: const EdgeInsets.symmetric(horizontal: 40),
@@ -584,9 +580,7 @@ class _LogPageState extends State<LogPage> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     key.toString(),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
@@ -598,9 +592,7 @@ class _LogPageState extends State<LogPage> {
                     ),
                   ],
                 )
-              : MutedText(
-                  AppLocalizations.of(context).plateCalculatorNotDivisible,
-                ),
+              : MutedText(AppLocalizations.of(context).plateCalculatorNotDivisible),
         ),
         const SizedBox(height: 3),
       ],
@@ -676,20 +668,20 @@ class ExerciseOverview extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              ..._exerciseBase.equipment.map((e) => Text(
-                    getTranslation(e.name, context),
-                    style: Theme.of(context).textTheme.titleLarge,
-                    textAlign: TextAlign.center,
-                  )),
+              ..._exerciseBase.equipment.map(
+                (e) => Text(
+                  getTranslation(e.name, context),
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ),
               if (_exerciseBase.images.isNotEmpty)
                 SizedBox(
                   width: double.infinity,
                   height: 200,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: [
-                      ..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e)),
-                    ],
+                    children: [..._exerciseBase.images.map((e) => ExerciseImageWidget(image: e))],
                   ),
                 ),
               Html(
@@ -712,12 +704,7 @@ class SessionPage extends StatefulWidget {
   final TimeOfDay _start;
   final Map<Exercise, int> _exercisePages;
 
-  const SessionPage(
-    this._workoutPlan,
-    this._controller,
-    this._start,
-    this._exercisePages,
-  );
+  const SessionPage(this._workoutPlan, this._controller, this._start, this._exercisePages);
 
   @override
   _SessionPageState createState() => _SessionPageState();
@@ -777,9 +764,11 @@ class _SessionPageState extends State<SessionPage> {
                   renderBorder: false,
                   onPressed: (int index) {
                     setState(() {
-                      for (int buttonIndex = 0;
-                          buttonIndex < selectedImpression.length;
-                          buttonIndex++) {
+                      for (
+                        int buttonIndex = 0;
+                        buttonIndex < selectedImpression.length;
+                        buttonIndex++
+                      ) {
                         _session.impression = index + 1;
 
                         if (buttonIndex == index) {
@@ -798,9 +787,7 @@ class _SessionPageState extends State<SessionPage> {
                   ],
                 ),
                 TextFormField(
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).notes,
-                  ),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
                   maxLines: 3,
                   controller: notesController,
                   keyboardType: TextInputType.multiline,
@@ -922,11 +909,7 @@ class TimerWidget extends StatefulWidget {
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
 
-  const TimerWidget(
-    this._controller,
-    this._ratioCompleted,
-    this._exercisePages,
-  );
+  const TimerWidget(this._controller, this._ratioCompleted, this._exercisePages);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -1054,18 +1037,11 @@ class NavigationHeader extends StatelessWidget {
   final String _title;
   final Map<Exercise, int> exercisePages;
 
-  const NavigationHeader(
-    this._title,
-    this._controller, {
-    required this.exercisePages,
-  });
+  const NavigationHeader(this._title, this._controller, {required this.exercisePages});
 
   Widget getDialog(BuildContext context) {
     return AlertDialog(
-      title: Text(
-        AppLocalizations.of(context).jumpTo,
-        textAlign: TextAlign.center,
-      ),
+      title: Text(AppLocalizations.of(context).jumpTo, textAlign: TextAlign.center),
       contentPadding: EdgeInsets.zero,
       content: SingleChildScrollView(
         child: Column(
@@ -1121,10 +1097,7 @@ class NavigationHeader extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.toc),
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (ctx) => getDialog(context),
-            );
+            showDialog(context: context, builder: (ctx) => getDialog(context));
           },
         ),
       ],

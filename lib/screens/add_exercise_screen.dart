@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -76,9 +76,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         final baseId = await addExerciseProvider.addExercise();
                         final base = await exerciseProvider.fetchAndSetExercise(baseId);
                         final name = base
-                            .getExercise(
-                              Localizations.localeOf(context).languageCode,
-                            )
+                            .getExercise(Localizations.localeOf(context).languageCode)
                             .name;
 
                         setState(() {
@@ -91,9 +89,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(AppLocalizations.of(context).success),
-                              content: Text(
-                                AppLocalizations.of(context).cacheWarning,
-                              ),
+                              content: Text(AppLocalizations.of(context).cacheWarning),
                               actions: [
                                 TextButton(
                                   child: Text(name),
@@ -112,11 +108,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         );
                       },
                 child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(),
-                      )
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator())
                     : Text(AppLocalizations.of(context).save),
               )
             else
@@ -207,8 +199,11 @@ class EmailNotVerified extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.warning),
                   title: Text(AppLocalizations.of(context).unVerifiedEmail),
-                  subtitle: Text(AppLocalizations.of(context)
-                      .contributeExerciseWarning(MIN_ACCOUNT_AGE.toString())),
+                  subtitle: Text(
+                    AppLocalizations.of(
+                      context,
+                    ).contributeExerciseWarning(MIN_ACCOUNT_AGE.toString()),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

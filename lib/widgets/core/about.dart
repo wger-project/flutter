@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/misc.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 
 class AboutEntry extends StatelessWidget {
@@ -66,9 +66,7 @@ class AboutPage extends StatelessWidget {
     final today = DateTime.now();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).aboutPageTitle),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).aboutPageTitle)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -89,13 +87,12 @@ class AboutPage extends StatelessWidget {
                     children: [
                       const Text(
                         'Wger',
-                        style: TextStyle(
-                          fontSize: 23,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
                       ),
-                      Text('App: ${authProvider.applicationVersion!.version}\n'
-                          'Server: ${authProvider.serverVersion}'),
+                      Text(
+                        'App: ${authProvider.applicationVersion!.version}\n'
+                        'Server: ${authProvider.serverVersion}',
+                      ),
                     ],
                   ),
                 ],
@@ -163,7 +160,8 @@ class AboutPage extends StatelessWidget {
                 showLicensePage(
                   context: context,
                   applicationName: 'wger',
-                  applicationVersion: 'App: ${authProvider.applicationVersion!.version}\n'
+                  applicationVersion:
+                      'App: ${authProvider.applicationVersion!.version}\n'
                       'Server: ${authProvider.serverVersion}',
                   applicationLegalese: '\u{a9} 2020 - 2021 contributors',
                   applicationIcon: Padding(

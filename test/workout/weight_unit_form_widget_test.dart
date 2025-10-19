@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/setting.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -66,9 +66,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: WeightUnitInputWidget(setting1)),
-        routes: {
-          WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen(),
-        },
+        routes: {WorkoutPlanScreen.routeName: (ctx) => const WorkoutPlanScreen()},
       ),
     );
   }

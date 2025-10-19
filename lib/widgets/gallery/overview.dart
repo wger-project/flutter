@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/platform.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
@@ -58,13 +58,12 @@ class Gallery extends StatelessWidget {
                           child: Column(
                             children: [
                               Text(
-                                DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                                    .format(currentImage.date),
+                                DateFormat.yMd(
+                                  Localizations.localeOf(context).languageCode,
+                                ).format(currentImage.date),
                                 style: Theme.of(context).textTheme.headlineSmall,
                               ),
-                              Expanded(
-                                child: Image.network(currentImage.url!),
-                              ),
+                              Expanded(child: Image.network(currentImage.url!)),
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8),
                                 child: Text(currentImage.description),

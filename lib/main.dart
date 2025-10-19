@@ -19,6 +19,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/powersync.dart';
@@ -53,8 +54,7 @@ import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/screens/workout_plans_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
-import 'package:wger/widgets/core/settings.dart';
-import 'package:logging/logging.dart';
+import 'package:wger/widgets/core/settingsdart';
 
 import 'providers/auth.dart';
 
@@ -92,9 +92,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
         ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
-          create: (context) => ExercisesProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
+          create: (context) =>
+              ExercisesProvider(WgerBaseProvider(Provider.of(context, listen: false))),
           update: (context, base, previous) =>
               previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
@@ -108,44 +107,34 @@ class MyApp extends StatelessWidget {
               previous ?? WorkoutPlansProvider(WgerBaseProvider(auth), exercises, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-            [],
-          ),
+          create: (context) =>
+              NutritionPlansProvider(WgerBaseProvider(Provider.of(context, listen: false)), []),
           update: (context, auth, previous) =>
               previous ?? NutritionPlansProvider(WgerBaseProvider(auth), []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
-          create: (context) => MeasurementProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
+          create: (context) =>
+              MeasurementProvider(WgerBaseProvider(Provider.of(context, listen: false))),
           update: (context, base, previous) =>
               previous ?? MeasurementProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
-          create: (context) => UserProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
+          create: (context) => UserProvider(WgerBaseProvider(Provider.of(context, listen: false))),
           update: (context, base, previous) => previous ?? UserProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
-          create: (context) => BodyWeightProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
+          create: (context) =>
+              BodyWeightProvider(WgerBaseProvider(Provider.of(context, listen: false))),
           update: (context, base, previous) =>
               previous ?? BodyWeightProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
-          create: (context) => GalleryProvider(
-            Provider.of(context, listen: false),
-            [],
-          ),
+          create: (context) => GalleryProvider(Provider.of(context, listen: false), []),
           update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, AddExerciseProvider>(
-          create: (context) => AddExerciseProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
+          create: (context) =>
+              AddExerciseProvider(WgerBaseProvider(Provider.of(context, listen: false))),
           update: (context, base, previous) =>
               previous ?? AddExerciseProvider(WgerBaseProvider(base)),
         ),
@@ -164,8 +153,8 @@ class MyApp extends StatelessWidget {
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
                       authResultSnapshot.connectionState == ConnectionState.waiting
-                          ? const SplashScreen()
-                          : const AuthScreen(),
+                      ? const SplashScreen()
+                      : const AuthScreen(),
                 ),
           routes: {
             DashboardScreen.routeName: (ctx) => const DashboardScreen(),

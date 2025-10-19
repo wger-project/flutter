@@ -19,9 +19,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -50,10 +50,7 @@ void showErrorDialog(dynamic exception, BuildContext context) {
   );
 }
 
-void showHttpExceptionErrorDialog(
-  WgerHttpException exception,
-  BuildContext context,
-) {
+void showHttpExceptionErrorDialog(WgerHttpException exception, BuildContext context) {
   log('showHttpExceptionErrorDialog: ');
   log(exception.toString());
   log('-------------------');
@@ -119,9 +116,7 @@ dynamic showDeleteDialog(
     context: context,
     builder: (BuildContext contextDialog) {
       return AlertDialog(
-        content: Text(
-          AppLocalizations.of(context).confirmDelete(confirmDeleteName),
-        ),
+        content: Text(AppLocalizations.of(context).confirmDelete(confirmDeleteName)),
         actions: [
           TextButton(
             child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
@@ -134,9 +129,7 @@ dynamic showDeleteDialog(
             ),
             onPressed: () {
               exerciseData[exercise]!.removeWhere((el) => el.id == log.id);
-              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(
-                log,
-              );
+              Provider.of<WorkoutPlansProvider>(context, listen: false).deleteLog(log);
 
               Navigator.of(contextDialog).pop();
 

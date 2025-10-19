@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
@@ -38,8 +38,9 @@ class WeightOverview extends StatelessWidget {
     final weightProvider = Provider.of<BodyWeightProvider>(context, listen: false);
     final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
 
-    final entriesAll =
-        weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final entriesAll = weightProvider.items
+        .map((e) => MeasurementChartEntry(e.weight, e.date))
+        .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
     final unit = weightUnit(profile!.isMetric, context);
@@ -55,10 +56,7 @@ class WeightOverview extends StatelessWidget {
           context,
         ),
         TextButton(
-          onPressed: () => Navigator.pushNamed(
-            context,
-            MeasurementCategoriesScreen.routeName,
-          ),
+          onPressed: () => Navigator.pushNamed(context, MeasurementCategoriesScreen.routeName),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

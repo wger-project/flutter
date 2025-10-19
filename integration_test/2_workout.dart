@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/workout_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -20,9 +20,7 @@ Widget createWorkoutDetailScreen({locale = 'en'}) {
 
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<WorkoutPlansProvider>(
-        create: (context) => mockWorkoutProvider,
-      ),
+      ChangeNotifierProvider<WorkoutPlansProvider>(create: (context) => mockWorkoutProvider),
     ],
     child: MaterialApp(
       locale: Locale(locale),

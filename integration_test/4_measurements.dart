@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -15,9 +15,7 @@ Widget createMeasurementScreen({locale = 'en'}) {
 
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<MeasurementProvider>(
-        create: (context) => mockMeasurementProvider,
-      ),
+      ChangeNotifierProvider<MeasurementProvider>(create: (context) => mockMeasurementProvider),
     ],
     child: MaterialApp(
       locale: Locale(locale),

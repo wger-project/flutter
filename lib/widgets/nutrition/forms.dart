@@ -17,12 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/ui.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -65,10 +65,7 @@ class MealForm extends StatelessWidget {
                 FocusScope.of(context).requestFocus(FocusNode());
 
                 // Open time picker
-                final pickedTime = await showTimePicker(
-                  context: context,
-                  initialTime: _meal.time!,
-                );
+                final pickedTime = await showTimePicker(context: context, initialTime: _meal.time!);
                 if (pickedTime != null) {
                   _timeController.text = timeToString(pickedTime)!;
                 }
@@ -101,10 +98,7 @@ class MealForm extends StatelessWidget {
                           context,
                           listen: false,
                         ).addMeal(_meal, _planId)
-                      : Provider.of<NutritionPlansProvider>(
-                          context,
-                          listen: false,
-                        ).editMeal(_meal);
+                      : Provider.of<NutritionPlansProvider>(context, listen: false).editMeal(_meal);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
                 } catch (error) {
@@ -120,12 +114,7 @@ class MealForm extends StatelessWidget {
   }
 }
 
-Widget MealItemForm(
-  Meal meal,
-  List<MealItem> recent, [
-  String? barcode,
-  bool? test,
-]) {
+Widget MealItemForm(Meal meal, List<MealItem> recent, [String? barcode, bool? test]) {
   return IngredientForm(
     // TODO we use planId 0 here cause we don't have one and we don't need it I think?
     recent: recent.map((e) => Log.fromMealItem(e, "0", e.mealId)).toList(),
@@ -143,14 +132,13 @@ Widget IngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
     recent: plan.dedupDiaryEntries,
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
-      Provider.of<NutritionPlansProvider>(context, listen: false)
-          .logIngredientToDiary(mealItem, plan.id!, dt);
+      Provider.of<NutritionPlansProvider>(
+        context,
+        listen: false,
+      ).logIngredientToDiary(mealItem, plan.id!, dt);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            AppLocalizations.of(context).ingredientLogged,
-            textAlign: TextAlign.center,
-          ),
+          content: Text(AppLocalizations.of(context).ingredientLogged, textAlign: TextAlign.center),
         ),
       );
     },
@@ -241,8 +229,9 @@ class IngredientFormState extends State<IngredientForm> {
   Widget build(BuildContext context) {
     final String unit = AppLocalizations.of(context).g;
     final queryLower = _searchQuery.toLowerCase();
-    final suggestions =
-        widget.recent.where((e) => e.ingredient.name.toLowerCase().contains(queryLower)).toList();
+    final suggestions = widget.recent
+        .where((e) => e.ingredient.name.toLowerCase().contains(queryLower))
+        .toList();
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -263,9 +252,7 @@ class IngredientFormState extends State<IngredientForm> {
                 Expanded(
                   child: TextFormField(
                     key: const Key('field-weight'), // needed ?
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).weight,
-                    ),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
                     controller: _amountController,
                     keyboardType: TextInputType.number,
                     onChanged: (value) {
@@ -361,10 +348,7 @@ class IngredientFormState extends State<IngredientForm> {
                         context,
                         listen: false,
                       ).fetchIngredient(_mealItem.ingredientId),
-                      builder: (
-                        BuildContext context,
-                        AsyncSnapshot<Ingredient> snapshot,
-                      ) {
+                      builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
                         if (snapshot.hasData) {
                           _mealItem.ingredient = snapshot.data!;
                           return MealItemValuesTile(
@@ -403,13 +387,7 @@ class IngredientFormState extends State<IngredientForm> {
                 try {
                   var date = DateTime.parse(_dateController.text);
                   final tod = stringToTime(_timeController.text);
-                  date = DateTime(
-                    date.year,
-                    date.month,
-                    date.day,
-                    tod.hour,
-                    tod.minute,
-                  );
+                  date = DateTime(date.year, date.month, date.day, tod.hour, tod.minute);
                   widget.onSave(context, _mealItem, date);
                 } on WgerHttpException catch (error) {
                   showHttpExceptionErrorDialog(error, context);
@@ -431,11 +409,7 @@ class IngredientFormState extends State<IngredientForm> {
                 itemBuilder: (context, index) {
                   void select() {
                     final ingredient = suggestions[index].ingredient;
-                    selectIngredient(
-                      ingredient.id,
-                      ingredient.name,
-                      suggestions[index].amount,
-                    );
+                    selectIngredient(ingredient.id, ingredient.name, suggestions[index].amount);
                   }
 
                   return Card(
@@ -444,10 +418,12 @@ class IngredientFormState extends State<IngredientForm> {
                       title: Text(
                         '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
                       ),
-                      subtitle: Text(getShortNutritionValues(
-                        suggestions[index].ingredient.nutritionalValues,
-                        context,
-                      )),
+                      subtitle: Text(
+                        getShortNutritionValues(
+                          suggestions[index].ingredient.nutritionalValues,
+                          context,
+                        ),
+                      ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -539,9 +515,7 @@ class _PlanFormState extends State<PlanForm> {
           // Description
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).description,
-            ),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             controller: _descriptionController,
             onSaved: (newValue) {
               widget._plan.description = newValue!;
@@ -569,12 +543,7 @@ class _PlanFormState extends State<PlanForm> {
                 child: DropdownButtonFormField<GoalType>(
                   value: _goalType,
                   items: GoalType.values
-                      .map(
-                        (e) => DropdownMenuItem<GoalType>(
-                          value: e,
-                          child: Text(e.label),
-                        ),
-                      )
+                      .map((e) => DropdownMenuItem<GoalType>(value: e, child: Text(e.label)))
                       .toList(),
                   onChanged: (GoalType? g) {
                     setState(() {

@@ -19,9 +19,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -39,8 +39,10 @@ class _NutritionalPlansListState extends State<NutritionalPlansList> {
   @override
   void initState() {
     super.initState();
-    final stream =
-        Provider.of<NutritionPlansProvider>(context, listen: false).watchNutritionPlans();
+    final stream = Provider.of<NutritionPlansProvider>(
+      context,
+      listen: false,
+    ).watchNutritionPlans();
     _subscription = stream.listen((plans) {
       if (!context.mounted) {
         return;
@@ -71,10 +73,9 @@ class _NutritionalPlansListState extends State<NutritionalPlansList> {
               return Card(
                 child: ListTile(
                   onTap: () {
-                    Navigator.of(context).pushNamed(
-                      NutritionalPlanScreen.routeName,
-                      arguments: currentPlan.id,
-                    );
+                    Navigator.of(
+                      context,
+                    ).pushNamed(NutritionalPlanScreen.routeName, arguments: currentPlan.id);
                   },
                   title: Text(currentPlan.getLabel(context)),
                   subtitle: Text(
@@ -82,53 +83,56 @@ class _NutritionalPlansListState extends State<NutritionalPlansList> {
                       Localizations.localeOf(context).languageCode,
                     ).format(currentPlan.creationDate),
                   ),
-                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const VerticalDivider(),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      tooltip: AppLocalizations.of(context).delete,
-                      onPressed: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (BuildContext contextDialog) {
-                            return AlertDialog(
-                              content: Text(
-                                AppLocalizations.of(context).confirmDelete(currentPlan.description),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: Text(
-                                    MaterialLocalizations.of(context).cancelButtonLabel,
-                                  ),
-                                  onPressed: () => Navigator.of(contextDialog).pop(),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const VerticalDivider(),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        tooltip: AppLocalizations.of(context).delete,
+                        onPressed: () async {
+                          await showDialog(
+                            context: context,
+                            builder: (BuildContext contextDialog) {
+                              return AlertDialog(
+                                content: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  ).confirmDelete(currentPlan.description),
                                 ),
-                                TextButton(
-                                  child: Text(
-                                    AppLocalizations.of(context).delete,
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.error,
+                                actions: [
+                                  TextButton(
+                                    child: Text(
+                                      MaterialLocalizations.of(context).cancelButtonLabel,
                                     ),
+                                    onPressed: () => Navigator.of(contextDialog).pop(),
                                   ),
-                                  onPressed: () {
-                                    provider.deletePlan(currentPlan.id!);
-                                    Navigator.of(contextDialog).pop();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          AppLocalizations.of(context).successfullyDeleted,
-                                          textAlign: TextAlign.center,
+                                  TextButton(
+                                    child: Text(
+                                      AppLocalizations.of(context).delete,
+                                      style: TextStyle(color: Theme.of(context).colorScheme.error),
+                                    ),
+                                    onPressed: () {
+                                      provider.deletePlan(currentPlan.id!);
+                                      Navigator.of(contextDialog).pop();
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            AppLocalizations.of(context).successfullyDeleted,
+                                            textAlign: TextAlign.center,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ]),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

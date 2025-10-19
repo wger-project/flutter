@@ -19,11 +19,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 
@@ -126,9 +126,7 @@ class _ImageFormState extends State<ImageForm> {
                               _showPicker(ImageSource.gallery);
                             },
                             leading: const Icon(Icons.photo_library),
-                            title: Text(
-                              AppLocalizations.of(context).chooseFromLibrary,
-                            ),
+                            title: Text(AppLocalizations.of(context).chooseFromLibrary),
                           ),
                         ],
                       ),
@@ -174,9 +172,7 @@ class _ImageFormState extends State<ImageForm> {
           ),
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).description,
-            ),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
             minLines: 3,
             maxLines: 10,
             controller: descriptionController,
@@ -196,12 +192,16 @@ class _ImageFormState extends State<ImageForm> {
               _form.currentState!.save();
 
               if (widget._image.id == null) {
-                Provider.of<GalleryProvider>(context, listen: false)
-                    .addImage(widget._image, _file!);
+                Provider.of<GalleryProvider>(
+                  context,
+                  listen: false,
+                ).addImage(widget._image, _file!);
                 Navigator.of(context).pop();
               } else {
-                Provider.of<GalleryProvider>(context, listen: false)
-                    .editImage(widget._image, _file);
+                Provider.of<GalleryProvider>(
+                  context,
+                  listen: false,
+                ).editImage(widget._image, _file);
                 Navigator.of(context).pop();
               }
             },

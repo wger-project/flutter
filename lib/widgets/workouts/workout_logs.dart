@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -70,10 +70,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            AppLocalizations.of(context).logHelpEntries,
-            textAlign: TextAlign.justify,
-          ),
+          child: Text(AppLocalizations.of(context).logHelpEntries, textAlign: TextAlign.justify),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -82,10 +79,7 @@ class _WorkoutLogsState extends State<WorkoutLogs> {
             textAlign: TextAlign.justify,
           ),
         ),
-        SizedBox(
-          width: double.infinity,
-          child: WorkoutLogCalendar(widget._workoutPlan),
-        ),
+        SizedBox(width: double.infinity, child: WorkoutLogCalendar(widget._workoutPlan)),
       ],
     );
   }

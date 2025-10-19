@@ -17,14 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/exercises_screen.dart';
 
-enum _WorkoutAppBarOptions {
-  list,
-  contribute,
-}
+enum _WorkoutAppBarOptions { list, contribute }
 
 class WorkoutOverviewAppBar extends StatelessWidget implements PreferredSizeWidget {
   const WorkoutOverviewAppBar();
