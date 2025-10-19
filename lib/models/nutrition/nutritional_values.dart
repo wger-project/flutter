@@ -132,13 +132,13 @@ class NutritionalValues {
   @override
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hash(
-        energy,
-        protein,
-        carbohydrates,
-        carbohydratesSugar,
-        fat,
-        fatSaturated,
-        fiber,
-        sodium,
-      );
+    energy,
+    protein,
+    carbohydrates,
+    carbohydratesSugar,
+    fat,
+    fatSaturated,
+    fiber,
+    sodium,
+  );
 }

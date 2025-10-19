@@ -21,10 +21,6 @@
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
   },
-  "labelWorkoutPlans": "Plány cvičení",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Trénink",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -58,10 +54,6 @@
   "category": "Kategorie",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "noWorkoutPlans": "Nemáte žádné cvičební plány",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "rir": "OvR",
   "@rir": {
@@ -233,16 +225,8 @@
   },
   "goToDetailPage": "Přejít na stránku s podrobnostmi",
   "@goToDetailPage": {},
-  "aboutSourceTitle": "Zdrojový kód",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
   "calendar": "Kalendář",
   "@calendar": {},
-  "enterRepetitionsOrWeight": "Prosím, vyplňte buď počet opakování, nebo hmotnost u alespoň jedné sady",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "enterValue": "Prosím zadejte hodnotu",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
@@ -258,8 +242,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "enterMinCharacters": "Prosím, zadejte alespoň {min} znaků",
@@ -267,7 +255,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "Všechny cviky potřebují mít základní název v angličtině",
@@ -372,10 +362,6 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
-  "supersetWith": "superset s",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "logMeal": "Zaznamenat do nutričního diáře",
   "@logMeal": {},
   "muscles": "Svaly",
@@ -385,10 +371,6 @@
   "musclesSecondary": "Vedlejší svaly",
   "@musclesSecondary": {
     "description": "secondary muscles trained by an exercise"
-  },
-  "newWorkout": "Nový plán cvičení",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "reps": "Opakování",
   "@reps": {
@@ -419,7 +401,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "newDay": "Nový den",
@@ -493,40 +477,14 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "aboutDescription": "Děkujeme Vám za použití wger! wger je komunitní open source projekt, který je tvořen fitness nadšenci z celého světa.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
-  },
-  "aboutSourceText": "Získejte zdrojový kód této aplikace a jejího serveru na GitHubu",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Máte problém nebo nápad?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Kontaktujte nás, pokud se něco nechovalo podle očekávání nebo pokud existuje funkce, o které se domníváte, že chybí.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Řekněte ahoj!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "Pokud si s námi chcete popovídat, přejděte na Discord server a kontaktujte nás",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Překlad",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "Tato aplikace je přeložena na weblate. Chcete-li také pomoci, klikněte na odkaz a začněte překládat",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
   },
   "goToToday": "Přejít na dnešek",
   "@goToToday": {
@@ -537,7 +495,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "recentlyUsedIngredients": "Naposledy přidané přísady",
@@ -548,6 +508,26 @@
   "@takePicture": {},
   "gallery": "Galerie",
   "@gallery": {},
+  "imageFormatNotSupported": "{imageFormat} není podporován",
+  "@imageFormatNotSupported": {
+      "description": "Label shown on the error container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "imageFormatNotSupportedDetail": "Obrazy {imageFormat} zatím nejsou podporovány.",
+  "@imageFormatNotSupportedDetail": {
+      "description": "Label shown on the image preview container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
   "productFound": "Produkt nalezen",
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"
@@ -581,7 +561,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "scanBarcode": "Naskenovat čárový kód",
@@ -614,7 +596,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "useMetric": "Použít metrické jednotky pro tělesnou váhu",
@@ -634,19 +618,15 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Sledujte nás na Mastodonu pro aktualizace a novinky o projektu",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
+  "@aboutMastodonTitle": {},
   "unVerifiedEmail": "Neověřený e-mail",
   "@unVerifiedEmail": {},
   "alsoKnownAs": "Také známé jako: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -663,7 +643,9 @@
   "verifiedEmailInfo": "Ověřovací e-mail byl odeslán na adresu {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "translateExercise": "Přeložte toto cvičení",
@@ -848,10 +830,6 @@
   "@onlyLogging": {},
   "onlyLoggingHelpText": "Zaškrtněte, pokud chcete pouze zaznamenávat své kalorie a nechcete nastavovat podrobný výživový plán s přesnými jídly",
   "@onlyLoggingHelpText": {},
-  "addGoalsToPlanHelpText": "Tato možnost vám umožňuje nastavit cíle pro energii, bílkoviny, karbohydráty a tuk ve vašem plánu. Upozornění: pokud si nastavíte podrobný jídelní plán, tyto hodnoty budou mít přednost.",
-  "@addGoalsToPlanHelpText": {},
-  "addGoalsToPlan": "Přidat cíle do tohoto plánu",
-  "@addGoalsToPlan": {},
   "goalEnergy": "Cíl energie",
   "@goalEnergy": {},
   "goalProtein": "Cíl bílkovin",
@@ -869,7 +847,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "gValue": "{value} g",
@@ -877,7 +857,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -885,7 +867,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "surplus": "přebytek",

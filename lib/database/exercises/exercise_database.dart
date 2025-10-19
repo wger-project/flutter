@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:wger/database/exercises/type_converters.dart';
@@ -68,6 +69,8 @@ class Equipments extends Table {
 
 @DriftDatabase(tables: [Exercises, Muscles, Equipments, Categories, Languages])
 class ExerciseDatabase extends _$ExerciseDatabase {
+  final _logger = Logger('ExerciseDatabase');
+
   ExerciseDatabase() : super(_openConnection());
 
   // Named constructor for creating in-memory database
@@ -75,31 +78,32 @@ class ExerciseDatabase extends _$ExerciseDatabase {
 
   /// Note that this needs to be bumped if the JSON response from the server changes
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
 
   /// There is not really a migration strategy. If we bump the version
   /// number, delete everything and recreate the new tables. The provider
   /// will fetch everything as needed from the server
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (m, from, to) async {
-          // no-op, but needs to be defined
-          return;
-        },
-        beforeOpen: (openingDetails) async {
-          if (openingDetails.hadUpgrade) {
-            final m = createMigrator();
-            for (final table in allTables) {
-              await m.deleteTable(table.actualTableName);
-              await m.createTable(table);
-            }
-          }
-        },
-      );
+    onUpgrade: (m, from, to) async {
+      // no-op, but needs to be defined
+      return;
+    },
+    beforeOpen: (openingDetails) async {
+      if (openingDetails.hadUpgrade) {
+        final m = createMigrator();
+        for (final table in allTables) {
+          await m.deleteTable(table.actualTableName);
+          await m.createTable(table);
+        }
+      }
+    },
+  );
 
   Future<void> deleteEverything() {
     return transaction(() async {
       for (final table in allTables) {
+        _logger.info('Deleting db cache table ${table.actualTableName}');
         await delete(table).go();
       }
     });

@@ -1,0 +1,80 @@
+name: Build Linux
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+    secrets:
+      SSH_DEPLOY_KEY:
+        required: true
+jobs:
+
+  # TODO: note that we currently only build for x64, as arm64 is not supported by
+  #       subosito/flutter-action@v2 yet and we don't want to install flutter manually
+  #       just for this workflow: https://github.com/subosito/flutter-action/issues/345
+  build_linux:
+    name: Build application - ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - platform: x64
+            runner: ubuntu-latest
+        # - platform: arm64
+        #   runner: ubuntu-24.04-arm
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common setup
+        uses: ./.github/actions/flutter-common
+
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
+      - name: Build application for linux
+        run: |
+          sudo apt update
+          sudo apt install -y pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev --no-install-recommends
+          flutter build linux --release
+          tar -zcvf linux-${{ matrix.platform }}.tar.gz build/linux/${{ matrix.platform }}/release/bundle
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-linux
+          path: |
+            linux-${{ matrix.platform }}.tar.gz
+
+  generate_flathub_manifest:
+    runs-on: ubuntu-latest
+    name: Update flathub manifest
+
+    # If the job fails just continue, this can be done manually later
+    continue-on-error: true
+    needs:
+      - build_linux
+    steps:
+
+      - name: Checkout flatpak-flathub repo
+        uses: actions/checkout@v5
+        with:
+          repository: wger-project/de.wger.flutter
+
+      - name: Bump version and update manifest
+        run: |
+          pip install pyyaml toml packaging
+          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.7.3 ../flatpak-flutter
+          python bump-wger-version.py ${{ inputs.ref }}
+          ../flatpak-flutter/flatpak-flutter.py --app-module wger flatpak-flutter.json
+
+      - name: Push updated config to flathub repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          destination-github-username: wger-project
+          destination-repository-name: de.wger.flutter
+          user-email: github-actions@github.com
+          target-branch: release-${{ inputs.ref }}
+          create-target-branch-if-needed: true
+          commit-message: Update to ${{ inputs.ref }}

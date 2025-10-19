@@ -16,67 +16,115 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/workouts/set.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/slot.dart';
 
 part 'day.g.dart';
 
+enum DayType { custom, enom, amrap, hiit, tabata, edt, rft, afap }
+
+extension DayTypeExtension on DayType {
+  String i18Label(AppLocalizations i18n) {
+    switch (this) {
+      case DayType.custom:
+        return i18n.dayTypeCustom;
+      case DayType.enom:
+        return i18n.dayTypeEnom;
+      case DayType.amrap:
+        return i18n.dayTypeAmrap;
+      case DayType.hiit:
+        return i18n.dayTypeHiit;
+      case DayType.tabata:
+        return i18n.dayTypeTabata;
+      case DayType.edt:
+        return i18n.dayTypeEdt;
+      case DayType.rft:
+        return i18n.dayTypeRft;
+      case DayType.afap:
+        return i18n.dayTypeAfap;
+    }
+  }
+}
+
 @JsonSerializable()
 class Day {
-  static const Map<int, String> weekdays = {
-    1: 'Monday',
-    2: 'Tuesday',
-    3: 'Wednesday',
-    4: 'Thursday',
-    5: 'Friday',
-    6: 'Saturday',
-    7: 'Sunday',
-  };
+  static const MIN_LENGTH_NAME = 3;
+  static const MAX_LENGTH_NAME = 20;
+  static const MAX_LENGTH_DESCRIPTION = 1000;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, includeToJson: false)
   int? id;
 
-  @JsonKey(required: true, name: 'training')
-  late int workoutId;
+  @JsonKey(required: true, name: 'routine')
+  late int routineId;
+
+  @JsonKey(required: true)
+  late String name;
 
   @JsonKey(required: true)
   late String description;
 
-  @JsonKey(required: true, name: 'day')
-  List<int> daysOfWeek = [];
+  @JsonKey(required: true)
+  late DayType type;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Set> sets = [];
+  @JsonKey(required: true, name: 'is_rest')
+  late bool isRest;
 
-  //@JsonKey(includeFromJson: false, includeToJson: false)
-  //late WorkoutPlan workout;
+  @JsonKey(required: true, name: 'need_logs_to_advance')
+  late bool needLogsToAdvance;
 
-  Day() {
-    daysOfWeek = [];
-    sets = [];
+  @JsonKey(required: true)
+  late num order;
+
+  @JsonKey(required: true)
+  late Object? config;
+
+  @JsonKey(required: false, includeFromJson: true, includeToJson: false)
+  List<Slot> slots = [];
+
+  Day({
+    this.id,
+    required this.routineId,
+    required this.name,
+    this.description = '',
+    this.isRest = false,
+    this.needLogsToAdvance = false,
+    this.type = DayType.custom,
+    this.order = 1,
+    this.config,
+    this.slots = const [],
+  });
+
+  Day copyWith({
+    int? id,
+    int? routineId,
+    String? name,
+    String? description,
+    DayType? type,
+    bool? isRest,
+    bool? needLogsToAdvance,
+    num? order,
+    Object? config,
+    List<Slot>? slots,
+  }) {
+    return Day(
+      id: id ?? this.id,
+      routineId: routineId ?? this.routineId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      type: type ?? this.type,
+      isRest: isRest ?? this.isRest,
+      needLogsToAdvance: needLogsToAdvance ?? this.needLogsToAdvance,
+      order: order ?? this.order,
+      config: config ?? this.config,
+      slots: slots ?? this.slots,
+    );
   }
 
-  String getDayName(int weekDay) {
-    return weekdays[weekDay]!;
-  }
+  bool get isSpecialType => type != DayType.custom;
 
-  String get getDaysText {
-    return daysOfWeek.map((e) => getDayName(e)).join(', ');
-  }
-
-  String getDaysTextTranslated(locale) {
-    return daysOfWeek.map((e) => getDayTranslated(e, locale)).join(', ');
-  }
-
-  /// Returns the translated name of the given day
-  String getDayTranslated(int day, locale) {
-    // Isn't there another way?... 🙄
-    final now = DateTime.now();
-    final firstDayOfWeek = now.subtract(Duration(days: now.weekday));
-
-    return DateFormat(DateFormat.WEEKDAY, locale).format(firstDayOfWeek.add(Duration(days: day)));
-  }
+  String get nameWithType => isSpecialType ? '${type.name.toUpperCase()} - $name' : name;
 
   // Boilerplate
   factory Day.fromJson(Map<String, dynamic> json) => _$DayFromJson(json);

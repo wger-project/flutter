@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/exercise_screen.dart';
-import 'package:wger/widgets/add_exercise/steps/step1basics.dart';
-import 'package:wger/widgets/add_exercise/steps/step2variations.dart';
-import 'package:wger/widgets/add_exercise/steps/step3description.dart';
-import 'package:wger/widgets/add_exercise/steps/step4translations.dart';
-import 'package:wger/widgets/add_exercise/steps/step5images.dart';
+import 'package:wger/widgets/add_exercise/steps/step_1_basics.dart';
+import 'package:wger/widgets/add_exercise/steps/step_2_variations.dart';
+import 'package:wger/widgets/add_exercise/steps/step_3_description.dart';
+import 'package:wger/widgets/add_exercise/steps/step_4_translations.dart';
+import 'package:wger/widgets/add_exercise/steps/step_5_images.dart';
+import 'package:wger/widgets/add_exercise/steps/step_6_overview.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/user/forms.dart';
 
@@ -32,7 +36,7 @@ class AddExerciseScreen extends StatelessWidget {
 class AddExerciseStepper extends StatefulWidget {
   const AddExerciseStepper({super.key});
 
-  static const STEPS_IN_FORM = 5;
+  static const STEPS_IN_FORM = 6;
 
   @override
   _AddExerciseStepperState createState() => _AddExerciseStepperState();
@@ -42,8 +46,10 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseStepper.STEPS_IN_FORM - 1;
   bool _isLoading = false;
+  Widget errorWidget = const SizedBox.shrink();
 
   final List<GlobalKey<FormState>> _keys = [
+    GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
@@ -55,6 +61,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
     return Column(
       children: [
         const SizedBox(height: 10),
+        if (_currentStep == lastStepIndex) errorWidget,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -62,6 +69,8 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
               onPressed: details.onStepCancel,
               child: Text(AppLocalizations.of(context).previous),
             ),
+
+            // Submit button on last step
             if (_currentStep == lastStepIndex)
               ElevatedButton(
                 onPressed: _isLoading
@@ -69,21 +78,37 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                     : () async {
                         setState(() {
                           _isLoading = true;
+                          errorWidget = const SizedBox.shrink();
                         });
                         final addExerciseProvider = context.read<AddExerciseProvider>();
                         final exerciseProvider = context.read<ExercisesProvider>();
 
-                        final baseId = await addExerciseProvider.addExercise();
-                        final base = await exerciseProvider.fetchAndSetExercise(baseId);
-                        final name = base
-                            .getExercise(Localizations.localeOf(context).languageCode)
+                        Exercise? exercise;
+                        try {
+                          final exerciseId = await addExerciseProvider.postExerciseToServer();
+                          exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
+                        } on WgerHttpException catch (error) {
+                          if (context.mounted) {
+                            setState(() {
+                              errorWidget = FormHttpErrorsWidget(error);
+                            });
+                          }
+                        } finally {
+                          if (mounted) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          }
+                        }
+
+                        if (exercise == null || !context.mounted) {
+                          return;
+                        }
+
+                        final name = exercise
+                            .getTranslation(Localizations.localeOf(context).languageCode)
                             .name;
 
-                        setState(() {
-                          _isLoading = false;
-                        });
-
-                        if (!context.mounted) return;
                         return showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -98,7 +123,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                                     Navigator.pushReplacementNamed(
                                       context,
                                       ExerciseDetailScreen.routeName,
-                                      arguments: base,
+                                      arguments: exercise,
                                     );
                                   },
                                 ),
@@ -149,6 +174,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
             title: Text(AppLocalizations.of(context).images),
             content: Step5Images(formkey: _keys[4]),
           ),
+          Step(title: Text(AppLocalizations.of(context).overview), content: Step6Overview()),
         ],
         currentStep: _currentStep,
         onStepContinue: () {

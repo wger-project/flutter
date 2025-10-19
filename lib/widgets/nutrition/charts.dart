@@ -34,8 +34,10 @@ import 'package:wger/widgets/measurements/charts.dart';
 // * here we draw our own simple gauges that can go beyond 100%,
 //   and support multiple segments
 class FlNutritionalPlanGoalWidget extends StatelessWidget {
-  const FlNutritionalPlanGoalWidget({super.key, required NutritionalPlan nutritionalPlan})
-    : _nutritionalPlan = nutritionalPlan;
+  const FlNutritionalPlanGoalWidget({
+    super.key,
+    required NutritionalPlan nutritionalPlan,
+  }) : _nutritionalPlan = nutritionalPlan;
 
   final NutritionalPlan _nutritionalPlan;
 
@@ -45,12 +47,20 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
   // why don't we just handle this inside this function? because it might be
   // *another* gauge that's in surplus and we want to have consistent widths
   // between all gauges
-  Widget _diyGauge(BuildContext context, double normWidth, double? plan, double val) {
+  Widget _diyGauge(
+    BuildContext context,
+    double normWidth,
+    double? plan,
+    double val,
+  ) {
     Container segment(double width, Color color) {
       return Container(
         height: 16,
         width: width,
-        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(15.0)),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(15.0),
+        ),
       );
     }
 
@@ -141,7 +151,12 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 2),
-            _diyGauge(context, normWidth, goals.carbohydrates, today.carbohydrates),
+            _diyGauge(
+              context,
+              normWidth,
+              goals.carbohydrates,
+              today.carbohydrates,
+            ),
             const SizedBox(height: 8),
             Text(
               fmtMacro(
@@ -272,8 +287,10 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
 
 /// Shows results vs plan of common macros, for today and last 7 days, as barchart
 class NutritionalDiaryChartWidgetFl extends StatefulWidget {
-  const NutritionalDiaryChartWidgetFl({super.key, required NutritionalPlan nutritionalPlan})
-    : _nutritionalPlan = nutritionalPlan;
+  const NutritionalDiaryChartWidgetFl({
+    super.key,
+    required NutritionalPlan nutritionalPlan,
+  }) : _nutritionalPlan = nutritionalPlan;
 
   final NutritionalPlan _nutritionalPlan;
 
@@ -294,7 +311,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
       _ => '',
     };
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(text, style: style),
     );
   }
@@ -303,8 +320,9 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     if (value == meta.max) {
       return Container();
     }
+
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(
         AppLocalizations.of(context).gValue(meta.formattedValue),
         style: const TextStyle(fontSize: 10),
@@ -320,7 +338,12 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
 
     final [colorPlanned, colorLoggedToday, colorLogged7Day] = LIST_OF_COLORS3;
 
-    BarChartGroupData barchartGroup(int x, double barsSpace, double barsWidth, String prop) {
+    BarChartGroupData barchartGroup(
+      int x,
+      double barsSpace,
+      double barsWidth,
+      String prop,
+    ) {
       final plan = planned.prop(prop);
 
       BarChartRodData barChartRodData(double? plan, double val, Color color) {
@@ -391,14 +414,20 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                         getTitlesWidget: leftTitles,
                       ),
                     ),
-                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
                   ),
                   gridData: FlGridData(
                     show: true,
                     checkToShowHorizontalLine: (value) => value % 10 == 0,
-                    getDrawingHorizontalLine: (value) =>
-                        const FlLine(color: Colors.black, strokeWidth: 1),
+                    getDrawingHorizontalLine: (value) => const FlLine(
+                      color: Colors.black,
+                      strokeWidth: 1,
+                    ),
                     drawVerticalLine: false,
                   ),
                   borderData: FlBorderData(show: false),
@@ -406,7 +435,12 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                   barGroups: [
                     barchartGroup(0, barsSpace, barsWidth, 'protein'),
                     barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
-                    barchartGroup(2, barsSpace, barsWidth, 'carbohydratesSugar'),
+                    barchartGroup(
+                      2,
+                      barsSpace,
+                      barsWidth,
+                      'carbohydratesSugar',
+                    ),
                     barchartGroup(3, barsSpace, barsWidth, 'fat'),
                     barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
                     if (widget._nutritionalPlan.nutritionalGoals.fiber != null)
@@ -417,8 +451,10 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 40, left: 25, right: 25),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Wrap(
+                spacing: 10.0,
+                runSpacing: 10.0,
+                alignment: WrapAlignment.center,
                 children:
                     [
                           (AppLocalizations.of(context).deficit, colorPlanned),
@@ -427,7 +463,12 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                           (AppLocalizations.of(context).weekAverage, colorLogged7Day),
                         ]
                         .map(
-                          (e) => Indicator(color: e.$2, text: e.$1, isSquare: true, marginRight: 0),
+                          (e) => Indicator(
+                            text: e.$1,
+                            color: e.$2,
+                            isSquare: true,
+                            marginRight: 0,
+                          ),
                         )
                         .toList(),
               ),
@@ -465,13 +506,13 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
       _ => '',
     };
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: Text(text, style: const TextStyle(fontSize: 10)),
     );
   }
 
   Widget leftTitles(double value, TitleMeta meta) => SideTitleWidget(
-    axisSide: meta.axisSide,
+    meta: meta,
     child: Text(
       AppLocalizations.of(context).percentValue(value.toStringAsFixed(0)),
       style: const TextStyle(fontSize: 10),
@@ -508,13 +549,19 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                       getTitlesWidget: leftTitles,
                     ),
                   ),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
                 gridData: FlGridData(
                   show: true,
-                  getDrawingHorizontalLine: (value) =>
-                      const FlLine(color: Colors.black, strokeWidth: 1),
+                  getDrawingHorizontalLine: (value) => const FlLine(
+                    color: Colors.black,
+                    strokeWidth: 1,
+                  ),
                   drawVerticalLine: false,
                 ),
                 borderData: FlBorderData(show: false),

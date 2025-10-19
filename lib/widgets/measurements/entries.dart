@@ -36,7 +36,9 @@ class EntriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+    final plans = Provider.of<NutritionPlansProvider>(context, listen: false).items;
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
     final entriesAll = _category.entries
         .map((e) => MeasurementChartEntry(e.value, e.date))
@@ -49,7 +51,7 @@ class EntriesList extends StatelessWidget {
           _category.name,
           entriesAll,
           entries7dAvg,
-          plan,
+          plans,
           _category.unit,
           context,
         ),
@@ -60,11 +62,10 @@ class EntriesList extends StatelessWidget {
             itemCount: _category.entries.length,
             itemBuilder: (context, index) {
               final currentEntry = _category.entries[index];
-              final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
               return Card(
                 child: ListTile(
-                  title: Text('${currentEntry.value} ${_category.unit}'),
+                  title: Text('${numberFormat.format(currentEntry.value)} ${_category.unit}'),
                   subtitle: Text(
                     DateFormat.yMd(
                       Localizations.localeOf(context).languageCode,
@@ -80,7 +81,10 @@ class EntriesList extends StatelessWidget {
                             FormScreen.routeName,
                             arguments: FormScreenArguments(
                               AppLocalizations.of(context).edit,
-                              MeasurementEntryForm(currentEntry.category, currentEntry),
+                              MeasurementEntryForm(
+                                currentEntry.category,
+                                currentEntry,
+                              ),
                             ),
                           ),
                         ),
@@ -88,7 +92,10 @@ class EntriesList extends StatelessWidget {
                           child: Text(AppLocalizations.of(context).delete),
                           onTap: () async {
                             // Delete entry from DB
-                            await provider.deleteEntry(currentEntry.id!, currentEntry.category);
+                            await provider.deleteEntry(
+                              currentEntry.id!,
+                              currentEntry.category,
+                            );
 
                             // and inform the user
                             if (context.mounted) {

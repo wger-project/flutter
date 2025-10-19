@@ -31,19 +31,12 @@ const DEFAULT_SERVER_TEST = 'https://wger-master.rge.uber.space/';
 const TESTSERVER_USER_NAME = 'user';
 const TESTSERVER_PASSWORD = 'flutteruser';
 
-/// Keys used in the android manifest
-const MANIFEST_KEY_API = 'wger.api_key';
-const MANIFEST_KEY_CHECK_UPDATE = 'wger.check_min_app_version';
-
-/// Default weight unit is "kg"
-const DEFAULT_WEIGHT_UNIT = 1;
-
 /// Default impression for a workout session (neutral)
 const DEFAULT_IMPRESSION = 2;
 
 // Weight and repetition units for the workout logs
-const REP_UNIT_REPETITIONS = 1;
-const REP_UNIT_TILL_FAILURE = 2;
+const REP_UNIT_REPETITIONS_ID = 1;
+const REP_UNIT_TILL_FAILURE_ID = 2;
 
 const WEIGHT_UNIT_KG = 1;
 const WEIGHT_UNIT_LB = 2;
@@ -63,6 +56,7 @@ const PREFS_LAST_UPDATED_LANGUAGES = 'lastUpdatedLanguages';
 const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
 const PREFS_USER = 'userData';
+const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_LAST_SERVER = 'lastServer';
 
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);
@@ -118,3 +112,37 @@ const COLOR_SECONDARY_MUSCLES = Colors.orange;
 // Min account age to contribute exercises. Needs to be kept in sync with
 // the value on the backend
 const MIN_ACCOUNT_AGE = 14;
+
+/// Different project URLs
+const GITHUB_PROJECT_URL = 'https://github.com/wger-project';
+const GITHUB_REPO_URL = '$GITHUB_PROJECT_URL/flutter';
+const GITHUB_ISSUES_URL = '$GITHUB_REPO_URL/issues/new/choose';
+const GITHUB_ISSUES_BUG_URL = '$GITHUB_REPO_URL/issues/new?template=1_bug.yml';
+const GITHUB_SPONSORS_URL = 'https://github.com/sponsors/wger-project';
+const DISCORD_URL = 'https://discord.gg/rPWFv6W';
+const MASTODON_URL = 'https://fosstodon.org/@wger';
+const WEBLATE_URL = 'https://hosted.weblate.org/engage/wger';
+const BUY_ME_A_COFFEE_URL = 'https://buymeacoffee.com/wger';
+const LIBERAPAY_URL = 'https://liberapay.com/wger';
+
+/// Factor to multiply / divide in the charts when converting dates to milliseconds
+/// from epoch since fl_charts does not support real time series charts and using
+/// the milliseconds themselves can cause the application to crash since it runs
+/// out of memory...
+const double CHART_MILLISECOND_FACTOR = 100000.0;
+
+enum WeightUnitEnum { kg, lb }
+
+/// TextInputType for decimal numbers
+const textInputTypeDecimal = TextInputType.numberWithOptions(decimal: true);
+
+const String API_MAX_PAGE_SIZE = '999';
+
+const String API_RESULTS_PAGE_SIZE = '100';
+
+/// Marker used for identifying interpolated values in a list, e.g. for measurements
+/// the milliseconds in the entry date are set to this value
+const INTERPOLATION_MARKER = 123;
+
+/// Creative Commons license IDs
+const CC_BY_SA_4_ID = 2;

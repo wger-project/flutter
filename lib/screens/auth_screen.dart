@@ -18,27 +18,34 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/misc.dart';
-import 'package:wger/helpers/ui.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/auth/api_token_field.dart';
+import 'package:wger/widgets/auth/email_field.dart';
+import 'package:wger/widgets/auth/password_field.dart';
+import 'package:wger/widgets/auth/server_field.dart';
+import 'package:wger/widgets/auth/username_field.dart';
 
 import '../providers/auth.dart';
 
-enum AuthMode { Signup, Login }
+enum AuthMode {
+  Register,
+  Login,
+}
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen();
+
   static const routeName = '/auth';
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
+    final deviceSize = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
@@ -77,12 +84,6 @@ class AuthScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Positioned(
-          //   top: 0.4 * deviceSize.height,
-          //   left: 15,
-          //   right: 15,
-          //   child: const ,
-          // ),
         ],
       ),
     );
@@ -99,16 +100,18 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard> {
   bool isObscure = true;
   bool confirmIsObscure = true;
+  Widget errorMessage = const SizedBox.shrink();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
-  bool _canRegister = true;
   AuthMode _authMode = AuthMode.Login;
   bool _hideCustomServer = true;
+  bool _useUsernameAndPassword = true;
   final Map<String, String> _authData = {
     'username': '',
     'email': '',
     'password': '',
     'serverUrl': '',
+    'apiToken': '',
   };
   var _isLoading = false;
   final _usernameController = TextEditingController();
@@ -118,6 +121,7 @@ class _AuthCardState extends State<AuthCard> {
   final _serverUrlController = TextEditingController(
     text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD,
   );
+  final _apiTokenController = TextEditingController();
 
   @override
   void dispose() {
@@ -126,6 +130,7 @@ class _AuthCardState extends State<AuthCard> {
     _password2Controller.dispose();
     _emailController.dispose();
     _serverUrlController.dispose();
+    _apiTokenController.dispose();
     super.dispose();
   }
 
@@ -136,17 +141,6 @@ class _AuthCardState extends State<AuthCard> {
       _serverUrlController.text = value;
     });
 
-    // Check if the API key is set
-    //
-    // If not, the user will not be able to register via the app
-    try {
-      final metadata = Provider.of<AuthProvider>(context, listen: false).metadata;
-      if (metadata.containsKey(MANIFEST_KEY_API) && metadata[MANIFEST_KEY_API] == '') {
-        _canRegister = false;
-      }
-    } on PlatformException {
-      _canRegister = false;
-    }
     _preFillTextfields();
   }
 
@@ -162,11 +156,11 @@ class _AuthCardState extends State<AuthCard> {
   void _resetTextfields() {
     _usernameController.clear();
     _passwordController.clear();
+    _apiTokenController.clear();
   }
 
   void _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
-      // Invalid!
       return;
     }
     _formKey.currentState!.save();
@@ -176,12 +170,14 @@ class _AuthCardState extends State<AuthCard> {
 
     try {
       // Login existing user
-      late Map<String, LoginActions> res;
+      late LoginActions res;
       if (_authMode == AuthMode.Login) {
-        res = await Provider.of<AuthProvider>(
-          context,
-          listen: false,
-        ).login(_authData['username']!, _authData['password']!, _authData['serverUrl']!);
+        res = await context.read<AuthProvider>().login(
+          _authData['username']!,
+          _authData['password']!,
+          _authData['serverUrl']!,
+          _authData['apiToken'],
+        );
 
         // Register new user
       } else {
@@ -195,44 +191,35 @@ class _AuthCardState extends State<AuthCard> {
       }
 
       // Check if update is required else continue normally
-      if (res.containsKey('action')) {
-        if (res['action'] == LoginActions.update && mounted) {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => const UpdateAppScreen()));
-          return;
-        }
+      if (res == LoginActions.update && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
+        );
+        return;
       }
-
-      setState(() {
-        _isLoading = false;
-      });
+      if (context.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } on WgerHttpException catch (error) {
-      if (mounted) {
-        showHttpExceptionErrorDialog(error, context);
+      if (context.mounted) {
+        setState(() {
+          errorMessage = FormHttpErrorsWidget(error);
+        });
       }
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (error) {
+    } finally {
       if (mounted) {
-        showErrorDialog(error, context);
+        setState(() => _isLoading = false);
       }
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
   void _switchAuthMode() {
-    if (!_canRegister) {
-      launchURL(DEFAULT_SERVER_PROD, context);
-      return;
-    }
-
     if (_authMode == AuthMode.Login) {
       setState(() {
-        _authMode = AuthMode.Signup;
+        _authMode = AuthMode.Register;
+        _useUsernameAndPassword = true;
       });
       _resetTextfields();
     } else {
@@ -245,7 +232,9 @@ class _AuthCardState extends State<AuthCard> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     final deviceSize = MediaQuery.of(context).size;
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       elevation: 8.0,
@@ -258,111 +247,49 @@ class _AuthCardState extends State<AuthCard> {
             child: AutofillGroup(
               child: Column(
                 children: [
-                  TextFormField(
-                    key: const Key('inputUsername'),
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).username,
-                      errorMaxLines: 2,
-                      prefixIcon: const Icon(Icons.account_circle),
+                  errorMessage,
+                  if (_useUsernameAndPassword)
+                    UsernameField(
+                      controller: _apiTokenController,
+                      onSaved: (value) => _authData['username'] = value!,
                     ),
-                    autofillHints: const [AutofillHints.username],
-                    controller: _usernameController,
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return AppLocalizations.of(context).invalidUsername;
-                      }
-                      if (!RegExp(r'^[\w.@+-]+$').hasMatch(value)) {
-                        return AppLocalizations.of(context).usernameValidChars;
-                      }
-
-                      return null;
-                    },
-                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'))],
-                    onSaved: (value) {
-                      _authData['username'] = value!;
-                    },
-                  ),
-                  if (_authMode == AuthMode.Signup)
-                    TextFormField(
-                      key: const Key('inputEmail'),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).email,
-                        prefixIcon: const Icon(Icons.mail),
-                      ),
-                      autofillHints: const [AutofillHints.email],
+                  if (_authMode == AuthMode.Register)
+                    EmailField(
                       controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-
-                      // Email is not required
-                      validator: (value) {
-                        if (value!.isNotEmpty && !value.contains('@')) {
-                          return AppLocalizations.of(context).invalidEmail;
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _authData['email'] = value!;
-                      },
+                      onSaved: (value) => _authData['email'] = value!,
                     ),
-                  StatefulBuilder(
-                    builder: (context, updateState) {
-                      return TextFormField(
-                        key: const Key('inputPassword'),
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).password,
-                          prefixIcon: const Icon(Icons.password),
-                          suffixIcon: IconButton(
-                            icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility),
-                            onPressed: () {
-                              isObscure = !isObscure;
-                              updateState(() {});
-                            },
-                          ),
-                        ),
-                        autofillHints: const [AutofillHints.password],
-                        obscureText: isObscure,
-                        controller: _passwordController,
-                        textInputAction: TextInputAction.next,
-                        validator: (value) {
-                          if (value!.isEmpty || value.length < 8) {
-                            return AppLocalizations.of(context).passwordTooShort;
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _authData['password'] = value!;
-                        },
-                      );
-                    },
-                  ),
-                  if (_authMode == AuthMode.Signup)
+                  if (_useUsernameAndPassword)
+                    PasswordField(
+                      controller: _passwordController,
+                      onSaved: (value) => _authData['password'] = value!,
+                    ),
+
+                  if (_authMode == AuthMode.Register)
                     StatefulBuilder(
                       builder: (context, updateState) {
                         return TextFormField(
                           key: const Key('inputPassword2'),
                           decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).confirmPassword,
+                            labelText: i18n.confirmPassword,
                             prefixIcon: const Icon(Icons.password),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 confirmIsObscure ? Icons.visibility_off : Icons.visibility,
                               ),
                               onPressed: () {
-                                confirmIsObscure = !confirmIsObscure;
-                                updateState(() {});
+                                updateState(() {
+                                  confirmIsObscure = !confirmIsObscure;
+                                });
                               },
                             ),
                           ),
                           controller: _password2Controller,
-                          enabled: _authMode == AuthMode.Signup,
+                          enabled: _authMode == AuthMode.Register,
                           obscureText: confirmIsObscure,
-                          validator: _authMode == AuthMode.Signup
+                          validator: _authMode == AuthMode.Register
                               ? (value) {
                                   if (value != _passwordController.text) {
-                                    return AppLocalizations.of(context).passwordsDontMatch;
+                                    return i18n.passwordsDontMatch;
                                   }
                                   return null;
                                 }
@@ -370,109 +297,81 @@ class _AuthCardState extends State<AuthCard> {
                         );
                       },
                     ),
+
                   // Off-stage widgets are kept in the tree, otherwise the server URL
                   // would not be saved to _authData
+                  if (_authMode == AuthMode.Login && !_useUsernameAndPassword)
+                    ApiTokenField(
+                      controller: _apiTokenController,
+                      onSaved: (value) => _authData['apiToken'] = value!,
+                    ),
                   Offstage(
                     offstage: _hideCustomServer,
-                    child: Row(
-                      children: [
-                        Flexible(
-                          flex: 3,
-                          child: TextFormField(
-                            key: const Key('inputServer'),
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context).customServerUrl,
-                              helperText: AppLocalizations.of(context).customServerHint,
-                              helperMaxLines: 4,
-                            ),
-                            controller: _serverUrlController,
-                            validator: (value) {
-                              if (Uri.tryParse(value!) == null) {
-                                return AppLocalizations.of(context).invalidUrl;
-                              }
+                    child: ServerField(
+                      controller: _serverUrlController,
+                      onSaved: (value) {
+                        // Remove any trailing slash
+                        if (value!.lastIndexOf('/') == (value.length - 1)) {
+                          value = value.substring(0, value.lastIndexOf('/'));
+                        }
+                        _authData['serverUrl'] = value;
+                      },
+                    ),
+                  ),
+                  if (!_hideCustomServer)
+                    TextButton(
+                      key: const ValueKey('toggleApiTokenButton'),
+                      onPressed: _authMode == AuthMode.Login
+                          ? () => setState(() => _useUsernameAndPassword = !_useUsernameAndPassword)
+                          : null,
+                      child: Text(
+                        _useUsernameAndPassword ? i18n.useApiToken : i18n.useUsernameAndPassword,
+                      ),
+                    ),
 
-                              if (value.isEmpty || !value.contains('http')) {
-                                return AppLocalizations.of(context).invalidUrl;
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              // Remove any trailing slash
-                              if (value!.lastIndexOf('/') == (value.length - 1)) {
-                                value = value.substring(0, value.lastIndexOf('/'));
-                              }
-                              _authData['serverUrl'] = value;
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.undo),
-                              onPressed: () {
-                                _serverUrlController.text = kDebugMode
-                                    ? DEFAULT_SERVER_TEST
-                                    : DEFAULT_SERVER_PROD;
-                              },
-                            ),
-                            Text(AppLocalizations.of(context).reset),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
                   const SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () {
-                      if (!_isLoading) {
-                        return _submit(context);
-                      }
-                    },
-                    child: Container(
+                  SizedBox(
+                    width: double.infinity,
+                    height: 45,
+                    child: ElevatedButton(
                       key: const Key('actionButton'),
-                      width: double.infinity,
-                      height: 0.065 * deviceSize.height,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30.0),
-                        color: wgerPrimaryColor,
+                      onPressed: () {
+                        if (!_isLoading) {
+                          return _submit(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                       ),
-                      child: Center(
-                        child: _isLoading
-                            ? const CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation(Colors.white),
-                              )
-                            : Text(
-                                _authMode == AuthMode.Login
-                                    ? AppLocalizations.of(context).login
-                                    : AppLocalizations.of(context).register,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation(Colors.white),
+                            )
+                          : Text(
+                              _authMode == AuthMode.Login ? i18n.login : i18n.register,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
                               ),
-                      ),
+                            ),
                     ),
                   ),
-                  SizedBox(height: 0.025 * deviceSize.height),
+
+                  const SizedBox(height: 20),
                   Builder(
                     key: const Key('toggleActionButton'),
                     builder: (context) {
-                      final String text = _authMode != AuthMode.Signup
-                          ? AppLocalizations.of(context).registerInstead
-                          : AppLocalizations.of(context).loginInstead;
+                      final String text = _authMode != AuthMode.Register
+                          ? i18n.registerInstead
+                          : i18n.loginInstead;
 
                       return GestureDetector(
-                        onTap: () {
-                          _switchAuthMode();
-                        },
+                        onTap: () => _switchAuthMode(),
                         child: Container(
                           color: Colors.transparent,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
                             children: [
-                              Text(text.substring(0, text.lastIndexOf('?') + 1)),
+                              // TODO: i18n!
                               Text(
                                 text.substring(text.lastIndexOf('?') + 1, text.length),
                                 style: const TextStyle(
@@ -486,18 +385,19 @@ class _AuthCardState extends State<AuthCard> {
                       );
                     },
                   ),
-
+                  const SizedBox(height: 15),
                   TextButton(
                     key: const Key('toggleCustomServerButton'),
                     onPressed: () {
                       setState(() {
                         _hideCustomServer = !_hideCustomServer;
+                        if (_hideCustomServer) {
+                          _useUsernameAndPassword = true;
+                        }
                       });
                     },
                     child: Text(
-                      _hideCustomServer
-                          ? AppLocalizations.of(context).useCustomServer
-                          : AppLocalizations.of(context).useDefaultServer,
+                      _hideCustomServer ? i18n.useCustomServer : i18n.useDefaultServer,
                     ),
                   ),
                 ],

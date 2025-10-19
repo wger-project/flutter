@@ -7,18 +7,14 @@ part of 'weight_unit.dart';
 // **************************************************************************
 
 WeightUnit _$WeightUnitFromJson(Map<String, dynamic> json) {
-  $checkKeys(
-    json,
-    requiredKeys: const ['id', 'name'],
-  );
+  $checkKeys(json, requiredKeys: const ['id', 'name']);
   return WeightUnit(
     id: (json['id'] as num).toInt(),
     name: json['name'] as String,
   );
 }
 
-Map<String, dynamic> _$WeightUnitToJson(WeightUnit instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-    };
+Map<String, dynamic> _$WeightUnitToJson(WeightUnit instance) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+};

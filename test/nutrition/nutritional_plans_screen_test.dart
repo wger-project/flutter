@@ -26,9 +26,12 @@ import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -55,25 +58,53 @@ void main() {
       client.delete(any, headers: anyNamed('headers')),
     ).thenAnswer((_) async => http.Response('', 200));
 
-    when(mockBaseProvider.deleteRequest(any, any)).thenAnswer((_) async => http.Response('', 200));
+    when(mockBaseProvider.deleteRequest(any, any)).thenAnswer(
+      (_) async => http.Response('', 200),
+    );
 
     when(mockAuthProvider.token).thenReturn('1234');
     when(mockAuthProvider.serverUrl).thenReturn('http://localhost');
     when(mockAuthProvider.getAppNameHeader()).thenReturn('wger app');
 
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => NutritionPlansProvider(mockBaseProvider, [
-        NutritionalPlan(
-          id: 'deadbeefa',
-          description: 'test plan 1',
-          creationDate: DateTime(2021, 01, 01),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (context) => NutritionPlansProvider(
+            mockBaseProvider,
+            [
+              NutritionalPlan(
+                id: 1,
+                description: 'test plan 1',
+                creationDate: DateTime(2021, 01, 01),
+                startDate: DateTime(2021, 01, 01),
+              ),
+              NutritionalPlan(
+                id: 2,
+                description: 'test plan 2',
+                creationDate: DateTime(2021, 01, 10),
+                startDate: DateTime(2021, 01, 10),
+              ),
+            ],
+            database: database,
+          ),
         ),
-        NutritionalPlan(
-          id: 'deadbeefb',
-          description: 'test plan 2',
-          creationDate: DateTime(2021, 01, 10),
+        ChangeNotifierProvider<BodyWeightProvider>(
+          create: (context) => BodyWeightProvider(mockBaseProvider),
         ),
-      ], database: database),
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) =>
+              UserProvider(
+                  mockBaseProvider,
+                )
+                ..profile = Profile(
+                  username: 'test',
+                  emailVerified: true,
+                  isTrustworthy: true,
+                  email: 'test@example.com',
+                  weightUnitStr: 'kg',
+                ),
+        ),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -121,14 +152,16 @@ void main() {
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
 
-    expect(find.text('1/1/2021'), findsOneWidget);
-    expect(find.text('1/10/2021'), findsOneWidget);
+    // note .. "(open ended)" at the time, depending on localisation strings
+    expect(find.textContaining('from 1/1/2021 ('), findsOneWidget);
+    expect(find.textContaining('from 1/10/2021 ('), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
+    // note .. "(open ended)" at the time, depending on localisation strings
 
-    expect(find.text('1.1.2021'), findsOneWidget);
-    expect(find.text('10.1.2021'), findsOneWidget);
+    expect(find.textContaining('from 1.1.2021 ('), findsOneWidget);
+    expect(find.textContaining('from 10.1.2021 ('), findsOneWidget);
   });
 }

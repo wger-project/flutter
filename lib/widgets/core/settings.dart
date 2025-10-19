@@ -18,10 +18,11 @@
 
 //import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/screens/configure_plates_screen.dart';
+import 'package:wger/widgets/core/settings/exercise_cache.dart';
+import 'package:wger/widgets/core/settings/ingredient_cache.dart';
+import 'package:wger/widgets/core/settings/theme.dart';
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
@@ -30,48 +31,25 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
-    final nutritionProvider = Provider.of<NutritionPlansProvider>(context, listen: false);
+    final i18n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context).settingsTitle)),
+      appBar: AppBar(title: Text(i18n.settingsTitle)),
       body: ListView(
         children: [
           ListTile(
-            title: Text(AppLocalizations.of(context).settingsExerciseCacheDescription),
-            trailing: IconButton(
-              key: const ValueKey('cacheIconExercises'),
-              icon: const Icon(Icons.delete),
-              onPressed: () async {
-                await exerciseProvider.clearAllCachesAndPrefs();
-
-                if (context.mounted) {
-                  final snackBar = SnackBar(
-                    content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
-                  );
-
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                }
-              },
-            ),
+            title: Text(i18n.settingsCacheTitle, style: Theme.of(context).textTheme.headlineSmall),
           ),
+          const SettingsExerciseCache(),
+          const SettingsIngredientCache(),
+          ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
+          const SettingsTheme(),
           ListTile(
-            title: Text(AppLocalizations.of(context).settingsIngredientCacheDescription),
-            trailing: IconButton(
-              key: const ValueKey('cacheIconIngredients'),
-              icon: const Icon(Icons.delete),
-              onPressed: () async {
-                await nutritionProvider.clearIngredientCache();
-
-                if (context.mounted) {
-                  final snackBar = SnackBar(
-                    content: Text(AppLocalizations.of(context).settingsCacheDeletedSnackbar),
-                  );
-
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                }
-              },
-            ),
+            title: Text(i18n.selectAvailablePlates),
+            onTap: () {
+              Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
+            },
+            trailing: const Icon(Icons.chevron_right),
           ),
         ],
       ),

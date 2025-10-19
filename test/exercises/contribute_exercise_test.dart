@@ -29,10 +29,9 @@ import 'package:wger/screens/add_exercise_screen.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/profile.dart';
-import '../workout/gym_mode_screen_test.mocks.dart';
 import 'contribute_exercise_test.mocks.dart';
 
-@GenerateMocks([AddExerciseProvider, UserProvider])
+@GenerateMocks([AddExerciseProvider, UserProvider, ExercisesProvider])
 void main() {
   final mockAddExerciseProvider = MockAddExerciseProvider();
   final mockExerciseProvider = MockExercisesProvider();
@@ -75,14 +74,14 @@ void main() {
     when(mockExerciseProvider.categories).thenReturn(testCategories);
     when(mockExerciseProvider.muscles).thenReturn(testMuscles);
     when(mockExerciseProvider.equipment).thenReturn(testEquipment);
-    when(mockExerciseProvider.exerciseBasesByVariation).thenReturn({});
+    when(mockExerciseProvider.exerciseByVariation).thenReturn({});
     when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
     when(mockExerciseProvider.languages).thenReturn(testLanguages);
 
     when(mockAddExerciseProvider.equipment).thenReturn([]);
     when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
-    when(mockAddExerciseProvider.newVariationForExercise).thenReturn(null);
+    when(mockAddExerciseProvider.variationConnectToExercise).thenReturn(null);
 
     // Act
     await tester.pumpWidget(createExerciseScreen());

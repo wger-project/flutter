@@ -5,12 +5,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 
 import '../fixtures/fixture_reader.dart';
 import '../measurements/measurement_provider_test.mocks.dart';
 
 void main() {
+  final now = DateTime.now();
   late NutritionPlansProvider nutritionProvider;
   late MockWgerBaseProvider mockWgerBaseProvider;
   late IngredientDatabase database;
@@ -80,8 +82,9 @@ void main() {
     when(mockWgerBaseProvider.makeUrl(planInfoUrl, id: anyNamed('id'))).thenReturn(planInfoUri);
     when(mockWgerBaseProvider.makeUrl(planUrl, id: anyNamed('id'))).thenReturn(planUri);
     when(mockWgerBaseProvider.makeUrl(diaryUrl, query: anyNamed('query'))).thenReturn(diaryUri);
-    when(mockWgerBaseProvider.makeUrl(ingredientInfoUrl, id: anyNamed('id')))
-        .thenReturn(ingredientUri);
+    when(
+      mockWgerBaseProvider.makeUrl(ingredientInfoUrl, id: anyNamed('id')),
+    ).thenReturn(ingredientUri);
     when(mockWgerBaseProvider.fetch(planInfoUri)).thenAnswer(
       (realInvocation) => Future.value(nutritionalPlanInfoResponse),
     );
@@ -110,11 +113,121 @@ void main() {
     });
   });
 
+  group('currentPlan', () {
+    test('gibt den aktiven Plan zurück, wenn nur einer aktiv ist', () {
+      final plan = NutritionalPlan(
+        id: 1,
+        description: 'Aktiver Plan',
+        startDate: now.subtract(const Duration(days: 1)),
+        endDate: now.add(const Duration(days: 1)),
+        creationDate: now.subtract(const Duration(days: 2)),
+      );
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [plan], database: database);
+      expect(nutritionProvider.currentPlan, equals(plan));
+    });
+
+    test('gibt den neuesten aktiven Plan zurück, wenn mehrere aktiv sind', () {
+      final olderPlan = NutritionalPlan(
+        id: 1,
+        description: 'Älterer aktiver Plan',
+        startDate: now.subtract(const Duration(days: 10)),
+        endDate: now.add(const Duration(days: 10)),
+        creationDate: now.subtract(const Duration(days: 10)),
+      );
+      final newerPlan = NutritionalPlan(
+        id: 2,
+        description: 'Neuerer aktiver Plan',
+        startDate: now.subtract(const Duration(days: 5)),
+        endDate: now.add(const Duration(days: 5)),
+        creationDate: now.subtract(const Duration(days: 2)),
+      );
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
+        olderPlan,
+        newerPlan,
+      ], database: database);
+      expect(nutritionProvider.currentPlan, equals(newerPlan));
+    });
+  });
+
+  group('currentPlan correctly returns the active plan', () {
+    test('no plans available -> null', () {
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [], database: database);
+      expect(nutritionProvider.currentPlan, isNull);
+    });
+
+    test('no active plan -> null', () {
+      final plans = [
+        NutritionalPlan(
+          id: 1,
+          description: 'plan 1',
+          startDate: now.subtract(const Duration(days: 30)),
+          endDate: now.subtract(const Duration(days: 5)),
+        ),
+        NutritionalPlan(
+          id: 2,
+          description: 'plan 2',
+          startDate: now.add(const Duration(days: 100)),
+          endDate: now.add(const Duration(days: 50)),
+        ),
+      ];
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, plans, database: database);
+      expect(nutritionProvider.currentPlan, isNull);
+    });
+
+    test('active plan exists -> return it', () {
+      final plan = NutritionalPlan(
+        description: 'Active plan',
+        startDate: now.subtract(const Duration(days: 10)),
+        endDate: now.add(const Duration(days: 10)),
+      );
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [plan], database: database);
+      expect(nutritionProvider.currentPlan, equals(plan));
+    });
+
+    test('inactive plans are ignored', () {
+      final inactivePlan = NutritionalPlan(
+        description: 'Inactive plan',
+        startDate: now.subtract(const Duration(days: 10)),
+        endDate: now.add(const Duration(days: 5)),
+      );
+      final plan = NutritionalPlan(
+        description: 'Active plan',
+        startDate: now.subtract(const Duration(days: 10)),
+        endDate: now.add(const Duration(days: 10)),
+      );
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
+        plan,
+        inactivePlan,
+      ], database: database);
+      expect(nutritionProvider.currentPlan, equals(plan));
+    });
+
+    test('several active plans exists -> return newest', () {
+      final olderPlan = NutritionalPlan(
+        description: 'Old active plan',
+        startDate: now.subtract(const Duration(days: 10)),
+        endDate: now.add(const Duration(days: 10)),
+      );
+      final newerPlan = NutritionalPlan(
+        description: 'Newer active plan',
+        startDate: now.subtract(const Duration(days: 5)),
+        endDate: now.add(const Duration(days: 5)),
+      );
+      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
+        olderPlan,
+        newerPlan,
+      ], database: database);
+      expect(nutritionProvider.currentPlan, equals(newerPlan));
+    });
+  });
+
   group('Ingredient cache DB', () {
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
       nutritionProvider.ingredients = [];
-      await database.into(database.ingredients).insert(
+      await database
+          .into(database.ingredients)
+          .insert(
             IngredientsCompanion.insert(
               id: ingredient59887Response['id'],
               data: json.encode(ingredient59887Response),
@@ -135,7 +248,9 @@ void main() {
     test('fetching an ingredient not present in the DB, the API is hit', () async {
       // Arrange
       nutritionProvider.ingredients = [];
-      await database.into(database.ingredients).insert(
+      await database
+          .into(database.ingredients)
+          .insert(
             IngredientsCompanion.insert(
               id: ingredient59887Response['id'],
               data: json.encode(ingredient59887Response),

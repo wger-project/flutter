@@ -42,7 +42,7 @@ class Translation extends Equatable {
   @JsonKey(required: true, name: 'created')
   final DateTime? created;
 
-  @JsonKey(required: true, name: 'exercise_base')
+  @JsonKey(required: true, name: 'exercise')
   late int? exerciseId;
 
   @JsonKey(required: true)
@@ -92,12 +92,12 @@ class Translation extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        exerciseId,
-        uuid,
-        languageId,
-        created,
-        name,
-        description,
-      ];
+    id,
+    exerciseId,
+    uuid,
+    languageId,
+    created,
+    name,
+    description,
+  ];
 }

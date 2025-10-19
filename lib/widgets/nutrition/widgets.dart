@@ -17,17 +17,16 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; //import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/ingredient_api.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/core.dart';
@@ -36,6 +35,7 @@ import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
 class ScanReader extends StatelessWidget {
   const ScanReader();
+
   @override
   Widget build(BuildContext context) => Scaffold(
     body: ReaderWidget(
@@ -54,26 +54,28 @@ class ScanReader extends StatelessWidget {
 }
 
 class IngredientTypeahead extends StatefulWidget {
+  final _logger = Logger('IngredientTypeahead');
+
   final TextEditingController _ingredientController;
   final TextEditingController _ingredientIdController;
 
   final String barcode;
-  final bool? test;
+  final bool test;
   final bool showScanner;
 
   final Function(int id, String name, num? amount) selectIngredient;
-  final Function() unSelectIngredient;
-  final Function(String query) updateSearchQuery;
+  final Function() onDeselectIngredient;
+  final Function(String query) onUpdateSearchQuery;
 
-  const IngredientTypeahead(
+  IngredientTypeahead(
     this._ingredientIdController,
     this._ingredientController, {
     this.showScanner = true,
     this.test = false,
     this.barcode = '',
     required this.selectIngredient,
-    required this.unSelectIngredient,
-    required this.updateSearchQuery,
+    required this.onDeselectIngredient,
+    required this.onUpdateSearchQuery,
   });
 
   @override
@@ -90,20 +92,22 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
     barcode = widget.barcode; // for unit tests
   }
 
-  Future<String> readerscan(BuildContext context) async {
+  Future<String> openBarcodeScan(BuildContext context) async {
     try {
       final code = await Navigator.of(
         context,
       ).push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
+
       if (code == null) {
         return '';
       }
 
-      if (code.compareTo('-1') == 0) {
+      if (code == '-1') {
         return '';
       }
       return code;
-    } on PlatformException {
+    } on PlatformException catch (e) {
+      widget._logger.warning('PlatformException during barcode scan: $e');
       return '';
     }
   }
@@ -112,8 +116,9 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TypeAheadField<IngredientApiSearchEntry>(
+        TypeAheadField<Ingredient>(
           controller: widget._ingredientController,
+          debounceDuration: const Duration(milliseconds: 500),
           builder: (context, controller, focusNode) {
             return TextFormField(
               controller: controller,
@@ -124,11 +129,6 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                   return AppLocalizations.of(context).selectIngredient;
                 }
                 return null;
-              },
-              onChanged: (value) {
-                widget.updateSearchQuery(value);
-                // unselect to start a new search
-                widget.unSelectIngredient();
               },
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
@@ -143,28 +143,37 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               return null;
             }
 
+            widget.onUpdateSearchQuery(pattern);
+            widget.onDeselectIngredient();
+
             return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
               searchEnglish: _searchEnglish,
             );
           },
-          itemBuilder: (context, suggestion) {
-            final url = context.read<NutritionPlansProvider>().baseProvider.auth.serverUrl;
+          itemBuilder: (context, ingredient) {
             return ListTile(
-              leading: suggestion.data.image != null
-                  ? CircleAvatar(backgroundImage: NetworkImage(url! + suggestion.data.image!))
-                  : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
-              title: Text(suggestion.value),
-              // subtitle: Text(suggestion.data.id.toString()),
+              leading: ingredient.image != null
+                  ? CircleAvatar(
+                      backgroundImage: NetworkImage(ingredient.thumbnails!.medium),
+                    )
+                  : const CircleIconAvatar(
+                      Icon(Icons.image, color: Colors.grey),
+                    ),
+              title: Text(
+                ingredient.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
               trailing: IconButton(
                 icon: const Icon(Icons.info_outline),
                 onPressed: () {
                   showIngredientDetails(
                     context,
-                    suggestion.data.id,
+                    ingredient.id,
                     select: () {
-                      widget.selectIngredient(suggestion.data.id, suggestion.value, null);
+                      widget.selectIngredient(ingredient.id, ingredient.name, null);
                     },
                   );
                 },
@@ -176,7 +185,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             child: child,
           ),
           onSelected: (suggestion) {
-            widget.selectIngredient(suggestion.data.id, suggestion.value, null);
+            widget.selectIngredient(suggestion.id, suggestion.name, null);
           },
         ),
         if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
@@ -199,15 +208,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
       key: const Key('scan-button'),
       icon: const FaIcon(FontAwesomeIcons.barcode),
       onPressed: () async {
-        try {
-          if (!widget.test!) {
-            barcode = await readerscan(context);
-          }
-        } catch (e) {
-          if (mounted) {
-            showErrorDialog(e, context);
-          }
+        if (!widget.test) {
+          barcode = await openBarcodeScan(context);
         }
+
         if (!mounted) {
           return;
         }
@@ -217,7 +221,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             future: Provider.of<NutritionPlansProvider>(
               context,
               listen: false,
-            ).searchIngredientWithCode(barcode),
+            ).searchIngredientWithBarcode(barcode),
             builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
               return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
             },
@@ -237,7 +241,9 @@ class IngredientAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ingredient.image != null
         ? GestureDetector(
-            child: CircleAvatar(backgroundImage: NetworkImage(ingredient.image!.image)),
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(ingredient.image!.url),
+            ),
             onTap: () async {
               if (ingredient.image!.objectUrl != '') {
                 return launchURL(ingredient.image!.objectUrl, context);

@@ -1,618 +1,682 @@
 {
-  "login": "ログイン",
-  "@login": {
-    "description": "Text for login button"
-  },
-  "logout": "ログアウト",
-  "@logout": {
-    "description": "Text for logout button"
-  },
-  "register": "登録",
-  "@register": {
-    "description": "Text for registration button"
-  },
-  "useDefaultServer": "デフォルトサーバを使用する",
-  "@useDefaultServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "useCustomServer": "カスタムサーバを使用する",
-  "@useCustomServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "invalidUrl": "有効なURLを入力してください",
-  "@invalidUrl": {
-    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-  },
-  "usernameValidChars": "ユーザー名に含められるのは文字，数字と@, +, ., -, _の記号のみです",
-  "@usernameValidChars": {
-    "description": "Error message when the user tries to register a username with forbidden characters"
-  },
-  "passwordsDontMatch": "パスワードが合致しません",
-  "@passwordsDontMatch": {
-    "description": "Error message when the user enters two different passwords during registration"
-  },
-  "passwordTooShort": "パスワードが短すぎます",
-  "@passwordTooShort": {
-    "description": "Error message when the user a password that is too short"
-  },
-  "password": "パスワード",
-  "@password": {},
-  "confirmPassword": "パスワードを決定する",
-  "@confirmPassword": {},
-  "invalidEmail": "有効なメールアドレスを入力してください",
-  "@invalidEmail": {
-    "description": "Error message when the user enters an invalid email"
-  },
-  "email": "Eメールアドレス",
-  "@email": {},
-  "username": "ユーザー名",
-  "@username": {},
-  "invalidUsername": "有効なユーザー名を入力してください",
-  "@invalidUsername": {
-    "description": "Error message when the user enters an invalid username"
-  },
-  "customServerUrl": "wgerのインスタンスURL",
-  "@customServerUrl": {
-    "description": "Label in the form where the users can enter their own wger instance"
-  },
-  "customServerHint": "あなたのサーバのアドレスを入力するか, そうでなければデフォルトのサーバが使用されます",
-  "@customServerHint": {
-    "description": "Hint text for the form where the users can enter their own wger instance"
-  },
-  "reset": "リセット",
-  "@reset": {
-    "description": "Button text allowing the user to reset the entered values to the default"
-  },
-  "registerInstead": "新規登録",
-  "@registerInstead": {},
-  "loginInstead": "Log in instead",
-  "@loginInstead": {},
-  "labelWorkoutPlans": "Workout plans",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
-  "labelBottomNavWorkout": "運動",
-  "@labelBottomNavWorkout": {
-    "description": "Label used in bottom navigation, use a short word"
-  },
-  "labelBottomNavNutrition": "栄養",
-  "@labelBottomNavNutrition": {
-    "description": "Label used in bottom navigation, use a short word"
-  },
-  "labelWorkoutLogs": "トレーニング履歴",
-  "@labelWorkoutLogs": {
-    "description": "(Workout) logs"
-  },
-  "labelWorkoutPlan": "運動メニュー",
-  "@labelWorkoutPlan": {
-    "description": "Title for screen workout plan"
-  },
-  "labelDashboard": "ダッシュボード",
-  "@labelDashboard": {
-    "description": "Title for screen dashboard"
-  },
-  "successfullyDeleted": "削除されました",
-  "@successfullyDeleted": {
-    "description": "Message when an item was successfully deleted"
-  },
-  "successfullySaved": "保存されました",
-  "@successfullySaved": {
-    "description": "Message when an item was successfully saved"
-  },
-  "exercise": "運動",
-  "@exercise": {
-    "description": "An exercise for a workout"
-  },
-  "searchExercise": "運動を探す",
-  "@searchExercise": {
-    "description": "Label on set form. Selected exercises are added to the set"
-  },
-  "supersetWith": "セットで",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
-  "equipment": "器具",
-  "@equipment": {
-    "description": "Equipment needed to perform an exercise"
-  },
-  "muscles": "メインとなる筋肉",
-  "@muscles": {
-    "description": "(main) muscles trained by an exercise"
-  },
-  "musclesSecondary": "補助的な筋肉",
-  "@musclesSecondary": {
-    "description": "secondary muscles trained by an exercise"
-  },
-  "category": "分類",
-  "@category": {
-    "description": "Category for an exercise, ingredient, etc."
-  },
-  "newWorkout": "新しい運動メニュー",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "運動メニューはありません",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
-  "repetitions": "繰り返し",
-  "@repetitions": {
-    "description": "Repetitions for an exercise set"
-  },
-  "reps": "反復",
-  "@reps": {
-    "description": "Shorthand for repetitions, used when space constraints are tighter"
-  },
-  "rir": "予備レップ",
-  "@rir": {
-    "description": "Shorthand for Repetitions In Reserve"
-  },
-  "rirNotUsed": "予備レップは保存されていません",
-  "@rirNotUsed": {
-    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
-  },
-  "weightUnit": "重量単位",
-  "@weightUnit": {},
-  "repetitionUnit": "反復単位",
-  "@repetitionUnit": {},
-  "set": "セット",
-  "@set": {
-    "description": "A set in a workout plan"
-  },
-  "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
-  "@dayDescriptionHelp": {},
-  "setNr": "Set {nr}",
-  "@setNr": {
-    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
-    "type": "text",
-    "placeholders": {
-      "nr": {}
-    }
-  },
-  "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
-  "@sameRepetitions": {},
-  "comment": "コメント",
-  "@comment": {
-    "description": "Comment, additional information"
-  },
-  "impression": "評価",
-  "@impression": {
-    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
-  },
-  "notes": "メモ",
-  "@notes": {
-    "description": "Personal notes, e.g. for a workout session"
-  },
-  "workoutSession": "Workout session",
-  "@workoutSession": {
-    "description": "A (logged) workout session"
-  },
-  "newDay": "新しい日",
-  "@newDay": {},
-  "newSet": "新しいセット",
-  "@newSet": {
-    "description": "Header when adding a new set to a workout day"
-  },
-  "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
-  "@selectExercises": {},
-  "gymMode": "ジムモード",
-  "@gymMode": {
-    "description": "Label when starting the gym mode"
-  },
-  "plateCalculator": "プレート",
-  "@plateCalculator": {
-    "description": "Label used for the plate calculator in the gym mode"
-  },
-  "plateCalculatorNotDivisible": "Not possible to reach weight with available plates",
-  "@plateCalculatorNotDivisible": {
-    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
-  },
-  "pause": "休止",
-  "@pause": {
-    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
-  },
-  "jumpTo": "ジャンプ",
-  "@jumpTo": {
-    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
-  },
-  "todaysWorkout": "あなたの今日の運動",
-  "@todaysWorkout": {},
-  "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
-  "@logHelpEntries": {},
-  "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",
-  "@logHelpEntriesUnits": {},
-  "description": "説明",
-  "@description": {},
-  "name": "名称",
-  "@name": {
-    "description": "Name for a workout or nutritional plan"
-  },
-  "save": "保存",
-  "@save": {},
-  "addSet": "セットを追加",
-  "@addSet": {
-    "description": "Label for the button that adds a set (to a workout day)"
-  },
-  "addMeal": "食事を追加",
-  "@addMeal": {},
-  "mealLogged": "食事が日記に記録されました",
-  "@mealLogged": {},
-  "logMeal": "この食事を記録する",
-  "@logMeal": {},
-  "addIngredient": "食材を追加する",
-  "@addIngredient": {},
-  "logIngredient": "栄養日記に記録する",
-  "@logIngredient": {},
-  "searchIngredient": "食材を探す",
-  "@searchIngredient": {
-    "description": "Label on ingredient search form"
-  },
-  "nutritionalPlan": "栄養メニュー",
-  "@nutritionalPlan": {},
-  "nutritionalDiary": "栄養日記",
-  "@nutritionalDiary": {},
-  "nutritionalPlans": "栄養メニュー一覧",
-  "@nutritionalPlans": {},
-  "noNutritionalPlans": "栄養メニューがありません",
-  "@noNutritionalPlans": {
-    "description": "Message shown when the user has no nutritional plans"
-  },
-  "anErrorOccurred": "エラーが発生しました",
-  "@anErrorOccurred": {},
-  "weight": "重量",
-  "@weight": {
-    "description": "The weight of a workout log or body weight entry"
-  },
-  "measurement": "測定",
-  "@measurement": {},
-  "measurements": "測定結果",
-  "@measurements": {
-    "description": "Categories for the measurements such as biceps size, body fat, etc."
-  },
-  "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
-  "@measurementCategoriesHelpText": {},
-  "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
-  "@measurementEntriesHelpText": {},
-  "date": "日付",
-  "@date": {
-    "description": "The date of a workout log or body weight entry"
-  },
-  "value": "値",
-  "@value": {
-    "description": "The value of a measurement entry"
-  },
-  "start": "開始",
-  "@start": {
-    "description": "Label on button to start the gym mode (i.e., an imperative)"
-  },
-  "time": "時間",
-  "@time": {
-    "description": "The time of a meal or workout"
-  },
-  "timeStart": "開始時刻",
-  "@timeStart": {
-    "description": "The starting time of a workout"
-  },
-  "timeEnd": "終了時刻",
-  "@timeEnd": {
-    "description": "The end time of a workout"
-  },
-  "timeStartAhead": "終了時刻を開始時刻より前にすることはできません",
-  "@timeStartAhead": {},
-  "ingredient": "食材",
-  "@ingredient": {},
-  "energy": "エネルギー",
-  "@energy": {
-    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
-  },
-  "energyShort": "E",
-  "@energyShort": {
-    "description": "The first letter or short name of the word 'Energy', used in overviews"
-  },
-  "kcal": "kcal",
-  "@kcal": {
-    "description": "Energy in a meal in kilocalories, kcal"
-  },
-  "macronutrients": "大栄養素",
-  "@macronutrients": {},
-  "planned": "計画された",
-  "@planned": {
-    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
-  },
-  "logged": "記録された",
-  "@logged": {
-    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
-  },
-  "weekAverage": "1週間平均",
-  "@weekAverage": {
-    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
-  },
-  "difference": "違い",
-  "@difference": {},
-  "percentEnergy": "エネルギーの割合（%）",
-  "@percentEnergy": {},
-  "gPerBodyKg": "体重（kg）に対するエネルギー（g）の割合",
-  "@gPerBodyKg": {
-    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
-  },
-  "total": "合計",
-  "@total": {
-    "description": "Label used for total sums of e.g. calories or similar"
-  },
-  "kJ": "kJ",
-  "@kJ": {
-    "description": "Energy in a meal in kilo joules, kJ"
-  },
-  "g": "g",
-  "@g": {
-    "description": "Abbreviation for gram"
-  },
-  "protein": "タンパク質",
-  "@protein": {},
-  "proteinShort": "P",
-  "@proteinShort": {
-    "description": "The first letter or short name of the word 'Protein', used in overviews"
-  },
-  "carbohydrates": "炭水化物",
-  "@carbohydrates": {},
-  "carbohydratesShort": "C",
-  "@carbohydratesShort": {
-    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
-  },
-  "sugars": "糖分",
-  "@sugars": {},
-  "fat": "脂肪",
-  "@fat": {},
-  "fatShort": "F",
-  "@fatShort": {
-    "description": "The first letter or short name of the word 'Fat', used in overviews"
-  },
-  "saturatedFat": "Saturated fat",
-  "@saturatedFat": {},
-  "fiber": "Fibre",
-  "@fiber": {},
-  "sodium": "Sodium",
-  "@sodium": {},
-  "amount": "Amount",
-  "@amount": {
-    "description": "The amount (e.g. in grams) of an ingredient in a meal"
-  },
-  "unit": "Unit",
-  "@unit": {
-    "description": "The unit used for a repetition (kg, time, etc.)"
-  },
-  "newEntry": "New entry",
-  "@newEntry": {
-    "description": "Title when adding a new entry such as a weight or log entry"
-  },
-  "noWeightEntries": "You have no weight entries",
-  "@noWeightEntries": {
-    "description": "Message shown when the user has no logged weight entries"
-  },
-  "edit": "Edit",
-  "@edit": {},
-  "loadingText": "Loading...",
-  "@loadingText": {
-    "description": "Text to show when entries are being loaded in the background: Loading..."
-  },
-  "delete": "Delete",
-  "@delete": {},
-  "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
-  "@confirmDelete": {
-    "description": "Confirmation text before the user deletes an object",
-    "type": "text",
-    "placeholders": {
-      "toDelete": {}
-    }
-  },
-  "newNutritionalPlan": "New nutritional plan",
-  "@newNutritionalPlan": {},
-  "toggleDetails": "Toggle details",
-  "@toggleDetails": {
-    "description": "Switch to toggle detail / overview"
-  },
-  "goToDetailPage": "Go to detail page",
-  "@goToDetailPage": {},
-  "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
-  "@aboutDescription": {
-    "description": "Text in the about dialog"
-  },
-  "aboutSourceTitle": "Source code",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutSourceText": "Get the source code of this application and its server on github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Have a problem or idea?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Get in touch if something didn't behave as expected or if there is a feature that you feel is missing.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Say hi!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "If you want to chat with us, hop on the Discord server and get in touch",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Translation",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "This application is translated on weblate. If you also want to help, click the link and start translating",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "calendar": "Calendar",
-  "@calendar": {},
-  "goToToday": "Go to today",
-  "@goToToday": {
-    "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "Please fill in either the repetitions or the weight for at least one of the sets",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
-  "enterValue": "Please enter a value",
-  "@enterValue": {
-    "description": "Error message when the user hasn't entered a value on a required field"
-  },
-  "selectExercise": "Please select an exercise",
-  "@selectExercise": {
-    "description": "Error message when the user hasn't selected an exercise in the form"
-  },
-  "enterCharacters": "Please enter between {min} and {max} characters",
-  "@enterCharacters": {
-    "description": "Error message when the user hasn't entered the correct number of characters in a form",
-    "type": "text",
-    "placeholders": {
-      "min": {},
-      "max": {}
-    }
-  },
-  "nrOfSets": "Sets per exercise: {nrOfSets}",
-  "@nrOfSets": {
-    "description": "Label shown on the slider where the user selects the nr of sets",
-    "type": "text",
-    "placeholders": {
-      "nrOfSets": {}
-    }
-  },
-  "setUnitsAndRir": "Set units and RiR",
-  "@setUnitsAndRir": {
-    "description": "Label shown on the slider where the user can toggle showing units and RiR",
-    "type": "text"
-  },
-  "enterValidNumber": "Please enter a valid number",
-  "@enterValidNumber": {
-    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
-  },
-  "selectIngredient": "Please select an ingredient",
-  "@selectIngredient": {
-    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
-  },
-  "recentlyUsedIngredients": "Recently added ingredients",
-  "@recentlyUsedIngredients": {
-    "description": "A message when a user adds a new ingredient to a meal."
-  },
-  "selectImage": "Please select an image",
-  "@selectImage": {
-    "description": "Label and error message when the user hasn't selected an image to save"
-  },
-  "optionsLabel": "Options",
-  "@optionsLabel": {
-    "description": "Label for the popup with general app options"
-  },
-  "takePicture": "Take a picture",
-  "@takePicture": {},
-  "chooseFromLibrary": "Choose from photo library",
-  "@chooseFromLibrary": {},
-  "gallery": "Gallery",
-  "@gallery": {},
-  "addImage": "Add image",
-  "@addImage": {},
-  "dataCopied": "Data copied to new entry",
-  "@dataCopied": {
-    "description": "Snackbar message to show on copying data to a new log entry"
-  },
-  "appUpdateTitle": "Update needed",
-  "@appUpdateTitle": {},
-  "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
-  "@appUpdateContent": {},
-  "productFound": "Product found",
-  "@productFound": {
-    "description": "Header label for dialog when product is found with barcode"
-  },
-  "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
-  "@productFoundDescription": {
-    "description": "Dialog info when product is found with barcode",
-    "type": "text",
-    "placeholders": {
-      "productName": {}
-    }
-  },
-  "productNotFound": "Product not found",
-  "@productNotFound": {
-    "description": "Header label for dialog when product is not found with barcode"
-  },
-  "productNotFoundDescription": "The product with the scanned barcode {barcode} was not found in the wger database",
-  "@productNotFoundDescription": {
-    "description": "Dialog info when product is not found with barcode",
-    "type": "text",
-    "placeholders": {
-      "barcode": {}
-    }
-  },
-  "scanBarcode": "Scan barcode",
-  "@scanBarcode": {
-    "description": "Label for scan barcode button"
-  },
-  "close": "Close",
-  "@close": {
-    "description": "Translation for close"
-  },
-  "userProfile": "あなたのプロフィール",
-  "@userProfile": {},
-  "barbell": "バーベル",
-  "@barbell": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "arms": "腕",
-  "@arms": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "chest": "胸",
-  "@chest": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "dumbbell": "ダンベル",
-  "@dumbbell": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "success": "成功",
-  "@success": {
-    "description": "Message when an action completed successfully, usually used as a heading"
-  },
-  "cardio": "有酸素運動",
-  "@cardio": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "bench": "ベンチ",
-  "@bench": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "settingsExerciseCacheDescription": "エクササイズキャッシュ",
-  "@settingsExerciseCacheDescription": {},
-  "settingsTitle": "設定",
-  "@settingsTitle": {},
-  "settingsCacheTitle": "キャッシュ",
-  "@settingsCacheTitle": {},
-  "back": "戻る",
-  "@back": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "abs": "腹筋",
-  "@abs": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "biceps": "力こぶ",
-  "@biceps": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "body_weight": "体重",
-  "@body_weight": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "verify": "確認する",
-  "@verify": {},
-  "calves": "ふくらはぎ",
-  "@calves": {
-    "description": "Generated entry for translation for server strings"
-  }
+    "login": "ログイン",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "logout": "ログアウト",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "register": "登録",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "useDefaultServer": "デフォルトサーバを使用する",
+    "@useDefaultServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "useCustomServer": "カスタムサーバを使用する",
+    "@useCustomServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "invalidUrl": "有効なURLを入力してください",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "usernameValidChars": "ユーザー名に含められるのは文字，数字と@, +, ., -, _の記号のみです",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "passwordsDontMatch": "パスワードが合致しません",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "passwordTooShort": "パスワードが短すぎます",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "password": "パスワード",
+    "@password": {},
+    "confirmPassword": "パスワードを決定する",
+    "@confirmPassword": {},
+    "invalidEmail": "有効なメールアドレスを入力してください",
+    "@invalidEmail": {
+        "description": "Error message when the user enters an invalid email"
+    },
+    "email": "Eメールアドレス",
+    "@email": {},
+    "username": "ユーザー名",
+    "@username": {},
+    "invalidUsername": "有効なユーザー名を入力してください",
+    "@invalidUsername": {
+        "description": "Error message when the user enters an invalid username"
+    },
+    "customServerUrl": "wgerのインスタンスURL",
+    "@customServerUrl": {
+        "description": "Label in the form where the users can enter their own wger instance"
+    },
+    "customServerHint": "あなたのサーバのアドレスを入力してください（入力しない場合、デフォルトのサーバアドレスが使用されます）",
+    "@customServerHint": {
+        "description": "Hint text for the form where the users can enter their own wger instance"
+    },
+    "reset": "リセット",
+    "@reset": {
+        "description": "Button text allowing the user to reset the entered values to the default"
+    },
+    "registerInstead": "新規登録",
+    "@registerInstead": {},
+    "loginInstead": "既にアカウントをお持ちの方はこちらからログイン",
+    "@loginInstead": {},
+    "labelBottomNavWorkout": "運動",
+    "@labelBottomNavWorkout": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelBottomNavNutrition": "栄養",
+    "@labelBottomNavNutrition": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelWorkoutLogs": "トレーニング履歴",
+    "@labelWorkoutLogs": {
+        "description": "(Workout) logs"
+    },
+    "labelWorkoutPlan": "運動メニュー",
+    "@labelWorkoutPlan": {
+        "description": "Title for screen workout plan"
+    },
+    "labelDashboard": "ダッシュボード",
+    "@labelDashboard": {
+        "description": "Title for screen dashboard"
+    },
+    "successfullyDeleted": "削除されました",
+    "@successfullyDeleted": {
+        "description": "Message when an item was successfully deleted"
+    },
+    "successfullySaved": "保存されました",
+    "@successfullySaved": {
+        "description": "Message when an item was successfully saved"
+    },
+    "exercise": "運動",
+    "@exercise": {
+        "description": "An exercise for a workout"
+    },
+    "searchExercise": "運動を探す",
+    "@searchExercise": {
+        "description": "Label on set form. Selected exercises are added to the set"
+    },
+    "equipment": "器具",
+    "@equipment": {
+        "description": "Equipment needed to perform an exercise"
+    },
+    "muscles": "メインとなる筋肉",
+    "@muscles": {
+        "description": "(main) muscles trained by an exercise"
+    },
+    "musclesSecondary": "補助的な筋肉",
+    "@musclesSecondary": {
+        "description": "secondary muscles trained by an exercise"
+    },
+    "category": "分類",
+    "@category": {
+        "description": "Category for an exercise, ingredient, etc."
+    },
+    "repetitions": "繰り返し",
+    "@repetitions": {
+        "description": "Repetitions for an exercise set"
+    },
+    "reps": "反復",
+    "@reps": {
+        "description": "Shorthand for repetitions, used when space constraints are tighter"
+    },
+    "rir": "予備レップ",
+    "@rir": {
+        "description": "Shorthand for Repetitions In Reserve"
+    },
+    "rirNotUsed": "予備レップは保存されていません",
+    "@rirNotUsed": {
+        "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+    },
+    "weightUnit": "重量単位",
+    "@weightUnit": {},
+    "repetitionUnit": "反復単位",
+    "@repetitionUnit": {},
+    "set": "セット",
+    "@set": {
+        "description": "A set in a workout plan"
+    },
+    "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
+    "@dayDescriptionHelp": {},
+    "setNr": "Set {nr}",
+    "@setNr": {
+        "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
+    "@sameRepetitions": {},
+    "comment": "コメント",
+    "@comment": {
+        "description": "Comment, additional information"
+    },
+    "impression": "評価",
+    "@impression": {
+        "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+    },
+    "notes": "メモ",
+    "@notes": {
+        "description": "Personal notes, e.g. for a workout session"
+    },
+    "workoutSession": "Workout session",
+    "@workoutSession": {
+        "description": "A (logged) workout session"
+    },
+    "newDay": "新しい日",
+    "@newDay": {},
+    "newSet": "新しいセット",
+    "@newSet": {
+        "description": "Header when adding a new set to a workout day"
+    },
+    "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
+    "@selectExercises": {},
+    "gymMode": "ジムモード",
+    "@gymMode": {
+        "description": "Label when starting the gym mode"
+    },
+    "plateCalculator": "プレート",
+    "@plateCalculator": {
+        "description": "Label used for the plate calculator in the gym mode"
+    },
+    "plateCalculatorNotDivisible": "Not possible to reach weight with available plates",
+    "@plateCalculatorNotDivisible": {
+        "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+    },
+    "pause": "休止",
+    "@pause": {
+        "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+    },
+    "jumpTo": "ジャンプ",
+    "@jumpTo": {
+        "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+    },
+    "todaysWorkout": "あなたの今日の運動",
+    "@todaysWorkout": {},
+    "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
+    "@logHelpEntries": {},
+    "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",
+    "@logHelpEntriesUnits": {},
+    "description": "説明",
+    "@description": {},
+    "name": "名称",
+    "@name": {
+        "description": "Name for a workout or nutritional plan"
+    },
+    "save": "保存",
+    "@save": {},
+    "addSet": "セットを追加",
+    "@addSet": {
+        "description": "Label for the button that adds a set (to a workout day)"
+    },
+    "addMeal": "食事を追加",
+    "@addMeal": {},
+    "mealLogged": "食事が日記に記録されました",
+    "@mealLogged": {},
+    "logMeal": "この食事を記録する",
+    "@logMeal": {},
+    "addIngredient": "食材を追加する",
+    "@addIngredient": {},
+    "logIngredient": "栄養日記に記録する",
+    "@logIngredient": {},
+    "searchIngredient": "食材を探す",
+    "@searchIngredient": {
+        "description": "Label on ingredient search form"
+    },
+    "nutritionalPlan": "栄養メニュー",
+    "@nutritionalPlan": {},
+    "nutritionalDiary": "栄養日記",
+    "@nutritionalDiary": {},
+    "nutritionalPlans": "栄養メニュー一覧",
+    "@nutritionalPlans": {},
+    "noNutritionalPlans": "栄養メニューがありません",
+    "@noNutritionalPlans": {
+        "description": "Message shown when the user has no nutritional plans"
+    },
+    "anErrorOccurred": "エラーが発生しました",
+    "@anErrorOccurred": {},
+    "weight": "重量",
+    "@weight": {
+        "description": "The weight of a workout log or body weight entry"
+    },
+    "measurement": "測定",
+    "@measurement": {},
+    "measurements": "測定結果",
+    "@measurements": {
+        "description": "Categories for the measurements such as biceps size, body fat, etc."
+    },
+    "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
+    "@measurementCategoriesHelpText": {},
+    "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
+    "@measurementEntriesHelpText": {},
+    "date": "日付",
+    "@date": {
+        "description": "The date of a workout log or body weight entry"
+    },
+    "value": "値",
+    "@value": {
+        "description": "The value of a measurement entry"
+    },
+    "start": "開始",
+    "@start": {
+        "description": "Label on button to start the gym mode (i.e., an imperative)"
+    },
+    "time": "時間",
+    "@time": {
+        "description": "The time of a meal or workout"
+    },
+    "timeStart": "開始時刻",
+    "@timeStart": {
+        "description": "The starting time of a workout"
+    },
+    "timeEnd": "終了時刻",
+    "@timeEnd": {
+        "description": "The end time of a workout"
+    },
+    "timeStartAhead": "終了時刻を開始時刻より前にすることはできません",
+    "@timeStartAhead": {},
+    "ingredient": "食材",
+    "@ingredient": {},
+    "energy": "エネルギー",
+    "@energy": {
+        "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+    },
+    "energyShort": "E",
+    "@energyShort": {
+        "description": "The first letter or short name of the word 'Energy', used in overviews"
+    },
+    "kcal": "kcal",
+    "@kcal": {
+        "description": "Energy in a meal in kilocalories, kcal"
+    },
+    "macronutrients": "大栄養素",
+    "@macronutrients": {},
+    "planned": "計画された",
+    "@planned": {
+        "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+    },
+    "logged": "記録された",
+    "@logged": {
+        "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+    },
+    "weekAverage": "1週間平均",
+    "@weekAverage": {
+        "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+    },
+    "difference": "違い",
+    "@difference": {},
+    "percentEnergy": "エネルギーの割合（%）",
+    "@percentEnergy": {},
+    "gPerBodyKg": "体重（kg）に対するエネルギー（g）の割合",
+    "@gPerBodyKg": {
+        "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+    },
+    "total": "合計",
+    "@total": {
+        "description": "Label used for total sums of e.g. calories or similar"
+    },
+    "kJ": "kJ",
+    "@kJ": {
+        "description": "Energy in a meal in kilo joules, kJ"
+    },
+    "g": "g",
+    "@g": {
+        "description": "Abbreviation for gram"
+    },
+    "protein": "タンパク質",
+    "@protein": {},
+    "proteinShort": "P",
+    "@proteinShort": {
+        "description": "The first letter or short name of the word 'Protein', used in overviews"
+    },
+    "carbohydrates": "炭水化物",
+    "@carbohydrates": {},
+    "carbohydratesShort": "C",
+    "@carbohydratesShort": {
+        "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+    },
+    "sugars": "糖分",
+    "@sugars": {},
+    "fat": "脂肪",
+    "@fat": {},
+    "fatShort": "F",
+    "@fatShort": {
+        "description": "The first letter or short name of the word 'Fat', used in overviews"
+    },
+    "saturatedFat": "Saturated fat",
+    "@saturatedFat": {},
+    "fiber": "Fibre",
+    "@fiber": {},
+    "sodium": "Sodium",
+    "@sodium": {},
+    "amount": "Amount",
+    "@amount": {
+        "description": "The amount (e.g. in grams) of an ingredient in a meal"
+    },
+    "unit": "Unit",
+    "@unit": {
+        "description": "The unit used for a repetition (kg, time, etc.)"
+    },
+    "newEntry": "New entry",
+    "@newEntry": {
+        "description": "Title when adding a new entry such as a weight or log entry"
+    },
+    "noWeightEntries": "You have no weight entries",
+    "@noWeightEntries": {
+        "description": "Message shown when the user has no logged weight entries"
+    },
+    "edit": "Edit",
+    "@edit": {},
+    "loadingText": "Loading...",
+    "@loadingText": {
+        "description": "Text to show when entries are being loaded in the background: Loading..."
+    },
+    "delete": "Delete",
+    "@delete": {},
+    "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
+    "@confirmDelete": {
+        "description": "Confirmation text before the user deletes an object",
+        "type": "text",
+        "placeholders": {
+            "toDelete": {
+                "type": "String"
+            }
+        }
+    },
+    "newNutritionalPlan": "New nutritional plan",
+    "@newNutritionalPlan": {},
+    "toggleDetails": "Toggle details",
+    "@toggleDetails": {
+        "description": "Switch to toggle detail / overview"
+    },
+    "goToDetailPage": "Go to detail page",
+    "@goToDetailPage": {},
+    "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
+    "@aboutDescription": {
+        "description": "Text in the about dialog"
+    },
+    "calendar": "Calendar",
+    "@calendar": {},
+    "goToToday": "Go to today",
+    "@goToToday": {
+        "description": "Label on button to jump back to 'today' in the calendar widget"
+    },
+    "enterValue": "Please enter a value",
+    "@enterValue": {
+        "description": "Error message when the user hasn't entered a value on a required field"
+    },
+    "selectExercise": "Please select an exercise",
+    "@selectExercise": {
+        "description": "Error message when the user hasn't selected an exercise in the form"
+    },
+    "enterCharacters": "Please enter between {min} and {max} characters",
+    "@enterCharacters": {
+        "description": "Error message when the user hasn't entered the correct number of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "String"
+            },
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "nrOfSets": "Sets per exercise: {nrOfSets}",
+    "@nrOfSets": {
+        "description": "Label shown on the slider where the user selects the nr of sets",
+        "type": "text",
+        "placeholders": {
+            "nrOfSets": {
+                "type": "String"
+            }
+        }
+    },
+    "setUnitsAndRir": "Set units and RiR",
+    "@setUnitsAndRir": {
+        "description": "Label shown on the slider where the user can toggle showing units and RiR",
+        "type": "text"
+    },
+    "enterValidNumber": "Please enter a valid number",
+    "@enterValidNumber": {
+        "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+    },
+    "selectIngredient": "Please select an ingredient",
+    "@selectIngredient": {
+        "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+    },
+    "recentlyUsedIngredients": "Recently added ingredients",
+    "@recentlyUsedIngredients": {
+        "description": "A message when a user adds a new ingredient to a meal."
+    },
+    "selectImage": "Please select an image",
+    "@selectImage": {
+        "description": "Label and error message when the user hasn't selected an image to save"
+    },
+    "optionsLabel": "Options",
+    "@optionsLabel": {
+        "description": "Label for the popup with general app options"
+    },
+    "takePicture": "Take a picture",
+    "@takePicture": {},
+    "chooseFromLibrary": "Choose from photo library",
+    "@chooseFromLibrary": {},
+    "gallery": "Gallery",
+    "@gallery": {},
+    "imageFormatNotSupported": "{imageFormat}はサポートされていません",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "{imageFormat}形式の画像はまだサポートされていません。",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "addImage": "Add image",
+    "@addImage": {},
+    "dataCopied": "Data copied to new entry",
+    "@dataCopied": {
+        "description": "Snackbar message to show on copying data to a new log entry"
+    },
+    "appUpdateTitle": "Update needed",
+    "@appUpdateTitle": {},
+    "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
+    "@appUpdateContent": {},
+    "productFound": "Product found",
+    "@productFound": {
+        "description": "Header label for dialog when product is found with barcode"
+    },
+    "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
+    "@productFoundDescription": {
+        "description": "Dialog info when product is found with barcode",
+        "type": "text",
+        "placeholders": {
+            "productName": {
+                "type": "String"
+            }
+        }
+    },
+    "productNotFound": "Product not found",
+    "@productNotFound": {
+        "description": "Header label for dialog when product is not found with barcode"
+    },
+    "productNotFoundDescription": "The product with the scanned barcode {barcode} was not found in the wger database",
+    "@productNotFoundDescription": {
+        "description": "Dialog info when product is not found with barcode",
+        "type": "text",
+        "placeholders": {
+            "barcode": {
+                "type": "String"
+            }
+        }
+    },
+    "scanBarcode": "Scan barcode",
+    "@scanBarcode": {
+        "description": "Label for scan barcode button"
+    },
+    "close": "Close",
+    "@close": {
+        "description": "Translation for close"
+    },
+    "userProfile": "あなたのプロフィール",
+    "@userProfile": {},
+    "barbell": "バーベル",
+    "@barbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "arms": "腕",
+    "@arms": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "chest": "胸",
+    "@chest": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "dumbbell": "ダンベル",
+    "@dumbbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "success": "成功",
+    "@success": {
+        "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "cardio": "有酸素運動",
+    "@cardio": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "bench": "ベンチ",
+    "@bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "settingsExerciseCacheDescription": "エクササイズキャッシュ",
+    "@settingsExerciseCacheDescription": {},
+    "settingsTitle": "設定",
+    "@settingsTitle": {},
+    "settingsCacheTitle": "キャッシュ",
+    "@settingsCacheTitle": {},
+    "back": "戻る",
+    "@back": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "abs": "腹筋",
+    "@abs": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "biceps": "力こぶ",
+    "@biceps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "body_weight": "体重",
+    "@body_weight": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "verify": "確認する",
+    "@verify": {},
+    "calves": "ふくらはぎ",
+    "@calves": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "selectAvailablePlates": "利用可能なプレートを選択してください",
+    "@selectAvailablePlates": {},
+    "barWeight": "バーの重さ",
+    "@barWeight": {},
+    "useColors": "色を使用する",
+    "@useColors": {},
+    "useApiToken": "APIトークンを使用する",
+    "@useApiToken": {},
+    "useUsernameAndPassword": "ユーザー名とパスワードを使用する",
+    "@useUsernameAndPassword": {},
+    "apiToken": "APIトークン",
+    "@apiToken": {},
+    "invalidApiToken": "有効なAPIキーを入力してください",
+    "@invalidApiToken": {
+        "description": "Error message when the user enters an invalid API key"
+    },
+    "apiTokenValidChars": "APIキーはアルファベットのa~f、数字の0~9のみで構成されており、ちょうど40文字の長さです",
+    "@apiTokenValidChars": {
+        "description": "Error message when the user tries to input a API key with forbidden characters"
+    },
+    "exerciseList": "エクササイズ一覧",
+    "@exerciseList": {},
+    "exercises": "ワークアウトを構成する複数のエクササイズ",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    },
+    "exerciseName": "ワークアウトエクササイズの名前にラベルを付ける",
+    "@exerciseName": {
+        "description": "Label for the name of a workout exercise"
+    },
+    "noIngredientsDefined": "要素が定義されていません",
+    "@noIngredientsDefined": {},
+    "noMatchingExerciseFound": "一致するエクササイズがありません",
+    "@noMatchingExerciseFound": {
+        "description": "Message returned if no exercises match the searched string"
+    },
+    "searchNamesInEnglish": "英語での名前検索",
+    "@searchNamesInEnglish": {},
+    "endDate": "終了日",
+    "@endDate": {},
+    "startDate": "開始日",
+    "@startDate": {},
+    "routines": "ルーティン",
+    "@routines": {},
+    "newRoutine": "新しいルーティン",
+    "@newRoutine": {},
+    "noRoutines": "ルーティンがありません",
+    "@noRoutines": {},
+    "restTime": "休憩時間",
+    "@restTime": {},
+    "sets": "セット",
+    "@sets": {
+        "description": "The number of sets to be done for one exercise"
+    },
+    "useMetric": "体重の単位",
+    "@useMetric": {},
+    "exerciseNr": "エクササイズ {nr}",
+    "@exerciseNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "supersetNr": "スーパーセット {nr}",
+    "@supersetNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "restDay": "休息日",
+    "@restDay": {},
+    "isRestDay": "休息日",
+    "@isRestDay": {},
+    "isRestDayHelp": "休憩日を設定する際はすべてのセットとエクササイズが削除されていることを確認してください。",
+    "@isRestDayHelp": {}
 }

@@ -17,7 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/models/exercises/video.dart';
 
 class ExerciseVideoWidget extends StatefulWidget {
@@ -31,33 +34,54 @@ class ExerciseVideoWidget extends StatefulWidget {
 
 class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
   late VideoPlayerController _controller;
+  bool hasError = false;
+  final logger = Logger('ExerciseVideoWidgetState');
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.video.url);
-    _controller.addListener(() {
+    _controller = VideoPlayerController.networkUrl(widget.video.uri);
+    _initializeVideo();
+  }
+
+  Future<void> _initializeVideo() async {
+    try {
+      await _controller.initialize();
       setState(() {});
-    });
-    _controller.initialize().then((_) => setState(() {}));
+    } on PlatformException catch (e) {
+      if (mounted) {
+        setState(() => hasError = true);
+      }
+
+      logger.warning('PlatformException while initializing video: ${e.message}');
+    }
   }
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _controller.value.isInitialized
+    return hasError
+        ? const GeneralErrorsWidget(
+            [
+              'An error happened while loading the video. If you can, please check the application logs.',
+            ],
+          )
+        : _controller.value.isInitialized
         ? AspectRatio(
             aspectRatio: _controller.value.aspectRatio,
-            child: Stack(alignment: Alignment.bottomCenter, children: [
-              VideoPlayer(_controller),
-              _ControlsOverlay(controller: _controller),
-              VideoProgressIndicator(_controller, allowScrubbing: true),
-            ]),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                VideoPlayer(_controller),
+                _ControlsOverlay(controller: _controller),
+                VideoProgressIndicator(_controller, allowScrubbing: true),
+              ],
+            ),
           )
         : Container();
   }

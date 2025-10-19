@@ -124,12 +124,15 @@ void main() {
         query: 'limit=20&offset=40',
       );
 
-      when(mockHttpClient.get(paginationUri1, headers: anyNamed('headers')))
-          .thenAnswer((_) => Future.value(response1));
-      when(mockHttpClient.get(paginationUri2, headers: anyNamed('headers')))
-          .thenAnswer((_) => Future.value(response2));
-      when(mockHttpClient.get(paginationUri3, headers: anyNamed('headers')))
-          .thenAnswer((_) => Future.value(response3));
+      when(
+        mockHttpClient.get(paginationUri1, headers: anyNamed('headers')),
+      ).thenAnswer((_) => Future.value(response1));
+      when(
+        mockHttpClient.get(paginationUri2, headers: anyNamed('headers')),
+      ).thenAnswer((_) => Future.value(response2));
+      when(
+        mockHttpClient.get(paginationUri3, headers: anyNamed('headers')),
+      ).thenAnswer((_) => Future.value(response3));
 
       // Act
       final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider, mockHttpClient);

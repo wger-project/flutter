@@ -7,10 +7,7 @@ part of 'meal_item.dart';
 // **************************************************************************
 
 MealItem _$MealItemFromJson(Map<String, dynamic> json) {
-  $checkKeys(
-    json,
-    requiredKeys: const ['id', 'amount'],
-  );
+  $checkKeys(json, requiredKeys: const ['id', 'amount']);
   return MealItem(
     id: (json['id'] as num?)?.toInt(),
     mealId: json['meal'] as String?,
@@ -21,9 +18,9 @@ MealItem _$MealItemFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$MealItemToJson(MealItem instance) => <String, dynamic>{
-      'id': instance.id,
-      'meal': instance.mealId,
-      'ingredient': instance.ingredientId,
-      'weight_unit': instance.weightUnitId,
-      'amount': numToString(instance.amount),
-    };
+  'id': instance.id,
+  'meal': instance.mealId,
+  'ingredient': instance.ingredientId,
+  'weight_unit': instance.weightUnitId,
+  'amount': numToString(instance.amount),
+};

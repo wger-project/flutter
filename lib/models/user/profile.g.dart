@@ -14,7 +14,7 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) {
       'email_verified',
       'is_trustworthy',
       'weight_unit',
-      'email'
+      'email',
     ],
   );
   return Profile(
@@ -27,9 +27,9 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
-      'username': instance.username,
-      'email_verified': instance.emailVerified,
-      'is_trustworthy': instance.isTrustworthy,
-      'weight_unit': instance.weightUnitStr,
-      'email': instance.email,
-    };
+  'username': instance.username,
+  'email_verified': instance.emailVerified,
+  'is_trustworthy': instance.isTrustworthy,
+  'weight_unit': instance.weightUnitStr,
+  'email': instance.email,
+};

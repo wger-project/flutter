@@ -23,6 +23,17 @@ num stringToNum(String? e) {
   return e == null ? 0 : num.parse(e);
 }
 
+num stringOrIntToNum(dynamic e) {
+  if (e is int) {
+    return e.toDouble(); // Convert int to double (a type of num)
+  }
+  return num.tryParse(e) ?? 0;
+}
+
+num? stringToNumNull(String? e) {
+  return e == null ? null : num.parse(e);
+}
+
 String? numToString(num? e) {
   if (e == null) {
     return null;
@@ -35,11 +46,20 @@ String? numToString(num? e) {
  * Converts a datetime to ISO8601 date format, but only the date.
  * Needed e.g. when the wger api only expects a date and no time information.
  */
-String? toDate(DateTime? dateTime) {
+String? dateToYYYYMMDD(DateTime? dateTime) {
   if (dateTime == null) {
     return null;
   }
   return DateFormat('yyyy-MM-dd').format(dateTime);
+}
+
+/// Convert a date to UTC and then to an ISO8601 string.
+///
+/// This makes sure that the serialized data has correct timezone information.
+/// Otherwise the django backend will possibly treat the date as local time,
+/// which will not be correct in most cases.
+String dateToUtcIso8601(DateTime dateTime) {
+  return dateTime.toUtc().toIso8601String();
 }
 
 /*
@@ -47,8 +67,16 @@ String? toDate(DateTime? dateTime) {
  * Needed e.g. when the wger api only sends a time but no date information.
  */
 TimeOfDay stringToTime(String? time) {
-  final String out = time ?? '00:00';
-  return TimeOfDay.fromDateTime(DateTime.parse('2020-01-01 $out'));
+  time ??= '00:00';
+  return TimeOfDay.fromDateTime(DateTime.parse('2020-01-01 $time'));
+}
+
+TimeOfDay? stringToTimeNull(String? time) {
+  if (time == null) {
+    return null;
+  }
+
+  return TimeOfDay.fromDateTime(DateTime.parse('2020-01-01 $time'));
 }
 
 /*

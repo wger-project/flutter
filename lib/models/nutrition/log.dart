@@ -40,7 +40,7 @@ class Log {
   @JsonKey(required: true, name: 'plan')
   String planId;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, toJson: dateToUtcIso8601)
   late DateTime datetime;
 
   String? comment;
@@ -101,8 +101,9 @@ class Log {
   NutritionalValues get nutritionalValues {
     // This is already done on the server. It might be better to read it from there.
 
-    final weight =
-        weightUnitObj == null ? amount : amount * weightUnitObj!.amount * weightUnitObj!.grams;
+    final weight = weightUnitObj == null
+        ? amount
+        : amount * weightUnitObj!.amount * weightUnitObj!.grams;
 
     return ingredient.nutritionalValues / (100 / weight);
   }

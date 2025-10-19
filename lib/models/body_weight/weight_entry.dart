@@ -29,7 +29,7 @@ class WeightEntry {
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num weight = 0;
 
-  @JsonKey(required: true, toJson: toDate)
+  @JsonKey(required: true)
   late DateTime date;
 
   WeightEntry({this.id, weight, DateTime? date}) {
@@ -41,10 +41,10 @@ class WeightEntry {
   }
 
   WeightEntry copyWith({int? id, int? weight, DateTime? date}) => WeightEntry(
-        id: id,
-        weight: weight ?? this.weight,
-        date: date ?? this.date,
-      );
+    id: id,
+    weight: weight ?? this.weight,
+    date: date ?? this.date,
+  );
 
   // Boilerplate
   factory WeightEntry.fromJson(Map<String, dynamic> json) => _$WeightEntryFromJson(json);

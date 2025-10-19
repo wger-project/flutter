@@ -21,10 +21,10 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 #   - the version number is taken from the git tag vX.Y.Z
 #   - the build number is computed by reading the last one from the play store
 #     and increasing by one
-version: 1.7.7+48
+version: 1.9.0+100
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.8.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -32,47 +32,49 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  android_metadata: ^0.2.1
   powersync: ^1.5.5
-  collection: ^1.17.0
+  carousel_slider: ^5.1.1
+  clock: ^1.1.2
+  collection: ^1.18.0
   cupertino_icons: ^1.0.8
-  equatable: ^2.0.5
-  flutter_calendar_carousel: ^2.4.4
-  flutter_html: ^3.0.0-beta.2
-  flutter_typeahead: ^5.2.0
-  font_awesome_flutter: ^10.7.0
-  http: ^1.2.2
-  image_picker: ^1.1.0
-  intl: ^0.19.0
-  json_annotation: ^4.8.1
-  version: ^3.0.2
-  package_info_plus: ^8.0.3
-  provider: ^6.1.2
-  # Note, do not update rive! https://github.com/wger-project/flutter/issues/577
-  rive: ^0.12.4
-  shared_preferences: ^2.3.2
-  table_calendar: ^3.0.8
-  url_launcher: ^6.3.1
-  flutter_barcode_scanner: ^2.0.0
-  video_player: ^2.9.2
+  drift: ^2.28.2
+  equatable: ^2.0.7
+  fl_chart: ^1.1.1
+  flex_color_scheme: ^8.3.0
+  flex_seed_scheme: ^3.5.1
+  flutter_html: ^3.0.0
   flutter_staggered_grid_view: ^0.7.0
-  carousel_slider: ^5.0.0
+  flutter_svg: ^2.2.1
+  flutter_svg_icons: ^0.0.1
+  flutter_typeahead: ^5.2.0
+  flutter_zxing: ^2.2.1
+  font_awesome_flutter: ^10.10.0
+  freezed_annotation: ^3.0.0
+  get_it: ^8.2.0
+  http: ^1.5.0
+  image_picker: ^1.2.0
+  intl: ^0.20.0
+  json_annotation: ^4.8.1
   multi_select_flutter: ^4.1.3
   flutter_svg: ^2.0.10+1
   fl_chart: ^0.69.0
   flutter_zxing: ^1.5.2
   drift: ^2.16.0
-  path: ^1.8.3
-  path_provider: ^2.1.4
-  sqlite3_flutter_libs: ^0.5.20
-  get_it: ^7.6.8
-  flex_seed_scheme: ^1.5.0
-  flex_color_scheme: ^7.3.1
-  freezed_annotation: ^2.4.4
-  clock: ^1.1.1
+  package_info_plus: ^9.0.0
+  path: ^1.9.0
+  path_provider: ^2.1.5
+  provider: ^6.1.5
+  rive: ^0.13.20
+  shared_preferences: ^2.5.3
+  sqlite3_flutter_libs: ^0.5.40
+  table_calendar: ^3.0.8
+  url_launcher: ^6.3.2
+  version: ^3.0.2
+  video_player: ^2.10.0
+  logging: ^1.3.0
+  flutter_riverpod: ^2.6.1
   flutter_svg_icons: ^0.0.1
   sqlite_async: ^0.9.0
-  logging: ^1.2.0
 
 dependency_overrides:
   intl: ^0.19.0
@@ -82,15 +84,18 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  build_runner: ^2.4.13
-  json_serializable: ^6.8.0
-  mockito: ^5.4.4
-  network_image_mock: ^2.1.1
-  flutter_lints: ^4.0.0
+  build_runner: ^2.9.0
   cider: ^0.2.7
-  drift_dev: ^2.20.3
-  freezed: ^2.5.2
-  golden_toolkit: ^0.15.0
+  drift_dev: ^2.28.3
+  flutter_lints: ^6.0.0
+  freezed: ^3.2.0
+  json_serializable: ^6.11.1
+  mockito: ^5.5.1
+  network_image_mock: ^2.1.1
+  shared_preferences_platform_interface: ^2.0.0
+
+  # Script to read out unused translations
+  #translations_cleaner: ^0.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

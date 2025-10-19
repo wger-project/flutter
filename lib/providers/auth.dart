@@ -18,19 +18,18 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:android_metadata/android_metadata.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:version/version.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 
 import 'helpers.dart';
 
@@ -39,40 +38,32 @@ enum LoginActions {
   proceed,
 }
 
+enum AuthState {
+  updateRequired,
+  loggedIn,
+  loggedOut,
+}
+
 class AuthProvider with ChangeNotifier {
+  final _logger = Logger('AuthProvider');
+
   String? token;
   String? serverUrl;
   String? serverVersion;
   PackageInfo? applicationVersion;
   Map<String, String> metadata = {};
+  AuthState state = AuthState.loggedOut;
 
   static const MIN_APP_VERSION_URL = 'min-app-version';
   static const SERVER_VERSION_URL = 'version';
   static const REGISTRATION_URL = 'register';
   static const LOGIN_URL = 'login';
+  static const TEST_URL = 'userprofile';
 
   late http.Client client;
 
-  AuthProvider([http.Client? client, bool? checkMetadata]) {
+  AuthProvider([http.Client? client]) {
     this.client = client ?? http.Client();
-
-    // TODO: this is a workaround since AndroidMetadata doesn't work while running tests
-    if (checkMetadata ?? true) {
-      try {
-        if (Platform.isAndroid) {
-          AndroidMetadata.metaDataAsMap.then((value) => metadata = value!);
-        } else if (Platform.isLinux || Platform.isMacOS) {
-          metadata = {
-            MANIFEST_KEY_CHECK_UPDATE: Platform.environment[MANIFEST_KEY_CHECK_UPDATE] ?? '',
-            MANIFEST_KEY_API: Platform.environment[MANIFEST_KEY_API] ?? '',
-          };
-        }
-      } on PlatformException {
-        throw Exception(
-          'An error occurred reading the metadata from AndroidManifest',
-        );
-      } catch (error) {}
-    }
   }
 
   /// flag to indicate that the application has successfully loaded all initial data
@@ -100,26 +91,22 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Checking if there is a new version of the application.
-  Future<bool> applicationUpdateRequired([
-    String? version,
-    Map<String, String>? metadata,
-  ]) async {
-    metadata ??= this.metadata;
-    if (!metadata.containsKey(MANIFEST_KEY_CHECK_UPDATE) ||
-        metadata[MANIFEST_KEY_CHECK_UPDATE] == 'false') {
-      return false;
-    }
-
+  Future<bool> applicationUpdateRequired([String? version]) async {
     final applicationCurrentVersion = version ?? applicationVersion!.version;
     final response = await client.get(makeUri(serverUrl!, MIN_APP_VERSION_URL));
     final currentVersion = Version.parse(applicationCurrentVersion);
     final requiredAppVersion = Version.parse(jsonDecode(response.body));
 
-    return requiredAppVersion > currentVersion;
+    final needUpdate = requiredAppVersion > currentVersion;
+    if (needUpdate) {
+      _logger.fine('Application update required: $requiredAppVersion > $currentVersion');
+    }
+
+    return needUpdate;
   }
 
   /// Registers a new user
-  Future<Map<String, LoginActions>> register({
+  Future<LoginActions> register({
     required String username,
     required String password,
     required String email,
@@ -138,7 +125,6 @@ class AuthProvider with ChangeNotifier {
       makeUri(serverUrl, REGISTRATION_URL),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: 'Token ${metadata[MANIFEST_KEY_API]}',
         HttpHeaders.userAgentHeader: getAppNameHeader(),
         HttpHeaders.acceptLanguageHeader: locale,
       },
@@ -149,45 +135,69 @@ class AuthProvider with ChangeNotifier {
       throw WgerHttpException(response.body);
     }
 
-    return login(username, password, serverUrl);
+    return login(username, password, serverUrl, null);
   }
 
   /// Authenticates a user
-  Future<Map<String, LoginActions>> login(
+  Future<LoginActions> login(
     String username,
     String password,
     String serverUrl,
+    String? apiToken,
   ) async {
     await logout(shouldNotify: false);
 
-    final response = await client.post(
-      makeUri(serverUrl, LOGIN_URL),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.userAgentHeader: getAppNameHeader(),
-      },
-      body: json.encode({'username': username, 'password': password}),
-    );
-    final responseData = json.decode(response.body);
+    // Login using the API token
+    if (apiToken != null && apiToken.isNotEmpty) {
+      final response = await client.get(
+        makeUri(serverUrl, TEST_URL),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.userAgentHeader: getAppNameHeader(),
+          HttpHeaders.authorizationHeader: 'Token $apiToken',
+        },
+      );
 
-    if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
+      if (response.statusCode != 200) {
+        throw WgerHttpException(response.body);
+      }
+
+      token = apiToken;
+
+      // Login using password
+    } else {
+      final response = await client.post(
+        makeUri(serverUrl, LOGIN_URL),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.userAgentHeader: getAppNameHeader(),
+        },
+        body: json.encode({'username': username, 'password': password}),
+      );
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode >= 400) {
+        throw WgerHttpException(response.body);
+      }
+
+      token = responseData['token'];
     }
 
     await initVersions(serverUrl);
 
     // If update is required don't log in user
     if (await applicationUpdateRequired()) {
-      return {'action': LoginActions.update};
+      state = AuthState.updateRequired;
+      return LoginActions.update;
     }
 
     // Log user in
     // should we update the backend to just include a powersync token also?
-    token = responseData['token'];
+    state = AuthState.loggedIn;
     notifyListeners();
 
     // store login data in shared preferences
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = PreferenceHelper.asyncPref;
     final userData = json.encode({
       'token': token,
       'serverUrl': this.serverUrl,
@@ -196,50 +206,86 @@ class AuthProvider with ChangeNotifier {
 
     prefs.setString(PREFS_USER, userData);
     prefs.setString(PREFS_LAST_SERVER, serverData);
-    return {'action': LoginActions.proceed};
+    return LoginActions.proceed;
   }
 
   /// Loads the last server URL from which the user successfully logged in
   Future<String> getServerUrlFromPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey(PREFS_LAST_SERVER)) {
+    final prefs = PreferenceHelper.asyncPref;
+    if (!(await prefs.containsKey(PREFS_LAST_SERVER))) {
       return DEFAULT_SERVER_PROD;
     }
 
-    final userData = json.decode(prefs.getString(PREFS_LAST_SERVER)!);
+    final userData = json.decode((await prefs.getString(PREFS_LAST_SERVER))!);
     return userData['serverUrl'] as String;
   }
 
-  Future<bool> tryAutoLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey(PREFS_USER)) {
-      log('autologin failed');
-      return false;
+  /// Tries to auto-login the user with the stored token
+  Future<void> tryAutoLogin() async {
+    final prefs = PreferenceHelper.asyncPref;
+    if (!(await prefs.containsKey(PREFS_USER))) {
+      _logger.info('autologin failed, no saved user data');
+      state = AuthState.loggedOut;
+      return;
     }
-    final extractedUserData = json.decode(prefs.getString(PREFS_USER)!);
 
-    token = extractedUserData['token'];
-    serverUrl = extractedUserData['serverUrl'];
+    final userData = json.decode((await prefs.getString(PREFS_USER))!);
 
-    log('autologin successful');
-    setApplicationVersion();
-    setServerVersion();
+    if (!userData.containsKey('token') || !userData.containsKey('serverUrl')) {
+      _logger.info('autologin failed, no token or serverUrl');
+      state = AuthState.loggedOut;
+      return;
+    }
+
+    token = userData['token'];
+    serverUrl = userData['serverUrl'];
+
+    if (token == null || serverUrl == null) {
+      _logger.info('autologin failed, token or serverUrl is null');
+      state = AuthState.loggedOut;
+      return;
+    }
+
+    // // Try to talk to a URL using the token, if this doesn't work, log out
+    final response = await client.head(
+      makeUri(serverUrl!, 'routine'),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        HttpHeaders.userAgentHeader: getAppNameHeader(),
+        HttpHeaders.authorizationHeader: 'Token $token',
+      },
+    );
+    if (response.statusCode != 200) {
+      _logger.info('autologin failed, statusCode: ${response.statusCode}');
+      await logout();
+      return;
+    }
+
+    await initVersions(serverUrl!);
+
+    // If update is required don't log in user
+    if (await applicationUpdateRequired()) {
+      state = AuthState.updateRequired;
+    } else {
+      state = AuthState.loggedIn;
+      _logger.info('autologin successful');
+    }
+
     notifyListeners();
-    //_autoLogout();
-    return true;
   }
 
   Future<void> logout({bool shouldNotify = true}) async {
-    log('logging out');
+    _logger.fine('logging out');
     token = null;
     serverUrl = null;
     dataInit = false;
+    state = AuthState.loggedOut;
 
     if (shouldNotify) {
       notifyListeners();
     }
 
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = PreferenceHelper.asyncPref;
     prefs.remove(PREFS_USER);
   }
 
@@ -249,9 +295,11 @@ class AuthProvider with ChangeNotifier {
   String getAppNameHeader() {
     String out = '';
     if (applicationVersion != null) {
-      out = '/${applicationVersion!.version} '
+      out =
+          '/${applicationVersion!.version} '
           '(${applicationVersion!.packageName}; '
-          'build: ${applicationVersion!.buildNumber})';
+          'build: ${applicationVersion!.buildNumber})'
+          ' - https://github.com/wger-project';
     }
     return 'wger App$out';
   }

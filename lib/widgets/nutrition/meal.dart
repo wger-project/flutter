@@ -111,7 +111,7 @@ class _MealWidgetState extends State<MealWidget> {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).addIngredient,
-                            MealItemForm(widget._meal, widget._recentMealItems),
+                            getMealItemForm(widget._meal, widget._recentMealItems),
                             hasListView: true,
                           ),
                         );
@@ -200,7 +200,9 @@ class _MealWidgetState extends State<MealWidget> {
                   ...widget._meal.diaryEntriesToday.map(
                     (item) => Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Column(children: [DiaryEntryTile(diaryEntry: item)]),
+                      child: Column(
+                        children: [DiaryEntryTile(diaryEntry: item)],
+                      ),
                     ),
                   ),
                 ],
@@ -234,15 +236,10 @@ class MealItemEditableFullTile extends StatelessWidget {
 
     return NutritionTile(
       leading: IngredientAvatar(ingredient: _item.ingredient),
-      title: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Text(
-            '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.left,
-          ),
-        ],
+      title: Text(
+        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.left,
       ),
       subtitle: (_viewMode != viewMode.withAllDetails && !_editing)
           ? null
@@ -297,38 +294,26 @@ class MealHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final subtitleTime = _meal.time != null ? '${_meal.time!.format(context)} / ' : '';
+    final subtitleCalories = _meal.isRealMeal
+        ? getKcalConsumedVsPlanned(_meal, context)
+        : getKcalConsumed(_meal, context);
+    final subtitle = '$subtitleTime $subtitleCalories';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          title: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(_meal.name, style: Theme.of(context).textTheme.titleLarge),
-                    Row(
-                      children: [
-                        if (_meal.time != null)
-                          Text(
-                            _meal.time!.format(context),
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                        if (_meal.time != null) const SizedBox(width: 12),
-                        Text(
-                          _meal.isRealMeal
-                              ? getKcalConsumedVsPlanned(_meal, context)
-                              : getKcalConsumed(_meal, context),
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          title: Text(
+            _meal.name,
+            style: Theme.of(context).textTheme.titleLarge,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            subtitle,
+            style: Theme.of(context).textTheme.titleSmall,
+            overflow: TextOverflow.ellipsis,
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,

@@ -27,6 +27,8 @@ import 'package:mockito/mockito.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/screens/auth_screen.dart';
@@ -35,18 +37,33 @@ import 'auth_screen_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
+  /// Replacement for SharedPreferences.setMockInitialValues()
+  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+
   late AuthProvider authProvider;
   late MockClient mockClient;
 
-  final Uri tRegistration = Uri(scheme: 'https', host: 'wger.de', path: 'api/v2/register/');
+  final Uri tRegistration = Uri(
+    scheme: 'https',
+    host: 'wger.de',
+    path: 'api/v2/register/',
+  );
 
-  final Uri tLogin = Uri(scheme: 'https', host: 'wger.de', path: 'api/v2/login/');
-
-  final responseLoginOk = {'token': 'b01c44d3e3e016a615d2f82b16d31f8b924fb936'};
+  final Uri tLogin = Uri(
+    scheme: 'https',
+    host: 'wger.de',
+    path: 'api/v2/login/',
+  );
+  final Uri tProfileCheck = Uri(
+    scheme: 'https',
+    host: 'wger.de',
+    path: 'api/v2/userprofile/',
+  );
+  final responseLoginOk = {'token': '1234567890abcdef1234567890abcdef12345678'};
 
   final responseRegistrationOk = {
     'message': 'api user successfully registered',
-    'token': 'b01c44d3e3e016a615d2f82b16d31f8b924fb936',
+    'token': '1234567890abcdef1234567890abcdef12345678',
   };
 
   MultiProvider getWidget() {
@@ -65,7 +82,7 @@ void main() {
 
   setUp(() {
     mockClient = MockClient();
-    authProvider = AuthProvider(mockClient, false);
+    authProvider = AuthProvider(mockClient);
     authProvider.serverUrl = 'https://wger.de';
 
     SharedPreferences.setMockInitialValues({});
@@ -78,13 +95,24 @@ void main() {
     );
 
     when(
-      mockClient.post(tLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      mockClient.post(
+        tLogin,
+        headers: anyNamed('headers'),
+        body: anyNamed('body'),
+      ),
     ).thenAnswer((_) => Future(() => Response(json.encode(responseLoginOk), 200)));
 
     when(mockClient.get(any)).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
+    when(
+      mockClient.get(any, headers: anyNamed('headers')),
+    ).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
 
     when(
-      mockClient.post(tRegistration, headers: anyNamed('headers'), body: anyNamed('body')),
+      mockClient.post(
+        tRegistration,
+        headers: anyNamed('headers'),
+        body: anyNamed('body'),
+      ),
     ).thenAnswer((_) => Future(() => Response(json.encode(responseRegistrationOk), 201)));
   });
 
@@ -107,9 +135,10 @@ void main() {
       expect(find.byKey(const Key('actionButton')), findsOneWidget);
       expect(find.byKey(const Key('toggleActionButton')), findsOneWidget);
       expect(find.byKey(const Key('toggleCustomServerButton')), findsOneWidget);
+      expect(find.byKey(const ValueKey('toggleApiTokenButton')), findsNothing);
     });
 
-    testWidgets('Login - happy path', (WidgetTester tester) async {
+    testWidgets('Login - with username & password - happy path', (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(getWidget());
 
@@ -120,6 +149,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
+      expect(find.byKey(const ValueKey('inputApiToken')), findsNothing);
       expect(find.textContaining('An Error Occurred'), findsNothing);
       verify(mockClient.get(any));
       verify(
@@ -131,17 +161,21 @@ void main() {
       );
     });
 
-    testWidgets('Login - wront username & password', (WidgetTester tester) async {
+    testWidgets('Login - wrong username & password', (WidgetTester tester) async {
       // Arrange
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
       final response = {
         'non_field_errors': ['Username or password unknown'],
       };
-
       when(
-        mockClient.post(tLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+        mockClient.post(
+          tLogin,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
       ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
+
       await tester.pumpWidget(getWidget());
 
       // Act
@@ -151,7 +185,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.textContaining('An Error Occurred'), findsOne);
       expect(find.textContaining('Non field errors'), findsOne);
       expect(find.textContaining('Username or password unknown'), findsOne);
       verify(
@@ -159,6 +192,97 @@ void main() {
           tLogin,
           headers: anyNamed('headers'),
           body: json.encode({'username': 'testuser', 'password': '123456789'}),
+        ),
+      );
+    });
+
+    testWidgets('Login - with API token - happy path', (WidgetTester tester) async {
+      // Arrange
+      await tester.pumpWidget(getWidget());
+
+      // Act
+      await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('toggleApiTokenButton')));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('inputApiToken')),
+        '1234567890abcdef1234567890abcdef12345678',
+      );
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.byKey(const ValueKey('inputApiToken')), findsOne);
+      expect(find.byKey(const Key('inputUsername')), findsNothing);
+      expect(find.byKey(const Key('inputPassword')), findsNothing);
+      expect(find.textContaining('An Error Occurred'), findsNothing);
+
+      verify(
+        mockClient.get(
+          tProfileCheck,
+          headers: argThat(
+            predicate(
+              (headers) =>
+                  headers is Map<String, String> &&
+                  headers['authorization'] == 'Token 1234567890abcdef1234567890abcdef12345678',
+            ),
+            named: 'headers',
+          ),
+        ),
+      );
+      verifyNever(
+        mockClient.post(
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      );
+    });
+
+    testWidgets('Login - with API token - wrong key', (WidgetTester tester) async {
+      // Arrange
+      final response = {
+        'detail': ['Invalid token'],
+      };
+      when(
+        mockClient.get(tProfileCheck, headers: anyNamed('headers')),
+      ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
+      await tester.pumpWidget(getWidget());
+
+      // Act
+      await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('toggleApiTokenButton')));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('inputApiToken')),
+        '31e2ea0322c07b9df583a9b6d1e794f7139e78d4',
+      );
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.textContaining('Detail'), findsOne);
+      expect(find.textContaining('Invalid token'), findsOne);
+      verify(
+        mockClient.get(
+          tProfileCheck,
+          headers: argThat(
+            predicate(
+              (headers) =>
+                  headers is Map<String, String> &&
+                  headers['authorization'] == 'Token 31e2ea0322c07b9df583a9b6d1e794f7139e78d4',
+            ),
+            named: 'headers',
+          ),
+        ),
+      );
+      verifyNever(
+        mockClient.post(
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
         ),
       );
     });
@@ -224,11 +348,18 @@ void main() {
       tester.view.devicePixelRatio = 1.0;
       final response = {
         'username': ['This field must be unique.'],
-        'password': ['This password is too common.', 'This password is entirely numeric.'],
+        'password': [
+          'This password is too common.',
+          'This password is entirely numeric.',
+        ],
       };
 
       when(
-        mockClient.post(tRegistration, headers: anyNamed('headers'), body: anyNamed('body')),
+        mockClient.post(
+          tRegistration,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
       ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
       await tester.pumpWidget(getWidget());
 
@@ -241,7 +372,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.textContaining('An Error Occurred'), findsOne);
       expect(find.textContaining('This password is too common'), findsOne);
       expect(find.textContaining('This password is entirely numeric'), findsOne);
       expect(find.textContaining('This field must be unique'), findsOne);

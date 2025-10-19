@@ -19,6 +19,10 @@ analyzer:
     # Please see https://github.com/flutter/flutter/pull/24528 for details.
     sdk_version_async_exported_from_core: ignore
 
+formatter:
+  page_width: 100
+  trailing_commas: preserve
+
 linter:
   rules:
     # These rules are documented on and in the same order as
@@ -165,8 +169,6 @@ dart_code_metrics:
     - avoid-passing-self-as-argument: false # fairly harmless. and e.g. drift calls are like this
     - avoid-passing-async-when-sync-expected: false # we really like to do this in onTap() etc, and it seems harmless
     - prefer-match-file-name: false # dieter wants to enable this. but requires a lot of renames. what does roland think?
-
   formatter:
     indent: 0
-    line-length: 100
     cascading-widget-extensions: false

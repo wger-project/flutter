@@ -20,8 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
@@ -38,7 +38,7 @@ class Meal {
   @JsonKey(name: 'plan')
   late String planId;
 
-  @JsonKey(toJson: timeToString, fromJson: stringToTime)
+  @JsonKey(toJson: timeToString, fromJson: stringToTimeNull)
   TimeOfDay? time;
 
   @JsonKey(name: 'name')

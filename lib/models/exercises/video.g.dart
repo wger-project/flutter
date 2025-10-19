@@ -13,7 +13,7 @@ Video _$VideoFromJson(Map<String, dynamic> json) {
       'id',
       'uuid',
       'video',
-      'exercise_base',
+      'exercise',
       'size',
       'duration',
       'width',
@@ -21,13 +21,13 @@ Video _$VideoFromJson(Map<String, dynamic> json) {
       'codec',
       'codec_long',
       'license',
-      'license_author'
+      'license_author',
     ],
   );
   return Video(
     id: (json['id'] as num).toInt(),
     uuid: json['uuid'] as String,
-    base: (json['exercise_base'] as num).toInt(),
+    exerciseId: (json['exercise'] as num).toInt(),
     size: (json['size'] as num).toInt(),
     url: json['video'] as String,
     duration: stringToNum(json['duration'] as String?),
@@ -41,16 +41,16 @@ Video _$VideoFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
-      'id': instance.id,
-      'uuid': instance.uuid,
-      'video': instance.url,
-      'exercise_base': instance.base,
-      'size': instance.size,
-      'duration': numToString(instance.duration),
-      'width': instance.width,
-      'height': instance.height,
-      'codec': instance.codec,
-      'codec_long': instance.codecLong,
-      'license': instance.license,
-      'license_author': instance.licenseAuthor,
-    };
+  'id': instance.id,
+  'uuid': instance.uuid,
+  'video': instance.url,
+  'exercise': instance.exerciseId,
+  'size': instance.size,
+  'duration': numToString(instance.duration),
+  'width': instance.width,
+  'height': instance.height,
+  'codec': instance.codec,
+  'codec_long': instance.codecLong,
+  'license': instance.license,
+  'license_author': instance.licenseAuthor,
+};

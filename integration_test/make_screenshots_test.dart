@@ -17,12 +17,17 @@ enum DeviceType {
   sevenInchScreenshots,
   tenInchScreenshots,
   tvScreenshots,
-  wearScreenshots
+  wearScreenshots,
 }
 
 final destination = DeviceType.phoneScreenshots.name;
 
-Future<void> takeScreenshot(tester, binding, String language, String name) async {
+Future<void> takeScreenshot(
+  WidgetTester tester,
+  IntegrationTestWidgetsFlutterBinding binding,
+  String language,
+  String name,
+) async {
   if (Platform.isAndroid) {
     await tester.pumpAndSettle();
     await binding.convertFlutterSurfaceToImage();
@@ -37,27 +42,31 @@ Future<void> takeScreenshot(tester, binding, String language, String name) async
 const languages = [
   // Note: it seems if too many languages are processed at once, some processes
   // disappear and no images are written. Doing this in smaller steps works fine
-
-  // 'ca',
-  // 'cs-CZ',
-  // 'de-DE',
-  // 'el-GR',
-  // 'en-US',
-  // 'es-ES',
+  'ar',
+  'ca',
+  'cs-CZ',
+  'de-DE',
+  'el-GR',
+  'en-US',
+  'es-ES',
 
   'fr-FR',
   'hi-IN',
   'hr',
   'it-IT',
+  'ko-KR',
   'nb-NO',
   'pl-PL',
 
   'pt-BR',
   'pt-PT',
   'ru-RU',
+  'sr',
+  'ta-IN',
   'tr-TR',
   'uk',
   'zh-CN',
+  'zh-TW',
 ];
 
 void main() {

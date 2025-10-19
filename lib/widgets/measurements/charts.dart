@@ -20,24 +20,31 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/charts.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementOverallChangeWidget extends StatelessWidget {
   final MeasurementChartEntry _first;
   final MeasurementChartEntry _last;
   final String _unit;
+
   const MeasurementOverallChangeWidget(this._first, this._last, this._unit);
 
   @override
   Widget build(BuildContext context) {
     final delta = _last.value - _first.value;
-    final prefix = delta > 0
-        ? '+'
-        : delta < 0
-        ? '-'
-        : '';
+    String prefix = '';
+    if (delta > 0) {
+      prefix = '+';
+    } else if (delta < 0) {
+      prefix = '-';
+    }
 
-    return Text('overall change $prefix ${delta.abs().toStringAsFixed(1)} $_unit');
+    // ignore: prefer_interpolation_to_compose_strings
+    return Text(
+      AppLocalizations.of(context).overallChangeWeight +
+          ' $prefix${delta.abs().toStringAsFixed(1)} $_unit',
+    );
   }
 }
 
@@ -61,7 +68,10 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.70,
-      child: Padding(padding: const EdgeInsets.all(4), child: LineChart(mainData())),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: LineChart(mainData()),
+      ),
     );
   }
 
@@ -70,15 +80,24 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       touchTooltipData: LineTouchTooltipData(
         getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItems: (touchedSpots) {
+          final numberFormat = NumberFormat.decimalPattern(
+            Localizations.localeOf(context).toString(),
+          );
+
           return touchedSpots.map((touchedSpot) {
+            final msSinceEpoch = touchedSpot.x.toInt();
             final DateTime date = DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
             final dateStr = DateFormat.Md(
               Localizations.localeOf(context).languageCode,
             ).format(date);
 
+            // Check if this is an interpolated point (milliseconds ending with 123)
+            final bool isInterpolated = msSinceEpoch % 1000 == INTERPOLATION_MARKER;
+            final String interpolatedMarker = isInterpolated ? ' (interpolated)' : '';
+
             return LineTooltipItem(
-              '$dateStr: ${touchedSpot.y.toStringAsFixed(1)} ${widget._unit}',
-              TextStyle(color: touchedSpot.bar.color, fontWeight: FontWeight.bold),
+              '$dateStr: ${numberFormat.format(touchedSpot.y)} ${widget._unit}$interpolatedMarker',
+              TextStyle(color: touchedSpot.bar.color),
             );
           }).toList();
         },
@@ -87,6 +106,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
   }
 
   LineChartData mainData() {
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
     return LineChartData(
       lineTouchData: tooltipData(),
       gridData: FlGridData(
@@ -103,8 +124,12 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
@@ -123,11 +148,16 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                   DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
                 );
               }
-              return Text(DateFormat.Md(Localizations.localeOf(context).languageCode).format(date));
+              return Text(
+                DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
+              );
             },
             interval: widget._entries.isNotEmpty
-                ? chartGetInterval(widget._entries.last.date, widget._entries.first.date)
-                : 1000,
+                ? chartGetInterval(
+                    widget._entries.last.date,
+                    widget._entries.first.date,
+                  )
+                : CHART_MILLISECOND_FACTOR,
           ),
         ),
         leftTitles: AxisTitles(
@@ -142,7 +172,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 return const Text('');
               }
 
-              return Text('$value ${widget._unit}');
+              return Text('${numberFormat.format(value)} ${widget._unit}');
             },
           ),
         ),
@@ -154,7 +184,12 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       lineBarsData: [
         LineChartBarData(
           spots: widget._entries
-              .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
+              .map(
+                (e) => FlSpot(
+                  e.date.millisecondsSinceEpoch.toDouble(),
+                  e.value.toDouble(),
+                ),
+              )
               .toList(),
           isCurved: false,
           color: Theme.of(context).colorScheme.primary,
@@ -165,7 +200,12 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         if (widget.avgs != null)
           LineChartBarData(
             spots: widget.avgs!
-                .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
+                .map(
+                  (e) => FlSpot(
+                    e.date.millisecondsSinceEpoch.toDouble(),
+                    e.value.toDouble(),
+                  ),
+                )
                 .toList(),
             isCurved: false,
             color: Theme.of(context).colorScheme.tertiary,
@@ -184,7 +224,7 @@ class MeasurementChartEntry {
   MeasurementChartEntry(this.value, this.date);
 }
 
-// for each point, return the average of all the points in the 7 days preceeding it
+// for each point, return the average of all the points in the 7 days preceding it
 List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
   var start = 0;
   var end = 0;
@@ -233,6 +273,7 @@ class Indicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           width: size,

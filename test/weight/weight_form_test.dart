@@ -34,11 +34,21 @@ void main() {
     );
   }
 
-  testWidgets('The form is prefilled with the data from an entry', (WidgetTester tester) async {
+  testWidgets('Correctly prefills and localizes the data - en', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1));
     await tester.pumpAndSettle();
 
-    expect(find.text('2021-01-01'), findsOneWidget);
+    expect(find.text('1/1/2021'), findsOneWidget);
+    expect(find.text('3:30 PM'), findsOneWidget);
+    expect(find.text('80'), findsOneWidget);
+  });
+
+  testWidgets('Correctly prefills and localizes the data - de', (WidgetTester tester) async {
+    await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1, locale: 'de'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('1.1.2021'), findsOneWidget);
+    expect(find.text('15:30'), findsOneWidget);
     expect(find.text('80'), findsOneWidget);
   });
 
@@ -56,7 +66,7 @@ void main() {
     expect(find.text('79.9'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('quickPlusSmall')));
-    expect(find.text('80.0'), findsOneWidget);
+    expect(find.text('80'), findsOneWidget);
   });
 
   testWidgets("Entering garbage doesn't break the quick-change", (WidgetTester tester) async {

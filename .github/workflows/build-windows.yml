@@ -1,0 +1,31 @@
+name: Build Windows
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+jobs:
+  # TODO: note that we currently only upload the .exe file, which is not
+  #       sufficient for a proper Windows release. See the documentation
+  #       for what would be necessary (low priority, but nice to have):
+  #       https://docs.flutter.dev/platform-integration/windows/building
+  build_windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Build .exe
+        run: flutter build windows --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-windows
+          path: build\windows\x64\runner\Release\wger.exe

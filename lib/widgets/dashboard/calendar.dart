@@ -17,17 +17,17 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/workout_plans.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
 
 /// Types of events
@@ -74,15 +74,34 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     _events = <String, List<Event>>{};
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
-    loadEvents();
+    //Fix: Defer context-dependent loadEvents() until after build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadEvents();
+    });
   }
 
+  /// Loads and organizes all events from various providers into the calendar.
+  ///
+  /// This method asynchronously fetches and processes data from multiple sources:
+  /// - **Weight entries**: Retrieves weight measurements from [BodyWeightProvider]
+  /// - **Measurements**: Retrieves body measurements from [MeasurementProvider]
+  /// - **Workout sessions**: Fetches workout session data from [RoutinesProvider]
+  /// - **Nutritional plans**: Retrieves calorie diary entries from [NutritionPlansProvider]
+  ///
+  /// Each event is formatted according to the current locale and stored in the
+  /// [_events] map, keyed by date. The date format is determined by [DateFormatLists.format].
+  ///
+  /// After loading all events, the [_selectedEvents] value is updated with events
+  /// for the currently selected day, if any.
+  ///
+  /// **Note**: This method checks if the widget is still mounted before updating
+  /// the state after the async workout session fetch operation.
   void loadEvents() async {
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final i18n = AppLocalizations.of(context);
+
     // Process weight entries
-    final BodyWeightProvider weightProvider = Provider.of<BodyWeightProvider>(
-      context,
-      listen: false,
-    );
+    final weightProvider = context.read<BodyWeightProvider>();
     for (final entry in weightProvider.items) {
       final date = DateFormatLists.format(entry.date);
 
@@ -91,14 +110,11 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       }
 
       // Add events to lists
-      _events[date]!.add(Event(EventType.weight, '${entry.weight} kg'));
+      _events[date]?.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
     }
 
     // Process measurements
-    final MeasurementProvider measurementProvider = Provider.of<MeasurementProvider>(
-      context,
-      listen: false,
-    );
+    final measurementProvider = context.read<MeasurementProvider>();
     for (final category in measurementProvider.categories) {
       for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
@@ -107,17 +123,19 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
 
-        _events[date]!.add(
-          Event(EventType.measurement, '${category.name}: ${entry.value} ${category.unit}'),
+        _events[date]?.add(
+          Event(
+            EventType.measurement,
+            '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
+          ),
         );
       }
     }
 
     // Process workout sessions
-    final WorkoutPlansProvider plans = Provider.of<WorkoutPlansProvider>(context, listen: false);
-    await plans.fetchSessionData().then((entries) {
-      for (final entry in entries['results']) {
-        final session = WorkoutSession.fromJson(entry);
+    final routinesProvider = context.read<RoutinesProvider>();
+    await routinesProvider.fetchSessionData().then((sessions) {
+      for (final session in sessions) {
         final date = DateFormatLists.format(session.date);
         if (!_events.containsKey(date)) {
           _events[date] = [];
@@ -126,14 +144,14 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
 
         // Add events to lists
-        _events[date]!.add(
-          Event(
-            EventType.session,
-            '${AppLocalizations.of(context).impression}: ${session.impressionAsString} $time',
-          ),
+        _events[date]?.add(
+          Event(EventType.session, '${i18n.impression}: ${session.impressionAsString} $time'),
         );
       }
     });
+    if (!mounted) {
+      return;
+    }
 
     // Process nutritional plans
     final NutritionPlansProvider nutritionProvider = Provider.of<NutritionPlansProvider>(
@@ -148,14 +166,14 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         }
 
         // Add events to lists
-        _events[date]!.add(
-          Event(EventType.caloriesDiary, '${entry.value.energy.toStringAsFixed(0)} kcal'),
+        _events[date]?.add(
+          Event(EventType.caloriesDiary, i18n.kcalValue(entry.value.energy.toStringAsFixed(0))),
         );
       }
     }
 
     // Add initial selected day to events list
-    _selectedEvents.value = _getEventsForDay(_selectedDay!);
+    _selectedEvents.value = _selectedDay != null ? _getEventsForDay(_selectedDay!) : [];
   }
 
   @override
@@ -225,7 +243,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           TableCalendar<Event>(
             locale: Localizations.localeOf(context).languageCode,
             firstDay: DateTime.now().subtract(const Duration(days: 1000)),
-            lastDay: DateTime.now(),
+            lastDay: DateTime.now().add(const Duration(days: 365)),
             focusedDay: _focusedDay,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             rangeStartDay: _rangeStart,

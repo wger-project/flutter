@@ -3,6 +3,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 class TextPrompt extends StatelessWidget {
   const TextPrompt();
+
   @override
   Widget build(BuildContext context) {
     return Center(

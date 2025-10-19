@@ -32,8 +32,10 @@ class Video {
   @JsonKey(name: 'video', required: true)
   final String url;
 
-  @JsonKey(name: 'exercise_base', required: true)
-  final int base;
+  Uri get uri => Uri.parse(url);
+
+  @JsonKey(name: 'exercise', required: true)
+  final int exerciseId;
 
   @JsonKey(required: true)
   final int size;
@@ -62,7 +64,7 @@ class Video {
   const Video({
     required this.id,
     required this.uuid,
-    required this.base,
+    required this.exerciseId,
     required this.size,
     required this.url,
     required this.duration,
@@ -76,5 +78,6 @@ class Video {
 
   // Boilerplate
   factory Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);
+
   Map<String, dynamic> toJson() => _$VideoToJson(this);
 }

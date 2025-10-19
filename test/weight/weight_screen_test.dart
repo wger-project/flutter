@@ -32,10 +32,9 @@ import 'package:wger/widgets/weight/forms.dart';
 
 import '../../test_data/body_weight.dart';
 import '../../test_data/profile.dart';
-import '../nutrition/nutritional_plan_form_test.mocks.dart';
 import 'weight_screen_test.mocks.dart';
 
-@GenerateMocks([BodyWeightProvider, UserProvider])
+@GenerateMocks([BodyWeightProvider, UserProvider, NutritionPlansProvider])
 void main() {
   late MockBodyWeightProvider mockWeightProvider;
   late MockUserProvider mockUserProvider;
@@ -44,30 +43,34 @@ void main() {
   setUp(() {
     mockWeightProvider = MockBodyWeightProvider();
     when(mockWeightProvider.items).thenReturn(getWeightEntries());
-    when(mockWeightProvider.getNewestEntry()).thenReturn(null);
 
     mockUserProvider = MockUserProvider();
     when(mockUserProvider.profile).thenReturn(tProfile1);
 
     mockNutritionPlansProvider = MockNutritionPlansProvider();
     when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
+    when(mockNutritionPlansProvider.items).thenReturn([]);
   });
 
   Widget createWeightScreen({locale = 'en'}) {
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => mockNutritionPlansProvider,
-      child: ChangeNotifierProvider<UserProvider>(
-        create: (context) => mockUserProvider,
-        child: ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => mockWeightProvider,
-          child: MaterialApp(
-            locale: Locale(locale),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const WeightScreen(),
-            routes: {FormScreen.routeName: (_) => const FormScreen()},
-          ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (ctx) => mockNutritionPlansProvider,
         ),
+        ChangeNotifierProvider<BodyWeightProvider>(
+          create: (context) => mockWeightProvider,
+        ),
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => mockUserProvider,
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const WeightScreen(),
+        routes: {FormScreen.routeName: (_) => const FormScreen()},
       ),
     );
   }

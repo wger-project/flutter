@@ -27,6 +27,7 @@ import 'package:wger/widgets/nutrition/nutritional_plans_list.dart';
 
 class NutritionalPlansScreen extends StatelessWidget {
   const NutritionalPlansScreen();
+
   static const routeName = '/nutrition';
 
   @override

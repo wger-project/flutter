@@ -19,6 +19,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:logging/logging.dart';
 import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
@@ -35,14 +36,22 @@ part 'nutritional_plan.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class NutritionalPlan {
-  @JsonKey(required: false)
-  String? id;
+  final _logger = Logger('NutritionalPlan Model');
+
+  @JsonKey(required: true)
+  int? id;
 
   @JsonKey(required: true)
   late String description;
 
-  @JsonKey(required: true, name: 'creation_date', toJson: toDate)
+  @JsonKey(required: true, name: 'creation_date', toJson: dateToUtcIso8601)
   late DateTime creationDate;
+
+  @JsonKey(required: true, name: 'start', toJson: dateToYYYYMMDD)
+  late DateTime startDate;
+
+  @JsonKey(required: true, name: 'end', toJson: dateToYYYYMMDD)
+  late DateTime? endDate;
 
   @JsonKey(required: true, name: 'only_logging')
   late bool onlyLogging;
@@ -71,7 +80,9 @@ class NutritionalPlan {
   NutritionalPlan({
     this.id,
     required this.description,
-    required this.creationDate,
+    DateTime? creationDate,
+    required this.startDate,
+    this.endDate,
     this.onlyLogging = false,
     this.goalEnergy,
     this.goalProtein,
@@ -80,9 +91,17 @@ class NutritionalPlan {
     this.goalFiber,
     List<Meal>? meals,
     List<Log>? diaryEntries,
-  }) {
+  }) : creationDate = creationDate ?? DateTime.now() {
     this.meals = meals ?? [];
     this.diaryEntries = diaryEntries ?? [];
+
+    if (endDate != null && endDate!.isBefore(startDate)) {
+      _logger.warning(
+        'The end date of a nutritional plan is before the start. Setting to null! '
+        'PlanId: $id, startDate: $startDate, endDate: $endDate',
+      );
+      endDate = null;
+    }
   }
 
   factory NutritionalPlan.fromRow(sqlite.Row row) {
@@ -133,6 +152,8 @@ class NutritionalPlan {
 
   NutritionalPlan.empty() {
     creationDate = DateTime.now();
+    startDate = DateTime.now();
+    endDate = null;
     description = '';
     onlyLogging = false;
     goalEnergy = null;

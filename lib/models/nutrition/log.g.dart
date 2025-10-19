@@ -15,7 +15,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
       'datetime',
       'ingredient',
       'weight_unit',
-      'amount'
+      'amount',
     ],
   );
   return Log(
@@ -31,12 +31,12 @@ Log _$LogFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
-      'id': instance.id,
-      'meal': instance.mealId,
-      'plan': instance.planId,
-      'datetime': instance.datetime.toIso8601String(),
-      'comment': instance.comment,
-      'ingredient': instance.ingredientId,
-      'weight_unit': instance.weightUnitId,
-      'amount': instance.amount,
-    };
+  'id': instance.id,
+  'meal': instance.mealId,
+  'plan': instance.planId,
+  'datetime': dateToUtcIso8601(instance.datetime),
+  'comment': instance.comment,
+  'ingredient': instance.ingredientId,
+  'weight_unit': instance.weightUnitId,
+  'amount': instance.amount,
+};

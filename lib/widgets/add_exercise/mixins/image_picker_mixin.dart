@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/providers/add_exercise.dart';
 
 const validFileExtensions = ['jpg', 'jpeg', 'png', 'webp'];
@@ -31,19 +32,21 @@ mixin ExerciseImagePickerMixin {
       images = await imagePicker.pickMultiImage();
     }
 
-    final selectedImages = <File>[];
+    final selectedImages = <ExerciseSubmissionImage>[];
     if (images != null) {
-      selectedImages.addAll(images.map((e) => File(e.path)).toList());
+      selectedImages.addAll(
+        images.map((e) => ExerciseSubmissionImage(imageFile: File(e.path))).toList(),
+      );
 
       for (final image in selectedImages) {
         bool isFileValid = true;
         String errorMessage = '';
 
-        if (!_validateFileType(image)) {
+        if (!_validateFileType(image.imageFile)) {
           isFileValid = false;
           errorMessage = "Select only 'jpg', 'jpeg', 'png', 'webp' files";
         }
-        if (_validateFileSize(image.lengthSync())) {
+        if (_validateFileSize(image.imageFile.lengthSync())) {
           isFileValid = true;
           errorMessage = 'File Size should not be greater than 20 mb';
         }

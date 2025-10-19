@@ -28,6 +28,7 @@ enum MeasurementOptions { edit, delete }
 
 class MeasurementEntriesScreen extends StatelessWidget {
   const MeasurementEntriesScreen();
+
   static const routeName = '/measurement-entries';
 
   @override

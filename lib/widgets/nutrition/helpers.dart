@@ -51,7 +51,13 @@ List<int> getNutritionColumnFlexes(BuildContext context) {
 }
 
 List<Widget> muted(List<String> children) => children
-    .map((e) => MutedText(e, textAlign: TextAlign.right, overflow: TextOverflow.ellipsis))
+    .map(
+      (e) => MutedText(
+        e,
+        textAlign: TextAlign.right,
+        overflow: TextOverflow.ellipsis,
+      ),
+    )
     .toList();
 
 // return a row of elements in the standard macros spacing

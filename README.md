@@ -1,4 +1,4 @@
-# Mobile app for wger Workout Manager
+# Mobile app for wger
 
 wger is a free, open-source flutter application that manages and tracks/logs
 your exercises and personal workouts, weight, and diet plans. This is the mobile
@@ -7,7 +7,7 @@ app written with Flutter, it talks via REST with the main server.
 If you want to contribute, hop on the Discord server and say hi!
 
 
-<p>
+<p align="center">
 <img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20dashboard.png" width="200" alt="" />
 
 <img src="https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20measurements.png" width="200" alt="" />
@@ -17,61 +17,45 @@ If you want to contribute, hop on the Discord server and say hi!
 
 ## Installation
 
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+[<img src="https://raw.githubusercontent.com/wger-project/wger/refs/heads/master/wger/core/static/images/logos/play-store/badge.svg"
 alt="Get it on Google Play"
-height="80">](https://play.google.com/store/apps/details?id=de.wger.flutter)
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+height="55">](https://play.google.com/store/apps/details?id=de.wger.flutter)
+[<img src="https://raw.githubusercontent.com/wger-project/wger/refs/heads/master/wger/core/static/images/logos/fdroid/get-it-on.svg"
 alt="Get it on F-Droid"
-height="80">](https://f-droid.org/packages/de.wger.flutter/)
+height="55">](https://f-droid.org/packages/de.wger.flutter/)
+[<img src="https://raw.githubusercontent.com/wger-project/wger/refs/heads/master/wger/core/static/images/logos/app-store/black.svg"
+alt="Download on the App Store"
+height="55">](https://apps.apple.com/us/app/wger-workout-manager/id6502226792)
+[<img src="https://raw.githubusercontent.com/wger-project/wger/refs/heads/master/wger/core/static/images/logos/flathub/black.svg"
+alt="Get it on Flathub"
+height="55">](https://flathub.org/apps/de.wger.flutter)
 
-## Development
+## Developing and contributing
 
-### 1
+Our goal is to build an awesome and flexible fitness and nutrition manager,
+along with a comprehensive list of exercises and ingredients, all released
+under a free license.
 
-Install the [wger server](https://github.com/wger-project/wger), the easiest way
-is to start the development docker-compose: <https://github.com/wger-project/docker>
+For this, we’d love your help! Whether it’s code, translations, exercises or
+reporting issues and ideas, check out our
+[contribution guide](https://wger.readthedocs.io/en/latest/contributing.html)
+to get started.
 
-Alternatively, you can use the test server (the db is reset every day):
+A huge thank you to everyone who has contributed so far! ❤️ See the full list
+in [AUTHORS.md](AUTHORS.md).
+
+**TLDR**
+
+```bash
+flutter run
+```
+
+This is a regular flutter application, so there's no magic. You will need a backend
+for this, so feel free to use the test server for this (the db is reset daily):
 
 * URL: `https://wger-master.rge.uber.space`
 * username: `user`
 * password: `flutteruser`
-* API key: `31e2ea0322c07b9df583a9b6d1e794f7139e78d4`
-
-### 2
-
-Install Flutter and all its dependencies, and create a new virtual device:
-<https://flutter.dev/docs/get-started/install>.
-
-The app currently uses flutter 3.22
-
-### 3
-The application will complain about an API key not being set. You can just
-ignore this during development, this is only important if you want to register
-directly over the app. If you just want to login, you can skip this section.
-
-If you want to register directly over the app, you need to set a user on the backend
-that is allowed to do this. For this, create/register a new user, generate an api key
-and run ``python3 manage.py add-user-rest theusername`` (you can later list all the
-registered users with ``python3 manage.py list-users-api``).
-
-Then create a new file ``wger.properties`` in ``fastlane/metadata/envfiles/`` and
-add the key:
-
-```properties
-WGER_API_KEY=123456
-```
-
-Alternatively, add the key as an environment variables, e.g. by running the `source`
-command on the file.
-
-### 4
-
-Start the application with ``flutter run`` or use your IDE
-(please note that depending on how you run your emulator you will need to change the IP address of
-the server)
-
-You can run the tests with the ``flutter test``
 
 ## Translation
 

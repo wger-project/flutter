@@ -30,11 +30,10 @@
 .pub-cache/
 .pub/
 /build/
+/**/build/
+/android/app/.cxx
 **/failures/*.png
 
-
-# Web related
-lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -53,3 +52,16 @@ app.*.map.json
 # Others
 /vendor/bundle/ruby/
 /coverage/
+/lib/l10n/generated/
+
+# ios build and fastlane
+ios/fastlane/.env
+ios/fastlane/*.p8
+ios/fastlane/test_output
+ios/fastlane/screenshots
+ios/fastlane/report.xml
+ios/fastlane/Preview.html
+ios/fastlane/output
+ios/Runner.ipa
+ios/Runner.app.dSYM.zip
+

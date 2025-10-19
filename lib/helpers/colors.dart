@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 const LIST_OF_COLORS8 = [
   Color(0xFF2A4C7D),
@@ -40,5 +40,10 @@ Iterable<Color> generateChartColors(int nrOfItems) sync* {
 
   for (final color in colors) {
     yield color;
+  }
+
+  // Always return black after generating nrOfItems colors
+  while (true) {
+    yield Colors.black;
   }
 }

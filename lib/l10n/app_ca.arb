@@ -73,10 +73,6 @@
   "@searchExercise": {
     "description": "Label on set form. Selected exercises are added to the set"
   },
-  "supersetWith": "en conjunt amb",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Equipament",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -92,14 +88,6 @@
   "category": "Categoria",
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
-  },
-  "newWorkout": "Nou pla d'entrenament",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
-  },
-  "noWorkoutPlans": "No tens cap pla d'entrenament",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
   },
   "repetitions": "Repeticions",
   "@repetitions": {
@@ -291,34 +279,6 @@
   },
   "goToDetailPage": "Vés a la pàgina dels detalls",
   "@goToDetailPage": {},
-  "aboutSourceTitle": "Codi font",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Teniu cap problema o idea?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Poseu-vos en contacte si alguna cosa no funciona com s'esperava o si hi ha alguna funció que penseu que manca.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Saludeu!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "Si voleu xatejar amb nosaltres, entreu al servidor de Discord i poseu-vos en contacte",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
-  "aboutTranslationTitle": "Traducció",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "Aquesta aplicació es tradueix a weblate. Si voleu ajudar-hi també, feu clic al vincle i comenceu a traduir",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
   "calendar": "Calendari",
   "@calendar": {},
   "enterValue": "Introduïu un valor",
@@ -330,7 +290,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "setUnitsAndRir": "Unitats de la sèrie i RER",
@@ -386,10 +348,6 @@
   },
   "loginInstead": "Ja tens un compte? Entra",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Plans d'entrenament",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavNutrition": "Nutrició",
   "@labelBottomNavNutrition": {
     "description": "Label used in bottom navigation, use a short word"
@@ -401,7 +359,9 @@
     "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "dayDescriptionHelp": "Descripció de què es fa aquest dia (p. e. «dia de tracció») o quines parts del cos d'exerciten (p. e. «pit i espatlles»)",
@@ -458,10 +418,6 @@
   "@proteinShort": {
     "description": "The first letter or short name of the word 'Protein', used in overviews"
   },
-  "enterRepetitionsOrWeight": "Ompliu les repeticions o bé el pes per a una de les sèries com a mínim",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
-  },
   "fatShort": "G",
   "@fatShort": {
     "description": "The first letter or short name of the word 'Fat', used in overviews"
@@ -478,16 +434,14 @@
   "@sodium": {},
   "delete": "Esborra",
   "@delete": {},
-  "aboutSourceText": "Obtingueu el codi font d'aquesta aplicació i el seu servidor a Github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
   "confirmDelete": "Esteu segur de voler esborrar '{toDelete}'?",
   "@confirmDelete": {
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "goToToday": "Vés a avui",
@@ -503,8 +457,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "recentlyUsedIngredients": "Ingredients afegits recentment",
@@ -513,6 +471,26 @@
   },
   "gallery": "Galeria",
   "@gallery": {},
+  "imageFormatNotSupported": "{imageFormat} no és compatible",
+  "@imageFormatNotSupported": {
+      "description": "Label shown on the error container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "imageFormatNotSupportedDetail": "Les imatges {imageFormat} encara no són compatibles.",
+  "@imageFormatNotSupportedDetail": {
+      "description": "Label shown on the image preview container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
   "addImage": "Afegeix imatge",
   "@addImage": {},
   "dataCopied": "Dades copiades a una nova entrada",
@@ -542,7 +520,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "productNotFound": "No s'ha trobat el producte",
@@ -554,7 +534,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "alternativeNames": "Noms alternatius",
@@ -664,7 +646,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "gValue": "{value} g",
@@ -672,7 +656,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -680,17 +666,13 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Segueix-nos a Mastodon per a actualitzacions i notícies sobre el projecte",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
+  "@aboutMastodonTitle": {},
   "selectEntry": "Si us plau, selecciona una entrada",
   "@selectEntry": {},
   "baseNameEnglish": "Tots els exercicis necessiten un nom base en anglès",
@@ -792,7 +774,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "variations": "Variacions",
@@ -802,14 +786,18 @@
   "alsoKnownAs": "També conegut com: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
   "verifiedEmailInfo": "S'ha enviat un correu electrònic de verificació a {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "previous": "Anterior",

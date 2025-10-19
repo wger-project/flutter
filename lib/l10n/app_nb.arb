@@ -1,10 +1,6 @@
 {
-  "aboutText": "wger arbeidsøkthåndterer er gemenhetslig fri programvare, lisensiert AGPLv3+ og tilgjengelig på GitHub:",
-  "@aboutText": {
-    "description": "Text in the about dialog"
-  },
   "fiber": "Fiber",
-  "@fibres": {},
+  "@fiber": {},
   "mealLogged": "Måltid lagt til i dagbok",
   "@mealLogged": {},
   "successfullyDeleted": "Slettet",
@@ -35,7 +31,7 @@
   "@newNutritionalPlan": {},
   "delete": "Slett",
   "@delete": {},
-  "loadingText": "Laster …",
+  "loadingText": "Laster…",
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
   },
@@ -91,8 +87,6 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "dismiss": "Forkast",
-  "@dismiss": {},
   "anErrorOccurred": "En feil inntraff.",
   "@anErrorOccurred": {},
   "nutritionalPlans": "Ernæringsplaner",
@@ -127,7 +121,7 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
-  "notes": "Notiser",
+  "notes": "Notater",
   "@notes": {
     "description": "Personal notes, e.g. for a workout session"
   },
@@ -138,10 +132,6 @@
   "repetitions": "Gjentagelser",
   "@repetitions": {
     "description": "Repetitions for an exercise set"
-  },
-  "newWorkout": "Ny treningsøktplan",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
   },
   "exercise": "Øvelse",
   "@exercise": {
@@ -154,10 +144,6 @@
   "labelWorkoutPlan": "Trenkingsøktplan",
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
-  },
-  "labelWorkoutPlans": "Treningsøktplaner",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
   },
   "logHelpEntriesUnits": "Kun oppføringer med vekt vises, ingen andre kombinasjoner.",
   "@logHelpEntriesUnits": {},
@@ -270,5 +256,11 @@
     "description": "Text for logout button"
   },
   "difference": "Forskjell",
-  "@difference": {}
+  "@difference": {},
+  "copyToClipboard": "Kopier til utklippstavlen",
+  "@copyToClipboard": {},
+  "value": "Verdi",
+  "@value": {
+    "description": "The value of a measurement entry"
+  }
 }

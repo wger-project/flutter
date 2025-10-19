@@ -37,6 +37,9 @@
   "@passwordTooShort": {
     "description": "Error message when the user a password that is too short"
   },
+  "selectAvailablePlates": "Select available plates",
+  "barWeight": "Bar weight",
+  "useColors": "Use colors",
   "password": "Password",
   "@password": {},
   "confirmPassword": "Confirm password",
@@ -52,6 +55,18 @@
   "invalidUsername": "Please enter a valid username",
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
+  },
+  "useApiToken": "Use API Token",
+  "useUsernameAndPassword": "Use username and password",
+  "apiToken": "API Token",
+  "@apiToken": {},
+  "invalidApiToken": "Please enter a valid API key",
+  "@invalidApiToken": {
+    "description": "Error message when the user enters an invalid API key"
+  },
+  "apiTokenValidChars": "An API key may only contain the letters a-f, numbers 0-9 and be exactly 40 characters long",
+  "@apiTokenValidChars": {
+    "description": "Error message when the user tries to input a API key with forbidden characters"
   },
   "customServerUrl": "URL of the wger instance",
   "@customServerUrl": {
@@ -69,10 +84,6 @@
   "@registerInstead": {},
   "loginInstead": "Already have an account? Login",
   "@loginInstead": {},
-  "labelWorkoutPlans": "Workout plans",
-  "@labelWorkoutPlans": {
-    "description": "Title for screen workout plans"
-  },
   "labelBottomNavWorkout": "Workout",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -128,10 +139,6 @@
     "description": "Message returned if no exercises match the searched string"
   },
   "searchNamesInEnglish": "Also search for names in English",
-  "supersetWith": "superset with",
-  "@supersetWith": {
-    "description": "Text used between exercise cards when adding a new set. Translate as something like 'in a superset with'"
-  },
   "equipment": "Equipment",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -148,17 +155,37 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "newWorkout": "New workout plan",
-  "@newWorkout": {
-    "description": "Header when adding a new workout"
+  "startDate": "Start date",
+  "@startDate": {
+    "description": "The start date of a nutritional plan or routine"
   },
-  "noWorkoutPlans": "You have no workout plans",
-  "@noWorkoutPlans": {
-    "description": "Message shown when the user has no workout plans"
-  },
+  "dayTypeCustom": "Custom",
+  "dayTypeEnom": "Every minute on the minute",
+  "dayTypeAmrap": "As many rounds as possible",
+  "dayTypeHiit": "High intensity interval training",
+  "dayTypeTabata": "Tabata",
+  "dayTypeEdt": "Escalating density training",
+  "dayTypeRft": "Rounds for time",
+  "dayTypeAfap": "As fast as possible",
+  "slotEntryTypeNormal": "Normal",
+  "slotEntryTypeDropset": "Dropset",
+  "slotEntryTypeMyo": "Myo",
+  "slotEntryTypePartial": "Partial",
+  "slotEntryTypeForced": "Forced",
+  "slotEntryTypeTut": "Time under Tension",
+  "slotEntryTypeIso": "Isometric hold",
+  "slotEntryTypeJump": "Jump",
+  "routines": "Routines",
+  "newRoutine": "New routine",
+  "noRoutines": "You have no routines",
   "reps": "Reps",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "restTime": "Rest time",
+  "sets": "Sets",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
   },
   "rir": "RiR",
   "@rir": {
@@ -179,12 +206,24 @@
   },
   "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
   "@dayDescriptionHelp": {},
-  "setNr": "Set {nr}",
-  "@setNr": {
-    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+  "exerciseNr": "Exercise {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
     "type": "text",
     "placeholders": {
-      "nr": {}
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "Superset {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
     }
   },
   "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
@@ -205,6 +244,13 @@
   "@workoutSession": {
     "description": "A (logged) workout session"
   },
+  "restDay": "Rest day",
+  "isRestDay": "Is rest day",
+  "isRestDayHelp": "Please note that all sets and exercises will be removed when you mark a day as a rest day.",
+  "needsLogsToAdvance": "Needs logs to advance",
+  "needsLogsToAdvanceHelp": "Select if you want the routine to progress to the next scheduled day only if you've logged a workout for the day",
+  "routineDays": "Days in routine",
+  "resultingRoutine": "Resulting routine",
   "newDay": "New day",
   "@newDay": {},
   "newSet": "New set",
@@ -285,14 +331,30 @@
     "description": "The goal for macronutrients"
   },
   "selectMealToLog": "Select a meal to log to diary",
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Your current nutrition plan has no meals defined",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "To add meals to the plan, go to the nutritional plan details",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  },
   "goalEnergy": "Energy goal",
   "goalProtein": "Protein goal",
   "goalCarbohydrates": "Carbohydrates goal",
   "goalFat": "Fat goal",
   "goalFiber": "Fiber goal",
   "anErrorOccurred": "An Error Occurred!",
-  "@anErrorOccurred": {},
+  "errorInfoDescription": "We're sorry, but something went wrong. You can help us fix this by reporting the issue on GitHub.",
+  "errorInfoDescription2": "You can continue using the app, but some features may not work.",
+  "errorViewDetails": "Technical details",
+  "applicationLogs": "Application logs",
+  "errorCouldNotConnectToServer": "Couldn't connect to server",
+  "errorCouldNotConnectToServerDetails": "The application could not connect to the server. Please check your internet connection or the server URL and try again. If the problem persists, contact the server administrator.",
+  "copyToClipboard": "Copy to clipboard",
   "weight": "Weight",
+  "min": "Min",
+  "max": "Max",
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
@@ -301,7 +363,9 @@
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chart30DaysTitle": "{name} last 30 days",
@@ -309,7 +373,9 @@
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
-      "name": {}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "chartDuringPlanTitle": "{chartName} during nutritional plan {planName}",
@@ -317,8 +383,12 @@
     "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
     "type": "text",
     "placeholders": {
-      "chartName": {},
-      "planName": {}
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
     }
   },
   "measurement": "Measurement",
@@ -334,6 +404,14 @@
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"
+  },
+  "endDate": "End date",
+  "@endDate": {
+    "description": "The End date of a nutritional plan or routine"
+  },
+  "openEnded": "Open ended",
+  "@openEnded": {
+    "description": "When a nutrition plan has no pre-defined end date"
   },
   "value": "Value",
   "@value": {
@@ -412,7 +490,9 @@
     "description": "A value in kcal, e.g. 500 kcal",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "kJ": "kJ",
@@ -428,7 +508,9 @@
     "description": "A value in grams, e.g. 5 g",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{value} %",
@@ -436,7 +518,9 @@
     "description": "A value in percent, e.g. 10 %",
     "type": "text",
     "placeholders": {
-      "value": {}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "protein": "Protein",
@@ -462,7 +546,6 @@
   "saturatedFat": "Saturated fat",
   "@saturatedFat": {},
   "fiber": "Fibers",
-  "@fibres": {},
   "sodium": "Sodium",
   "@sodium": {},
   "amount": "Amount",
@@ -502,72 +585,41 @@
     "description": "Confirmation text before the user deletes an object",
     "type": "text",
     "placeholders": {
-      "toDelete": {}
+      "toDelete": {
+        "type": "String"
+      }
     }
   },
   "newNutritionalPlan": "New nutritional plan",
   "@newNutritionalPlan": {},
+  "overview": "Overview",
   "toggleDetails": "Toggle details",
   "@toggleDetails": {
     "description": "Switch to toggle detail / overview"
   },
   "goToDetailPage": "Go to detail page",
   "@goToDetailPage": {},
+  "aboutWhySupportTitle": "Open Source & free to use ❤️",
   "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
   "@aboutDescription": {
     "description": "Text in the about dialog"
   },
-  "aboutSourceTitle": "Source code",
-  "@aboutSourceTitle": {
-    "description": "Title for source code section in the about dialog"
-  },
-  "aboutSourceText": "Get the source code of this application and its server on github",
-  "@aboutSourceText": {
-    "description": "Text for source code section in the about dialog"
-  },
-  "aboutBugsTitle": "Have a problem or idea?",
-  "@aboutBugsTitle": {
-    "description": "Title for bugs section in the about dialog"
-  },
-  "aboutBugsText": "Get in touch if something didn't behave as expected or if there is a feature that you feel is missing.",
-  "@aboutBugsText": {
-    "description": "Text for bugs section in the about dialog"
-  },
-  "aboutContactUsTitle": "Say hi!",
-  "@aboutContactUsTitle": {
-    "description": "Title for contact us section in the about dialog"
-  },
-  "aboutContactUsText": "If you want to chat with us, hop on the Discord server and get in touch",
-  "@aboutContactUsText": {
-    "description": "Text for contact us section in the about dialog"
-  },
+  "aboutDonateTitle": "Make a donation",
+  "aboutDonateText": "While the project is free and will always remain it, running the server isn’t! Development also takes significant time and effort from volunteers. Your contribution directly supports these costs, helping to keep the service reliable.",
+  "aboutContributeTitle": "Contribute",
+  "aboutContributeText": "All types of contributions are encouraged. Whether you're a developer, a translator, or just passionate about fitness, every bit of support is appreciated!",
+  "aboutBugsListTitle": "Report a problem or suggest a feature",
+  "aboutTranslationListTitle": "Translate the application",
+  "aboutSourceListTitle": "View source code",
+  "aboutJoinCommunityTitle": "Join the community",
   "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {
-    "description": "Title for mastodon section in the about dialog"
-  },
-  "aboutMastodonText": "Follow us on mastodon for updates and news about the project",
-  "@aboutMastodonText": {
-    "description": "Text for the mastodon section in the about dialog"
-  },
-  "aboutTranslationTitle": "Translation",
-  "@aboutTranslationTitle": {
-    "description": "Title for translation section in the about dialog"
-  },
-  "aboutTranslationText": "This application is translated on weblate. If you also want to help, click the link and start translating",
-  "@aboutTranslationText": {
-    "description": "Text for translation section in the about dialog"
-  },
-  "aboutDonateTitle": "Donate",
-  "aboutDonateText": "Buy us a coffee to help the project, pay for server costs, and keep us fueled",
+  "aboutDiscordTitle": "Discord",
+  "others": "Others",
   "calendar": "Calendar",
   "@calendar": {},
   "goToToday": "Go to today",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterRepetitionsOrWeight": "Please fill in either the repetitions or the weight for at least one of the sets",
-  "@enterRepetitionsOrWeight": {
-    "description": "Error message when the user hasn't filled in the forms for exercise sets"
   },
   "enterValue": "Please enter a value",
   "@enterValue": {
@@ -583,8 +635,12 @@
     "description": "Error message when the user hasn't entered the correct number of characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {},
-      "max": {}
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
     }
   },
   "enterMinCharacters": "Please enter at least {min} characters",
@@ -592,7 +648,9 @@
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
-      "min": {}
+      "min": {
+        "type": "String"
+      }
     }
   },
   "baseNameEnglish": "All exercises need a base name in English",
@@ -601,7 +659,9 @@
     "description": "Label shown on the slider where the user selects the nr of sets",
     "type": "text",
     "placeholders": {
-      "nrOfSets": {}
+      "nrOfSets": {
+        "type": "String"
+      }
     }
   },
   "setUnitsAndRir": "Set units and RiR",
@@ -654,7 +714,9 @@
     "description": "Dialog info when product is found with barcode",
     "type": "text",
     "placeholders": {
-      "productName": {}
+      "productName": {
+        "type": "String"
+      }
     }
   },
   "productNotFound": "Product not found",
@@ -666,7 +728,9 @@
     "description": "Dialog info when product is not found with barcode",
     "type": "text",
     "placeholders": {
-      "barcode": {}
+      "barcode": {
+        "type": "String"
+      }
     }
   },
   "scanBarcode": "Scan barcode",
@@ -677,7 +741,75 @@
   "@close": {
     "description": "Translation for close"
   },
+  "identicalExercisePleaseDiscard": "If you notice an exercise that is identical to the one you're adding, please discard your draft and edit that exercise instead.",
+  "checkInformationBeforeSubmitting": "Please check that the information you entered is correct before submitting the exercise",
   "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
+  "imageDetailsTitle": "Image details",
+  "@imageDetailsTitle": {
+    "description": "Title for image details form"
+  },
+  "imageDetailsLicenseTitle": "Title",
+  "@imageDetailsLicenseTitle": {
+    "description": "Label for image title field"
+  },
+  "imageDetailsLicenseTitleHint": "Enter image title",
+  "@imageDetailsLicenseTitleHint": {
+    "description": "Hint text for image title field"
+  },
+  "imageDetailsSourceLink": "Link to the source website",
+  "@imageDetailsSourceLink": {
+    "description": "Label for source link field"
+  },
+  "author": "Author(s)",
+  "@Author": {
+    "description": "Label for author field"
+  },
+  "authorHint": "Enter author name",
+  "@authorHint": {
+    "description": "Hint text for author field"
+  },
+  "imageDetailsAuthorLink": "Link to author website or profile",
+  "@imageDetailsAuthorLink": {
+    "description": "Label for author link field"
+  },
+  "imageDetailsDerivativeSource": "Link to the original source, if this is a derivative work",
+  "@imageDetailsDerivativeSource": {
+    "description": "Label for derivative source field"
+  },
+  "imageDetailsDerivativeHelp": "A derivative work is based on a previous work but contains sufficient new, creative content to entitle it to its own copyright.",
+  "@imageDetailsDerivativeHelp": {
+    "description": "Helper text explaining derivative works"
+  },
+  "imageDetailsImageType": "Image Type",
+  "@imageDetailsImageType": {
+    "description": "Label for image type selector"
+  },
+  "imageDetailsLicenseNotice": "By submitting this image, you agree to release it under the CC-BY-SA-4. The image must be either your own work or the author must have released it under a license compatible with it.",
+  "imageDetailsLicenseNoticeLinkToLicense": "See license text.",
+  "imageFormatNotSupported": "{imageFormat} not supported",
+  "@imageFormatNotSupported": {
+      "description": "Label shown on the error container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "imageFormatNotSupportedDetail": "{imageFormat} images are not supported yet.",
+  "@imageFormatNotSupportedDetail": {
+      "description": "Label shown on the image preview container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "add": "add",
+  "@add": {
+    "description": "Add button text"
+  },
   "variations": "Variations",
   "@variations": {
     "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
@@ -685,7 +817,9 @@
   "alsoKnownAs": "Also known as: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
-      "aliases": {}
+      "aliases": {
+        "type": "String"
+      }
     },
     "description": "List of alternative names for an exercise"
   },
@@ -695,7 +829,9 @@
   "verifiedEmailInfo": "A verification email was sent to {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
-      "email": {}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "alternativeNames": "Alternative names",
@@ -706,6 +842,12 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
+  "fitInWeek": "Fit in week",
+  "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
+  "addSuperset": "Add superset",
+  "setHasProgression": "Set has progression",
+  "setHasProgressionWarning": "Please note that at the moment it is not possible to edit all settings for a set on the mobile application or configure automatic progression. For now, please use the web application.",
+  "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
   "translation": "Translation",
   "translateExercise": "Translate this exercise now",
@@ -713,12 +855,13 @@
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
   },
+  "enterTextInLanguage": "Please enter the text in the correct language!",
   "settingsTitle": "Settings",
   "settingsCacheTitle": "Cache",
   "settingsExerciseCacheDescription": "Exercise cache",
   "settingsIngredientCacheDescription": "Ingredient cache",
   "settingsCacheDeletedSnackbar": "Cache successfully cleared",
-  "aboutPageTitle": "About Wger",
+  "aboutPageTitle": "About us & Support",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
   "@contributeExerciseWarning": {
     "description": "Number of days before which a person can add exercise",
@@ -729,6 +872,9 @@
       }
     }
   },
+  "simpleMode": "Simple mode",
+  "simpleModeHelp": "Hide some of the more advanced settings when editing exercises",
+  "progressionRules": "This exercise has progression rules and can't be edited on the mobile app. Please use the web application to edit this exercise.",
   "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
   "textPromptTitle": "Ready to start?",
   "textPromptSubheading": "Press the action button to begin",
@@ -848,6 +994,10 @@
   "@repetitions": {
     "description": "Generated entry for translation for server strings"
   },
+  "resistance_band": "Resistance band",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  },
   "sz_bar": "SZ-Bar",
   "@sz_bar": {
     "description": "Generated entry for translation for server strings"
@@ -888,5 +1038,34 @@
   "@log": {
     "description": "Log a specific meal (imperative form)"
   },
-  "done": "Done"
+  "done": "Done",
+  "overallChangeWeight": "Overall change",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "From meals",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Basic",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Advanced",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "raw",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "avg",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "endWorkout": "End Workout",
+  "themeMode": "Theme mode",
+  "darkMode": "Always dark mode",
+  "lightMode": "Always light mode",
+  "systemMode": "System settings"
 }

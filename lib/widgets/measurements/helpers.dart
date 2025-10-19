@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/widgets/measurements/charts.dart';
@@ -15,7 +16,16 @@ List<Widget> getOverviewWidgets(
     Container(
       padding: const EdgeInsets.all(15),
       height: 220,
-      child: MeasurementChartWidgetFl(raw, unit, avgs: avg),
+      child: raw.isEmpty
+          ? Center(
+              child: Text(
+                'No data available',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
+                ),
+              ),
+            )
+          : MeasurementChartWidgetFl(raw, unit, avgs: avg),
     ),
     if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
     const SizedBox(height: 8),
@@ -26,13 +36,11 @@ List<Widget> getOverviewWidgetsSeries(
   String name,
   List<MeasurementChartEntry> entriesAll,
   List<MeasurementChartEntry> entries7dAvg,
-  NutritionalPlan? plan,
+  List<NutritionalPlan> plans,
   String unit,
   BuildContext context,
 ) {
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
-  final showPlan = plan != null && entriesAll.any((e) => e.date.isAfter(plan.creationDate));
-
   return [
     ...getOverviewWidgets(
       AppLocalizations.of(context).chartAllTimeTitle(name),
@@ -41,31 +49,25 @@ List<Widget> getOverviewWidgetsSeries(
       unit,
       context,
     ),
-    if (showPlan)
+    // Show overview widgets for each plan in plans
+    for (final plan in plans)
       ...getOverviewWidgets(
         AppLocalizations.of(context).chartDuringPlanTitle(name, plan.description),
-        entriesAll.where((e) => e.date.isAfter(plan.creationDate)).toList(),
-        entries7dAvg.where((e) => e.date.isAfter(plan.creationDate)).toList(),
+        entriesAll.whereDateWithInterpolation(plan.startDate, plan.endDate),
+        entries7dAvg.whereDateWithInterpolation(plan.startDate, plan.endDate),
         unit,
         context,
       ),
     // if all time is significantly longer than 30 days (let's say > 75 days)
-    // and any plan was also > 75 days,
     // then let's show a separate chart just focusing on the last 30 days,
     // if there is data for it.
     if (entriesAll.isNotEmpty &&
         entriesAll.first.date.isBefore(entriesAll.last.date.subtract(const Duration(days: 75))) &&
-        (plan == null ||
-            (showPlan &&
-                entriesAll
-                    .firstWhere((e) => e.date.isAfter(plan.creationDate))
-                    .date
-                    .isBefore(entriesAll.last.date.subtract(const Duration(days: 30))))) &&
         entriesAll.any((e) => e.date.isAfter(monthAgo)))
       ...getOverviewWidgets(
         AppLocalizations.of(context).chart30DaysTitle(name),
-        entriesAll.where((e) => e.date.isAfter(monthAgo)).toList(),
-        entries7dAvg.where((e) => e.date.isAfter(monthAgo)).toList(),
+        entriesAll.whereDateWithInterpolation(monthAgo, null),
+        entries7dAvg.whereDateWithInterpolation(monthAgo, null),
         unit,
         context,
       ),
@@ -73,14 +75,22 @@ List<Widget> getOverviewWidgetsSeries(
     Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Indicator(color: Theme.of(context).colorScheme.primary, text: 'raw', isSquare: true),
-        Indicator(color: Theme.of(context).colorScheme.tertiary, text: 'avg', isSquare: true),
+        Indicator(
+          color: Theme.of(context).colorScheme.primary,
+          text: AppLocalizations.of(context).indicatorRaw,
+          isSquare: true,
+        ),
+        Indicator(
+          color: Theme.of(context).colorScheme.tertiary,
+          text: AppLocalizations.of(context).indicatorAvg,
+          isSquare: true,
+        ),
       ],
     ),
   ];
 }
 
-// return the raw and average meaasurements for a "sensible range"
+// return the raw and average measurements for a "sensible range"
 // a sensible range is something relatively recent, which is most relevant
 // for the user to track their progress, but a range should always include
 // at least 5 points, and if not we chose a bigger one.
@@ -92,16 +102,16 @@ List<Widget> getOverviewWidgetsSeries(
   final twoMonthsAgo = DateTime.now().subtract(const Duration(days: 61));
   final fourMonthsAgo = DateTime.now().subtract(const Duration(days: 122));
 
-  if (entriesAll.where((e) => e.date.isAfter(twoMonthsAgo)).length > 4) {
+  if (entriesAll.whereDate(twoMonthsAgo, null).length > 4) {
     return (
-      entriesAll.where((e) => e.date.isAfter(twoMonthsAgo)).toList(),
-      entries7dAvg.where((e) => e.date.isAfter(twoMonthsAgo)).toList(),
+      entriesAll.whereDate(twoMonthsAgo, null),
+      entries7dAvg.whereDate(twoMonthsAgo, null),
     );
   }
-  if (entriesAll.where((e) => e.date.isAfter(fourMonthsAgo)).length > 4) {
+  if (entriesAll.whereDate(fourMonthsAgo, null).length > 4) {
     return (
-      entriesAll.where((e) => e.date.isAfter(fourMonthsAgo)).toList(),
-      entries7dAvg.where((e) => e.date.isAfter(fourMonthsAgo)).toList(),
+      entriesAll.whereDate(fourMonthsAgo, null),
+      entries7dAvg.whereDate(fourMonthsAgo, null),
     );
   }
   return (entriesAll, entries7dAvg);

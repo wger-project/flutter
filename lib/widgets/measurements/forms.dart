@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
@@ -31,7 +31,11 @@ class MeasurementCategoryForm extends StatelessWidget {
   final nameController = TextEditingController();
   final unitController = TextEditingController();
 
-  final Map<String, dynamic> categoryData = {'id': null, 'name': '', 'unit': ''};
+  final Map<String, dynamic> categoryData = {
+    'id': null,
+    'name': '',
+    'unit': '',
+  };
 
   MeasurementCategoryForm([MeasurementCategory? category]) {
     //this._category = category ?? MeasurementCategory();
@@ -97,29 +101,26 @@ class MeasurementCategoryForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              try {
-                categoryData['id'] == null
-                    ? await Provider.of<MeasurementProvider>(context, listen: false).addCategory(
-                        MeasurementCategory(
-                          id: categoryData['id'],
-                          name: categoryData['name'],
-                          unit: categoryData['unit'],
-                        ),
-                      )
-                    : await Provider.of<MeasurementProvider>(context, listen: false).editCategory(
-                        categoryData['id'],
-                        categoryData['name'],
-                        categoryData['unit'],
-                      );
-              } on WgerHttpException catch (error) {
-                if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
-                }
-              } catch (error) {
-                if (context.mounted) {
-                  showErrorDialog(error, context);
-                }
-              }
+              categoryData['id'] == null
+                  ? await Provider.of<MeasurementProvider>(
+                      context,
+                      listen: false,
+                    ).addCategory(
+                      MeasurementCategory(
+                        id: categoryData['id'],
+                        name: categoryData['name'],
+                        unit: categoryData['unit'],
+                      ),
+                    )
+                  : await Provider.of<MeasurementProvider>(
+                      context,
+                      listen: false,
+                    ).editCategory(
+                      categoryData['id'],
+                      categoryData['name'],
+                      categoryData['unit'],
+                    );
+
               if (context.mounted) {
                 Navigator.of(context).pop();
               }
@@ -157,8 +158,8 @@ class MeasurementEntryForm extends StatelessWidget {
       _entryData['notes'] = entry.notes;
     }
 
-    _dateController.text = toDate(_entryData['date'])!;
-    _valueController.text = _entryData['value']!.toString();
+    _dateController.text = dateToYYYYMMDD(_entryData['date'])!;
+    _valueController.text = '';
     _notesController.text = _entryData['notes']!;
   }
 
@@ -169,13 +170,27 @@ class MeasurementEntryForm extends StatelessWidget {
       (category) => category.id == _categoryId,
     );
 
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
+    // If the value is not empty, format it
+    if (_valueController.text.isEmpty && _entryData['value'] != null && _entryData['value'] != '') {
+      _valueController.text = numberFormat.format(_entryData['value']);
+    }
+
     return Form(
       key: _form,
       child: Column(
         children: [
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).date),
-            readOnly: true, // Hide text cursor
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).date,
+              suffixIcon: const Icon(
+                Icons.calendar_today,
+                key: Key('calendarIcon'),
+              ),
+            ),
+            readOnly: true,
+            // Hide text cursor
             controller: _dateController,
             onTap: () async {
               // Stop keyboard from appearing
@@ -198,7 +213,7 @@ class MeasurementEntryForm extends StatelessWidget {
                 },
               );
 
-              _dateController.text = toDate(pickedDate)!;
+              _dateController.text = pickedDate == null ? '' : dateToYYYYMMDD(pickedDate)!;
             },
             onSaved: (newValue) {
               _entryData['date'] = DateTime.parse(newValue!);
@@ -218,20 +233,20 @@ class MeasurementEntryForm extends StatelessWidget {
               suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
             ),
             controller: _valueController,
-            keyboardType: TextInputType.number,
+            keyboardType: textInputTypeDecimal,
             validator: (value) {
               if (value!.isEmpty) {
                 return AppLocalizations.of(context).enterValue;
               }
               try {
-                double.parse(value);
+                numberFormat.parse(value);
               } catch (error) {
                 return AppLocalizations.of(context).enterValidNumber;
               }
               return null;
             },
             onSaved: (newValue) {
-              _entryData['value'] = double.parse(newValue!);
+              _entryData['value'] = numberFormat.parse(newValue!);
             },
           ),
           // Value
@@ -245,7 +260,10 @@ class MeasurementEntryForm extends StatelessWidget {
               const minLength = 0;
               const maxLength = 100;
               if (value!.isNotEmpty && (value.length < minLength || value.length > maxLength)) {
-                return AppLocalizations.of(context).enterCharacters(minLength, maxLength);
+                return AppLocalizations.of(context).enterCharacters(
+                  minLength.toString(),
+                  maxLength.toString(),
+                );
               }
               return null;
             },
@@ -262,33 +280,30 @@ class MeasurementEntryForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              try {
-                _entryData['id'] == null
-                    ? await Provider.of<MeasurementProvider>(context, listen: false).addEntry(
-                        MeasurementEntry(
-                          id: _entryData['id'],
-                          category: _entryData['category'],
-                          date: _entryData['date'],
-                          value: _entryData['value'],
-                          notes: _entryData['notes'],
-                        ),
-                      )
-                    : await Provider.of<MeasurementProvider>(context, listen: false).editEntry(
-                        _entryData['id'],
-                        _entryData['category'],
-                        _entryData['value'],
-                        _entryData['notes'],
-                        _entryData['date'],
-                      );
-              } on WgerHttpException catch (error) {
-                if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
-                }
-              } catch (error) {
-                if (context.mounted) {
-                  showErrorDialog(error, context);
-                }
-              }
+              _entryData['id'] == null
+                  ? await Provider.of<MeasurementProvider>(
+                      context,
+                      listen: false,
+                    ).addEntry(
+                      MeasurementEntry(
+                        id: _entryData['id'],
+                        category: _entryData['category'],
+                        date: _entryData['date'],
+                        value: _entryData['value'],
+                        notes: _entryData['notes'],
+                      ),
+                    )
+                  : await Provider.of<MeasurementProvider>(
+                      context,
+                      listen: false,
+                    ).editEntry(
+                      _entryData['id'],
+                      _entryData['category'],
+                      _entryData['value'],
+                      _entryData['notes'],
+                      _entryData['date'],
+                    );
+
               if (context.mounted) {
                 Navigator.of(context).pop();
               }

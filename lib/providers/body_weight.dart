@@ -17,11 +17,15 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class BodyWeightProvider with ChangeNotifier {
+  final _logger = Logger('BodyWeightProvider');
+
   final WgerBaseProvider baseProvider;
 
   static const BODY_WEIGHT_URL = 'weightentry';
@@ -61,11 +65,15 @@ class BodyWeightProvider with ChangeNotifier {
   }
 
   Future<List<WeightEntry>> fetchAndSetEntries() async {
+    _logger.info('Fetching all body weight entries');
+
     // Process the response
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(
-      BODY_WEIGHT_URL,
-      query: {'ordering': '-date', 'limit': '100'},
-    ));
+    final data = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        BODY_WEIGHT_URL,
+        query: {'ordering': '-date', 'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
     _entries = [];
     for (final entry in data) {
       _entries.add(WeightEntry.fromJson(entry));

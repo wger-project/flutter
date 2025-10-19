@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/helpers/ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -71,7 +71,7 @@ class MealForm extends StatelessWidget {
                 }
               },
               onSaved: (newValue) {
-                _meal.time = stringToTime(newValue);
+                _meal.time = stringToTimeNull(newValue);
               },
             ),
             TextFormField(
@@ -86,24 +86,22 @@ class MealForm extends StatelessWidget {
             ElevatedButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
-              onPressed: () async {
+              onPressed: () {
                 if (!_form.currentState!.validate()) {
                   return;
                 }
                 _form.currentState!.save();
 
-                try {
-                  _meal.id == null
-                      ? Provider.of<NutritionPlansProvider>(
-                          context,
-                          listen: false,
-                        ).addMeal(_meal, _planId)
-                      : Provider.of<NutritionPlansProvider>(context, listen: false).editMeal(_meal);
-                } on WgerHttpException catch (error) {
-                  showHttpExceptionErrorDialog(error, context);
-                } catch (error) {
-                  showErrorDialog(error, context);
-                }
+                _meal.id == null
+                    ? Provider.of<NutritionPlansProvider>(
+                        context,
+                        listen: false,
+                      ).addMeal(_meal, _planId)
+                    : Provider.of<NutritionPlansProvider>(
+                        context,
+                        listen: false,
+                      ).editMeal(_meal);
+
                 Navigator.of(context).pop();
               },
             ),
@@ -114,7 +112,12 @@ class MealForm extends StatelessWidget {
   }
 }
 
-Widget MealItemForm(Meal meal, List<MealItem> recent, [String? barcode, bool? test]) {
+Widget getMealItemForm(
+  Meal meal,
+  List<MealItem> recent, [
+  String? barcode,
+  bool? test,
+]) {
   return IngredientForm(
     // TODO we use planId 0 here cause we don't have one and we don't need it I think?
     recent: recent.map((e) => Log.fromMealItem(e, "0", e.mealId)).toList(),
@@ -128,7 +131,7 @@ Widget MealItemForm(Meal meal, List<MealItem> recent, [String? barcode, bool? te
   );
 }
 
-Widget IngredientLogForm(NutritionalPlan plan) {
+Widget getIngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
     recent: plan.dedupDiaryEntries,
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
@@ -181,7 +184,7 @@ class IngredientFormState extends State<IngredientForm> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    _dateController.text = toDate(now)!;
+    _dateController.text = dateToYYYYMMDD(now)!;
     _timeController.text = timeToString(TimeOfDay.fromDateTime(now))!;
   }
 
@@ -232,6 +235,8 @@ class IngredientFormState extends State<IngredientForm> {
     final suggestions = widget.recent
         .where((e) => e.ingredient.name.toLowerCase().contains(queryLower))
         .toList();
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -244,17 +249,20 @@ class IngredientFormState extends State<IngredientForm> {
               barcode: widget.barcode,
               test: widget.test,
               selectIngredient: selectIngredient,
-              unSelectIngredient: unSelectIngredient,
-              updateSearchQuery: updateSearchQuery,
+              onDeselectIngredient: unSelectIngredient,
+              onUpdateSearchQuery: updateSearchQuery,
             ),
             Row(
               children: [
                 Expanded(
                   child: TextFormField(
-                    key: const Key('field-weight'), // needed ?
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context).weight),
+                    key: const Key('field-weight'),
+                    // needed ?
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context).weight,
+                    ),
                     controller: _amountController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: textInputTypeDecimal,
                     onChanged: (value) {
                       setState(() {
                         final v = double.tryParse(value);
@@ -264,11 +272,11 @@ class IngredientFormState extends State<IngredientForm> {
                       });
                     },
                     onSaved: (value) {
-                      _mealItem.amount = double.parse(value!);
+                      _mealItem.amount = numberFormat.parse(value!);
                     },
                     validator: (value) {
                       try {
-                        double.parse(value!);
+                        numberFormat.parse(value!);
                       } catch (error) {
                         return AppLocalizations.of(context).enterValidNumber;
                       }
@@ -297,7 +305,7 @@ class IngredientFormState extends State<IngredientForm> {
                         );
 
                         if (pickedDate != null) {
-                          _dateController.text = toDate(pickedDate)!;
+                          _dateController.text = dateToYYYYMMDD(pickedDate)!;
                         }
                       },
                       onSaved: (newValue) {
@@ -348,28 +356,32 @@ class IngredientFormState extends State<IngredientForm> {
                         context,
                         listen: false,
                       ).fetchIngredient(_mealItem.ingredientId),
-                      builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
-                        if (snapshot.hasData) {
-                          _mealItem.ingredient = snapshot.data!;
-                          return MealItemValuesTile(
-                            ingredient: _mealItem.ingredient,
-                            nutritionalValues: _mealItem.nutritionalValues,
-                          );
-                        } else if (snapshot.hasError) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Text(
-                              'Ingredient lookup error: ${snapshot.error}',
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          );
-                        }
-                        return const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(),
-                        );
-                      },
+                      builder:
+                          (
+                            BuildContext context,
+                            AsyncSnapshot<Ingredient> snapshot,
+                          ) {
+                            if (snapshot.hasData) {
+                              _mealItem.ingredient = snapshot.data!;
+                              return MealItemValuesTile(
+                                ingredient: _mealItem.ingredient,
+                                nutritionalValues: _mealItem.nutritionalValues,
+                              );
+                            } else if (snapshot.hasError) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: Text(
+                                  'Ingredient lookup error: ${snapshot.error}',
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              );
+                            }
+                            return const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(),
+                            );
+                          },
                     ),
                   ],
                 ),
@@ -384,16 +396,12 @@ class IngredientFormState extends State<IngredientForm> {
                 _form.currentState!.save();
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
-                try {
-                  var date = DateTime.parse(_dateController.text);
-                  final tod = stringToTime(_timeController.text);
-                  date = DateTime(date.year, date.month, date.day, tod.hour, tod.minute);
-                  widget.onSave(context, _mealItem, date);
-                } on WgerHttpException catch (error) {
-                  showHttpExceptionErrorDialog(error, context);
-                } catch (error) {
-                  showErrorDialog(error, context);
-                }
+                final loggedDate = getDateTimeFromDateAndTime(
+                  _dateController.text,
+                  _timeController.text,
+                );
+                widget.onSave(context, _mealItem, loggedDate);
+
                 Navigator.of(context).pop();
               },
             ),
@@ -459,7 +467,19 @@ enum GoalType {
   advanced('Advanced');
 
   const GoalType(this.label);
+
   final String label;
+
+  String getI18nLabel(BuildContext context) {
+    switch (this) {
+      case GoalType.meals:
+        return AppLocalizations.of(context).goalTypeMeals;
+      case GoalType.basic:
+        return AppLocalizations.of(context).goalTypeBasic;
+      case GoalType.advanced:
+        return AppLocalizations.of(context).goalTypeAdvanced;
+    }
+  }
 }
 
 class PlanForm extends StatefulWidget {
@@ -476,20 +496,13 @@ class PlanForm extends StatefulWidget {
 class _PlanFormState extends State<PlanForm> {
   final _form = GlobalKey<FormState>();
 
-  bool _onlyLogging = true;
   GoalType _goalType = GoalType.meals;
-
-  final _descriptionController = TextEditingController();
-  final TextEditingController colorController = TextEditingController();
-
   GoalType? selectedGoal;
 
   @override
   void initState() {
     super.initState();
 
-    _onlyLogging = widget._plan.onlyLogging;
-    _descriptionController.text = widget._plan.description;
     if (widget._plan.hasAnyAdvancedGoals) {
       _goalType = GoalType.advanced;
     } else if (widget._plan.hasAnyGoals) {
@@ -500,14 +513,9 @@ class _PlanFormState extends State<PlanForm> {
   }
 
   @override
-  void dispose() {
-    _descriptionController.dispose();
-    colorController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+
     return Form(
       key: _form,
       child: ListView(
@@ -515,21 +523,119 @@ class _PlanFormState extends State<PlanForm> {
           // Description
           TextFormField(
             key: const Key('field-description'),
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).description),
-            controller: _descriptionController,
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).description,
+            ),
+            controller: TextEditingController(
+              text: widget._plan.description,
+            ),
             onSaved: (newValue) {
               widget._plan.description = newValue!;
             },
           ),
+          // Start Date
+          TextFormField(
+            key: const Key('field-start-date'),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).startDate,
+              suffixIcon: const Icon(
+                Icons.calendar_today,
+                key: Key('calendarIcon'),
+              ),
+            ),
+            controller: TextEditingController(
+              text: dateFormat.format(widget._plan.startDate),
+            ),
+            readOnly: true,
+            onTap: () async {
+              // Stop keyboard from appearing
+              FocusScope.of(context).requestFocus(FocusNode());
+
+              // Open date picker
+              final pickedDate = await showDatePicker(
+                context: context,
+                initialDate: widget._plan.startDate,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+              );
+
+              if (pickedDate != null) {
+                setState(() {
+                  widget._plan.startDate = pickedDate;
+                });
+              }
+            },
+            validator: (value) {
+              if (widget._plan.endDate != null &&
+                  widget._plan.endDate!.isBefore(widget._plan.startDate)) {
+                return 'End date must be after start date';
+              }
+
+              return null;
+            },
+          ),
+          // End Date
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  key: const Key('field-end-date'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).endDate,
+                    helperText:
+                        'Tip: only for athletes with contest deadlines.  Most users benefit from flexibility',
+                    suffixIcon: widget._plan.endDate == null
+                        ? const Icon(
+                            Icons.calendar_today,
+                            key: Key('calendarIcon'),
+                          )
+                        : IconButton(
+                            icon: const Icon(Icons.clear),
+                            tooltip: 'Clear end date',
+                            onPressed: () {
+                              setState(() {
+                                widget._plan.endDate = null;
+                              });
+                            },
+                          ),
+                  ),
+                  controller: TextEditingController(
+                    text: widget._plan.endDate == null
+                        ? ''
+                        : dateFormat.format(widget._plan.endDate!),
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    // Stop keyboard from appearing
+                    FocusScope.of(context).requestFocus(FocusNode());
+
+                    // Open date picker
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: widget._plan.endDate,
+                      // end must be after start
+                      firstDate: widget._plan.startDate.add(const Duration(days: 1)),
+                      lastDate: DateTime(2100),
+                    );
+
+                    if (pickedDate != null) {
+                      setState(() {
+                        widget._plan.endDate = pickedDate;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
           SwitchListTile(
             title: Text(AppLocalizations.of(context).onlyLogging),
             subtitle: Text(AppLocalizations.of(context).onlyLoggingHelpText),
-            value: _onlyLogging,
+            value: widget._plan.onlyLogging,
             onChanged: (value) {
               setState(() {
-                _onlyLogging = !_onlyLogging;
+                widget._plan.onlyLogging = value;
               });
-              widget._plan.onlyLogging = value;
             },
           ),
           Row(
@@ -541,9 +647,14 @@ class _PlanFormState extends State<PlanForm> {
               const SizedBox(width: 8),
               Expanded(
                 child: DropdownButtonFormField<GoalType>(
-                  value: _goalType,
+                  initialValue: _goalType,
                   items: GoalType.values
-                      .map((e) => DropdownMenuItem<GoalType>(value: e, child: Text(e.label)))
+                      .map(
+                        (e) => DropdownMenuItem<GoalType>(
+                          value: e,
+                          child: Text(e.getI18nLabel(context)),
+                        ),
+                      )
                       .toList(),
                   onChanged: (GoalType? g) {
                     setState(() {
@@ -624,37 +735,24 @@ class _PlanFormState extends State<PlanForm> {
               _form.currentState!.save();
 
               // Save to DB
-              try {
-                if (widget._plan.id != null) {
-                  await Provider.of<NutritionPlansProvider>(
-                    context,
-                    listen: false,
-                  ).editPlan(widget._plan);
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
-                } else {
-                  widget._plan = await Provider.of<NutritionPlansProvider>(
-                    context,
-                    listen: false,
-                  ).addPlan(widget._plan);
-                  if (context.mounted) {
-                    Navigator.of(context).pushReplacementNamed(
-                      NutritionalPlanScreen.routeName,
-                      arguments: widget._plan.id,
-                    );
-                  }
-                }
-
-                // Saving was successful, reset the data
-                _descriptionController.clear();
-              } on WgerHttpException catch (error) {
+              if (widget._plan.id != null) {
+                await Provider.of<NutritionPlansProvider>(
+                  context,
+                  listen: false,
+                ).editPlan(widget._plan);
                 if (context.mounted) {
-                  showHttpExceptionErrorDialog(error, context);
+                  Navigator.of(context).pop();
                 }
-              } catch (error) {
+              } else {
+                widget._plan = await Provider.of<NutritionPlansProvider>(
+                  context,
+                  listen: false,
+                ).addPlan(widget._plan);
                 if (context.mounted) {
-                  showErrorDialog(error, context);
+                  Navigator.of(context).pushReplacementNamed(
+                    NutritionalPlanScreen.routeName,
+                    arguments: widget._plan,
+                  );
                 }
               }
             },
@@ -681,22 +779,24 @@ class GoalMacros extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
     return TextFormField(
       initialValue: val ?? '',
       decoration: InputDecoration(labelText: label, suffixText: suffix),
-      keyboardType: TextInputType.number,
+      keyboardType: textInputTypeDecimal,
       onSaved: (newValue) {
         if (newValue == null || newValue == '') {
           return;
         }
-        onSave(double.parse(newValue));
+        onSave(numberFormat.parse(newValue) as double);
       },
       validator: (value) {
         if (value == '') {
           return null;
         }
         try {
-          double.parse(value!);
+          numberFormat.parse(value!);
         } catch (error) {
           return AppLocalizations.of(context).enterValidNumber;
         }

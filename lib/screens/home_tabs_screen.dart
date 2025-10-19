@@ -29,16 +29,18 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/providers/workout_plans.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/screens/workout_plans_screen.dart';
 
 class HomeTabsScreen extends StatefulWidget {
-  const HomeTabsScreen();
+  final _logger = Logger('HomeTabsScreen');
+
+  HomeTabsScreen();
 
   static const routeName = '/dashboard2';
 
@@ -48,6 +50,7 @@ class HomeTabsScreen extends StatefulWidget {
 
 class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
   late Future<void> _initialData;
+  bool _errorHandled = false;
   int _selectedIndex = 0;
 
   @override
@@ -69,7 +72,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   final _screenList = [
     const DashboardScreen(),
-    const WorkoutPlansScreen(),
+    const RoutineListScreen(),
     const NutritionalPlansScreen(),
     const WeightScreen(),
     const GalleryScreen(),
@@ -99,7 +102,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {
-      final workoutPlansProvider = context.read<WorkoutPlansProvider>();
+      final routinesProvider = context.read<RoutinesProvider>();
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final exercisesProvider = context.read<ExercisesProvider>();
       final galleryProvider = context.read<GalleryProvider>();
@@ -107,41 +110,53 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       final measurementProvider = context.read<MeasurementProvider>();
       final userProvider = context.read<UserProvider>();
 
+      //
       // Base data
-      log.log(Level.FINER, Level.FINER, 'Loading base data');
-      try {
-        await Future.wait([
-          authProvider.setServerVersion(),
-          userProvider.fetchAndSetProfile(),
-          workoutPlansProvider.fetchAndSetUnits(),
-          nutritionPlansProvider.fetchIngredientsFromCache(),
-          exercisesProvider.fetchAndSetInitialData(),
-        ]);
-      } catch (e) {
-        log.log(Level.FINER, 'Exception loading base data');
-        log.log(Level.FINER, e.toString());
+      widget._logger.info('Loading base data');
+      await Future.wait([
+        authProvider.setServerVersion(),
+        userProvider.fetchAndSetProfile(),
+        routinesProvider.fetchAndSetUnits(),
+        nutritionPlansProvider.fetchIngredientsFromCache(),
+        exercisesProvider.fetchAndSetInitialData(),
+      ]);
+      exercisesProvider.fetchAndSetAllExercises();
+
+      // Workaround for https://github.com/wger-project/flutter/issues/901
+      // It seems that it can happen that sometimes the units were not loaded properly
+      // so now we check and try again if necessary. We might need a better general
+      // solution since this could potentially happen with other data as well.
+      if (routinesProvider.repetitionUnits.isEmpty || routinesProvider.weightUnits.isEmpty) {
+        widget._logger.info('Routine units are empty, fetching again');
+        await routinesProvider.fetchAndSetUnits();
       }
 
+      //
       // Plans, weight and gallery
-      log.log(Level.FINER, 'Loading workouts, weight, measurements and gallery');
-      try {
-        await Future.wait([
-          galleryProvider.fetchAndSetGallery(),
-          workoutPlansProvider.fetchAndSetAllPlansSparse(),
-          weightProvider.fetchAndSetEntries(),
-          measurementProvider.fetchAndSetAllCategoriesAndEntries(),
-        ]);
-      } catch (e) {
-        log.log(Level.FINER, 'Exception loading plans, weight, measurements and gallery');
-        log.log(Level.FINER, e.toString());
+      widget._logger.info('Loading routines, weight, measurements and gallery');
+      await Future.wait([
+        galleryProvider.fetchAndSetGallery(),
+        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+        routinesProvider.fetchAndSetAllRoutinesSparse(),
+        // routinesProvider.fetchAndSetAllRoutinesFull(),
+        weightProvider.fetchAndSetEntries(),
+        measurementProvider.fetchAndSetAllCategoriesAndEntries(),
+      ]);
+
+      //
+      // Current nutritional plan
+      widget._logger.info('Loading current nutritional plan');
+      if (nutritionPlansProvider.currentPlan != null) {
+        final plan = nutritionPlansProvider.currentPlan!;
+        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
       }
 
-      // Current workout plan
-      log.log(Level.FINER, 'Loading current workout plan');
-      if (workoutPlansProvider.activePlan != null) {
-        final planId = workoutPlansProvider.activePlan!.id!;
-        await workoutPlansProvider.fetchAndSetWorkoutPlanFull(planId);
-        workoutPlansProvider.setCurrentPlan(planId);
+      //
+      // Current routine
+      widget._logger.info('Loading current routine');
+      if (routinesProvider.currentRoutine != null) {
+        final planId = routinesProvider.currentRoutine!.id!;
+        await routinesProvider.fetchAndSetRoutineFull(planId);
       }
     }
 
@@ -153,62 +168,95 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     return FutureBuilder<void>(
       future: _initialData,
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          // Throw the original error with the original stack trace, otherwise
+          // the error will only point to these lines here
+          if (!_errorHandled) {
+            _errorHandled = true;
+            final error = snapshot.error;
+            final stackTrace = snapshot.stackTrace;
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                if (error != null && stackTrace != null) {
+                  throw Error.throwWithStackTrace(error, stackTrace);
+                }
+                throw error!;
+              }
+            });
+          }
+
+          // Note that we continue to show the app, even if there was an error.
+          // return const Scaffold(body: LoadingWidget());
+        }
+
         if (snapshot.connectionState != ConnectionState.done) {
-          return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Center(
-                    child: SizedBox(
-                      height: 70,
-                      child: RiveAnimation.asset(
-                        'assets/animations/wger_logo.riv',
-                        animations: ['idle_loop2'],
-                      ),
-                    ),
-                  ),
-                  Text(
-                    AppLocalizations.of(context).loadingText,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {
-          return Scaffold(
-            body: _screenList.elementAt(_selectedIndex),
-            bottomNavigationBar: NavigationBar(
-              destinations: [
-                NavigationDestination(
-                  icon: const Icon(Icons.home),
-                  label: AppLocalizations.of(context).labelDashboard,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.fitness_center),
-                  label: AppLocalizations.of(context).labelBottomNavWorkout,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.restaurant),
-                  label: AppLocalizations.of(context).labelBottomNavNutrition,
-                ),
-                NavigationDestination(
-                  icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
-                  label: AppLocalizations.of(context).weight,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.photo_library),
-                  label: AppLocalizations.of(context).gallery,
-                ),
-              ],
-              onDestinationSelected: _onItemTapped,
-              selectedIndex: _selectedIndex,
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-            ),
+          return const Scaffold(
+            body: LoadingWidget(),
           );
         }
+
+        return Scaffold(
+          body: _screenList.elementAt(_selectedIndex),
+          bottomNavigationBar: NavigationBar(
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(Icons.home),
+                label: AppLocalizations.of(context).labelDashboard,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.fitness_center),
+                label: AppLocalizations.of(context).labelBottomNavWorkout,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.restaurant),
+                label: AppLocalizations.of(context).labelBottomNavNutrition,
+              ),
+              NavigationDestination(
+                icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
+                label: AppLocalizations.of(context).weight,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.photo_library),
+                label: AppLocalizations.of(context).gallery,
+              ),
+            ],
+            onDestinationSelected: _onItemTapped,
+            selectedIndex: _selectedIndex,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          ),
+        );
       },
+    );
+  }
+}
+
+class LoadingWidget extends StatelessWidget {
+  const LoadingWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Center(
+            child: SizedBox(
+              height: 70,
+              child: RiveAnimation.asset(
+                'assets/animations/wger_logo.riv',
+                animations: ['idle_loop2'],
+              ),
+            ),
+          ),
+          Text(
+            AppLocalizations.of(context).loadingText,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+        ],
+      ),
     );
   }
 }
