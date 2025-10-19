@@ -8,7 +8,10 @@ part of 'category.dart';
 
 ExerciseCategory _$ExerciseCategoryFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'name']);
-  return ExerciseCategory(id: (json['id'] as num).toInt(), name: json['name'] as String);
+  return ExerciseCategory(
+    id: (json['id'] as num).toInt(),
+    name: json['name'] as String,
+  );
 }
 
 Map<String, dynamic> _$ExerciseCategoryToJson(ExerciseCategory instance) => <String, dynamic>{

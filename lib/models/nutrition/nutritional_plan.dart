@@ -39,7 +39,7 @@ class NutritionalPlan {
   final _logger = Logger('NutritionalPlan Model');
 
   @JsonKey(required: true)
-  int? id;
+  String? id;
 
   @JsonKey(required: true)
   late String description;
@@ -109,6 +109,8 @@ class NutritionalPlan {
       id: row['id'],
       description: row['description'],
       creationDate: DateTime.parse(row['creation_date']),
+      startDate: row['start'] != null ? DateTime.parse(row['start']) : DateTime.now(),
+      endDate: row['end'] != null ? DateTime.parse(row['end']) : null,
       onlyLogging: row['only_logging'] == 1,
       goalEnergy: row['goal_energy'],
       goalProtein: row['goal_protein'],
@@ -135,6 +137,8 @@ class NutritionalPlan {
       id: id ?? this.id,
       description: description ?? this.description,
       creationDate: creationDate ?? this.creationDate,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
       onlyLogging: onlyLogging ?? this.onlyLogging,
       goalEnergy: goalEnergy ?? this.goalEnergy,
       goalProtein: goalProtein ?? this.goalProtein,

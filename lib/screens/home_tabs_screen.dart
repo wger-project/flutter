@@ -136,7 +136,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       widget._logger.info('Loading routines, weight, measurements and gallery');
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
-        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+        // nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         routinesProvider.fetchAndSetAllRoutinesSparse(),
         // routinesProvider.fetchAndSetAllRoutinesFull(),
         weightProvider.fetchAndSetEntries(),
@@ -145,11 +145,11 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
       //
       // Current nutritional plan
-      widget._logger.info('Loading current nutritional plan');
-      if (nutritionPlansProvider.currentPlan != null) {
-        final plan = nutritionPlansProvider.currentPlan!;
-        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
-      }
+      // widget._logger.info('Loading current nutritional plan');
+      // if (nutritionPlansProvider.currentPlan != null) {
+      //   final plan = nutritionPlansProvider.currentPlan!;
+      //   await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
+      // }
 
       //
       // Current routine

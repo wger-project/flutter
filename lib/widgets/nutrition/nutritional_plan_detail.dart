@@ -138,8 +138,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-      ]),
+        ],
+      ),
     );
   }
 }

@@ -118,7 +118,7 @@ class Log {
     return results.map((r) => Log.fromRow(r)).toList();
   }
 
-/*
+  /*
   Future<void> delete() async {
     await db.execute('DELETE FROM $logItemsTable WHERE id = ?', [id]);
   }

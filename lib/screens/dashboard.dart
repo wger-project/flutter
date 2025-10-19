@@ -19,8 +19,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:wger/models/muscle.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/muscle.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets/measurements.dart';

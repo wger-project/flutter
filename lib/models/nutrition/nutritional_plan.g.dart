@@ -10,6 +10,7 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
     requiredKeys: const [
+      'id',
       'description',
       'creation_date',
       'start',

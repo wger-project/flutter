@@ -28,12 +28,12 @@ import 'package:wger/widgets/nutrition/nutritional_diary_detail.dart';
 /// Arguments passed to the form screen
 class NutritionalDiaryArguments {
   /// Nutritional plan
-  final String plan;
+  final String planId;
 
   /// Date to show data for
   final DateTime date;
 
-  const NutritionalDiaryArguments(this.plan, this.date);
+  const NutritionalDiaryArguments(this.planId, this.date);
 }
 
 class NutritionalDiaryScreen extends StatefulWidget {
@@ -55,8 +55,10 @@ class _NutritionalDiaryScreenState extends State<NutritionalDiaryScreen> {
     final args = ModalRoute.of(context)!.settings.arguments as NutritionalDiaryArguments;
     date = args.date;
 
-    final stream =
-        Provider.of<NutritionPlansProvider>(context, listen: false).watchNutritionPlan(args.plan);
+    final stream = Provider.of<NutritionPlansProvider>(
+      context,
+      listen: false,
+    ).watchNutritionPlan(args.planId);
     _subscription = stream.listen((plan) {
       if (!context.mounted) {
         return;

@@ -22,7 +22,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/locator.dart';
-import 'package:wger/powersync.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/shared_preferences.dart';

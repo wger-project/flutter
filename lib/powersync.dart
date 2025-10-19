@@ -39,7 +39,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
     // final wgerSession = await apiClient.getWgerJWTToken();
     final session = await apiClient.getPowersyncToken();
     // note: we don't set userId and expires property here. not sure if needed
-    return PowerSyncCredentials(endpoint: this.powersyncUrl, token: session['token']);
+    return PowerSyncCredentials(endpoint: powersyncUrl, token: session['token']);
   }
 
   // Upload pending changes to Postgres via Django backend

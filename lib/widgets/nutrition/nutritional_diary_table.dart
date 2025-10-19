@@ -113,7 +113,7 @@ class NutritionalDiaryTable extends StatelessWidget {
             return GestureDetector(
               onTap: () => Navigator.of(context).pushNamed(
                 NutritionalDiaryScreen.routeName,
-                arguments: NutritionalDiaryArguments(plan, date),
+                arguments: NutritionalDiaryArguments(plan.id!, date),
               ),
               child: element,
             );

@@ -24,11 +24,8 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
-import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -85,7 +82,7 @@ class NutritionPlansProvider with ChangeNotifier {
         .sorted((a, b) => b.creationDate.compareTo(a.creationDate))
         .firstOrNull;
   }
-/*
+  /*
   NutritionalPlan findById(int id) {
     return _plans.firstWhere(
       (plan) => plan.id == id,
@@ -168,7 +165,7 @@ class NutritionPlansProvider with ChangeNotifier {
       ),
     );
   }
-/*
+  /*
 TODO implement:
           ingredient.image = image;
         mealItem.ingredient = ingredient;
@@ -188,11 +185,11 @@ TODO implement:
   }
 
   Future<void> editPlan(NutritionalPlan plan) async {
-// TODO
+    // TODO
   }
 
   Future<void> deletePlan(String id) async {
-// TODO
+    // TODO
   }
 
   /// Adds a meal to a plan
@@ -406,10 +403,11 @@ TODO implement:
   }
 
   /// Log custom ingredient to nutrition diary
-  Future<void> logIngredientToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
+  Future<void> logIngredientToDiary(MealItem mealItem, String planId, [DateTime? dateTime]) async {
     print(
-        'DIETER logIngredientToDiary called ingredient=${mealItem.ingredientId}, planId=$planId, dateTime=$dateTime'
+      'DIETER logIngredientToDiary called ingredient=${mealItem.ingredientId}, planId=$planId, dateTime=$dateTime',
     );
+    /*
     final plan = findById(planId);
     mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
     final log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
@@ -417,6 +415,8 @@ TODO implement:
     final data = await baseProvider.post(log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
     log.id = data['id'];
     plan.diaryEntries.add(log);
+
+     */
     notifyListeners();
   }
 
