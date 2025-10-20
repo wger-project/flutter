@@ -718,7 +718,7 @@
     "@searchNamesInEnglish": {},
     "language": "Jezik",
     "@language": {},
-    "aboutPageTitle": "Wger informacije",
+    "aboutPageTitle": "O nama i podrška",
     "@aboutPageTitle": {},
     "abs": "Trbuh",
     "@abs": {
@@ -788,7 +788,7 @@
     },
     "aboutDonateTitle": "Doniraj",
     "@aboutDonateTitle": {},
-    "aboutDonateText": "Pomogni projektu: kupi nam kavu, plati troškove poslužitelja i potiči nas u našem radu",
+    "aboutDonateText": "Iako je projekt besplatan i uvijek će to ostati, održavanje servera nije! Razvoj također zahtijeva značajno vrijeme i trud volontera. Tvoj doprinos izravno podupire te troškove i pomaže u održavanju pouzdanosti usluge.",
     "@aboutDonateText": {},
     "settingsTitle": "Postavke",
     "@settingsTitle": {},
@@ -955,20 +955,32 @@
     "@invalidApiToken": {
         "description": "Error message when the user enters an invalid API key"
     },
-    "apiTokenValidChars": "API Token može sadržavati a-f, brojeve od 0-9 i mora biti točno 40 znakova dugačak.",
+    "apiTokenValidChars": "API ključ može sadržati slova a-f, brojke od 0-9 i mora imati točno 40 znakova",
     "@apiTokenValidChars": {
         "description": "Error message when the user tries to input a API key with forbidden characters"
     },
-    "routines": "Rutina",
+    "routines": "Rutine",
     "@routines": {},
     "newRoutine": "Nova rutina",
     "@newRoutine": {},
-    "noRoutines": "Vi nemate rutine",
+    "noRoutines": "Ti nemaš rutine",
     "@noRoutines": {},
-    "restTime": "Period odmora",
+    "restTime": "Vrijeme odmora",
     "@restTime": {},
-    "sets": "Vježba ima setova",
+    "sets": "Serije",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
-    }
+    },
+    "min": "Min.",
+    "@min": {},
+    "max": "Maks.",
+    "@max": {},
+    "dayTypeAfap": "Što brže moguće",
+    "@dayTypeAfap": {},
+    "slotEntryTypeNormal": "Normalno",
+    "@slotEntryTypeNormal": {},
+    "slotEntryTypePartial": "Djelomično",
+    "@slotEntryTypePartial": {},
+    "slotEntryTypeForced": "Prisiljeno",
+    "@slotEntryTypeForced": {}
 }
