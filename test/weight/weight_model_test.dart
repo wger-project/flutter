@@ -23,19 +23,19 @@ void main() {
   group('fetchPost', () {
     test('Test that the weight entries are correctly converted to json', () {
       expect(
-        WeightEntry(id: 1, weight: 80, date: DateTime(2020, 12, 31, 12, 34)).toJson(),
+        WeightEntry(id: '1', weight: 80, date: DateTime(2020, 12, 31, 12, 34)).toJson(),
         {'id': 1, 'weight': '80', 'date': '2020-12-31T12:34:00.000'},
       );
 
       expect(
-        WeightEntry(id: 2, weight: 70.2, date: DateTime(2020, 12, 01)).toJson(),
+        WeightEntry(id: '2', weight: 70.2, date: DateTime(2020, 12, 01)).toJson(),
         {'id': 2, 'weight': '70.2', 'date': '2020-12-01T00:00:00.000'},
       );
     });
 
     test('Test that the weight entries are correctly converted from json', () {
       final WeightEntry weightEntryObj = WeightEntry(
-        id: 1,
+        id: '1',
         weight: 80,
         date: DateTime(2020, 12, 31),
       );
@@ -53,8 +53,7 @@ void main() {
   group('model', () {
     test('Test the individual values from the model', () {
       WeightEntry weightModel;
-      //_weightModel = WeightEntry();
-      weightModel = WeightEntry(id: 1, weight: 80, date: DateTime(2020, 10, 01));
+      weightModel = WeightEntry(id: '1', weight: 80, date: DateTime(2020, 10, 01));
 
       expect(weightModel.id, 1);
       expect(weightModel.weight, 80);

@@ -40,99 +40,124 @@ class WeightOverview extends riverpod.ConsumerWidget {
     final plans = context.read<NutritionPlansProvider>().items;
 
     final auth = context.read<AuthProvider>();
-    final entriesList = ref.watch(bodyWeightStateProvider(auth));
-    final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
-    final entries7dAvg = moving7dAverage(entriesAll);
+    final entriesAsync = ref.watch(bodyWeightStreamProvider(auth));
 
-    final unit = weightUnit(profile!.isMetric, context);
+    // Handle stream states (loading/error/data) and reuse the existing UI
+    return entriesAsync.when(
+      data: (entriesList) {
+        final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+        final entries7dAvg = moving7dAverage(entriesAll);
 
-    return Column(
-      children: [
-        ...getOverviewWidgetsSeries(
-          AppLocalizations.of(context).weight,
-          entriesAll,
-          entries7dAvg,
-          plans,
-          unit,
-          context,
-        ),
-        TextButton(
-          onPressed: () => Navigator.pushNamed(
-            context,
-            '/measurement-categories',
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(AppLocalizations.of(context).measurements),
-              const Icon(Icons.chevron_right),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 300,
-          child: RefreshIndicator(
-            onRefresh: () => ref.read(bodyWeightStateProvider(auth).notifier).fetchAndSetEntries(),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: entriesList.length,
-              itemBuilder: (context, index) {
-                final currentEntry = entriesList[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(
-                      '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
-                    ),
-                    subtitle: Text(
-                      DateFormat.yMd(
-                        Localizations.localeOf(context).languageCode,
-                      ).add_Hm().format(currentEntry.date),
-                    ),
-                    trailing: PopupMenuButton(
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem(
-                            child: Text(AppLocalizations.of(context).edit),
-                            onTap: () => Navigator.pushNamed(
-                              context,
-                              FormScreen.routeName,
-                              arguments: FormScreenArguments(
-                                AppLocalizations.of(context).edit,
-                                WeightForm(currentEntry),
-                              ),
-                            ),
-                          ),
-                          PopupMenuItem(
-                            child: Text(AppLocalizations.of(context).delete),
-                            onTap: () async {
-                              // Delete entry from DB
-                              await ref
-                                  .read(bodyWeightStateProvider(auth).notifier)
-                                  .deleteEntry(currentEntry.id!);
+        final unit = weightUnit(profile!.isMetric, context);
 
-                              // and inform the user
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      AppLocalizations.of(context).successfullyDeleted,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ];
-                      },
-                    ),
-                  ),
-                );
-              },
+        return Column(
+          children: [
+            ...getOverviewWidgetsSeries(
+              AppLocalizations.of(context).weight,
+              entriesAll,
+              entries7dAvg,
+              plans,
+              unit,
+              context,
             ),
-          ),
-        ),
-      ],
+            TextButton(
+              onPressed: () => Navigator.pushNamed(
+                context,
+                '/measurement-categories',
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(AppLocalizations.of(context).measurements),
+                  const Icon(Icons.chevron_right),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 300,
+              child: RefreshIndicator(
+                onRefresh: () =>
+                    ref.read(bodyWeightStateProvider(auth).notifier).fetchAndSetEntries(),
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(10.0),
+                  itemCount: entriesList.length,
+                  itemBuilder: (context, index) {
+                    final currentEntry = entriesList[index];
+                    return Card(
+                      child: ListTile(
+                        title: Text(
+                          '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
+                        ),
+                        subtitle: Text(
+                          DateFormat.yMd(
+                            Localizations.localeOf(context).languageCode,
+                          ).add_Hm().format(currentEntry.date),
+                        ),
+                        trailing: PopupMenuButton(
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              PopupMenuItem(
+                                child: Text(AppLocalizations.of(context).edit),
+                                onTap: () => Navigator.pushNamed(
+                                  context,
+                                  FormScreen.routeName,
+                                  arguments: FormScreenArguments(
+                                    AppLocalizations.of(context).edit,
+                                    WeightForm(currentEntry),
+                                  ),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                child: Text(AppLocalizations.of(context).delete),
+                                onTap: () async {
+                                  // Delete entry from DB
+                                  await ref
+                                      .read(bodyWeightStateProvider(auth).notifier)
+                                      .deleteEntry(currentEntry.id!);
+
+                                  // and inform the user
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          AppLocalizations.of(context).successfullyDeleted,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ];
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () {
+        // Show a small loading indicator while waiting for the first data set
+        return const Column(
+          children: [
+            SizedBox(height: 200, child: Center(child: CircularProgressIndicator())),
+          ],
+        );
+      },
+      error: (err, st) {
+        return Column(
+          children: [
+            Text('Error loading local weights: $err'),
+            Text(st.toString()),
+
+            const SizedBox(height: 200, child: Center(child: Icon(Icons.error))),
+          ],
+        );
+      },
     );
   }
 }

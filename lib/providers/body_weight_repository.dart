@@ -47,13 +47,13 @@ class BodyWeightRepository {
     _logger.info('Repository: updating weight entry ${entry.id}');
     await baseProvider.patch(
       entry.toJson(),
-      baseProvider.makeUrl(BODY_WEIGHT_URL, id: entry.id),
+      baseProvider.makeUrl(BODY_WEIGHT_URL, id: int.parse(entry.id!)),
     );
   }
 
   /// Deletes a weight entry on the server
-  Future<Response> delete(int id) async {
+  Future<Response> delete(String id) async {
     _logger.info('Repository: deleting weight entry $id');
-    return await baseProvider.deleteRequest(BODY_WEIGHT_URL, id);
+    return await baseProvider.deleteRequest(BODY_WEIGHT_URL, int.parse(id));
   }
 }

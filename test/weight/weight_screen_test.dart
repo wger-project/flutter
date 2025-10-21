@@ -147,7 +147,7 @@ class FakeBodyWeightRepository extends BodyWeightRepository {
   FakeBodyWeightRepository(WgerBaseProvider base) : super(base);
 
   @override
-  Future<Response> delete(int id) async {
+  Future<Response> delete(String id) async {
     return Response('', 204);
   }
 }

@@ -107,11 +107,11 @@ void main() {
       final BodyWeightRepository repo = BodyWeightRepository(mockBaseProvider);
       final BodyWeightState provider = BodyWeightState(repo);
       provider.state = [
-        WeightEntry(id: 4, weight: 80, date: DateTime(2021, 1, 1)),
-        WeightEntry(id: 2, weight: 100, date: DateTime(2021, 2, 2)),
-        WeightEntry(id: 5, weight: 60, date: DateTime(2021, 2, 2)),
+        WeightEntry(id: '4', weight: 80, date: DateTime(2021, 1, 1)),
+        WeightEntry(id: '2', weight: 100, date: DateTime(2021, 2, 2)),
+        WeightEntry(id: '5', weight: 60, date: DateTime(2021, 2, 2)),
       ];
-      await provider.deleteEntry(4);
+      await provider.deleteEntry('4');
 
       // Check that the entry was removed from the entry list
       expect(provider.items.length, 2);

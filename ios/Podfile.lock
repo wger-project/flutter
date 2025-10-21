@@ -17,6 +17,11 @@ PODS:
     - FlutterMacOS
   - pointer_interceptor_ios (0.0.1):
     - Flutter
+  - powersync-sqlite-core (0.4.7)
+  - powersync_flutter_libs (0.0.1):
+    - Flutter
+    - FlutterMacOS
+    - powersync-sqlite-core (~> 0.4.6)
   - rive_common (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -63,6 +68,7 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - pointer_interceptor_ios (from `.symlinks/plugins/pointer_interceptor_ios/ios`)
+  - powersync_flutter_libs (from `.symlinks/plugins/powersync_flutter_libs/darwin`)
   - rive_common (from `.symlinks/plugins/rive_common/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/darwin`)
@@ -71,6 +77,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - powersync-sqlite-core
     - sqlite3
 
 EXTERNAL SOURCES:
@@ -92,6 +99,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   pointer_interceptor_ios:
     :path: ".symlinks/plugins/pointer_interceptor_ios/ios"
+  powersync_flutter_libs:
+    :path: ".symlinks/plugins/powersync_flutter_libs/darwin"
   rive_common:
     :path: ".symlinks/plugins/rive_common/ios"
   shared_preferences_foundation:
@@ -113,6 +122,8 @@ SPEC CHECKSUMS:
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   pointer_interceptor_ios: ec847ef8b0915778bed2b2cef636f4d177fa8eed
+  powersync-sqlite-core: 7d97e321b00adbbc4d87cc8bab3a8895c855327c
+  powersync_flutter_libs: 19fc6b96ff8155ffea72a08990f6c9f2e712b8a6
   rive_common: dd421daaf9ae69f0125aa761dd96abd278399952
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqlite3: 73513155ec6979715d3904ef53a8d68892d4032b

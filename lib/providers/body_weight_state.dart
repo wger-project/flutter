@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
@@ -59,7 +61,7 @@ class BodyWeightState extends StateNotifier<List<WeightEntry>> {
     }
   }
 
-  Future<void> deleteEntry(int id) async {
+  Future<void> deleteEntry(String id) async {
     final idx = state.indexWhere((e) => e.id == id);
     if (idx < 0) {
       return;

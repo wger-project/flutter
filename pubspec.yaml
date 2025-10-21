@@ -68,6 +68,7 @@ dependencies:
   video_player: ^2.10.0
   logging: ^1.3.0
   flutter_riverpod: ^2.6.1
+  powersync: ^1.16.1
 
 dev_dependencies:
   flutter_test:

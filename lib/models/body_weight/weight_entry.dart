@@ -17,6 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/json.dart';
 
 part 'weight_entry.g.dart';
@@ -24,7 +25,7 @@ part 'weight_entry.g.dart';
 @JsonSerializable()
 class WeightEntry {
   @JsonKey(required: true)
-  int? id;
+  String? id;
 
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num weight = 0;
@@ -32,7 +33,7 @@ class WeightEntry {
   @JsonKey(required: true)
   late DateTime date;
 
-  WeightEntry({this.id, weight, DateTime? date}) {
+  WeightEntry({this.id, num? weight, DateTime? date}) {
     this.date = date ?? DateTime.now();
 
     if (weight != null) {
@@ -40,7 +41,15 @@ class WeightEntry {
     }
   }
 
-  WeightEntry copyWith({int? id, int? weight, DateTime? date}) => WeightEntry(
+  factory WeightEntry.fromRow(sqlite.Row row) {
+    return WeightEntry(
+      id: row['uuid'],
+      date: DateTime.parse(row['date']),
+      weight: row['weight'],
+    );
+  }
+
+  WeightEntry copyWith({String? id, int? weight, DateTime? date}) => WeightEntry(
     id: id,
     weight: weight ?? this.weight,
     date: date ?? this.date,

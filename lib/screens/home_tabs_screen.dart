@@ -23,8 +23,8 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/powersync.dart';
 import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
@@ -57,6 +57,10 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
   @override
   void initState() {
     super.initState();
+
+    // do we need to await this? or if it's async, how do we handle failures?
+    _setupPowersync();
+
     // Loading data here, since the build method can be called more than once
     _initialData = _loadEntries();
   }
@@ -65,6 +69,25 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Future<void> _setupPowersync() async {
+    final authProvider = context.read<AuthProvider>();
+    final baseUrl = authProvider.serverUrl!;
+    final powerSyncUrl = baseUrl.replaceAll(':8000', ':8080');
+
+    await openDatabase(false, baseUrl, powerSyncUrl);
+
+    final connector = DjangoConnector(db, baseUrl, powerSyncUrl);
+    // try {
+    // TODO: should we cache these credentials? that's what their demo does?
+    // we could maybe get the initial token from the /api/v2/login call
+    final credentials = await connector.fetchCredentials();
+    widget._logger.fine('fetched credentials: $credentials');
+    await openDatabase(true, baseUrl, powerSyncUrl);
+    // } catch (e) {
+    //   widget._logger.warning('failed to fetchCredentials: $e');
+    // }/
   }
 
   final _screenList = [
@@ -119,7 +142,7 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
         measurementProvider.fetchAndSetAllCategoriesAndEntries(),
       ]);
       // fetch weights separately using Riverpod notifier
-      await ref.read(bodyWeightStateProvider(authProvider).notifier).fetchAndSetEntries();
+      // await ref.read(bodyWeightStateProvider(authProvider).notifier).fetchAndSetEntries();
 
       //
       // Current nutritional plan
