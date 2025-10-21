@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -24,7 +25,8 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
@@ -49,14 +51,14 @@ class Event {
   }
 }
 
-class DashboardCalendarWidget extends StatefulWidget {
+class DashboardCalendarWidget extends riverpod.ConsumerStatefulWidget {
   const DashboardCalendarWidget();
 
   @override
   _DashboardCalendarWidgetState createState() => _DashboardCalendarWidgetState();
 }
 
-class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
+class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCalendarWidget>
     with TickerProviderStateMixin {
   late Map<String, List<Event>> _events;
   late final ValueNotifier<List<Event>> _selectedEvents;
@@ -101,8 +103,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     final i18n = AppLocalizations.of(context);
 
     // Process weight entries
-    final weightProvider = context.read<BodyWeightProvider>();
-    for (final entry in weightProvider.items) {
+    final auth = context.read<AuthProvider>();
+    final entries = ref.read(bodyWeightStateProvider(auth));
+    for (final entry in entries) {
       final date = DateFormatLists.format(entry.date);
 
       if (!_events.containsKey(date)) {

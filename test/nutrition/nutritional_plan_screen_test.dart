@@ -20,6 +20,7 @@ import 'dart:io';
 
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
@@ -28,7 +29,6 @@ import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
@@ -52,33 +52,35 @@ void main() {
     final mockBaseProvider = MockWgerBaseProvider();
     final plan = getNutritionalPlan();
 
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(
-            mockBaseProvider,
-            [],
-            database: database,
-          ),
-        ),
-        ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => BodyWeightProvider(mockBaseProvider),
-        ),
-      ],
-      child: MaterialApp(
-        key: GlobalKey(),
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        home: TextButton(
-          onPressed: () => key.currentState!.push(
-            MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: plan),
-              builder: (_) => const NutritionalPlanScreen(),
+    return riverpod.ProviderScope(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<NutritionPlansProvider>(
+            create: (context) => NutritionPlansProvider(
+              mockBaseProvider,
+              [],
+              database: database,
             ),
           ),
-          child: const SizedBox(),
+          ChangeNotifierProvider<AuthProvider>(
+            create: (context) => AuthProvider(),
+          ),
+        ],
+        child: MaterialApp(
+          key: GlobalKey(),
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          home: TextButton(
+            onPressed: () => key.currentState!.push(
+              MaterialPageRoute<void>(
+                settings: RouteSettings(arguments: plan),
+                builder: (_) => const NutritionalPlanScreen(),
+              ),
+            ),
+            child: const SizedBox(),
+          ),
         ),
       ),
     );

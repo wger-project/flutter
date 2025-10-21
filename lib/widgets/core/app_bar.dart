@@ -17,10 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
@@ -30,13 +31,13 @@ import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
 import 'package:wger/widgets/user/forms.dart';
 
-class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
+class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String _title;
 
   const MainAppBar(this._title);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
       title: Text(_title),
       actions: [
@@ -91,10 +92,11 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                         leading: const Icon(Icons.exit_to_app),
                         title: Text(AppLocalizations.of(context).logout),
                         onTap: () {
-                          context.read<AuthProvider>().logout();
+                          final auth = context.read<AuthProvider>();
+                          auth.logout();
                           context.read<RoutinesProvider>().clear();
                           context.read<NutritionPlansProvider>().clear();
-                          context.read<BodyWeightProvider>().clear();
+                          ref.read(bodyWeightStateProvider(auth).notifier).clear();
                           context.read<GalleryProvider>().clear();
                           context.read<UserProvider>().clear();
 

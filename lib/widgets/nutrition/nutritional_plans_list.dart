@@ -17,27 +17,35 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
-class NutritionalPlansList extends StatelessWidget {
+class NutritionalPlansList extends riverpod.ConsumerWidget {
   final NutritionPlansProvider _nutritionProvider;
 
   const NutritionalPlansList(this._nutritionProvider);
 
   /// Builds the weight change information for a nutritional plan period
-  Widget _buildWeightChangeInfo(BuildContext context, DateTime startDate, DateTime? endDate) {
-    final provider = Provider.of<BodyWeightProvider>(context, listen: false);
+  Widget _buildWeightChangeInfo(
+    BuildContext context,
+    riverpod.WidgetRef ref,
+    DateTime startDate,
+    DateTime? endDate,
+  ) {
+    final auth = context.read<AuthProvider>();
+    final entriesList = ref.watch(bodyWeightStateProvider(auth));
 
-    final entriesAll = provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
     final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);
     if (entries7dAvg.length < 2) {
       return const SizedBox.shrink();
@@ -87,7 +95,7 @@ class NutritionalPlansList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, riverpod.WidgetRef ref) {
     return RefreshIndicator(
       onRefresh: () => _nutritionProvider.fetchAndSetAllPlansSparse(),
       child: _nutritionProvider.items.isEmpty
@@ -120,7 +128,12 @@ class NutritionalPlansList extends StatelessWidget {
                                   Localizations.localeOf(context).languageCode,
                                 ).format(currentPlan.startDate)} (open ended)',
                         ),
-                        _buildWeightChangeInfo(context, currentPlan.startDate, currentPlan.endDate),
+                        _buildWeightChangeInfo(
+                          context,
+                          ref,
+                          currentPlan.startDate,
+                          currentPlan.endDate,
+                        ),
                       ],
                     ),
                     trailing: Row(

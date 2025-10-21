@@ -17,13 +17,14 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
@@ -36,7 +37,7 @@ import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 
-class HomeTabsScreen extends StatefulWidget {
+class HomeTabsScreen extends riverpod.ConsumerStatefulWidget {
   final _logger = Logger('HomeTabsScreen');
 
   HomeTabsScreen();
@@ -47,7 +48,8 @@ class HomeTabsScreen extends StatefulWidget {
   _HomeTabsScreenState createState() => _HomeTabsScreenState();
 }
 
-class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
+class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
+    with SingleTickerProviderStateMixin {
   late Future<void> _initialData;
   bool _errorHandled = false;
   int _selectedIndex = 0;
@@ -82,7 +84,6 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final exercisesProvider = context.read<ExercisesProvider>();
       final galleryProvider = context.read<GalleryProvider>();
-      final weightProvider = context.read<BodyWeightProvider>();
       final measurementProvider = context.read<MeasurementProvider>();
       final userProvider = context.read<UserProvider>();
 
@@ -115,9 +116,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         routinesProvider.fetchAndSetAllRoutinesSparse(),
         // routinesProvider.fetchAndSetAllRoutinesFull(),
-        weightProvider.fetchAndSetEntries(),
         measurementProvider.fetchAndSetAllCategoriesAndEntries(),
       ]);
+      // fetch weights separately using Riverpod notifier
+      await ref.read(bodyWeightStateProvider(authProvider).notifier).fetchAndSetEntries();
 
       //
       // Current nutritional plan

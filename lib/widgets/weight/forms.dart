@@ -17,15 +17,17 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/body_weight_riverpod.dart';
 
-class WeightForm extends StatelessWidget {
+class WeightForm extends riverpod.ConsumerWidget {
   final _form = GlobalKey<FormState>();
   final dateController = TextEditingController(text: '');
   final timeController = TextEditingController(text: '');
@@ -37,7 +39,7 @@ class WeightForm extends StatelessWidget {
     : _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
@@ -209,10 +211,11 @@ class WeightForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              final provider = Provider.of<BodyWeightProvider>(context, listen: false);
+              final auth = context.read<AuthProvider>();
+              final notifier = ref.read(bodyWeightStateProvider(auth).notifier);
               _weightEntry.id == null
-                  ? await provider.addEntry(_weightEntry)
-                  : await provider.editEntry(_weightEntry);
+                  ? await notifier.addEntry(_weightEntry)
+                  : await notifier.editEntry(_weightEntry);
 
               if (context.mounted) {
                 Navigator.of(context).pop();

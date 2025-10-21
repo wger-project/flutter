@@ -24,7 +24,8 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/providers/body_weight_state.dart';
 
 import '../fixtures/fixture_reader.dart';
 import 'weight_provider_test.mocks.dart';
@@ -53,8 +54,9 @@ void main() {
         (_) => Future.value(weightEntries['results']),
       );
 
-      // Load the entries
-      final BodyWeightProvider provider = BodyWeightProvider(mockBaseProvider);
+      // Load the entries using the repository + state implementation
+      final BodyWeightRepository repo = BodyWeightRepository(mockBaseProvider);
+      final BodyWeightState provider = BodyWeightState(repo);
       await provider.fetchAndSetEntries();
 
       // Check that everything is ok
@@ -78,7 +80,8 @@ void main() {
       ).thenAnswer((_) => Future.value({'id': 25, 'date': '2021-01-01', 'weight': '80'}));
 
       // Act
-      final BodyWeightProvider provider = BodyWeightProvider(mockBaseProvider);
+      final BodyWeightRepository repo = BodyWeightRepository(mockBaseProvider);
+      final BodyWeightState provider = BodyWeightState(repo);
       final WeightEntry weightEntry = WeightEntry(date: DateTime(2021, 1, 1), weight: 80);
       final WeightEntry weightEntryNew = await provider.addEntry(weightEntry);
 
@@ -100,9 +103,10 @@ void main() {
         (_) => Future.value(Response("{'id': 4, 'date': '2021-01-01', 'weight': '80'}", 204)),
       );
 
-      // DELETE the data from the server
-      final BodyWeightProvider provider = BodyWeightProvider(mockBaseProvider);
-      provider.items = [
+      // DELETE the data from the server (use repo + state)
+      final BodyWeightRepository repo = BodyWeightRepository(mockBaseProvider);
+      final BodyWeightState provider = BodyWeightState(repo);
+      provider.state = [
         WeightEntry(id: 4, weight: 80, date: DateTime(2021, 1, 1)),
         WeightEntry(id: 2, weight: 100, date: DateTime(2021, 2, 2)),
         WeightEntry(id: 5, weight: 60, date: DateTime(2021, 2, 2)),

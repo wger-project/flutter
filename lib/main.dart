@@ -28,7 +28,6 @@ import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
@@ -193,13 +192,6 @@ class MainApp extends StatelessWidget {
             WgerBaseProvider(Provider.of(context, listen: false)),
           ),
           update: (context, base, previous) => previous ?? UserProvider(WgerBaseProvider(base)),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, BodyWeightProvider>(
-          create: (context) => BodyWeightProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
-          update: (context, base, previous) =>
-              previous ?? BodyWeightProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
           create: (context) => GalleryProvider(

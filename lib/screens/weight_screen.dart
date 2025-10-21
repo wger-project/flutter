@@ -17,21 +17,20 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/weight/forms.dart';
 import 'package:wger/widgets/weight/weight_overview.dart';
 
-class WeightScreen extends StatelessWidget {
+class WeightScreen extends ConsumerWidget {
   const WeightScreen();
 
   static const routeName = '/weight';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
       floatingActionButton: FloatingActionButton(
@@ -47,10 +46,8 @@ class WeightScreen extends StatelessWidget {
           );
         },
       ),
-      body: SingleChildScrollView(
-        child: Consumer<BodyWeightProvider>(
-          builder: (context, provider, child) => WeightOverview(provider),
-        ),
+      body: const SingleChildScrollView(
+        child: WeightOverview(),
       ),
     );
   }

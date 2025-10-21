@@ -17,30 +17,31 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
-class WeightOverview extends StatelessWidget {
-  final BodyWeightProvider _provider;
-
-  const WeightOverview(this._provider);
+class WeightOverview extends riverpod.ConsumerWidget {
+  const WeightOverview();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final profile = context.read<UserProvider>().profile;
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-    final plans = Provider.of<NutritionPlansProvider>(context, listen: false).items;
+    final plans = context.read<NutritionPlansProvider>().items;
 
-    final entriesAll = _provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final auth = context.read<AuthProvider>();
+    final entriesList = ref.watch(bodyWeightStateProvider(auth));
+    final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
     final unit = weightUnit(profile!.isMetric, context);
@@ -58,7 +59,7 @@ class WeightOverview extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.pushNamed(
             context,
-            MeasurementCategoriesScreen.routeName,
+            '/measurement-categories',
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -71,12 +72,12 @@ class WeightOverview extends StatelessWidget {
         SizedBox(
           height: 300,
           child: RefreshIndicator(
-            onRefresh: () => _provider.fetchAndSetEntries(),
+            onRefresh: () => ref.read(bodyWeightStateProvider(auth).notifier).fetchAndSetEntries(),
             child: ListView.builder(
               padding: const EdgeInsets.all(10.0),
-              itemCount: _provider.items.length,
+              itemCount: entriesList.length,
               itemBuilder: (context, index) {
-                final currentEntry = _provider.items[index];
+                final currentEntry = entriesList[index];
                 return Card(
                   child: ListTile(
                     title: Text(
@@ -105,7 +106,9 @@ class WeightOverview extends StatelessWidget {
                             child: Text(AppLocalizations.of(context).delete),
                             onTap: () async {
                               // Delete entry from DB
-                              await _provider.deleteEntry(currentEntry.id!);
+                              await ref
+                                  .read(bodyWeightStateProvider(auth).notifier)
+                                  .deleteEntry(currentEntry.id!);
 
                               // and inform the user
                               if (context.mounted) {

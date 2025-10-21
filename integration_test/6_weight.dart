@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/providers/body_weight_riverpod.dart';
+import 'package:wger/providers/body_weight_state.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/utils.dart';
 import '../test/weight/weight_screen_test.mocks.dart';
 import '../test_data/body_weight.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
 
 Widget createWeightScreen({locale = 'en'}) {
-  final weightProvider = BodyWeightProvider(mockBaseProvider);
-  weightProvider.items = getScreenshotWeightEntries();
+  // Build a Riverpod override so tests use the new BodyWeightState
+  final auth = AuthProvider();
+  final repo = BodyWeightRepository(WgerBaseProvider(auth));
+  final bwState = BodyWeightState(repo);
+  bwState.state = getScreenshotWeightEntries();
 
   final mockUserProvider = MockUserProvider();
   when(mockUserProvider.profile).thenReturn(tProfile1);
@@ -26,26 +33,29 @@ Widget createWeightScreen({locale = 'en'}) {
   when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
   when(mockNutritionPlansProvider.items).thenReturn([getNutritionalPlan()]);
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<UserProvider>(
-        create: (context) => mockUserProvider,
-      ),
-      ChangeNotifierProvider<BodyWeightProvider>(
-        create: (context) => weightProvider,
-      ),
-      ChangeNotifierProvider<NutritionPlansProvider>(
-        create: (context) => mockNutritionPlansProvider,
-      ),
+  return riverpod.ProviderScope(
+    overrides: [
+      // Override the family provider to return our prepared BodyWeightState
+      bodyWeightStateProvider.overrideWith((ref, auth) => bwState),
     ],
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerLightTheme,
-      home: const WeightScreen(),
-      routes: {FormScreen.routeName: (ctx) => const FormScreen()},
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => mockUserProvider,
+        ),
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (context) => mockNutritionPlansProvider,
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        home: const WeightScreen(),
+        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
+      ),
     ),
   );
 }

@@ -18,6 +18,7 @@
 
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
@@ -29,7 +30,6 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -66,51 +66,53 @@ void main() {
     when(mockAuthProvider.serverUrl).thenReturn('http://localhost');
     when(mockAuthProvider.getAppNameHeader()).thenReturn('wger app');
 
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(
-            mockBaseProvider,
-            [
-              NutritionalPlan(
-                id: 1,
-                description: 'test plan 1',
-                creationDate: DateTime(2021, 01, 01),
-                startDate: DateTime(2021, 01, 01),
-              ),
-              NutritionalPlan(
-                id: 2,
-                description: 'test plan 2',
-                creationDate: DateTime(2021, 01, 10),
-                startDate: DateTime(2021, 01, 10),
-              ),
-            ],
-            database: database,
-          ),
-        ),
-        ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => BodyWeightProvider(mockBaseProvider),
-        ),
-        ChangeNotifierProvider<UserProvider>(
-          create: (context) =>
-              UserProvider(
-                  mockBaseProvider,
-                )
-                ..profile = Profile(
-                  username: 'test',
-                  emailVerified: true,
-                  isTrustworthy: true,
-                  email: 'test@example.com',
-                  weightUnitStr: 'kg',
+    return riverpod.ProviderScope(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<NutritionPlansProvider>(
+            create: (context) => NutritionPlansProvider(
+              mockBaseProvider,
+              [
+                NutritionalPlan(
+                  id: 1,
+                  description: 'test plan 1',
+                  creationDate: DateTime(2021, 01, 01),
+                  startDate: DateTime(2021, 01, 01),
                 ),
+                NutritionalPlan(
+                  id: 2,
+                  description: 'test plan 2',
+                  creationDate: DateTime(2021, 01, 10),
+                  startDate: DateTime(2021, 01, 10),
+                ),
+              ],
+              database: database,
+            ),
+          ),
+          ChangeNotifierProvider<AuthProvider>(
+            create: (context) => AuthProvider(),
+          ),
+          ChangeNotifierProvider<UserProvider>(
+            create: (context) =>
+                UserProvider(
+                    mockBaseProvider,
+                  )
+                  ..profile = Profile(
+                    username: 'test',
+                    emailVerified: true,
+                    isTrustworthy: true,
+                    email: 'test@example.com',
+                    weightUnitStr: 'kg',
+                  ),
+          ),
+        ],
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const NutritionalPlansScreen(),
+          routes: {FormScreen.routeName: (ctx) => const FormScreen()},
         ),
-      ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const NutritionalPlansScreen(),
-        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
       ),
     );
   }

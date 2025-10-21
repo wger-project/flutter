@@ -17,12 +17,18 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/providers/body_weight_riverpod.dart';
+import 'package:wger/providers/body_weight_state.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -34,43 +40,54 @@ import '../../test_data/body_weight.dart';
 import '../../test_data/profile.dart';
 import 'weight_screen_test.mocks.dart';
 
-@GenerateMocks([BodyWeightProvider, UserProvider, NutritionPlansProvider])
+@GenerateMocks([UserProvider, NutritionPlansProvider])
 void main() {
-  late MockBodyWeightProvider mockWeightProvider;
   late MockUserProvider mockUserProvider;
   late MockNutritionPlansProvider mockNutritionPlansProvider;
 
-  setUp(() {
-    mockWeightProvider = MockBodyWeightProvider();
-    when(mockWeightProvider.items).thenReturn(getWeightEntries());
+  late BodyWeightState bodyWeightState;
 
+  setUp(() {
     mockUserProvider = MockUserProvider();
     when(mockUserProvider.profile).thenReturn(tProfile1);
 
     mockNutritionPlansProvider = MockNutritionPlansProvider();
     when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
     when(mockNutritionPlansProvider.items).thenReturn([]);
+
+    // Prepare a BodyWeightState instance backed by a fake repository
+    final base = WgerBaseProvider(AuthProvider());
+    final repo = FakeBodyWeightRepository(base);
+    bodyWeightState = BodyWeightState(repo);
+    bodyWeightState.state = getWeightEntries();
   });
 
   Widget createWeightScreen({locale = 'en'}) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (ctx) => mockNutritionPlansProvider,
-        ),
-        ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => mockWeightProvider,
-        ),
-        ChangeNotifierProvider<UserProvider>(
-          create: (context) => mockUserProvider,
-        ),
+    // Wrap the widget tree in a Riverpod ProviderScope and override the
+    // bodyWeightStateProvider.family to return our prepopulated BodyWeightState.
+    return riverpod.ProviderScope(
+      overrides: [
+        bodyWeightStateProvider.overrideWith((ref, auth) => bodyWeightState),
       ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const WeightScreen(),
-        routes: {FormScreen.routeName: (_) => const FormScreen()},
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<NutritionPlansProvider>(
+            create: (ctx) => mockNutritionPlansProvider,
+          ),
+          ChangeNotifierProvider<UserProvider>(
+            create: (context) => mockUserProvider,
+          ),
+          ChangeNotifierProvider<AuthProvider>(
+            create: (context) => AuthProvider(),
+          ),
+        ],
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const WeightScreen(),
+          routes: {FormScreen.routeName: (_) => const FormScreen()},
+        ),
       ),
     );
   }
@@ -96,7 +113,9 @@ void main() {
     // Assert
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
-    verify(mockWeightProvider.deleteEntry(1)).called(1);
+
+    // The fake state removes the entry; the UI should now show 1 ListTile
+    expect(find.byType(ListTile), findsNWidgets(1));
   });
 
   testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
@@ -121,4 +140,14 @@ void main() {
     // expect(find.text('1.1.'), findsOneWidget);
     // expect(find.text('10.1.'), findsOneWidget);
   });
+}
+
+// A tiny fake repository that intercepts delete requests so tests don't perform HTTP calls.
+class FakeBodyWeightRepository extends BodyWeightRepository {
+  FakeBodyWeightRepository(WgerBaseProvider base) : super(base);
+
+  @override
+  Future<Response> delete(int id) async {
+    return Response('', 204);
+  }
 }
