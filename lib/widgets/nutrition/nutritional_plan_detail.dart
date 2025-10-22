@@ -39,7 +39,7 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
     final auth = context.read<AuthProvider>();
-    final entriesList = ref.watch(bodyWeightStateProvider(auth));
+    final entriesList = ref.watch(bodyWeightStateProvider);
     final WeightEntry? lastWeightEntry = entriesList.isNotEmpty ? entriesList.first : null;
     final nutritionalGoalsGperKg = lastWeightEntry != null
         ? nutritionalGoals / lastWeightEntry.weight.toDouble()

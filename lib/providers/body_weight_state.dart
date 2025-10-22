@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:state_notifier/state_notifier.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 
@@ -49,16 +49,8 @@ class BodyWeightState extends StateNotifier<List<WeightEntry>> {
     return created;
   }
 
-  Future<void> editEntry(WeightEntry entry) async {
-    await repository.update(entry);
-    // Update local copy if present
-    final idx = state.indexWhere((e) => e.id == entry.id);
-    if (idx >= 0) {
-      final newList = [...state];
-      newList[idx] = entry;
-      newList.sort((a, b) => b.date.compareTo(a.date));
-      state = newList;
-    }
+  Future<WeightEntry> editEntry(WeightEntry entry) async {
+    return repository.update(entry);
   }
 
   Future<void> deleteEntry(String id) async {
@@ -73,11 +65,11 @@ class BodyWeightState extends StateNotifier<List<WeightEntry>> {
 
     try {
       final response = await repository.delete(id);
-      if (response.statusCode >= 400) {
-        // Revert
-        state = [...state]..insert(idx, removed);
-        throw Exception('Failed to delete: ${response.statusCode}');
-      }
+      // if (response.statusCode >= 400) {
+      //   // Revert
+      //   state = [...state]..insert(idx, removed);
+      //   throw Exception('Failed to delete: ${response.statusCode}');
+      // }
     } catch (e) {
       // Revert on any error and rethrow
       state = [...state]..insert(idx, removed);

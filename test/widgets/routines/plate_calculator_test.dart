@@ -53,8 +53,6 @@ void main() {
         selectedPlates: [1.25, 2.5],
       );
 
-      await pumpWidget(tester, notifier: notifier);
-
       // Correctly changes the unit
       expect(notifier.state.isMetric, isTrue);
       await tester.tap(find.byKey(const ValueKey('weightUnitDropdown')));

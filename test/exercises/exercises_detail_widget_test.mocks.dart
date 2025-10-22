@@ -29,37 +29,43 @@ import 'package:wger/providers/exercises.dart' as _i9;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
-// ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake
+    implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeExerciseDatabase_1 extends _i1.SmartFake implements _i3.ExerciseDatabase {
+class _FakeExerciseDatabase_1 extends _i1.SmartFake
+    implements _i3.ExerciseDatabase {
   _FakeExerciseDatabase_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeExercise_2 extends _i1.SmartFake implements _i4.Exercise {
-  _FakeExercise_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeExercise_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeExerciseCategory_3 extends _i1.SmartFake implements _i5.ExerciseCategory {
+class _FakeExerciseCategory_3 extends _i1.SmartFake
+    implements _i5.ExerciseCategory {
   _FakeExerciseCategory_3(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeEquipment_4 extends _i1.SmartFake implements _i6.Equipment {
-  _FakeEquipment_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeEquipment_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeMuscle_5 extends _i1.SmartFake implements _i7.Muscle {
-  _FakeMuscle_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeMuscle_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeLanguage_6 extends _i1.SmartFake implements _i8.Language {
-  _FakeLanguage_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeLanguage_6(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [ExercisesProvider].
@@ -149,22 +155,23 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
           as List<_i8.Language>);
 
   @override
-  set database(_i3.ExerciseDatabase? value) => super.noSuchMethod(
-    Invocation.setter(#database, value),
+  set database(_i3.ExerciseDatabase? _database) => super.noSuchMethod(
+    Invocation.setter(#database, _database),
     returnValueForMissingStub: null,
   );
 
   @override
-  set exercises(List<_i4.Exercise>? value) => super.noSuchMethod(
-    Invocation.setter(#exercises, value),
+  set exercises(List<_i4.Exercise>? _exercises) => super.noSuchMethod(
+    Invocation.setter(#exercises, _exercises),
     returnValueForMissingStub: null,
   );
 
   @override
-  set filteredExercises(List<_i4.Exercise>? newFilteredExercises) => super.noSuchMethod(
-    Invocation.setter(#filteredExercises, newFilteredExercises),
-    returnValueForMissingStub: null,
-  );
+  set filteredExercises(List<_i4.Exercise>? newFilteredExercises) =>
+      super.noSuchMethod(
+        Invocation.setter(#filteredExercises, newFilteredExercises),
+        returnValueForMissingStub: null,
+      );
 
   @override
   set languages(List<_i8.Language>? languages) => super.noSuchMethod(
@@ -174,7 +181,8 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
   _i10.Future<void> setFilters(_i9.Filters? newFilters) =>

@@ -21,7 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/body_weight_powersync.dart';
 import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
@@ -39,11 +39,11 @@ class WeightOverview extends riverpod.ConsumerWidget {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final plans = context.read<NutritionPlansProvider>().items;
 
-    final auth = context.read<AuthProvider>();
-    final entriesAsync = ref.watch(bodyWeightStreamProvider(auth));
+    final entries = ref.watch(weightEntryProvider);
+    // final entriesAsync = ref.watch(bodyWeightStreamProvider);
 
     // Handle stream states (loading/error/data) and reuse the existing UI
-    return entriesAsync.when(
+    return entries.when(
       data: (entriesList) {
         final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
         final entries7dAvg = moving7dAverage(entriesAll);
@@ -76,8 +76,7 @@ class WeightOverview extends riverpod.ConsumerWidget {
             SizedBox(
               height: 300,
               child: RefreshIndicator(
-                onRefresh: () =>
-                    ref.read(bodyWeightStateProvider(auth).notifier).fetchAndSetEntries(),
+                onRefresh: () => ref.read(bodyWeightStateProvider.notifier).fetchAndSetEntries(),
                 child: ListView.builder(
                   padding: const EdgeInsets.all(10.0),
                   itemCount: entriesList.length,
@@ -112,7 +111,7 @@ class WeightOverview extends riverpod.ConsumerWidget {
                                 onTap: () async {
                                   // Delete entry from DB
                                   await ref
-                                      .read(bodyWeightStateProvider(auth).notifier)
+                                      .read(bodyWeightStateProvider.notifier)
                                       .deleteEntry(currentEntry.id!);
 
                                   // and inform the user

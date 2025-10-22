@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -37,8 +36,7 @@ class DashboardWeightWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = context.read<UserProvider>().profile;
-    final auth = context.read<AuthProvider>();
-    final entriesList = ref.watch(bodyWeightStateProvider(auth));
+    final entriesList = ref.watch(bodyWeightStateProvider);
 
     final (entriesAll, entries7dAvg) = sensibleRange(
       entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),

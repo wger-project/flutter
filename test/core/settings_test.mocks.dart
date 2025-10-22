@@ -41,62 +41,74 @@ import 'package:wger/providers/user.dart' as _i21;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
-// ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake
+    implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeExerciseDatabase_1 extends _i1.SmartFake implements _i3.ExerciseDatabase {
+class _FakeExerciseDatabase_1 extends _i1.SmartFake
+    implements _i3.ExerciseDatabase {
   _FakeExerciseDatabase_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeExercise_2 extends _i1.SmartFake implements _i4.Exercise {
-  _FakeExercise_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeExercise_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeExerciseCategory_3 extends _i1.SmartFake implements _i5.ExerciseCategory {
+class _FakeExerciseCategory_3 extends _i1.SmartFake
+    implements _i5.ExerciseCategory {
   _FakeExerciseCategory_3(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeEquipment_4 extends _i1.SmartFake implements _i6.Equipment {
-  _FakeEquipment_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeEquipment_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeMuscle_5 extends _i1.SmartFake implements _i7.Muscle {
-  _FakeMuscle_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeMuscle_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeLanguage_6 extends _i1.SmartFake implements _i8.Language {
-  _FakeLanguage_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeLanguage_6(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeIngredientDatabase_7 extends _i1.SmartFake implements _i9.IngredientDatabase {
+class _FakeIngredientDatabase_7 extends _i1.SmartFake
+    implements _i9.IngredientDatabase {
   _FakeIngredientDatabase_7(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeNutritionalPlan_8 extends _i1.SmartFake implements _i10.NutritionalPlan {
+class _FakeNutritionalPlan_8 extends _i1.SmartFake
+    implements _i10.NutritionalPlan {
   _FakeNutritionalPlan_8(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeMeal_9 extends _i1.SmartFake implements _i11.Meal {
-  _FakeMeal_9(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeMeal_9(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeMealItem_10 extends _i1.SmartFake implements _i12.MealItem {
-  _FakeMealItem_10(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeMealItem_10(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeIngredient_11 extends _i1.SmartFake implements _i13.Ingredient {
-  _FakeIngredient_11(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeIngredient_11(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeSharedPreferencesAsync_12 extends _i1.SmartFake implements _i14.SharedPreferencesAsync {
+class _FakeSharedPreferencesAsync_12 extends _i1.SmartFake
+    implements _i14.SharedPreferencesAsync {
   _FakeSharedPreferencesAsync_12(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
@@ -107,15 +119,18 @@ class _FakeAuthProvider_13 extends _i1.SmartFake implements _i15.AuthProvider {
 }
 
 class _FakeClient_14 extends _i1.SmartFake implements _i16.Client {
-  _FakeClient_14(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeClient_14(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeUri_15 extends _i1.SmartFake implements Uri {
-  _FakeUri_15(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeUri_15(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeResponse_16 extends _i1.SmartFake implements _i16.Response {
-  _FakeResponse_16(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeResponse_16(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [ExercisesProvider].
@@ -205,22 +220,23 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
           as List<_i8.Language>);
 
   @override
-  set database(_i3.ExerciseDatabase? value) => super.noSuchMethod(
-    Invocation.setter(#database, value),
+  set database(_i3.ExerciseDatabase? _database) => super.noSuchMethod(
+    Invocation.setter(#database, _database),
     returnValueForMissingStub: null,
   );
 
   @override
-  set exercises(List<_i4.Exercise>? value) => super.noSuchMethod(
-    Invocation.setter(#exercises, value),
+  set exercises(List<_i4.Exercise>? _exercises) => super.noSuchMethod(
+    Invocation.setter(#exercises, _exercises),
     returnValueForMissingStub: null,
   );
 
   @override
-  set filteredExercises(List<_i4.Exercise>? newFilteredExercises) => super.noSuchMethod(
-    Invocation.setter(#filteredExercises, newFilteredExercises),
-    returnValueForMissingStub: null,
-  );
+  set filteredExercises(List<_i4.Exercise>? newFilteredExercises) =>
+      super.noSuchMethod(
+        Invocation.setter(#filteredExercises, newFilteredExercises),
+        returnValueForMissingStub: null,
+      );
 
   @override
   set languages(List<_i8.Language>? languages) => super.noSuchMethod(
@@ -230,7 +246,8 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
   _i18.Future<void> setFilters(_i17.Filters? newFilters) =>
@@ -543,7 +560,8 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
 /// A class which mocks [NutritionPlansProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionPlansProvider extends _i1.Mock implements _i20.NutritionPlansProvider {
+class MockNutritionPlansProvider extends _i1.Mock
+    implements _i20.NutritionPlansProvider {
   MockNutritionPlansProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -587,20 +605,21 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i20.NutritionPlans
           as List<_i10.NutritionalPlan>);
 
   @override
-  set database(_i9.IngredientDatabase? value) => super.noSuchMethod(
-    Invocation.setter(#database, value),
+  set database(_i9.IngredientDatabase? _database) => super.noSuchMethod(
+    Invocation.setter(#database, _database),
     returnValueForMissingStub: null,
   );
 
   @override
-  set ingredients(List<_i13.Ingredient>? value) => super.noSuchMethod(
-    Invocation.setter(#ingredients, value),
+  set ingredients(List<_i13.Ingredient>? _ingredients) => super.noSuchMethod(
+    Invocation.setter(#ingredients, _ingredients),
     returnValueForMissingStub: null,
   );
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
   void clear() => super.noSuchMethod(
@@ -621,7 +640,8 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i20.NutritionPlans
 
   @override
   _i11.Meal? findMealById(int? id) =>
-      (super.noSuchMethod(Invocation.method(#findMealById, [id])) as _i11.Meal?);
+      (super.noSuchMethod(Invocation.method(#findMealById, [id]))
+          as _i11.Meal?);
 
   @override
   _i18.Future<void> fetchAndSetAllPlansSparse() =>
@@ -928,26 +948,27 @@ class MockUserProvider extends _i1.Mock implements _i21.UserProvider {
           as _i14.SharedPreferencesAsync);
 
   @override
-  set themeMode(_i22.ThemeMode? value) => super.noSuchMethod(
-    Invocation.setter(#themeMode, value),
+  set themeMode(_i22.ThemeMode? _themeMode) => super.noSuchMethod(
+    Invocation.setter(#themeMode, _themeMode),
     returnValueForMissingStub: null,
   );
 
   @override
-  set prefs(_i14.SharedPreferencesAsync? value) => super.noSuchMethod(
-    Invocation.setter(#prefs, value),
+  set prefs(_i14.SharedPreferencesAsync? _prefs) => super.noSuchMethod(
+    Invocation.setter(#prefs, _prefs),
     returnValueForMissingStub: null,
   );
 
   @override
-  set profile(_i23.Profile? value) => super.noSuchMethod(
-    Invocation.setter(#profile, value),
+  set profile(_i23.Profile? _profile) => super.noSuchMethod(
+    Invocation.setter(#profile, _profile),
     returnValueForMissingStub: null,
   );
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
   void clear() => super.noSuchMethod(
@@ -1038,14 +1059,14 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
           as _i16.Client);
 
   @override
-  set auth(_i15.AuthProvider? value) => super.noSuchMethod(
-    Invocation.setter(#auth, value),
+  set auth(_i15.AuthProvider? _auth) => super.noSuchMethod(
+    Invocation.setter(#auth, _auth),
     returnValueForMissingStub: null,
   );
 
   @override
-  set client(_i16.Client? value) => super.noSuchMethod(
-    Invocation.setter(#client, value),
+  set client(_i16.Client? _client) => super.noSuchMethod(
+    Invocation.setter(#client, _client),
     returnValueForMissingStub: null,
   );
 
@@ -1143,7 +1164,8 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
 ///
 /// See the documentation for Mockito's code generation for more information.
 // ignore: must_be_immutable
-class MockSharedPreferencesAsync extends _i1.Mock implements _i14.SharedPreferencesAsync {
+class MockSharedPreferencesAsync extends _i1.Mock
+    implements _i14.SharedPreferencesAsync {
   MockSharedPreferencesAsync() {
     _i1.throwOnMissingStub(this);
   }

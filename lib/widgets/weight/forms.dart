@@ -20,11 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight_riverpod.dart';
 
 class WeightForm extends riverpod.ConsumerWidget {
@@ -199,6 +197,7 @@ class WeightForm extends riverpod.ConsumerWidget {
               return null;
             },
           ),
+          Text("ID: ${_weightEntry.id}"),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
@@ -211,8 +210,7 @@ class WeightForm extends riverpod.ConsumerWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              final auth = context.read<AuthProvider>();
-              final notifier = ref.read(bodyWeightStateProvider(auth).notifier);
+              final notifier = ref.read(bodyWeightStateProvider.notifier);
               _weightEntry.id == null
                   ? await notifier.addEntry(_weightEntry)
                   : await notifier.editEntry(_weightEntry);

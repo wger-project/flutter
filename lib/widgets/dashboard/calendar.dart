@@ -25,7 +25,6 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -103,8 +102,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     final i18n = AppLocalizations.of(context);
 
     // Process weight entries
-    final auth = context.read<AuthProvider>();
-    final entries = ref.read(bodyWeightStateProvider(auth));
+    final entries = ref.read(bodyWeightStateProvider);
     for (final entry in entries) {
       final date = DateFormatLists.format(entry.date);
 

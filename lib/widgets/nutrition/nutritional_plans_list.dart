@@ -43,7 +43,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     DateTime? endDate,
   ) {
     final auth = context.read<AuthProvider>();
-    final entriesList = ref.watch(bodyWeightStateProvider(auth));
+    final entriesList = ref.watch(bodyWeightStateProvider);
 
     final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
     final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);

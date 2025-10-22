@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/json.dart';
@@ -54,6 +55,34 @@ class WeightEntry {
     weight: weight ?? this.weight,
     date: date ?? this.date,
   );
+
+  factory WeightEntry.fromData(
+    Map<String, dynamic> data,
+    drift.GeneratedDatabase db, {
+    String? prefix,
+  }) {
+    final effectivePrefix = prefix ?? '';
+
+    final rawId = data['${effectivePrefix}id'];
+    final rawWeight = data['${effectivePrefix}weight'];
+    final rawDate = data['${effectivePrefix}date'];
+
+    final parsedId = rawId as String?;
+    final parsedWeight = rawWeight is num
+        ? rawWeight
+        : (rawWeight == null ? 0 : num.tryParse(rawWeight.toString()) ?? 0);
+    final parsedDate = rawDate is DateTime
+        ? rawDate
+        : (rawDate == null
+              ? DateTime.now()
+              : DateTime.tryParse(rawDate.toString()) ?? DateTime.now());
+
+    return WeightEntry(
+      id: parsedId,
+      weight: parsedWeight,
+      date: parsedDate,
+    );
+  }
 
   // Boilerplate
   factory WeightEntry.fromJson(Map<String, dynamic> json) => _$WeightEntryFromJson(json);

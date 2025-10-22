@@ -32,38 +32,44 @@ import 'package:wger/providers/user.dart' as _i9;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
-// ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake
+    implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeSharedPreferencesAsync_1 extends _i1.SmartFake implements _i3.SharedPreferencesAsync {
+class _FakeSharedPreferencesAsync_1 extends _i1.SmartFake
+    implements _i3.SharedPreferencesAsync {
   _FakeSharedPreferencesAsync_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeIngredientDatabase_2 extends _i1.SmartFake implements _i4.IngredientDatabase {
+class _FakeIngredientDatabase_2 extends _i1.SmartFake
+    implements _i4.IngredientDatabase {
   _FakeIngredientDatabase_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeNutritionalPlan_3 extends _i1.SmartFake implements _i5.NutritionalPlan {
+class _FakeNutritionalPlan_3 extends _i1.SmartFake
+    implements _i5.NutritionalPlan {
   _FakeNutritionalPlan_3(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeMeal_4 extends _i1.SmartFake implements _i6.Meal {
-  _FakeMeal_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeMeal_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeMealItem_5 extends _i1.SmartFake implements _i7.MealItem {
-  _FakeMealItem_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeMealItem_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeIngredient_6 extends _i1.SmartFake implements _i8.Ingredient {
-  _FakeIngredient_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeIngredient_6(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [UserProvider].
@@ -105,26 +111,27 @@ class MockUserProvider extends _i1.Mock implements _i9.UserProvider {
           as _i3.SharedPreferencesAsync);
 
   @override
-  set themeMode(_i10.ThemeMode? value) => super.noSuchMethod(
-    Invocation.setter(#themeMode, value),
+  set themeMode(_i10.ThemeMode? _themeMode) => super.noSuchMethod(
+    Invocation.setter(#themeMode, _themeMode),
     returnValueForMissingStub: null,
   );
 
   @override
-  set prefs(_i3.SharedPreferencesAsync? value) => super.noSuchMethod(
-    Invocation.setter(#prefs, value),
+  set prefs(_i3.SharedPreferencesAsync? _prefs) => super.noSuchMethod(
+    Invocation.setter(#prefs, _prefs),
     returnValueForMissingStub: null,
   );
 
   @override
-  set profile(_i11.Profile? value) => super.noSuchMethod(
-    Invocation.setter(#profile, value),
+  set profile(_i11.Profile? _profile) => super.noSuchMethod(
+    Invocation.setter(#profile, _profile),
     returnValueForMissingStub: null,
   );
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
   void clear() => super.noSuchMethod(
@@ -193,7 +200,8 @@ class MockUserProvider extends _i1.Mock implements _i9.UserProvider {
 /// A class which mocks [NutritionPlansProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionPlansProvider extends _i1.Mock implements _i14.NutritionPlansProvider {
+class MockNutritionPlansProvider extends _i1.Mock
+    implements _i14.NutritionPlansProvider {
   MockNutritionPlansProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -237,20 +245,21 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i14.NutritionPlans
           as List<_i5.NutritionalPlan>);
 
   @override
-  set database(_i4.IngredientDatabase? value) => super.noSuchMethod(
-    Invocation.setter(#database, value),
+  set database(_i4.IngredientDatabase? _database) => super.noSuchMethod(
+    Invocation.setter(#database, _database),
     returnValueForMissingStub: null,
   );
 
   @override
-  set ingredients(List<_i8.Ingredient>? value) => super.noSuchMethod(
-    Invocation.setter(#ingredients, value),
+  set ingredients(List<_i8.Ingredient>? _ingredients) => super.noSuchMethod(
+    Invocation.setter(#ingredients, _ingredients),
     returnValueForMissingStub: null,
   );
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
   void clear() => super.noSuchMethod(

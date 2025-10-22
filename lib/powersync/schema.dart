@@ -1,11 +1,11 @@
 import 'package:powersync/powersync.dart';
 
-const tableMuscles = 'exercises_muscle';
-const tableBodyWeights = 'weight_weightentry';
+const tableMuscle = 'exercises_muscle';
+const tableBodyWeight = 'weight_weightentry';
 
 Schema schema = const Schema([
   Table(
-    tableMuscles,
+    tableMuscle,
     [
       Column.text('name'),
       Column.text('name_en'),
@@ -13,8 +13,9 @@ Schema schema = const Schema([
     ],
   ),
   Table(
-    tableBodyWeights,
+    tableBodyWeight,
     [
+      Column.text('uuid'),
       Column.real('weight'),
       Column.text('date'),
     ],

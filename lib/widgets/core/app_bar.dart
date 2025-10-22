@@ -96,7 +96,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
                           auth.logout();
                           context.read<RoutinesProvider>().clear();
                           context.read<NutritionPlansProvider>().clear();
-                          ref.read(bodyWeightStateProvider(auth).notifier).clear();
+                          ref.read(bodyWeightStateProvider.notifier).clear();
                           context.read<GalleryProvider>().clear();
                           context.read<UserProvider>().clear();
 

@@ -6,10 +6,7 @@ import 'package:wger/models/exercises/exercise.dart';
 
 const DEFAULT_DURATION = Duration(hours: 5);
 
-final StateNotifierProvider<GymStateNotifier, GymState> gymStateProvider =
-    StateNotifierProvider<GymStateNotifier, GymState>((ref) {
-      return GymStateNotifier();
-    });
+final gymStateProvider = NotifierProvider<GymNotifier, GymState>(GymNotifier.new);
 
 class GymState {
   final Map<Exercise, int> exercisePages;
@@ -62,10 +59,11 @@ class GymState {
   }
 }
 
-class GymStateNotifier extends StateNotifier<GymState> {
+class GymNotifier extends Notifier<GymState> {
   final _logger = Logger('GymStateNotifier');
 
-  GymStateNotifier() : super(GymState());
+  @override
+  GymState build() => GymState();
 
   void setCurrentPage(int page) {
     // _logger.fine('Setting page from ${state.currentPage} to $page');
