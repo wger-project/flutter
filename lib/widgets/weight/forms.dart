@@ -23,7 +23,7 @@ import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/body_weight_powersync.dart';
+import 'package:wger/providers/body_weight.dart';
 
 class WeightForm extends riverpod.ConsumerWidget {
   final _form = GlobalKey<FormState>();

@@ -25,7 +25,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight_powersync.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';

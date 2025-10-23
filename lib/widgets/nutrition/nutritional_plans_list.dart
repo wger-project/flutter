@@ -22,7 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight_powersync.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';

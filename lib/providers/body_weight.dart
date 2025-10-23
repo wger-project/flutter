@@ -6,7 +6,7 @@ import 'package:wger/models/body_weight/weight_entry.dart';
 
 import 'body_weight_repository.dart';
 
-part 'body_weight_powersync.g.dart';
+part 'body_weight.g.dart';
 
 @riverpod
 final class WeightEntryNotifier extends _$WeightEntryNotifier {

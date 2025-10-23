@@ -21,7 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/body_weight_powersync.dart';
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 
 import 'weight_provider_test.mocks.dart';

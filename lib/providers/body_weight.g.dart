@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'body_weight_powersync.dart';
+part of 'body_weight.dart';
 
 // **************************************************************************
 // RiverpodGenerator
