@@ -33,18 +33,15 @@ final class WeightEntryNotifierProvider
   WeightEntryNotifier create() => WeightEntryNotifier();
 }
 
-String _$weightEntryNotifierHash() =>
-    r'e1ebd97614bf12e7fd64c4613a13b082cb01eb33';
+String _$weightEntryNotifierHash() => r'df37b137d038b82b0937333a4f1cc3be7148f932';
 
-abstract class _$WeightEntryNotifier
-    extends $StreamNotifier<List<WeightEntry>> {
+abstract class _$WeightEntryNotifier extends $StreamNotifier<List<WeightEntry>> {
   Stream<List<WeightEntry>> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref =
-        this.ref as $Ref<AsyncValue<List<WeightEntry>>, List<WeightEntry>>;
+    final ref = this.ref as $Ref<AsyncValue<List<WeightEntry>>, List<WeightEntry>>;
     final element =
         ref.element
             as $ClassProviderElement<

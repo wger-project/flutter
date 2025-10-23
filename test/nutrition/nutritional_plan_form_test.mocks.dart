@@ -29,44 +29,37 @@ import 'package:wger/providers/nutrition.dart' as _i8;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake
-    implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeIngredientDatabase_1 extends _i1.SmartFake
-    implements _i3.IngredientDatabase {
+class _FakeIngredientDatabase_1 extends _i1.SmartFake implements _i3.IngredientDatabase {
   _FakeIngredientDatabase_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeNutritionalPlan_2 extends _i1.SmartFake
-    implements _i4.NutritionalPlan {
+class _FakeNutritionalPlan_2 extends _i1.SmartFake implements _i4.NutritionalPlan {
   _FakeNutritionalPlan_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeMeal_3 extends _i1.SmartFake implements _i5.Meal {
-  _FakeMeal_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeMeal_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeMealItem_4 extends _i1.SmartFake implements _i6.MealItem {
-  _FakeMealItem_4(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeMealItem_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeIngredient_5 extends _i1.SmartFake implements _i7.Ingredient {
-  _FakeIngredient_5(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeIngredient_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [NutritionPlansProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionPlansProvider extends _i1.Mock
-    implements _i8.NutritionPlansProvider {
+class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansProvider {
   MockNutritionPlansProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -123,8 +116,7 @@ class MockNutritionPlansProvider extends _i1.Mock
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   void clear() => super.noSuchMethod(

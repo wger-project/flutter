@@ -36,57 +36,47 @@ import 'package:wger/providers/routines.dart' as _i12;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake
-    implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeWeightUnit_1 extends _i1.SmartFake implements _i3.WeightUnit {
-  _FakeWeightUnit_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeWeightUnit_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeRepetitionUnit_2 extends _i1.SmartFake
-    implements _i4.RepetitionUnit {
+class _FakeRepetitionUnit_2 extends _i1.SmartFake implements _i4.RepetitionUnit {
   _FakeRepetitionUnit_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeRoutine_3 extends _i1.SmartFake implements _i5.Routine {
-  _FakeRoutine_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeRoutine_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeDay_4 extends _i1.SmartFake implements _i6.Day {
-  _FakeDay_4(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeDay_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeSlot_5 extends _i1.SmartFake implements _i7.Slot {
-  _FakeSlot_5(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeSlot_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeSlotEntry_6 extends _i1.SmartFake implements _i8.SlotEntry {
-  _FakeSlotEntry_6(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeSlotEntry_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeBaseConfig_7 extends _i1.SmartFake implements _i9.BaseConfig {
-  _FakeBaseConfig_7(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeBaseConfig_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeWorkoutSession_8 extends _i1.SmartFake
-    implements _i10.WorkoutSession {
+class _FakeWorkoutSession_8 extends _i1.SmartFake implements _i10.WorkoutSession {
   _FakeWorkoutSession_8(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeLog_9 extends _i1.SmartFake implements _i11.Log {
-  _FakeLog_9(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeLog_9(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [RoutinesProvider].
@@ -167,16 +157,14 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
   );
 
   @override
-  set repetitionUnits(List<_i4.RepetitionUnit>? repetitionUnits) =>
-      super.noSuchMethod(
-        Invocation.setter(#repetitionUnits, repetitionUnits),
-        returnValueForMissingStub: null,
-      );
+  set repetitionUnits(List<_i4.RepetitionUnit>? repetitionUnits) => super.noSuchMethod(
+    Invocation.setter(#repetitionUnits, repetitionUnits),
+    returnValueForMissingStub: null,
+  );
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   void clear() => super.noSuchMethod(

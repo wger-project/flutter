@@ -19,11 +19,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
@@ -38,7 +36,6 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
-    final auth = context.read<AuthProvider>();
     final entriesList = ref.watch(bodyWeightStateProvider);
     final WeightEntry? lastWeightEntry = entriesList.isNotEmpty ? entriesList.first : null;
     final nutritionalGoalsGperKg = lastWeightEntry != null

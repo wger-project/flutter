@@ -173,9 +173,9 @@ class WeightEntryTableCompanion extends UpdateCompanion<WeightEntry> {
   }
 }
 
-abstract class _$AppDatabase extends GeneratedDatabase {
-  _$AppDatabase(QueryExecutor e) : super(e);
-  $AppDatabaseManager get managers => $AppDatabaseManager(this);
+abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
+  _$DriftPowersyncDatabase(QueryExecutor e) : super(e);
+  $DriftPowersyncDatabaseManager get managers => $DriftPowersyncDatabaseManager(this);
   late final $WeightEntryTableTable weightEntryTable = $WeightEntryTableTable(
     this,
   );
@@ -185,8 +185,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [weightEntryTable];
   @override
-  DriftDatabaseOptions get options =>
-      const DriftDatabaseOptions(storeDateTimeAsText: true);
+  DriftDatabaseOptions get options => const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
 
 typedef $$WeightEntryTableTableCreateCompanionBuilder =
@@ -205,7 +204,7 @@ typedef $$WeightEntryTableTableUpdateCompanionBuilder =
     });
 
 class $$WeightEntryTableTableFilterComposer
-    extends Composer<_$AppDatabase, $WeightEntryTableTable> {
+    extends Composer<_$DriftPowersyncDatabase, $WeightEntryTableTable> {
   $$WeightEntryTableTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -230,7 +229,7 @@ class $$WeightEntryTableTableFilterComposer
 }
 
 class $$WeightEntryTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $WeightEntryTableTable> {
+    extends Composer<_$DriftPowersyncDatabase, $WeightEntryTableTable> {
   $$WeightEntryTableTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -255,7 +254,7 @@ class $$WeightEntryTableTableOrderingComposer
 }
 
 class $$WeightEntryTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $WeightEntryTableTable> {
+    extends Composer<_$DriftPowersyncDatabase, $WeightEntryTableTable> {
   $$WeightEntryTableTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -276,7 +275,7 @@ class $$WeightEntryTableTableAnnotationComposer
 class $$WeightEntryTableTableTableManager
     extends
         RootTableManager<
-          _$AppDatabase,
+          _$DriftPowersyncDatabase,
           $WeightEntryTableTable,
           WeightEntry,
           $$WeightEntryTableTableFilterComposer,
@@ -286,13 +285,13 @@ class $$WeightEntryTableTableTableManager
           $$WeightEntryTableTableUpdateCompanionBuilder,
           (
             WeightEntry,
-            BaseReferences<_$AppDatabase, $WeightEntryTableTable, WeightEntry>,
+            BaseReferences<_$DriftPowersyncDatabase, $WeightEntryTableTable, WeightEntry>,
           ),
           WeightEntry,
           PrefetchHooks Function()
         > {
   $$WeightEntryTableTableTableManager(
-    _$AppDatabase db,
+    _$DriftPowersyncDatabase db,
     $WeightEntryTableTable table,
   ) : super(
         TableManagerState(
@@ -328,9 +327,8 @@ class $$WeightEntryTableTableTableManager
                 date: date,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -338,7 +336,7 @@ class $$WeightEntryTableTableTableManager
 
 typedef $$WeightEntryTableTableProcessedTableManager =
     ProcessedTableManager<
-      _$AppDatabase,
+      _$DriftPowersyncDatabase,
       $WeightEntryTableTable,
       WeightEntry,
       $$WeightEntryTableTableFilterComposer,
@@ -346,17 +344,14 @@ typedef $$WeightEntryTableTableProcessedTableManager =
       $$WeightEntryTableTableAnnotationComposer,
       $$WeightEntryTableTableCreateCompanionBuilder,
       $$WeightEntryTableTableUpdateCompanionBuilder,
-      (
-        WeightEntry,
-        BaseReferences<_$AppDatabase, $WeightEntryTableTable, WeightEntry>,
-      ),
+      (WeightEntry, BaseReferences<_$DriftPowersyncDatabase, $WeightEntryTableTable, WeightEntry>),
       WeightEntry,
       PrefetchHooks Function()
     >;
 
-class $AppDatabaseManager {
-  final _$AppDatabase _db;
-  $AppDatabaseManager(this._db);
+class $DriftPowersyncDatabaseManager {
+  final _$DriftPowersyncDatabase _db;
+  $DriftPowersyncDatabaseManager(this._db);
   $$WeightEntryTableTableTableManager get weightEntryTable =>
       $$WeightEntryTableTableTableManager(_db, _db.weightEntryTable);
 }

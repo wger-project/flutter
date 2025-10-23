@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/body_weight_state.dart';
@@ -21,8 +19,7 @@ import '../test_data/profile.dart';
 
 Widget createWeightScreen({locale = 'en'}) {
   // Build a Riverpod override so tests use the new BodyWeightState
-  final auth = AuthProvider();
-  final repo = BodyWeightRepository(WgerBaseProvider(auth));
+  final repo = BodyWeightRepository();
   final bwState = BodyWeightState(repo);
   bwState.state = getScreenshotWeightEntries();
 

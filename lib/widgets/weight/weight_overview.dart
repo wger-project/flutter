@@ -22,10 +22,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight_powersync.dart';
-import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
 import 'package:wger/widgets/weight/forms.dart';
@@ -40,9 +40,6 @@ class WeightOverview extends riverpod.ConsumerWidget {
     final plans = context.read<NutritionPlansProvider>().items;
 
     final entries = ref.watch(weightEntryProvider);
-    // final entriesAsync = ref.watch(bodyWeightStreamProvider);
-
-    // Handle stream states (loading/error/data) and reuse the existing UI
     return entries.when(
       data: (entriesList) {
         final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
@@ -75,78 +72,67 @@ class WeightOverview extends riverpod.ConsumerWidget {
             ),
             SizedBox(
               height: 300,
-              child: RefreshIndicator(
-                onRefresh: () => ref.read(bodyWeightStateProvider.notifier).fetchAndSetEntries(),
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(10.0),
-                  itemCount: entriesList.length,
-                  itemBuilder: (context, index) {
-                    final currentEntry = entriesList[index];
-                    return Card(
-                      child: ListTile(
-                        title: Text(
-                          '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
-                        ),
-                        subtitle: Text(
-                          DateFormat.yMd(
-                            Localizations.localeOf(context).languageCode,
-                          ).add_Hm().format(currentEntry.date),
-                        ),
-                        trailing: PopupMenuButton(
-                          itemBuilder: (BuildContext context) {
-                            return [
-                              PopupMenuItem(
-                                child: Text(AppLocalizations.of(context).edit),
-                                onTap: () => Navigator.pushNamed(
-                                  context,
-                                  FormScreen.routeName,
-                                  arguments: FormScreenArguments(
-                                    AppLocalizations.of(context).edit,
-                                    WeightForm(currentEntry),
-                                  ),
+              child: ListView.builder(
+                padding: const EdgeInsets.all(10.0),
+                itemCount: entriesList.length,
+                itemBuilder: (context, index) {
+                  final currentEntry = entriesList[index];
+                  return Card(
+                    child: ListTile(
+                      title: Text(
+                        '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
+                      ),
+                      subtitle: Text(
+                        DateFormat.yMd(
+                          Localizations.localeOf(context).languageCode,
+                        ).add_Hm().format(currentEntry.date),
+                      ),
+                      trailing: PopupMenuButton(
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem(
+                              child: Text(AppLocalizations.of(context).edit),
+                              onTap: () => Navigator.pushNamed(
+                                context,
+                                FormScreen.routeName,
+                                arguments: FormScreenArguments(
+                                  AppLocalizations.of(context).edit,
+                                  WeightForm(currentEntry),
                                 ),
                               ),
-                              PopupMenuItem(
-                                child: Text(AppLocalizations.of(context).delete),
-                                onTap: () async {
-                                  // Delete entry from DB
-                                  await ref
-                                      .read(bodyWeightStateProvider.notifier)
-                                      .deleteEntry(currentEntry.id!);
+                            ),
+                            PopupMenuItem(
+                              child: Text(AppLocalizations.of(context).delete),
+                              onTap: () async {
+                                await ref
+                                    .read(weightEntryProvider.notifier)
+                                    .deleteEntry(currentEntry.id!);
 
-                                  // and inform the user
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          AppLocalizations.of(context).successfullyDeleted,
-                                          textAlign: TextAlign.center,
-                                        ),
+                                // and inform the user
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        AppLocalizations.of(context).successfullyDeleted,
+                                        textAlign: TextAlign.center,
                                       ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ];
-                          },
-                        ),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ];
+                        },
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
         );
       },
-      loading: () {
-        // Show a small loading indicator while waiting for the first data set
-        return const Column(
-          children: [
-            SizedBox(height: 200, child: Center(child: CircularProgressIndicator())),
-          ],
-        );
-      },
+      loading: () => const BoxedProgressIndicator(),
       error: (err, st) {
         return Column(
           children: [

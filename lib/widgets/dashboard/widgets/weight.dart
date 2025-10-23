@@ -21,10 +21,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight_riverpod.dart';
+import 'package:wger/providers/body_weight_powersync.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
@@ -36,11 +37,11 @@ class DashboardWeightWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = context.read<UserProvider>().profile;
-    final entriesList = ref.watch(bodyWeightStateProvider);
+    final entriesList = ref.watch(weightEntryProvider);
 
-    final (entriesAll, entries7dAvg) = sensibleRange(
-      entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
-    );
+    // final (entriesAll, entries7dAvg) = sensibleRange(
+    //   entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
+    // );
 
     return Card(
       child: Column(
@@ -56,62 +57,81 @@ class DashboardWeightWidget extends ConsumerWidget {
               color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
           ),
-          Column(
-            children: [
-              if (entriesList.isNotEmpty)
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 200,
-                      child: MeasurementChartWidgetFl(
-                        entriesAll,
-                        weightUnit(profile!.isMetric, context),
-                        avgs: entries7dAvg,
-                      ),
-                    ),
-                    if (entries7dAvg.isNotEmpty)
-                      MeasurementOverallChangeWidget(
-                        entries7dAvg.first,
-                        entries7dAvg.last,
-                        weightUnit(profile.isMetric, context),
-                      ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          entriesList.when(
+            data: (entriesList) {
+              final (entriesAll, entries7dAvg) = sensibleRange(
+                entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
+              );
+
+              return Column(
+                children: [
+                  if (entriesList.isNotEmpty)
+                    Column(
                       children: [
-                        TextButton(
-                          child: Text(
-                            AppLocalizations.of(context).goToDetailPage,
+                        SizedBox(
+                          height: 200,
+                          child: MeasurementChartWidgetFl(
+                            entriesAll,
+                            weightUnit(profile!.isMetric, context),
+                            avgs: entries7dAvg,
                           ),
-                          onPressed: () {
-                            Navigator.of(context).pushNamed(WeightScreen.routeName);
-                          },
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              FormScreen.routeName,
-                              arguments: FormScreenArguments(
-                                AppLocalizations.of(context).newEntry,
-                                WeightForm(
-                                  entriesList.first.copyWith(id: null, date: DateTime.now()),
-                                ),
+                        if (entries7dAvg.isNotEmpty)
+                          MeasurementOverallChangeWidget(
+                            entries7dAvg.first,
+                            entries7dAvg.last,
+                            weightUnit(profile.isMetric, context),
+                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              child: Text(
+                                AppLocalizations.of(context).goToDetailPage,
                               ),
-                            );
-                          },
+                              onPressed: () {
+                                Navigator.of(context).pushNamed(WeightScreen.routeName);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  FormScreen.routeName,
+                                  arguments: FormScreenArguments(
+                                    AppLocalizations.of(context).newEntry,
+                                    WeightForm(
+                                      entriesList.first.copyWith(id: null, date: DateTime.now()),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ],
+                    )
+                  else
+                    NothingFound(
+                      AppLocalizations.of(context).noWeightEntries,
+                      AppLocalizations.of(context).newEntry,
+                      WeightForm(),
                     ),
-                  ],
-                )
-              else
-                NothingFound(
-                  AppLocalizations.of(context).noWeightEntries,
-                  AppLocalizations.of(context).newEntry,
-                  WeightForm(),
-                ),
-            ],
+                ],
+              );
+            },
+            loading: () => const BoxedProgressIndicator(),
+            error: (err, st) {
+              return Column(
+                children: [
+                  Text('Error loading local weights: $err'),
+                  Text(st.toString()),
+
+                  const SizedBox(height: 200, child: Center(child: Icon(Icons.error))),
+                ],
+              );
+            },
           ),
         ],
       ),

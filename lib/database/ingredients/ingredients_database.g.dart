@@ -3,8 +3,7 @@
 part of 'ingredients_database.dart';
 
 // ignore_for_file: type=lint
-class $IngredientsTable extends Ingredients
-    with TableInfo<$IngredientsTable, IngredientTable> {
+class $IngredientsTable extends Ingredients with TableInfo<$IngredientsTable, IngredientTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -155,19 +154,16 @@ class IngredientTable extends DataClass implements Insertable<IngredientTable> {
     };
   }
 
-  IngredientTable copyWith({int? id, String? data, DateTime? lastFetched}) =>
-      IngredientTable(
-        id: id ?? this.id,
-        data: data ?? this.data,
-        lastFetched: lastFetched ?? this.lastFetched,
-      );
+  IngredientTable copyWith({int? id, String? data, DateTime? lastFetched}) => IngredientTable(
+    id: id ?? this.id,
+    data: data ?? this.data,
+    lastFetched: lastFetched ?? this.lastFetched,
+  );
   IngredientTable copyWithCompanion(IngredientsCompanion data) {
     return IngredientTable(
       id: data.id.present ? data.id.value : this.id,
       data: data.data.present ? data.data.value : this.data,
-      lastFetched: data.lastFetched.present
-          ? data.lastFetched.value
-          : this.lastFetched,
+      lastFetched: data.lastFetched.present ? data.lastFetched.value : this.lastFetched,
     );
   }
 
@@ -279,8 +275,7 @@ abstract class _$IngredientDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [ingredients];
   @override
-  DriftDatabaseOptions get options =>
-      const DriftDatabaseOptions(storeDateTimeAsText: true);
+  DriftDatabaseOptions get options => const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
 
 typedef $$IngredientsTableCreateCompanionBuilder =
@@ -298,8 +293,7 @@ typedef $$IngredientsTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-class $$IngredientsTableFilterComposer
-    extends Composer<_$IngredientDatabase, $IngredientsTable> {
+class $$IngredientsTableFilterComposer extends Composer<_$IngredientDatabase, $IngredientsTable> {
   $$IngredientsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -323,8 +317,7 @@ class $$IngredientsTableFilterComposer
   );
 }
 
-class $$IngredientsTableOrderingComposer
-    extends Composer<_$IngredientDatabase, $IngredientsTable> {
+class $$IngredientsTableOrderingComposer extends Composer<_$IngredientDatabase, $IngredientsTable> {
   $$IngredientsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -357,8 +350,7 @@ class $$IngredientsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
@@ -382,11 +374,7 @@ class $$IngredientsTableTableManager
           $$IngredientsTableUpdateCompanionBuilder,
           (
             IngredientTable,
-            BaseReferences<
-              _$IngredientDatabase,
-              $IngredientsTable,
-              IngredientTable
-            >,
+            BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>,
           ),
           IngredientTable,
           PrefetchHooks Function()
@@ -398,10 +386,8 @@ class $$IngredientsTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$IngredientsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$IngredientsTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$IngredientsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$IngredientsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$IngredientsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
@@ -428,9 +414,8 @@ class $$IngredientsTableTableManager
                 lastFetched: lastFetched,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -446,14 +431,7 @@ typedef $$IngredientsTableProcessedTableManager =
       $$IngredientsTableAnnotationComposer,
       $$IngredientsTableCreateCompanionBuilder,
       $$IngredientsTableUpdateCompanionBuilder,
-      (
-        IngredientTable,
-        BaseReferences<
-          _$IngredientDatabase,
-          $IngredientsTable,
-          IngredientTable
-        >,
-      ),
+      (IngredientTable, BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>),
       IngredientTable,
       PrefetchHooks Function()
     >;

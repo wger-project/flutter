@@ -3,8 +3,7 @@
 part of 'exercise_database.dart';
 
 // ignore_for_file: type=lint
-class $ExercisesTable extends Exercises
-    with TableInfo<$ExercisesTable, ExerciseTable> {
+class $ExercisesTable extends Exercises with TableInfo<$ExercisesTable, ExerciseTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -201,12 +200,8 @@ class ExerciseTable extends DataClass implements Insertable<ExerciseTable> {
     return ExerciseTable(
       id: data.id.present ? data.id.value : this.id,
       data: data.data.present ? data.data.value : this.data,
-      lastUpdate: data.lastUpdate.present
-          ? data.lastUpdate.value
-          : this.lastUpdate,
-      lastFetched: data.lastFetched.present
-          ? data.lastFetched.value
-          : this.lastFetched,
+      lastUpdate: data.lastUpdate.present ? data.lastUpdate.value : this.lastUpdate,
+      lastFetched: data.lastFetched.present ? data.lastFetched.value : this.lastFetched,
     );
   }
 
@@ -337,14 +332,13 @@ class $MusclesTable extends Muscles with TableInfo<$MusclesTable, MuscleTable> {
     requiredDuringInsert: true,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<Muscle, String> data =
-      GeneratedColumn<String>(
-        'data',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<Muscle>($MusclesTable.$converterdata);
+  late final GeneratedColumnWithTypeConverter<Muscle, String> data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<Muscle>($MusclesTable.$converterdata);
   @override
   List<GeneratedColumn> get $columns => [id, data];
   @override
@@ -524,8 +518,7 @@ class MusclesCompanion extends UpdateCompanion<MuscleTable> {
   }
 }
 
-class $EquipmentsTable extends Equipments
-    with TableInfo<$EquipmentsTable, EquipmentTable> {
+class $EquipmentsTable extends Equipments with TableInfo<$EquipmentsTable, EquipmentTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -540,14 +533,13 @@ class $EquipmentsTable extends Equipments
     requiredDuringInsert: true,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<Equipment, String> data =
-      GeneratedColumn<String>(
-        'data',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<Equipment>($EquipmentsTable.$converterdata);
+  late final GeneratedColumnWithTypeConverter<Equipment, String> data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<Equipment>($EquipmentsTable.$converterdata);
   @override
   List<GeneratedColumn> get $columns => [id, data];
   @override
@@ -594,8 +586,7 @@ class $EquipmentsTable extends Equipments
     return $EquipmentsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Equipment, String> $converterdata =
-      const EquipmentConverter();
+  static TypeConverter<Equipment, String> $converterdata = const EquipmentConverter();
 }
 
 class EquipmentTable extends DataClass implements Insertable<EquipmentTable> {
@@ -660,9 +651,7 @@ class EquipmentTable extends DataClass implements Insertable<EquipmentTable> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is EquipmentTable &&
-          other.id == this.id &&
-          other.data == this.data);
+      (other is EquipmentTable && other.id == this.id && other.data == this.data);
 }
 
 class EquipmentsCompanion extends UpdateCompanion<EquipmentTable> {
@@ -732,8 +721,7 @@ class EquipmentsCompanion extends UpdateCompanion<EquipmentTable> {
   }
 }
 
-class $CategoriesTable extends Categories
-    with TableInfo<$CategoriesTable, CategoryTable> {
+class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, CategoryTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -802,8 +790,7 @@ class $CategoriesTable extends Categories
     return $CategoriesTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<ExerciseCategory, String> $converterdata =
-      const ExerciseCategoryConverter();
+  static TypeConverter<ExerciseCategory, String> $converterdata = const ExerciseCategoryConverter();
 }
 
 class CategoryTable extends DataClass implements Insertable<CategoryTable> {
@@ -868,9 +855,7 @@ class CategoryTable extends DataClass implements Insertable<CategoryTable> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is CategoryTable &&
-          other.id == this.id &&
-          other.data == this.data);
+      (other is CategoryTable && other.id == this.id && other.data == this.data);
 }
 
 class CategoriesCompanion extends UpdateCompanion<CategoryTable> {
@@ -940,8 +925,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryTable> {
   }
 }
 
-class $LanguagesTable extends Languages
-    with TableInfo<$LanguagesTable, LanguagesTable> {
+class $LanguagesTable extends Languages with TableInfo<$LanguagesTable, LanguagesTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -956,14 +940,13 @@ class $LanguagesTable extends Languages
     requiredDuringInsert: true,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<Language, String> data =
-      GeneratedColumn<String>(
-        'data',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<Language>($LanguagesTable.$converterdata);
+  late final GeneratedColumnWithTypeConverter<Language, String> data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<Language>($LanguagesTable.$converterdata);
   @override
   List<GeneratedColumn> get $columns => [id, data];
   @override
@@ -1010,8 +993,7 @@ class $LanguagesTable extends Languages
     return $LanguagesTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Language, String> $converterdata =
-      const LanguageConverter();
+  static TypeConverter<Language, String> $converterdata = const LanguageConverter();
 }
 
 class LanguagesTable extends DataClass implements Insertable<LanguagesTable> {
@@ -1076,9 +1058,7 @@ class LanguagesTable extends DataClass implements Insertable<LanguagesTable> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is LanguagesTable &&
-          other.id == this.id &&
-          other.data == this.data);
+      (other is LanguagesTable && other.id == this.id && other.data == this.data);
 }
 
 class LanguagesCompanion extends UpdateCompanion<LanguagesTable> {
@@ -1168,8 +1148,7 @@ abstract class _$ExerciseDatabase extends GeneratedDatabase {
     languages,
   ];
   @override
-  DriftDatabaseOptions get options =>
-      const DriftDatabaseOptions(storeDateTimeAsText: true);
+  DriftDatabaseOptions get options => const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
 
 typedef $$ExercisesTableCreateCompanionBuilder =
@@ -1189,8 +1168,7 @@ typedef $$ExercisesTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-class $$ExercisesTableFilterComposer
-    extends Composer<_$ExerciseDatabase, $ExercisesTable> {
+class $$ExercisesTableFilterComposer extends Composer<_$ExerciseDatabase, $ExercisesTable> {
   $$ExercisesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -1219,8 +1197,7 @@ class $$ExercisesTableFilterComposer
   );
 }
 
-class $$ExercisesTableOrderingComposer
-    extends Composer<_$ExerciseDatabase, $ExercisesTable> {
+class $$ExercisesTableOrderingComposer extends Composer<_$ExerciseDatabase, $ExercisesTable> {
   $$ExercisesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -1249,8 +1226,7 @@ class $$ExercisesTableOrderingComposer
   );
 }
 
-class $$ExercisesTableAnnotationComposer
-    extends Composer<_$ExerciseDatabase, $ExercisesTable> {
+class $$ExercisesTableAnnotationComposer extends Composer<_$ExerciseDatabase, $ExercisesTable> {
   $$ExercisesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -1258,8 +1234,7 @@ class $$ExercisesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
@@ -1286,10 +1261,7 @@ class $$ExercisesTableTableManager
           $$ExercisesTableAnnotationComposer,
           $$ExercisesTableCreateCompanionBuilder,
           $$ExercisesTableUpdateCompanionBuilder,
-          (
-            ExerciseTable,
-            BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>,
-          ),
+          (ExerciseTable, BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>),
           ExerciseTable,
           PrefetchHooks Function()
         > {
@@ -1298,10 +1270,8 @@ class $$ExercisesTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$ExercisesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$ExercisesTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$ExercisesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$ExercisesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$ExercisesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
@@ -1332,9 +1302,8 @@ class $$ExercisesTableTableManager
                 lastFetched: lastFetched,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -1350,10 +1319,7 @@ typedef $$ExercisesTableProcessedTableManager =
       $$ExercisesTableAnnotationComposer,
       $$ExercisesTableCreateCompanionBuilder,
       $$ExercisesTableUpdateCompanionBuilder,
-      (
-        ExerciseTable,
-        BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>,
-      ),
+      (ExerciseTable, BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>),
       ExerciseTable,
       PrefetchHooks Function()
     >;
@@ -1370,8 +1336,7 @@ typedef $$MusclesTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-class $$MusclesTableFilterComposer
-    extends Composer<_$ExerciseDatabase, $MusclesTable> {
+class $$MusclesTableFilterComposer extends Composer<_$ExerciseDatabase, $MusclesTable> {
   $$MusclesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -1384,15 +1349,13 @@ class $$MusclesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<Muscle, Muscle, String> get data =>
-      $composableBuilder(
-        column: $table.data,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
+  ColumnWithTypeConverterFilters<Muscle, Muscle, String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
-class $$MusclesTableOrderingComposer
-    extends Composer<_$ExerciseDatabase, $MusclesTable> {
+class $$MusclesTableOrderingComposer extends Composer<_$ExerciseDatabase, $MusclesTable> {
   $$MusclesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -1411,8 +1374,7 @@ class $$MusclesTableOrderingComposer
   );
 }
 
-class $$MusclesTableAnnotationComposer
-    extends Composer<_$ExerciseDatabase, $MusclesTable> {
+class $$MusclesTableAnnotationComposer extends Composer<_$ExerciseDatabase, $MusclesTable> {
   $$MusclesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -1420,8 +1382,7 @@ class $$MusclesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<Muscle, String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
@@ -1438,10 +1399,7 @@ class $$MusclesTableTableManager
           $$MusclesTableAnnotationComposer,
           $$MusclesTableCreateCompanionBuilder,
           $$MusclesTableUpdateCompanionBuilder,
-          (
-            MuscleTable,
-            BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>,
-          ),
+          (MuscleTable, BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>),
           MuscleTable,
           PrefetchHooks Function()
         > {
@@ -1450,10 +1408,8 @@ class $$MusclesTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$MusclesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$MusclesTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$MusclesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$MusclesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$MusclesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
@@ -1468,9 +1424,8 @@ class $$MusclesTableTableManager
                 required Muscle data,
                 Value<int> rowid = const Value.absent(),
               }) => MusclesCompanion.insert(id: id, data: data, rowid: rowid),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -1486,10 +1441,7 @@ typedef $$MusclesTableProcessedTableManager =
       $$MusclesTableAnnotationComposer,
       $$MusclesTableCreateCompanionBuilder,
       $$MusclesTableUpdateCompanionBuilder,
-      (
-        MuscleTable,
-        BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>,
-      ),
+      (MuscleTable, BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>),
       MuscleTable,
       PrefetchHooks Function()
     >;
@@ -1506,8 +1458,7 @@ typedef $$EquipmentsTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-class $$EquipmentsTableFilterComposer
-    extends Composer<_$ExerciseDatabase, $EquipmentsTable> {
+class $$EquipmentsTableFilterComposer extends Composer<_$ExerciseDatabase, $EquipmentsTable> {
   $$EquipmentsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -1520,15 +1471,13 @@ class $$EquipmentsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<Equipment, Equipment, String> get data =>
-      $composableBuilder(
-        column: $table.data,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
+  ColumnWithTypeConverterFilters<Equipment, Equipment, String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
-class $$EquipmentsTableOrderingComposer
-    extends Composer<_$ExerciseDatabase, $EquipmentsTable> {
+class $$EquipmentsTableOrderingComposer extends Composer<_$ExerciseDatabase, $EquipmentsTable> {
   $$EquipmentsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -1547,8 +1496,7 @@ class $$EquipmentsTableOrderingComposer
   );
 }
 
-class $$EquipmentsTableAnnotationComposer
-    extends Composer<_$ExerciseDatabase, $EquipmentsTable> {
+class $$EquipmentsTableAnnotationComposer extends Composer<_$ExerciseDatabase, $EquipmentsTable> {
   $$EquipmentsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -1556,8 +1504,7 @@ class $$EquipmentsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<Equipment, String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
@@ -1574,14 +1521,7 @@ class $$EquipmentsTableTableManager
           $$EquipmentsTableAnnotationComposer,
           $$EquipmentsTableCreateCompanionBuilder,
           $$EquipmentsTableUpdateCompanionBuilder,
-          (
-            EquipmentTable,
-            BaseReferences<
-              _$ExerciseDatabase,
-              $EquipmentsTable,
-              EquipmentTable
-            >,
-          ),
+          (EquipmentTable, BaseReferences<_$ExerciseDatabase, $EquipmentsTable, EquipmentTable>),
           EquipmentTable,
           PrefetchHooks Function()
         > {
@@ -1590,10 +1530,8 @@ class $$EquipmentsTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$EquipmentsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$EquipmentsTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$EquipmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$EquipmentsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$EquipmentsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
@@ -1607,11 +1545,9 @@ class $$EquipmentsTableTableManager
                 required int id,
                 required Equipment data,
                 Value<int> rowid = const Value.absent(),
-              }) =>
-                  EquipmentsCompanion.insert(id: id, data: data, rowid: rowid),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+              }) => EquipmentsCompanion.insert(id: id, data: data, rowid: rowid),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -1627,10 +1563,7 @@ typedef $$EquipmentsTableProcessedTableManager =
       $$EquipmentsTableAnnotationComposer,
       $$EquipmentsTableCreateCompanionBuilder,
       $$EquipmentsTableUpdateCompanionBuilder,
-      (
-        EquipmentTable,
-        BaseReferences<_$ExerciseDatabase, $EquipmentsTable, EquipmentTable>,
-      ),
+      (EquipmentTable, BaseReferences<_$ExerciseDatabase, $EquipmentsTable, EquipmentTable>),
       EquipmentTable,
       PrefetchHooks Function()
     >;
@@ -1647,8 +1580,7 @@ typedef $$CategoriesTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-class $$CategoriesTableFilterComposer
-    extends Composer<_$ExerciseDatabase, $CategoriesTable> {
+class $$CategoriesTableFilterComposer extends Composer<_$ExerciseDatabase, $CategoriesTable> {
   $$CategoriesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -1661,15 +1593,14 @@ class $$CategoriesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<ExerciseCategory, ExerciseCategory, String>
-  get data => $composableBuilder(
-    column: $table.data,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
+  ColumnWithTypeConverterFilters<ExerciseCategory, ExerciseCategory, String> get data =>
+      $composableBuilder(
+        column: $table.data,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 }
 
-class $$CategoriesTableOrderingComposer
-    extends Composer<_$ExerciseDatabase, $CategoriesTable> {
+class $$CategoriesTableOrderingComposer extends Composer<_$ExerciseDatabase, $CategoriesTable> {
   $$CategoriesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -1688,8 +1619,7 @@ class $$CategoriesTableOrderingComposer
   );
 }
 
-class $$CategoriesTableAnnotationComposer
-    extends Composer<_$ExerciseDatabase, $CategoriesTable> {
+class $$CategoriesTableAnnotationComposer extends Composer<_$ExerciseDatabase, $CategoriesTable> {
   $$CategoriesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -1697,8 +1627,7 @@ class $$CategoriesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<ExerciseCategory, String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
@@ -1715,10 +1644,7 @@ class $$CategoriesTableTableManager
           $$CategoriesTableAnnotationComposer,
           $$CategoriesTableCreateCompanionBuilder,
           $$CategoriesTableUpdateCompanionBuilder,
-          (
-            CategoryTable,
-            BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>,
-          ),
+          (CategoryTable, BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>),
           CategoryTable,
           PrefetchHooks Function()
         > {
@@ -1727,10 +1653,8 @@ class $$CategoriesTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$CategoriesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$CategoriesTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$CategoriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$CategoriesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$CategoriesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
@@ -1744,11 +1668,9 @@ class $$CategoriesTableTableManager
                 required int id,
                 required ExerciseCategory data,
                 Value<int> rowid = const Value.absent(),
-              }) =>
-                  CategoriesCompanion.insert(id: id, data: data, rowid: rowid),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+              }) => CategoriesCompanion.insert(id: id, data: data, rowid: rowid),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -1764,10 +1686,7 @@ typedef $$CategoriesTableProcessedTableManager =
       $$CategoriesTableAnnotationComposer,
       $$CategoriesTableCreateCompanionBuilder,
       $$CategoriesTableUpdateCompanionBuilder,
-      (
-        CategoryTable,
-        BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>,
-      ),
+      (CategoryTable, BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>),
       CategoryTable,
       PrefetchHooks Function()
     >;
@@ -1784,8 +1703,7 @@ typedef $$LanguagesTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-class $$LanguagesTableFilterComposer
-    extends Composer<_$ExerciseDatabase, $LanguagesTable> {
+class $$LanguagesTableFilterComposer extends Composer<_$ExerciseDatabase, $LanguagesTable> {
   $$LanguagesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -1798,15 +1716,13 @@ class $$LanguagesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<Language, Language, String> get data =>
-      $composableBuilder(
-        column: $table.data,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
+  ColumnWithTypeConverterFilters<Language, Language, String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
-class $$LanguagesTableOrderingComposer
-    extends Composer<_$ExerciseDatabase, $LanguagesTable> {
+class $$LanguagesTableOrderingComposer extends Composer<_$ExerciseDatabase, $LanguagesTable> {
   $$LanguagesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -1825,8 +1741,7 @@ class $$LanguagesTableOrderingComposer
   );
 }
 
-class $$LanguagesTableAnnotationComposer
-    extends Composer<_$ExerciseDatabase, $LanguagesTable> {
+class $$LanguagesTableAnnotationComposer extends Composer<_$ExerciseDatabase, $LanguagesTable> {
   $$LanguagesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -1834,8 +1749,7 @@ class $$LanguagesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<Language, String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
@@ -1852,10 +1766,7 @@ class $$LanguagesTableTableManager
           $$LanguagesTableAnnotationComposer,
           $$LanguagesTableCreateCompanionBuilder,
           $$LanguagesTableUpdateCompanionBuilder,
-          (
-            LanguagesTable,
-            BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>,
-          ),
+          (LanguagesTable, BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>),
           LanguagesTable,
           PrefetchHooks Function()
         > {
@@ -1864,10 +1775,8 @@ class $$LanguagesTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$LanguagesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$LanguagesTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$LanguagesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$LanguagesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$LanguagesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
@@ -1882,9 +1791,8 @@ class $$LanguagesTableTableManager
                 required Language data,
                 Value<int> rowid = const Value.absent(),
               }) => LanguagesCompanion.insert(id: id, data: data, rowid: rowid),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -1900,10 +1808,7 @@ typedef $$LanguagesTableProcessedTableManager =
       $$LanguagesTableAnnotationComposer,
       $$LanguagesTableCreateCompanionBuilder,
       $$LanguagesTableUpdateCompanionBuilder,
-      (
-        LanguagesTable,
-        BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>,
-      ),
+      (LanguagesTable, BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>),
       LanguagesTable,
       PrefetchHooks Function()
     >;
@@ -1911,14 +1816,11 @@ typedef $$LanguagesTableProcessedTableManager =
 class $ExerciseDatabaseManager {
   final _$ExerciseDatabase _db;
   $ExerciseDatabaseManager(this._db);
-  $$ExercisesTableTableManager get exercises =>
-      $$ExercisesTableTableManager(_db, _db.exercises);
-  $$MusclesTableTableManager get muscles =>
-      $$MusclesTableTableManager(_db, _db.muscles);
+  $$ExercisesTableTableManager get exercises => $$ExercisesTableTableManager(_db, _db.exercises);
+  $$MusclesTableTableManager get muscles => $$MusclesTableTableManager(_db, _db.muscles);
   $$EquipmentsTableTableManager get equipments =>
       $$EquipmentsTableTableManager(_db, _db.equipments);
   $$CategoriesTableTableManager get categories =>
       $$CategoriesTableTableManager(_db, _db.categories);
-  $$LanguagesTableTableManager get languages =>
-      $$LanguagesTableTableManager(_db, _db.languages);
+  $$LanguagesTableTableManager get languages => $$LanguagesTableTableManager(_db, _db.languages);
 }

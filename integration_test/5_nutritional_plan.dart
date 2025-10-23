@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/body_weight_state.dart';
@@ -29,8 +27,7 @@ Widget createNutritionalPlanScreen({locale = 'en'}) {
   );
 
   // Riverpod: prepare BodyWeightState with no entries for this test (or mock via mockBaseProvider)
-  final auth = AuthProvider();
-  final repo = BodyWeightRepository(WgerBaseProvider(auth));
+  final repo = BodyWeightRepository();
   final bwState = BodyWeightState(repo);
 
   return riverpod.ProviderScope(

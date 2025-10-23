@@ -15,8 +15,8 @@ part 'database.g.dart';
   ],
   //include: {'queries.drift'},
 )
-class AppDatabase extends _$AppDatabase {
-  AppDatabase(super.e);
+class DriftPowersyncDatabase extends _$DriftPowersyncDatabase {
+  DriftPowersyncDatabase(super.e);
 
   @override
   int get schemaVersion => 1;
@@ -42,7 +42,7 @@ class AppDatabase extends _$AppDatabase {
 }
 
 final driftPowerSyncDatabase = Provider((ref) {
-  return AppDatabase(
+  return DriftPowersyncDatabase(
     DatabaseConnection.delayed(
       Future(() async {
         final database = await ref.read(powerSyncInstanceProvider.future);

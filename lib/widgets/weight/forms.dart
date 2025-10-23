@@ -23,7 +23,7 @@ import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/body_weight_riverpod.dart';
+import 'package:wger/providers/body_weight_powersync.dart';
 
 class WeightForm extends riverpod.ConsumerWidget {
   final _form = GlobalKey<FormState>();
@@ -197,7 +197,6 @@ class WeightForm extends riverpod.ConsumerWidget {
               return null;
             },
           ),
-          Text("ID: ${_weightEntry.id}"),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
@@ -210,10 +209,10 @@ class WeightForm extends riverpod.ConsumerWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              final notifier = ref.read(bodyWeightStateProvider.notifier);
+              final notifier = ref.read(weightEntryProvider.notifier);
               _weightEntry.id == null
                   ? await notifier.addEntry(_weightEntry)
-                  : await notifier.editEntry(_weightEntry);
+                  : await notifier.updateEntry(_weightEntry);
 
               if (context.mounted) {
                 Navigator.of(context).pop();

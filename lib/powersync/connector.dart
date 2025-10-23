@@ -62,19 +62,21 @@ class DjangoConnector extends PowerSyncBackendConnector {
           'data': {'id': op.id, ...?op.opData},
         };
 
-        logger.fine('Uploading record', record);
+        logger.fine('Uploading record $record');
+        logger.fine(op.clientId);
+        logger.fine(op.metadata);
 
         switch (op.op) {
           case UpdateType.put:
-            logger.fine('Upserting record', record);
+            logger.fine('Upserting record');
             await apiClient.upsert(record);
             break;
           case UpdateType.patch:
-            logger.fine('Patching record', record);
+            logger.fine('Patching record');
             await apiClient.update(record);
             break;
           case UpdateType.delete:
-            logger.fine('Deleting record', record);
+            logger.fine('Deleting record');
             await apiClient.delete(record);
             break;
         }
