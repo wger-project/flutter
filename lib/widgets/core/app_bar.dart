@@ -18,10 +18,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:powersync/powersync.dart' as ps;
 import 'package:provider/provider.dart';
+import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/body_weight_riverpod.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
@@ -31,6 +32,39 @@ import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
 import 'package:wger/widgets/user/forms.dart';
 
+Widget _makeIcon(String text, IconData icon) {
+  return Tooltip(
+    message: text,
+    child: SizedBox(width: 40, height: null, child: Icon(icon, size: 24)),
+  );
+}
+
+Widget _getStatusIcon(ps.SyncStatus status) {
+  if (status.anyError != null) {
+    // The error message is verbose, could be replaced with something
+    // more user-friendly
+    if (!status.connected) {
+      return _makeIcon(status.anyError!.toString(), Icons.cloud_off);
+    } else {
+      return _makeIcon(status.anyError!.toString(), Icons.sync_problem);
+    }
+  } else if (status.connecting) {
+    return _makeIcon('Connecting', Icons.cloud_sync_outlined);
+  } else if (!status.connected) {
+    return _makeIcon('Not connected', Icons.cloud_off);
+  } else if (status.uploading && status.downloading) {
+    // The status changes often between downloading, uploading and both,
+    // so we use the same icon for all three
+    return _makeIcon('Uploading and downloading', Icons.cloud_sync_outlined);
+  } else if (status.uploading) {
+    return _makeIcon('Uploading', Icons.cloud_upload_outlined);
+  } else if (status.downloading) {
+    return _makeIcon('Downloading', Icons.cloud_download_outlined);
+  } else {
+    return _makeIcon('Connected', Icons.cloud_queue);
+  }
+}
+
 class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String _title;
 
@@ -38,9 +72,13 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final syncState = ref.watch(syncStatus);
+    final statusIcon = _getStatusIcon(syncState);
+
     return AppBar(
       title: Text(_title),
       actions: [
+        statusIcon,
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: () async {
@@ -96,7 +134,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
                           auth.logout();
                           context.read<RoutinesProvider>().clear();
                           context.read<NutritionPlansProvider>().clear();
-                          ref.read(bodyWeightStateProvider.notifier).clear();
+                          // ref.read(bodyWeightStateProvider.notifier).clear();
                           context.read<GalleryProvider>().clear();
                           context.read<UserProvider>().clear();
 

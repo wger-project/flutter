@@ -37,11 +37,7 @@ class DashboardWeightWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = context.read<UserProvider>().profile;
-    final entriesList = ref.watch(weightEntryProvider);
-
-    // final (entriesAll, entries7dAvg) = sensibleRange(
-    //   entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
-    // );
+    final entriesList = ref.watch(weightEntryProvider());
 
     return Card(
       child: Column(

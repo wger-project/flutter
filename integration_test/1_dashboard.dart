@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/providers/body_weight_riverpod.dart';
-import 'package:wger/providers/body_weight_state.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
@@ -17,6 +15,7 @@ import 'package:wger/theme/theme.dart';
 import '../test/exercises/contribute_exercise_test.mocks.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
 import '../test/routine/weight_unit_form_widget_test.mocks.dart';
+import '../test/weight/weight_provider_test.mocks.dart';
 import '../test/weight/weight_screen_test.mocks.dart' as weight;
 import '../test_data/body_weight.dart';
 import '../test_data/exercises.dart';
@@ -51,10 +50,10 @@ Widget createDashboardScreen({String locale = 'en'}) {
   ).thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
   when(mockNutritionProvider.items).thenReturn([getNutritionalPlanScreenshot()]);
 
-  // Prepare a BodyWeightState (Riverpod) with screenshot entries
-  final repo = BodyWeightRepository();
-  final bwState = BodyWeightState(repo);
-  bwState.state = getScreenshotWeightEntries();
+  final mockBodyWeightRepository = MockBodyWeightRepository();
+  when(
+    mockBodyWeightRepository.watchAllDrift(),
+  ).thenAnswer((_) => Stream.value(getWeightEntries()));
 
   final mockMeasurementProvider = MockMeasurementProvider();
   when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
@@ -64,8 +63,7 @@ Widget createDashboardScreen({String locale = 'en'}) {
 
   return riverpod.ProviderScope(
     overrides: [
-      // Override the family provider to return our prepared BodyWeightState
-      bodyWeightStateProvider.overrideWith((ref, auth) => bwState),
+      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
     ],
     child: MultiProvider(
       providers: [

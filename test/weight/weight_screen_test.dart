@@ -19,16 +19,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/providers/body_weight_riverpod.dart';
-import 'package:wger/providers/body_weight_state.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -40,12 +36,11 @@ import '../../test_data/body_weight.dart';
 import '../../test_data/profile.dart';
 import 'weight_screen_test.mocks.dart';
 
-@GenerateMocks([UserProvider, NutritionPlansProvider])
+@GenerateMocks([UserProvider, NutritionPlansProvider, BodyWeightRepository])
 void main() {
   late MockUserProvider mockUserProvider;
   late MockNutritionPlansProvider mockNutritionPlansProvider;
-
-  late BodyWeightState bodyWeightState;
+  MockBodyWeightRepository mockBodyWeightRepository = MockBodyWeightRepository();
 
   setUp(() {
     mockUserProvider = MockUserProvider();
@@ -55,19 +50,19 @@ void main() {
     when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
     when(mockNutritionPlansProvider.items).thenReturn([]);
 
-    // Prepare a BodyWeightState instance backed by a fake repository
-    final base = WgerBaseProvider(AuthProvider());
-    final repo = FakeBodyWeightRepository(base);
-    bodyWeightState = BodyWeightState(repo);
-    bodyWeightState.state = getWeightEntries();
+    mockBodyWeightRepository = MockBodyWeightRepository();
+    when(
+      mockBodyWeightRepository.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(getWeightEntries()));
+    when(
+      mockBodyWeightRepository.deleteLocalDrift(any),
+    ).thenAnswer((_) async => Future.value());
   });
 
   Widget createWeightScreen({locale = 'en'}) {
-    // Wrap the widget tree in a Riverpod ProviderScope and override the
-    // bodyWeightStateProvider.family to return our prepopulated BodyWeightState.
     return riverpod.ProviderScope(
       overrides: [
-        bodyWeightStateProvider.overrideWith((ref, auth) => bodyWeightState),
+        bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
       ],
       child: MultiProvider(
         providers: [
@@ -94,6 +89,7 @@ void main() {
 
   testWidgets('Test the widgets on the body weight screen', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
 
     expect(find.text('Weight'), findsOneWidget);
     expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
@@ -104,6 +100,7 @@ void main() {
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     // Arrange
     await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
 
     // Act
     expect(find.byType(ListTile), findsNWidgets(2));
@@ -114,12 +111,13 @@ void main() {
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
 
-    // The fake state removes the entry; the UI should now show 1 ListTile
-    expect(find.byType(ListTile), findsNWidgets(1));
+    // We would delete the entry from the DB
+    verify(mockBodyWeightRepository.deleteLocalDrift('1')).called(1);
   });
 
   testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
 
     expect(find.byType(WeightForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
@@ -129,6 +127,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
     // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
     // expect(find.text('1/1'), findsOneWidget);
     //  expect(find.text('1/10'), findsOneWidget);
@@ -136,18 +135,9 @@ void main() {
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen(locale: 'de'));
+    await tester.pumpAndSettle();
     // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
     // expect(find.text('1.1.'), findsOneWidget);
     // expect(find.text('10.1.'), findsOneWidget);
   });
-}
-
-// A tiny fake repository that intercepts delete requests so tests don't perform HTTP calls.
-class FakeBodyWeightRepository extends BodyWeightRepository {
-  FakeBodyWeightRepository(WgerBaseProvider base) : super(base);
-
-  @override
-  Future<Response> delete(String id) async {
-    return Response('', 204);
-  }
 }

@@ -4,8 +4,6 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/providers/body_weight_riverpod.dart';
-import 'package:wger/providers/body_weight_state.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -18,10 +16,10 @@ import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
 
 Widget createWeightScreen({locale = 'en'}) {
-  // Build a Riverpod override so tests use the new BodyWeightState
-  final repo = BodyWeightRepository();
-  final bwState = BodyWeightState(repo);
-  bwState.state = getScreenshotWeightEntries();
+  final mockBodyWeightRepository = MockBodyWeightRepository();
+  when(
+    mockBodyWeightRepository.watchAllDrift(),
+  ).thenAnswer((_) => Stream.value(getWeightEntries()));
 
   final mockUserProvider = MockUserProvider();
   when(mockUserProvider.profile).thenReturn(tProfile1);
@@ -32,8 +30,7 @@ Widget createWeightScreen({locale = 'en'}) {
 
   return riverpod.ProviderScope(
     overrides: [
-      // Override the family provider to return our prepared BodyWeightState
-      bodyWeightStateProvider.overrideWith((ref, auth) => bwState),
+      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
     ],
     child: MultiProvider(
       providers: [

@@ -3,12 +3,11 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i3;
 
-import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/providers/auth.dart' as _i2;
-import 'package:wger/providers/base_provider.dart' as _i4;
+import 'package:wger/models/body_weight/weight_entry.dart' as _i4;
+import 'package:wger/providers/body_weight_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -24,141 +23,46 @@ import 'package:wger/providers/base_provider.dart' as _i4;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-/// A class which mocks [WgerBaseProvider].
+/// A class which mocks [BodyWeightRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
-  MockWgerBaseProvider() {
+class MockBodyWeightRepository extends _i1.Mock implements _i2.BodyWeightRepository {
+  MockBodyWeightRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.AuthProvider get auth =>
+  _i3.Stream<List<_i4.WeightEntry>> watchAllDrift() =>
       (super.noSuchMethod(
-            Invocation.getter(#auth),
-            returnValue: _FakeAuthProvider_0(this, Invocation.getter(#auth)),
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i3.Stream<List<_i4.WeightEntry>>.empty(),
           )
-          as _i2.AuthProvider);
+          as _i3.Stream<List<_i4.WeightEntry>>);
 
   @override
-  _i3.Client get client =>
+  _i3.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
-            Invocation.getter(#client),
-            returnValue: _FakeClient_1(this, Invocation.getter(#client)),
+            Invocation.method(#deleteLocalDrift, [id]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i3.Client);
+          as _i3.Future<void>);
 
   @override
-  set auth(_i2.AuthProvider? _auth) => super.noSuchMethod(
-    Invocation.setter(#auth, _auth),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set client(_i3.Client? _client) => super.noSuchMethod(
-    Invocation.setter(#client, _client),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
+  _i3.Future<void> updateLocalDrift(_i4.WeightEntry? entry) =>
       (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {
-              #includeAuth: includeAuth,
-            }),
-            returnValue: <String, String>{},
+            Invocation.method(#updateLocalDrift, [entry]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as Map<String, String>);
+          as _i3.Future<void>);
 
   @override
-  Uri makeUrl(
-    String? path, {
-    int? id,
-    String? objectMethod,
-    Map<String, dynamic>? query,
-  }) =>
+  _i3.Future<void> addLocalDrift(_i4.WeightEntry? entry) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #makeUrl,
-              [path],
-              {#id: id, #objectMethod: objectMethod, #query: query},
-            ),
-            returnValue: _FakeUri_2(
-              this,
-              Invocation.method(
-                #makeUrl,
-                [path],
-                {#id: id, #objectMethod: objectMethod, #query: query},
-              ),
-            ),
+            Invocation.method(#addLocalDrift, [entry]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as Uri);
-
-  @override
-  _i5.Future<dynamic> fetch(Uri? uri) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetch, [uri]),
-            returnValue: _i5.Future<dynamic>.value(),
-          )
-          as _i5.Future<dynamic>);
-
-  @override
-  _i5.Future<List<dynamic>> fetchPaginated(Uri? uri) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchPaginated, [uri]),
-            returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
-          )
-          as _i5.Future<List<dynamic>>);
-
-  @override
-  _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
-      (super.noSuchMethod(
-            Invocation.method(#post, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i5.Future<Map<String, dynamic>>);
-
-  @override
-  _i5.Future<Map<String, dynamic>> patch(
-    Map<String, dynamic>? data,
-    Uri? uri,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#patch, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i5.Future<Map<String, dynamic>>);
-
-  @override
-  _i5.Future<_i3.Response> deleteRequest(String? url, int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteRequest, [url, id]),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
-                this,
-                Invocation.method(#deleteRequest, [url, id]),
-              ),
-            ),
-          )
-          as _i5.Future<_i3.Response>);
+          as _i3.Future<void>);
 }

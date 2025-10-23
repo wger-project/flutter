@@ -22,8 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/body_weight_riverpod.dart';
+import 'package:wger/providers/body_weight_powersync.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -42,8 +41,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     DateTime startDate,
     DateTime? endDate,
   ) {
-    final auth = context.read<AuthProvider>();
-    final entriesList = ref.watch(bodyWeightStateProvider);
+    final entriesList = ref.watch(weightEntryProvider()).asData?.value ?? [];
 
     final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
     final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);

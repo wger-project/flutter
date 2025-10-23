@@ -16,105 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/body_weight_powersync.dart';
 import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/providers/body_weight_state.dart';
 
-import '../fixtures/fixture_reader.dart';
 import 'weight_provider_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
+@GenerateMocks([BodyWeightRepository])
 void main() {
-  late MockWgerBaseProvider mockBaseProvider;
+  late MockBodyWeightRepository mockBodyWeightRepository;
+  late ProviderContainer container;
 
   setUp(() {
-    mockBaseProvider = MockWgerBaseProvider();
+    mockBodyWeightRepository = MockBodyWeightRepository();
+    when(mockBodyWeightRepository.watchAllDrift()).thenAnswer((_) => Stream.value(<WeightEntry>[]));
+    when(mockBodyWeightRepository.deleteLocalDrift(any)).thenAnswer((_) async {});
+    when(mockBodyWeightRepository.updateLocalDrift(any)).thenAnswer((_) async {});
+
+    container = ProviderContainer(
+      overrides: [bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository)],
+    );
+    addTearDown(container.dispose);
   });
 
   group('test body weight provider', () {
-    test('Test that the weight entries are correctly loaded', () async {
-      final uri = Uri(
-        scheme: 'https',
-        host: 'localhost',
-        path: 'api/v2/weightentry/',
-      );
-      when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
-      final Map<String, dynamic> weightEntries = jsonDecode(
-        fixture('weight/weight_entries.json'),
-      );
+    test('deleteEntry correctly calls repository.deleteLocalDrift', () async {
+      final notifier = container.read(weightEntryProvider().notifier);
 
-      when(mockBaseProvider.fetchPaginated(uri)).thenAnswer(
-        (_) => Future.value(weightEntries['results']),
-      );
-
-      // Load the entries using the repository + state implementation
-      final BodyWeightRepository repo = BodyWeightRepository(mockBaseProvider);
-      final BodyWeightState provider = BodyWeightState(repo);
-      await provider.fetchAndSetEntries();
-
-      // Check that everything is ok
-      expect(provider.items, isA<List<WeightEntry>>());
-      expect(provider.items.length, 11);
+      await notifier.deleteEntry('123');
+      verify(mockBodyWeightRepository.deleteLocalDrift('123')).called(1);
     });
 
-    test('Test adding a new weight entry', () async {
-      // Arrange
-      final uri = Uri(
-        scheme: 'https',
-        host: 'localhost',
-        path: 'api/v2/weightentry/',
-      );
-      when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
-      when(
-        mockBaseProvider.post(
-          {'id': null, 'weight': '80', 'date': '2021-01-01T00:00:00.000'},
-          uri,
-        ),
-      ).thenAnswer((_) => Future.value({'id': 25, 'date': '2021-01-01', 'weight': '80'}));
+    test('updateEntry correctly calls repository.updateLocalDrift', () async {
+      final notifier = container.read(weightEntryProvider().notifier);
+      final entry = WeightEntry(id: '123', date: DateTime.now(), weight: 70.0);
 
-      // Act
-      final BodyWeightRepository repo = BodyWeightRepository(mockBaseProvider);
-      final BodyWeightState provider = BodyWeightState(repo);
-      final WeightEntry weightEntry = WeightEntry(date: DateTime(2021, 1, 1), weight: 80);
-      final WeightEntry weightEntryNew = await provider.addEntry(weightEntry);
-
-      // Assert
-      expect(weightEntryNew.id, 25);
-      expect(weightEntryNew.date, DateTime(2021, 1, 1));
-      expect(weightEntryNew.weight, 80);
-    });
-
-    test('Test deleting an existing weight entry', () async {
-      // Arrange
-      final uri = Uri(
-        scheme: 'https',
-        host: 'localhost',
-        path: 'api/v2/weightentry/4/',
-      );
-      when(mockBaseProvider.makeUrl(any, query: anyNamed('query'))).thenReturn(uri);
-      when(mockBaseProvider.deleteRequest('weightentry', 4)).thenAnswer(
-        (_) => Future.value(Response("{'id': 4, 'date': '2021-01-01', 'weight': '80'}", 204)),
-      );
-
-      // DELETE the data from the server (use repo + state)
-      final BodyWeightRepository repo = BodyWeightRepository(mockBaseProvider);
-      final BodyWeightState provider = BodyWeightState(repo);
-      provider.state = [
-        WeightEntry(id: '4', weight: 80, date: DateTime(2021, 1, 1)),
-        WeightEntry(id: '2', weight: 100, date: DateTime(2021, 2, 2)),
-        WeightEntry(id: '5', weight: 60, date: DateTime(2021, 2, 2)),
-      ];
-      await provider.deleteEntry('4');
-
-      // Check that the entry was removed from the entry list
-      expect(provider.items.length, 2);
+      await notifier.updateEntry(entry);
+      verify(mockBodyWeightRepository.updateLocalDrift(entry)).called(1);
     });
   });
 }

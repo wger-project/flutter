@@ -14,7 +14,7 @@ Future<void> pumpWidget(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        if (notifier != null) plateCalculatorProvider.overrideWith((ref) => notifier),
+        if (notifier != null) plateCalculatorProvider.overrideWith(() => notifier),
       ],
       child: const MaterialApp(
         locale: Locale('en'),
