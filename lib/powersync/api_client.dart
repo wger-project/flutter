@@ -32,7 +32,7 @@ class ApiClient {
     final prefs = PreferenceHelper.asyncPref;
 
     final apiData = json.decode((await prefs.getString(PREFS_USER))!);
-    _logger.info('posting our token "${apiData["token"]}" to $baseUrl/api/v2/powersync-token');
+    // _logger.info('posting our token "${apiData["token"]}" to $baseUrl/api/v2/powersync-token');
     token = apiData['token'];
     final response = await http.get(
       Uri.parse('$baseUrl/api/v2/powersync-token'),
@@ -41,9 +41,9 @@ class ApiClient {
         HttpHeaders.authorizationHeader: 'Token ${apiData["token"]}',
       },
     );
-    _logger.info('response: status ${response.statusCode}, body ${response.body}');
+    // _logger.info('response: status ${response.statusCode}, body ${response.body}');
     if (response.statusCode == 200) {
-      _logger.log(Level.ALL, response.body);
+      // _logger.fine(response.body);
       final result = json.decode(response.body);
 
       return result;

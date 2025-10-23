@@ -38,10 +38,10 @@ class Exercise extends Equatable {
   final _logger = Logger('ExerciseModel');
 
   @JsonKey(required: true)
-  late final int? id;
+  late final int id;
 
   @JsonKey(required: true)
-  late final String? uuid;
+  late final String uuid;
 
   @JsonKey(required: true, name: 'variations')
   late final int? variationId;
@@ -95,12 +95,13 @@ class Exercise extends Equatable {
   List<String> authorsGlobal = [];
 
   Exercise({
-    this.id,
-    this.uuid,
+    required this.id,
+    required this.uuid,
     this.created,
     this.lastUpdate,
-    this.lastUpdateGlobal,
+    // this.lastUpdateGlobal,
     this.variationId,
+    required this.categoryId,
     List<Muscle>? muscles,
     List<Muscle>? musclesSecondary,
     List<Equipment>? equipment,
@@ -142,6 +143,8 @@ class Exercise extends Equatable {
     }
     this.authors = authors ?? [];
     this.authorsGlobal = authorsGlobal ?? [];
+
+    lastUpdateGlobal = DateTime.now();
   }
 
   bool get showPlateCalculator => equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL);
@@ -160,7 +163,7 @@ class Exercise extends Equatable {
 
     created = exerciseData.created;
     lastUpdate = exerciseData.lastUpdate;
-    lastUpdateGlobal = exerciseData.lastUpdateGlobal;
+    // lastUpdateGlobal = exerciseData.lastUpdateGlobal;
 
     musclesSecondary = exerciseData.muscles;
     muscles = exerciseData.muscles;

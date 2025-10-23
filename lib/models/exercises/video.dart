@@ -55,8 +55,8 @@ class Video {
   @JsonKey(name: 'codec_long', required: true)
   final String codecLong;
 
-  @JsonKey(required: true)
-  final int license;
+  @JsonKey(required: true, name: 'license')
+  final int licenseId;
 
   @JsonKey(name: 'license_author', required: true)
   final String? licenseAuthor;
@@ -72,7 +72,7 @@ class Video {
     required this.height,
     required this.codec,
     required this.codecLong,
-    required this.license,
+    required this.licenseId,
     required this.licenseAuthor,
   });
 

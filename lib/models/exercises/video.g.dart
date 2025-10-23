@@ -35,7 +35,7 @@ Video _$VideoFromJson(Map<String, dynamic> json) {
     height: (json['height'] as num).toInt(),
     codec: json['codec'] as String,
     codecLong: json['codec_long'] as String,
-    license: (json['license'] as num).toInt(),
+    licenseId: (json['license'] as num).toInt(),
     licenseAuthor: json['license_author'] as String?,
   );
 }
@@ -51,6 +51,6 @@ Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
   'height': instance.height,
   'codec': instance.codec,
   'codec_long': instance.codecLong,
-  'license': instance.license,
+  'license': instance.licenseId,
   'license_author': instance.licenseAuthor,
 };
