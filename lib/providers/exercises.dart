@@ -63,24 +63,6 @@ class ExercisesProvider with ChangeNotifier {
   List<Equipment> _equipment = [];
   List<Language> _languages = [];
 
-  Filters? _filters;
-
-  Filters? get filters => _filters;
-
-  Future<void> setFilters(Filters? newFilters) async {
-    _filters = newFilters;
-    await findByFilters();
-  }
-
-  List<Exercise> _filteredExercises = [];
-
-  List<Exercise> get filteredExercises => _filteredExercises;
-
-  set filteredExercises(List<Exercise> newFilteredExercises) {
-    _filteredExercises = newFilteredExercises;
-    notifyListeners();
-  }
-
   Map<int, List<Exercise>> get exerciseByVariation {
     final Map<int, List<Exercise>> variations = {};
 
@@ -105,61 +87,6 @@ class ExercisesProvider with ChangeNotifier {
 
   set languages(List<Language> languages) {
     _languages = languages;
-  }
-
-  // Initialize filters for exercises search in exercises list
-  void initFilters() {
-    if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) {
-      return;
-    }
-
-    setFilters(
-      Filters(
-        exerciseCategories: FilterCategory(
-          title: 'Category',
-          items: Map.fromEntries(
-            _categories.map((category) => MapEntry<ExerciseCategory, bool>(category, false)),
-          ),
-        ),
-        equipment: FilterCategory(
-          title: 'Equipment',
-          items: Map.fromEntries(
-            _equipment.map((singleEquipment) => MapEntry<Equipment, bool>(singleEquipment, false)),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> findByFilters() async {
-    // Filters not initialized
-    if (filters == null) {
-      filteredExercises = [];
-      return;
-    }
-
-    // Filters are initialized and nothing is marked
-    if (filters!.isNothingMarked && filters!.searchTerm.length <= 1) {
-      filteredExercises = exercises;
-      return;
-    }
-
-    filteredExercises = [];
-
-    List<Exercise> filteredItems = exercises;
-    if (filters!.searchTerm.length > 1) {
-      filteredItems = await searchExercise(filters!.searchTerm);
-    }
-    filteredExercises = filteredItems.where((exercise) {
-      final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
-
-      final bool doesContainAnyEquipment = filters!.equipment.selected.any(
-        (selectedEquipment) => exercise.equipment.contains(selectedEquipment),
-      );
-
-      return (isInAnyCategory || filters!.exerciseCategories.selected.isEmpty) &&
-          (doesContainAnyEquipment || filters!.equipment.selected.isEmpty);
-    }).toList();
   }
 
   /// Clears all lists
@@ -446,7 +373,6 @@ class ExercisesProvider with ChangeNotifier {
     ]);
     await setExercisesFromDatabase(database);
 
-    initFilters();
     notifyListeners();
   }
 
@@ -673,70 +599,5 @@ class ExercisesProvider with ChangeNotifier {
     // );
 
     return out;
-  }
-}
-
-class FilterCategory<T> {
-  bool isExpanded;
-  final Map<T, bool> items;
-  final String title;
-
-  List<T> get selected => [...items.keys].where((key) => items[key]!).toList();
-
-  FilterCategory({required this.title, required this.items, this.isExpanded = false});
-
-  FilterCategory<T> copyWith({bool? isExpanded, Map<T, bool>? items, String? title}) {
-    return FilterCategory(
-      isExpanded: isExpanded ?? this.isExpanded,
-      items: items ?? this.items,
-      title: title ?? this.title,
-    );
-  }
-}
-
-class Filters {
-  final FilterCategory<ExerciseCategory> exerciseCategories;
-  final FilterCategory<Equipment> equipment;
-  String searchTerm;
-
-  Filters({
-    required this.exerciseCategories,
-    required this.equipment,
-    this.searchTerm = '',
-    bool doesNeedUpdate = false,
-  }) : _doesNeedUpdate = doesNeedUpdate;
-
-  List<FilterCategory> get filterCategories => [exerciseCategories, equipment];
-
-  bool get isNothingMarked {
-    final isExerciseCategoryMarked = exerciseCategories.items.values.any((isMarked) => isMarked);
-    final isEquipmentMarked = equipment.items.values.any((isMarked) => isMarked);
-    return !isExerciseCategoryMarked && !isEquipmentMarked;
-  }
-
-  bool _doesNeedUpdate = false;
-
-  bool get doesNeedUpdate => _doesNeedUpdate;
-
-  void markNeedsUpdate() {
-    _doesNeedUpdate = true;
-  }
-
-  void markUpdated() {
-    _doesNeedUpdate = false;
-  }
-
-  Filters copyWith({
-    FilterCategory<ExerciseCategory>? exerciseCategories,
-    FilterCategory<Equipment>? equipment,
-    String? searchTerm,
-    bool? doesNeedUpdate,
-  }) {
-    return Filters(
-      exerciseCategories: exerciseCategories ?? this.exerciseCategories,
-      equipment: equipment ?? this.equipment,
-      searchTerm: searchTerm ?? this.searchTerm,
-      doesNeedUpdate: doesNeedUpdate ?? _doesNeedUpdate,
-    );
   }
 }
