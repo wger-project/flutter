@@ -1707,6 +1707,278 @@ class EquipmentTableCompanion extends UpdateCompanion<Equipment> {
   }
 }
 
+class $ExerciseEquipmentM2NTable extends ExerciseEquipmentM2N
+    with TableInfo<$ExerciseEquipmentM2NTable, ExerciseEquipmentM2NData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExerciseEquipmentM2NTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _equipmentIdMeta = const VerificationMeta(
+    'equipmentId',
+  );
+  @override
+  late final GeneratedColumn<int> equipmentId = GeneratedColumn<int>(
+    'equipment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, exerciseId, equipmentId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'exercises_exercise_equipment';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExerciseEquipmentM2NData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('equipment_id')) {
+      context.handle(
+        _equipmentIdMeta,
+        equipmentId.isAcceptableOrUnknown(
+          data['equipment_id']!,
+          _equipmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_equipmentIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  ExerciseEquipmentM2NData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExerciseEquipmentM2NData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      equipmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}equipment_id'],
+      )!,
+    );
+  }
+
+  @override
+  $ExerciseEquipmentM2NTable createAlias(String alias) {
+    return $ExerciseEquipmentM2NTable(attachedDatabase, alias);
+  }
+}
+
+class ExerciseEquipmentM2NData extends DataClass implements Insertable<ExerciseEquipmentM2NData> {
+  final int id;
+  final int exerciseId;
+  final int equipmentId;
+  const ExerciseEquipmentM2NData({
+    required this.id,
+    required this.exerciseId,
+    required this.equipmentId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['exercise_id'] = Variable<int>(exerciseId);
+    map['equipment_id'] = Variable<int>(equipmentId);
+    return map;
+  }
+
+  ExerciseEquipmentM2NCompanion toCompanion(bool nullToAbsent) {
+    return ExerciseEquipmentM2NCompanion(
+      id: Value(id),
+      exerciseId: Value(exerciseId),
+      equipmentId: Value(equipmentId),
+    );
+  }
+
+  factory ExerciseEquipmentM2NData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExerciseEquipmentM2NData(
+      id: serializer.fromJson<int>(json['id']),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      equipmentId: serializer.fromJson<int>(json['equipmentId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'equipmentId': serializer.toJson<int>(equipmentId),
+    };
+  }
+
+  ExerciseEquipmentM2NData copyWith({
+    int? id,
+    int? exerciseId,
+    int? equipmentId,
+  }) => ExerciseEquipmentM2NData(
+    id: id ?? this.id,
+    exerciseId: exerciseId ?? this.exerciseId,
+    equipmentId: equipmentId ?? this.equipmentId,
+  );
+  ExerciseEquipmentM2NData copyWithCompanion(
+    ExerciseEquipmentM2NCompanion data,
+  ) {
+    return ExerciseEquipmentM2NData(
+      id: data.id.present ? data.id.value : this.id,
+      exerciseId: data.exerciseId.present ? data.exerciseId.value : this.exerciseId,
+      equipmentId: data.equipmentId.present ? data.equipmentId.value : this.equipmentId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseEquipmentM2NData(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('equipmentId: $equipmentId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, exerciseId, equipmentId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExerciseEquipmentM2NData &&
+          other.id == this.id &&
+          other.exerciseId == this.exerciseId &&
+          other.equipmentId == this.equipmentId);
+}
+
+class ExerciseEquipmentM2NCompanion extends UpdateCompanion<ExerciseEquipmentM2NData> {
+  final Value<int> id;
+  final Value<int> exerciseId;
+  final Value<int> equipmentId;
+  final Value<int> rowid;
+  const ExerciseEquipmentM2NCompanion({
+    this.id = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.equipmentId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExerciseEquipmentM2NCompanion.insert({
+    required int id,
+    required int exerciseId,
+    required int equipmentId,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       exerciseId = Value(exerciseId),
+       equipmentId = Value(equipmentId);
+  static Insertable<ExerciseEquipmentM2NData> custom({
+    Expression<int>? id,
+    Expression<int>? exerciseId,
+    Expression<int>? equipmentId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (equipmentId != null) 'equipment_id': equipmentId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExerciseEquipmentM2NCompanion copyWith({
+    Value<int>? id,
+    Value<int>? exerciseId,
+    Value<int>? equipmentId,
+    Value<int>? rowid,
+  }) {
+    return ExerciseEquipmentM2NCompanion(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      equipmentId: equipmentId ?? this.equipmentId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (equipmentId.present) {
+      map['equipment_id'] = Variable<int>(equipmentId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseEquipmentM2NCompanion(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('equipmentId: $equipmentId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ExerciseCategoryTableTable extends ExerciseCategoryTable
     with TableInfo<$ExerciseCategoryTableTable, ExerciseCategory> {
   @override
@@ -3549,6 +3821,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   late final $ExerciseSecondaryMuscleM2NTable exerciseSecondaryMuscleM2N =
       $ExerciseSecondaryMuscleM2NTable(this);
   late final $EquipmentTableTable equipmentTable = $EquipmentTableTable(this);
+  late final $ExerciseEquipmentM2NTable exerciseEquipmentM2N = $ExerciseEquipmentM2NTable(this);
   late final $ExerciseCategoryTableTable exerciseCategoryTable = $ExerciseCategoryTableTable(this);
   late final $ExerciseImageTableTable exerciseImageTable = $ExerciseImageTableTable(this);
   late final $ExerciseVideoTableTable exerciseVideoTable = $ExerciseVideoTableTable(this);
@@ -3572,6 +3845,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     exerciseMuscleM2N,
     exerciseSecondaryMuscleM2N,
     equipmentTable,
+    exerciseEquipmentM2N,
     exerciseCategoryTable,
     exerciseImageTable,
     exerciseVideoTable,
@@ -4879,6 +5153,184 @@ typedef $$EquipmentTableTableProcessedTableManager =
       $$EquipmentTableTableUpdateCompanionBuilder,
       (Equipment, BaseReferences<_$DriftPowersyncDatabase, $EquipmentTableTable, Equipment>),
       Equipment,
+      PrefetchHooks Function()
+    >;
+typedef $$ExerciseEquipmentM2NTableCreateCompanionBuilder =
+    ExerciseEquipmentM2NCompanion Function({
+      required int id,
+      required int exerciseId,
+      required int equipmentId,
+      Value<int> rowid,
+    });
+typedef $$ExerciseEquipmentM2NTableUpdateCompanionBuilder =
+    ExerciseEquipmentM2NCompanion Function({
+      Value<int> id,
+      Value<int> exerciseId,
+      Value<int> equipmentId,
+      Value<int> rowid,
+    });
+
+class $$ExerciseEquipmentM2NTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseEquipmentM2NTable> {
+  $$ExerciseEquipmentM2NTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get equipmentId => $composableBuilder(
+    column: $table.equipmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ExerciseEquipmentM2NTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseEquipmentM2NTable> {
+  $$ExerciseEquipmentM2NTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get equipmentId => $composableBuilder(
+    column: $table.equipmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ExerciseEquipmentM2NTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseEquipmentM2NTable> {
+  $$ExerciseEquipmentM2NTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get equipmentId => $composableBuilder(
+    column: $table.equipmentId,
+    builder: (column) => column,
+  );
+}
+
+class $$ExerciseEquipmentM2NTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $ExerciseEquipmentM2NTable,
+          ExerciseEquipmentM2NData,
+          $$ExerciseEquipmentM2NTableFilterComposer,
+          $$ExerciseEquipmentM2NTableOrderingComposer,
+          $$ExerciseEquipmentM2NTableAnnotationComposer,
+          $$ExerciseEquipmentM2NTableCreateCompanionBuilder,
+          $$ExerciseEquipmentM2NTableUpdateCompanionBuilder,
+          (
+            ExerciseEquipmentM2NData,
+            BaseReferences<
+              _$DriftPowersyncDatabase,
+              $ExerciseEquipmentM2NTable,
+              ExerciseEquipmentM2NData
+            >,
+          ),
+          ExerciseEquipmentM2NData,
+          PrefetchHooks Function()
+        > {
+  $$ExerciseEquipmentM2NTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $ExerciseEquipmentM2NTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExerciseEquipmentM2NTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$ExerciseEquipmentM2NTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$ExerciseEquipmentM2NTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<int> equipmentId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseEquipmentM2NCompanion(
+                id: id,
+                exerciseId: exerciseId,
+                equipmentId: equipmentId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required int exerciseId,
+                required int equipmentId,
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseEquipmentM2NCompanion.insert(
+                id: id,
+                exerciseId: exerciseId,
+                equipmentId: equipmentId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ExerciseEquipmentM2NTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $ExerciseEquipmentM2NTable,
+      ExerciseEquipmentM2NData,
+      $$ExerciseEquipmentM2NTableFilterComposer,
+      $$ExerciseEquipmentM2NTableOrderingComposer,
+      $$ExerciseEquipmentM2NTableAnnotationComposer,
+      $$ExerciseEquipmentM2NTableCreateCompanionBuilder,
+      $$ExerciseEquipmentM2NTableUpdateCompanionBuilder,
+      (
+        ExerciseEquipmentM2NData,
+        BaseReferences<
+          _$DriftPowersyncDatabase,
+          $ExerciseEquipmentM2NTable,
+          ExerciseEquipmentM2NData
+        >,
+      ),
+      ExerciseEquipmentM2NData,
       PrefetchHooks Function()
     >;
 typedef $$ExerciseCategoryTableTableCreateCompanionBuilder =
@@ -6326,6 +6778,8 @@ class $DriftPowersyncDatabaseManager {
       );
   $$EquipmentTableTableTableManager get equipmentTable =>
       $$EquipmentTableTableTableManager(_db, _db.equipmentTable);
+  $$ExerciseEquipmentM2NTableTableManager get exerciseEquipmentM2N =>
+      $$ExerciseEquipmentM2NTableTableManager(_db, _db.exerciseEquipmentM2N);
   $$ExerciseCategoryTableTableTableManager get exerciseCategoryTable =>
       $$ExerciseCategoryTableTableTableManager(_db, _db.exerciseCategoryTable);
   $$ExerciseImageTableTableTableManager get exerciseImageTable =>

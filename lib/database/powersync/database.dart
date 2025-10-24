@@ -35,6 +35,7 @@ part 'database.g.dart';
     ExerciseMuscleM2N,
     ExerciseSecondaryMuscleM2N,
     EquipmentTable,
+    ExerciseEquipmentM2N,
     ExerciseCategoryTable,
     ExerciseImageTable,
     ExerciseVideoTable,

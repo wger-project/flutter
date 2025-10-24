@@ -53,6 +53,15 @@ class EquipmentTable extends Table {
   TextColumn get name => text()();
 }
 
+class ExerciseEquipmentM2N extends Table {
+  @override
+  String get tableName => 'exercises_exercise_equipment';
+
+  IntColumn get id => integer()();
+  IntColumn get exerciseId => integer().named('exercise_id')();
+  IntColumn get equipmentId => integer().named('equipment_id')();
+}
+
 @UseRowClass(Muscle)
 class MuscleTable extends Table {
   @override

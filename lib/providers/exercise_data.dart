@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -53,6 +54,16 @@ final class ExerciseNotifier extends _$ExerciseNotifier {
         secondaryMuscleTable.id.equalsExp(db.exerciseSecondaryMuscleM2N.muscleId),
       ),
 
+      // Exercise <-> Equipment
+      leftOuterJoin(
+        db.exerciseEquipmentM2N,
+        db.exerciseEquipmentM2N.exerciseId.equalsExp(db.exerciseTable.id),
+      ),
+      leftOuterJoin(
+        db.equipmentTable,
+        db.equipmentTable.id.equalsExp(db.exerciseEquipmentM2N.equipmentId),
+      ),
+
       // Category
       leftOuterJoin(
         db.exerciseCategoryTable,
@@ -73,6 +84,7 @@ final class ExerciseNotifier extends _$ExerciseNotifier {
         final exercise = row.readTable(db.exerciseTable);
         final primaryMuscle = row.readTableOrNull(primaryMuscleTable);
         final secondaryMuscle = row.readTableOrNull(secondaryMuscleTable);
+        final equipment = row.readTableOrNull(db.equipmentTable);
         final image = row.readTableOrNull(db.exerciseImageTable);
         final video = row.readTableOrNull(db.exerciseVideoTable);
         final translation = row.readTableOrNull(db.exerciseTranslationTable);
@@ -98,6 +110,10 @@ final class ExerciseNotifier extends _$ExerciseNotifier {
 
         if (video != null && !entry.videos.any((t) => t.id == video.id)) {
           entry.videos.add(video);
+        }
+
+        if (equipment != null && !entry.equipment.any((e) => e.id == equipment.id)) {
+          entry.equipment.add(equipment);
         }
 
         if (primaryMuscle != null && !entry.muscles.any((m) => m.id == primaryMuscle.id)) {
@@ -127,6 +143,15 @@ final class ExerciseNotifier extends _$ExerciseNotifier {
       }
     }
     return null;
+  }
+}
+
+@riverpod
+final class ExerciseCategoryNotifier extends _$ExerciseCategoryNotifier {
+  @override
+  Stream<List<ExerciseCategory>> build() {
+    final db = ref.read(driftPowerSyncDatabase);
+    return db.select(db.exerciseCategoryTable).watch();
   }
 }
 
