@@ -17,32 +17,39 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import 'filter_modal.dart';
 
-class FilterRow extends StatefulWidget {
+class FilterRow extends ConsumerStatefulWidget {
   const FilterRow({super.key});
 
   @override
   _FilterRowState createState() => _FilterRowState();
 }
 
-class _FilterRowState extends State<FilterRow> {
+class _FilterRowState extends ConsumerState<FilterRow> {
   late final TextEditingController _exerciseNameController;
 
   @override
   void initState() {
     super.initState();
 
-    _exerciseNameController = TextEditingController()
+    final initialSearch = ref.read(exerciseStateProvider).filters.searchTerm;
+
+    _exerciseNameController = TextEditingController(text: initialSearch)
       ..addListener(() {
-        final provider = Provider.of<ExercisesProvider>(context, listen: false);
-        if (provider.filters!.searchTerm != _exerciseNameController.text) {
-          provider.setFilters(provider.filters!.copyWith(searchTerm: _exerciseNameController.text));
+        final text = _exerciseNameController.text;
+        final currentFilters = ref.read(exerciseStateProvider).filters;
+        if (currentFilters.searchTerm != text) {
+          ref
+              .read(exerciseStateProvider.notifier)
+              .setFilters(
+                currentFilters.copyWith(searchTerm: text),
+              );
         }
       });
   }

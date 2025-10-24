@@ -17,24 +17,25 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/i18n.dart';
+import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/exercises.dart';
 
-class ExerciseFilterModalBody extends StatefulWidget {
+class ExerciseFilterModalBody extends ConsumerStatefulWidget {
   const ExerciseFilterModalBody({super.key});
 
   @override
   _ExerciseFilterModalBodyState createState() => _ExerciseFilterModalBodyState();
 }
 
-class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
+class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBody> {
   late Filters filters;
 
   @override
   void initState() {
     super.initState();
-    filters = Provider.of<ExercisesProvider>(context, listen: false).filters!;
+    filters = ref.read(exerciseStateProvider).filters;
   }
 
   @override
@@ -57,11 +58,9 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
               backgroundColor: Colors.transparent,
               isExpanded: filterCategory.isExpanded,
               headerBuilder: (context, isExpanded) {
-                return Container(
-                  child: Text(
-                    filterCategory.title,
-                    style: theme.textTheme.headlineSmall,
-                  ),
+                return Text(
+                  filterCategory.title,
+                  style: theme.textTheme.headlineSmall,
                 );
               },
               body: Column(
@@ -72,7 +71,7 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
                     onChanged: (_) {
                       setState(() {
                         filterCategory.items.update(currentEntry.key, (value) => !value);
-                        Provider.of<ExercisesProvider>(context, listen: false).setFilters(filters);
+                        ref.read(exerciseStateProvider.notifier).setFilters(filters);
                       });
                     },
                   );

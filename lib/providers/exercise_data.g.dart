@@ -33,7 +33,7 @@ final class ExerciseNotifierProvider
   ExerciseNotifier create() => ExerciseNotifier();
 }
 
-String _$exerciseNotifierHash() => r'2b7dafd181f3659590ddbd961e7f903d6ba31338';
+String _$exerciseNotifierHash() => r'b8db6a2b5e05f4ba3f7a7677999816298209f5db';
 
 abstract class _$ExerciseNotifier extends $StreamNotifier<List<Exercise>> {
   Stream<List<Exercise>> build();
@@ -47,6 +47,51 @@ abstract class _$ExerciseNotifier extends $StreamNotifier<List<Exercise>> {
             as $ClassProviderElement<
               AnyNotifier<AsyncValue<List<Exercise>>, List<Exercise>>,
               AsyncValue<List<Exercise>>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(ExerciseCategoryNotifier)
+const exerciseCategoryProvider = ExerciseCategoryNotifierProvider._();
+
+final class ExerciseCategoryNotifierProvider
+    extends $StreamNotifierProvider<ExerciseCategoryNotifier, List<ExerciseCategory>> {
+  const ExerciseCategoryNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exerciseCategoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$exerciseCategoryNotifierHash();
+
+  @$internal
+  @override
+  ExerciseCategoryNotifier create() => ExerciseCategoryNotifier();
+}
+
+String _$exerciseCategoryNotifierHash() => r'476b5cb3f50ac52ce3eda06dac6f43783c48ec31';
+
+abstract class _$ExerciseCategoryNotifier extends $StreamNotifier<List<ExerciseCategory>> {
+  Stream<List<ExerciseCategory>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<ExerciseCategory>>, List<ExerciseCategory>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<ExerciseCategory>>, List<ExerciseCategory>>,
+              AsyncValue<List<ExerciseCategory>>,
               Object?,
               Object?
             >;

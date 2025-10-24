@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/providers/exercise_data.dart';
+import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/filter_row.dart';
@@ -15,7 +15,7 @@ class ExercisesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final exercises = ref.watch(exerciseProvider);
+    final exerciseState = ref.watch(exerciseStateProvider);
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).exercises),
@@ -23,21 +23,11 @@ class ExercisesScreen extends ConsumerWidget {
         children: [
           const FilterRow(),
           Expanded(
-            child: exercises.when(
-              data: (List<Exercise> exercisesList) {
-                return exercisesList.isEmpty
-                    ? const Center(
-                        child: SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : _ExercisesList(exerciseList: exercisesList);
-              },
-              loading: () => const BoxedProgressIndicator(),
-              error: (err, st) => Center(child: Text('Error: $err')),
-            ),
+            child: exerciseState.isLoading
+                ? const BoxedProgressIndicator()
+                : _ExercisesList(
+                    exerciseList: exerciseState.filteredExercises,
+                  ),
           ),
         ],
       ),
