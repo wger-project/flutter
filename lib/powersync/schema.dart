@@ -82,6 +82,17 @@ Schema schema = const Schema([
     ],
   ),
   Table(
+    'exercises_exercise_equipment',
+    [
+      Column.text('exercise_id'),
+      Column.text('equipment_id'),
+    ],
+    indexes: [
+      Index('equipment', [IndexedColumn('equipment_id')]),
+      Index('exercise', [IndexedColumn('exercise_id')]),
+    ],
+  ),
+  Table(
     'exercises_exercisecategory',
     [
       Column.text('name'),
