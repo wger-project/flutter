@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/muscle.dart';
 
 part 'exercise_data.g.dart';
 
@@ -14,6 +15,7 @@ final class ExerciseNotifier extends _$ExerciseNotifier {
   @override
   Stream<List<Exercise>> build() {
     final db = ref.read(driftPowerSyncDatabase);
+    _logger.fine('Building exercise stream');
 
     final primaryMuscleTable = db.alias(db.muscleTable, 'pm');
     final secondaryMuscleTable = db.alias(db.muscleTable, 'sm');
@@ -23,6 +25,12 @@ final class ExerciseNotifier extends _$ExerciseNotifier {
       leftOuterJoin(
         db.exerciseTranslationTable,
         db.exerciseTranslationTable.exerciseId.equalsExp(db.exerciseTable.id),
+      ),
+
+      // Language
+      leftOuterJoin(
+        db.languageTable,
+        db.languageTable.id.equalsExp(db.exerciseTranslationTable.languageId),
       ),
 
       // Exercise <-> Muscle
@@ -80,6 +88,7 @@ final class ExerciseNotifier extends _$ExerciseNotifier {
         }
 
         if (translation != null && !entry.translations.any((t) => t.id == translation.id)) {
+          translation.language = row.readTable(db.languageTable);
           entry.translations.add(translation);
         }
 
@@ -104,6 +113,21 @@ final class ExerciseNotifier extends _$ExerciseNotifier {
       return map.values.toList();
     });
   }
+
+  Exercise? getById(int id) {
+    // Can be null e.g. during initial loading
+    final cached = state.asData?.value;
+    if (cached == null) {
+      return null;
+    }
+
+    for (final e in cached) {
+      if (e.id == id) {
+        return e;
+      }
+    }
+    return null;
+  }
 }
 
 @riverpod
@@ -112,5 +136,14 @@ final class ExerciseEquipmentNotifier extends _$ExerciseEquipmentNotifier {
   Stream<List<Equipment>> build() {
     final db = ref.read(driftPowerSyncDatabase);
     return db.select(db.equipmentTable).watch();
+  }
+}
+
+@riverpod
+final class ExerciseMuscleNotifier extends _$ExerciseMuscleNotifier {
+  @override
+  Stream<List<Muscle>> build() {
+    final db = ref.read(driftPowerSyncDatabase);
+    return db.select(db.muscleTable).watch();
   }
 }

@@ -95,6 +95,9 @@ Schema schema = const Schema([
       Column.text('url'),
       Column.integer('is_main'),
     ],
+    indexes: [
+      Index('exercise', [IndexedColumn('exercise_id')]),
+    ],
   ),
   Table(
     'exercises_exercisevideo',
@@ -111,6 +114,9 @@ Schema schema = const Schema([
       Column.integer('license_id'),
       Column.text('license_author'),
     ],
+    indexes: [
+      Index('exercise', [IndexedColumn('exercise_id')]),
+    ],
   ),
 
   //
@@ -122,6 +128,40 @@ Schema schema = const Schema([
       Column.text('uuid'),
       Column.real('weight'),
       Column.text('date'),
+    ],
+  ),
+  Table(
+    'measurements_category',
+    [
+      Column.text('name'),
+      Column.real('unit'),
+    ],
+  ),
+  Table(
+    'manager_workoutlog',
+    [
+      Column.integer('exercise_id'),
+      Column.integer('routine_id'),
+      Column.integer('session_id'),
+      Column.integer('iteration'),
+      Column.integer('slot_entry_id'),
+      Column.real('rir'),
+      Column.real('rir_target'),
+      Column.real('repetitions'),
+      Column.real('repetitions_target'),
+      Column.integer('repetitions_unit_id'),
+      Column.real('weight'),
+      Column.real('weight_target'),
+      Column.integer('weight_unit_id'),
+      Column.text('date'),
+    ],
+    indexes: [
+      Index('exercise', [IndexedColumn('exercise_id')]),
+      Index('slot_entry', [IndexedColumn('slot_entry_id')]),
+      Index('routine', [IndexedColumn('routine_id')]),
+      Index('session', [IndexedColumn('session_id')]),
+      Index('repetitions_unit', [IndexedColumn('repetitions_unit_id')]),
+      Index('weight_unit', [IndexedColumn('weight_unit_id')]),
     ],
   ),
 ]);

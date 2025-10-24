@@ -61,7 +61,7 @@ Widget _getStatusIcon(ps.SyncStatus status) {
   } else if (status.downloading) {
     return _makeIcon('Downloading', Icons.cloud_download_outlined);
   } else {
-    return _makeIcon('Connected', Icons.cloud_queue);
+    return _makeIcon('Connected', Icons.cloud_done_outlined);
   }
 }
 

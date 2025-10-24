@@ -33,7 +33,7 @@ final class ExerciseNotifierProvider
   ExerciseNotifier create() => ExerciseNotifier();
 }
 
-String _$exerciseNotifierHash() => r'4f6613f81e292dd3c74f9eebbbb20482b8da1e42';
+String _$exerciseNotifierHash() => r'2b7dafd181f3659590ddbd961e7f903d6ba31338';
 
 abstract class _$ExerciseNotifier extends $StreamNotifier<List<Exercise>> {
   Stream<List<Exercise>> build();
@@ -92,6 +92,51 @@ abstract class _$ExerciseEquipmentNotifier extends $StreamNotifier<List<Equipmen
             as $ClassProviderElement<
               AnyNotifier<AsyncValue<List<Equipment>>, List<Equipment>>,
               AsyncValue<List<Equipment>>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(ExerciseMuscleNotifier)
+const exerciseMuscleProvider = ExerciseMuscleNotifierProvider._();
+
+final class ExerciseMuscleNotifierProvider
+    extends $StreamNotifierProvider<ExerciseMuscleNotifier, List<Muscle>> {
+  const ExerciseMuscleNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exerciseMuscleProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$exerciseMuscleNotifierHash();
+
+  @$internal
+  @override
+  ExerciseMuscleNotifier create() => ExerciseMuscleNotifier();
+}
+
+String _$exerciseMuscleNotifierHash() => r'6be0b7400776f1593194fb43667acbeee8e3a4a8';
+
+abstract class _$ExerciseMuscleNotifier extends $StreamNotifier<List<Muscle>> {
+  Stream<List<Muscle>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<Muscle>>, List<Muscle>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<Muscle>>, List<Muscle>>,
+              AsyncValue<List<Muscle>>,
               Object?,
               Object?
             >;

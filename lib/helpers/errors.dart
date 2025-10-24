@@ -296,7 +296,7 @@ void showDeleteDialog(BuildContext context, String confirmDeleteName, Log log) a
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
             onPressed: () {
-              context.read<RoutinesProvider>().deleteLog(log.id!, log.routineId);
+              context.read<RoutinesProvider>().deleteLog(log.id.toString(), log.routineId);
 
               Navigator.of(contextDialog).pop();
 
