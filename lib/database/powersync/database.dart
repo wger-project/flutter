@@ -12,13 +12,11 @@ import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/models/workouts/log.dart';
 
 import 'powersync.dart';
 import 'tables/exercise.dart';
 import 'tables/language.dart';
 import 'tables/measurements.dart';
-import 'tables/routines.dart';
 import 'tables/weight.dart';
 
 part 'database.g.dart';
@@ -43,7 +41,7 @@ part 'database.g.dart';
     // User data
     WeightEntryTable,
     MeasurementCategoryTable,
-    WorkoutLogTable,
+    // WorkoutLogTable,
   ],
   //include: {'queries.drift'},
 )

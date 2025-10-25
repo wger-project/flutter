@@ -16,22 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/providers/exercise_state.dart';
+import 'package:wger/providers/wger_base_riverpod.dart';
 
 part 'exercise_state_notifier.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
   final _logger = Logger('ExerciseStateNotifier');
 
+  static const exerciseInfoUrlPath = 'exerciseinfo';
+
   @override
   ExerciseState build() {
+    _logger.finer('Building ExerciseStateNotifier');
     state = ExerciseState(isLoading: true);
 
     // Load exercises
@@ -104,16 +111,20 @@ final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
     }
 
     if (updated) {
-      setFilters(filters);
+      setFilters(filters, LANGUAGE_SHORT_ENGLISH);
     }
   }
 
-  void setFilters(Filters filters) {
-    final filtered = _applyFilters(state.exercises, filters);
+  void setFilters(Filters filters, [String languageCode = LANGUAGE_SHORT_ENGLISH]) {
+    final filtered = _applyFilters(state.exercises, filters, languageCode: languageCode);
     state = state.copyWith(filters: filters, filteredExercises: filtered);
   }
 
-  List<Exercise> _applyFilters(List<Exercise> all, Filters filters) {
+  List<Exercise> _applyFilters(
+    List<Exercise> all,
+    Filters filters, {
+    String languageCode = LANGUAGE_SHORT_ENGLISH,
+  }) {
     if (filters.isNothingMarked && (filters.searchTerm.length <= 1)) {
       return all;
     }
@@ -123,8 +134,7 @@ final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
       final term = filters.searchTerm.toLowerCase();
       items = items.where((e) {
         // TODO: FullTextSearch?
-        // TODO!!!! translations
-        final title = (e.getTranslation('en').name ?? '').toLowerCase();
+        final title = (e.getTranslation(languageCode).name ?? '').toLowerCase();
         return title.contains(term);
       }).toList();
     }
@@ -150,40 +160,89 @@ final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
 
   Future<List<Exercise>> searchExercise(
     String term, {
-    bool useServer = false,
+    bool useOnlineSearch = true,
     String languageCode = 'en',
     bool searchEnglish = false,
   }) async {
-    if (term.trim().length <= 1) {
+    if (term.isEmpty) {
       return [];
     }
 
-    // Local mode: search in the sqlite db
-    if (!useServer) {
-      final languages = [languageCode];
-      if (searchEnglish && languageCode != 'en') {
-        languages.add('en');
-      }
+    final searchMethod = useOnlineSearch ? searchExerciseOnline : searchExerciseLocal;
+    return searchMethod(
+      term,
+      languageCode: languageCode,
+      searchEnglish: searchEnglish,
+    );
+  }
 
-      final List<Exercise> out = [];
+  Future<List<Exercise>> searchExerciseOnline(
+    String term, {
+    String languageCode = 'en',
+    bool searchEnglish = false,
+  }) async {
+    final wgerBase = ref.read(wgerBaseProvider);
+    _logger.info('Online search for exercises: $term');
 
-      for (final e in state.exercises) {
-        var matched = false;
-        for (final lang in languages) {
-          final title = (e.getTranslation(lang).name ?? '').toLowerCase();
-          if (title.contains(term.toLowerCase())) {
-            matched = true;
-            break;
-          }
-        }
-        if (matched) {
-          out.add(e);
-        }
-      }
-      return out;
+    if (term.length <= 1) {
+      return [];
     }
 
-    // Online mode, use server-side search API
-    return [];
+    final languages = [languageCode];
+    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languages.add(LANGUAGE_SHORT_ENGLISH);
+    }
+
+    // Send the request
+    final result = await wgerBase.fetch(
+      wgerBase.makeUrl(
+        exerciseInfoUrlPath,
+        query: {
+          'name__search': term,
+          'language__code': languages.join(','),
+          'limit': API_RESULTS_PAGE_SIZE,
+        },
+      ),
+    );
+
+    // Load the exercises
+    final ids = (result['results'] as List).map<int>((data) => data['id'] as int).toList();
+
+    // TODO: fix this! Why is the ref of stateProvider always disposed?
+    return state.exercises.where((e) => ids.contains(e.id)).toList();
+
+    return (result['results'] as List)
+        .map((data) => Exercise.fromApiDataJson(data as Map<String, dynamic>, []))
+        .toList();
+  }
+
+  Future<List<Exercise>> searchExerciseLocal(
+    String term, {
+    String languageCode = 'en',
+    bool searchEnglish = false,
+  }) async {
+    _logger.fine('Local search for exercises: $term');
+
+    final languages = [languageCode];
+    if (searchEnglish && languageCode != 'en') {
+      languages.add('en');
+    }
+
+    final List<Exercise> out = [];
+
+    for (final e in state.exercises) {
+      var matched = false;
+      for (final lang in languages) {
+        final title = (e.getTranslation(lang).name ?? '').toLowerCase();
+        if (title.contains(term.toLowerCase())) {
+          matched = true;
+          break;
+        }
+      }
+      if (matched) {
+        out.add(e);
+      }
+    }
+    return out;
   }
 }

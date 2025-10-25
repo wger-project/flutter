@@ -100,14 +100,6 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
           as List<_i4.Exercise>);
 
   @override
-  List<_i4.Exercise> get filteredExercises =>
-      (super.noSuchMethod(
-            Invocation.getter(#filteredExercises),
-            returnValue: <_i4.Exercise>[],
-          )
-          as List<_i4.Exercise>);
-
-  @override
   Map<int, List<_i4.Exercise>> get exerciseByVariation =>
       (super.noSuchMethod(
             Invocation.getter(#exerciseByVariation),
@@ -160,12 +152,6 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
   );
 
   @override
-  set filteredExercises(List<_i4.Exercise>? newFilteredExercises) => super.noSuchMethod(
-    Invocation.setter(#filteredExercises, newFilteredExercises),
-    returnValueForMissingStub: null,
-  );
-
-  @override
   set languages(List<_i8.Language>? languages) => super.noSuchMethod(
     Invocation.setter(#languages, languages),
     returnValueForMissingStub: null,
@@ -174,30 +160,6 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
   @override
   bool get hasListeners =>
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
-
-  @override
-  _i10.Future<void> setFilters(_i9.Filters? newFilters) =>
-      (super.noSuchMethod(
-            Invocation.method(#setFilters, [newFilters]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
-          )
-          as _i10.Future<void>);
-
-  @override
-  void initFilters() => super.noSuchMethod(
-    Invocation.method(#initFilters, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i10.Future<void> findByFilters() =>
-      (super.noSuchMethod(
-            Invocation.method(#findByFilters, []),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
-          )
-          as _i10.Future<void>);
 
   @override
   void clear() => super.noSuchMethod(
@@ -439,24 +401,6 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
             returnValueForMissingStub: _i10.Future<void>.value(),
           )
           as _i10.Future<void>);
-
-  @override
-  _i10.Future<List<_i4.Exercise>> searchExercise(
-    String? name, {
-    String? languageCode = 'en',
-    bool? searchEnglish = false,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #searchExercise,
-              [name],
-              {#languageCode: languageCode, #searchEnglish: searchEnglish},
-            ),
-            returnValue: _i10.Future<List<_i4.Exercise>>.value(
-              <_i4.Exercise>[],
-            ),
-          )
-          as _i10.Future<List<_i4.Exercise>>);
 
   @override
   void addListener(_i11.VoidCallback? listener) => super.noSuchMethod(

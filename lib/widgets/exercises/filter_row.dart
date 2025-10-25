@@ -49,6 +49,7 @@ class _FilterRowState extends ConsumerState<FilterRow> {
               .read(exerciseStateProvider.notifier)
               .setFilters(
                 currentFilters.copyWith(searchTerm: text),
+                Localizations.localeOf(context).languageCode,
               );
         }
       });

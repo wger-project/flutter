@@ -49,7 +49,6 @@ class ExercisesProvider with ChangeNotifier {
 
   static const exerciseUrlPath = 'exercise';
   static const exerciseInfoUrlPath = 'exerciseinfo';
-  static const exerciseSearchPath = 'exercise/search';
 
   static const categoriesUrlPath = 'exercisecategory';
   static const musclesUrlPath = 'muscle';
@@ -556,48 +555,5 @@ class ExercisesProvider with ChangeNotifier {
     validTill = DateTime.now().add(const Duration(days: EXERCISE_CACHE_DAYS));
     await prefs.setString(PREFS_LAST_UPDATED_EQUIPMENT, validTill.toIso8601String());
     _logger.fine('Saved ${_equipment.length} equipment entries to cache (valid till $validTill)');
-  }
-
-  /// Searches for an exercise
-  ///
-  /// We could do this locally, but the server has better text searching capabilities
-  /// with postgresql.
-  Future<List<Exercise>> searchExercise(
-    String name, {
-    String languageCode = LANGUAGE_SHORT_ENGLISH,
-    bool searchEnglish = false,
-  }) async {
-    if (name.length <= 1) {
-      return [];
-    }
-
-    final languages = [languageCode];
-    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
-      languages.add(LANGUAGE_SHORT_ENGLISH);
-    }
-
-    // Send the request
-    final result = await baseProvider.fetch(
-      baseProvider.makeUrl(
-        exerciseSearchPath,
-        query: {'term': name, 'language': languages.join(',')},
-      ),
-    );
-
-    // Load the exercises
-    final results = ExerciseApiSearch.fromJson(result);
-
-    final List<Exercise> out = [];
-    for (final result in results.suggestions) {
-      final exercise = await fetchAndSetExercise(result.data.exerciseId);
-      if (exercise != null) {
-        out.add(exercise);
-      }
-    }
-    // return Future.wait(
-    //   results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
-    // );
-
-    return out;
   }
 }

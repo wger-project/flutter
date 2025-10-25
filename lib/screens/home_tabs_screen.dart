@@ -25,6 +25,8 @@ import 'package:rive/rive.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/powersync/connector.dart';
 import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
@@ -120,7 +122,8 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
         nutritionPlansProvider.fetchIngredientsFromCache(),
         exercisesProvider.fetchAndSetInitialData(),
       ]);
-      exercisesProvider.fetchAndSetAllExercises();
+      ref.read(exerciseStateProvider);
+      ref.read(weightEntryProvider());
 
       // Workaround for https://github.com/wger-project/flutter/issues/901
       // It seems that it can happen that sometimes the units were not loaded properly

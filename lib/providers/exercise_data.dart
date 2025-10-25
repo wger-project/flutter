@@ -27,12 +27,13 @@ import 'package:wger/models/exercises/muscle.dart';
 
 part 'exercise_data.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 final class ExerciseNotifier extends _$ExerciseNotifier {
   final _logger = Logger('ExerciseNotifier');
 
   @override
   Stream<List<Exercise>> build() {
+    ref.keepAlive();
     final db = ref.read(driftPowerSyncDatabase);
     _logger.fine('Building exercise stream');
 

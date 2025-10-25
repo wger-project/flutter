@@ -20,7 +20,7 @@ final class ExerciseStateNotifierProvider
         argument: null,
         retry: null,
         name: r'exerciseStateProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -41,7 +41,7 @@ final class ExerciseStateNotifierProvider
   }
 }
 
-String _$exerciseStateNotifierHash() => r'c3070d53059705b03595597f099ded2b7efb5a93';
+String _$exerciseStateNotifierHash() => r'0190aca10f979de44254c429212e8a9e614cb167';
 
 abstract class _$ExerciseStateNotifier extends $Notifier<ExerciseState> {
   ExerciseState build();

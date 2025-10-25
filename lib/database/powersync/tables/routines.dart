@@ -1,8 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' show uuid;
-import 'package:wger/models/workouts/log.dart';
 
-@UseRowClass(Log)
+// @UseRowClass(Log)
 class WorkoutLogTable extends Table {
   @override
   String get tableName => 'manager_workoutlog';

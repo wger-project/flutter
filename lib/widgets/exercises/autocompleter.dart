@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:provider/provider.dart';
+import 'package:wger/helpers/connectivity.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 typedef ExerciseSelectedCallback = void Function(Exercise exercise);
 
-class ExerciseAutocompleter extends StatefulWidget {
+class ExerciseAutocompleter extends ConsumerStatefulWidget {
   final ExerciseSelectedCallback onExerciseSelected;
 
   const ExerciseAutocompleter({required this.onExerciseSelected});
 
   @override
-  State<ExerciseAutocompleter> createState() => _ExerciseAutocompleterState();
+  ConsumerState<ExerciseAutocompleter> createState() => _ExerciseAutocompleterState();
 }
 
-class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
+class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
   bool _searchEnglish = true;
   final _exercisesController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+
     return Column(
       // mainAxisSize: MainAxisSize.min,
       children: [
@@ -80,35 +83,37 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
               ),
             );
           },
-          suggestionsCallback: (pattern) {
-            if (pattern == '') {
+          suggestionsCallback: (pattern) async {
+            if (pattern.isEmpty) {
               return null;
             }
-            return context.read<ExercisesProvider>().searchExercise(
-              pattern,
-              languageCode: Localizations.localeOf(context).languageCode,
-              searchEnglish: _searchEnglish,
-            );
+
+            return ref
+                .read(exerciseStateProvider.notifier)
+                .searchExercise(
+                  pattern,
+                  languageCode: languageCode,
+                  searchEnglish: _searchEnglish,
+                  useOnlineSearch: await hasNetworkConnection(),
+                );
           },
           itemBuilder:
               (
                 BuildContext context,
-                Exercise exerciseSuggestion,
+                Exercise exercise,
               ) => ListTile(
-                key: Key('exercise-${exerciseSuggestion.id}'),
+                key: Key('exercise-${exercise.id}'),
                 leading: SizedBox(
                   width: 45,
                   child: ExerciseImageWidget(
-                    image: exerciseSuggestion.getMainImage,
+                    image: exercise.getMainImage,
                   ),
                 ),
                 title: Text(
-                  exerciseSuggestion
-                      .getTranslation(Localizations.localeOf(context).languageCode)
-                      .name,
+                  exercise.getTranslation(languageCode).name,
                 ),
                 subtitle: Text(
-                  '${exerciseSuggestion.category!.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
+                  '${exercise.category!.name} / ${exercise.equipment.map((e) => e.name).join(', ')}',
                 ),
               ),
           emptyBuilder: (context) {
@@ -141,7 +146,7 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
             _exercisesController.text = '';
           },
         ),
-        if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
+        if (languageCode != LANGUAGE_SHORT_ENGLISH)
           SwitchListTile(
             title: Text(AppLocalizations.of(context).searchNamesInEnglish),
             value: _searchEnglish,

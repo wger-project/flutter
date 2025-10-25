@@ -132,7 +132,7 @@ class _GymModeState extends ConsumerState<GymMode> {
 
   List<Widget> getContent() {
     final state = ref.watch(gymStateProvider);
-    final exercisesAsync = ref.watch(exerciseStateProvider.notifier);
+    final exercisesAsync = ref.read(exerciseStateProvider.notifier);
     final routinesProvider = context.read<RoutinesProvider>();
     var currentElement = 1;
     final List<Widget> out = [];

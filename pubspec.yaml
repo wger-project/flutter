@@ -73,6 +73,7 @@ dependencies:
   riverpod_annotation: ^3.0.3
   stream_transform: ^2.1.1
   state_notifier: ^1.0.0
+  connectivity_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:

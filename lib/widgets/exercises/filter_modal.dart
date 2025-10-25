@@ -71,7 +71,12 @@ class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBod
                     onChanged: (_) {
                       setState(() {
                         filterCategory.items.update(currentEntry.key, (value) => !value);
-                        ref.read(exerciseStateProvider.notifier).setFilters(filters);
+                        ref
+                            .read(exerciseStateProvider.notifier)
+                            .setFilters(
+                              filters,
+                              Localizations.localeOf(context).languageCode,
+                            );
                       });
                     },
                   );

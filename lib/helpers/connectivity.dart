@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2025 wger Team
+ * Copyright (c) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,16 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/base_provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
-/// Central provider that maps an existing [AuthProvider] (from the provider package)
-/// to a [WgerBaseProvider] used by repositories.
-///
-/// Usage: ref.watch(wgerBaseProvider(authProvider))
-final wgerBaseProvider = Provider<WgerBaseProvider>((ref) {
-  throw UnimplementedError(
-    'Override wgerBaseProvider in a ProviderScope with your existing WgerBaseProvider instance',
-  );
-});
+Future<bool> hasNetworkConnection({Duration timeout = const Duration(seconds: 1)}) async {
+  final connectivityResult = await Connectivity().checkConnectivity();
+
+  final allowed = [
+    ConnectivityResult.mobile,
+    ConnectivityResult.wifi,
+    ConnectivityResult.ethernet,
+  ];
+
+  if (!connectivityResult.any((c) => allowed.contains(c))) {
+    return false;
+  }
+
+  return true;
+
+  // try {
+  //   final result = await InternetAddress.lookup('example.com').timeout(timeout);
+  //   return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+  // } catch (_) {
+  //   return false;
+  // }
+}

@@ -20,7 +20,7 @@ final class ExerciseNotifierProvider
         argument: null,
         retry: null,
         name: r'exerciseProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -33,7 +33,7 @@ final class ExerciseNotifierProvider
   ExerciseNotifier create() => ExerciseNotifier();
 }
 
-String _$exerciseNotifierHash() => r'b8db6a2b5e05f4ba3f7a7677999816298209f5db';
+String _$exerciseNotifierHash() => r'897551df3c53c72427a050c9559647aa9f8b59dd';
 
 abstract class _$ExerciseNotifier extends $StreamNotifier<List<Exercise>> {
   Stream<List<Exercise>> build();
