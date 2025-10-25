@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,22 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart' as drift;
-import 'package:json_annotation/json_annotation.dart';
-import 'package:powersync/sqlite3.dart' as sqlite;
-import 'package:wger/helpers/json.dart';
+import 'package:drift/drift.dart';
+import 'package:wger/database/powersync/database.dart';
 
-part 'weight_entry.g.dart';
-
-@JsonSerializable()
 class WeightEntry {
-  @JsonKey(required: true)
   String? id;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num weight = 0;
 
-  @JsonKey(required: true)
   late DateTime date;
 
   WeightEntry({this.id, num? weight, DateTime? date}) {
@@ -42,50 +34,17 @@ class WeightEntry {
     }
   }
 
-  factory WeightEntry.fromRow(sqlite.Row row) {
-    return WeightEntry(
-      id: row['uuid'],
-      date: DateTime.parse(row['date']),
-      weight: row['weight'],
-    );
-  }
-
   WeightEntry copyWith({String? id, int? weight, DateTime? date}) => WeightEntry(
     id: id,
     weight: weight ?? this.weight,
     date: date ?? this.date,
   );
 
-  factory WeightEntry.fromData(
-    Map<String, dynamic> data,
-    drift.GeneratedDatabase db, {
-    String? prefix,
-  }) {
-    final effectivePrefix = prefix ?? '';
-
-    final rawId = data['${effectivePrefix}id'];
-    final rawWeight = data['${effectivePrefix}weight'];
-    final rawDate = data['${effectivePrefix}date'];
-
-    final parsedId = rawId as String?;
-    final parsedWeight = rawWeight is num
-        ? rawWeight
-        : (rawWeight == null ? 0 : num.tryParse(rawWeight.toString()) ?? 0);
-    final parsedDate = rawDate is DateTime
-        ? rawDate
-        : (rawDate == null
-              ? DateTime.now()
-              : DateTime.tryParse(rawDate.toString()) ?? DateTime.now());
-
-    return WeightEntry(
-      id: parsedId,
-      weight: parsedWeight,
-      date: parsedDate,
+  WeightEntryTableCompanion toCompanion({bool includeId = false}) {
+    return WeightEntryTableCompanion(
+      id: includeId && id != null ? Value(id!) : const Value.absent(),
+      date: Value(date),
+      weight: Value(weight as double),
     );
   }
-
-  // Boilerplate
-  factory WeightEntry.fromJson(Map<String, dynamic> json) => _$WeightEntryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$WeightEntryToJson(this);
 }

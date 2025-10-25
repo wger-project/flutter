@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -55,6 +55,7 @@ final testBenchPress = Exercise(
   uuid: '364f196c-881b-4839-8bfc-9e8f651521b6',
   created: DateTime(2021, 09, 01),
   lastUpdate: DateTime(2021, 09, 10),
+  categoryId: 1,
   category: tCategory1,
   equipment: const [tEquipment1, tEquipment2],
   muscles: const [tMuscle1, tMuscle2],
@@ -67,6 +68,7 @@ final testCrunches = Exercise(
   uuid: '82415754-fc4c-49ea-8ca7-1516dd36d5a0',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 10),
+  categoryId: 2,
   category: tCategory2,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
@@ -79,6 +81,7 @@ final testDeadLift = Exercise(
   uuid: 'ca84e2c5-5608-4d6d-ba57-6d4b6b5e7acd',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 01),
+  categoryId: 3,
   category: tCategory3,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
@@ -91,6 +94,7 @@ final testCurls = Exercise(
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 01),
+  categoryId: 3,
   category: tCategory3,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
@@ -103,6 +107,7 @@ final testSquats = Exercise(
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 01),
+  categoryId: 3,
   category: tCategory3,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
@@ -115,6 +120,7 @@ final testSideRaises = Exercise(
   uuid: '721ff972-c568-41e3-8cf5-cf1e5c5c801c',
   created: DateTime(2022, 11, 01),
   lastUpdate: DateTime(2022, 11, 01),
+  categoryId: 4,
   category: tCategory4,
   equipment: const [tEquipment2],
   muscles: const [tMuscle1],
