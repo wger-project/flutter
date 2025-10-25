@@ -18,7 +18,7 @@
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'exercise_state_notifier.dart';
+part of 'network_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -27,55 +27,48 @@ part of 'exercise_state_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ExerciseStateNotifier)
-const exerciseStateProvider = ExerciseStateNotifierProvider._();
+@ProviderFor(NetworkStatus)
+const networkStatusProvider = NetworkStatusProvider._();
 
-final class ExerciseStateNotifierProvider
-    extends $NotifierProvider<ExerciseStateNotifier, ExerciseState> {
-  const ExerciseStateNotifierProvider._()
+final class NetworkStatusProvider extends $NotifierProvider<NetworkStatus, bool> {
+  const NetworkStatusProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'exerciseStateProvider',
+        name: r'networkStatusProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$exerciseStateNotifierHash();
+  String debugGetCreateSourceHash() => _$networkStatusHash();
 
   @$internal
   @override
-  ExerciseStateNotifier create() => ExerciseStateNotifier();
+  NetworkStatus create() => NetworkStatus();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ExerciseState value) {
+  Override overrideWithValue(bool value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<ExerciseState>(value),
+      providerOverride: $SyncValueProvider<bool>(value),
     );
   }
 }
 
-String _$exerciseStateNotifierHash() => r'5d1743a7b85262c82d981b735a546178369f71e0';
+String _$networkStatusHash() => r'76d8c1608f5ff85a539f5cc015c33b86109c48c9';
 
-abstract class _$ExerciseStateNotifier extends $Notifier<ExerciseState> {
-  ExerciseState build();
+abstract class _$NetworkStatus extends $Notifier<bool> {
+  bool build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<ExerciseState, ExerciseState>;
+    final ref = this.ref as $Ref<bool, bool>;
     final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<ExerciseState, ExerciseState>,
-              ExerciseState,
-              Object?,
-              Object?
-            >;
+        ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

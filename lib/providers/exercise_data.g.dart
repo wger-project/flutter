@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020,  wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'exercise_data.dart';
@@ -33,7 +51,7 @@ final class ExerciseNotifierProvider
   ExerciseNotifier create() => ExerciseNotifier();
 }
 
-String _$exerciseNotifierHash() => r'897551df3c53c72427a050c9559647aa9f8b59dd';
+String _$exerciseNotifierHash() => r'672664bf86ed5d6ba7da9e03590d14e9dbd02496';
 
 abstract class _$ExerciseNotifier extends $StreamNotifier<List<Exercise>> {
   Stream<List<Exercise>> build();

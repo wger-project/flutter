@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2025 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,6 +39,8 @@ final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
   @override
   ExerciseState build() {
     _logger.finer('Building ExerciseStateNotifier');
+
+    ref.keepAlive();
     state = ExerciseState(isLoading: true);
 
     // Load exercises

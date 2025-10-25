@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2025 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,7 +35,7 @@ final class ExerciseNotifier extends _$ExerciseNotifier {
   Stream<List<Exercise>> build() {
     ref.keepAlive();
     final db = ref.read(driftPowerSyncDatabase);
-    _logger.fine('Building exercise stream');
+    _logger.finer('Building exercise stream');
 
     final primaryMuscleTable = db.alias(db.muscleTable, 'pm');
     final secondaryMuscleTable = db.alias(db.muscleTable, 'sm');

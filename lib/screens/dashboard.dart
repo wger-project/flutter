@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets/measurements.dart';
+import 'package:wger/widgets/dashboard/widgets/network.dart';
 import 'package:wger/widgets/dashboard/widgets/nutrition.dart';
 import 'package:wger/widgets/dashboard/widgets/routines.dart';
 import 'package:wger/widgets/dashboard/widgets/weight.dart';
@@ -38,6 +39,7 @@ class DashboardScreen extends StatelessWidget {
         padding: EdgeInsets.all(10),
         child: Column(
           children: [
+            DashboardNetworkInfo(),
             DashboardRoutineWidget(),
             DashboardNutritionWidget(),
             DashboardWeightWidget(),
