@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer;
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/exercises/validators.dart';
@@ -6,33 +7,40 @@ import 'package:wger/helpers/i18n.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/core_data.dart';
+import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/exercises/forms.dart';
 
-class Step1Basics extends StatelessWidget {
+class Step1Basics extends ConsumerWidget {
   final GlobalKey<FormState> formkey;
 
   const Step1Basics({required this.formkey});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final userProvider = context.read<UserProvider>();
     final addExerciseProvider = context.read<AddExerciseProvider>();
-    final exerciseProvider = context.read<ExercisesProvider>();
-    final categories = exerciseProvider.categories;
-    final muscles = exerciseProvider.muscles;
-    final equipment = exerciseProvider.equipment;
 
-    // There mus be a better way to ensure this...
-    addExerciseProvider.languageEn = exerciseProvider.languages.firstWhere(
-      (l) => l.shortName == LANGUAGE_SHORT_ENGLISH,
-    );
+    final languagesAsync = ref.watch(languageProvider);
+    final categoriesAsync = ref.watch(exerciseCategoryProvider);
+    final musclesAsync = ref.watch(exerciseMuscleProvider);
+    final equipmentAsync = ref.watch(exerciseEquipmentProvider);
+
+    final categories = categoriesAsync.asData?.value ?? <ExerciseCategory>[];
+    final muscles = musclesAsync.asData?.value ?? <Muscle>[];
+    final equipment = equipmentAsync.asData?.value ?? <Equipment>[];
+    final languages = languagesAsync.asData?.value ?? <Language>[];
+
+    // Doing it like this because the languages list is empty before the stream loads
+    final matched = languages.where((l) => l.shortName == LANGUAGE_SHORT_ENGLISH);
+    addExerciseProvider.languageEn = matched.isNotEmpty ? matched.first : null;
 
     return Form(
       key: formkey,

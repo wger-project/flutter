@@ -1,4 +1,23 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) 2020, 2025 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
@@ -6,7 +25,7 @@ import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/add_exercise/steps/step_1_basics.dart';
@@ -33,7 +52,7 @@ class AddExerciseScreen extends StatelessWidget {
   }
 }
 
-class AddExerciseStepper extends StatefulWidget {
+class AddExerciseStepper extends ConsumerStatefulWidget {
   const AddExerciseStepper({super.key});
 
   static const STEPS_IN_FORM = 6;
@@ -42,7 +61,7 @@ class AddExerciseStepper extends StatefulWidget {
   _AddExerciseStepperState createState() => _AddExerciseStepperState();
 }
 
-class _AddExerciseStepperState extends State<AddExerciseStepper> {
+class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseStepper.STEPS_IN_FORM - 1;
   bool _isLoading = false;
@@ -81,12 +100,11 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                           errorWidget = const SizedBox.shrink();
                         });
                         final addExerciseProvider = context.read<AddExerciseProvider>();
-                        final exerciseProvider = context.read<ExercisesProvider>();
 
                         Exercise? exercise;
                         try {
                           final exerciseId = await addExerciseProvider.postExerciseToServer();
-                          exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
+                          exercise = ref.read(exerciseStateProvider.notifier).getById(exerciseId);
                         } on WgerHttpException catch (error) {
                           if (context.mounted) {
                             setState(() {

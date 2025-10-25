@@ -23,6 +23,7 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
+import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
@@ -131,7 +132,7 @@ class _GymModeState extends ConsumerState<GymMode> {
 
   List<Widget> getContent() {
     final state = ref.watch(gymStateProvider);
-    final exerciseProvider = context.read<ExercisesProvider>();
+    final exercisesAsync = ref.watch(exerciseStateProvider.notifier);
     final routinesProvider = context.read<RoutinesProvider>();
     var currentElement = 1;
     final List<Widget> out = [];
@@ -140,7 +141,7 @@ class _GymModeState extends ConsumerState<GymMode> {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
         final ratioCompleted = currentElement / _totalElements;
-        final exercise = exerciseProvider.findExerciseById(config.exerciseId);
+        final exercise = exercisesAsync.getById(config.exerciseId)!;
         currentElement++;
 
         if (firstPage && state.showExercisePages) {

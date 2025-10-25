@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer;
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/exercises/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/core_data.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/exercises/forms.dart';
 
-class Step4Translation extends StatefulWidget {
+class Step4Translation extends ConsumerStatefulWidget {
   final GlobalKey<FormState> formkey;
 
   const Step4Translation({required this.formkey});
 
   @override
-  State<Step4Translation> createState() => _Step4TranslationState();
+  ConsumerState<Step4Translation> createState() => _Step4TranslationState();
 }
 
-class _Step4TranslationState extends State<Step4Translation> {
+class _Step4TranslationState extends ConsumerState<Step4Translation> {
   bool translate = false;
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final addExerciseProvider = context.read<AddExerciseProvider>();
-    final exerciseProvider = context.read<ExercisesProvider>();
-    final languages = exerciseProvider.languages;
+
+    final languagesAsync = ref.watch(languageProvider);
+    final languages = languagesAsync.asData?.value ?? <Language>[];
 
     return Form(
       key: widget.formkey,
