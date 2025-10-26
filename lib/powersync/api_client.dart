@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020,  wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -33,6 +51,7 @@ class ApiClient {
 
     final apiData = json.decode((await prefs.getString(PREFS_USER))!);
     // _logger.info('posting our token "${apiData["token"]}" to $baseUrl/api/v2/powersync-token');
+
     token = apiData['token'];
     final response = await http.get(
       Uri.parse('$baseUrl/api/v2/powersync-token'),
@@ -41,12 +60,9 @@ class ApiClient {
         HttpHeaders.authorizationHeader: 'Token ${apiData["token"]}',
       },
     );
-    // _logger.info('response: status ${response.statusCode}, body ${response.body}');
-    if (response.statusCode == 200) {
-      // _logger.fine(response.body);
-      final result = json.decode(response.body);
 
-      return result;
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
     }
     throw Exception('Failed to fetch token');
   }

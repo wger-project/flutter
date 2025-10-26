@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -76,11 +76,8 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
   Future<void> _setupPowersync() async {
     final authProvider = context.read<AuthProvider>();
     final baseUrl = authProvider.serverUrl!;
-    final powerSyncUrl = baseUrl.replaceAll(':8000', ':8080');
 
-    // await openDatabase(false, baseUrl, powerSyncUrl);
-
-    final connector = DjangoConnector(baseUrl: baseUrl, powersyncUrl: powerSyncUrl);
+    final connector = DjangoConnector(baseUrl: baseUrl);
     // try {
     // TODO: should we cache these credentials? that's what their demo does?
     // we could maybe get the initial token from the /api/v2/login call

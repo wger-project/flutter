@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020,  wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 // This file performs setup of the PowerSync database
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
@@ -19,12 +37,10 @@ final List<RegExp> fatalResponseCodes = [
 
 class DjangoConnector extends PowerSyncBackendConnector {
   late String baseUrl;
-  late String powersyncUrl;
   late ApiClient apiClient;
 
-  DjangoConnector({String? baseUrl, String? powersyncUrl}) {
+  DjangoConnector({String? baseUrl}) {
     this.baseUrl = baseUrl ?? 'http://localhost:8000';
-    this.powersyncUrl = powersyncUrl ?? 'http://localhost:8080';
 
     apiClient = ApiClient(this.baseUrl);
   }
@@ -34,14 +50,36 @@ class DjangoConnector extends PowerSyncBackendConnector {
   Future<PowerSyncCredentials?> fetchCredentials() async {
     // Somewhat contrived to illustrate usage, see auth docs here:
     // https://docs.powersync.com/usage/installation/authentication-setup/custom
-    // final wgerSession = await apiClient.getWgerJWTToken();
     final session = await apiClient.getPowersyncToken();
+
     // note: we don't set userId and expires property here. not sure if needed
-    logger.info('Powersync Url: $powersyncUrl');
     return PowerSyncCredentials(
-      endpoint: powersyncUrl,
+      endpoint: session['powersync_url'],
       token: session['token'],
     );
+  }
+
+  /// Transform a record before sending it to the backend.
+  Map<String, dynamic> _genericTransform(Map<String, dynamic>? src, String id) {
+    final out = <String, dynamic>{'id': id};
+    if (src == null) {
+      return out;
+    }
+
+    src.forEach((k, v) {
+      if (k == 'id') {
+        return;
+      }
+      final key = k.endsWith('_id') ? k.substring(0, k.length - 3) : k;
+
+      if (v is DateTime) {
+        out[key] = v.toUtc().toIso8601String();
+        return;
+      }
+
+      out[key] = v;
+    });
+    return out;
   }
 
   // Upload pending changes to Postgres via Django backend
@@ -59,24 +97,20 @@ class DjangoConnector extends PowerSyncBackendConnector {
       for (final op in transaction.crud) {
         final record = {
           'table': op.table,
-          'data': {'id': op.id, ...?op.opData},
+          'data': _genericTransform(op.opData, op.id),
+          // 'data': {'id': op.id, ...?op.opData},
         };
 
-        logger.fine('Uploading record $record');
-        logger.fine(op.clientId);
-        logger.fine(op.metadata);
+        logger.finer('Uploading record $record to server with operation ${op.op}');
 
         switch (op.op) {
           case UpdateType.put:
-            logger.fine('Upserting record');
             await apiClient.upsert(record);
             break;
           case UpdateType.patch:
-            logger.fine('Patching record');
             await apiClient.update(record);
             break;
           case UpdateType.delete:
-            logger.fine('Deleting record');
             await apiClient.delete(record);
             break;
         }
