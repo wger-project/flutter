@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
@@ -27,10 +29,14 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 part 'log.g.dart';
 
+/// Temporary fix for id conversion: the "id" field used in the drift database
+/// is a UUID string, but the JSON data is the database ID.
+String? idFromJson(Object? value) => value?.toString();
+
 @JsonSerializable()
 class Log {
-  @JsonKey(required: true)
-  int? id;
+  @JsonKey(required: true, fromJson: idFromJson)
+  String? id;
 
   @JsonKey(required: true, name: 'exercise')
   late int exerciseId;
@@ -118,6 +124,36 @@ class Log {
 
     rir = data.rir;
     rirTarget = data.rir;
+  }
+
+  WorkoutLogTableCompanion toCompanion({bool includeId = false}) {
+    return WorkoutLogTableCompanion(
+      id: includeId && id != null ? drift.Value(id!) : const drift.Value.absent(),
+      exerciseId: drift.Value(exerciseId),
+      routineId: drift.Value(routineId),
+      sessionId: sessionId != null ? drift.Value(sessionId) : const drift.Value.absent(),
+      iteration: iteration != null ? drift.Value(iteration) : const drift.Value.absent(),
+      slotEntryId: slotEntryId != null ? drift.Value(slotEntryId) : const drift.Value.absent(),
+      rir: rir != null ? drift.Value(rir!.toDouble()) : const drift.Value.absent(),
+      rirTarget: rirTarget != null
+          ? drift.Value(rirTarget!.toDouble())
+          : const drift.Value.absent(),
+      repetitions: repetitions != null
+          ? drift.Value(repetitions!.toDouble())
+          : const drift.Value.absent(),
+      repetitionsTarget: repetitionsTarget != null
+          ? drift.Value(repetitionsTarget!.toDouble())
+          : const drift.Value.absent(),
+      repetitionsUnitId: repetitionsUnitId != null
+          ? drift.Value(repetitionsUnitId)
+          : const drift.Value.absent(),
+      weight: weight != null ? drift.Value(weight!.toDouble()) : const drift.Value.absent(),
+      weightTarget: weightTarget != null
+          ? drift.Value(weightTarget!.toDouble())
+          : const drift.Value.absent(),
+      weightUnitId: weightUnitId != null ? drift.Value(weightUnitId) : const drift.Value.absent(),
+      date: drift.Value(date.toUtc()),
+    );
   }
 
   // Boilerplate

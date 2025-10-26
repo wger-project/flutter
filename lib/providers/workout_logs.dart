@@ -18,21 +18,20 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/workouts/log.dart';
 
-import 'body_weight_repository.dart';
+import 'workout_log_repository.dart';
 
-part 'body_weight.g.dart';
+part 'workout_logs.g.dart';
 
 @riverpod
-final class WeightEntryNotifier extends _$WeightEntryNotifier {
-  final _log = Logger('WeightEntryNotifier');
-  late final BodyWeightRepository _repo;
+final class WorkoutLogNotifier extends _$WorkoutLogNotifier {
+  final _log = Logger('WorkoutLogNotifier');
+  late final WorkoutLogRepository _repo;
 
   @override
-  // BodyWeightState build() {
-  Stream<List<WeightEntry>> build([BodyWeightRepository? repository]) {
-    _repo = repository ?? ref.read(bodyWeightRepositoryProvider);
+  Stream<List<Log>> build() {
+    _repo = ref.read(workoutLogRepositoryProvider);
 
     // final state = BodyWeightState();
     // repo.watchAllDrift(database).listen((entries) {
@@ -47,11 +46,11 @@ final class WeightEntryNotifier extends _$WeightEntryNotifier {
     await _repo.deleteLocalDrift(id);
   }
 
-  Future<void> updateEntry(WeightEntry entry) async {
-    await _repo.updateLocalDrift(entry);
+  Future<void> updateEntry(Log log) async {
+    await _repo.updateLocalDrift(log);
   }
 
-  Future<void> addEntry(WeightEntry entry) async {
-    await _repo.addLocalDrift(entry);
+  Future<void> addEntry(Log log) async {
+    await _repo.addLocalDrift(log);
   }
 }

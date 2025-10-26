@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -45,41 +45,44 @@ const testRepetitionUnits = [testRepetitionUnit1, testRepetitionUnit2];
 Routine getTestRoutine({List<Exercise>? exercises}) {
   final testExercises = exercises ?? getTestExercises();
 
-  final log1 = Log.empty()
-    ..id = 1
-    ..iteration = 2
-    ..slotEntryId = 3
-    ..weight = 10
-    ..rir = 1.5
-    ..date = DateTime(2021, 5, 1)
-    ..repetitions = 10
-    ..routineId = 1;
+  final log1 = Log(
+    id: '1',
+    iteration: 2,
+    slotEntryId: 3,
+    weight: 10,
+    rir: 1.5,
+    date: DateTime(2021, 5, 1),
+    repetitions: 10,
+    routineId: 1,
+  );
   log1.exerciseBase = testExercises[0];
   log1.weightUnit = testWeightUnit1;
   log1.repetitionUnit = testRepetitionUnit1;
 
-  final log2 = Log.empty()
-    ..id = 2
-    ..iteration = 4
-    ..slotEntryId = 1
-    ..weight = 10
-    ..rir = 2
-    ..date = DateTime(2021, 5, 1)
-    ..repetitions = 12
-    ..routineId = 1;
+  final log2 = Log(
+    id: '2',
+    iteration: 4,
+    slotEntryId: 1,
+    weight: 10,
+    rir: 2,
+    date: DateTime(2021, 5, 1),
+    repetitions: 12,
+    routineId: 1,
+  );
   log2.exerciseBase = testExercises[0];
   log2.weightUnit = testWeightUnit1;
   log2.repetitionUnit = testRepetitionUnit1;
 
-  final log3 = Log.empty()
-    ..id = 3
-    ..iteration = 5
-    ..slotEntryId = 1
-    ..weight = 50
-    ..rir = null
-    ..date = DateTime(2021, 5, 2)
-    ..repetitions = 8
-    ..routineId = 1;
+  final log3 = Log(
+    id: '3',
+    iteration: 5,
+    slotEntryId: 1,
+    weight: 50,
+    rir: null,
+    date: DateTime(2021, 5, 2),
+    repetitions: 8,
+    routineId: 1,
+  );
   log3.exerciseBase = testExercises[1];
   log3.weightUnit = testWeightUnit1;
   log3.repetitionUnit = testRepetitionUnit1;

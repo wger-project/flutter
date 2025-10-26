@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020,  wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'database.dart';
@@ -3210,6 +3228,944 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   }
 }
 
+class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTableTable, Log> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkoutLogTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => uuid.v4(),
+  );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _routineIdMeta = const VerificationMeta(
+    'routineId',
+  );
+  @override
+  late final GeneratedColumn<int> routineId = GeneratedColumn<int>(
+    'routine_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<int> sessionId = GeneratedColumn<int>(
+    'session_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _iterationMeta = const VerificationMeta(
+    'iteration',
+  );
+  @override
+  late final GeneratedColumn<int> iteration = GeneratedColumn<int>(
+    'iteration',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _slotEntryIdMeta = const VerificationMeta(
+    'slotEntryId',
+  );
+  @override
+  late final GeneratedColumn<int> slotEntryId = GeneratedColumn<int>(
+    'slot_entry_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rirMeta = const VerificationMeta('rir');
+  @override
+  late final GeneratedColumn<double> rir = GeneratedColumn<double>(
+    'rir',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rirTargetMeta = const VerificationMeta(
+    'rirTarget',
+  );
+  @override
+  late final GeneratedColumn<double> rirTarget = GeneratedColumn<double>(
+    'rir_target',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _repetitionsMeta = const VerificationMeta(
+    'repetitions',
+  );
+  @override
+  late final GeneratedColumn<double> repetitions = GeneratedColumn<double>(
+    'repetitions',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _repetitionsTargetMeta = const VerificationMeta(
+    'repetitionsTarget',
+  );
+  @override
+  late final GeneratedColumn<double> repetitionsTarget = GeneratedColumn<double>(
+    'repetitions_target',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _repetitionsUnitIdMeta = const VerificationMeta(
+    'repetitionsUnitId',
+  );
+  @override
+  late final GeneratedColumn<int> repetitionsUnitId = GeneratedColumn<int>(
+    'repetitions_unit_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weightMeta = const VerificationMeta('weight');
+  @override
+  late final GeneratedColumn<double> weight = GeneratedColumn<double>(
+    'weight',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weightTargetMeta = const VerificationMeta(
+    'weightTarget',
+  );
+  @override
+  late final GeneratedColumn<double> weightTarget = GeneratedColumn<double>(
+    'weight_target',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weightUnitIdMeta = const VerificationMeta(
+    'weightUnitId',
+  );
+  @override
+  late final GeneratedColumn<int> weightUnitId = GeneratedColumn<int>(
+    'weight_unit_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    exerciseId,
+    routineId,
+    sessionId,
+    iteration,
+    slotEntryId,
+    rir,
+    rirTarget,
+    repetitions,
+    repetitionsTarget,
+    repetitionsUnitId,
+    weight,
+    weightTarget,
+    weightUnitId,
+    date,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'manager_workoutlog';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Log> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('routine_id')) {
+      context.handle(
+        _routineIdMeta,
+        routineId.isAcceptableOrUnknown(data['routine_id']!, _routineIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_routineIdMeta);
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    }
+    if (data.containsKey('iteration')) {
+      context.handle(
+        _iterationMeta,
+        iteration.isAcceptableOrUnknown(data['iteration']!, _iterationMeta),
+      );
+    }
+    if (data.containsKey('slot_entry_id')) {
+      context.handle(
+        _slotEntryIdMeta,
+        slotEntryId.isAcceptableOrUnknown(
+          data['slot_entry_id']!,
+          _slotEntryIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rir')) {
+      context.handle(
+        _rirMeta,
+        rir.isAcceptableOrUnknown(data['rir']!, _rirMeta),
+      );
+    }
+    if (data.containsKey('rir_target')) {
+      context.handle(
+        _rirTargetMeta,
+        rirTarget.isAcceptableOrUnknown(data['rir_target']!, _rirTargetMeta),
+      );
+    }
+    if (data.containsKey('repetitions')) {
+      context.handle(
+        _repetitionsMeta,
+        repetitions.isAcceptableOrUnknown(
+          data['repetitions']!,
+          _repetitionsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_repetitionsMeta);
+    }
+    if (data.containsKey('repetitions_target')) {
+      context.handle(
+        _repetitionsTargetMeta,
+        repetitionsTarget.isAcceptableOrUnknown(
+          data['repetitions_target']!,
+          _repetitionsTargetMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_repetitionsTargetMeta);
+    }
+    if (data.containsKey('repetitions_unit_id')) {
+      context.handle(
+        _repetitionsUnitIdMeta,
+        repetitionsUnitId.isAcceptableOrUnknown(
+          data['repetitions_unit_id']!,
+          _repetitionsUnitIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('weight')) {
+      context.handle(
+        _weightMeta,
+        weight.isAcceptableOrUnknown(data['weight']!, _weightMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weightMeta);
+    }
+    if (data.containsKey('weight_target')) {
+      context.handle(
+        _weightTargetMeta,
+        weightTarget.isAcceptableOrUnknown(
+          data['weight_target']!,
+          _weightTargetMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_weightTargetMeta);
+    }
+    if (data.containsKey('weight_unit_id')) {
+      context.handle(
+        _weightUnitIdMeta,
+        weightUnitId.isAcceptableOrUnknown(
+          data['weight_unit_id']!,
+          _weightUnitIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  Log map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Log(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      iteration: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}iteration'],
+      ),
+      slotEntryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}slot_entry_id'],
+      ),
+      routineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}routine_id'],
+      )!,
+      repetitions: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}repetitions'],
+      )!,
+      repetitionsTarget: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}repetitions_target'],
+      )!,
+      repetitionsUnitId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}repetitions_unit_id'],
+      ),
+      rir: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rir'],
+      ),
+      rirTarget: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rir_target'],
+      ),
+      weight: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight'],
+      )!,
+      weightTarget: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_target'],
+      )!,
+      weightUnitId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}weight_unit_id'],
+      ),
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkoutLogTableTable createAlias(String alias) {
+    return $WorkoutLogTableTable(attachedDatabase, alias);
+  }
+}
+
+class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
+  final Value<String> id;
+  final Value<int> exerciseId;
+  final Value<int> routineId;
+  final Value<int?> sessionId;
+  final Value<int?> iteration;
+  final Value<int?> slotEntryId;
+  final Value<double?> rir;
+  final Value<double?> rirTarget;
+  final Value<double> repetitions;
+  final Value<double> repetitionsTarget;
+  final Value<int?> repetitionsUnitId;
+  final Value<double> weight;
+  final Value<double> weightTarget;
+  final Value<int?> weightUnitId;
+  final Value<DateTime> date;
+  final Value<int> rowid;
+  const WorkoutLogTableCompanion({
+    this.id = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.routineId = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.iteration = const Value.absent(),
+    this.slotEntryId = const Value.absent(),
+    this.rir = const Value.absent(),
+    this.rirTarget = const Value.absent(),
+    this.repetitions = const Value.absent(),
+    this.repetitionsTarget = const Value.absent(),
+    this.repetitionsUnitId = const Value.absent(),
+    this.weight = const Value.absent(),
+    this.weightTarget = const Value.absent(),
+    this.weightUnitId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WorkoutLogTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int exerciseId,
+    required int routineId,
+    this.sessionId = const Value.absent(),
+    this.iteration = const Value.absent(),
+    this.slotEntryId = const Value.absent(),
+    this.rir = const Value.absent(),
+    this.rirTarget = const Value.absent(),
+    required double repetitions,
+    required double repetitionsTarget,
+    this.repetitionsUnitId = const Value.absent(),
+    required double weight,
+    required double weightTarget,
+    this.weightUnitId = const Value.absent(),
+    required DateTime date,
+    this.rowid = const Value.absent(),
+  }) : exerciseId = Value(exerciseId),
+       routineId = Value(routineId),
+       repetitions = Value(repetitions),
+       repetitionsTarget = Value(repetitionsTarget),
+       weight = Value(weight),
+       weightTarget = Value(weightTarget),
+       date = Value(date);
+  static Insertable<Log> custom({
+    Expression<String>? id,
+    Expression<int>? exerciseId,
+    Expression<int>? routineId,
+    Expression<int>? sessionId,
+    Expression<int>? iteration,
+    Expression<int>? slotEntryId,
+    Expression<double>? rir,
+    Expression<double>? rirTarget,
+    Expression<double>? repetitions,
+    Expression<double>? repetitionsTarget,
+    Expression<int>? repetitionsUnitId,
+    Expression<double>? weight,
+    Expression<double>? weightTarget,
+    Expression<int>? weightUnitId,
+    Expression<DateTime>? date,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (routineId != null) 'routine_id': routineId,
+      if (sessionId != null) 'session_id': sessionId,
+      if (iteration != null) 'iteration': iteration,
+      if (slotEntryId != null) 'slot_entry_id': slotEntryId,
+      if (rir != null) 'rir': rir,
+      if (rirTarget != null) 'rir_target': rirTarget,
+      if (repetitions != null) 'repetitions': repetitions,
+      if (repetitionsTarget != null) 'repetitions_target': repetitionsTarget,
+      if (repetitionsUnitId != null) 'repetitions_unit_id': repetitionsUnitId,
+      if (weight != null) 'weight': weight,
+      if (weightTarget != null) 'weight_target': weightTarget,
+      if (weightUnitId != null) 'weight_unit_id': weightUnitId,
+      if (date != null) 'date': date,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WorkoutLogTableCompanion copyWith({
+    Value<String>? id,
+    Value<int>? exerciseId,
+    Value<int>? routineId,
+    Value<int?>? sessionId,
+    Value<int?>? iteration,
+    Value<int?>? slotEntryId,
+    Value<double?>? rir,
+    Value<double?>? rirTarget,
+    Value<double>? repetitions,
+    Value<double>? repetitionsTarget,
+    Value<int?>? repetitionsUnitId,
+    Value<double>? weight,
+    Value<double>? weightTarget,
+    Value<int?>? weightUnitId,
+    Value<DateTime>? date,
+    Value<int>? rowid,
+  }) {
+    return WorkoutLogTableCompanion(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      routineId: routineId ?? this.routineId,
+      sessionId: sessionId ?? this.sessionId,
+      iteration: iteration ?? this.iteration,
+      slotEntryId: slotEntryId ?? this.slotEntryId,
+      rir: rir ?? this.rir,
+      rirTarget: rirTarget ?? this.rirTarget,
+      repetitions: repetitions ?? this.repetitions,
+      repetitionsTarget: repetitionsTarget ?? this.repetitionsTarget,
+      repetitionsUnitId: repetitionsUnitId ?? this.repetitionsUnitId,
+      weight: weight ?? this.weight,
+      weightTarget: weightTarget ?? this.weightTarget,
+      weightUnitId: weightUnitId ?? this.weightUnitId,
+      date: date ?? this.date,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (routineId.present) {
+      map['routine_id'] = Variable<int>(routineId.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<int>(sessionId.value);
+    }
+    if (iteration.present) {
+      map['iteration'] = Variable<int>(iteration.value);
+    }
+    if (slotEntryId.present) {
+      map['slot_entry_id'] = Variable<int>(slotEntryId.value);
+    }
+    if (rir.present) {
+      map['rir'] = Variable<double>(rir.value);
+    }
+    if (rirTarget.present) {
+      map['rir_target'] = Variable<double>(rirTarget.value);
+    }
+    if (repetitions.present) {
+      map['repetitions'] = Variable<double>(repetitions.value);
+    }
+    if (repetitionsTarget.present) {
+      map['repetitions_target'] = Variable<double>(repetitionsTarget.value);
+    }
+    if (repetitionsUnitId.present) {
+      map['repetitions_unit_id'] = Variable<int>(repetitionsUnitId.value);
+    }
+    if (weight.present) {
+      map['weight'] = Variable<double>(weight.value);
+    }
+    if (weightTarget.present) {
+      map['weight_target'] = Variable<double>(weightTarget.value);
+    }
+    if (weightUnitId.present) {
+      map['weight_unit_id'] = Variable<int>(weightUnitId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkoutLogTableCompanion(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('routineId: $routineId, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('iteration: $iteration, ')
+          ..write('slotEntryId: $slotEntryId, ')
+          ..write('rir: $rir, ')
+          ..write('rirTarget: $rirTarget, ')
+          ..write('repetitions: $repetitions, ')
+          ..write('repetitionsTarget: $repetitionsTarget, ')
+          ..write('repetitionsUnitId: $repetitionsUnitId, ')
+          ..write('weight: $weight, ')
+          ..write('weightTarget: $weightTarget, ')
+          ..write('weightUnitId: $weightUnitId, ')
+          ..write('date: $date, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkoutSessionTableTable extends WorkoutSessionTable
+    with TableInfo<$WorkoutSessionTableTable, WorkoutSession> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkoutSessionTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => uuid.v4(),
+  );
+  static const VerificationMeta _routineIdMeta = const VerificationMeta(
+    'routineId',
+  );
+  @override
+  late final GeneratedColumn<int> routineId = GeneratedColumn<int>(
+    'routine_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dayIdMeta = const VerificationMeta('dayId');
+  @override
+  late final GeneratedColumn<int> dayId = GeneratedColumn<int>(
+    'day_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<int, String> impression = GeneratedColumn<String>(
+    'impression',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<int>($WorkoutSessionTableTable.$converterimpression);
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDay?, String> timeStart =
+      GeneratedColumn<String>(
+        'time_start',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<TimeOfDay?>(
+        $WorkoutSessionTableTable.$convertertimeStartn,
+      );
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDay?, String> timeEnd = GeneratedColumn<String>(
+    'time_end',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<TimeOfDay?>($WorkoutSessionTableTable.$convertertimeEndn);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    routineId,
+    dayId,
+    date,
+    notes,
+    impression,
+    timeStart,
+    timeEnd,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'manager_workoutsession';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkoutSession> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('routine_id')) {
+      context.handle(
+        _routineIdMeta,
+        routineId.isAcceptableOrUnknown(data['routine_id']!, _routineIdMeta),
+      );
+    }
+    if (data.containsKey('day_id')) {
+      context.handle(
+        _dayIdMeta,
+        dayId.isAcceptableOrUnknown(data['day_id']!, _dayIdMeta),
+      );
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_notesMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  WorkoutSession map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkoutSession(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      dayId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}day_id'],
+      ),
+      routineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}routine_id'],
+      ),
+      impression: $WorkoutSessionTableTable.$converterimpression.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}impression'],
+        )!,
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+      timeStart: $WorkoutSessionTableTable.$convertertimeStartn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}time_start'],
+        ),
+      ),
+      timeEnd: $WorkoutSessionTableTable.$convertertimeEndn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}time_end'],
+        ),
+      ),
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkoutSessionTableTable createAlias(String alias) {
+    return $WorkoutSessionTableTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<int, String> $converterimpression = const IntToStringConverter();
+  static TypeConverter<TimeOfDay, String> $convertertimeStart = const TimeOfDayConverter();
+  static TypeConverter<TimeOfDay?, String?> $convertertimeStartn = NullAwareTypeConverter.wrap(
+    $convertertimeStart,
+  );
+  static TypeConverter<TimeOfDay, String> $convertertimeEnd = const TimeOfDayConverter();
+  static TypeConverter<TimeOfDay?, String?> $convertertimeEndn = NullAwareTypeConverter.wrap(
+    $convertertimeEnd,
+  );
+}
+
+class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
+  final Value<String> id;
+  final Value<int?> routineId;
+  final Value<int?> dayId;
+  final Value<DateTime> date;
+  final Value<String> notes;
+  final Value<int> impression;
+  final Value<TimeOfDay?> timeStart;
+  final Value<TimeOfDay?> timeEnd;
+  final Value<int> rowid;
+  const WorkoutSessionTableCompanion({
+    this.id = const Value.absent(),
+    this.routineId = const Value.absent(),
+    this.dayId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.impression = const Value.absent(),
+    this.timeStart = const Value.absent(),
+    this.timeEnd = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WorkoutSessionTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.routineId = const Value.absent(),
+    this.dayId = const Value.absent(),
+    required DateTime date,
+    required String notes,
+    required int impression,
+    this.timeStart = const Value.absent(),
+    this.timeEnd = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : date = Value(date),
+       notes = Value(notes),
+       impression = Value(impression);
+  static Insertable<WorkoutSession> custom({
+    Expression<String>? id,
+    Expression<int>? routineId,
+    Expression<int>? dayId,
+    Expression<DateTime>? date,
+    Expression<String>? notes,
+    Expression<String>? impression,
+    Expression<String>? timeStart,
+    Expression<String>? timeEnd,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (routineId != null) 'routine_id': routineId,
+      if (dayId != null) 'day_id': dayId,
+      if (date != null) 'date': date,
+      if (notes != null) 'notes': notes,
+      if (impression != null) 'impression': impression,
+      if (timeStart != null) 'time_start': timeStart,
+      if (timeEnd != null) 'time_end': timeEnd,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WorkoutSessionTableCompanion copyWith({
+    Value<String>? id,
+    Value<int?>? routineId,
+    Value<int?>? dayId,
+    Value<DateTime>? date,
+    Value<String>? notes,
+    Value<int>? impression,
+    Value<TimeOfDay?>? timeStart,
+    Value<TimeOfDay?>? timeEnd,
+    Value<int>? rowid,
+  }) {
+    return WorkoutSessionTableCompanion(
+      id: id ?? this.id,
+      routineId: routineId ?? this.routineId,
+      dayId: dayId ?? this.dayId,
+      date: date ?? this.date,
+      notes: notes ?? this.notes,
+      impression: impression ?? this.impression,
+      timeStart: timeStart ?? this.timeStart,
+      timeEnd: timeEnd ?? this.timeEnd,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (routineId.present) {
+      map['routine_id'] = Variable<int>(routineId.value);
+    }
+    if (dayId.present) {
+      map['day_id'] = Variable<int>(dayId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (impression.present) {
+      map['impression'] = Variable<String>(
+        $WorkoutSessionTableTable.$converterimpression.toSql(impression.value),
+      );
+    }
+    if (timeStart.present) {
+      map['time_start'] = Variable<String>(
+        $WorkoutSessionTableTable.$convertertimeStartn.toSql(timeStart.value),
+      );
+    }
+    if (timeEnd.present) {
+      map['time_end'] = Variable<String>(
+        $WorkoutSessionTableTable.$convertertimeEndn.toSql(timeEnd.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkoutSessionTableCompanion(')
+          ..write('id: $id, ')
+          ..write('routineId: $routineId, ')
+          ..write('dayId: $dayId, ')
+          ..write('date: $date, ')
+          ..write('notes: $notes, ')
+          ..write('impression: $impression, ')
+          ..write('timeStart: $timeStart, ')
+          ..write('timeEnd: $timeEnd, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   _$DriftPowersyncDatabase(QueryExecutor e) : super(e);
   $DriftPowersyncDatabaseManager get managers => $DriftPowersyncDatabaseManager(this);
@@ -3231,6 +4187,10 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   );
   late final $MeasurementCategoryTableTable measurementCategoryTable =
       $MeasurementCategoryTableTable(this);
+  late final $WorkoutLogTableTable workoutLogTable = $WorkoutLogTableTable(
+    this,
+  );
+  late final $WorkoutSessionTableTable workoutSessionTable = $WorkoutSessionTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3249,6 +4209,8 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     exerciseVideoTable,
     weightEntryTable,
     measurementCategoryTable,
+    workoutLogTable,
+    workoutSessionTable,
   ];
   @override
   DriftDatabaseOptions get options => const DriftDatabaseOptions(storeDateTimeAsText: true);
@@ -5752,6 +6714,669 @@ typedef $$MeasurementCategoryTableTableProcessedTableManager =
       MeasurementCategory,
       PrefetchHooks Function()
     >;
+typedef $$WorkoutLogTableTableCreateCompanionBuilder =
+    WorkoutLogTableCompanion Function({
+      Value<String> id,
+      required int exerciseId,
+      required int routineId,
+      Value<int?> sessionId,
+      Value<int?> iteration,
+      Value<int?> slotEntryId,
+      Value<double?> rir,
+      Value<double?> rirTarget,
+      required double repetitions,
+      required double repetitionsTarget,
+      Value<int?> repetitionsUnitId,
+      required double weight,
+      required double weightTarget,
+      Value<int?> weightUnitId,
+      required DateTime date,
+      Value<int> rowid,
+    });
+typedef $$WorkoutLogTableTableUpdateCompanionBuilder =
+    WorkoutLogTableCompanion Function({
+      Value<String> id,
+      Value<int> exerciseId,
+      Value<int> routineId,
+      Value<int?> sessionId,
+      Value<int?> iteration,
+      Value<int?> slotEntryId,
+      Value<double?> rir,
+      Value<double?> rirTarget,
+      Value<double> repetitions,
+      Value<double> repetitionsTarget,
+      Value<int?> repetitionsUnitId,
+      Value<double> weight,
+      Value<double> weightTarget,
+      Value<int?> weightUnitId,
+      Value<DateTime> date,
+      Value<int> rowid,
+    });
+
+class $$WorkoutLogTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $WorkoutLogTableTable> {
+  $$WorkoutLogTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get routineId => $composableBuilder(
+    column: $table.routineId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get iteration => $composableBuilder(
+    column: $table.iteration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get slotEntryId => $composableBuilder(
+    column: $table.slotEntryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rir => $composableBuilder(
+    column: $table.rir,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rirTarget => $composableBuilder(
+    column: $table.rirTarget,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get repetitions => $composableBuilder(
+    column: $table.repetitions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get repetitionsTarget => $composableBuilder(
+    column: $table.repetitionsTarget,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get repetitionsUnitId => $composableBuilder(
+    column: $table.repetitionsUnitId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weight => $composableBuilder(
+    column: $table.weight,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightTarget => $composableBuilder(
+    column: $table.weightTarget,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get weightUnitId => $composableBuilder(
+    column: $table.weightUnitId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkoutLogTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $WorkoutLogTableTable> {
+  $$WorkoutLogTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get routineId => $composableBuilder(
+    column: $table.routineId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get iteration => $composableBuilder(
+    column: $table.iteration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get slotEntryId => $composableBuilder(
+    column: $table.slotEntryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rir => $composableBuilder(
+    column: $table.rir,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rirTarget => $composableBuilder(
+    column: $table.rirTarget,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get repetitions => $composableBuilder(
+    column: $table.repetitions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get repetitionsTarget => $composableBuilder(
+    column: $table.repetitionsTarget,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get repetitionsUnitId => $composableBuilder(
+    column: $table.repetitionsUnitId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weight => $composableBuilder(
+    column: $table.weight,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightTarget => $composableBuilder(
+    column: $table.weightTarget,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get weightUnitId => $composableBuilder(
+    column: $table.weightUnitId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkoutLogTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $WorkoutLogTableTable> {
+  $$WorkoutLogTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get routineId =>
+      $composableBuilder(column: $table.routineId, builder: (column) => column);
+
+  GeneratedColumn<int> get sessionId =>
+      $composableBuilder(column: $table.sessionId, builder: (column) => column);
+
+  GeneratedColumn<int> get iteration =>
+      $composableBuilder(column: $table.iteration, builder: (column) => column);
+
+  GeneratedColumn<int> get slotEntryId => $composableBuilder(
+    column: $table.slotEntryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get rir =>
+      $composableBuilder(column: $table.rir, builder: (column) => column);
+
+  GeneratedColumn<double> get rirTarget =>
+      $composableBuilder(column: $table.rirTarget, builder: (column) => column);
+
+  GeneratedColumn<double> get repetitions => $composableBuilder(
+    column: $table.repetitions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get repetitionsTarget => $composableBuilder(
+    column: $table.repetitionsTarget,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get repetitionsUnitId => $composableBuilder(
+    column: $table.repetitionsUnitId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get weight =>
+      $composableBuilder(column: $table.weight, builder: (column) => column);
+
+  GeneratedColumn<double> get weightTarget => $composableBuilder(
+    column: $table.weightTarget,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get weightUnitId => $composableBuilder(
+    column: $table.weightUnitId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+}
+
+class $$WorkoutLogTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $WorkoutLogTableTable,
+          Log,
+          $$WorkoutLogTableTableFilterComposer,
+          $$WorkoutLogTableTableOrderingComposer,
+          $$WorkoutLogTableTableAnnotationComposer,
+          $$WorkoutLogTableTableCreateCompanionBuilder,
+          $$WorkoutLogTableTableUpdateCompanionBuilder,
+          (Log, BaseReferences<_$DriftPowersyncDatabase, $WorkoutLogTableTable, Log>),
+          Log,
+          PrefetchHooks Function()
+        > {
+  $$WorkoutLogTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $WorkoutLogTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkoutLogTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkoutLogTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkoutLogTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<int> routineId = const Value.absent(),
+                Value<int?> sessionId = const Value.absent(),
+                Value<int?> iteration = const Value.absent(),
+                Value<int?> slotEntryId = const Value.absent(),
+                Value<double?> rir = const Value.absent(),
+                Value<double?> rirTarget = const Value.absent(),
+                Value<double> repetitions = const Value.absent(),
+                Value<double> repetitionsTarget = const Value.absent(),
+                Value<int?> repetitionsUnitId = const Value.absent(),
+                Value<double> weight = const Value.absent(),
+                Value<double> weightTarget = const Value.absent(),
+                Value<int?> weightUnitId = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkoutLogTableCompanion(
+                id: id,
+                exerciseId: exerciseId,
+                routineId: routineId,
+                sessionId: sessionId,
+                iteration: iteration,
+                slotEntryId: slotEntryId,
+                rir: rir,
+                rirTarget: rirTarget,
+                repetitions: repetitions,
+                repetitionsTarget: repetitionsTarget,
+                repetitionsUnitId: repetitionsUnitId,
+                weight: weight,
+                weightTarget: weightTarget,
+                weightUnitId: weightUnitId,
+                date: date,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                required int exerciseId,
+                required int routineId,
+                Value<int?> sessionId = const Value.absent(),
+                Value<int?> iteration = const Value.absent(),
+                Value<int?> slotEntryId = const Value.absent(),
+                Value<double?> rir = const Value.absent(),
+                Value<double?> rirTarget = const Value.absent(),
+                required double repetitions,
+                required double repetitionsTarget,
+                Value<int?> repetitionsUnitId = const Value.absent(),
+                required double weight,
+                required double weightTarget,
+                Value<int?> weightUnitId = const Value.absent(),
+                required DateTime date,
+                Value<int> rowid = const Value.absent(),
+              }) => WorkoutLogTableCompanion.insert(
+                id: id,
+                exerciseId: exerciseId,
+                routineId: routineId,
+                sessionId: sessionId,
+                iteration: iteration,
+                slotEntryId: slotEntryId,
+                rir: rir,
+                rirTarget: rirTarget,
+                repetitions: repetitions,
+                repetitionsTarget: repetitionsTarget,
+                repetitionsUnitId: repetitionsUnitId,
+                weight: weight,
+                weightTarget: weightTarget,
+                weightUnitId: weightUnitId,
+                date: date,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkoutLogTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $WorkoutLogTableTable,
+      Log,
+      $$WorkoutLogTableTableFilterComposer,
+      $$WorkoutLogTableTableOrderingComposer,
+      $$WorkoutLogTableTableAnnotationComposer,
+      $$WorkoutLogTableTableCreateCompanionBuilder,
+      $$WorkoutLogTableTableUpdateCompanionBuilder,
+      (Log, BaseReferences<_$DriftPowersyncDatabase, $WorkoutLogTableTable, Log>),
+      Log,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkoutSessionTableTableCreateCompanionBuilder =
+    WorkoutSessionTableCompanion Function({
+      Value<String> id,
+      Value<int?> routineId,
+      Value<int?> dayId,
+      required DateTime date,
+      required String notes,
+      required int impression,
+      Value<TimeOfDay?> timeStart,
+      Value<TimeOfDay?> timeEnd,
+      Value<int> rowid,
+    });
+typedef $$WorkoutSessionTableTableUpdateCompanionBuilder =
+    WorkoutSessionTableCompanion Function({
+      Value<String> id,
+      Value<int?> routineId,
+      Value<int?> dayId,
+      Value<DateTime> date,
+      Value<String> notes,
+      Value<int> impression,
+      Value<TimeOfDay?> timeStart,
+      Value<TimeOfDay?> timeEnd,
+      Value<int> rowid,
+    });
+
+class $$WorkoutSessionTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $WorkoutSessionTableTable> {
+  $$WorkoutSessionTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get routineId => $composableBuilder(
+    column: $table.routineId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dayId => $composableBuilder(
+    column: $table.dayId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<int, int, String> get impression => $composableBuilder(
+    column: $table.impression,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<TimeOfDay?, TimeOfDay, String> get timeStart => $composableBuilder(
+    column: $table.timeStart,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<TimeOfDay?, TimeOfDay, String> get timeEnd => $composableBuilder(
+    column: $table.timeEnd,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+}
+
+class $$WorkoutSessionTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $WorkoutSessionTableTable> {
+  $$WorkoutSessionTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get routineId => $composableBuilder(
+    column: $table.routineId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dayId => $composableBuilder(
+    column: $table.dayId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get impression => $composableBuilder(
+    column: $table.impression,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timeStart => $composableBuilder(
+    column: $table.timeStart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timeEnd => $composableBuilder(
+    column: $table.timeEnd,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkoutSessionTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $WorkoutSessionTableTable> {
+  $$WorkoutSessionTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get routineId =>
+      $composableBuilder(column: $table.routineId, builder: (column) => column);
+
+  GeneratedColumn<int> get dayId =>
+      $composableBuilder(column: $table.dayId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<int, String> get impression => $composableBuilder(
+    column: $table.impression,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<TimeOfDay?, String> get timeStart =>
+      $composableBuilder(column: $table.timeStart, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDay?, String> get timeEnd =>
+      $composableBuilder(column: $table.timeEnd, builder: (column) => column);
+}
+
+class $$WorkoutSessionTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $WorkoutSessionTableTable,
+          WorkoutSession,
+          $$WorkoutSessionTableTableFilterComposer,
+          $$WorkoutSessionTableTableOrderingComposer,
+          $$WorkoutSessionTableTableAnnotationComposer,
+          $$WorkoutSessionTableTableCreateCompanionBuilder,
+          $$WorkoutSessionTableTableUpdateCompanionBuilder,
+          (
+            WorkoutSession,
+            BaseReferences<_$DriftPowersyncDatabase, $WorkoutSessionTableTable, WorkoutSession>,
+          ),
+          WorkoutSession,
+          PrefetchHooks Function()
+        > {
+  $$WorkoutSessionTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $WorkoutSessionTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkoutSessionTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$WorkoutSessionTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$WorkoutSessionTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int?> routineId = const Value.absent(),
+                Value<int?> dayId = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> impression = const Value.absent(),
+                Value<TimeOfDay?> timeStart = const Value.absent(),
+                Value<TimeOfDay?> timeEnd = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkoutSessionTableCompanion(
+                id: id,
+                routineId: routineId,
+                dayId: dayId,
+                date: date,
+                notes: notes,
+                impression: impression,
+                timeStart: timeStart,
+                timeEnd: timeEnd,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int?> routineId = const Value.absent(),
+                Value<int?> dayId = const Value.absent(),
+                required DateTime date,
+                required String notes,
+                required int impression,
+                Value<TimeOfDay?> timeStart = const Value.absent(),
+                Value<TimeOfDay?> timeEnd = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkoutSessionTableCompanion.insert(
+                id: id,
+                routineId: routineId,
+                dayId: dayId,
+                date: date,
+                notes: notes,
+                impression: impression,
+                timeStart: timeStart,
+                timeEnd: timeEnd,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkoutSessionTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $WorkoutSessionTableTable,
+      WorkoutSession,
+      $$WorkoutSessionTableTableFilterComposer,
+      $$WorkoutSessionTableTableOrderingComposer,
+      $$WorkoutSessionTableTableAnnotationComposer,
+      $$WorkoutSessionTableTableCreateCompanionBuilder,
+      $$WorkoutSessionTableTableUpdateCompanionBuilder,
+      (
+        WorkoutSession,
+        BaseReferences<_$DriftPowersyncDatabase, $WorkoutSessionTableTable, WorkoutSession>,
+      ),
+      WorkoutSession,
+      PrefetchHooks Function()
+    >;
 
 class $DriftPowersyncDatabaseManager {
   final _$DriftPowersyncDatabase _db;
@@ -5791,4 +7416,8 @@ class $DriftPowersyncDatabaseManager {
         _db,
         _db.measurementCategoryTable,
       );
+  $$WorkoutLogTableTableTableManager get workoutLogTable =>
+      $$WorkoutLogTableTableTableManager(_db, _db.workoutLogTable);
+  $$WorkoutSessionTableTableTableManager get workoutSessionTable =>
+      $$WorkoutSessionTableTableTableManager(_db, _db.workoutSessionTable);
 }

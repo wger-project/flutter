@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/workouts/log.dart';
 
@@ -28,7 +30,7 @@ const IMPRESSION_MAP = {1: 'bad', 2: 'neutral', 3: 'good'};
 @JsonSerializable()
 class WorkoutSession {
   @JsonKey(required: true)
-  int? id;
+  String? id;
 
   @JsonKey(required: true, name: 'routine')
   late int? routineId;
@@ -66,6 +68,19 @@ class WorkoutSession {
     DateTime? date,
   }) {
     this.date = date ?? DateTime.now();
+  }
+
+  WorkoutSessionTableCompanion toCompanion({bool includeId = false}) {
+    return WorkoutSessionTableCompanion(
+      id: includeId && id != null ? drift.Value(id!) : const drift.Value.absent(),
+      routineId: routineId != null ? drift.Value(routineId) : const drift.Value.absent(),
+      dayId: dayId != null ? drift.Value(dayId) : const drift.Value.absent(),
+      date: drift.Value(date.toUtc()),
+      notes: drift.Value(notes),
+      impression: drift.Value(impression),
+      timeStart: timeStart != null ? drift.Value(timeStart) : const drift.Value.absent(),
+      timeEnd: timeEnd != null ? drift.Value(timeEnd) : const drift.Value.absent(),
+    );
   }
 
   // Boilerplate
