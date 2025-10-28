@@ -199,6 +199,148 @@ class LanguageTableCompanion extends UpdateCompanion<Language> {
   }
 }
 
+class $ExerciseCategoryTableTable extends ExerciseCategoryTable
+    with TableInfo<$ExerciseCategoryTableTable, ExerciseCategory> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExerciseCategoryTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'exercises_exercisecategory';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExerciseCategory> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  ExerciseCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExerciseCategory(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+    );
+  }
+
+  @override
+  $ExerciseCategoryTableTable createAlias(String alias) {
+    return $ExerciseCategoryTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExerciseCategoryTableCompanion extends UpdateCompanion<ExerciseCategory> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<int> rowid;
+  const ExerciseCategoryTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExerciseCategoryTableCompanion.insert({
+    required int id,
+    required String name,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name);
+  static Insertable<ExerciseCategory> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExerciseCategoryTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<int>? rowid,
+  }) {
+    return ExerciseCategoryTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseCategoryTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTable, Exercise> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -243,6 +385,9 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_exercisecategory (id)',
+    ),
   );
   static const VerificationMeta _createdMeta = const VerificationMeta(
     'created',
@@ -521,6 +666,9 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_exercise (id)',
+    ),
   );
   static const VerificationMeta _languageIdMeta = const VerificationMeta(
     'languageId',
@@ -532,6 +680,9 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES core_language (id)',
+    ),
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -1078,6 +1229,9 @@ class $ExerciseMuscleM2NTable extends ExerciseMuscleM2N
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_exercise (id)',
+    ),
   );
   static const VerificationMeta _muscleIdMeta = const VerificationMeta(
     'muscleId',
@@ -1089,6 +1243,9 @@ class $ExerciseMuscleM2NTable extends ExerciseMuscleM2N
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_muscle (id)',
+    ),
   );
   @override
   List<GeneratedColumn> get $columns => [id, exerciseId, muscleId];
@@ -1339,6 +1496,9 @@ class $ExerciseSecondaryMuscleM2NTable extends ExerciseSecondaryMuscleM2N
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_exercise (id)',
+    ),
   );
   static const VerificationMeta _muscleIdMeta = const VerificationMeta(
     'muscleId',
@@ -1350,6 +1510,9 @@ class $ExerciseSecondaryMuscleM2NTable extends ExerciseSecondaryMuscleM2N
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_muscle (id)',
+    ),
   );
   @override
   List<GeneratedColumn> get $columns => [id, exerciseId, muscleId];
@@ -1750,6 +1913,9 @@ class $ExerciseEquipmentM2NTable extends ExerciseEquipmentM2N
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_exercise (id)',
+    ),
   );
   static const VerificationMeta _equipmentIdMeta = const VerificationMeta(
     'equipmentId',
@@ -1761,6 +1927,9 @@ class $ExerciseEquipmentM2NTable extends ExerciseEquipmentM2N
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_equipment (id)',
+    ),
   );
   @override
   List<GeneratedColumn> get $columns => [id, exerciseId, equipmentId];
@@ -1997,148 +2166,6 @@ class ExerciseEquipmentM2NCompanion extends UpdateCompanion<ExerciseEquipmentM2N
   }
 }
 
-class $ExerciseCategoryTableTable extends ExerciseCategoryTable
-    with TableInfo<$ExerciseCategoryTableTable, ExerciseCategory> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $ExerciseCategoryTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, name];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'exercises_exercisecategory';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<ExerciseCategory> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => const {};
-  @override
-  ExerciseCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ExerciseCategory(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-    );
-  }
-
-  @override
-  $ExerciseCategoryTableTable createAlias(String alias) {
-    return $ExerciseCategoryTableTable(attachedDatabase, alias);
-  }
-}
-
-class ExerciseCategoryTableCompanion extends UpdateCompanion<ExerciseCategory> {
-  final Value<int> id;
-  final Value<String> name;
-  final Value<int> rowid;
-  const ExerciseCategoryTableCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  ExerciseCategoryTableCompanion.insert({
-    required int id,
-    required String name,
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       name = Value(name);
-  static Insertable<ExerciseCategory> custom({
-    Expression<int>? id,
-    Expression<String>? name,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  ExerciseCategoryTableCompanion copyWith({
-    Value<int>? id,
-    Value<String>? name,
-    Value<int>? rowid,
-  }) {
-    return ExerciseCategoryTableCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('ExerciseCategoryTableCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $ExerciseImageTableTable extends ExerciseImageTable
     with TableInfo<$ExerciseImageTableTable, ExerciseImage> {
   @override
@@ -2173,6 +2200,9 @@ class $ExerciseImageTableTable extends ExerciseImageTable
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_exercise (id)',
+    ),
   );
   static const VerificationMeta _urlMeta = const VerificationMeta('url');
   @override
@@ -2419,6 +2449,9 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_exercise (id)',
+    ),
   );
   static const VerificationMeta _urlMeta = const VerificationMeta('url');
   @override
@@ -3325,9 +3358,9 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
   late final GeneratedColumn<double> repetitions = GeneratedColumn<double>(
     'repetitions',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.double,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _repetitionsTargetMeta = const VerificationMeta(
     'repetitionsTarget',
@@ -3336,9 +3369,9 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
   late final GeneratedColumn<double> repetitionsTarget = GeneratedColumn<double>(
     'repetitions_target',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.double,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _repetitionsUnitIdMeta = const VerificationMeta(
     'repetitionsUnitId',
@@ -3356,9 +3389,9 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
   late final GeneratedColumn<double> weight = GeneratedColumn<double>(
     'weight',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.double,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _weightTargetMeta = const VerificationMeta(
     'weightTarget',
@@ -3367,9 +3400,9 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
   late final GeneratedColumn<double> weightTarget = GeneratedColumn<double>(
     'weight_target',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.double,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _weightUnitIdMeta = const VerificationMeta(
     'weightUnitId',
@@ -3481,8 +3514,6 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
           _repetitionsMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_repetitionsMeta);
     }
     if (data.containsKey('repetitions_target')) {
       context.handle(
@@ -3492,8 +3523,6 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
           _repetitionsTargetMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_repetitionsTargetMeta);
     }
     if (data.containsKey('repetitions_unit_id')) {
       context.handle(
@@ -3509,8 +3538,6 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
         _weightMeta,
         weight.isAcceptableOrUnknown(data['weight']!, _weightMeta),
       );
-    } else if (isInserting) {
-      context.missing(_weightMeta);
     }
     if (data.containsKey('weight_target')) {
       context.handle(
@@ -3520,8 +3547,6 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
           _weightTargetMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_weightTargetMeta);
     }
     if (data.containsKey('weight_unit_id')) {
       context.handle(
@@ -3572,11 +3597,11 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
       repetitions: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}repetitions'],
-      )!,
+      ),
       repetitionsTarget: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}repetitions_target'],
-      )!,
+      ),
       repetitionsUnitId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}repetitions_unit_id'],
@@ -3592,11 +3617,11 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
       weight: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}weight'],
-      )!,
+      ),
       weightTarget: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}weight_target'],
-      )!,
+      ),
       weightUnitId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}weight_unit_id'],
@@ -3623,11 +3648,11 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   final Value<int?> slotEntryId;
   final Value<double?> rir;
   final Value<double?> rirTarget;
-  final Value<double> repetitions;
-  final Value<double> repetitionsTarget;
+  final Value<double?> repetitions;
+  final Value<double?> repetitionsTarget;
   final Value<int?> repetitionsUnitId;
-  final Value<double> weight;
-  final Value<double> weightTarget;
+  final Value<double?> weight;
+  final Value<double?> weightTarget;
   final Value<int?> weightUnitId;
   final Value<DateTime> date;
   final Value<int> rowid;
@@ -3658,20 +3683,16 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     this.slotEntryId = const Value.absent(),
     this.rir = const Value.absent(),
     this.rirTarget = const Value.absent(),
-    required double repetitions,
-    required double repetitionsTarget,
+    this.repetitions = const Value.absent(),
+    this.repetitionsTarget = const Value.absent(),
     this.repetitionsUnitId = const Value.absent(),
-    required double weight,
-    required double weightTarget,
+    this.weight = const Value.absent(),
+    this.weightTarget = const Value.absent(),
     this.weightUnitId = const Value.absent(),
     required DateTime date,
     this.rowid = const Value.absent(),
   }) : exerciseId = Value(exerciseId),
        routineId = Value(routineId),
-       repetitions = Value(repetitions),
-       repetitionsTarget = Value(repetitionsTarget),
-       weight = Value(weight),
-       weightTarget = Value(weightTarget),
        date = Value(date);
   static Insertable<Log> custom({
     Expression<String>? id,
@@ -3720,11 +3741,11 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     Value<int?>? slotEntryId,
     Value<double?>? rir,
     Value<double?>? rirTarget,
-    Value<double>? repetitions,
-    Value<double>? repetitionsTarget,
+    Value<double?>? repetitions,
+    Value<double?>? repetitionsTarget,
     Value<int?>? repetitionsUnitId,
-    Value<double>? weight,
-    Value<double>? weightTarget,
+    Value<double?>? weight,
+    Value<double?>? weightTarget,
     Value<int?>? weightUnitId,
     Value<DateTime>? date,
     Value<int>? rowid,
@@ -4170,6 +4191,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   _$DriftPowersyncDatabase(QueryExecutor e) : super(e);
   $DriftPowersyncDatabaseManager get managers => $DriftPowersyncDatabaseManager(this);
   late final $LanguageTableTable languageTable = $LanguageTableTable(this);
+  late final $ExerciseCategoryTableTable exerciseCategoryTable = $ExerciseCategoryTableTable(this);
   late final $ExerciseTableTable exerciseTable = $ExerciseTableTable(this);
   late final $ExerciseTranslationTableTable exerciseTranslationTable =
       $ExerciseTranslationTableTable(this);
@@ -4179,7 +4201,6 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
       $ExerciseSecondaryMuscleM2NTable(this);
   late final $EquipmentTableTable equipmentTable = $EquipmentTableTable(this);
   late final $ExerciseEquipmentM2NTable exerciseEquipmentM2N = $ExerciseEquipmentM2NTable(this);
-  late final $ExerciseCategoryTableTable exerciseCategoryTable = $ExerciseCategoryTableTable(this);
   late final $ExerciseImageTableTable exerciseImageTable = $ExerciseImageTableTable(this);
   late final $ExerciseVideoTableTable exerciseVideoTable = $ExerciseVideoTableTable(this);
   late final $WeightEntryTableTable weightEntryTable = $WeightEntryTableTable(
@@ -4197,6 +4218,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     languageTable,
+    exerciseCategoryTable,
     exerciseTable,
     exerciseTranslationTable,
     muscleTable,
@@ -4204,7 +4226,6 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     exerciseSecondaryMuscleM2N,
     equipmentTable,
     exerciseEquipmentM2N,
-    exerciseCategoryTable,
     exerciseImageTable,
     exerciseVideoTable,
     weightEntryTable,
@@ -4231,6 +4252,38 @@ typedef $$LanguageTableTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$LanguageTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $LanguageTableTable, Language> {
+  $$LanguageTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<Translation>>
+  _exerciseTranslationTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.exerciseTranslationTable,
+    aliasName: $_aliasNameGenerator(
+      db.languageTable.id,
+      db.exerciseTranslationTable.languageId,
+    ),
+  );
+
+  $$ExerciseTranslationTableTableProcessedTableManager get exerciseTranslationTableRefs {
+    final manager = $$ExerciseTranslationTableTableTableManager(
+      $_db,
+      $_db.exerciseTranslationTable,
+    ).filter((f) => f.languageId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseTranslationTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
 class $$LanguageTableTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $LanguageTableTable> {
   $$LanguageTableTableFilterComposer({
@@ -4254,6 +4307,30 @@ class $$LanguageTableTableFilterComposer
     column: $table.fullName,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> exerciseTranslationTableRefs(
+    Expression<bool> Function($$ExerciseTranslationTableTableFilterComposer f) f,
+  ) {
+    final $$ExerciseTranslationTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.languageId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$LanguageTableTableOrderingComposer
@@ -4297,6 +4374,30 @@ class $$LanguageTableTableAnnotationComposer
 
   GeneratedColumn<String> get fullName =>
       $composableBuilder(column: $table.fullName, builder: (column) => column);
+
+  Expression<T> exerciseTranslationTableRefs<T extends Object>(
+    Expression<T> Function($$ExerciseTranslationTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseTranslationTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.languageId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$LanguageTableTableTableManager
@@ -4310,9 +4411,9 @@ class $$LanguageTableTableTableManager
           $$LanguageTableTableAnnotationComposer,
           $$LanguageTableTableCreateCompanionBuilder,
           $$LanguageTableTableUpdateCompanionBuilder,
-          (Language, BaseReferences<_$DriftPowersyncDatabase, $LanguageTableTable, Language>),
+          (Language, $$LanguageTableTableReferences),
           Language,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool exerciseTranslationTableRefs})
         > {
   $$LanguageTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -4350,9 +4451,41 @@ class $$LanguageTableTableTableManager
                 fullName: fullName,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$LanguageTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseTranslationTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (exerciseTranslationTableRefs) db.exerciseTranslationTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (exerciseTranslationTableRefs)
+                    await $_getPrefetchedData<Language, $LanguageTableTable, Translation>(
+                      currentTable: table,
+                      referencedTable: $$LanguageTableTableReferences
+                          ._exerciseTranslationTableRefsTable(db),
+                      managerFromTypedResult: (p0) => $$LanguageTableTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).exerciseTranslationTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.languageId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -4367,9 +4500,268 @@ typedef $$LanguageTableTableProcessedTableManager =
       $$LanguageTableTableAnnotationComposer,
       $$LanguageTableTableCreateCompanionBuilder,
       $$LanguageTableTableUpdateCompanionBuilder,
-      (Language, BaseReferences<_$DriftPowersyncDatabase, $LanguageTableTable, Language>),
+      (Language, $$LanguageTableTableReferences),
       Language,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool exerciseTranslationTableRefs})
+    >;
+typedef $$ExerciseCategoryTableTableCreateCompanionBuilder =
+    ExerciseCategoryTableCompanion Function({
+      required int id,
+      required String name,
+      Value<int> rowid,
+    });
+typedef $$ExerciseCategoryTableTableUpdateCompanionBuilder =
+    ExerciseCategoryTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<int> rowid,
+    });
+
+final class $$ExerciseCategoryTableTableReferences
+    extends
+        BaseReferences<_$DriftPowersyncDatabase, $ExerciseCategoryTableTable, ExerciseCategory> {
+  $$ExerciseCategoryTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$ExerciseTableTable, List<Exercise>> _exerciseTableRefsTable(
+    _$DriftPowersyncDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.exerciseTable,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseCategoryTable.id,
+      db.exerciseTable.categoryId,
+    ),
+  );
+
+  $$ExerciseTableTableProcessedTableManager get exerciseTableRefs {
+    final manager = $$ExerciseTableTableTableManager(
+      $_db,
+      $_db.exerciseTable,
+    ).filter((f) => f.categoryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_exerciseTableRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ExerciseCategoryTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseCategoryTableTable> {
+  $$ExerciseCategoryTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> exerciseTableRefs(
+    Expression<bool> Function($$ExerciseTableTableFilterComposer f) f,
+  ) {
+    final $$ExerciseTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.categoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ExerciseCategoryTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseCategoryTableTable> {
+  $$ExerciseCategoryTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ExerciseCategoryTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseCategoryTableTable> {
+  $$ExerciseCategoryTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  Expression<T> exerciseTableRefs<T extends Object>(
+    Expression<T> Function($$ExerciseTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.categoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ExerciseCategoryTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $ExerciseCategoryTableTable,
+          ExerciseCategory,
+          $$ExerciseCategoryTableTableFilterComposer,
+          $$ExerciseCategoryTableTableOrderingComposer,
+          $$ExerciseCategoryTableTableAnnotationComposer,
+          $$ExerciseCategoryTableTableCreateCompanionBuilder,
+          $$ExerciseCategoryTableTableUpdateCompanionBuilder,
+          (ExerciseCategory, $$ExerciseCategoryTableTableReferences),
+          ExerciseCategory,
+          PrefetchHooks Function({bool exerciseTableRefs})
+        > {
+  $$ExerciseCategoryTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $ExerciseCategoryTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$ExerciseCategoryTableTableFilterComposer(
+            $db: db,
+            $table: table,
+          ),
+          createOrderingComposer: () => $$ExerciseCategoryTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$ExerciseCategoryTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseCategoryTableCompanion(
+                id: id,
+                name: name,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String name,
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseCategoryTableCompanion.insert(
+                id: id,
+                name: name,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseCategoryTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (exerciseTableRefs) db.exerciseTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (exerciseTableRefs)
+                    await $_getPrefetchedData<
+                      ExerciseCategory,
+                      $ExerciseCategoryTableTable,
+                      Exercise
+                    >(
+                      currentTable: table,
+                      referencedTable: $$ExerciseCategoryTableTableReferences
+                          ._exerciseTableRefsTable(db),
+                      managerFromTypedResult: (p0) => $$ExerciseCategoryTableTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).exerciseTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.categoryId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ExerciseCategoryTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $ExerciseCategoryTableTable,
+      ExerciseCategory,
+      $$ExerciseCategoryTableTableFilterComposer,
+      $$ExerciseCategoryTableTableOrderingComposer,
+      $$ExerciseCategoryTableTableAnnotationComposer,
+      $$ExerciseCategoryTableTableCreateCompanionBuilder,
+      $$ExerciseCategoryTableTableUpdateCompanionBuilder,
+      (ExerciseCategory, $$ExerciseCategoryTableTableReferences),
+      ExerciseCategory,
+      PrefetchHooks Function({bool exerciseTableRefs})
     >;
 typedef $$ExerciseTableTableCreateCompanionBuilder =
     ExerciseTableCompanion Function({
@@ -4391,6 +4783,178 @@ typedef $$ExerciseTableTableUpdateCompanionBuilder =
       Value<DateTime> lastUpdate,
       Value<int> rowid,
     });
+
+final class $$ExerciseTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseTableTable, Exercise> {
+  $$ExerciseTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseCategoryTableTable _categoryIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.exerciseCategoryTable.createAlias(
+    $_aliasNameGenerator(
+      db.exerciseTable.categoryId,
+      db.exerciseCategoryTable.id,
+    ),
+  );
+
+  $$ExerciseCategoryTableTableProcessedTableManager get categoryId {
+    final $_column = $_itemColumn<int>('category_id')!;
+
+    final manager = $$ExerciseCategoryTableTableTableManager(
+      $_db,
+      $_db.exerciseCategoryTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_categoryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<Translation>>
+  _exerciseTranslationTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.exerciseTranslationTable,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseTable.id,
+      db.exerciseTranslationTable.exerciseId,
+    ),
+  );
+
+  $$ExerciseTranslationTableTableProcessedTableManager get exerciseTranslationTableRefs {
+    final manager = $$ExerciseTranslationTableTableTableManager(
+      $_db,
+      $_db.exerciseTranslationTable,
+    ).filter((f) => f.exerciseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseTranslationTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseMuscleM2NTable, List<ExerciseMuscleM2NData>>
+  _exerciseMuscleM2NRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.exerciseMuscleM2N,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseTable.id,
+      db.exerciseMuscleM2N.exerciseId,
+    ),
+  );
+
+  $$ExerciseMuscleM2NTableProcessedTableManager get exerciseMuscleM2NRefs {
+    final manager = $$ExerciseMuscleM2NTableTableManager(
+      $_db,
+      $_db.exerciseMuscleM2N,
+    ).filter((f) => f.exerciseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseMuscleM2NRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseSecondaryMuscleM2NTable, List<ExerciseSecondaryMuscleM2NData>>
+  _exerciseSecondaryMuscleM2NRefsTable(_$DriftPowersyncDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.exerciseSecondaryMuscleM2N,
+        aliasName: $_aliasNameGenerator(
+          db.exerciseTable.id,
+          db.exerciseSecondaryMuscleM2N.exerciseId,
+        ),
+      );
+
+  $$ExerciseSecondaryMuscleM2NTableProcessedTableManager get exerciseSecondaryMuscleM2NRefs {
+    final manager = $$ExerciseSecondaryMuscleM2NTableTableManager(
+      $_db,
+      $_db.exerciseSecondaryMuscleM2N,
+    ).filter((f) => f.exerciseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseSecondaryMuscleM2NRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseEquipmentM2NTable, List<ExerciseEquipmentM2NData>>
+  _exerciseEquipmentM2NRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.exerciseEquipmentM2N,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseTable.id,
+      db.exerciseEquipmentM2N.exerciseId,
+    ),
+  );
+
+  $$ExerciseEquipmentM2NTableProcessedTableManager get exerciseEquipmentM2NRefs {
+    final manager = $$ExerciseEquipmentM2NTableTableManager(
+      $_db,
+      $_db.exerciseEquipmentM2N,
+    ).filter((f) => f.exerciseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseEquipmentM2NRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseImageTableTable, List<ExerciseImage>>
+  _exerciseImageTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.exerciseImageTable,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseTable.id,
+      db.exerciseImageTable.exerciseId,
+    ),
+  );
+
+  $$ExerciseImageTableTableProcessedTableManager get exerciseImageTableRefs {
+    final manager = $$ExerciseImageTableTableTableManager(
+      $_db,
+      $_db.exerciseImageTable,
+    ).filter((f) => f.exerciseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseImageTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseVideoTableTable, List<Video>> _exerciseVideoTableRefsTable(
+    _$DriftPowersyncDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.exerciseVideoTable,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseTable.id,
+      db.exerciseVideoTable.exerciseId,
+    ),
+  );
+
+  $$ExerciseVideoTableTableProcessedTableManager get exerciseVideoTableRefs {
+    final manager = $$ExerciseVideoTableTableTableManager(
+      $_db,
+      $_db.exerciseVideoTable,
+    ).filter((f) => f.exerciseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseVideoTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
 
 class $$ExerciseTableTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $ExerciseTableTable> {
@@ -4416,11 +4980,6 @@ class $$ExerciseTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get categoryId => $composableBuilder(
-    column: $table.categoryId,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<DateTime> get created => $composableBuilder(
     column: $table.created,
     builder: (column) => ColumnFilters(column),
@@ -4430,6 +4989,172 @@ class $$ExerciseTableTableFilterComposer
     column: $table.lastUpdate,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$ExerciseCategoryTableTableFilterComposer get categoryId {
+    final $$ExerciseCategoryTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.categoryId,
+      referencedTable: $db.exerciseCategoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseCategoryTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseCategoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> exerciseTranslationTableRefs(
+    Expression<bool> Function($$ExerciseTranslationTableTableFilterComposer f) f,
+  ) {
+    final $$ExerciseTranslationTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> exerciseMuscleM2NRefs(
+    Expression<bool> Function($$ExerciseMuscleM2NTableFilterComposer f) f,
+  ) {
+    final $$ExerciseMuscleM2NTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseMuscleM2N,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseMuscleM2NTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseMuscleM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> exerciseSecondaryMuscleM2NRefs(
+    Expression<bool> Function($$ExerciseSecondaryMuscleM2NTableFilterComposer f) f,
+  ) {
+    final $$ExerciseSecondaryMuscleM2NTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseSecondaryMuscleM2N,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseSecondaryMuscleM2NTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseSecondaryMuscleM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> exerciseEquipmentM2NRefs(
+    Expression<bool> Function($$ExerciseEquipmentM2NTableFilterComposer f) f,
+  ) {
+    final $$ExerciseEquipmentM2NTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseEquipmentM2N,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseEquipmentM2NTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseEquipmentM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> exerciseImageTableRefs(
+    Expression<bool> Function($$ExerciseImageTableTableFilterComposer f) f,
+  ) {
+    final $$ExerciseImageTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseImageTable,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseImageTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseImageTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> exerciseVideoTableRefs(
+    Expression<bool> Function($$ExerciseVideoTableTableFilterComposer f) f,
+  ) {
+    final $$ExerciseVideoTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseVideoTable,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseVideoTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseVideoTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ExerciseTableTableOrderingComposer
@@ -4456,11 +5181,6 @@ class $$ExerciseTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get categoryId => $composableBuilder(
-    column: $table.categoryId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<DateTime> get created => $composableBuilder(
     column: $table.created,
     builder: (column) => ColumnOrderings(column),
@@ -4470,6 +5190,28 @@ class $$ExerciseTableTableOrderingComposer
     column: $table.lastUpdate,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$ExerciseCategoryTableTableOrderingComposer get categoryId {
+    final $$ExerciseCategoryTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.categoryId,
+      referencedTable: $db.exerciseCategoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseCategoryTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseCategoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseTableTableAnnotationComposer
@@ -4491,11 +5233,6 @@ class $$ExerciseTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get categoryId => $composableBuilder(
-    column: $table.categoryId,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<DateTime> get created =>
       $composableBuilder(column: $table.created, builder: (column) => column);
 
@@ -4503,6 +5240,175 @@ class $$ExerciseTableTableAnnotationComposer
     column: $table.lastUpdate,
     builder: (column) => column,
   );
+
+  $$ExerciseCategoryTableTableAnnotationComposer get categoryId {
+    final $$ExerciseCategoryTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.categoryId,
+      referencedTable: $db.exerciseCategoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseCategoryTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseCategoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> exerciseTranslationTableRefs<T extends Object>(
+    Expression<T> Function($$ExerciseTranslationTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseTranslationTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> exerciseMuscleM2NRefs<T extends Object>(
+    Expression<T> Function($$ExerciseMuscleM2NTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseMuscleM2NTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseMuscleM2N,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseMuscleM2NTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseMuscleM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> exerciseSecondaryMuscleM2NRefs<T extends Object>(
+    Expression<T> Function(
+      $$ExerciseSecondaryMuscleM2NTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$ExerciseSecondaryMuscleM2NTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseSecondaryMuscleM2N,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseSecondaryMuscleM2NTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseSecondaryMuscleM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> exerciseEquipmentM2NRefs<T extends Object>(
+    Expression<T> Function($$ExerciseEquipmentM2NTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseEquipmentM2NTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseEquipmentM2N,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseEquipmentM2NTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseEquipmentM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> exerciseImageTableRefs<T extends Object>(
+    Expression<T> Function($$ExerciseImageTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseImageTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseImageTable,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseImageTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseImageTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> exerciseVideoTableRefs<T extends Object>(
+    Expression<T> Function($$ExerciseVideoTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseVideoTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseVideoTable,
+      getReferencedColumn: (t) => t.exerciseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseVideoTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseVideoTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ExerciseTableTableTableManager
@@ -4516,9 +5422,17 @@ class $$ExerciseTableTableTableManager
           $$ExerciseTableTableAnnotationComposer,
           $$ExerciseTableTableCreateCompanionBuilder,
           $$ExerciseTableTableUpdateCompanionBuilder,
-          (Exercise, BaseReferences<_$DriftPowersyncDatabase, $ExerciseTableTable, Exercise>),
+          (Exercise, $$ExerciseTableTableReferences),
           Exercise,
-          PrefetchHooks Function()
+          PrefetchHooks Function({
+            bool categoryId,
+            bool exerciseTranslationTableRefs,
+            bool exerciseMuscleM2NRefs,
+            bool exerciseSecondaryMuscleM2NRefs,
+            bool exerciseEquipmentM2NRefs,
+            bool exerciseImageTableRefs,
+            bool exerciseVideoTableRefs,
+          })
         > {
   $$ExerciseTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -4568,9 +5482,180 @@ class $$ExerciseTableTableTableManager
                 lastUpdate: lastUpdate,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                categoryId = false,
+                exerciseTranslationTableRefs = false,
+                exerciseMuscleM2NRefs = false,
+                exerciseSecondaryMuscleM2NRefs = false,
+                exerciseEquipmentM2NRefs = false,
+                exerciseImageTableRefs = false,
+                exerciseVideoTableRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (exerciseTranslationTableRefs) db.exerciseTranslationTable,
+                    if (exerciseMuscleM2NRefs) db.exerciseMuscleM2N,
+                    if (exerciseSecondaryMuscleM2NRefs) db.exerciseSecondaryMuscleM2N,
+                    if (exerciseEquipmentM2NRefs) db.exerciseEquipmentM2N,
+                    if (exerciseImageTableRefs) db.exerciseImageTable,
+                    if (exerciseVideoTableRefs) db.exerciseVideoTable,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (categoryId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.categoryId,
+                                    referencedTable: $$ExerciseTableTableReferences
+                                        ._categoryIdTable(db),
+                                    referencedColumn: $$ExerciseTableTableReferences
+                                        ._categoryIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (exerciseTranslationTableRefs)
+                        await $_getPrefetchedData<Exercise, $ExerciseTableTable, Translation>(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTableTableReferences
+                              ._exerciseTranslationTableRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseTranslationTableRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.exerciseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (exerciseMuscleM2NRefs)
+                        await $_getPrefetchedData<
+                          Exercise,
+                          $ExerciseTableTable,
+                          ExerciseMuscleM2NData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTableTableReferences
+                              ._exerciseMuscleM2NRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseMuscleM2NRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.exerciseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (exerciseSecondaryMuscleM2NRefs)
+                        await $_getPrefetchedData<
+                          Exercise,
+                          $ExerciseTableTable,
+                          ExerciseSecondaryMuscleM2NData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTableTableReferences
+                              ._exerciseSecondaryMuscleM2NRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseSecondaryMuscleM2NRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.exerciseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (exerciseEquipmentM2NRefs)
+                        await $_getPrefetchedData<
+                          Exercise,
+                          $ExerciseTableTable,
+                          ExerciseEquipmentM2NData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTableTableReferences
+                              ._exerciseEquipmentM2NRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseEquipmentM2NRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.exerciseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (exerciseImageTableRefs)
+                        await $_getPrefetchedData<Exercise, $ExerciseTableTable, ExerciseImage>(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTableTableReferences
+                              ._exerciseImageTableRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseImageTableRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.exerciseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (exerciseVideoTableRefs)
+                        await $_getPrefetchedData<Exercise, $ExerciseTableTable, Video>(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTableTableReferences
+                              ._exerciseVideoTableRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseVideoTableRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.exerciseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
         ),
       );
 }
@@ -4585,9 +5670,17 @@ typedef $$ExerciseTableTableProcessedTableManager =
       $$ExerciseTableTableAnnotationComposer,
       $$ExerciseTableTableCreateCompanionBuilder,
       $$ExerciseTableTableUpdateCompanionBuilder,
-      (Exercise, BaseReferences<_$DriftPowersyncDatabase, $ExerciseTableTable, Exercise>),
+      (Exercise, $$ExerciseTableTableReferences),
       Exercise,
-      PrefetchHooks Function()
+      PrefetchHooks Function({
+        bool categoryId,
+        bool exerciseTranslationTableRefs,
+        bool exerciseMuscleM2NRefs,
+        bool exerciseSecondaryMuscleM2NRefs,
+        bool exerciseEquipmentM2NRefs,
+        bool exerciseImageTableRefs,
+        bool exerciseVideoTableRefs,
+      })
     >;
 typedef $$ExerciseTranslationTableTableCreateCompanionBuilder =
     ExerciseTranslationTableCompanion Function({
@@ -4614,6 +5707,59 @@ typedef $$ExerciseTranslationTableTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$ExerciseTranslationTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseTranslationTableTable, Translation> {
+  $$ExerciseTranslationTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
+      db.exerciseTable.createAlias(
+        $_aliasNameGenerator(
+          db.exerciseTranslationTable.exerciseId,
+          db.exerciseTable.id,
+        ),
+      );
+
+  $$ExerciseTableTableProcessedTableManager get exerciseId {
+    final $_column = $_itemColumn<int>('exercise_id')!;
+
+    final manager = $$ExerciseTableTableTableManager(
+      $_db,
+      $_db.exerciseTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_exerciseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $LanguageTableTable _languageIdTable(_$DriftPowersyncDatabase db) =>
+      db.languageTable.createAlias(
+        $_aliasNameGenerator(
+          db.exerciseTranslationTable.languageId,
+          db.languageTable.id,
+        ),
+      );
+
+  $$LanguageTableTableProcessedTableManager get languageId {
+    final $_column = $_itemColumn<int>('language_id')!;
+
+    final manager = $$LanguageTableTableTableManager(
+      $_db,
+      $_db.languageTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_languageIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
 class $$ExerciseTranslationTableTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $ExerciseTranslationTableTable> {
   $$ExerciseTranslationTableTableFilterComposer({
@@ -4630,16 +5776,6 @@ class $$ExerciseTranslationTableTableFilterComposer
 
   ColumnFilters<String> get uuid => $composableBuilder(
     column: $table.uuid,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get languageId => $composableBuilder(
-    column: $table.languageId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4662,6 +5798,50 @@ class $$ExerciseTranslationTableTableFilterComposer
     column: $table.lastUpdate,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$ExerciseTableTableFilterComposer get exerciseId {
+    final $$ExerciseTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LanguageTableTableFilterComposer get languageId {
+    final $$LanguageTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.languageId,
+      referencedTable: $db.languageTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LanguageTableTableFilterComposer(
+            $db: $db,
+            $table: $db.languageTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseTranslationTableTableOrderingComposer
@@ -4680,16 +5860,6 @@ class $$ExerciseTranslationTableTableOrderingComposer
 
   ColumnOrderings<String> get uuid => $composableBuilder(
     column: $table.uuid,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get languageId => $composableBuilder(
-    column: $table.languageId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -4712,6 +5882,50 @@ class $$ExerciseTranslationTableTableOrderingComposer
     column: $table.lastUpdate,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$ExerciseTableTableOrderingComposer get exerciseId {
+    final $$ExerciseTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LanguageTableTableOrderingComposer get languageId {
+    final $$LanguageTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.languageId,
+      referencedTable: $db.languageTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LanguageTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.languageTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseTranslationTableTableAnnotationComposer
@@ -4728,16 +5942,6 @@ class $$ExerciseTranslationTableTableAnnotationComposer
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
 
-  GeneratedColumn<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get languageId => $composableBuilder(
-    column: $table.languageId,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -4753,6 +5957,50 @@ class $$ExerciseTranslationTableTableAnnotationComposer
     column: $table.lastUpdate,
     builder: (column) => column,
   );
+
+  $$ExerciseTableTableAnnotationComposer get exerciseId {
+    final $$ExerciseTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LanguageTableTableAnnotationComposer get languageId {
+    final $$LanguageTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.languageId,
+      referencedTable: $db.languageTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LanguageTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.languageTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseTranslationTableTableTableManager
@@ -4766,12 +6014,9 @@ class $$ExerciseTranslationTableTableTableManager
           $$ExerciseTranslationTableTableAnnotationComposer,
           $$ExerciseTranslationTableTableCreateCompanionBuilder,
           $$ExerciseTranslationTableTableUpdateCompanionBuilder,
-          (
-            Translation,
-            BaseReferences<_$DriftPowersyncDatabase, $ExerciseTranslationTableTable, Translation>,
-          ),
+          (Translation, $$ExerciseTranslationTableTableReferences),
           Translation,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool exerciseId, bool languageId})
         > {
   $$ExerciseTranslationTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -4836,9 +6081,68 @@ class $$ExerciseTranslationTableTableTableManager
                 lastUpdate: lastUpdate,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseTranslationTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseId = false, languageId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (exerciseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.exerciseId,
+                                referencedTable: $$ExerciseTranslationTableTableReferences
+                                    ._exerciseIdTable(db),
+                                referencedColumn: $$ExerciseTranslationTableTableReferences
+                                    ._exerciseIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+                    if (languageId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.languageId,
+                                referencedTable: $$ExerciseTranslationTableTableReferences
+                                    ._languageIdTable(db),
+                                referencedColumn: $$ExerciseTranslationTableTableReferences
+                                    ._languageIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -4853,12 +6157,9 @@ typedef $$ExerciseTranslationTableTableProcessedTableManager =
       $$ExerciseTranslationTableTableAnnotationComposer,
       $$ExerciseTranslationTableTableCreateCompanionBuilder,
       $$ExerciseTranslationTableTableUpdateCompanionBuilder,
-      (
-        Translation,
-        BaseReferences<_$DriftPowersyncDatabase, $ExerciseTranslationTableTable, Translation>,
-      ),
+      (Translation, $$ExerciseTranslationTableTableReferences),
       Translation,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool exerciseId, bool languageId})
     >;
 typedef $$MuscleTableTableCreateCompanionBuilder =
     MuscleTableCompanion Function({
@@ -4876,6 +6177,58 @@ typedef $$MuscleTableTableUpdateCompanionBuilder =
       Value<bool> isFront,
       Value<int> rowid,
     });
+
+final class $$MuscleTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $MuscleTableTable, Muscle> {
+  $$MuscleTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$ExerciseMuscleM2NTable, List<ExerciseMuscleM2NData>>
+  _exerciseMuscleM2NRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.exerciseMuscleM2N,
+    aliasName: $_aliasNameGenerator(
+      db.muscleTable.id,
+      db.exerciseMuscleM2N.muscleId,
+    ),
+  );
+
+  $$ExerciseMuscleM2NTableProcessedTableManager get exerciseMuscleM2NRefs {
+    final manager = $$ExerciseMuscleM2NTableTableManager(
+      $_db,
+      $_db.exerciseMuscleM2N,
+    ).filter((f) => f.muscleId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseMuscleM2NRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseSecondaryMuscleM2NTable, List<ExerciseSecondaryMuscleM2NData>>
+  _exerciseSecondaryMuscleM2NRefsTable(_$DriftPowersyncDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.exerciseSecondaryMuscleM2N,
+        aliasName: $_aliasNameGenerator(
+          db.muscleTable.id,
+          db.exerciseSecondaryMuscleM2N.muscleId,
+        ),
+      );
+
+  $$ExerciseSecondaryMuscleM2NTableProcessedTableManager get exerciseSecondaryMuscleM2NRefs {
+    final manager = $$ExerciseSecondaryMuscleM2NTableTableManager(
+      $_db,
+      $_db.exerciseSecondaryMuscleM2N,
+    ).filter((f) => f.muscleId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseSecondaryMuscleM2NRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
 
 class $$MuscleTableTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $MuscleTableTable> {
@@ -4905,6 +6258,54 @@ class $$MuscleTableTableFilterComposer
     column: $table.isFront,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> exerciseMuscleM2NRefs(
+    Expression<bool> Function($$ExerciseMuscleM2NTableFilterComposer f) f,
+  ) {
+    final $$ExerciseMuscleM2NTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseMuscleM2N,
+      getReferencedColumn: (t) => t.muscleId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseMuscleM2NTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseMuscleM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> exerciseSecondaryMuscleM2NRefs(
+    Expression<bool> Function($$ExerciseSecondaryMuscleM2NTableFilterComposer f) f,
+  ) {
+    final $$ExerciseSecondaryMuscleM2NTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseSecondaryMuscleM2N,
+      getReferencedColumn: (t) => t.muscleId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseSecondaryMuscleM2NTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseSecondaryMuscleM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$MuscleTableTableOrderingComposer
@@ -4956,6 +6357,57 @@ class $$MuscleTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isFront =>
       $composableBuilder(column: $table.isFront, builder: (column) => column);
+
+  Expression<T> exerciseMuscleM2NRefs<T extends Object>(
+    Expression<T> Function($$ExerciseMuscleM2NTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseMuscleM2NTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseMuscleM2N,
+      getReferencedColumn: (t) => t.muscleId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseMuscleM2NTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseMuscleM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> exerciseSecondaryMuscleM2NRefs<T extends Object>(
+    Expression<T> Function(
+      $$ExerciseSecondaryMuscleM2NTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$ExerciseSecondaryMuscleM2NTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseSecondaryMuscleM2N,
+      getReferencedColumn: (t) => t.muscleId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseSecondaryMuscleM2NTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseSecondaryMuscleM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$MuscleTableTableTableManager
@@ -4969,9 +6421,12 @@ class $$MuscleTableTableTableManager
           $$MuscleTableTableAnnotationComposer,
           $$MuscleTableTableCreateCompanionBuilder,
           $$MuscleTableTableUpdateCompanionBuilder,
-          (Muscle, BaseReferences<_$DriftPowersyncDatabase, $MuscleTableTable, Muscle>),
+          (Muscle, $$MuscleTableTableReferences),
           Muscle,
-          PrefetchHooks Function()
+          PrefetchHooks Function({
+            bool exerciseMuscleM2NRefs,
+            bool exerciseSecondaryMuscleM2NRefs,
+          })
         > {
   $$MuscleTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -5012,9 +6467,69 @@ class $$MuscleTableTableTableManager
                 isFront: isFront,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MuscleTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                exerciseMuscleM2NRefs = false,
+                exerciseSecondaryMuscleM2NRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (exerciseMuscleM2NRefs) db.exerciseMuscleM2N,
+                    if (exerciseSecondaryMuscleM2NRefs) db.exerciseSecondaryMuscleM2N,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (exerciseMuscleM2NRefs)
+                        await $_getPrefetchedData<Muscle, $MuscleTableTable, ExerciseMuscleM2NData>(
+                          currentTable: table,
+                          referencedTable: $$MuscleTableTableReferences._exerciseMuscleM2NRefsTable(
+                            db,
+                          ),
+                          managerFromTypedResult: (p0) => $$MuscleTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseMuscleM2NRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.muscleId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (exerciseSecondaryMuscleM2NRefs)
+                        await $_getPrefetchedData<
+                          Muscle,
+                          $MuscleTableTable,
+                          ExerciseSecondaryMuscleM2NData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$MuscleTableTableReferences
+                              ._exerciseSecondaryMuscleM2NRefsTable(db),
+                          managerFromTypedResult: (p0) => $$MuscleTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseSecondaryMuscleM2NRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.muscleId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
         ),
       );
 }
@@ -5029,9 +6544,12 @@ typedef $$MuscleTableTableProcessedTableManager =
       $$MuscleTableTableAnnotationComposer,
       $$MuscleTableTableCreateCompanionBuilder,
       $$MuscleTableTableUpdateCompanionBuilder,
-      (Muscle, BaseReferences<_$DriftPowersyncDatabase, $MuscleTableTable, Muscle>),
+      (Muscle, $$MuscleTableTableReferences),
       Muscle,
-      PrefetchHooks Function()
+      PrefetchHooks Function({
+        bool exerciseMuscleM2NRefs,
+        bool exerciseSecondaryMuscleM2NRefs,
+      })
     >;
 typedef $$ExerciseMuscleM2NTableCreateCompanionBuilder =
     ExerciseMuscleM2NCompanion Function({
@@ -5048,6 +6566,57 @@ typedef $$ExerciseMuscleM2NTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$ExerciseMuscleM2NTableReferences
+    extends
+        BaseReferences<_$DriftPowersyncDatabase, $ExerciseMuscleM2NTable, ExerciseMuscleM2NData> {
+  $$ExerciseMuscleM2NTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
+      db.exerciseTable.createAlias(
+        $_aliasNameGenerator(
+          db.exerciseMuscleM2N.exerciseId,
+          db.exerciseTable.id,
+        ),
+      );
+
+  $$ExerciseTableTableProcessedTableManager get exerciseId {
+    final $_column = $_itemColumn<int>('exercise_id')!;
+
+    final manager = $$ExerciseTableTableTableManager(
+      $_db,
+      $_db.exerciseTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_exerciseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $MuscleTableTable _muscleIdTable(_$DriftPowersyncDatabase db) =>
+      db.muscleTable.createAlias(
+        $_aliasNameGenerator(db.exerciseMuscleM2N.muscleId, db.muscleTable.id),
+      );
+
+  $$MuscleTableTableProcessedTableManager get muscleId {
+    final $_column = $_itemColumn<int>('muscle_id')!;
+
+    final manager = $$MuscleTableTableTableManager(
+      $_db,
+      $_db.muscleTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_muscleIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
 class $$ExerciseMuscleM2NTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $ExerciseMuscleM2NTable> {
   $$ExerciseMuscleM2NTableFilterComposer({
@@ -5062,15 +6631,49 @@ class $$ExerciseMuscleM2NTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnFilters(column),
-  );
+  $$ExerciseTableTableFilterComposer get exerciseId {
+    final $$ExerciseTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
-  ColumnFilters<int> get muscleId => $composableBuilder(
-    column: $table.muscleId,
-    builder: (column) => ColumnFilters(column),
-  );
+  $$MuscleTableTableFilterComposer get muscleId {
+    final $$MuscleTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.muscleId,
+      referencedTable: $db.muscleTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MuscleTableTableFilterComposer(
+            $db: $db,
+            $table: $db.muscleTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseMuscleM2NTableOrderingComposer
@@ -5087,15 +6690,49 @@ class $$ExerciseMuscleM2NTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnOrderings(column),
-  );
+  $$ExerciseTableTableOrderingComposer get exerciseId {
+    final $$ExerciseTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
-  ColumnOrderings<int> get muscleId => $composableBuilder(
-    column: $table.muscleId,
-    builder: (column) => ColumnOrderings(column),
-  );
+  $$MuscleTableTableOrderingComposer get muscleId {
+    final $$MuscleTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.muscleId,
+      referencedTable: $db.muscleTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MuscleTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.muscleTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseMuscleM2NTableAnnotationComposer
@@ -5109,13 +6746,49 @@ class $$ExerciseMuscleM2NTableAnnotationComposer
   });
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => column,
-  );
+  $$ExerciseTableTableAnnotationComposer get exerciseId {
+    final $$ExerciseTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
-  GeneratedColumn<int> get muscleId =>
-      $composableBuilder(column: $table.muscleId, builder: (column) => column);
+  $$MuscleTableTableAnnotationComposer get muscleId {
+    final $$MuscleTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.muscleId,
+      referencedTable: $db.muscleTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MuscleTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.muscleTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseMuscleM2NTableTableManager
@@ -5129,16 +6802,9 @@ class $$ExerciseMuscleM2NTableTableManager
           $$ExerciseMuscleM2NTableAnnotationComposer,
           $$ExerciseMuscleM2NTableCreateCompanionBuilder,
           $$ExerciseMuscleM2NTableUpdateCompanionBuilder,
-          (
-            ExerciseMuscleM2NData,
-            BaseReferences<
-              _$DriftPowersyncDatabase,
-              $ExerciseMuscleM2NTable,
-              ExerciseMuscleM2NData
-            >,
-          ),
+          (ExerciseMuscleM2NData, $$ExerciseMuscleM2NTableReferences),
           ExerciseMuscleM2NData,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool exerciseId, bool muscleId})
         > {
   $$ExerciseMuscleM2NTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -5179,9 +6845,69 @@ class $$ExerciseMuscleM2NTableTableManager
                 muscleId: muscleId,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseMuscleM2NTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseId = false, muscleId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (exerciseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.exerciseId,
+                                referencedTable: $$ExerciseMuscleM2NTableReferences
+                                    ._exerciseIdTable(db),
+                                referencedColumn: $$ExerciseMuscleM2NTableReferences
+                                    ._exerciseIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+                    if (muscleId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.muscleId,
+                                referencedTable: $$ExerciseMuscleM2NTableReferences._muscleIdTable(
+                                  db,
+                                ),
+                                referencedColumn: $$ExerciseMuscleM2NTableReferences
+                                    ._muscleIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -5196,12 +6922,9 @@ typedef $$ExerciseMuscleM2NTableProcessedTableManager =
       $$ExerciseMuscleM2NTableAnnotationComposer,
       $$ExerciseMuscleM2NTableCreateCompanionBuilder,
       $$ExerciseMuscleM2NTableUpdateCompanionBuilder,
-      (
-        ExerciseMuscleM2NData,
-        BaseReferences<_$DriftPowersyncDatabase, $ExerciseMuscleM2NTable, ExerciseMuscleM2NData>,
-      ),
+      (ExerciseMuscleM2NData, $$ExerciseMuscleM2NTableReferences),
       ExerciseMuscleM2NData,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool exerciseId, bool muscleId})
     >;
 typedef $$ExerciseSecondaryMuscleM2NTableCreateCompanionBuilder =
     ExerciseSecondaryMuscleM2NCompanion Function({
@@ -5218,6 +6941,64 @@ typedef $$ExerciseSecondaryMuscleM2NTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$ExerciseSecondaryMuscleM2NTableReferences
+    extends
+        BaseReferences<
+          _$DriftPowersyncDatabase,
+          $ExerciseSecondaryMuscleM2NTable,
+          ExerciseSecondaryMuscleM2NData
+        > {
+  $$ExerciseSecondaryMuscleM2NTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
+      db.exerciseTable.createAlias(
+        $_aliasNameGenerator(
+          db.exerciseSecondaryMuscleM2N.exerciseId,
+          db.exerciseTable.id,
+        ),
+      );
+
+  $$ExerciseTableTableProcessedTableManager get exerciseId {
+    final $_column = $_itemColumn<int>('exercise_id')!;
+
+    final manager = $$ExerciseTableTableTableManager(
+      $_db,
+      $_db.exerciseTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_exerciseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $MuscleTableTable _muscleIdTable(_$DriftPowersyncDatabase db) =>
+      db.muscleTable.createAlias(
+        $_aliasNameGenerator(
+          db.exerciseSecondaryMuscleM2N.muscleId,
+          db.muscleTable.id,
+        ),
+      );
+
+  $$MuscleTableTableProcessedTableManager get muscleId {
+    final $_column = $_itemColumn<int>('muscle_id')!;
+
+    final manager = $$MuscleTableTableTableManager(
+      $_db,
+      $_db.muscleTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_muscleIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
 class $$ExerciseSecondaryMuscleM2NTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $ExerciseSecondaryMuscleM2NTable> {
   $$ExerciseSecondaryMuscleM2NTableFilterComposer({
@@ -5232,15 +7013,49 @@ class $$ExerciseSecondaryMuscleM2NTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnFilters(column),
-  );
+  $$ExerciseTableTableFilterComposer get exerciseId {
+    final $$ExerciseTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
-  ColumnFilters<int> get muscleId => $composableBuilder(
-    column: $table.muscleId,
-    builder: (column) => ColumnFilters(column),
-  );
+  $$MuscleTableTableFilterComposer get muscleId {
+    final $$MuscleTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.muscleId,
+      referencedTable: $db.muscleTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MuscleTableTableFilterComposer(
+            $db: $db,
+            $table: $db.muscleTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseSecondaryMuscleM2NTableOrderingComposer
@@ -5257,15 +7072,49 @@ class $$ExerciseSecondaryMuscleM2NTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnOrderings(column),
-  );
+  $$ExerciseTableTableOrderingComposer get exerciseId {
+    final $$ExerciseTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
-  ColumnOrderings<int> get muscleId => $composableBuilder(
-    column: $table.muscleId,
-    builder: (column) => ColumnOrderings(column),
-  );
+  $$MuscleTableTableOrderingComposer get muscleId {
+    final $$MuscleTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.muscleId,
+      referencedTable: $db.muscleTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MuscleTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.muscleTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseSecondaryMuscleM2NTableAnnotationComposer
@@ -5279,13 +7128,49 @@ class $$ExerciseSecondaryMuscleM2NTableAnnotationComposer
   });
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => column,
-  );
+  $$ExerciseTableTableAnnotationComposer get exerciseId {
+    final $$ExerciseTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
-  GeneratedColumn<int> get muscleId =>
-      $composableBuilder(column: $table.muscleId, builder: (column) => column);
+  $$MuscleTableTableAnnotationComposer get muscleId {
+    final $$MuscleTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.muscleId,
+      referencedTable: $db.muscleTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MuscleTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.muscleTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseSecondaryMuscleM2NTableTableManager
@@ -5299,16 +7184,9 @@ class $$ExerciseSecondaryMuscleM2NTableTableManager
           $$ExerciseSecondaryMuscleM2NTableAnnotationComposer,
           $$ExerciseSecondaryMuscleM2NTableCreateCompanionBuilder,
           $$ExerciseSecondaryMuscleM2NTableUpdateCompanionBuilder,
-          (
-            ExerciseSecondaryMuscleM2NData,
-            BaseReferences<
-              _$DriftPowersyncDatabase,
-              $ExerciseSecondaryMuscleM2NTable,
-              ExerciseSecondaryMuscleM2NData
-            >,
-          ),
+          (ExerciseSecondaryMuscleM2NData, $$ExerciseSecondaryMuscleM2NTableReferences),
           ExerciseSecondaryMuscleM2NData,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool exerciseId, bool muscleId})
         > {
   $$ExerciseSecondaryMuscleM2NTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -5353,9 +7231,68 @@ class $$ExerciseSecondaryMuscleM2NTableTableManager
                 muscleId: muscleId,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseSecondaryMuscleM2NTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseId = false, muscleId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (exerciseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.exerciseId,
+                                referencedTable: $$ExerciseSecondaryMuscleM2NTableReferences
+                                    ._exerciseIdTable(db),
+                                referencedColumn: $$ExerciseSecondaryMuscleM2NTableReferences
+                                    ._exerciseIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+                    if (muscleId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.muscleId,
+                                referencedTable: $$ExerciseSecondaryMuscleM2NTableReferences
+                                    ._muscleIdTable(db),
+                                referencedColumn: $$ExerciseSecondaryMuscleM2NTableReferences
+                                    ._muscleIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -5370,16 +7307,9 @@ typedef $$ExerciseSecondaryMuscleM2NTableProcessedTableManager =
       $$ExerciseSecondaryMuscleM2NTableAnnotationComposer,
       $$ExerciseSecondaryMuscleM2NTableCreateCompanionBuilder,
       $$ExerciseSecondaryMuscleM2NTableUpdateCompanionBuilder,
-      (
-        ExerciseSecondaryMuscleM2NData,
-        BaseReferences<
-          _$DriftPowersyncDatabase,
-          $ExerciseSecondaryMuscleM2NTable,
-          ExerciseSecondaryMuscleM2NData
-        >,
-      ),
+      (ExerciseSecondaryMuscleM2NData, $$ExerciseSecondaryMuscleM2NTableReferences),
       ExerciseSecondaryMuscleM2NData,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool exerciseId, bool muscleId})
     >;
 typedef $$EquipmentTableTableCreateCompanionBuilder =
     EquipmentTableCompanion Function({
@@ -5393,6 +7323,38 @@ typedef $$EquipmentTableTableUpdateCompanionBuilder =
       Value<String> name,
       Value<int> rowid,
     });
+
+final class $$EquipmentTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $EquipmentTableTable, Equipment> {
+  $$EquipmentTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$ExerciseEquipmentM2NTable, List<ExerciseEquipmentM2NData>>
+  _exerciseEquipmentM2NRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.exerciseEquipmentM2N,
+    aliasName: $_aliasNameGenerator(
+      db.equipmentTable.id,
+      db.exerciseEquipmentM2N.equipmentId,
+    ),
+  );
+
+  $$ExerciseEquipmentM2NTableProcessedTableManager get exerciseEquipmentM2NRefs {
+    final manager = $$ExerciseEquipmentM2NTableTableManager(
+      $_db,
+      $_db.exerciseEquipmentM2N,
+    ).filter((f) => f.equipmentId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseEquipmentM2NRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
 
 class $$EquipmentTableTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $EquipmentTableTable> {
@@ -5412,6 +7374,30 @@ class $$EquipmentTableTableFilterComposer
     column: $table.name,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> exerciseEquipmentM2NRefs(
+    Expression<bool> Function($$ExerciseEquipmentM2NTableFilterComposer f) f,
+  ) {
+    final $$ExerciseEquipmentM2NTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseEquipmentM2N,
+      getReferencedColumn: (t) => t.equipmentId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseEquipmentM2NTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseEquipmentM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$EquipmentTableTableOrderingComposer
@@ -5447,6 +7433,30 @@ class $$EquipmentTableTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  Expression<T> exerciseEquipmentM2NRefs<T extends Object>(
+    Expression<T> Function($$ExerciseEquipmentM2NTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseEquipmentM2NTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseEquipmentM2N,
+      getReferencedColumn: (t) => t.equipmentId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseEquipmentM2NTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseEquipmentM2N,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$EquipmentTableTableTableManager
@@ -5460,9 +7470,9 @@ class $$EquipmentTableTableTableManager
           $$EquipmentTableTableAnnotationComposer,
           $$EquipmentTableTableCreateCompanionBuilder,
           $$EquipmentTableTableUpdateCompanionBuilder,
-          (Equipment, BaseReferences<_$DriftPowersyncDatabase, $EquipmentTableTable, Equipment>),
+          (Equipment, $$EquipmentTableTableReferences),
           Equipment,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool exerciseEquipmentM2NRefs})
         > {
   $$EquipmentTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -5493,9 +7503,47 @@ class $$EquipmentTableTableTableManager
                 name: name,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$EquipmentTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseEquipmentM2NRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (exerciseEquipmentM2NRefs) db.exerciseEquipmentM2N,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (exerciseEquipmentM2NRefs)
+                    await $_getPrefetchedData<
+                      Equipment,
+                      $EquipmentTableTable,
+                      ExerciseEquipmentM2NData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$EquipmentTableTableReferences
+                          ._exerciseEquipmentM2NRefsTable(db),
+                      managerFromTypedResult: (p0) => $$EquipmentTableTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).exerciseEquipmentM2NRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where(
+                            (e) => e.equipmentId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -5510,9 +7558,9 @@ typedef $$EquipmentTableTableProcessedTableManager =
       $$EquipmentTableTableAnnotationComposer,
       $$EquipmentTableTableCreateCompanionBuilder,
       $$EquipmentTableTableUpdateCompanionBuilder,
-      (Equipment, BaseReferences<_$DriftPowersyncDatabase, $EquipmentTableTable, Equipment>),
+      (Equipment, $$EquipmentTableTableReferences),
       Equipment,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool exerciseEquipmentM2NRefs})
     >;
 typedef $$ExerciseEquipmentM2NTableCreateCompanionBuilder =
     ExerciseEquipmentM2NCompanion Function({
@@ -5529,6 +7577,64 @@ typedef $$ExerciseEquipmentM2NTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$ExerciseEquipmentM2NTableReferences
+    extends
+        BaseReferences<
+          _$DriftPowersyncDatabase,
+          $ExerciseEquipmentM2NTable,
+          ExerciseEquipmentM2NData
+        > {
+  $$ExerciseEquipmentM2NTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
+      db.exerciseTable.createAlias(
+        $_aliasNameGenerator(
+          db.exerciseEquipmentM2N.exerciseId,
+          db.exerciseTable.id,
+        ),
+      );
+
+  $$ExerciseTableTableProcessedTableManager get exerciseId {
+    final $_column = $_itemColumn<int>('exercise_id')!;
+
+    final manager = $$ExerciseTableTableTableManager(
+      $_db,
+      $_db.exerciseTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_exerciseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $EquipmentTableTable _equipmentIdTable(_$DriftPowersyncDatabase db) =>
+      db.equipmentTable.createAlias(
+        $_aliasNameGenerator(
+          db.exerciseEquipmentM2N.equipmentId,
+          db.equipmentTable.id,
+        ),
+      );
+
+  $$EquipmentTableTableProcessedTableManager get equipmentId {
+    final $_column = $_itemColumn<int>('equipment_id')!;
+
+    final manager = $$EquipmentTableTableTableManager(
+      $_db,
+      $_db.equipmentTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_equipmentIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
 class $$ExerciseEquipmentM2NTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $ExerciseEquipmentM2NTable> {
   $$ExerciseEquipmentM2NTableFilterComposer({
@@ -5543,15 +7649,49 @@ class $$ExerciseEquipmentM2NTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnFilters(column),
-  );
+  $$ExerciseTableTableFilterComposer get exerciseId {
+    final $$ExerciseTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
-  ColumnFilters<int> get equipmentId => $composableBuilder(
-    column: $table.equipmentId,
-    builder: (column) => ColumnFilters(column),
-  );
+  $$EquipmentTableTableFilterComposer get equipmentId {
+    final $$EquipmentTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.equipmentId,
+      referencedTable: $db.equipmentTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EquipmentTableTableFilterComposer(
+            $db: $db,
+            $table: $db.equipmentTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseEquipmentM2NTableOrderingComposer
@@ -5568,15 +7708,49 @@ class $$ExerciseEquipmentM2NTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnOrderings(column),
-  );
+  $$ExerciseTableTableOrderingComposer get exerciseId {
+    final $$ExerciseTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
-  ColumnOrderings<int> get equipmentId => $composableBuilder(
-    column: $table.equipmentId,
-    builder: (column) => ColumnOrderings(column),
-  );
+  $$EquipmentTableTableOrderingComposer get equipmentId {
+    final $$EquipmentTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.equipmentId,
+      referencedTable: $db.equipmentTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EquipmentTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.equipmentTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseEquipmentM2NTableAnnotationComposer
@@ -5590,15 +7764,49 @@ class $$ExerciseEquipmentM2NTableAnnotationComposer
   });
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => column,
-  );
+  $$ExerciseTableTableAnnotationComposer get exerciseId {
+    final $$ExerciseTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
-  GeneratedColumn<int> get equipmentId => $composableBuilder(
-    column: $table.equipmentId,
-    builder: (column) => column,
-  );
+  $$EquipmentTableTableAnnotationComposer get equipmentId {
+    final $$EquipmentTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.equipmentId,
+      referencedTable: $db.equipmentTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EquipmentTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.equipmentTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseEquipmentM2NTableTableManager
@@ -5612,16 +7820,9 @@ class $$ExerciseEquipmentM2NTableTableManager
           $$ExerciseEquipmentM2NTableAnnotationComposer,
           $$ExerciseEquipmentM2NTableCreateCompanionBuilder,
           $$ExerciseEquipmentM2NTableUpdateCompanionBuilder,
-          (
-            ExerciseEquipmentM2NData,
-            BaseReferences<
-              _$DriftPowersyncDatabase,
-              $ExerciseEquipmentM2NTable,
-              ExerciseEquipmentM2NData
-            >,
-          ),
+          (ExerciseEquipmentM2NData, $$ExerciseEquipmentM2NTableReferences),
           ExerciseEquipmentM2NData,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool exerciseId, bool equipmentId})
         > {
   $$ExerciseEquipmentM2NTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -5664,9 +7865,68 @@ class $$ExerciseEquipmentM2NTableTableManager
                 equipmentId: equipmentId,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseEquipmentM2NTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseId = false, equipmentId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (exerciseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.exerciseId,
+                                referencedTable: $$ExerciseEquipmentM2NTableReferences
+                                    ._exerciseIdTable(db),
+                                referencedColumn: $$ExerciseEquipmentM2NTableReferences
+                                    ._exerciseIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+                    if (equipmentId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.equipmentId,
+                                referencedTable: $$ExerciseEquipmentM2NTableReferences
+                                    ._equipmentIdTable(db),
+                                referencedColumn: $$ExerciseEquipmentM2NTableReferences
+                                    ._equipmentIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -5681,165 +7941,9 @@ typedef $$ExerciseEquipmentM2NTableProcessedTableManager =
       $$ExerciseEquipmentM2NTableAnnotationComposer,
       $$ExerciseEquipmentM2NTableCreateCompanionBuilder,
       $$ExerciseEquipmentM2NTableUpdateCompanionBuilder,
-      (
-        ExerciseEquipmentM2NData,
-        BaseReferences<
-          _$DriftPowersyncDatabase,
-          $ExerciseEquipmentM2NTable,
-          ExerciseEquipmentM2NData
-        >,
-      ),
+      (ExerciseEquipmentM2NData, $$ExerciseEquipmentM2NTableReferences),
       ExerciseEquipmentM2NData,
-      PrefetchHooks Function()
-    >;
-typedef $$ExerciseCategoryTableTableCreateCompanionBuilder =
-    ExerciseCategoryTableCompanion Function({
-      required int id,
-      required String name,
-      Value<int> rowid,
-    });
-typedef $$ExerciseCategoryTableTableUpdateCompanionBuilder =
-    ExerciseCategoryTableCompanion Function({
-      Value<int> id,
-      Value<String> name,
-      Value<int> rowid,
-    });
-
-class $$ExerciseCategoryTableTableFilterComposer
-    extends Composer<_$DriftPowersyncDatabase, $ExerciseCategoryTableTable> {
-  $$ExerciseCategoryTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$ExerciseCategoryTableTableOrderingComposer
-    extends Composer<_$DriftPowersyncDatabase, $ExerciseCategoryTableTable> {
-  $$ExerciseCategoryTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$ExerciseCategoryTableTableAnnotationComposer
-    extends Composer<_$DriftPowersyncDatabase, $ExerciseCategoryTableTable> {
-  $$ExerciseCategoryTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-}
-
-class $$ExerciseCategoryTableTableTableManager
-    extends
-        RootTableManager<
-          _$DriftPowersyncDatabase,
-          $ExerciseCategoryTableTable,
-          ExerciseCategory,
-          $$ExerciseCategoryTableTableFilterComposer,
-          $$ExerciseCategoryTableTableOrderingComposer,
-          $$ExerciseCategoryTableTableAnnotationComposer,
-          $$ExerciseCategoryTableTableCreateCompanionBuilder,
-          $$ExerciseCategoryTableTableUpdateCompanionBuilder,
-          (
-            ExerciseCategory,
-            BaseReferences<_$DriftPowersyncDatabase, $ExerciseCategoryTableTable, ExerciseCategory>,
-          ),
-          ExerciseCategory,
-          PrefetchHooks Function()
-        > {
-  $$ExerciseCategoryTableTableTableManager(
-    _$DriftPowersyncDatabase db,
-    $ExerciseCategoryTableTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () => $$ExerciseCategoryTableTableFilterComposer(
-            $db: db,
-            $table: table,
-          ),
-          createOrderingComposer: () => $$ExerciseCategoryTableTableOrderingComposer(
-            $db: db,
-            $table: table,
-          ),
-          createComputedFieldComposer: () => $$ExerciseCategoryTableTableAnnotationComposer(
-            $db: db,
-            $table: table,
-          ),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> name = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => ExerciseCategoryTableCompanion(
-                id: id,
-                name: name,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required int id,
-                required String name,
-                Value<int> rowid = const Value.absent(),
-              }) => ExerciseCategoryTableCompanion.insert(
-                id: id,
-                name: name,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$ExerciseCategoryTableTableProcessedTableManager =
-    ProcessedTableManager<
-      _$DriftPowersyncDatabase,
-      $ExerciseCategoryTableTable,
-      ExerciseCategory,
-      $$ExerciseCategoryTableTableFilterComposer,
-      $$ExerciseCategoryTableTableOrderingComposer,
-      $$ExerciseCategoryTableTableAnnotationComposer,
-      $$ExerciseCategoryTableTableCreateCompanionBuilder,
-      $$ExerciseCategoryTableTableUpdateCompanionBuilder,
-      (
-        ExerciseCategory,
-        BaseReferences<_$DriftPowersyncDatabase, $ExerciseCategoryTableTable, ExerciseCategory>,
-      ),
-      ExerciseCategory,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool exerciseId, bool equipmentId})
     >;
 typedef $$ExerciseImageTableTableCreateCompanionBuilder =
     ExerciseImageTableCompanion Function({
@@ -5860,6 +7964,37 @@ typedef $$ExerciseImageTableTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$ExerciseImageTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseImageTableTable, ExerciseImage> {
+  $$ExerciseImageTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
+      db.exerciseTable.createAlias(
+        $_aliasNameGenerator(
+          db.exerciseImageTable.exerciseId,
+          db.exerciseTable.id,
+        ),
+      );
+
+  $$ExerciseTableTableProcessedTableManager get exerciseId {
+    final $_column = $_itemColumn<int>('exercise_id')!;
+
+    final manager = $$ExerciseTableTableTableManager(
+      $_db,
+      $_db.exerciseTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_exerciseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
 class $$ExerciseImageTableTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $ExerciseImageTableTable> {
   $$ExerciseImageTableTableFilterComposer({
@@ -5879,11 +8014,6 @@ class $$ExerciseImageTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<String> get url => $composableBuilder(
     column: $table.url,
     builder: (column) => ColumnFilters(column),
@@ -5893,6 +8023,28 @@ class $$ExerciseImageTableTableFilterComposer
     column: $table.isMain,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$ExerciseTableTableFilterComposer get exerciseId {
+    final $$ExerciseTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseImageTableTableOrderingComposer
@@ -5914,11 +8066,6 @@ class $$ExerciseImageTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get url => $composableBuilder(
     column: $table.url,
     builder: (column) => ColumnOrderings(column),
@@ -5928,6 +8075,28 @@ class $$ExerciseImageTableTableOrderingComposer
     column: $table.isMain,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$ExerciseTableTableOrderingComposer get exerciseId {
+    final $$ExerciseTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseImageTableTableAnnotationComposer
@@ -5944,16 +8113,33 @@ class $$ExerciseImageTableTableAnnotationComposer
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
 
-  GeneratedColumn<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<String> get url =>
       $composableBuilder(column: $table.url, builder: (column) => column);
 
   GeneratedColumn<bool> get isMain =>
       $composableBuilder(column: $table.isMain, builder: (column) => column);
+
+  $$ExerciseTableTableAnnotationComposer get exerciseId {
+    final $$ExerciseTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseImageTableTableTableManager
@@ -5967,12 +8153,9 @@ class $$ExerciseImageTableTableTableManager
           $$ExerciseImageTableTableAnnotationComposer,
           $$ExerciseImageTableTableCreateCompanionBuilder,
           $$ExerciseImageTableTableUpdateCompanionBuilder,
-          (
-            ExerciseImage,
-            BaseReferences<_$DriftPowersyncDatabase, $ExerciseImageTableTable, ExerciseImage>,
-          ),
+          (ExerciseImage, $$ExerciseImageTableTableReferences),
           ExerciseImage,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool exerciseId})
         > {
   $$ExerciseImageTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -6021,9 +8204,55 @@ class $$ExerciseImageTableTableTableManager
                 isMain: isMain,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseImageTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (exerciseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.exerciseId,
+                                referencedTable: $$ExerciseImageTableTableReferences
+                                    ._exerciseIdTable(db),
+                                referencedColumn: $$ExerciseImageTableTableReferences
+                                    ._exerciseIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -6038,12 +8267,9 @@ typedef $$ExerciseImageTableTableProcessedTableManager =
       $$ExerciseImageTableTableAnnotationComposer,
       $$ExerciseImageTableTableCreateCompanionBuilder,
       $$ExerciseImageTableTableUpdateCompanionBuilder,
-      (
-        ExerciseImage,
-        BaseReferences<_$DriftPowersyncDatabase, $ExerciseImageTableTable, ExerciseImage>,
-      ),
+      (ExerciseImage, $$ExerciseImageTableTableReferences),
       ExerciseImage,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool exerciseId})
     >;
 typedef $$ExerciseVideoTableTableCreateCompanionBuilder =
     ExerciseVideoTableCompanion Function({
@@ -6078,6 +8304,37 @@ typedef $$ExerciseVideoTableTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$ExerciseVideoTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseVideoTableTable, Video> {
+  $$ExerciseVideoTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
+      db.exerciseTable.createAlias(
+        $_aliasNameGenerator(
+          db.exerciseVideoTable.exerciseId,
+          db.exerciseTable.id,
+        ),
+      );
+
+  $$ExerciseTableTableProcessedTableManager get exerciseId {
+    final $_column = $_itemColumn<int>('exercise_id')!;
+
+    final manager = $$ExerciseTableTableTableManager(
+      $_db,
+      $_db.exerciseTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_exerciseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
 class $$ExerciseVideoTableTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $ExerciseVideoTableTable> {
   $$ExerciseVideoTableTableFilterComposer({
@@ -6094,11 +8351,6 @@ class $$ExerciseVideoTableTableFilterComposer
 
   ColumnFilters<String> get uuid => $composableBuilder(
     column: $table.uuid,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6146,6 +8398,28 @@ class $$ExerciseVideoTableTableFilterComposer
     column: $table.licenseAuthor,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$ExerciseTableTableFilterComposer get exerciseId {
+    final $$ExerciseTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseVideoTableTableOrderingComposer
@@ -6164,11 +8438,6 @@ class $$ExerciseVideoTableTableOrderingComposer
 
   ColumnOrderings<String> get uuid => $composableBuilder(
     column: $table.uuid,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -6216,6 +8485,28 @@ class $$ExerciseVideoTableTableOrderingComposer
     column: $table.licenseAuthor,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$ExerciseTableTableOrderingComposer get exerciseId {
+    final $$ExerciseTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseVideoTableTableAnnotationComposer
@@ -6231,11 +8522,6 @@ class $$ExerciseVideoTableTableAnnotationComposer
 
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
-
-  GeneratedColumn<int> get exerciseId => $composableBuilder(
-    column: $table.exerciseId,
-    builder: (column) => column,
-  );
 
   GeneratedColumn<String> get url =>
       $composableBuilder(column: $table.url, builder: (column) => column);
@@ -6265,6 +8551,28 @@ class $$ExerciseVideoTableTableAnnotationComposer
     column: $table.licenseAuthor,
     builder: (column) => column,
   );
+
+  $$ExerciseTableTableAnnotationComposer get exerciseId {
+    final $$ExerciseTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.exerciseTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ExerciseVideoTableTableTableManager
@@ -6278,9 +8586,9 @@ class $$ExerciseVideoTableTableTableManager
           $$ExerciseVideoTableTableAnnotationComposer,
           $$ExerciseVideoTableTableCreateCompanionBuilder,
           $$ExerciseVideoTableTableUpdateCompanionBuilder,
-          (Video, BaseReferences<_$DriftPowersyncDatabase, $ExerciseVideoTableTable, Video>),
+          (Video, $$ExerciseVideoTableTableReferences),
           Video,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool exerciseId})
         > {
   $$ExerciseVideoTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -6357,9 +8665,55 @@ class $$ExerciseVideoTableTableTableManager
                 licenseAuthor: licenseAuthor,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseVideoTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (exerciseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.exerciseId,
+                                referencedTable: $$ExerciseVideoTableTableReferences
+                                    ._exerciseIdTable(db),
+                                referencedColumn: $$ExerciseVideoTableTableReferences
+                                    ._exerciseIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -6374,9 +8728,9 @@ typedef $$ExerciseVideoTableTableProcessedTableManager =
       $$ExerciseVideoTableTableAnnotationComposer,
       $$ExerciseVideoTableTableCreateCompanionBuilder,
       $$ExerciseVideoTableTableUpdateCompanionBuilder,
-      (Video, BaseReferences<_$DriftPowersyncDatabase, $ExerciseVideoTableTable, Video>),
+      (Video, $$ExerciseVideoTableTableReferences),
       Video,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool exerciseId})
     >;
 typedef $$WeightEntryTableTableCreateCompanionBuilder =
     WeightEntryTableCompanion Function({
@@ -6724,11 +9078,11 @@ typedef $$WorkoutLogTableTableCreateCompanionBuilder =
       Value<int?> slotEntryId,
       Value<double?> rir,
       Value<double?> rirTarget,
-      required double repetitions,
-      required double repetitionsTarget,
+      Value<double?> repetitions,
+      Value<double?> repetitionsTarget,
       Value<int?> repetitionsUnitId,
-      required double weight,
-      required double weightTarget,
+      Value<double?> weight,
+      Value<double?> weightTarget,
       Value<int?> weightUnitId,
       required DateTime date,
       Value<int> rowid,
@@ -6743,11 +9097,11 @@ typedef $$WorkoutLogTableTableUpdateCompanionBuilder =
       Value<int?> slotEntryId,
       Value<double?> rir,
       Value<double?> rirTarget,
-      Value<double> repetitions,
-      Value<double> repetitionsTarget,
+      Value<double?> repetitions,
+      Value<double?> repetitionsTarget,
       Value<int?> repetitionsUnitId,
-      Value<double> weight,
-      Value<double> weightTarget,
+      Value<double?> weight,
+      Value<double?> weightTarget,
       Value<int?> weightUnitId,
       Value<DateTime> date,
       Value<int> rowid,
@@ -7030,11 +9384,11 @@ class $$WorkoutLogTableTableTableManager
                 Value<int?> slotEntryId = const Value.absent(),
                 Value<double?> rir = const Value.absent(),
                 Value<double?> rirTarget = const Value.absent(),
-                Value<double> repetitions = const Value.absent(),
-                Value<double> repetitionsTarget = const Value.absent(),
+                Value<double?> repetitions = const Value.absent(),
+                Value<double?> repetitionsTarget = const Value.absent(),
                 Value<int?> repetitionsUnitId = const Value.absent(),
-                Value<double> weight = const Value.absent(),
-                Value<double> weightTarget = const Value.absent(),
+                Value<double?> weight = const Value.absent(),
+                Value<double?> weightTarget = const Value.absent(),
                 Value<int?> weightUnitId = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -7066,11 +9420,11 @@ class $$WorkoutLogTableTableTableManager
                 Value<int?> slotEntryId = const Value.absent(),
                 Value<double?> rir = const Value.absent(),
                 Value<double?> rirTarget = const Value.absent(),
-                required double repetitions,
-                required double repetitionsTarget,
+                Value<double?> repetitions = const Value.absent(),
+                Value<double?> repetitionsTarget = const Value.absent(),
                 Value<int?> repetitionsUnitId = const Value.absent(),
-                required double weight,
-                required double weightTarget,
+                Value<double?> weight = const Value.absent(),
+                Value<double?> weightTarget = const Value.absent(),
                 Value<int?> weightUnitId = const Value.absent(),
                 required DateTime date,
                 Value<int> rowid = const Value.absent(),
@@ -7383,6 +9737,8 @@ class $DriftPowersyncDatabaseManager {
   $DriftPowersyncDatabaseManager(this._db);
   $$LanguageTableTableTableManager get languageTable =>
       $$LanguageTableTableTableManager(_db, _db.languageTable);
+  $$ExerciseCategoryTableTableTableManager get exerciseCategoryTable =>
+      $$ExerciseCategoryTableTableTableManager(_db, _db.exerciseCategoryTable);
   $$ExerciseTableTableTableManager get exerciseTable =>
       $$ExerciseTableTableTableManager(_db, _db.exerciseTable);
   $$ExerciseTranslationTableTableTableManager get exerciseTranslationTable =>
@@ -7403,8 +9759,6 @@ class $DriftPowersyncDatabaseManager {
       $$EquipmentTableTableTableManager(_db, _db.equipmentTable);
   $$ExerciseEquipmentM2NTableTableManager get exerciseEquipmentM2N =>
       $$ExerciseEquipmentM2NTableTableManager(_db, _db.exerciseEquipmentM2N);
-  $$ExerciseCategoryTableTableTableManager get exerciseCategoryTable =>
-      $$ExerciseCategoryTableTableTableManager(_db, _db.exerciseCategoryTable);
   $$ExerciseImageTableTableTableManager get exerciseImageTable =>
       $$ExerciseImageTableTableTableManager(_db, _db.exerciseImageTable);
   $$ExerciseVideoTableTableTableManager get exerciseVideoTable =>

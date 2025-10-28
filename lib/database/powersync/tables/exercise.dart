@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020,  wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:drift/drift.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
@@ -7,6 +25,8 @@ import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 
+import 'language.dart';
+
 @UseRowClass(Exercise)
 class ExerciseTable extends Table {
   @override
@@ -15,7 +35,8 @@ class ExerciseTable extends Table {
   IntColumn get id => integer()();
   TextColumn get uuid => text()();
   IntColumn get variationId => integer().nullable().named('variation_id')();
-  IntColumn get categoryId => integer().named('category_id')();
+  IntColumn get categoryId =>
+      integer().named('category_id').references(ExerciseCategoryTable, #id)();
   DateTimeColumn get created => dateTime()();
   DateTimeColumn get lastUpdate => dateTime().named('last_update')();
 }
@@ -27,8 +48,8 @@ class ExerciseTranslationTable extends Table {
 
   IntColumn get id => integer()();
   TextColumn get uuid => text()();
-  IntColumn get exerciseId => integer().named('exercise_id')();
-  IntColumn get languageId => integer().named('language_id')();
+  IntColumn get exerciseId => integer().named('exercise_id').references(ExerciseTable, #id)();
+  IntColumn get languageId => integer().named('language_id').references(LanguageTable, #id)();
   TextColumn get name => text()();
   TextColumn get description => text()();
   DateTimeColumn get created => dateTime()();
@@ -58,8 +79,8 @@ class ExerciseEquipmentM2N extends Table {
   String get tableName => 'exercises_exercise_equipment';
 
   IntColumn get id => integer()();
-  IntColumn get exerciseId => integer().named('exercise_id')();
-  IntColumn get equipmentId => integer().named('equipment_id')();
+  IntColumn get exerciseId => integer().named('exercise_id').references(ExerciseTable, #id)();
+  IntColumn get equipmentId => integer().named('equipment_id').references(EquipmentTable, #id)();
 }
 
 @UseRowClass(Muscle)
@@ -78,8 +99,8 @@ class ExerciseMuscleM2N extends Table {
   String get tableName => 'exercises_exercise_muscles';
 
   IntColumn get id => integer()();
-  IntColumn get exerciseId => integer().named('exercise_id')();
-  IntColumn get muscleId => integer().named('muscle_id')();
+  IntColumn get exerciseId => integer().named('exercise_id').references(ExerciseTable, #id)();
+  IntColumn get muscleId => integer().named('muscle_id').references(MuscleTable, #id)();
 }
 
 class ExerciseSecondaryMuscleM2N extends Table {
@@ -87,8 +108,8 @@ class ExerciseSecondaryMuscleM2N extends Table {
   String get tableName => 'exercises_exercise_muscles_secondary';
 
   IntColumn get id => integer()();
-  IntColumn get exerciseId => integer().named('exercise_id')();
-  IntColumn get muscleId => integer().named('muscle_id')();
+  IntColumn get exerciseId => integer().named('exercise_id').references(ExerciseTable, #id)();
+  IntColumn get muscleId => integer().named('muscle_id').references(MuscleTable, #id)();
 }
 
 @UseRowClass(ExerciseImage)
@@ -98,7 +119,7 @@ class ExerciseImageTable extends Table {
 
   IntColumn get id => integer()();
   TextColumn get uuid => text()();
-  IntColumn get exerciseId => integer().named('exercise_id')();
+  IntColumn get exerciseId => integer().named('exercise_id').references(ExerciseTable, #id)();
   TextColumn get url => text()();
   BoolColumn get isMain => boolean().named('is_main')();
 }
@@ -110,7 +131,7 @@ class ExerciseVideoTable extends Table {
 
   IntColumn get id => integer()();
   TextColumn get uuid => text()();
-  IntColumn get exerciseId => integer().named('exercise_id')();
+  IntColumn get exerciseId => integer().named('exercise_id').references(ExerciseTable, #id)();
   TextColumn get url => text()();
   IntColumn get size => integer()();
   IntColumn get duration => integer()();
