@@ -1094,5 +1094,11 @@
     "enterTextInLanguage": "Aggiungete il testo usando la lingua giusta!",
     "@enterTextInLanguage": {},
     "applicationLogs": "Registri dell'applicazione",
-    "@applicationLogs": {}
+    "@applicationLogs": {},
+    "dayTypeCustom": "Personalizzato",
+    "@dayTypeCustom": {},
+    "dayTypeAfap": "Più velocemente possibile",
+    "@dayTypeAfap": {},
+    "dayTypeHiit": "Allenamento a intervalli ad alta intensità",
+    "@dayTypeHiit": {}
 }
