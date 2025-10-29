@@ -38,13 +38,13 @@ class WorkoutLogTable extends Table {
   RealColumn get rir => real().nullable()();
   RealColumn get rirTarget => real().named('rir_target').nullable()();
 
-  RealColumn get repetitions => real()();
-  RealColumn get repetitionsTarget => real().named('repetitions_target')();
+  RealColumn get repetitions => real().nullable()();
+  RealColumn get repetitionsTarget => real().nullable().named('repetitions_target')();
   IntColumn get repetitionsUnitId => integer().named('repetitions_unit_id').nullable()();
 
-  RealColumn get weight => real()();
-  RealColumn get weightTarget => real().named('weight_target')();
-  IntColumn get weightUnitId => integer().named('weight_unit_id').nullable()();
+  RealColumn get weight => real().nullable()();
+  RealColumn get weightTarget => real().nullable().named('weight_target')();
+  IntColumn get weightUnitId => integer().nullable().named('weight_unit_id').nullable()();
 
   DateTimeColumn get date => dateTime()();
 }
