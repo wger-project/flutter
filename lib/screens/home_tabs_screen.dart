@@ -80,10 +80,9 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
     final connector = DjangoConnector(baseUrl: baseUrl);
     // try {
     // TODO: should we cache these credentials? that's what their demo does?
-    // we could maybe get the initial token from the /api/v2/login call
+    //       we could maybe get the initial token from the /api/v2/login call
     final credentials = await connector.fetchCredentials();
     widget._logger.fine('fetched credentials: $credentials');
-    // await openDatabase(true, baseUrl, powerSyncUrl);
     // } catch (e) {
     //   widget._logger.warning('failed to fetchCredentials: $e');
     // }/
@@ -96,6 +95,8 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
     const WeightScreen(),
     const GalleryScreen(),
   ];
+
+  bool _exerciseListenerInitialized = false;
 
   /// Load initial data from the server
   Future<void> _loadEntries() async {
@@ -119,7 +120,7 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
         nutritionPlansProvider.fetchIngredientsFromCache(),
         exercisesProvider.fetchAndSetInitialData(),
       ]);
-      ref.read(exerciseStateProvider);
+      await ref.read(exerciseStateReadyProvider.future);
       ref.read(weightEntryProvider());
 
       // Workaround for https://github.com/wger-project/flutter/issues/901
@@ -166,6 +167,12 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Note that listen needs to happen on the build method. We use
+    if (!_exerciseListenerInitialized) {
+      ref.listen(exerciseStateProvider, (_, _) {});
+      _exerciseListenerInitialized = true;
+    }
+
     return FutureBuilder<void>(
       future: _initialData,
       builder: (context, snapshot) {

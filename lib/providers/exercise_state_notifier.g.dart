@@ -27,6 +27,39 @@ part of 'exercise_state_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(exerciseStateReady)
+const exerciseStateReadyProvider = ExerciseStateReadyProvider._();
+
+final class ExerciseStateReadyProvider
+    extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
+    with $FutureModifier<void>, $FutureProvider<void> {
+  const ExerciseStateReadyProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exerciseStateReadyProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$exerciseStateReadyHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<void> create(Ref ref) {
+    return exerciseStateReady(ref);
+  }
+}
+
+String _$exerciseStateReadyHash() => r'a5b80b37b69bb14902a6d347124721b835bd7ab5';
+
 @ProviderFor(ExerciseStateNotifier)
 const exerciseStateProvider = ExerciseStateNotifierProvider._();
 
@@ -59,7 +92,7 @@ final class ExerciseStateNotifierProvider
   }
 }
 
-String _$exerciseStateNotifierHash() => r'5d1743a7b85262c82d981b735a546178369f71e0';
+String _$exerciseStateNotifierHash() => r'2afd58c1f64a23010125795263121a745d2b17c0';
 
 abstract class _$ExerciseStateNotifier extends $Notifier<ExerciseState> {
   ExerciseState build();

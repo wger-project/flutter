@@ -26,13 +26,14 @@ part 'body_weight.g.dart';
 
 @riverpod
 final class WeightEntryNotifier extends _$WeightEntryNotifier {
-  final _log = Logger('WeightEntryNotifier');
+  final _logger = Logger('WeightEntryNotifier');
   late final BodyWeightRepository _repo;
 
   @override
   // BodyWeightState build() {
   Stream<List<WeightEntry>> build([BodyWeightRepository? repository]) {
     _repo = repository ?? ref.read(bodyWeightRepositoryProvider);
+    _logger.finer('Building WeightEntryNotifier');
 
     // final state = BodyWeightState();
     // repo.watchAllDrift(database).listen((entries) {

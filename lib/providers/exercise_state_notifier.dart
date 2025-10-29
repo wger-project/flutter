@@ -30,6 +30,15 @@ import 'package:wger/providers/wger_base_riverpod.dart';
 
 part 'exercise_state_notifier.g.dart';
 
+@riverpod
+Future<void> exerciseStateReady(Ref ref) {
+  return Future.wait([
+    ref.watch(exerciseProvider.future),
+    ref.watch(exerciseEquipmentProvider.future),
+    ref.watch(exerciseCategoryProvider.future),
+  ]);
+}
+
 @Riverpod(keepAlive: true)
 final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
   final _logger = Logger('ExerciseStateNotifier');
@@ -39,82 +48,73 @@ final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
   @override
   ExerciseState build() {
     _logger.finer('Building ExerciseStateNotifier');
-
     ref.keepAlive();
-    state = ExerciseState(isLoading: true);
 
-    // Load exercises
-    ref.listen<AsyncValue<List<Exercise>>>(
-      exerciseProvider,
-      (previous, next) {
-        if (next.isLoading) {
-          state = state.copyWith(isLoading: true);
-          return;
-        }
+    final exercisesAsync = ref.watch(exerciseProvider);
+    final equipmentAsync = ref.watch(exerciseEquipmentProvider);
+    final categoriesAsync = ref.watch(exerciseCategoryProvider);
 
-        if (next.hasError) {
-          _logger.warning('Error in exercise stream: ${next.error}');
-          state = state.copyWith(isLoading: false);
-          return;
-        }
+    if (exercisesAsync.isLoading || equipmentAsync.isLoading || categoriesAsync.isLoading) {
+      return ExerciseState(isLoading: true);
+    }
 
-        final fresh = next.asData!.value;
-        final filtered = _applyFilters(fresh, state.filters);
-        state = state.copyWith(exercises: fresh, filteredExercises: filtered, isLoading: false);
-      },
-      fireImmediately: true,
+    final error = exercisesAsync.error ?? equipmentAsync.error ?? categoriesAsync.error;
+    if (error != null) {
+      _logger.warning('Error building ExerciseStateNotifier: $error');
+      return ExerciseState(isLoading: false);
+    }
+
+    // If we arrive here, all data is loaded
+    final exercises = exercisesAsync.asData!.value;
+    final equipment = equipmentAsync.asData!.value;
+    final categories = categoriesAsync.asData!.value;
+    _logger.finer(
+      'All data loaded: ${exercises.length} exercises, '
+      '${equipment.length} equipment, '
+      '${categories.length} categories',
     );
 
-    // Load equipment
-    ref.listen<AsyncValue<List<Equipment>>>(
-      exerciseEquipmentProvider,
-      (previous, next) {
-        if (next.hasValue) {
-          state = state.copyWith(equipment: next.asData!.value);
-          _ensureFiltersInitialized();
-        }
-      },
-      fireImmediately: true,
+    final newState = ExerciseState(
+      exercises: exercises,
+      equipment: equipment,
+      categories: categories,
+      isLoading: false,
     );
 
-    // Load categories
-    ref.listen<AsyncValue<List<ExerciseCategory>>>(
-      exerciseCategoryProvider,
-      (previous, next) {
-        if (next.hasValue) {
-          state = state.copyWith(categories: next.asData!.value);
-          _ensureFiltersInitialized();
-        }
-      },
-      fireImmediately: true,
+    final filters = _initializeFilters(newState.filters, equipment, categories);
+    final filteredExercises = _applyFilters(exercises, filters);
+    return newState.copyWith(
+      filters: filters,
+      filteredExercises: filteredExercises,
     );
-
-    return state;
   }
 
-  void _ensureFiltersInitialized() {
-    var filters = state.filters;
+  Filters _initializeFilters(
+    Filters currentFilters,
+    List<Equipment> equipment,
+    List<ExerciseCategory> categories,
+  ) {
+    var filters = currentFilters;
     var updated = false;
 
-    if (filters.equipment.items.isEmpty && state.equipment.isNotEmpty) {
-      final equipmentMap = {for (final e in state.equipment) e: false};
-      filters = filters.copyWith(
-        equipment: FilterCategory<Equipment>(title: 'Equipment', items: equipmentMap),
-      );
+    if (filters.equipment.items.isEmpty && equipment.isNotEmpty) {
+      final Map<Equipment, bool> items = {for (var e in equipment) e: false};
+      filters = filters.copyWith(equipment: filters.equipment.copyWith(items: items));
       updated = true;
     }
 
-    if (filters.exerciseCategories.items.isEmpty && state.categories.isNotEmpty) {
-      final categoryMap = {for (final c in state.categories) c: false};
+    if (filters.exerciseCategories.items.isEmpty && categories.isNotEmpty) {
+      final Map<ExerciseCategory, bool> items = {for (var c in categories) c: false};
       filters = filters.copyWith(
-        exerciseCategories: FilterCategory<ExerciseCategory>(title: 'Category', items: categoryMap),
+        exerciseCategories: filters.exerciseCategories.copyWith(items: items),
       );
       updated = true;
     }
 
     if (updated) {
-      setFilters(filters, LANGUAGE_SHORT_ENGLISH);
+      filters.markUpdated();
     }
+    return filters;
   }
 
   void setFilters(Filters filters, [String languageCode = LANGUAGE_SHORT_ENGLISH]) {
