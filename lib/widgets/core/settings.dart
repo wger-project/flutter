@@ -20,7 +20,6 @@
 import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/configure_plates_screen.dart';
-import 'package:wger/widgets/core/settings/exercise_cache.dart';
 import 'package:wger/widgets/core/settings/ingredient_cache.dart';
 import 'package:wger/widgets/core/settings/theme.dart';
 
@@ -40,7 +39,6 @@ class SettingsPage extends StatelessWidget {
           ListTile(
             title: Text(i18n.settingsCacheTitle, style: Theme.of(context).textTheme.headlineSmall),
           ),
-          const SettingsExerciseCache(),
           const SettingsIngredientCache(),
           ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
           const SettingsTheme(),
