@@ -302,6 +302,27 @@ class NutritionPlansProvider with ChangeNotifier {
     await database.deleteEverything();
   }
 
+
+
+  /// Saves an ingredient to the cache  
+  Future<void> cacheIngredient(Ingredient ingredient, {IngredientDatabase? database}) async {
+    database ??= this.database;
+
+    ingredients.add(ingredient);
+
+    final data = ingredient.toJson();
+    await database
+        .into(database.ingredients)
+        .insert(
+          IngredientsCompanion.insert(
+            id: ingredient.id,
+            data: jsonEncode(data),
+            lastFetched: DateTime.now(),
+          ),
+        );
+    _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
+  }
+
   /// Fetch and return an ingredient
   ///
   /// If the ingredient is not known locally, it is fetched from the server
@@ -319,7 +340,7 @@ class NutritionPlansProvider with ChangeNotifier {
       // Try to fetch from local db
       if (ingredientDb != null) {
         ingredient = Ingredient.fromJson(jsonDecode(ingredientDb.data));
-        ingredients.add(ingredient);
+          ingredients.add(ingredient);
         _logger.info("Loaded ingredient '${ingredient.name}' from db cache");
 
         // Prune old entries
@@ -329,22 +350,14 @@ class NutritionPlansProvider with ChangeNotifier {
           (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
         }
       } else {
+        print("Fetching ingredient ID $ingredientId from server");
         final data = await baseProvider.fetch(
           baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
         );
         ingredient = Ingredient.fromJson(data);
-        ingredients.add(ingredient);
 
-        database
-            .into(database.ingredients)
-            .insert(
-              IngredientsCompanion.insert(
-                id: ingredientId,
-                data: jsonEncode(data),
-                lastFetched: DateTime.now(),
-              ),
-            );
-        _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
+        // Cache the ingredient
+        await cacheIngredient(ingredient, database: database);
       }
     }
 
@@ -376,6 +389,7 @@ class NutritionPlansProvider with ChangeNotifier {
     }
 
     // Send the request
+    print("Fetching ingredient from server");
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
         _ingredientInfoPath,
@@ -406,8 +420,16 @@ class NutritionPlansProvider with ChangeNotifier {
     if (data['count'] == 0) {
       return null;
     }
-    // TODO we should probably add it to ingredient cache.
-    return Ingredient.fromJson(data['results'][0]);
+    final ingredient = Ingredient.fromJson(data['results'][0]);
+
+    // Cache the ingredient
+    try {
+      await cacheIngredient(ingredient);
+    } catch (e) {
+      _logger.warning("Could not cache ingredient ${ingredient.id} from barcode search: $e");
+    }
+    
+    return ingredient;
   }
 
   /// Log meal to nutrition diary
