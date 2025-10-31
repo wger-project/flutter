@@ -19,8 +19,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/platform.dart';
@@ -29,22 +29,24 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/exercises/list_tile.dart';
 import 'package:wger/widgets/exercises/videos.dart';
 
-class ExerciseDetail extends StatelessWidget {
+class ExerciseDetail extends ConsumerWidget {
   final Exercise _exercise;
-  late Translation _translation;
+  late final Translation _translation;
+  late final ExerciseStateNotifier _exerciseStateNotifier;
   static const PADDING = 9.0;
   final CarouselController carouselController = CarouselController();
 
   ExerciseDetail(this._exercise);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    _exerciseStateNotifier = ref.read(exerciseStateProvider.notifier);
     _translation = _exercise.getTranslation(Localizations.localeOf(context).languageCode);
 
     return SingleChildScrollView(
@@ -81,11 +83,10 @@ class ExerciseDetail extends StatelessWidget {
   }
 
   List<Widget> getVariations(BuildContext context) {
-    final variations = Provider.of<ExercisesProvider>(context, listen: false)
-        .findExercisesByVariationId(
-          _exercise.variationId,
-          exerciseIdToExclude: _exercise.id,
-        );
+    final variations = _exerciseStateNotifier.findExercisesByVariationId(
+      _exercise.variationId,
+      exerciseIdToExclude: _exercise.id,
+    );
 
     final List<Widget> out = [];
     if (_exercise.variationId == null) {

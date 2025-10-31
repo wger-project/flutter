@@ -118,7 +118,7 @@ class _GymModeState extends ConsumerState<GymMode> {
     for (final slot in widget._dayDataGym.slots) {
       var firstPage = true;
       for (final config in slot.setConfigs) {
-        final exercise = context.read<ExercisesProvider>().findExerciseById(config.exerciseId);
+        final exercise = ref.read(exerciseStateProvider.notifier).getById(config.exerciseId);
 
         if (firstPage) {
           _exercisePages[exercise] = currentPage;
@@ -141,7 +141,7 @@ class _GymModeState extends ConsumerState<GymMode> {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
         final ratioCompleted = currentElement / _totalElements;
-        final exercise = exercisesAsync.getById(config.exerciseId)!;
+        final exercise = exercisesAsync.getById(config.exerciseId);
         currentElement++;
 
         if (firstPage && state.showExercisePages) {

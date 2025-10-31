@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/colors.dart';
 import 'package:wger/helpers/date.dart';
@@ -26,31 +27,34 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/routines/charts.dart';
 import 'package:wger/widgets/routines/forms/session.dart';
 
-class SessionInfo extends StatefulWidget {
+class SessionInfo extends ConsumerStatefulWidget {
   final WorkoutSession _session;
 
   const SessionInfo(this._session);
 
   @override
-  State<SessionInfo> createState() => _SessionInfoState();
+  ConsumerState<SessionInfo> createState() => _SessionInfoState();
 }
 
-class _SessionInfoState extends State<SessionInfo> {
+class _SessionInfoState extends ConsumerState<SessionInfo> {
   bool editMode = false;
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
           ListTile(
+            enabled: isOnline,
             title: Text(
               i18n.workoutSession,
               style: Theme.of(context).textTheme.headlineSmall,
@@ -160,14 +164,16 @@ class ExerciseLogChart extends StatelessWidget {
   }
 }
 
-class DayLogWidget extends StatelessWidget {
+class DayLogWidget extends ConsumerWidget {
   final DateTime _date;
   final Routine _routine;
 
   const DayLogWidget(this._date, this._routine);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isOnline = ref.watch(networkStatusProvider);
+
     final sessionApi = _routine.sessions.firstWhere(
       (sessionApi) => sessionApi.session.date.isSameDayAs(_date),
     );
@@ -197,9 +203,9 @@ class DayLogWidget extends StatelessWidget {
                           IconButton(
                             icon: const Icon(Icons.delete),
                             key: ValueKey('delete-log-${log.id}'),
-                            onPressed: () {
-                              showDeleteDialog(context, translation.name, log);
-                            },
+                            onPressed: isOnline
+                                ? () => showDeleteLogDialog(context, translation.name, log)
+                                : null,
                           ),
                         ],
                       ),

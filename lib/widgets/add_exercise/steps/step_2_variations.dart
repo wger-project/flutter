@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as provider;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercise_state_notifier.dart';
 
-class Step2Variations extends StatelessWidget {
+class Step2Variations extends ConsumerWidget {
   final GlobalKey<FormState> formkey;
 
   const Step2Variations({required this.formkey});
 
   @override
-  Widget build(BuildContext context) {
-    final exerciseProvider = context.read<ExercisesProvider>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final exerciseProvider = ref.read(exerciseStateProvider.notifier);
 
     return Form(
       key: formkey,
@@ -49,7 +50,7 @@ class Step2Variations extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Consumer<AddExerciseProvider>(
+                        provider.Consumer<AddExerciseProvider>(
                           builder: (ctx, provider, __) => Switch(
                             value: provider.variationId == key,
                             onChanged: (state) => provider.variationId = key,
@@ -59,7 +60,7 @@ class Step2Variations extends StatelessWidget {
                     ),
                   ),
                   // Exercise bases without variations
-                  ...exerciseProvider.exercises
+                  ...exerciseProvider.allExercises
                       .where((b) => b.variationId == null)
                       .map(
                         (base) => Row(
@@ -82,7 +83,7 @@ class Step2Variations extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Consumer<AddExerciseProvider>(
+                            provider.Consumer<AddExerciseProvider>(
                               builder: (ctx, provider, __) => Switch(
                                 value: provider.variationConnectToExercise == base.id,
                                 onChanged: (state) => provider.variationConnectToExercise = base.id,

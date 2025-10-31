@@ -106,25 +106,6 @@ class ExercisesProvider with ChangeNotifier {
     );
   }
 
-  /// Find exercises by variation IDs
-  ///
-  /// exerciseIdToExclude: the ID of the exercise to exclude from the list of
-  /// returned exercises. Since this is typically called by one exercise, we are
-  /// not interested in seeing that same exercise returned in the list of variations.
-  /// If this parameter is not passed, all exercises are returned.
-  List<Exercise> findExercisesByVariationId(int? variationId, {int? exerciseIdToExclude}) {
-    if (variationId == null) {
-      return [];
-    }
-
-    var out = exercises.where((base) => base.variationId == variationId).toList();
-
-    if (exerciseIdToExclude != null) {
-      out = out.where((e) => e.id != exerciseIdToExclude).toList();
-    }
-    return out;
-  }
-
   /// Find category by ID
   ExerciseCategory findCategoryById(int id) {
     return _categories.firstWhere(
