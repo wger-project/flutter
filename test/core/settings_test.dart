@@ -25,31 +25,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/core/settings.dart';
 
-import '../../test_data/exercises.dart';
 import '../../test_data/nutritional_plans.dart';
 import 'settings_test.mocks.dart';
 
 @GenerateMocks([
-  ExercisesProvider,
   NutritionPlansProvider,
   UserProvider,
   WgerBaseProvider,
   SharedPreferencesAsync,
 ])
 void main() {
-  final mockExerciseProvider = MockExercisesProvider();
   final mockNutritionProvider = MockNutritionPlansProvider();
   final mockSharedPreferences = MockSharedPreferencesAsync();
   final mockUserProvider = MockUserProvider();
 
   setUp(() {
     when(mockUserProvider.themeMode).thenReturn(ThemeMode.system);
-    when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
     when(mockNutritionProvider.ingredients).thenReturn([ingredient1, ingredient2]);
   });
 
@@ -57,7 +52,6 @@ void main() {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NutritionPlansProvider>(create: (context) => mockNutritionProvider),
-        ChangeNotifierProvider<ExercisesProvider>(create: (context) => mockExerciseProvider),
         ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
       ],
       child: MaterialApp(
@@ -70,24 +64,6 @@ void main() {
   }
 
   group('Cache', () {
-    testWidgets('Test resetting the exercise cache', (WidgetTester tester) async {
-      await tester.pumpWidget(createSettingsScreen());
-      await tester.tap(find.byKey(const ValueKey('cacheIconExercisesDelete')));
-      await tester.pumpAndSettle();
-
-      verify(mockExerciseProvider.clearAllCachesAndPrefs());
-    });
-
-    testWidgets('Test refreshing the exercise cache', (WidgetTester tester) async {
-      await tester.pumpWidget(createSettingsScreen());
-      await tester.tap(find.byKey(const ValueKey('cacheIconExercisesRefresh')));
-      await tester.pumpAndSettle();
-
-      verify(mockExerciseProvider.clearAllCachesAndPrefs());
-      verify(mockExerciseProvider.fetchAndSetInitialData());
-      verify(mockExerciseProvider.fetchAndSetAllExercises());
-    });
-
     testWidgets('Test resetting the ingredient cache', (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());
       await tester.tap(find.byKey(const ValueKey('cacheIconIngredients')));

@@ -48,11 +48,6 @@ const DAYS_TO_CACHE = 20;
 const SUBMIT_BUTTON_KEY_NAME = 'submit-button';
 
 /// Local Preferences keys
-const PREFS_EXERCISES = 'exerciseData';
-const PREFS_LAST_UPDATED_MUSCLES = 'lastUpdatedMuscles';
-const PREFS_LAST_UPDATED_EQUIPMENT = 'lastUpdatedEquipment';
-const PREFS_LAST_UPDATED_CATEGORIES = 'lastUpdatedCategories';
-const PREFS_LAST_UPDATED_LANGUAGES = 'lastUpdatedLanguages';
 const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
 const PREFS_USER = 'userData';
