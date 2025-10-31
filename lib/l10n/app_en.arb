@@ -1069,5 +1069,5 @@
   "lightMode": "Always light mode",
   "systemMode": "System settings",
   "youAreOffline": "You are offline",
-  "offlineModeInfo": "Some features are unavailable until you reconnect to the internet. Currently, this mainly affects editing routines and nutrition plans, but logging workouts and meals works offline. The data will be synced automatically once you are back online."
+  "offlineModeInfo": "Some features are unavailable until you reconnect to the internet (buttons and menus will be disabled). Currently, this mainly affects editing routines and nutrition plans, but logging workouts and meals works offline. The data will be synced automatically once you are back online."
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -277,7 +277,7 @@ class CopyToClipboardButton extends StatelessWidget {
   }
 }
 
-void showDeleteDialog(BuildContext context, String confirmDeleteName, Log log) async {
+void showDeleteLogDialog(BuildContext context, String confirmDeleteName, Log log) async {
   final res = await showDialog(
     context: context,
     builder: (BuildContext contextDialog) {

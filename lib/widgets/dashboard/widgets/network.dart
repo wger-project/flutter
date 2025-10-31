@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/widgets/core/cards.dart';
 
 class DashboardNetworkInfo extends ConsumerWidget {
   const DashboardNetworkInfo({super.key});
@@ -34,20 +35,7 @@ class DashboardNetworkInfo extends ConsumerWidget {
         : Tooltip(
             margin: const EdgeInsets.all(8),
             message: i18n.offlineModeInfo,
-            child: Card(
-              color: Theme.of(context).colorScheme.errorContainer,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  spacing: 8,
-                  children: [
-                    const Icon(Icons.info_outline),
-                    Text(i18n.youAreOffline),
-                  ],
-                ),
-              ),
-            ),
+            child: WarningCard(text: i18n.youAreOffline),
           );
   }
 }
