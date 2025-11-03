@@ -20,8 +20,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/core/locator.dart';
-import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -33,10 +31,8 @@ class ExercisesProvider with ChangeNotifier {
   final _logger = Logger('ExercisesProvider');
 
   final WgerBaseProvider baseProvider;
-  ExerciseDatabase database;
 
-  ExercisesProvider(this.baseProvider, {ExerciseDatabase? database})
-    : database = database ?? locator<ExerciseDatabase>();
+  ExercisesProvider(this.baseProvider);
 
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 4;

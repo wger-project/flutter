@@ -18,12 +18,10 @@
 
 import 'dart:io';
 
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
@@ -38,7 +36,6 @@ void main() {
   final mockBaseProvider = MockWgerBaseProvider();
   final exercisesProvider = ExercisesProvider(
     mockBaseProvider,
-    database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
   );
 
   Widget renderWidget({locale = 'en'}) {
