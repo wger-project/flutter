@@ -21,7 +21,9 @@ import 'package:powersync/powersync.dart' show uuid;
 import 'package:wger/database/converters/int_to_string_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 
 @UseRowClass(Log)
 class WorkoutLogTable extends Table {
@@ -63,4 +65,22 @@ class WorkoutSessionTable extends Table {
   TextColumn get timeStart =>
       text().named('time_start').nullable().map(const TimeOfDayConverter())();
   TextColumn get timeEnd => text().named('time_end').nullable().map(const TimeOfDayConverter())();
+}
+
+@UseRowClass(RepetitionUnit)
+class RoutineRepetitionUnitTable extends Table {
+  @override
+  String get tableName => 'core_repetitionunit';
+
+  IntColumn get id => integer()();
+  TextColumn get name => text()();
+}
+
+@UseRowClass(WeightUnit)
+class RoutineWeightUnitTable extends Table {
+  @override
+  String get tableName => 'core_weightunit';
+
+  IntColumn get id => integer()();
+  TextColumn get name => text()();
 }

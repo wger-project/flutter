@@ -20,6 +20,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
@@ -27,7 +29,6 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
-import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -37,6 +38,20 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
+
+part 'routines.g.dart';
+
+@riverpod
+Stream<List<WeightUnit>> routineWeightUnit(Ref ref) {
+  final db = ref.read(driftPowerSyncDatabase);
+  return db.select(db.routineWeightUnitTable).watch();
+}
+
+@riverpod
+Stream<List<RepetitionUnit>> routineRepetitionUnit(Ref ref) {
+  final db = ref.read(driftPowerSyncDatabase);
+  return db.select(db.routineRepetitionUnitTable).watch();
+}
 
 class RoutinesProvider with ChangeNotifier {
   final _logger = Logger('RoutinesProvider');
@@ -647,52 +662,28 @@ class RoutinesProvider with ChangeNotifier {
     return newSession;
   }
 
-  Future<WorkoutSession> editSession(WorkoutSession session) async {
-    final data = await baseProvider.patch(
-      session.toJson(),
-      baseProvider.makeUrl(_sessionUrlPath, id: session.id),
-    );
-    final newSession = WorkoutSession.fromJson(data);
-    notifyListeners();
-    return newSession;
+  Future<void> editSession(WorkoutSession session) async {
+    // final data = await baseProvider.patch(
+    //   session.toJson(),
+    //   baseProvider.makeUrl(_sessionUrlPath, id: session.id),
+    // );
+    // final newSession = WorkoutSession.fromJson(data);
+    // notifyListeners();
+    // return newSession;
   }
 
   /*
    * Logs
    */
-  Future<Log> addLog(Log log) async {
-    final data = await baseProvider.post(
-      log.toJson(),
-      baseProvider.makeUrl(_logsUrlPath),
-    );
-    final newLog = Log.fromJson(data);
-
-    newLog.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-    newLog.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
-    newLog.exerciseBase = (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
-
-    final plan = findById(newLog.routineId);
-
-    // If there is no session known locally, just re-fetch everything
-    try {
-      final session = plan.sessions.firstWhere((element) => element.session.id == newLog.sessionId);
-      session.logs.add(newLog);
-      notifyListeners();
-    } on StateError {
-      await fetchAndSetRoutineFull(newLog.routineId);
-    }
-
-    return newLog;
-  }
 
   /*Future<void> editLog(Log log) async {
     await patch(log.toJson(), makeUrl(_logsUrlPath, id: log.id));
     notifyListeners();
   }*/
 
-  Future<void> deleteLog(int logId, int routineId) async {
+  Future<void> deleteLog(String logId, int routineId) async {
     _logger.fine('Deleting log ${logId}');
-    await baseProvider.deleteRequest(_logsUrlPath, logId);
+    // await baseProvider.deleteRequest(_logsUrlPath, logId);
     await fetchAndSetRoutineFull(routineId);
   }
 }

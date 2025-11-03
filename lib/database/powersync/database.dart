@@ -34,7 +34,9 @@ import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 
 import 'powersync.dart';
 import 'tables/exercise.dart';
@@ -67,6 +69,8 @@ part 'database.g.dart';
     MeasurementCategoryTable,
     WorkoutLogTable,
     WorkoutSessionTable,
+    RoutineRepetitionUnitTable,
+    RoutineWeightUnitTable,
   ],
   //include: {'queries.drift'},
 )

@@ -4169,6 +4169,290 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
   }
 }
 
+class $RoutineRepetitionUnitTableTable extends RoutineRepetitionUnitTable
+    with TableInfo<$RoutineRepetitionUnitTableTable, RepetitionUnit> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoutineRepetitionUnitTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'core_repetitionunit';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RepetitionUnit> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  RepetitionUnit map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RepetitionUnit(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+    );
+  }
+
+  @override
+  $RoutineRepetitionUnitTableTable createAlias(String alias) {
+    return $RoutineRepetitionUnitTableTable(attachedDatabase, alias);
+  }
+}
+
+class RoutineRepetitionUnitTableCompanion extends UpdateCompanion<RepetitionUnit> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<int> rowid;
+  const RoutineRepetitionUnitTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RoutineRepetitionUnitTableCompanion.insert({
+    required int id,
+    required String name,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name);
+  static Insertable<RepetitionUnit> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RoutineRepetitionUnitTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<int>? rowid,
+  }) {
+    return RoutineRepetitionUnitTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoutineRepetitionUnitTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RoutineWeightUnitTableTable extends RoutineWeightUnitTable
+    with TableInfo<$RoutineWeightUnitTableTable, WeightUnit> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoutineWeightUnitTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'core_weightunit';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WeightUnit> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  WeightUnit map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeightUnit(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+    );
+  }
+
+  @override
+  $RoutineWeightUnitTableTable createAlias(String alias) {
+    return $RoutineWeightUnitTableTable(attachedDatabase, alias);
+  }
+}
+
+class RoutineWeightUnitTableCompanion extends UpdateCompanion<WeightUnit> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<int> rowid;
+  const RoutineWeightUnitTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RoutineWeightUnitTableCompanion.insert({
+    required int id,
+    required String name,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name);
+  static Insertable<WeightUnit> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RoutineWeightUnitTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<int>? rowid,
+  }) {
+    return RoutineWeightUnitTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoutineWeightUnitTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   _$DriftPowersyncDatabase(QueryExecutor e) : super(e);
   $DriftPowersyncDatabaseManager get managers => $DriftPowersyncDatabaseManager(this);
@@ -4194,6 +4478,11 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     this,
   );
   late final $WorkoutSessionTableTable workoutSessionTable = $WorkoutSessionTableTable(this);
+  late final $RoutineRepetitionUnitTableTable routineRepetitionUnitTable =
+      $RoutineRepetitionUnitTableTable(this);
+  late final $RoutineWeightUnitTableTable routineWeightUnitTable = $RoutineWeightUnitTableTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4214,6 +4503,8 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     measurementCategoryTable,
     workoutLogTable,
     workoutSessionTable,
+    routineRepetitionUnitTable,
+    routineWeightUnitTable,
   ];
   @override
   DriftDatabaseOptions get options => const DriftDatabaseOptions(storeDateTimeAsText: true);
@@ -9713,6 +10004,308 @@ typedef $$WorkoutSessionTableTableProcessedTableManager =
       WorkoutSession,
       PrefetchHooks Function()
     >;
+typedef $$RoutineRepetitionUnitTableTableCreateCompanionBuilder =
+    RoutineRepetitionUnitTableCompanion Function({
+      required int id,
+      required String name,
+      Value<int> rowid,
+    });
+typedef $$RoutineRepetitionUnitTableTableUpdateCompanionBuilder =
+    RoutineRepetitionUnitTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<int> rowid,
+    });
+
+class $$RoutineRepetitionUnitTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $RoutineRepetitionUnitTableTable> {
+  $$RoutineRepetitionUnitTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RoutineRepetitionUnitTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $RoutineRepetitionUnitTableTable> {
+  $$RoutineRepetitionUnitTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RoutineRepetitionUnitTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $RoutineRepetitionUnitTableTable> {
+  $$RoutineRepetitionUnitTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+}
+
+class $$RoutineRepetitionUnitTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $RoutineRepetitionUnitTableTable,
+          RepetitionUnit,
+          $$RoutineRepetitionUnitTableTableFilterComposer,
+          $$RoutineRepetitionUnitTableTableOrderingComposer,
+          $$RoutineRepetitionUnitTableTableAnnotationComposer,
+          $$RoutineRepetitionUnitTableTableCreateCompanionBuilder,
+          $$RoutineRepetitionUnitTableTableUpdateCompanionBuilder,
+          (
+            RepetitionUnit,
+            BaseReferences<
+              _$DriftPowersyncDatabase,
+              $RoutineRepetitionUnitTableTable,
+              RepetitionUnit
+            >,
+          ),
+          RepetitionUnit,
+          PrefetchHooks Function()
+        > {
+  $$RoutineRepetitionUnitTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $RoutineRepetitionUnitTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$RoutineRepetitionUnitTableTableFilterComposer(
+            $db: db,
+            $table: table,
+          ),
+          createOrderingComposer: () => $$RoutineRepetitionUnitTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$RoutineRepetitionUnitTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RoutineRepetitionUnitTableCompanion(
+                id: id,
+                name: name,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String name,
+                Value<int> rowid = const Value.absent(),
+              }) => RoutineRepetitionUnitTableCompanion.insert(
+                id: id,
+                name: name,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RoutineRepetitionUnitTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $RoutineRepetitionUnitTableTable,
+      RepetitionUnit,
+      $$RoutineRepetitionUnitTableTableFilterComposer,
+      $$RoutineRepetitionUnitTableTableOrderingComposer,
+      $$RoutineRepetitionUnitTableTableAnnotationComposer,
+      $$RoutineRepetitionUnitTableTableCreateCompanionBuilder,
+      $$RoutineRepetitionUnitTableTableUpdateCompanionBuilder,
+      (
+        RepetitionUnit,
+        BaseReferences<_$DriftPowersyncDatabase, $RoutineRepetitionUnitTableTable, RepetitionUnit>,
+      ),
+      RepetitionUnit,
+      PrefetchHooks Function()
+    >;
+typedef $$RoutineWeightUnitTableTableCreateCompanionBuilder =
+    RoutineWeightUnitTableCompanion Function({
+      required int id,
+      required String name,
+      Value<int> rowid,
+    });
+typedef $$RoutineWeightUnitTableTableUpdateCompanionBuilder =
+    RoutineWeightUnitTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<int> rowid,
+    });
+
+class $$RoutineWeightUnitTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $RoutineWeightUnitTableTable> {
+  $$RoutineWeightUnitTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RoutineWeightUnitTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $RoutineWeightUnitTableTable> {
+  $$RoutineWeightUnitTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RoutineWeightUnitTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $RoutineWeightUnitTableTable> {
+  $$RoutineWeightUnitTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+}
+
+class $$RoutineWeightUnitTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $RoutineWeightUnitTableTable,
+          WeightUnit,
+          $$RoutineWeightUnitTableTableFilterComposer,
+          $$RoutineWeightUnitTableTableOrderingComposer,
+          $$RoutineWeightUnitTableTableAnnotationComposer,
+          $$RoutineWeightUnitTableTableCreateCompanionBuilder,
+          $$RoutineWeightUnitTableTableUpdateCompanionBuilder,
+          (
+            WeightUnit,
+            BaseReferences<_$DriftPowersyncDatabase, $RoutineWeightUnitTableTable, WeightUnit>,
+          ),
+          WeightUnit,
+          PrefetchHooks Function()
+        > {
+  $$RoutineWeightUnitTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $RoutineWeightUnitTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$RoutineWeightUnitTableTableFilterComposer(
+            $db: db,
+            $table: table,
+          ),
+          createOrderingComposer: () => $$RoutineWeightUnitTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$RoutineWeightUnitTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RoutineWeightUnitTableCompanion(
+                id: id,
+                name: name,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String name,
+                Value<int> rowid = const Value.absent(),
+              }) => RoutineWeightUnitTableCompanion.insert(
+                id: id,
+                name: name,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RoutineWeightUnitTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $RoutineWeightUnitTableTable,
+      WeightUnit,
+      $$RoutineWeightUnitTableTableFilterComposer,
+      $$RoutineWeightUnitTableTableOrderingComposer,
+      $$RoutineWeightUnitTableTableAnnotationComposer,
+      $$RoutineWeightUnitTableTableCreateCompanionBuilder,
+      $$RoutineWeightUnitTableTableUpdateCompanionBuilder,
+      (
+        WeightUnit,
+        BaseReferences<_$DriftPowersyncDatabase, $RoutineWeightUnitTableTable, WeightUnit>,
+      ),
+      WeightUnit,
+      PrefetchHooks Function()
+    >;
 
 class $DriftPowersyncDatabaseManager {
   final _$DriftPowersyncDatabase _db;
@@ -9756,4 +10349,14 @@ class $DriftPowersyncDatabaseManager {
       $$WorkoutLogTableTableTableManager(_db, _db.workoutLogTable);
   $$WorkoutSessionTableTableTableManager get workoutSessionTable =>
       $$WorkoutSessionTableTableTableManager(_db, _db.workoutSessionTable);
+  $$RoutineRepetitionUnitTableTableTableManager get routineRepetitionUnitTable =>
+      $$RoutineRepetitionUnitTableTableTableManager(
+        _db,
+        _db.routineRepetitionUnitTable,
+      );
+  $$RoutineWeightUnitTableTableTableManager get routineWeightUnitTable =>
+      $$RoutineWeightUnitTableTableTableManager(
+        _db,
+        _db.routineWeightUnitTable,
+      );
 }

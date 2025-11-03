@@ -209,4 +209,16 @@ Schema schema = const Schema([
       Index('day', [IndexedColumn('day_id')]),
     ],
   ),
+  Table(
+    'core_repetitionunit',
+    [
+      Column.text('name'),
+    ],
+  ),
+  Table(
+    'core_weightunit',
+    [
+      Column.text('name'),
+    ],
+  ),
 ]);
