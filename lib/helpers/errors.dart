@@ -22,15 +22,15 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/main.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/workout_logs.dart';
 
 import 'consts.dart';
 import 'logs.dart';
@@ -295,8 +295,10 @@ void showDeleteLogDialog(BuildContext context, String confirmDeleteName, Log log
               AppLocalizations.of(context).delete,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-            onPressed: () {
-              context.read<RoutinesProvider>().deleteLog(log.id.toString(), log.routineId);
+            onPressed: () async {
+              await ProviderScope.containerOf(
+                context,
+              ).read(workoutLogProvider.notifier).deleteEntry(log.id.toString());
 
               Navigator.of(contextDialog).pop();
 

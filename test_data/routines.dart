@@ -47,6 +47,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final log1 = Log(
     id: '1',
+    exerciseId: 1,
     iteration: 2,
     slotEntryId: 3,
     weight: 10,
@@ -61,6 +62,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final log2 = Log(
     id: '2',
+    exerciseId: 1,
     iteration: 4,
     slotEntryId: 1,
     weight: 10,
@@ -75,6 +77,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final log3 = Log(
     id: '3',
+    exerciseId: 2,
     iteration: 5,
     slotEntryId: 1,
     weight: 50,
@@ -89,7 +92,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final session1 = WorkoutSessionApi(
     session: WorkoutSession(
-      id: 1,
+      id: '1',
       routineId: 1,
       date: DateTime(2021, 5, 1),
       impression: 3,
@@ -102,7 +105,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
 
   final session2 = WorkoutSessionApi(
     session: WorkoutSession(
-      id: 2,
+      id: '2',
       routineId: 1,
       date: DateTime(2021, 5, 2),
       impression: 1,

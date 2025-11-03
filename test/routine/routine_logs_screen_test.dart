@@ -20,13 +20,16 @@ import 'dart:io';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/workout_log_repository.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/workout_logs.dart';
@@ -34,40 +37,48 @@ import 'package:wger/widgets/routines/workout_logs.dart';
 import '../../test_data/routines.dart';
 import 'routine_logs_screen_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesProvider, WorkoutLogRepository])
 void main() {
   late Routine routine;
   final mockRoutinesProvider = MockRoutinesProvider();
+  final mockWorkoutLogRepository = MockWorkoutLogRepository();
 
   setUp(() {
     routine = getTestRoutine();
     routine.sessions[0].session.date = DateTime(2025, 3, 29);
 
     when(mockRoutinesProvider.findById(any)).thenAnswer((_) => routine);
+    when(mockWorkoutLogRepository.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
   });
 
-  Widget renderWidget({locale = 'en'}) {
+  Widget renderWidget({locale = 'en', isOnline = true}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        home: TextButton(
-          onPressed: () => key.currentState!.push(
-            MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: routine.id),
-              builder: (_) => const WorkoutLogsScreen(),
+    return ProviderScope(
+      overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
+        workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepository),
+      ],
+      child: ChangeNotifierProvider<RoutinesProvider>(
+        create: (context) => mockRoutinesProvider,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          home: TextButton(
+            onPressed: () => key.currentState!.push(
+              MaterialPageRoute<void>(
+                settings: RouteSettings(arguments: routine.id),
+                builder: (_) => const WorkoutLogsScreen(),
+              ),
             ),
+            child: const SizedBox(),
           ),
-          child: const SizedBox(),
+          routes: {
+            RoutineScreen.routeName: (ctx) => const WorkoutLogsScreen(),
+          },
         ),
-        routes: {
-          RoutineScreen.routeName: (ctx) => const WorkoutLogsScreen(),
-        },
       ),
     );
   }
@@ -114,7 +125,25 @@ void main() {
       expect(find.byKey(const ValueKey('delete-button')), findsOneWidget);
       expect(find.byKey(const ValueKey('cancel-button')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey('delete-button')));
-      verify(mockRoutinesProvider.deleteLog(1, 1)).called(1);
+      verify(mockWorkoutLogRepository.deleteLocalDrift('1')).called(1);
+    });
+  });
+
+  testWidgets('Handle offline status', (WidgetTester tester) async {
+    // If the user is offline, the delete button is deactivated and no dialog is shown
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+      await tester.pumpWidget(renderWidget(isOnline: false));
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('delete-log-1')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey('delete-button')), findsNothing);
+      expect(find.byKey(const ValueKey('cancel-button')), findsNothing);
+      verifyNever(mockWorkoutLogRepository.deleteLocalDrift);
     });
   });
 }
