@@ -17,16 +17,10 @@
  */
 
 import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/exercises.dart';
 
-import 'measurements/measurement_provider_test.mocks.dart';
 import 'other/base_provider_test.mocks.dart';
 
 // Test Auth provider
 final AuthProvider testAuthProvider = AuthProvider(MockClient())
   ..token = 'FooBar'
   ..serverUrl = 'https://localhost';
-
-// Test Exercises provider
-final mockBaseProvider = MockWgerBaseProvider();
-final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);

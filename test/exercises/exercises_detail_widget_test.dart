@@ -17,24 +17,31 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 import '../../test_data/exercises.dart';
-import 'exercises_detail_widget_test.mocks.dart';
 
-@GenerateMocks([ExercisesProvider])
 void main() {
-  final mockProvider = MockExercisesProvider();
-
   Widget createHomeScreen({locale = 'en'}) {
-    return ChangeNotifierProvider<ExercisesProvider>(
-      create: (context) => mockProvider,
+    return ProviderScope(
+      overrides: [
+        exercisesProvider.overrideWith((ref) => Stream<List<Exercise>>.value(<Exercise>[])),
+        exerciseMusclesProvider.overrideWith((ref) => Stream<List<Muscle>>.value(<Muscle>[])),
+        exerciseCategoriesProvider.overrideWith(
+          (ref) => Stream<List<ExerciseCategory>>.value(<ExerciseCategory>[]),
+        ),
+        exerciseEquipmentProvider.overrideWith(
+          (ref) => Stream<List<Equipment>>.value(<Equipment>[]),
+        ),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -46,8 +53,6 @@ void main() {
   }
 
   testWidgets('Test the widgets on the exercise detail widget', (WidgetTester tester) async {
-    when(mockProvider.findExercisesByVariationId(any, exerciseIdToExclude: 1)).thenReturn([]);
-
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();
 
