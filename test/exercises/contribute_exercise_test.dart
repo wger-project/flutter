@@ -17,38 +17,62 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/language.dart';
+import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/core_data.dart';
+import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
-import '../../test_data/exercises.dart';
 import '../../test_data/profile.dart';
 import 'contribute_exercise_test.mocks.dart';
 
-@GenerateMocks([AddExerciseProvider, UserProvider, ExercisesProvider])
+@GenerateMocks([AddExerciseProvider, UserProvider])
 void main() {
   final mockAddExerciseProvider = MockAddExerciseProvider();
-  final mockExerciseProvider = MockExercisesProvider();
   final mockUserProvider = MockUserProvider();
 
+  setUp(() {
+    when(mockAddExerciseProvider.equipment).thenReturn([]);
+    when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
+    when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
+    when(mockAddExerciseProvider.variationConnectToExercise).thenReturn(null);
+  });
+
   Widget createExerciseScreen({locale = 'en'}) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<ExercisesProvider>(create: (context) => mockExerciseProvider),
-        ChangeNotifierProvider<AddExerciseProvider>(create: (context) => mockAddExerciseProvider),
-        ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
+    return riverpod.ProviderScope(
+      overrides: [
+        languagesProvider.overrideWith((ref) => Stream<List<Language>>.value(<Language>[])),
+        exercisesProvider.overrideWith((ref) => Stream<List<Exercise>>.value(<Exercise>[])),
+        exerciseMusclesProvider.overrideWith((ref) => Stream<List<Muscle>>.value(<Muscle>[])),
+        exerciseCategoriesProvider.overrideWith(
+          (ref) => Stream<List<ExerciseCategory>>.value(<ExerciseCategory>[]),
+        ),
+        exerciseEquipmentProvider.overrideWith(
+          (ref) => Stream<List<Equipment>>.value(<Equipment>[]),
+        ),
       ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const AddExerciseScreen(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<AddExerciseProvider>(create: (context) => mockAddExerciseProvider),
+          ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
+        ],
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const AddExerciseScreen(),
+        ),
       ),
     );
   }
@@ -70,18 +94,6 @@ void main() {
     // Arrange
     tProfile1.isTrustworthy = true;
     when(mockUserProvider.profile).thenReturn(tProfile1);
-
-    when(mockExerciseProvider.categories).thenReturn(testCategories);
-    when(mockExerciseProvider.muscles).thenReturn(testMuscles);
-    when(mockExerciseProvider.equipment).thenReturn(testEquipment);
-    when(mockExerciseProvider.exerciseByVariation).thenReturn({});
-    when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
-    when(mockExerciseProvider.languages).thenReturn(testLanguages);
-
-    when(mockAddExerciseProvider.equipment).thenReturn([]);
-    when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
-    when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
-    when(mockAddExerciseProvider.variationConnectToExercise).thenReturn(null);
 
     // Act
     await tester.pumpWidget(createExerciseScreen());

@@ -27,7 +27,6 @@ import 'package:wger/powersync/connector.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -105,7 +104,6 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
     if (!authProvider.dataInit) {
       final routinesProvider = context.read<RoutinesProvider>();
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
-      final exercisesProvider = context.read<ExercisesProvider>();
       final galleryProvider = context.read<GalleryProvider>();
       final measurementProvider = context.read<MeasurementProvider>();
       final userProvider = context.read<UserProvider>();
@@ -118,7 +116,6 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
         userProvider.fetchAndSetProfile(),
         routinesProvider.fetchAndSetUnits(),
         nutritionPlansProvider.fetchIngredientsFromCache(),
-        exercisesProvider.fetchAndSetInitialData(),
       ]);
       await ref.read(exerciseStateReadyProvider.future);
       ref.read(weightEntryProvider());

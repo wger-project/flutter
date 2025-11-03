@@ -26,7 +26,7 @@ class _Step4TranslationState extends ConsumerState<Step4Translation> {
     final i18n = AppLocalizations.of(context);
     final addExerciseProvider = context.read<AddExerciseProvider>();
 
-    final languagesAsync = ref.watch(languageProvider);
+    final languagesAsync = ref.watch(languagesProvider);
     final languages = languagesAsync.asData?.value ?? <Language>[];
 
     return Form(

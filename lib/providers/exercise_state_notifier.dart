@@ -33,9 +33,9 @@ part 'exercise_state_notifier.g.dart';
 @riverpod
 Future<void> exerciseStateReady(Ref ref) {
   return Future.wait([
-    ref.watch(exerciseProvider.future),
+    ref.watch(exercisesProvider.future),
     ref.watch(exerciseEquipmentProvider.future),
-    ref.watch(exerciseCategoryProvider.future),
+    ref.watch(exerciseCategoriesProvider.future),
   ]);
 }
 
@@ -50,9 +50,9 @@ final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
     _logger.finer('Building ExerciseStateNotifier');
     ref.keepAlive();
 
-    final exercisesAsync = ref.watch(exerciseProvider);
+    final exercisesAsync = ref.watch(exercisesProvider);
     final equipmentAsync = ref.watch(exerciseEquipmentProvider);
-    final categoriesAsync = ref.watch(exerciseCategoryProvider);
+    final categoriesAsync = ref.watch(exerciseCategoriesProvider);
 
     if (exercisesAsync.isLoading || equipmentAsync.isLoading || categoriesAsync.isLoading) {
       return ExerciseState(isLoading: true);

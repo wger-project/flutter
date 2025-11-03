@@ -28,9 +28,9 @@ class Step1Basics extends ConsumerWidget {
     final userProvider = context.read<UserProvider>();
     final addExerciseProvider = context.read<AddExerciseProvider>();
 
-    final languagesAsync = ref.watch(languageProvider);
-    final categoriesAsync = ref.watch(exerciseCategoryProvider);
-    final musclesAsync = ref.watch(exerciseMuscleProvider);
+    final languagesAsync = ref.watch(languagesProvider);
+    final categoriesAsync = ref.watch(exerciseCategoriesProvider);
+    final musclesAsync = ref.watch(exerciseMusclesProvider);
     final equipmentAsync = ref.watch(exerciseEquipmentProvider);
 
     final categories = categoriesAsync.asData?.value ?? <ExerciseCategory>[];

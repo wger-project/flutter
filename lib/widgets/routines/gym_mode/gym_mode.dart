@@ -24,7 +24,6 @@ import 'package:provider/provider.dart' as provider;
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';

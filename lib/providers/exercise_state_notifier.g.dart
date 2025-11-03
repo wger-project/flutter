@@ -40,7 +40,7 @@ final class ExerciseStateReadyProvider
   }
 }
 
-String _$exerciseStateReadyHash() => r'a5b80b37b69bb14902a6d347124721b835bd7ab5';
+String _$exerciseStateReadyHash() => r'4ba35bfced32dc984ea363e2a103eb8660bb4487';
 
 @ProviderFor(ExerciseStateNotifier)
 const exerciseStateProvider = ExerciseStateNotifierProvider._();
@@ -74,7 +74,7 @@ final class ExerciseStateNotifierProvider
   }
 }
 
-String _$exerciseStateNotifierHash() => r'317a9ce4bccae9899e30048be1586a6c21a2a006';
+String _$exerciseStateNotifierHash() => r'15a583c2d00b76fc792103db1b923e6a07bd1fc2';
 
 abstract class _$ExerciseStateNotifier extends $Notifier<ExerciseState> {
   ExerciseState build();

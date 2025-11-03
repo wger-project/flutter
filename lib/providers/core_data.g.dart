@@ -9,47 +9,36 @@ part of 'core_data.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(LanguageNotifier)
-const languageProvider = LanguageNotifierProvider._();
+@ProviderFor(languages)
+const languagesProvider = LanguagesProvider._();
 
-final class LanguageNotifierProvider
-    extends $StreamNotifierProvider<LanguageNotifier, List<Language>> {
-  const LanguageNotifierProvider._()
+final class LanguagesProvider
+    extends $FunctionalProvider<AsyncValue<List<Language>>, List<Language>, Stream<List<Language>>>
+    with $FutureModifier<List<Language>>, $StreamProvider<List<Language>> {
+  const LanguagesProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'languageProvider',
+        name: r'languagesProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$languageNotifierHash();
+  String debugGetCreateSourceHash() => _$languagesHash();
 
   @$internal
   @override
-  LanguageNotifier create() => LanguageNotifier();
-}
+  $StreamProviderElement<List<Language>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
-String _$languageNotifierHash() => r'7945fdd6a4a80c381615b153209e4b70d9c81332';
-
-abstract class _$LanguageNotifier extends $StreamNotifier<List<Language>> {
-  Stream<List<Language>> build();
-  @$mustCallSuper
   @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Language>>, List<Language>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Language>>, List<Language>>,
-              AsyncValue<List<Language>>,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
+  Stream<List<Language>> create(Ref ref) {
+    return languages(ref);
   }
 }
+
+String _$languagesHash() => r'639c1518060a0fcc66fd686405142bf0239d7647';

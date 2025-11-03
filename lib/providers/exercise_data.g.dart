@@ -1,21 +1,3 @@
-/*
- * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
- *
- * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'exercise_data.dart';
@@ -27,102 +9,87 @@ part of 'exercise_data.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ExerciseNotifier)
-const exerciseProvider = ExerciseNotifierProvider._();
+@ProviderFor(exercises)
+const exercisesProvider = ExercisesProvider._();
 
-final class ExerciseNotifierProvider
-    extends $StreamNotifierProvider<ExerciseNotifier, List<Exercise>> {
-  const ExerciseNotifierProvider._()
+final class ExercisesProvider
+    extends $FunctionalProvider<AsyncValue<List<Exercise>>, List<Exercise>, Stream<List<Exercise>>>
+    with $FutureModifier<List<Exercise>>, $StreamProvider<List<Exercise>> {
+  const ExercisesProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'exerciseProvider',
+        name: r'exercisesProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$exerciseNotifierHash();
+  String debugGetCreateSourceHash() => _$exercisesHash();
 
   @$internal
   @override
-  ExerciseNotifier create() => ExerciseNotifier();
-}
+  $StreamProviderElement<List<Exercise>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
-String _$exerciseNotifierHash() => r'672664bf86ed5d6ba7da9e03590d14e9dbd02496';
-
-abstract class _$ExerciseNotifier extends $StreamNotifier<List<Exercise>> {
-  Stream<List<Exercise>> build();
-  @$mustCallSuper
   @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Exercise>>, List<Exercise>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Exercise>>, List<Exercise>>,
-              AsyncValue<List<Exercise>>,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
+  Stream<List<Exercise>> create(Ref ref) {
+    return exercises(ref);
   }
 }
 
-@ProviderFor(ExerciseCategoryNotifier)
-const exerciseCategoryProvider = ExerciseCategoryNotifierProvider._();
+String _$exercisesHash() => r'3c3bf6b9c2d5d5e9ff2c7fa3776165724f006151';
 
-final class ExerciseCategoryNotifierProvider
-    extends $StreamNotifierProvider<ExerciseCategoryNotifier, List<ExerciseCategory>> {
-  const ExerciseCategoryNotifierProvider._()
+@ProviderFor(exerciseCategories)
+const exerciseCategoriesProvider = ExerciseCategoriesProvider._();
+
+final class ExerciseCategoriesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<ExerciseCategory>>,
+          List<ExerciseCategory>,
+          Stream<List<ExerciseCategory>>
+        >
+    with $FutureModifier<List<ExerciseCategory>>, $StreamProvider<List<ExerciseCategory>> {
+  const ExerciseCategoriesProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'exerciseCategoryProvider',
+        name: r'exerciseCategoriesProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$exerciseCategoryNotifierHash();
+  String debugGetCreateSourceHash() => _$exerciseCategoriesHash();
 
   @$internal
   @override
-  ExerciseCategoryNotifier create() => ExerciseCategoryNotifier();
-}
+  $StreamProviderElement<List<ExerciseCategory>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
-String _$exerciseCategoryNotifierHash() => r'476b5cb3f50ac52ce3eda06dac6f43783c48ec31';
-
-abstract class _$ExerciseCategoryNotifier extends $StreamNotifier<List<ExerciseCategory>> {
-  Stream<List<ExerciseCategory>> build();
-  @$mustCallSuper
   @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<ExerciseCategory>>, List<ExerciseCategory>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<ExerciseCategory>>, List<ExerciseCategory>>,
-              AsyncValue<List<ExerciseCategory>>,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
+  Stream<List<ExerciseCategory>> create(Ref ref) {
+    return exerciseCategories(ref);
   }
 }
 
-@ProviderFor(ExerciseEquipmentNotifier)
-const exerciseEquipmentProvider = ExerciseEquipmentNotifierProvider._();
+String _$exerciseCategoriesHash() => r'0b43e83e3b68d18ae1319bcc9f553d2fed83e3f2';
 
-final class ExerciseEquipmentNotifierProvider
-    extends $StreamNotifierProvider<ExerciseEquipmentNotifier, List<Equipment>> {
-  const ExerciseEquipmentNotifierProvider._()
+@ProviderFor(exerciseEquipment)
+const exerciseEquipmentProvider = ExerciseEquipmentProvider._();
+
+final class ExerciseEquipmentProvider
+    extends
+        $FunctionalProvider<AsyncValue<List<Equipment>>, List<Equipment>, Stream<List<Equipment>>>
+    with $FutureModifier<List<Equipment>>, $StreamProvider<List<Equipment>> {
+  const ExerciseEquipmentProvider._()
     : super(
         from: null,
         argument: null,
@@ -134,75 +101,52 @@ final class ExerciseEquipmentNotifierProvider
       );
 
   @override
-  String debugGetCreateSourceHash() => _$exerciseEquipmentNotifierHash();
+  String debugGetCreateSourceHash() => _$exerciseEquipmentHash();
 
   @$internal
   @override
-  ExerciseEquipmentNotifier create() => ExerciseEquipmentNotifier();
-}
+  $StreamProviderElement<List<Equipment>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
-String _$exerciseEquipmentNotifierHash() => r'581494c6fd4f58e210ea1962fa48bda613c5827f';
-
-abstract class _$ExerciseEquipmentNotifier extends $StreamNotifier<List<Equipment>> {
-  Stream<List<Equipment>> build();
-  @$mustCallSuper
   @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Equipment>>, List<Equipment>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Equipment>>, List<Equipment>>,
-              AsyncValue<List<Equipment>>,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
+  Stream<List<Equipment>> create(Ref ref) {
+    return exerciseEquipment(ref);
   }
 }
 
-@ProviderFor(ExerciseMuscleNotifier)
-const exerciseMuscleProvider = ExerciseMuscleNotifierProvider._();
+String _$exerciseEquipmentHash() => r'49e42160c8640d68fde7e9d9849f46a8cf6a10f9';
 
-final class ExerciseMuscleNotifierProvider
-    extends $StreamNotifierProvider<ExerciseMuscleNotifier, List<Muscle>> {
-  const ExerciseMuscleNotifierProvider._()
+@ProviderFor(exerciseMuscles)
+const exerciseMusclesProvider = ExerciseMusclesProvider._();
+
+final class ExerciseMusclesProvider
+    extends $FunctionalProvider<AsyncValue<List<Muscle>>, List<Muscle>, Stream<List<Muscle>>>
+    with $FutureModifier<List<Muscle>>, $StreamProvider<List<Muscle>> {
+  const ExerciseMusclesProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'exerciseMuscleProvider',
+        name: r'exerciseMusclesProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$exerciseMuscleNotifierHash();
+  String debugGetCreateSourceHash() => _$exerciseMusclesHash();
 
   @$internal
   @override
-  ExerciseMuscleNotifier create() => ExerciseMuscleNotifier();
-}
+  $StreamProviderElement<List<Muscle>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
-String _$exerciseMuscleNotifierHash() => r'6be0b7400776f1593194fb43667acbeee8e3a4a8';
-
-abstract class _$ExerciseMuscleNotifier extends $StreamNotifier<List<Muscle>> {
-  Stream<List<Muscle>> build();
-  @$mustCallSuper
   @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Muscle>>, List<Muscle>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Muscle>>, List<Muscle>>,
-              AsyncValue<List<Muscle>>,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
+  Stream<List<Muscle>> create(Ref ref) {
+    return exerciseMuscles(ref);
   }
 }
+
+String _$exerciseMusclesHash() => r'e283b2b2c170c136663b133764b164cd9cd4b347';
