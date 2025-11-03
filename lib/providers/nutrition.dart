@@ -48,6 +48,10 @@ class NutritionPlansProvider with ChangeNotifier {
   late IngredientDatabase database;
   List<NutritionalPlan> _plans = [];
   List<Ingredient> ingredients = [];
+  
+  // Track current search to prevent multiple concurrent requests
+  String? _currentSearchQuery;
+  int _searchCounter = 0;
 
   NutritionPlansProvider(
     this.baseProvider,
@@ -350,7 +354,7 @@ class NutritionPlansProvider with ChangeNotifier {
           (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
         }
       } else {
-        print("Fetching ingredient ID $ingredientId from server");
+        _logger.info("Fetching ingredient ID $ingredientId from server");
         final data = await baseProvider.fetch(
           baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
         );
@@ -389,7 +393,7 @@ class NutritionPlansProvider with ChangeNotifier {
     }
 
     // Send the request
-    print("Fetching ingredient from server");
+    _logger.info("Fetching ingredients from server");
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
         _ingredientInfoPath,
@@ -420,16 +424,10 @@ class NutritionPlansProvider with ChangeNotifier {
     if (data['count'] == 0) {
       return null;
     }
-    final ingredient = Ingredient.fromJson(data['results'][0]);
 
-    // Cache the ingredient
-    try {
-      await cacheIngredient(ingredient);
-    } catch (e) {
-      _logger.warning("Could not cache ingredient ${ingredient.id} from barcode search: $e");
-    }
-    
-    return ingredient;
+    // TODO we should probably add it to ingredient cache.
+    return Ingredient.fromJson(data['results'][0]);
+
   }
 
   /// Log meal to nutrition diary
