@@ -16,25 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-
-part 'alias.g.dart';
-
-@JsonSerializable()
 class Alias {
-  @JsonKey(required: true)
   final int? id;
-
-  @JsonKey(name: 'translation')
   final int? translationId;
-
-  @JsonKey(required: true)
   final String alias;
 
   const Alias({this.id, required this.translationId, required this.alias});
-
-  // Boilerplate
-  factory Alias.fromJson(Map<String, dynamic> json) => _$AliasFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AliasToJson(this);
 }

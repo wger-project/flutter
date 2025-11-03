@@ -16,19 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-
-part 'comment.g.dart';
-
-@JsonSerializable()
 class Comment {
-  @JsonKey(required: true)
   final int id;
-
-  @JsonKey(name: 'translation')
   final int translationId;
-
-  @JsonKey(required: true)
   final String comment;
 
   const Comment({
@@ -36,9 +26,4 @@ class Comment {
     required this.translationId,
     required this.comment,
   });
-
-  // Boilerplate
-  factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CommentToJson(this);
 }

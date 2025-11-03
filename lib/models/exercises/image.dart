@@ -16,25 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-
-part 'image.g.dart';
-
-@JsonSerializable()
 class ExerciseImage {
-  @JsonKey(required: true)
   final int id;
-
-  @JsonKey(required: true)
   final String uuid;
-
-  @JsonKey(required: true, name: 'exercise')
   final int exerciseId;
-
-  @JsonKey(required: true, name: 'image')
   final String url;
-
-  @JsonKey(name: 'is_main', defaultValue: false)
   final bool isMain;
 
   const ExerciseImage({
@@ -44,11 +30,6 @@ class ExerciseImage {
     required this.url,
     required this.isMain,
   });
-
-  // Boilerplate
-  factory ExerciseImage.fromJson(Map<String, dynamic> json) => _$ExerciseImageFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ExerciseImageToJson(this);
 
   @override
   String toString() {

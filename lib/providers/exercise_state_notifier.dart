@@ -245,10 +245,6 @@ final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
 
     // TODO: fix this! Why is the ref of stateProvider always disposed?
     return state.exercises.where((e) => ids.contains(e.id)).toList();
-
-    return (result['results'] as List)
-        .map((data) => Exercise.fromApiDataJson(data as Map<String, dynamic>, []))
-        .toList();
   }
 
   Future<List<Exercise>> searchExerciseLocal(

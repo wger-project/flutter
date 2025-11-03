@@ -16,49 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
-
-part 'video.g.dart';
-
-@JsonSerializable()
 class Video {
-  @JsonKey(required: true)
   final int id;
-
-  @JsonKey(required: true)
   final String uuid;
-
-  @JsonKey(name: 'video', required: true)
   final String url;
 
   Uri get uri => Uri.parse(url);
 
-  @JsonKey(name: 'exercise', required: true)
   final int exerciseId;
-
-  @JsonKey(required: true)
   final int size;
-
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num duration;
-
-  @JsonKey(required: true)
   final int width;
-
-  @JsonKey(required: true)
   final int height;
-
-  @JsonKey(required: true)
   final String codec;
-
-  @JsonKey(name: 'codec_long', required: true)
   final String codecLong;
-
-  @JsonKey(required: true, name: 'license')
   final int licenseId;
-
-  @JsonKey(name: 'license_author', required: true)
   final String? licenseAuthor;
 
   const Video({
@@ -75,9 +47,4 @@ class Video {
     required this.licenseId,
     required this.licenseAuthor,
   });
-
-  // Boilerplate
-  factory Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$VideoToJson(this);
 }

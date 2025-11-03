@@ -17,44 +17,22 @@
  */
 
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/language.dart';
 
-part 'translation.g.dart';
-
-@JsonSerializable()
 class Translation extends Equatable {
-  @JsonKey(required: true)
   final int? id;
-
-  @JsonKey(required: true)
   final String? uuid;
-
-  @JsonKey(required: true, name: 'language')
   late int languageId;
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
   late Language languageObj;
-
-  @JsonKey(required: true, name: 'created')
   final DateTime? created;
-
-  @JsonKey(required: true, name: 'exercise')
   late int? exerciseId;
-
-  @JsonKey(required: true)
   final String name;
-
-  @JsonKey(required: true)
   final String description;
 
-  @JsonKey(includeFromJson: true, includeToJson: false)
   List<Comment> notes = [];
-
-  @JsonKey(includeFromJson: true, includeToJson: false)
   List<Alias> aliases = [];
 
   Translation({
@@ -84,11 +62,6 @@ class Translation extends Equatable {
     languageObj = language;
     languageId = language.id;
   }
-
-  // Boilerplate
-  factory Translation.fromJson(Map<String, dynamic> json) => _$TranslationFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TranslationToJson(this);
 
   @override
   List<Object?> get props => [

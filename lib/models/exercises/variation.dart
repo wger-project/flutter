@@ -16,18 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-
-part 'variation.g.dart';
-
-@JsonSerializable()
 class Variation {
-  @JsonKey(required: true)
   final int id;
-
   const Variation({required this.id});
-
-  // Boilerplate
-  factory Variation.fromJson(Map<String, dynamic> json) => _$VariationFromJson(json);
-  Map<String, dynamic> toJson() => _$VariationToJson(this);
 }
