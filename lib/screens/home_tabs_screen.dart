@@ -114,20 +114,10 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
       await Future.wait([
         authProvider.setServerVersion(),
         userProvider.fetchAndSetProfile(),
-        routinesProvider.fetchAndSetUnits(),
         nutritionPlansProvider.fetchIngredientsFromCache(),
       ]);
       await ref.read(exerciseStateReadyProvider.future);
       ref.read(weightEntryProvider());
-
-      // Workaround for https://github.com/wger-project/flutter/issues/901
-      // It seems that it can happen that sometimes the units were not loaded properly
-      // so now we check and try again if necessary. We might need a better general
-      // solution since this could potentially happen with other data as well.
-      if (routinesProvider.repetitionUnits.isEmpty || routinesProvider.weightUnits.isEmpty) {
-        widget._logger.info('Routine units are empty, fetching again');
-        await routinesProvider.fetchAndSetUnits();
-      }
 
       //
       // Plans, weight and gallery

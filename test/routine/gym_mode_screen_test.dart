@@ -57,9 +57,9 @@ void main() {
     when(mockRoutinesProvider.findById(any)).thenReturn(testRoutine);
     when(mockRoutinesProvider.items).thenReturn([testRoutine]);
     when(mockRoutinesProvider.repetitionUnits).thenReturn(testRepetitionUnits);
-    when(mockRoutinesProvider.findRepetitionUnitById(1)).thenReturn(testRepetitionUnit1);
+    when(mockRoutinesProvider.getRepetitionUnitById(1)).thenReturn(testRepetitionUnit1);
     when(mockRoutinesProvider.weightUnits).thenReturn(testWeightUnits);
-    when(mockRoutinesProvider.findWeightUnitById(1)).thenReturn(testWeightUnit1);
+    when(mockRoutinesProvider.getWeightUnitById(1)).thenReturn(testWeightUnit1);
     when(
       mockRoutinesProvider.fetchAndSetRoutineFull(any),
     ).thenAnswer((_) => Future.value(testRoutine));

@@ -54,8 +54,8 @@ void main() {
     result = null;
     mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.weightUnits).thenAnswer((_) => [unit1, unit2, unit3]);
-    when(mockWorkoutPlans.findWeightUnitById(1)).thenReturn(unit1);
-    when(mockWorkoutPlans.findWeightUnitById(2)).thenReturn(unit2);
+    when(mockWorkoutPlans.getWeightUnitById(1)).thenReturn(unit1);
+    when(mockWorkoutPlans.getWeightUnitById(2)).thenReturn(unit2);
   });
 
   Widget renderWidget() {

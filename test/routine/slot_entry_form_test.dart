@@ -42,9 +42,9 @@ void main() {
   setUp(() {
     mockRoutinesProvider = MockRoutinesProvider();
     when(mockRoutinesProvider.weightUnits).thenReturn(testWeightUnits);
-    when(mockRoutinesProvider.findWeightUnitById(any)).thenReturn(testWeightUnit1);
+    when(mockRoutinesProvider.getWeightUnitById(any)).thenReturn(testWeightUnit1);
     when(mockRoutinesProvider.repetitionUnits).thenReturn(testRepetitionUnits);
-    when(mockRoutinesProvider.findRepetitionUnitById(any)).thenReturn(testRepetitionUnit1);
+    when(mockRoutinesProvider.getRepetitionUnitById(any)).thenReturn(testRepetitionUnit1);
   });
 
   Widget renderWidget({simpleMode = true, locale = 'en'}) {

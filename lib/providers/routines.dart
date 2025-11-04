@@ -16,15 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -37,7 +34,6 @@ import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercises.dart';
 
 part 'routines.g.dart';
 
@@ -66,8 +62,6 @@ class RoutinesProvider with ChangeNotifier {
   static const _slotEntriesUrlPath = 'slot-entry';
   static const _logsUrlPath = 'workoutlog';
   static const _sessionUrlPath = 'workoutsession';
-  static const _weightUnitUrlPath = 'setting-weightunit';
-  static const _repetitionUnitUrlPath = 'setting-repetitionunit';
   static const _routineConfigSets = 'sets-config';
   static const _routineConfigMaxSets = 'max-sets-config';
   static const _routineConfigWeights = 'weight-config';
@@ -80,23 +74,52 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigMaxRestTime = 'max-rest-config';
 
   Routine? activeRoutine;
-  final ExercisesProvider _exerciseProvider;
   final WgerBaseProvider baseProvider;
   List<Routine> _routines = [];
+  List<Exercise> _exercises = [];
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnits = [];
 
   RoutinesProvider(
     this.baseProvider,
-    this._exerciseProvider,
     List<Routine> entries, {
     List<WeightUnit>? weightUnits,
     List<RepetitionUnit>? repetitionUnits,
+    List<Exercise>? exercises,
   }) {
     _routines = entries;
     _weightUnits = weightUnits ?? [];
     _repetitionUnits = repetitionUnits ?? [];
+    _exercises = exercises ?? [];
   }
+
+  Exercise _getExerciseById(int id) {
+    return _exercises.firstWhere((element) => element.id == id);
+  }
+
+  set exercises(List<Exercise> exercises) {
+    _exercises = exercises;
+    notifyListeners();
+  }
+
+  set repetitionUnits(List<RepetitionUnit> units) {
+    _repetitionUnits = units;
+    notifyListeners();
+  }
+
+  RepetitionUnit getRepetitionUnitById(int? id) =>
+      _repetitionUnits.firstWhere((element) => element.id == id);
+
+  set weightUnits(List<WeightUnit> units) {
+    _weightUnits = units;
+    notifyListeners();
+  }
+
+  List<WeightUnit> get weightUnits {
+    return [..._weightUnits];
+  }
+
+  WeightUnit getWeightUnitById(int? id) => _weightUnits.firstWhere((element) => element.id == id);
 
   /// Returns the current active nutritional plan. At the moment this is just
   /// the latest, but this might change in the future.
@@ -111,14 +134,6 @@ class RoutinesProvider with ChangeNotifier {
     return [..._routines];
   }
 
-  List<WeightUnit> get weightUnits {
-    return [..._weightUnits];
-  }
-
-  set weightUnits(List<WeightUnit> weightUnits) {
-    _weightUnits = weightUnits;
-  }
-
   /// Clears all lists
   void clear() {
     _routines = [];
@@ -131,18 +146,9 @@ class RoutinesProvider with ChangeNotifier {
     return _weightUnits.firstWhere((element) => element.id == WEIGHT_UNIT_KG);
   }
 
-  WeightUnit findWeightUnitById(int id) => _weightUnits.firstWhere((element) => element.id == id);
-
   List<RepetitionUnit> get repetitionUnits {
     return [..._repetitionUnits];
   }
-
-  set repetitionUnits(List<RepetitionUnit> repetitionUnits) {
-    _repetitionUnits = repetitionUnits;
-  }
-
-  RepetitionUnit findRepetitionUnitById(int id) =>
-      _repetitionUnits.firstWhere((element) => element.id == id);
 
   /// Return the default weight unit (reps)
   RepetitionUnit get defaultRepetitionUnit {
@@ -210,17 +216,13 @@ class RoutinesProvider with ChangeNotifier {
           final exerciseId = setConfig.exerciseId;
           if (!exercises.containsKey(exerciseId)) {
             _logger.fine('Fetching exercise $exerciseId for routine set config');
-            exercises[exerciseId] = (await _exerciseProvider.fetchAndSetExercise(exerciseId))!;
+            exercises[exerciseId] = _getExerciseById(exerciseId);
           }
           setConfig.exercise = exercises[exerciseId]!;
 
-          setConfig.repetitionsUnit = _repetitionUnits.firstWhere(
-            (e) => e.id == setConfig.repetitionsUnitId,
-          );
+          setConfig.repetitionsUnit = getRepetitionUnitById(setConfig.repetitionsUnitId);
 
-          setConfig.weightUnit = _weightUnits.firstWhere(
-            (e) => e.id == setConfig.weightUnitId,
-          );
+          setConfig.weightUnit = getWeightUnitById(setConfig.weightUnitId);
         }
       }
     }
@@ -303,20 +305,16 @@ class RoutinesProvider with ChangeNotifier {
         for (final slotEntry in slot.entries) {
           final exerciseId = slotEntry.exerciseId;
           if (!exercises.containsKey(exerciseId)) {
-            exercises[exerciseId] = (await _exerciseProvider.fetchAndSetExercise(exerciseId))!;
+            exercises[exerciseId] = _getExerciseById(exerciseId);
           }
           slotEntry.exerciseObj = exercises[exerciseId]!;
 
           if (slotEntry.repetitionUnitId != null) {
-            slotEntry.repetitionUnitObj = _repetitionUnits.firstWhere(
-              (e) => e.id == slotEntry.repetitionUnitId,
-            );
+            slotEntry.repetitionUnitObj = getRepetitionUnitById(slotEntry.repetitionUnitId);
           }
 
           if (slotEntry.weightUnitId != null) {
-            slotEntry.weightUnitObj = _weightUnits.firstWhere(
-              (e) => e.id == slotEntry.weightUnitId,
-            );
+            slotEntry.weightUnitObj = getWeightUnitById(slotEntry.weightUnitId);
           }
         }
       }
@@ -330,17 +328,15 @@ class RoutinesProvider with ChangeNotifier {
     for (final session in routine.sessions) {
       for (final log in session.logs) {
         if (log.weightUnitId != null) {
-          log.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
+          log.weightUnit = getWeightUnitById(log.weightUnitId);
         }
 
         if (log.repetitionsUnitId != null) {
-          log.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.repetitionsUnitId);
+          log.repetitionUnit = getRepetitionUnitById(log.repetitionsUnitId);
         }
 
         if (!exercises.containsKey(log.exerciseId)) {
-          exercises[log.exerciseId] = (await _exerciseProvider.fetchAndSetExercise(
-            log.exerciseId,
-          ))!;
+          exercises[log.exerciseId] = _getExerciseById(log.exerciseId);
         }
 
         log.exerciseBase = exercises[log.exerciseId]!;
@@ -391,56 +387,6 @@ class RoutinesProvider with ChangeNotifier {
       notifyListeners();
       throw WgerHttpException(response.body);
     }
-  }
-
-  /// Fetch and set weight units for workout (kg, lb, plate, etc.)
-  Future<void> fetchAndSetRepetitionUnits() async {
-    final response = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(_repetitionUnitUrlPath),
-    );
-    for (final unit in response) {
-      _repetitionUnits.add(RepetitionUnit.fromJson(unit));
-    }
-  }
-
-  /// Fetch and set weight units for workout (kg, lb, plate, etc.)
-  Future<void> fetchAndSetWeightUnits() async {
-    final response = await baseProvider.fetchPaginated(baseProvider.makeUrl(_weightUnitUrlPath));
-    for (final unit in response) {
-      _weightUnits.add(WeightUnit.fromJson(unit));
-    }
-  }
-
-  Future<void> fetchAndSetUnits() async {
-    // Load units from cache, if available
-    final prefs = PreferenceHelper.asyncPref;
-    if (await prefs.containsKey(PREFS_WORKOUT_UNITS)) {
-      final unitData = json.decode((await prefs.getString(PREFS_WORKOUT_UNITS))!);
-      if (DateTime.parse(unitData['expiresIn']).isAfter(DateTime.now())) {
-        unitData['repetitionUnits'].forEach(
-          (e) => _repetitionUnits.add(RepetitionUnit.fromJson(e)),
-        );
-        unitData['weightUnit'].forEach(
-          (e) => _weightUnits.add(WeightUnit.fromJson(e)),
-        );
-        _logger.info("Read workout units data from cache. Valid till ${unitData['expiresIn']}");
-        return;
-      }
-    }
-
-    // Load units
-    await fetchAndSetWeightUnits();
-    await fetchAndSetRepetitionUnits();
-
-    // Save the result to the cache
-    final cacheData = {
-      'date': DateTime.now().toIso8601String(),
-      'expiresIn': DateTime.now().add(const Duration(days: DAYS_TO_CACHE)).toIso8601String(),
-      'repetitionUnits': _repetitionUnits.map((e) => e.toJson()).toList(),
-      'weightUnit': _weightUnits.map((e) => e.toJson()).toList(),
-    };
-    prefs.setString(PREFS_WORKOUT_UNITS, json.encode(cacheData));
-    notifyListeners();
   }
 
   /*
@@ -675,11 +621,6 @@ class RoutinesProvider with ChangeNotifier {
   /*
    * Logs
    */
-
-  /*Future<void> editLog(Log log) async {
-    await patch(log.toJson(), makeUrl(_logsUrlPath, id: log.id));
-    notifyListeners();
-  }*/
 
   Future<void> deleteLog(String logId, int routineId) async {
     _logger.fine('Deleting log ${logId}');

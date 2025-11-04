@@ -43,7 +43,7 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
     final unitProvider = context.read<RoutinesProvider>();
 
     RepetitionUnit? selectedWeightUnit = widget.selectedRepetitionUnit != null
-        ? unitProvider.findRepetitionUnitById(widget.selectedRepetitionUnit!)
+        ? unitProvider.getRepetitionUnitById(widget.selectedRepetitionUnit!)
         : null;
 
     return DropdownButtonFormField(

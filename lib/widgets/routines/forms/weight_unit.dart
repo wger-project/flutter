@@ -43,7 +43,7 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
     final unitProvider = context.read<RoutinesProvider>();
 
     WeightUnit? selectedWeightUnit = widget.selectedWeightUnit != null
-        ? unitProvider.findWeightUnitById(widget.selectedWeightUnit!)
+        ? unitProvider.getWeightUnitById(widget.selectedWeightUnit!)
         : null;
 
     return DropdownButtonFormField(
