@@ -30,15 +30,16 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
-import 'nutritional_plan_screen_test.mocks.dart';
+import 'nutritional_plans_screen_test.mocks.dart';
 
-@GenerateMocks([AuthProvider, WgerBaseProvider, http.Client])
+@GenerateMocks([AuthProvider, WgerBaseProvider, http.Client, BodyWeightRepository])
 void main() {
   final mockAuthProvider = MockAuthProvider();
   final mockBaseProvider = MockWgerBaseProvider();
@@ -67,6 +68,7 @@ void main() {
     when(mockAuthProvider.getAppNameHeader()).thenReturn('wger app');
 
     return riverpod.ProviderScope(
+      overrides: [bodyWeightRepositoryProvider.overrideWithValue(MockBodyWeightRepository())],
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider<NutritionPlansProvider>(
