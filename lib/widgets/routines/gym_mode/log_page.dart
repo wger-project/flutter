@@ -19,8 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart' as provider;
-import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -30,7 +28,7 @@ import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/plate_weights.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/workout_logs.dart';
 import 'package:wger/screens/configure_plates_screen.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
@@ -540,6 +538,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+    final logProvider = ref.watch(workoutLogProvider.notifier);
 
     return Form(
       key: _form,
@@ -655,43 +654,32 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     if (!isValid) {
                       return;
                     }
-                    _isSaving = true;
+                    setState(() {
+                      _isSaving = true;
+                    });
                     _form.currentState!.save();
 
-                    try {
-                      await provider.Provider.of<RoutinesProvider>(
-                        context,
-                        listen: false,
-                      ).addLog(widget.log);
+                    widget.log.id = null;
+                    logProvider.addEntry(widget.log);
 
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: const Duration(seconds: 2),
-                            content: Text(
-                              i18n.successfullySaved,
-                              textAlign: TextAlign.center,
-                            ),
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: const Duration(seconds: 2),
+                          content: Text(
+                            i18n.successfullySaved,
+                            textAlign: TextAlign.center,
                           ),
-                        );
-                      }
-                      widget.controller.nextPage(
-                        duration: DEFAULT_ANIMATION_DURATION,
-                        curve: DEFAULT_ANIMATION_CURVE,
+                        ),
                       );
-                      setState(() {
-                        _isSaving = false;
-                      });
-                    } on WgerHttpException {
-                      setState(() {
-                        _isSaving = false;
-                      });
-                      rethrow;
-                    } finally {
-                      setState(() {
-                        _isSaving = false;
-                      });
                     }
+                    widget.controller.nextPage(
+                      duration: DEFAULT_ANIMATION_DURATION,
+                      curve: DEFAULT_ANIMATION_CURVE,
+                    );
+                    setState(() {
+                      _isSaving = false;
+                    });
                   },
             child: _isSaving ? const FormProgressIndicator() : Text(i18n.save),
           ),

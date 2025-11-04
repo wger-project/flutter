@@ -29,7 +29,7 @@ const IMPRESSION_MAP = {1: 'bad', 2: 'neutral', 3: 'good'};
 
 @JsonSerializable()
 class WorkoutSession {
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'uuid')
   String? id;
 
   @JsonKey(required: true, name: 'routine')
