@@ -29,7 +29,6 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -160,13 +159,6 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
-        ChangeNotifierProxyProvider<AuthProvider, ExercisesProvider>(
-          create: (context) => ExercisesProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
-          update: (context, base, previous) =>
-              previous ?? ExercisesProvider(WgerBaseProvider(base)),
-        ),
         ChangeNotifierProxyProvider<AuthProvider, RoutinesProvider>(
           create: (context) => RoutinesProvider(
             WgerBaseProvider(Provider.of(context, listen: false)),
