@@ -81,13 +81,13 @@ class RoutinesProvider with ChangeNotifier {
   List<RepetitionUnit> _repetitionUnits = [];
 
   RoutinesProvider(
-    this.baseProvider,
-    List<Routine> entries, {
+    this.baseProvider, {
+    List<Routine>? entries,
     List<WeightUnit>? weightUnits,
     List<RepetitionUnit>? repetitionUnits,
     List<Exercise>? exercises,
   }) {
-    _routines = entries;
+    _routines = entries ?? [];
     _weightUnits = weightUnits ?? [];
     _repetitionUnits = repetitionUnits ?? [];
     _exercises = exercises ?? [];
@@ -305,6 +305,7 @@ class RoutinesProvider with ChangeNotifier {
         for (final slotEntry in slot.entries) {
           final exerciseId = slotEntry.exerciseId;
           if (!exercises.containsKey(exerciseId)) {
+            print(exerciseId);
             exercises[exerciseId] = _getExerciseById(exerciseId);
           }
           slotEntry.exerciseObj = exercises[exerciseId]!;

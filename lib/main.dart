@@ -170,14 +170,12 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, RoutinesProvider>(
           create: (context) => RoutinesProvider(
             WgerBaseProvider(Provider.of(context, listen: false)),
-            [],
             exercises: [],
           ),
           update: (context, auth, previous) =>
               previous ??
               RoutinesProvider(
                 WgerBaseProvider(auth),
-                [],
                 exercises: [],
               ),
         ),

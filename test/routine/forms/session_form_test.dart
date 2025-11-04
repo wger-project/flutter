@@ -54,7 +54,7 @@ void main() {
     testWidgets('renders correctly for an existing session', (WidgetTester tester) async {
       //Arrange
       final existingSession = WorkoutSession(
-        id: 1,
+        id: '1',
         routineId: 1,
         notes: 'Existing notes',
         impression: 1,
@@ -80,7 +80,7 @@ void main() {
       await pumpSessionForm(tester, onSaved: () => onSavedCalled = true);
 
       when(mockRoutinesProvider.addSession(any, any)).thenAnswer(
-        (_) async => WorkoutSession(id: 1, routineId: 1, date: DateTime.now()),
+        (_) async => WorkoutSession(id: '1', routineId: 1, date: DateTime.now()),
       );
 
       // Act
@@ -97,7 +97,7 @@ void main() {
       // Arrange
       bool onSavedCalled = false;
       final existingSession = WorkoutSession(
-        id: 1,
+        id: '1',
         routineId: 1,
         notes: 'Old notes',
         impression: 2,
@@ -105,7 +105,7 @@ void main() {
       );
       when(mockRoutinesProvider.editSession(any)).thenAnswer(
         (_) async => WorkoutSession(
-          id: 1,
+          id: '1',
           routineId: 1,
           date: DateTime.now(),
         ),

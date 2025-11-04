@@ -19,49 +19,49 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 
+import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
 import 'routine_screen_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider])
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
-  final exercisesProvider = ExercisesProvider(
-    mockBaseProvider,
-  );
 
   Widget renderWidget({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => RoutinesProvider(
-        mockBaseProvider,
-        exercisesProvider,
-        [getTestRoutine()],
-      ),
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        home: TextButton(
-          onPressed: () => key.currentState!.push(
-            MaterialPageRoute<void>(
-              settings: const RouteSettings(arguments: 1),
-              builder: (_) => const RoutineScreen(),
-            ),
-          ),
-          child: const SizedBox(),
+    return riverpod.ProviderScope(
+      child: ChangeNotifierProvider<RoutinesProvider>(
+        create: (context) => RoutinesProvider(
+          mockBaseProvider,
+          entries: [getTestRoutine()],
+          exercises: getTestExercises(),
         ),
-        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          home: TextButton(
+            onPressed: () => key.currentState!.push(
+              MaterialPageRoute<void>(
+                settings: const RouteSettings(arguments: 1),
+                builder: (_) => const RoutineScreen(),
+              ),
+            ),
+            child: const SizedBox(),
+          ),
+          routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
+        ),
       ),
     );
   }
