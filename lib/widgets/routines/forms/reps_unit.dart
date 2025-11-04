@@ -26,7 +26,7 @@ import 'package:wger/providers/routines.dart';
 ///
 /// Can be used with a Setting or a Log object
 class RepetitionUnitInputWidget extends ConsumerStatefulWidget {
-  late final int? selectedRepetitionUnit;
+  late int? selectedRepetitionUnit;
   final ValueChanged<int?> onChanged;
 
   RepetitionUnitInputWidget(int? initialValue, {required this.onChanged}) {

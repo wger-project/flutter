@@ -17,10 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
@@ -28,11 +26,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
 
-import 'repetition_unit_form_widget_test.mocks.dart';
-
-@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockRoutinesProvider();
   const unit1 = RepetitionUnit(id: 1, name: 'some rep unit');
   const unit2 = RepetitionUnit(id: 2, name: 'another name');
   const unit3 = RepetitionUnit(id: 3, name: 'this is repetition number 3');
@@ -51,18 +45,18 @@ void main() {
   slotEntry.repetitionUnitObj = unit1;
 
   setUp(() {
-    mockWorkoutPlans = MockRoutinesProvider();
     result = null;
-    when(mockWorkoutPlans.repetitionUnits).thenAnswer((_) => [unit1, unit2, unit3]);
-    when(mockWorkoutPlans.getRepetitionUnitById(1)).thenReturn(unit1);
-    when(mockWorkoutPlans.getRepetitionUnitById(2)).thenReturn(unit2);
   });
 
   Widget renderWidget() {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockWorkoutPlans,
+    return ProviderScope(
+      overrides: [
+        routineRepetitionUnitProvider.overrideWithValue(
+          const AsyncValue.data([unit1, unit2, unit3]),
+        ),
+      ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

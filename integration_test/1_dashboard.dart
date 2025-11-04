@@ -14,7 +14,6 @@ import 'package:wger/theme/theme.dart';
 
 import '../test/exercises/contribute_exercise_test.mocks.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
-import '../test/routine/weight_unit_form_widget_test.mocks.dart';
 import '../test/weight/weight_provider_test.mocks.dart';
 import '../test/weight/weight_screen_test.mocks.dart' as weight;
 import '../test_data/body_weight.dart';

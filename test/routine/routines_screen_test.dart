@@ -17,72 +17,75 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
 import 'routines_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
+@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockBaseProvider = MockWgerBaseProvider();
-  final testExercisesProvider = ExercisesProvider(
-    mockBaseProvider,
+  MockRoutinesProvider mockRoutinesProvider = MockRoutinesProvider();
+
+  final routine1 = Routine(
+    id: 1,
+    created: DateTime(2021, 01, 01),
+    start: DateTime(2024, 11, 1),
+    end: DateTime(2024, 12, 1),
+    name: 'test 1',
+    fitInWeek: false,
+  );
+
+  final routine2 = Routine(
+    id: 2,
+    created: DateTime(2021, 02, 12),
+    start: DateTime(2024, 5, 5),
+    end: DateTime(2024, 6, 6),
+    name: 'test 2',
+    fitInWeek: false,
   );
 
   setUp(() {
-    mockBaseProvider = MockWgerBaseProvider();
+    mockRoutinesProvider = MockRoutinesProvider();
   });
 
-  Widget renderWidget({locale = 'en'}) {
-    final uri = Uri(
-      scheme: 'https',
-      host: 'localhost',
-      path: 'api/v2/workout/',
+  Widget renderWidget({locale = 'en', isOnline = true}) {
+    when(mockRoutinesProvider.fetchAndSetRoutineFull(any)).thenAnswer(
+      (_) async => routine1,
     );
-    when(mockBaseProvider.makeUrl('workout', query: anyNamed('query'))).thenReturn(uri);
-    when(mockBaseProvider.deleteRequest(any, any)).thenAnswer((_) async => http.Response('', 204));
+    when(mockRoutinesProvider.items).thenReturn([
+      routine1,
+      routine2,
+    ]);
+    when(mockRoutinesProvider.findById(1)).thenReturn(routine1);
 
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => RoutinesProvider(
-        mockBaseProvider,
-        testExercisesProvider,
-        [
-          Routine(
-            id: 1,
-            created: DateTime(2021, 01, 01),
-            start: DateTime(2024, 11, 1),
-            end: DateTime(2024, 12, 1),
-            name: 'test 1',
-            fitInWeek: false,
-          ),
-          Routine(
-            id: 2,
-            created: DateTime(2021, 02, 12),
-            start: DateTime(2024, 5, 5),
-            end: DateTime(2024, 6, 6),
-            name: 'test 2',
-            fitInWeek: false,
-          ),
-        ],
-      ),
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const RoutineListScreen(),
-        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
+    return riverpod.ProviderScope(
+      overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
+      ],
+      child: ChangeNotifierProvider<RoutinesProvider>(
+        create: (context) => mockRoutinesProvider,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const RoutineListScreen(),
+          routes: {
+            FormScreen.routeName: (ctx) => const FormScreen(),
+            RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+          },
+        ),
       ),
     );
   }
@@ -100,9 +103,7 @@ void main() {
 
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
-
     await tester.tap(find.byIcon(Icons.delete).first);
-
     await tester.pumpAndSettle();
 
     // Confirmation dialog
@@ -111,7 +112,17 @@ void main() {
     // Confirm
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
-    expect(find.byType(ListTile), findsOneWidget);
+    verify(mockRoutinesProvider.deleteRoutine(1)).called(1);
+  });
+
+  testWidgets('Handle offline status', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget(isOnline: false));
+    await tester.tap(find.byIcon(Icons.delete).first);
+    await tester.pumpAndSettle();
+
+    // No confirmation dialog (button is disabled)
+    expect(find.byType(AlertDialog), findsNothing);
+    verifyNever(mockRoutinesProvider.deleteRoutine(1));
   });
 
   /*
@@ -120,9 +131,8 @@ void main() {
     await tester.fling(find.byKey(const Key('1')), const Offset(0, 300), 1000);
     await tester.pumpAndSettle();
 
-    //verify(mockWorkoutProvider.fetchAndSetAllPlansSparse());
+    //verify(mockRoutinesProvider.fetchAndSetAllPlansSparse());
   });
-
    */
 
   testWidgets('Test the form on the workout plan screen', (WidgetTester tester) async {

@@ -28,12 +28,12 @@ void main() {
       expect(routine.logs.length, 3);
       final logExercise1 = routine.filterLogsByExercise(1);
       expect(logExercise1.length, 2);
-      expect(logExercise1[0].id, 1);
-      expect(logExercise1[1].id, 2);
+      expect(logExercise1[0].id, '1');
+      expect(logExercise1[1].id, '2');
 
       final logExercise2 = routine.filterLogsByExercise(2);
       expect(logExercise2.length, 1);
-      expect(logExercise2[0].id, 3);
+      expect(logExercise2[0].id, '3');
 
       expect(routine.filterLogsByExercise(3).length, 0);
     });

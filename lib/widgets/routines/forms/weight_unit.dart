@@ -26,7 +26,7 @@ import 'package:wger/providers/routines.dart';
 ///
 /// Can be used with a Setting or a Log object
 class WeightUnitInputWidget extends ConsumerStatefulWidget {
-  late final int? selectedWeightUnit;
+  late int? selectedWeightUnit;
   final ValueChanged<int?> onChanged;
 
   WeightUnitInputWidget(int? initialValue, {required this.onChanged}) {

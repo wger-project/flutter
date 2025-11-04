@@ -143,7 +143,7 @@ void main() {
 
       expect(find.byKey(const ValueKey('delete-button')), findsNothing);
       expect(find.byKey(const ValueKey('cancel-button')), findsNothing);
-      verifyNever(mockWorkoutLogRepository.deleteLocalDrift);
+      verifyNever(mockWorkoutLogRepository.deleteLocalDrift(any));
     });
   });
 }

@@ -110,7 +110,7 @@ void main() {
       final captured =
           verify(mockRoutinesProvider.editSession(captureAny)).captured.single as WorkoutSession;
 
-      expect(captured.id, 1);
+      expect(captured.id, '1');
       expect(captured.impression, 3);
       expect(captured.notes, equals('This is a note'));
       expect(captured.timeStart, equals(const TimeOfDay(hour: 10, minute: 0)));

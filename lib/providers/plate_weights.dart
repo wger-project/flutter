@@ -141,11 +141,13 @@ class PlateCalculatorNotifier extends Notifier<PlateCalculatorState> {
 
   PlateCalculatorNotifier({SharedPreferencesAsync? prefs}) : super() {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
-    _readDataFromSharedPrefs();
   }
 
   @override
-  PlateCalculatorState build() => PlateCalculatorState();
+  PlateCalculatorState build() {
+    _readDataFromSharedPrefs();
+    return PlateCalculatorState();
+  }
 
   Future<void> saveToSharedPrefs() async {
     _logger.fine('Saving plate data to SharedPreferences');

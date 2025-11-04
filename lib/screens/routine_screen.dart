@@ -30,9 +30,9 @@ class RoutineScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routineId = ModalRoute.of(context)!.settings.arguments as int;
-    final provider = context.read<RoutinesProvider>();
+    final routineProvider = context.read<RoutinesProvider>();
 
-    final routine = provider.findById(routineId);
+    final routine = routineProvider.findById(routineId);
 
     return Scaffold(
       appBar: RoutineDetailAppBar(routine),

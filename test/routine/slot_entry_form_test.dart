@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -41,23 +42,29 @@ void main() {
 
   setUp(() {
     mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.weightUnits).thenReturn(testWeightUnits);
-    when(mockRoutinesProvider.getWeightUnitById(any)).thenReturn(testWeightUnit1);
-    when(mockRoutinesProvider.repetitionUnits).thenReturn(testRepetitionUnits);
-    when(mockRoutinesProvider.getRepetitionUnitById(any)).thenReturn(testRepetitionUnit1);
   });
 
   Widget renderWidget({simpleMode = true, locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        home: Scaffold(body: SlotEntryForm(slotEntry, 1, simpleMode: simpleMode)),
+    return riverpod.ProviderScope(
+      overrides: [
+        routineWeightUnitProvider.overrideWithValue(
+          const riverpod.AsyncValue.data(testWeightUnits),
+        ),
+        routineRepetitionUnitProvider.overrideWithValue(
+          const riverpod.AsyncValue.data(testRepetitionUnits),
+        ),
+      ],
+      child: ChangeNotifierProvider<RoutinesProvider>(
+        create: (context) => mockRoutinesProvider,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          home: Scaffold(body: SlotEntryForm(slotEntry, 1, simpleMode: simpleMode)),
+        ),
       ),
     );
   }

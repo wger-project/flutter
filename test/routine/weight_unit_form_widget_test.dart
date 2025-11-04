@@ -17,10 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -28,11 +26,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 
-import 'weight_unit_form_widget_test.mocks.dart';
-
-@GenerateMocks([RoutinesProvider])
 void main() {
-  var mockWorkoutPlans = MockRoutinesProvider();
   int? result;
 
   const unit1 = WeightUnit(id: 1, name: 'kg');
@@ -52,17 +46,15 @@ void main() {
 
   setUp(() {
     result = null;
-    mockWorkoutPlans = MockRoutinesProvider();
-    when(mockWorkoutPlans.weightUnits).thenAnswer((_) => [unit1, unit2, unit3]);
-    when(mockWorkoutPlans.getWeightUnitById(1)).thenReturn(unit1);
-    when(mockWorkoutPlans.getWeightUnitById(2)).thenReturn(unit2);
   });
 
   Widget renderWidget() {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockWorkoutPlans,
+    return ProviderScope(
+      overrides: [
+        routineWeightUnitProvider.overrideWithValue(const AsyncValue.data([unit1, unit2, unit3])),
+      ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

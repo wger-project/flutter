@@ -9,13 +9,11 @@ import 'package:wger/widgets/routines/plate_calculator.dart';
 
 Future<void> pumpWidget(
   WidgetTester tester, {
-  PlateCalculatorNotifier? notifier,
+  required ProviderContainer container,
 }) async {
   await tester.pumpWidget(
-    ProviderScope(
-      overrides: [
-        if (notifier != null) plateCalculatorProvider.overrideWith(() => notifier),
-      ],
+    UncontrolledProviderScope(
+      container: container,
       child: const MaterialApp(
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -27,12 +25,19 @@ Future<void> pumpWidget(
 }
 
 void main() {
+  late ProviderContainer container;
+
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    container = ProviderContainer(
+      overrides: [
+        plateCalculatorProvider.overrideWith(() => PlateCalculatorNotifier()),
+      ],
+    );
   });
 
   testWidgets('Smoke test for ConfigureAvailablePlates', (WidgetTester tester) async {
-    await pumpWidget(tester);
+    await pumpWidget(tester, container: container);
 
     expect(find.text('Unit'), findsWidgets);
     expect(find.text('Bar weight'), findsWidgets);
@@ -45,7 +50,8 @@ void main() {
     'ConfigureAvailablePlates correctly updates state',
     (WidgetTester tester) async {
       // Arrange
-      final notifier = PlateCalculatorNotifier();
+      await pumpWidget(tester, container: container);
+      final notifier = container.read(plateCalculatorProvider.notifier);
       notifier.state = PlateCalculatorState(
         isMetric: true,
         barWeight: 20,
