@@ -48,7 +48,7 @@ class NutritionPlansProvider with ChangeNotifier {
   late IngredientDatabase database;
   List<NutritionalPlan> _plans = [];
   List<Ingredient> ingredients = [];
-  
+
   // Track current search to prevent multiple concurrent requests
   String? _currentSearchQuery;
   int _searchCounter = 0;
@@ -306,9 +306,7 @@ class NutritionPlansProvider with ChangeNotifier {
     await database.deleteEverything();
   }
 
-
-
-  /// Saves an ingredient to the cache  
+  /// Saves an ingredient to the cache
   Future<void> cacheIngredient(Ingredient ingredient, {IngredientDatabase? database}) async {
     database ??= this.database;
 
@@ -344,7 +342,7 @@ class NutritionPlansProvider with ChangeNotifier {
       // Try to fetch from local db
       if (ingredientDb != null) {
         ingredient = Ingredient.fromJson(jsonDecode(ingredientDb.data));
-          ingredients.add(ingredient);
+        ingredients.add(ingredient);
         _logger.info("Loaded ingredient '${ingredient.name}' from db cache");
 
         // Prune old entries
@@ -427,7 +425,6 @@ class NutritionPlansProvider with ChangeNotifier {
 
     // TODO we should probably add it to ingredient cache.
     return Ingredient.fromJson(data['results'][0]);
-
   }
 
   /// Log meal to nutrition diary
