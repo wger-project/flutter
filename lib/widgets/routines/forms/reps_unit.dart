@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/providers/routines.dart';
@@ -25,11 +25,11 @@ import 'package:wger/providers/routines.dart';
 /// Input widget for repetition units
 ///
 /// Can be used with a Setting or a Log object
-class RepetitionUnitInputWidget extends StatefulWidget {
-  late int? selectedRepetitionUnit;
+class RepetitionUnitInputWidget extends ConsumerStatefulWidget {
+  late final int? selectedRepetitionUnit;
   final ValueChanged<int?> onChanged;
 
-  RepetitionUnitInputWidget(initialValue, {required this.onChanged}) {
+  RepetitionUnitInputWidget(int? initialValue, {required this.onChanged}) {
     selectedRepetitionUnit = initialValue;
   }
 
@@ -37,17 +37,17 @@ class RepetitionUnitInputWidget extends StatefulWidget {
   _RepetitionUnitInputWidgetState createState() => _RepetitionUnitInputWidgetState();
 }
 
-class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
+class _RepetitionUnitInputWidgetState extends ConsumerState<RepetitionUnitInputWidget> {
   @override
   Widget build(BuildContext context) {
-    final unitProvider = context.read<RoutinesProvider>();
+    final repUnits = ref.read(routineRepetitionUnitProvider).asData?.value ?? [];
 
     RepetitionUnit? selectedWeightUnit = widget.selectedRepetitionUnit != null
-        ? unitProvider.getRepetitionUnitById(widget.selectedRepetitionUnit!)
+        ? repUnits.firstWhere((unit) => unit.id == widget.selectedRepetitionUnit)
         : null;
 
     return DropdownButtonFormField(
-      value: selectedWeightUnit,
+      initialValue: selectedWeightUnit,
       decoration: InputDecoration(
         labelText: AppLocalizations.of(context).repetitionUnit,
       ),
@@ -59,15 +59,13 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
           widget.onChanged(newValue.id);
         });
       },
-      items: Provider.of<RoutinesProvider>(context, listen: false).repetitionUnits
-          .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
-            return DropdownMenuItem<RepetitionUnit>(
-              key: Key(value.id.toString()),
-              value: value,
-              child: Text(value.name),
-            );
-          })
-          .toList(),
+      items: repUnits.map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
+        return DropdownMenuItem<RepetitionUnit>(
+          key: Key(value.id.toString()),
+          value: value,
+          child: Text(value.name),
+        );
+      }).toList(),
     );
   }
 }

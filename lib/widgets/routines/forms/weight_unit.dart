@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/routines.dart';
@@ -25,8 +25,8 @@ import 'package:wger/providers/routines.dart';
 /// Input widget for workout weight units
 ///
 /// Can be used with a Setting or a Log object
-class WeightUnitInputWidget extends StatefulWidget {
-  late int? selectedWeightUnit;
+class WeightUnitInputWidget extends ConsumerStatefulWidget {
+  late final int? selectedWeightUnit;
   final ValueChanged<int?> onChanged;
 
   WeightUnitInputWidget(int? initialValue, {required this.onChanged}) {
@@ -37,17 +37,17 @@ class WeightUnitInputWidget extends StatefulWidget {
   _WeightUnitInputWidgetState createState() => _WeightUnitInputWidgetState();
 }
 
-class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
+class _WeightUnitInputWidgetState extends ConsumerState<WeightUnitInputWidget> {
   @override
   Widget build(BuildContext context) {
-    final unitProvider = context.read<RoutinesProvider>();
+    final weightUnits = ref.read(routineWeightUnitProvider).asData?.value ?? [];
 
     WeightUnit? selectedWeightUnit = widget.selectedWeightUnit != null
-        ? unitProvider.getWeightUnitById(widget.selectedWeightUnit!)
+        ? weightUnits.firstWhere((unit) => unit.id == widget.selectedWeightUnit)
         : null;
 
     return DropdownButtonFormField(
-      value: selectedWeightUnit,
+      initialValue: selectedWeightUnit,
       decoration: InputDecoration(labelText: AppLocalizations.of(context).weightUnit),
       onChanged: (WeightUnit? newValue) {
         setState(() {
@@ -56,15 +56,13 @@ class _WeightUnitInputWidgetState extends State<WeightUnitInputWidget> {
           widget.onChanged(newValue.id);
         });
       },
-      items: Provider.of<RoutinesProvider>(context, listen: false).weightUnits
-          .map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
-            return DropdownMenuItem<WeightUnit>(
-              key: Key(value.id.toString()),
-              value: value,
-              child: Text(value.name),
-            );
-          })
-          .toList(),
+      items: weightUnits.map<DropdownMenuItem<WeightUnit>>((WeightUnit value) {
+        return DropdownMenuItem<WeightUnit>(
+          key: Key(value.id.toString()),
+          value: value,
+          child: Text(value.name),
+        );
+      }).toList(),
     );
   }
 }
