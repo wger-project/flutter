@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:wger/powersync/connector.dart';
 import 'package:wger/powersync/schema.dart';
+import 'package:wger/providers/wger_base_riverpod.dart';
 
 part 'powersync.g.dart';
 
@@ -19,8 +20,9 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   );
   await db.initialize();
 
-  DjangoConnector? currentConnector;
-  currentConnector = DjangoConnector();
+  final baseProvider = ref.read(wgerBaseProvider);
+
+  final currentConnector = DjangoConnector(baseUrl: baseProvider.auth.serverUrl!);
   db.connect(connector: currentConnector);
 
   // if (ref.read(sessionProvider).value != null) {

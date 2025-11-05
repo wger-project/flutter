@@ -26,13 +26,13 @@ import 'package:wger/helpers/shared_preferences.dart';
 import '../helpers/consts.dart';
 
 class ApiClient {
-  final _logger = Logger('powersync-ApiClient');
-  late final uri = Uri.parse('$baseUrl/api/v2/upload-powersync-data');
+  final _logger = Logger('Powersync ApiClient');
+  late final uri = Uri.parse('$serverUrl/api/v2/upload-powersync-data');
 
-  final String baseUrl;
+  final String serverUrl;
   String token = '';
 
-  ApiClient(this.baseUrl);
+  ApiClient(this.serverUrl);
 
   Map<String, String> getHeaders() {
     return {
@@ -54,7 +54,7 @@ class ApiClient {
 
     token = apiData['token'];
     final response = await http.get(
-      Uri.parse('$baseUrl/api/v2/powersync-token'),
+      Uri.parse('$serverUrl/api/v2/powersync-token'),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
         HttpHeaders.authorizationHeader: 'Token ${apiData["token"]}',

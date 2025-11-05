@@ -28,22 +28,20 @@ final List<RegExp> fatalResponseCodes = [
   // Class 22 — Data Exception
   // Examples include data type mismatch.
   RegExp(r'^22...$'),
+
   // Class 23 — Integrity Constraint Violation.
   // Examples include NOT NULL, FOREIGN KEY and UNIQUE violations.
   RegExp(r'^23...$'),
+
   // INSUFFICIENT PRIVILEGE - typically a row-level security violation
   RegExp(r'^42501$'),
 ];
 
 class DjangoConnector extends PowerSyncBackendConnector {
-  late String baseUrl;
-  late ApiClient apiClient;
+  final String baseUrl;
+  final ApiClient apiClient;
 
-  DjangoConnector({String? baseUrl}) {
-    this.baseUrl = baseUrl ?? 'http://localhost:8000';
-
-    apiClient = ApiClient(this.baseUrl);
-  }
+  DjangoConnector({required this.baseUrl}) : apiClient = ApiClient(baseUrl);
 
   /// Get a token to authenticate against the PowerSync instance.
   @override
