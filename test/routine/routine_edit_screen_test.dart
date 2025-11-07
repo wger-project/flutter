@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
@@ -40,8 +40,10 @@ void main() {
 
     // Build the RoutineEditScreen widget with the correct arguments
     await tester.pumpWidget(
-      ChangeNotifierProvider<RoutinesProvider>.value(
-        value: mockRoutinesProvider,
+      ProviderScope(
+        overrides: [
+          routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+        ],
         child: MaterialApp(
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,

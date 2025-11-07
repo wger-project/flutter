@@ -18,10 +18,10 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
@@ -46,8 +46,10 @@ void main() {
   });
 
   Widget renderSessionPage({locale = 'en'}) {
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
+    return ProviderScope(
+      overrides: [
+        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -73,19 +72,17 @@ void main() {
     return riverpod.ProviderScope(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
+        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
       ],
-      child: ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockRoutinesProvider,
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const RoutineListScreen(),
-          routes: {
-            FormScreen.routeName: (ctx) => const FormScreen(),
-            RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-          },
-        ),
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const RoutineListScreen(),
+        routes: {
+          FormScreen.routeName: (ctx) => const FormScreen(),
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+        },
       ),
     );
   }

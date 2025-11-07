@@ -24,7 +24,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -58,27 +57,25 @@ void main() {
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
         workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepository),
+        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
       ],
-      child: ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockRoutinesProvider,
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: key,
-          home: TextButton(
-            onPressed: () => key.currentState!.push(
-              MaterialPageRoute<void>(
-                settings: RouteSettings(arguments: routine.id),
-                builder: (_) => const WorkoutLogsScreen(),
-              ),
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(arguments: routine.id),
+              builder: (_) => const WorkoutLogsScreen(),
             ),
-            child: const SizedBox(),
           ),
-          routes: {
-            RoutineScreen.routeName: (ctx) => const WorkoutLogsScreen(),
-          },
+          child: const SizedBox(),
         ),
+        routes: {
+          RoutineScreen.routeName: (ctx) => const WorkoutLogsScreen(),
+        },
       ),
     );
   }

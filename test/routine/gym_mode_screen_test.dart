@@ -19,10 +19,10 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -57,40 +57,38 @@ void main() {
   });
 
   Widget renderGymMode({locale = 'en'}) {
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
-      child: riverpod.ProviderScope(
-        overrides: [
-          exercisesProvider.overrideWithValue(riverpod.AsyncValue.data(getTestExercises())),
-          exerciseEquipmentProvider.overrideWithValue(
-            const riverpod.AsyncValue.data(<Equipment>[]),
-          ),
-          exerciseCategoriesProvider.overrideWithValue(
-            const riverpod.AsyncValue.data(<ExerciseCategory>[]),
-          ),
-          routineRepetitionUnitProvider.overrideWithValue(
-            const riverpod.AsyncValue.data(testRepetitionUnits),
-          ),
-          routineWeightUnitProvider.overrideWithValue(
-            const riverpod.AsyncValue.data(testWeightUnits),
-          ),
-        ],
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: key,
-          home: TextButton(
-            onPressed: () => key.currentState!.push(
-              MaterialPageRoute<void>(
-                settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
-                builder: (_) => const GymModeScreen(),
-              ),
-            ),
-            child: const SizedBox(),
-          ),
-          routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
+    return ProviderScope(
+      overrides: [
+        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+        exercisesProvider.overrideWithValue(riverpod.AsyncValue.data(getTestExercises())),
+        exerciseEquipmentProvider.overrideWithValue(
+          const riverpod.AsyncValue.data(<Equipment>[]),
         ),
+        exerciseCategoriesProvider.overrideWithValue(
+          const riverpod.AsyncValue.data(<ExerciseCategory>[]),
+        ),
+        routineRepetitionUnitProvider.overrideWithValue(
+          const riverpod.AsyncValue.data(testRepetitionUnits),
+        ),
+        routineWeightUnitProvider.overrideWithValue(
+          const riverpod.AsyncValue.data(testWeightUnits),
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
+              builder: (_) => const GymModeScreen(),
+            ),
+          ),
+          child: const SizedBox(),
+        ),
+        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
   }

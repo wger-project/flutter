@@ -20,9 +20,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/routines.dart';
@@ -40,12 +40,16 @@ void main() {
     final key = GlobalKey<NavigatorState>();
 
     return riverpod.ProviderScope(
-      child: ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => RoutinesProvider(
-          mockBaseProvider,
-          entries: [getTestRoutine()],
-          exercises: getTestExercises(),
-        ),
+      child: ProviderScope(
+        overrides: [
+          routinesChangeProvider.overrideWithValue(
+            RoutinesProvider(
+              mockBaseProvider,
+              entries: [getTestRoutine()],
+              exercises: getTestExercises(),
+            ),
+          ),
+        ],
         child: MaterialApp(
           locale: Locale(locale),
           localizationsDelegates: AppLocalizations.localizationsDelegates,

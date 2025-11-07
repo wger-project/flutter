@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -60,8 +60,10 @@ void main() {
   Widget renderWidget(Routine routine, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
+    return ProviderScope(
+      overrides: [
+        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

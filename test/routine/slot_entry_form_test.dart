@@ -17,11 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
@@ -47,24 +46,22 @@ void main() {
   Widget renderWidget({simpleMode = true, locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return riverpod.ProviderScope(
+    return ProviderScope(
       overrides: [
         routineWeightUnitProvider.overrideWithValue(
-          const riverpod.AsyncValue.data(testWeightUnits),
+          const AsyncValue.data(testWeightUnits),
         ),
         routineRepetitionUnitProvider.overrideWithValue(
-          const riverpod.AsyncValue.data(testRepetitionUnits),
+          const AsyncValue.data(testRepetitionUnits),
         ),
+        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
       ],
-      child: ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockRoutinesProvider,
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: key,
-          home: Scaffold(body: SlotEntryForm(slotEntry, 1, simpleMode: simpleMode)),
-        ),
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: Scaffold(body: SlotEntryForm(slotEntry, 1, simpleMode: simpleMode)),
       ),
     );
   }
