@@ -3880,9 +3880,9 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
     'notes',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   @override
   late final GeneratedColumnWithTypeConverter<int, String> impression = GeneratedColumn<String>(
@@ -3962,8 +3962,6 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
         _notesMeta,
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
       );
-    } else if (isInserting) {
-      context.missing(_notesMeta);
     }
     return context;
   }
@@ -3995,7 +3993,7 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
-      )!,
+      ),
       timeStart: $WorkoutSessionTableTable.$convertertimeStartn.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -4036,7 +4034,7 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
   final Value<int?> routineId;
   final Value<int?> dayId;
   final Value<DateTime> date;
-  final Value<String> notes;
+  final Value<String?> notes;
   final Value<int> impression;
   final Value<TimeOfDay?> timeStart;
   final Value<TimeOfDay?> timeEnd;
@@ -4057,13 +4055,12 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
     this.routineId = const Value.absent(),
     this.dayId = const Value.absent(),
     required DateTime date,
-    required String notes,
+    this.notes = const Value.absent(),
     required int impression,
     this.timeStart = const Value.absent(),
     this.timeEnd = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : date = Value(date),
-       notes = Value(notes),
        impression = Value(impression);
   static Insertable<WorkoutSession> custom({
     Expression<String>? id,
@@ -4094,7 +4091,7 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
     Value<int?>? routineId,
     Value<int?>? dayId,
     Value<DateTime>? date,
-    Value<String>? notes,
+    Value<String?>? notes,
     Value<int>? impression,
     Value<TimeOfDay?>? timeStart,
     Value<TimeOfDay?>? timeEnd,
@@ -9746,7 +9743,7 @@ typedef $$WorkoutSessionTableTableCreateCompanionBuilder =
       Value<int?> routineId,
       Value<int?> dayId,
       required DateTime date,
-      required String notes,
+      Value<String?> notes,
       required int impression,
       Value<TimeOfDay?> timeStart,
       Value<TimeOfDay?> timeEnd,
@@ -9758,7 +9755,7 @@ typedef $$WorkoutSessionTableTableUpdateCompanionBuilder =
       Value<int?> routineId,
       Value<int?> dayId,
       Value<DateTime> date,
-      Value<String> notes,
+      Value<String?> notes,
       Value<int> impression,
       Value<TimeOfDay?> timeStart,
       Value<TimeOfDay?> timeEnd,
@@ -9942,7 +9939,7 @@ class $$WorkoutSessionTableTableTableManager
                 Value<int?> routineId = const Value.absent(),
                 Value<int?> dayId = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
-                Value<String> notes = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
                 Value<int> impression = const Value.absent(),
                 Value<TimeOfDay?> timeStart = const Value.absent(),
                 Value<TimeOfDay?> timeEnd = const Value.absent(),
@@ -9964,7 +9961,7 @@ class $$WorkoutSessionTableTableTableManager
                 Value<int?> routineId = const Value.absent(),
                 Value<int?> dayId = const Value.absent(),
                 required DateTime date,
-                required String notes,
+                Value<String?> notes = const Value.absent(),
                 required int impression,
                 Value<TimeOfDay?> timeStart = const Value.absent(),
                 Value<TimeOfDay?> timeEnd = const Value.absent(),

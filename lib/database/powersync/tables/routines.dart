@@ -60,7 +60,7 @@ class WorkoutSessionTable extends Table {
   IntColumn get routineId => integer().named('routine_id').nullable()();
   IntColumn get dayId => integer().named('day_id').nullable()();
   DateTimeColumn get date => dateTime()();
-  TextColumn get notes => text()();
+  TextColumn get notes => text().nullable()();
   TextColumn get impression => text().map(const IntToStringConverter())();
   TextColumn get timeStart =>
       text().named('time_start').nullable().map(const TimeOfDayConverter())();
