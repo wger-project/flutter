@@ -20,7 +20,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart' as provider;
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
@@ -73,14 +72,6 @@ class _GymModeState extends ConsumerState<GymMode> {
   }
 
   Future<int> _loadGymState() async {
-    // Re-fetch the current routine data to ensure we have the latest session
-    // data since it is possible that the user created or deleted it from the
-    // web interface.
-    await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
-      widget._dayDataGym.day!.routineId,
-    );
-    widget._logger.fine('Refreshed routine data');
-
     final validUntil = ref.read(gymStateProvider).validUntil;
     final currentPage = ref.read(gymStateProvider).currentPage;
     final savedDayId = ref.read(gymStateProvider).dayId;
@@ -132,7 +123,7 @@ class _GymModeState extends ConsumerState<GymMode> {
   List<Widget> getContent() {
     final state = ref.watch(gymStateProvider);
     final exercisesAsync = ref.read(exerciseStateProvider.notifier);
-    final routinesProvider = context.read<RoutinesProvider>();
+    final routinesProvider = ref.watch(routinesChangeProvider);
     var currentElement = 1;
     final List<Widget> out = [];
 
@@ -213,11 +204,11 @@ class _GymModeState extends ConsumerState<GymMode> {
           StartPage(_controller, widget._dayDataDisplay, _exercisePages),
           ...getContent(),
           SessionPage(
-            context.read<RoutinesProvider>().findById(widget._dayDataGym.day!.routineId),
+            ref.read(routinesChangeProvider).findById(widget._dayDataGym.day!.routineId),
             _controller,
             ref.read(gymStateProvider).startTime,
             _exercisePages,
-            dayId: widget._dayDataGym.day!.id!,
+            dayId: widget._dayDataGym.day!.id,
           ),
         ];
 

@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 
 part 'session.g.dart';
@@ -45,7 +46,7 @@ class WorkoutSession {
   late int impression;
 
   @JsonKey(required: false, defaultValue: '')
-  late String notes;
+  late String? notes;
 
   @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTimeNull)
   late TimeOfDay? timeStart;
@@ -81,6 +82,14 @@ class WorkoutSession {
       timeStart: timeStart != null ? drift.Value(timeStart) : const drift.Value.absent(),
       timeEnd: timeEnd != null ? drift.Value(timeEnd) : const drift.Value.absent(),
     );
+  }
+
+  List<Exercise> get exercises {
+    final Set<Exercise> exerciseSet = {};
+    for (final log in logs) {
+      exerciseSet.add(log.exercise);
+    }
+    return exerciseSet.toList();
   }
 
   // Boilerplate

@@ -25,6 +25,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -61,8 +62,8 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     with TickerProviderStateMixin {
   late Map<String, List<Event>> _events;
   late final ValueNotifier<List<Event>> _selectedEvents;
-  RangeSelectionMode _rangeSelectionMode =
-      RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
+  // Can be toggled on/off by longpressing a date
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
@@ -98,20 +99,29 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   /// **Note**: This method checks if the widget is still mounted before updating
   /// the state after the async workout session fetch operation.
   void loadEvents() async {
+    // TODO: refactor widget so it reacts to changes in the weight entries provider (and the others)
+
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final i18n = AppLocalizations.of(context);
 
+    final Map<String, List<Event>> newEvents = <String, List<Event>>{};
+
     // Process weight entries
-    final entries = ref.watch(weightEntryProvider()).asData?.value ?? [];
+    List<WeightEntry> entries = [];
+    try {
+      entries = await ref.read(weightEntryProvider().future);
+    } catch (_) {
+      entries = ref.watch(weightEntryProvider()).asData?.value ?? [];
+    }
     for (final entry in entries) {
       final date = DateFormatLists.format(entry.date);
 
-      if (!_events.containsKey(date)) {
-        _events[date] = [];
+      if (!newEvents.containsKey(date)) {
+        newEvents[date] = [];
       }
 
       // Add events to lists
-      _events[date]?.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
+      newEvents[date]?.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
     }
 
     // Process measurements
@@ -120,11 +130,11 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
 
-        if (!_events.containsKey(date)) {
-          _events[date] = [];
+        if (!newEvents.containsKey(date)) {
+          newEvents[date] = [];
         }
 
-        _events[date]?.add(
+        newEvents[date]?.add(
           Event(
             EventType.measurement,
             '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
@@ -134,22 +144,22 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     }
 
     // Process workout sessions
-    final routinesProvider = context.read<RoutinesProvider>();
-    await routinesProvider.fetchSessionData().then((sessions) {
-      for (final session in sessions) {
-        final date = DateFormatLists.format(session.date);
-        if (!_events.containsKey(date)) {
-          _events[date] = [];
-        }
-        var time = '';
-        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
-
-        // Add events to lists
-        _events[date]?.add(
-          Event(EventType.session, '${i18n.impression}: ${session.impressionAsString} $time'),
-        );
+    final routinesProvider = ref.read(routinesChangeProvider);
+    for (final session in routinesProvider.sessions) {
+      final date = DateFormatLists.format(session.date);
+      if (!newEvents.containsKey(date)) {
+        newEvents[date] = [];
       }
-    });
+      var time = '';
+      if (session.timeStart != null && session.timeEnd != null) {
+        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+      }
+
+      // Add events to lists
+      newEvents[date]?.add(
+        Event(EventType.session, '${i18n.impression}: ${session.impressionAsString} $time'),
+      );
+    }
     if (!mounted) {
       return;
     }
@@ -162,19 +172,22 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     for (final plan in nutritionProvider.items) {
       for (final entry in plan.logEntriesValues.entries) {
         final date = DateFormatLists.format(entry.key);
-        if (!_events.containsKey(date)) {
-          _events[date] = [];
+        if (!newEvents.containsKey(date)) {
+          newEvents[date] = [];
         }
 
         // Add events to lists
-        _events[date]?.add(
+        newEvents[date]?.add(
           Event(EventType.caloriesDiary, i18n.kcalValue(entry.value.energy.toStringAsFixed(0))),
         );
       }
     }
 
     // Add initial selected day to events list
-    _selectedEvents.value = _selectedDay != null ? _getEventsForDay(_selectedDay!) : [];
+    setState(() {
+      _events = newEvents;
+      _selectedEvents.value = _selectedDay != null ? _getEventsForDay(_selectedDay!) : [];
+    });
   }
 
   @override

@@ -41,7 +41,7 @@ void main() {
     testRoutine = getTestRoutine();
 
     when(mockRoutinesProvider.editSession(any)).thenAnswer(
-      (_) => Future.value(testRoutine.sessions[0].session),
+      (_) => Future.value(testRoutine.sessions[0]),
     );
   });
 
@@ -76,8 +76,8 @@ void main() {
   });
 
   testWidgets('Test that data from  session is loaded - null times', (WidgetTester tester) async {
-    testRoutine.sessions[0].session.timeStart = null;
-    testRoutine.sessions[0].session.timeEnd = null;
+    testRoutine.sessions[0].timeStart = null;
+    testRoutine.sessions[0].timeEnd = null;
 
     withClock(Clock.fixed(DateTime(2021, 5, 1)), () async {
       await tester.pumpWidget(renderSessionPage());

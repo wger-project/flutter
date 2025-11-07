@@ -28,11 +28,9 @@ import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/providers/wger_base_riverpod.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
@@ -65,8 +63,6 @@ import 'package:wger/widgets/core/log_overview.dart';
 import 'package:wger/widgets/core/settings.dart';
 
 import 'helpers/logs.dart';
-import 'models/workouts/repetition_unit.dart';
-import 'models/workouts/weight_unit.dart';
 import 'providers/auth.dart';
 
 void _setupLogging() {
@@ -140,7 +136,8 @@ class MainApp extends StatelessWidget {
   Widget _getHomeScreen(AuthProvider auth) {
     switch (auth.state) {
       case AuthState.loggedIn:
-        return HomeTabsScreen();
+        return const EagerInitialization();
+      // return HomeTabsScreen();
       case AuthState.updateRequired:
         return const UpdateAppScreen();
       default:
@@ -159,18 +156,6 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
-        ChangeNotifierProxyProvider<AuthProvider, RoutinesProvider>(
-          create: (context) => RoutinesProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-            exercises: [],
-          ),
-          update: (context, auth, previous) =>
-              previous ??
-              RoutinesProvider(
-                WgerBaseProvider(auth),
-                exercises: [],
-              ),
-        ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) => NutritionPlansProvider(
             WgerBaseProvider(Provider.of(context, listen: false)),
@@ -218,21 +203,6 @@ class MainApp extends StatelessWidget {
               ],
               child: riverpod.Consumer(
                 builder: (rpCtx, ref, _) {
-                  final exerciseState = ref.watch(exerciseStateProvider);
-                  final exercises = exerciseState.exercises;
-
-                  final repetitionUnitsAsync = ref.watch(routineRepetitionUnitProvider);
-                  final repetitionUnits = repetitionUnitsAsync.value ?? <RepetitionUnit>[];
-
-                  final weightUnitsAsync = ref.watch(routineWeightUnitProvider);
-                  final weightUnits = weightUnitsAsync.value ?? <WeightUnit>[];
-
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    Provider.of<RoutinesProvider>(ctx, listen: false).exercises = exercises;
-                    Provider.of<RoutinesProvider>(ctx, listen: false).repetitionUnits =
-                        repetitionUnits;
-                    Provider.of<RoutinesProvider>(ctx, listen: false).weightUnits = weightUnits;
-                  });
                   return MaterialApp(
                     title: 'wger',
                     navigatorKey: navigatorKey,

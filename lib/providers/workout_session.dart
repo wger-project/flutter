@@ -18,28 +18,32 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 
 part 'workout_session.g.dart';
 
 @riverpod
+Future<void> sessionStateReady(Ref ref) {
+  return Future.wait([
+    ref.watch(workoutSessionProvider.future),
+  ]);
+}
+
+@riverpod
 final class WorkoutSessionNotifier extends _$WorkoutSessionNotifier {
-  final _log = Logger('WorkoutSessionNotifier');
+  final _logger = Logger('WorkoutSessionNotifier');
   late final WorkoutSessionRepository _repo;
 
   @override
   Stream<List<WorkoutSession>> build() {
     _repo = ref.read(workoutSessionRepositoryProvider);
-
-    // final state = BodyWeightState();
-    // repo.watchAllDrift(database).listen((entries) {
-    //   state.setItems(entries);
-    // });
-    // return state;
-
     return _repo.watchAllDrift();
+  }
+
+  Stream<List<WorkoutSession>> getForRoutine(int routineId) {
+    _repo = ref.read(workoutSessionRepositoryProvider);
+    return _repo.watchRoutineDrift(routineId);
   }
 
   Future<void> deleteEntry(String id) async {

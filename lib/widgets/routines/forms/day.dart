@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
@@ -9,7 +9,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/slot.dart';
 
-class ReorderableDaysList extends StatefulWidget {
+class ReorderableDaysList extends ConsumerStatefulWidget {
   final int routineId;
   final List<Day> days;
   final int? selectedDayId;
@@ -22,6 +22,13 @@ class ReorderableDaysList extends StatefulWidget {
     required this.selectedDayId,
     required this.onDaySelected,
   });
+
+  @override
+  ConsumerState<ReorderableDaysList> createState() => _ReorderableDaysListState();
+}
+
+class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
+  Widget errorMessage = const SizedBox.shrink();
 
   void _showDeleteConfirmationDialog(BuildContext context, Day day) {
     final i18n = AppLocalizations.of(context);
@@ -41,8 +48,8 @@ class ReorderableDaysList extends StatefulWidget {
             ),
             TextButton(
               onPressed: () async {
-                days.remove(day);
-                await context.read<RoutinesProvider>().deleteDay(day.id!);
+                widget.days.remove(day);
+                await ref.read(routinesChangeProvider).deleteDay(day.id!);
                 Navigator.of(context).pop();
               },
               child: const Text('Delete'),
@@ -54,16 +61,9 @@ class ReorderableDaysList extends StatefulWidget {
   }
 
   @override
-  State<ReorderableDaysList> createState() => _ReorderableDaysListState();
-}
-
-class _ReorderableDaysListState extends State<ReorderableDaysList> {
-  Widget errorMessage = const SizedBox.shrink();
-
-  @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesChangeProvider);
 
     return Column(
       children: [
@@ -102,7 +102,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () => widget._showDeleteConfirmationDialog(context, day),
+                      onPressed: () => _showDeleteConfirmationDialog(context, day),
                     ),
                   ],
                 ),
@@ -165,7 +165,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
   }
 }
 
-class DayFormWidget extends StatefulWidget {
+class DayFormWidget extends ConsumerStatefulWidget {
   late final Day day;
 
   DayFormWidget({required Day day, super.key}) {
@@ -176,7 +176,7 @@ class DayFormWidget extends StatefulWidget {
   _DayFormWidgetState createState() => _DayFormWidgetState();
 }
 
-class _DayFormWidgetState extends State<DayFormWidget> {
+class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
   Widget errorMessage = const SizedBox.shrink();
 
   final descriptionController = TextEditingController();
@@ -324,10 +324,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                     setState(() => isSaving = true);
 
                     try {
-                      await Provider.of<RoutinesProvider>(
-                        context,
-                        listen: false,
-                      ).editDay(widget.day);
+                      await ref.read(routinesChangeProvider).editDay(widget.day);
                       if (context.mounted) {
                         setState(() {
                           errorMessage = const SizedBox.shrink();

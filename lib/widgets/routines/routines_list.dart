@@ -17,43 +17,39 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
-class RoutinesList extends riverpod.ConsumerStatefulWidget {
-  final RoutinesProvider _routineProvider;
-
-  const RoutinesList(this._routineProvider);
+class RoutinesList extends ConsumerStatefulWidget {
+  const RoutinesList();
 
   @override
-  riverpod.ConsumerState<RoutinesList> createState() => _RoutinesListState();
+  ConsumerState<RoutinesList> createState() => _RoutinesListState();
 }
 
-class _RoutinesListState extends riverpod.ConsumerState<RoutinesList> {
+class _RoutinesListState extends ConsumerState<RoutinesList> {
   int? _loadingRoutine;
 
   @override
   Widget build(BuildContext context) {
     final isOnline = ref.watch(networkStatusProvider);
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final routineProvider = ref.read(routinesChangeProvider);
 
     return RefreshIndicator(
-      onRefresh: isOnline
-          ? () => widget._routineProvider.fetchAndSetAllRoutinesSparse()
-          : () async {},
-      child: widget._routineProvider.items.isEmpty
+      onRefresh: isOnline ? () => routineProvider.fetchAndSetAllRoutinesSparse() : () async {},
+      child: routineProvider.items.isEmpty
           ? const TextPrompt()
           : ListView.builder(
               padding: const EdgeInsets.all(10.0),
-              itemCount: widget._routineProvider.items.length,
+              itemCount: routineProvider.items.length,
               itemBuilder: (context, index) {
-                final currentRoutine = widget._routineProvider.items[index];
+                final currentRoutine = routineProvider.items[index];
 
                 return Card(
                   child: ListTile(
@@ -62,7 +58,7 @@ class _RoutinesListState extends riverpod.ConsumerState<RoutinesList> {
                         _loadingRoutine = currentRoutine.id;
                       });
                       try {
-                        await widget._routineProvider.fetchAndSetRoutineFull(currentRoutine.id!);
+                        await routineProvider.fetchAndSetRoutineFull(currentRoutine.id!);
                       } finally {
                         if (mounted) {
                           setState(() => _loadingRoutine = null);
@@ -122,10 +118,7 @@ class _RoutinesListState extends riverpod.ConsumerState<RoutinesList> {
                                               ),
                                               onPressed: () {
                                                 // Confirmed, delete the workout
-                                                Provider.of<RoutinesProvider>(
-                                                  context,
-                                                  listen: false,
-                                                ).deleteRoutine(currentRoutine.id!);
+                                                routineProvider.deleteRoutine(currentRoutine.id!);
 
                                                 // Close the popup
                                                 Navigator.of(contextDialog).pop();

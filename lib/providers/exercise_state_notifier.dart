@@ -69,7 +69,8 @@ final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
     final equipment = equipmentAsync.asData!.value;
     final categories = categoriesAsync.asData!.value;
     _logger.finer(
-      'All data loaded: ${exercises.length} exercises, '
+      'All data loaded: '
+      '${exercises.length} exercises, '
       '${equipment.length} equipment, '
       '${categories.length} categories',
     );

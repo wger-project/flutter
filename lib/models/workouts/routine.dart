@@ -22,7 +22,7 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/session_api.dart';
+import 'package:wger/models/workouts/session.dart';
 
 part 'routine.g.dart';
 
@@ -70,7 +70,7 @@ class Routine {
   List<DayData> dayDataGym = [];
 
   @JsonKey(required: false, includeToJson: false, defaultValue: [])
-  List<WorkoutSessionApi> sessions = [];
+  List<WorkoutSession> sessions = [];
 
   Routine({
     this.id,

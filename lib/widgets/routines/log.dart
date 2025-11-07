@@ -101,7 +101,9 @@ class _SessionInfoState extends ConsumerState<SessionInfo> {
                 _buildInfoRow(
                   context,
                   i18n.notes,
-                  widget._session.notes.isNotEmpty ? widget._session.notes : '-/-',
+                  (widget._session.notes != null && widget._session.notes!.isNotEmpty)
+                      ? widget._session.notes!
+                      : '-/-',
                 ),
               ],
             ),
@@ -174,15 +176,15 @@ class DayLogWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isOnline = ref.watch(networkStatusProvider);
 
-    final sessionApi = _routine.sessions.firstWhere(
-      (sessionApi) => sessionApi.session.date.isSameDayAs(_date),
+    final session = _routine.sessions.firstWhere(
+      (sessionApi) => sessionApi.date.isSameDayAs(_date),
     );
-    final exercises = sessionApi.exercises;
+    final exercises = session.exercises;
 
     return Card(
       child: Column(
         children: [
-          SessionInfo(sessionApi.session),
+          SessionInfo(session),
           ...exercises.map((exercise) {
             final translation = exercise.getTranslation(
               Localizations.localeOf(context).languageCode,
@@ -193,7 +195,7 @@ class DayLogWidget extends ConsumerWidget {
                   translation.name,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                ...sessionApi.logs
+                ...session.logs
                     .where((l) => l.exerciseId == exercise.id)
                     .map(
                       (log) => Row(

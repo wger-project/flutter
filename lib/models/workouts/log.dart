@@ -108,7 +108,7 @@ class Log {
 
   Log.empty();
 
-  Log.fromSetConfigData(SetConfigData data) {
+  Log.fromSetConfigData(SetConfigData data, {int? routineId, this.iteration}) {
     date = DateTime.now();
     sessionId = null;
     slotEntryId = data.slotEntryId;
@@ -124,6 +124,10 @@ class Log {
 
     rir = data.rir;
     rirTarget = data.rir;
+
+    if (routineId != null) {
+      this.routineId = routineId;
+    }
   }
 
   WorkoutLogTableCompanion toCompanion({bool includeId = false}) {
@@ -207,9 +211,6 @@ class Log {
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode =>
       Object.hash(exerciseId, weight, weightUnitId, repetitions, repetitionsUnitId, rir);
-
-  //@override
-  //int get hashCode => super.hashCode;
 
   @override
   String toString() {

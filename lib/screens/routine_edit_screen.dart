@@ -17,20 +17,20 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/routines/routine_edit.dart';
 
-class RoutineEditScreen extends StatelessWidget {
+class RoutineEditScreen extends ConsumerWidget {
   const RoutineEditScreen();
 
   static const routeName = '/routine-edit';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final routineId = ModalRoute.of(context)!.settings.arguments as int;
-    final routine = Provider.of<RoutinesProvider>(context).findById(routineId);
+    final routine = ref.read(routinesChangeProvider).findById(routineId);
 
     return Scaffold(
       appBar: EmptyAppBar(routine.name),

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -29,11 +31,13 @@ import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/session_api.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/exercise_data.dart';
+import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/workout_session.dart';
 
 part 'routines.g.dart';
 
@@ -47,6 +51,49 @@ Stream<List<WeightUnit>> routineWeightUnit(Ref ref) {
 Stream<List<RepetitionUnit>> routineRepetitionUnit(Ref ref) {
   final db = ref.read(driftPowerSyncDatabase);
   return db.select(db.routineRepetitionUnitTable).watch();
+}
+
+@riverpod
+RoutinesProvider routinesChangeNotifier(Ref ref) {
+  final logger = Logger('RoutinesChangeProvider');
+  logger.fine('Creating routinesChangeNotifier notifier');
+
+  final base = ref.read(wgerBaseProvider);
+  final provider = RoutinesProvider(base);
+
+  ref.listen<AsyncValue<List<WeightUnit>>>(routineWeightUnitProvider, (_, next) {
+    final data = next.asData?.value;
+    if (data != null) {
+      logger.finer('Setting ${data.length} weight units');
+      provider.weightUnits = data;
+    }
+  });
+
+  ref.listen<AsyncValue<List<RepetitionUnit>>>(routineRepetitionUnitProvider, (_, next) {
+    final data = next.asData?.value;
+    if (data != null) {
+      logger.finer('Setting ${data.length} repetition units');
+      provider.repetitionUnits = data;
+    }
+  });
+
+  ref.listen<AsyncValue<List<Exercise>>>(exercisesProvider, (_, next) {
+    final data = next.asData?.value;
+    if (data != null) {
+      logger.finer('Setting ${data.length} exercises');
+      provider.exercises = data;
+    }
+  });
+
+  ref.listen<AsyncValue<List<WorkoutSession>>>(workoutSessionProvider, (_, next) {
+    final data = next.asData?.value;
+    if (data != null) {
+      logger.finer('Setting ${data.length} sessions');
+      provider.sessions = data;
+    }
+  });
+
+  return provider;
 }
 
 class RoutinesProvider with ChangeNotifier {
@@ -77,6 +124,7 @@ class RoutinesProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
   List<Routine> _routines = [];
   List<Exercise> _exercises = [];
+  List<WorkoutSession> _sessions = [];
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnits = [];
 
@@ -86,14 +134,20 @@ class RoutinesProvider with ChangeNotifier {
     List<WeightUnit>? weightUnits,
     List<RepetitionUnit>? repetitionUnits,
     List<Exercise>? exercises,
+    List<WorkoutSession>? sessions,
   }) {
     _routines = entries ?? [];
     _weightUnits = weightUnits ?? [];
     _repetitionUnits = repetitionUnits ?? [];
     _exercises = exercises ?? [];
+    _sessions = sessions ?? [];
   }
 
   Exercise _getExerciseById(int id) {
+    // if (ref != null) {
+    //   final exercises = ref!.read(exercisesProvider);
+    //   return exercises.firstWhere((element) => element.id == id);
+    // }
     return _exercises.firstWhere((element) => element.id == id);
   }
 
@@ -107,7 +161,7 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  RepetitionUnit getRepetitionUnitById(int? id) =>
+  RepetitionUnit _getRepetitionUnitById(int? id) =>
       _repetitionUnits.firstWhere((element) => element.id == id);
 
   set weightUnits(List<WeightUnit> units) {
@@ -119,7 +173,19 @@ class RoutinesProvider with ChangeNotifier {
     return [..._weightUnits];
   }
 
-  WeightUnit getWeightUnitById(int? id) => _weightUnits.firstWhere((element) => element.id == id);
+  WeightUnit _getWeightUnitById(int? id) => _weightUnits.firstWhere((element) => element.id == id);
+
+  set sessions(List<WorkoutSession> sessions) {
+    _logger.finer('Setting ${sessions.length} sessions');
+    _sessions = sessions;
+  }
+
+  List<WorkoutSession> get sessions {
+    return [..._sessions];
+  }
+
+  List<WorkoutSession> getSessionsForRoutine(int id) =>
+      _sessions.where((s) => s.routineId == id).toList();
 
   /// Returns the current active nutritional plan. At the moment this is just
   /// the latest, but this might change in the future.
@@ -207,22 +273,14 @@ class RoutinesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setExercisesAndUnits(List<DayData> entries, {Map<int, Exercise>? exercises}) async {
-    exercises ??= {};
-
+  Future<void> setExercisesAndUnits(List<DayData> entries) async {
     for (final entry in entries) {
       for (final slot in entry.slots) {
         for (final setConfig in slot.setConfigs) {
           final exerciseId = setConfig.exerciseId;
-          if (!exercises.containsKey(exerciseId)) {
-            _logger.fine('Fetching exercise $exerciseId for routine set config');
-            exercises[exerciseId] = _getExerciseById(exerciseId);
-          }
-          setConfig.exercise = exercises[exerciseId]!;
-
-          setConfig.repetitionsUnit = getRepetitionUnitById(setConfig.repetitionsUnitId);
-
-          setConfig.weightUnit = getWeightUnitById(setConfig.weightUnitId);
+          setConfig.exercise = _getExerciseById(exerciseId);
+          setConfig.repetitionsUnit = _getRepetitionUnitById(setConfig.repetitionsUnitId);
+          setConfig.weightUnit = _getWeightUnitById(setConfig.weightUnitId);
         }
       }
     }
@@ -267,55 +325,47 @@ class RoutinesProvider with ChangeNotifier {
           objectMethod: _routinesDateSequenceGymSubpath,
         ),
       ),
-      baseProvider.fetch(
-        baseProvider.makeUrl(
-          _routinesUrlPath,
-          id: routineId,
-          objectMethod: _routinesLogsSubpath,
-        ),
-      ),
+      // baseProvider.fetch(
+      //   baseProvider.makeUrl(
+      //     _routinesUrlPath,
+      //     id: routineId,
+      //     objectMethod: _routinesLogsSubpath,
+      //   ),
+      // ),
     ]);
 
     final routine = Routine.fromJson(results[0] as Map<String, dynamic>);
     final dayData = results[1] as List<dynamic>;
     final dayDataGym = results[2] as List<dynamic>;
-    final sessionData = results[3] as List<dynamic>;
+    // final sessionData = results[3] as List<dynamic>;
 
     /*
      * Set exercise, repetition and weight unit objects
      *
      * note that setExercisesAndUnits modifies the list in-place
      */
-
-    /// Temporary cache to avoid fetching the same exercise multiple times
-    final Map<int, Exercise> exercises = {};
-
     final dayDataEntriesDisplay = dayData.map((entry) => DayData.fromJson(entry)).toList();
-    await setExercisesAndUnits(dayDataEntriesDisplay, exercises: exercises);
+    await setExercisesAndUnits(dayDataEntriesDisplay);
 
     final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
-    await setExercisesAndUnits(dayDataEntriesGym, exercises: exercises);
+    await setExercisesAndUnits(dayDataEntriesGym);
 
-    final sessionDataEntries = sessionData
-        .map((entry) => WorkoutSessionApi.fromJson(entry))
-        .toList();
+    // final sessionDataEntries = sessionData
+    //     .map((entry) => WorkoutSessionApi.fromJson(entry))
+    //     .toList();
 
     for (final day in routine.days) {
       for (final slot in day.slots) {
         for (final slotEntry in slot.entries) {
           final exerciseId = slotEntry.exerciseId;
-          if (!exercises.containsKey(exerciseId)) {
-            print(exerciseId);
-            exercises[exerciseId] = _getExerciseById(exerciseId);
-          }
-          slotEntry.exerciseObj = exercises[exerciseId]!;
+          slotEntry.exerciseObj = _getExerciseById(exerciseId);
 
           if (slotEntry.repetitionUnitId != null) {
-            slotEntry.repetitionUnitObj = getRepetitionUnitById(slotEntry.repetitionUnitId);
+            slotEntry.repetitionUnitObj = _getRepetitionUnitById(slotEntry.repetitionUnitId);
           }
 
           if (slotEntry.weightUnitId != null) {
-            slotEntry.weightUnitObj = getWeightUnitById(slotEntry.weightUnitId);
+            slotEntry.weightUnitObj = _getWeightUnitById(slotEntry.weightUnitId);
           }
         }
       }
@@ -325,24 +375,7 @@ class RoutinesProvider with ChangeNotifier {
     routine.dayDataGym = dayDataEntriesGym;
 
     // Logs
-    routine.sessions = List<WorkoutSessionApi>.of(sessionDataEntries);
-    for (final session in routine.sessions) {
-      for (final log in session.logs) {
-        if (log.weightUnitId != null) {
-          log.weightUnit = getWeightUnitById(log.weightUnitId);
-        }
-
-        if (log.repetitionsUnitId != null) {
-          log.repetitionUnit = getRepetitionUnitById(log.repetitionsUnitId);
-        }
-
-        if (!exercises.containsKey(log.exerciseId)) {
-          exercises[log.exerciseId] = _getExerciseById(log.exerciseId);
-        }
-
-        log.exerciseBase = exercises[log.exerciseId]!;
-      }
-    }
+    routine.sessions = getSessionsForRoutine(routine.id!);
 
     // ... and done
     final routineIndex = _routines.indexWhere((r) => r.id == routineId);
@@ -593,20 +626,20 @@ class RoutinesProvider with ChangeNotifier {
     return sessions;
   }
 
-  Future<WorkoutSession> addSession(WorkoutSession session, int? routineId) async {
-    final data = await baseProvider.post(
-      session.toJson(),
-      baseProvider.makeUrl(_sessionUrlPath),
-    );
-    final newSession = WorkoutSession.fromJson(data);
-
-    if (routineId != null) {
-      final routine = findById(routineId);
-      routine.sessions.add(WorkoutSessionApi(session: newSession));
-    }
-
+  Future<void> addSession(WorkoutSession session, int? routineId) async {
+    // final data = await baseProvider.post(
+    //   session.toJson(),
+    //   baseProvider.makeUrl(_sessionUrlPath),
+    // );
+    // final newSession = WorkoutSession.fromJson(data);
+    //
+    // if (routineId != null) {
+    //   final routine = findById(routineId);
+    //   routine.sessions.add(WorkoutSessionApi(session: newSession));
+    // }
+    //
     notifyListeners();
-    return newSession;
+    // return newSession;
   }
 
   Future<void> editSession(WorkoutSession session) async {

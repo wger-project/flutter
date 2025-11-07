@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,29 +17,27 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/app_bar.dart';
 import 'package:wger/widgets/routines/routine_detail.dart';
 
-class RoutineScreen extends StatelessWidget {
+class RoutineScreen extends ConsumerWidget {
   const RoutineScreen({super.key});
 
   static const routeName = '/routine-detail';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final routineId = ModalRoute.of(context)!.settings.arguments as int;
-    final routineProvider = context.read<RoutinesProvider>();
+    final routineProvider = ref.read(routinesChangeProvider);
 
     final routine = routineProvider.findById(routineId);
 
     return Scaffold(
       appBar: RoutineDetailAppBar(routine),
       body: SingleChildScrollView(
-        child: Consumer<RoutinesProvider>(
-          builder: (context, value, child) => RoutineDetail(routine),
-        ),
+        child: RoutineDetail(routine),
       ),
     );
   }

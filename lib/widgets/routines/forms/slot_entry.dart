@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
@@ -34,7 +34,7 @@ import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/slot.dart';
 
-class SlotEntryForm extends StatefulWidget {
+class SlotEntryForm extends ConsumerStatefulWidget {
   final SlotEntry entry;
   final bool simpleMode;
   final int routineId;
@@ -42,10 +42,10 @@ class SlotEntryForm extends StatefulWidget {
   const SlotEntryForm(this.entry, this.routineId, {this.simpleMode = true, super.key});
 
   @override
-  State<SlotEntryForm> createState() => _SlotEntryFormState();
+  _SlotEntryFormState createState() => _SlotEntryFormState();
 }
 
-class _SlotEntryFormState extends State<SlotEntryForm> {
+class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
   bool isSaving = false;
   bool isDeleting = false;
 
@@ -124,7 +124,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
     final languageCode = Localizations.localeOf(context).languageCode;
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesChangeProvider);
 
     return Form(
       key: _form,
@@ -420,7 +420,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
   }
 }
 
-class SlotDetailWidget extends StatefulWidget {
+class SlotDetailWidget extends ConsumerStatefulWidget {
   final Slot slot;
   final bool simpleMode;
   final int routineId;
@@ -428,17 +428,17 @@ class SlotDetailWidget extends StatefulWidget {
   const SlotDetailWidget(this.slot, this.routineId, {this.simpleMode = true, super.key});
 
   @override
-  State<SlotDetailWidget> createState() => _SlotDetailWidgetState();
+  _SlotDetailWidgetState createState() => _SlotDetailWidgetState();
 }
 
-class _SlotDetailWidgetState extends State<SlotDetailWidget> {
+class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
   bool _showExerciseSearchBox = false;
   Widget errorMessage = const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesChangeProvider);
 
     return Column(
       children: [
@@ -487,7 +487,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
   }
 }
 
-class ReorderableSlotList extends StatefulWidget {
+class ReorderableSlotList extends ConsumerStatefulWidget {
   final List<Slot> slots;
   final Day day;
 
@@ -497,7 +497,7 @@ class ReorderableSlotList extends StatefulWidget {
   _SlotFormWidgetStateNg createState() => _SlotFormWidgetStateNg();
 }
 
-class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
+class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
   int? selectedSlotId;
   bool simpleMode = true;
   bool isAddingSlot = false;
@@ -507,7 +507,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesChangeProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
     return Column(

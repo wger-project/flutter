@@ -34,7 +34,7 @@ Routine _$RoutineFromJson(Map<String, dynamic> json) {
         const [],
     sessions:
         (json['sessions'] as List<dynamic>?)
-            ?.map((e) => WorkoutSessionApi.fromJson(e as Map<String, dynamic>))
+            ?.map((e) => WorkoutSession.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
   );

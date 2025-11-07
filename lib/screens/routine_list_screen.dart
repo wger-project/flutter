@@ -18,11 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/routines/app_bar.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
@@ -56,9 +54,7 @@ class RoutineListScreen extends riverpod.ConsumerWidget {
             : null,
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      body: Consumer<RoutinesProvider>(
-        builder: (context, workoutProvider, child) => RoutinesList(workoutProvider),
-      ),
+      body: const RoutinesList(),
     );
   }
 }

@@ -25,7 +25,6 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/session_api.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_data.dart';
@@ -90,29 +89,25 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
   log3.weightUnit = testWeightUnit1;
   log3.repetitionUnit = testRepetitionUnit1;
 
-  final session1 = WorkoutSessionApi(
-    session: WorkoutSession(
-      id: '1',
-      routineId: 1,
-      date: DateTime(2021, 5, 1),
-      impression: 3,
-      notes: 'This is a note',
-      timeStart: const TimeOfDay(hour: 10, minute: 0),
-      timeEnd: const TimeOfDay(hour: 12, minute: 34),
-    ),
+  final session1 = WorkoutSession(
+    id: '1',
+    routineId: 1,
+    date: DateTime(2021, 5, 1),
+    impression: 3,
+    notes: 'This is a note',
+    timeStart: const TimeOfDay(hour: 10, minute: 0),
+    timeEnd: const TimeOfDay(hour: 12, minute: 34),
     logs: [log1, log2],
   );
 
-  final session2 = WorkoutSessionApi(
-    session: WorkoutSession(
-      id: '2',
-      routineId: 1,
-      date: DateTime(2021, 5, 2),
-      impression: 1,
-      notes: 'This is a note',
-      timeStart: const TimeOfDay(hour: 6, minute: 12),
-      timeEnd: const TimeOfDay(hour: 8, minute: 1),
-    ),
+  final session2 = WorkoutSession(
+    id: '2',
+    routineId: 1,
+    date: DateTime(2021, 5, 2),
+    impression: 1,
+    notes: 'This is a note',
+    timeStart: const TimeOfDay(hour: 6, minute: 12),
+    timeEnd: const TimeOfDay(hour: 8, minute: 1),
     logs: [log3],
   );
 

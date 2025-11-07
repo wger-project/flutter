@@ -31,11 +31,25 @@ import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
+import 'package:wger/providers/workout_session.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
+
+class EagerInitialization extends riverpod.ConsumerWidget {
+  const EagerInitialization();
+
+  @override
+  Widget build(BuildContext context, riverpod.WidgetRef ref) {
+    // TODO: do we need all of these here?
+    ref.watch(exerciseStateProvider);
+    ref.watch(workoutSessionProvider);
+    ref.watch(routinesChangeProvider);
+    return HomeTabsScreen();
+  }
+}
 
 class HomeTabsScreen extends riverpod.ConsumerStatefulWidget {
   final _logger = Logger('HomeTabsScreen');
@@ -76,14 +90,12 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
     const GalleryScreen(),
   ];
 
-  bool _exerciseListenerInitialized = false;
-
   /// Load initial data from the server
   Future<void> _loadEntries() async {
     final authProvider = context.read<AuthProvider>();
 
     if (!authProvider.dataInit) {
-      final routinesProvider = context.read<RoutinesProvider>();
+      final routinesProvider = ref.read(routinesChangeProvider);
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final galleryProvider = context.read<GalleryProvider>();
       final measurementProvider = context.read<MeasurementProvider>();
@@ -97,7 +109,9 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
         userProvider.fetchAndSetProfile(),
         nutritionPlansProvider.fetchIngredientsFromCache(),
       ]);
+      // await ref.read(routineWeightUnitProvider.future);
       await ref.read(exerciseStateReadyProvider.future);
+      await ref.read(sessionStateReadyProvider.future);
       ref.read(weightEntryProvider());
 
       //
@@ -110,8 +124,6 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
         // routinesProvider.fetchAndSetAllRoutinesFull(),
         measurementProvider.fetchAndSetAllCategoriesAndEntries(),
       ]);
-      // fetch weights separately using Riverpod notifier
-      // await ref.read(bodyWeightStateProvider(authProvider).notifier).fetchAndSetEntries();
 
       //
       // Current nutritional plan
@@ -125,8 +137,9 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
       // Current routine
       widget._logger.info('Loading current routine');
       if (routinesProvider.currentRoutine != null) {
-        final planId = routinesProvider.currentRoutine!.id!;
-        await routinesProvider.fetchAndSetRoutineFull(planId);
+        final routineId = routinesProvider.currentRoutine!.id!;
+        widget._logger.finer('Current routine ID: $routineId');
+        await routinesProvider.fetchAndSetRoutineFull(routinesProvider.currentRoutine!.id!);
       }
     }
 
@@ -135,12 +148,6 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Note that listen needs to happen on the build method. We use
-    if (!_exerciseListenerInitialized) {
-      ref.listen(exerciseStateProvider, (_, _) {});
-      _exerciseListenerInitialized = true;
-    }
-
     return FutureBuilder<void>(
       future: _initialData,
       builder: (context, snapshot) {

@@ -95,9 +95,9 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   }
 
   void loadEvents() {
-    for (final sessionApi in widget._routine.sessions) {
-      _events[DateFormatLists.format(sessionApi.session.date)] = [
-        sessionApi.session.date,
+    for (final session in widget._routine.sessions) {
+      _events[DateFormatLists.format(session.date)] = [
+        session.date,
       ];
     }
 

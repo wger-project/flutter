@@ -26,19 +26,12 @@ part 'workout_logs.g.dart';
 
 @riverpod
 final class WorkoutLogNotifier extends _$WorkoutLogNotifier {
-  final _log = Logger('WorkoutLogNotifier');
+  final _logger = Logger('WorkoutLogNotifier');
   late final WorkoutLogRepository _repo;
 
   @override
   Stream<List<Log>> build() {
     _repo = ref.read(workoutLogRepositoryProvider);
-
-    // final state = BodyWeightState();
-    // repo.watchAllDrift(database).listen((entries) {
-    //   state.setItems(entries);
-    // });
-    // return state;
-
     return _repo.watchAllDrift();
   }
 

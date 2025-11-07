@@ -50,15 +50,9 @@ void main() {
   final key = GlobalKey<NavigatorState>();
 
   final mockRoutinesProvider = MockRoutinesProvider();
-  final testRoutine = getTestRoutine();
 
   setUp(() {
-    when(mockRoutinesProvider.findById(any)).thenReturn(testRoutine);
-    when(mockRoutinesProvider.items).thenReturn([testRoutine]);
-    when(
-      mockRoutinesProvider.fetchAndSetRoutineFull(any),
-    ).thenAnswer((_) => Future.value(testRoutine));
-
+    when(mockRoutinesProvider.findById(any)).thenReturn(getTestRoutine());
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
   });
 

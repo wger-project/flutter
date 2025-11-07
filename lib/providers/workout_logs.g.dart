@@ -33,7 +33,7 @@ final class WorkoutLogNotifierProvider
   WorkoutLogNotifier create() => WorkoutLogNotifier();
 }
 
-String _$workoutLogNotifierHash() => r'8ec76c8d9c72c6bc482952763d048c5df110bd6e';
+String _$workoutLogNotifierHash() => r'532917be5ce98bf849b8a16b401d89e934483e67';
 
 abstract class _$WorkoutLogNotifier extends $StreamNotifier<List<Log>> {
   Stream<List<Log>> build();

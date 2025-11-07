@@ -132,7 +132,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
                         onTap: () {
                           final auth = context.read<AuthProvider>();
                           auth.logout();
-                          context.read<RoutinesProvider>().clear();
+                          ref.read(routinesChangeProvider).clear();
                           context.read<NutritionPlansProvider>().clear();
                           // ref.read(bodyWeightStateProvider.notifier).clear();
                           context.read<GalleryProvider>().clear();

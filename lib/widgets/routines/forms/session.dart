@@ -18,8 +18,8 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
@@ -28,7 +28,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/routines.dart';
 
-class SessionForm extends StatefulWidget {
+class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');
   final WorkoutSession _session;
   final int? _routineId;
@@ -53,7 +53,7 @@ class SessionForm extends StatefulWidget {
   _SessionFormState createState() => _SessionFormState();
 }
 
-class _SessionFormState extends State<SessionForm> {
+class _SessionFormState extends ConsumerState<SessionForm> {
   Widget errorMessage = const SizedBox.shrink();
   final _form = GlobalKey<FormState>();
 
@@ -75,8 +75,7 @@ class _SessionFormState extends State<SessionForm> {
     timeEndController.text = widget._session.timeEnd == null
         ? ''
         : timeToString(widget._session.timeEnd)!;
-    notesController.text = widget._session.notes;
-
+    notesController.text = widget._session.notes ?? '';
     selectedImpression[widget._session.impression - 1] = true;
   }
 
@@ -91,7 +90,7 @@ class _SessionFormState extends State<SessionForm> {
 
   @override
   Widget build(BuildContext context) {
-    final routinesProvider = context.read<RoutinesProvider>();
+    final routinesProvider = ref.read(routinesChangeProvider);
 
     return Form(
       key: _form,

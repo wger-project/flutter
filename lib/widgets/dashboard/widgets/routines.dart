@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -31,22 +31,22 @@ import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
-class DashboardRoutineWidget extends StatefulWidget {
+class DashboardRoutineWidget extends ConsumerStatefulWidget {
   const DashboardRoutineWidget();
 
   @override
   _DashboardRoutineWidgetState createState() => _DashboardRoutineWidgetState();
 }
 
-class _DashboardRoutineWidgetState extends State<DashboardRoutineWidget> {
+class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget> {
   var _showDetail = false;
   bool _hasContent = false;
 
   @override
   Widget build(BuildContext context) {
-    final routine = context.watch<RoutinesProvider>().currentRoutine;
-    _hasContent = routine != null;
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final routine = ref.watch(routinesChangeProvider).currentRoutine;
+    _hasContent = routine != null;
 
     return Card(
       child: Column(

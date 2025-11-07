@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -30,7 +30,7 @@ import 'package:wger/widgets/exercises/autocompleter.dart';
 import 'package:wger/widgets/routines/forms/slot_entry.dart';
 import 'package:wger/widgets/routines/slot.dart';
 
-class SlotDetailWidget extends StatefulWidget {
+class SlotDetailWidget extends ConsumerStatefulWidget {
   final Slot slot;
   final bool simpleMode;
   final int routineId;
@@ -38,17 +38,17 @@ class SlotDetailWidget extends StatefulWidget {
   const SlotDetailWidget(this.slot, this.routineId, {this.simpleMode = true, super.key});
 
   @override
-  State<SlotDetailWidget> createState() => _SlotDetailWidgetState();
+  _SlotDetailWidgetState createState() => _SlotDetailWidgetState();
 }
 
-class _SlotDetailWidgetState extends State<SlotDetailWidget> {
+class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
   bool _showExerciseSearchBox = false;
   Widget errorMessage = const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesChangeProvider);
 
     return Column(
       children: [
@@ -97,7 +97,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
   }
 }
 
-class ReorderableSlotList extends StatefulWidget {
+class ReorderableSlotList extends ConsumerStatefulWidget {
   final List<Slot> slots;
   final Day day;
 
@@ -107,7 +107,7 @@ class ReorderableSlotList extends StatefulWidget {
   _SlotFormWidgetStateNg createState() => _SlotFormWidgetStateNg();
 }
 
-class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
+class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
   int? selectedSlotId;
   bool simpleMode = true;
   bool isAddingSlot = false;
@@ -117,7 +117,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesChangeProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
     return Column(

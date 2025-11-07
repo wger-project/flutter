@@ -59,9 +59,7 @@ class LogPage extends ConsumerStatefulWidget {
     this._exercisePages,
     this._totalPages,
     int? iteration,
-  ) : _log = Log.fromSetConfigData(_configData)
-        ..routineId = _routine.id!
-        ..iteration = iteration;
+  ) : _log = Log.fromSetConfigData(_configData, routineId: _routine.id, iteration: iteration);
 
   @override
   _LogPageState createState() => _LogPageState();
@@ -127,10 +125,10 @@ class _LogPageState extends ConsumerState<LogPage> {
           Text(widget._slotData.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._routine.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
+          child: (widget._routine.filterLogsByExercise(widget._exercise.id).isNotEmpty)
               ? LogsPastLogsWidget(
                   log: widget._log,
-                  pastLogs: widget._routine.filterLogsByExercise(widget._exercise.id!),
+                  pastLogs: widget._routine.filterLogsByExercise(widget._exercise.id),
                   onCopy: (pastLog) {
                     _logFormKey.currentState?.copyFromPastLog(pastLog);
                   },

@@ -45,7 +45,7 @@ void main() {
 
   setUp(() {
     routine = getTestRoutine();
-    routine.sessions[0].session.date = DateTime(2025, 3, 29);
+    routine.sessions[0].date = DateTime(2025, 3, 29);
 
     when(mockRoutinesProvider.findById(any)).thenAnswer((_) => routine);
     when(mockWorkoutLogRepository.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());

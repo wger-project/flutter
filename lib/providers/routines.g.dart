@@ -86,3 +86,44 @@ final class RoutineRepetitionUnitProvider
 }
 
 String _$routineRepetitionUnitHash() => r'7754a0197c3fed27feea2c6d33d5e5a5e1deab45';
+
+@ProviderFor(routinesChangeNotifier)
+const routinesChangeProvider = RoutinesChangeNotifierProvider._();
+
+final class RoutinesChangeNotifierProvider
+    extends $FunctionalProvider<RoutinesProvider, RoutinesProvider, RoutinesProvider>
+    with $Provider<RoutinesProvider> {
+  const RoutinesChangeNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'routinesChangeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$routinesChangeNotifierHash();
+
+  @$internal
+  @override
+  $ProviderElement<RoutinesProvider> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  RoutinesProvider create(Ref ref) {
+    return routinesChangeNotifier(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(RoutinesProvider value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<RoutinesProvider>(value),
+    );
+  }
+}
+
+String _$routinesChangeNotifierHash() => r'95f7de1ed7184387ffbe4f8ba6e697a311ea02e1';
