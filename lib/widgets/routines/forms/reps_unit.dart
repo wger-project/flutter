@@ -40,7 +40,7 @@ class RepetitionUnitInputWidget extends ConsumerStatefulWidget {
 class _RepetitionUnitInputWidgetState extends ConsumerState<RepetitionUnitInputWidget> {
   @override
   Widget build(BuildContext context) {
-    final repUnits = ref.read(routineRepetitionUnitProvider).asData?.value ?? [];
+    final repUnits = ref.watch(routineRepetitionUnitProvider).asData?.value ?? [];
 
     RepetitionUnit? selectedWeightUnit = widget.selectedRepetitionUnit != null
         ? repUnits.firstWhere((unit) => unit.id == widget.selectedRepetitionUnit)

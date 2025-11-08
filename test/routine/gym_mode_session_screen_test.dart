@@ -26,29 +26,26 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 
 import '../../test_data/routines.dart';
 import 'gym_mode_session_screen_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([WorkoutSessionRepository])
 void main() {
-  final mockRoutinesProvider = MockRoutinesProvider();
+  late MockWorkoutSessionRepository mockRepository;
   late Routine testRoutine;
 
   setUp(() {
     testRoutine = getTestRoutine();
-
-    when(mockRoutinesProvider.editSession(any)).thenAnswer(
-      (_) => Future.value(testRoutine.sessions[0]),
-    );
+    mockRepository = MockWorkoutSessionRepository();
   });
 
   Widget renderSessionPage({locale = 'en'}) {
     return ProviderScope(
       overrides: [
-        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+        workoutSessionRepositoryProvider.overrideWithValue(mockRepository),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -110,7 +107,8 @@ void main() {
       await tester.pumpWidget(renderSessionPage());
       await tester.tap(find.byKey(const ValueKey('save-button')));
       final captured =
-          verify(mockRoutinesProvider.editSession(captureAny)).captured.single as WorkoutSession;
+          verify(mockRepository.editLocalDrift(captureAny as dynamic)).captured.single
+              as WorkoutSession;
 
       expect(captured.id, '1');
       expect(captured.impression, 3);

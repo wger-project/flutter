@@ -41,17 +41,12 @@ final class WorkoutSessionNotifier extends _$WorkoutSessionNotifier {
     return _repo.watchAllDrift();
   }
 
-  Stream<List<WorkoutSession>> getForRoutine(int routineId) {
-    _repo = ref.read(workoutSessionRepositoryProvider);
-    return _repo.watchRoutineDrift(routineId);
-  }
-
   Future<void> deleteEntry(String id) async {
     await _repo.deleteLocalDrift(id);
   }
 
   Future<void> updateEntry(WorkoutSession entry) async {
-    await _repo.updateLocalDrift(entry);
+    await _repo.editLocalDrift(entry);
   }
 
   Future<void> addEntry(WorkoutSession entry) async {

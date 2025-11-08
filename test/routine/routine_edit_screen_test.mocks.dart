@@ -472,43 +472,6 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  _i13.Future<List<_i11.WorkoutSession>> fetchSessionData() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchSessionData, []),
-            returnValue: _i13.Future<List<_i11.WorkoutSession>>.value(
-              <_i11.WorkoutSession>[],
-            ),
-          )
-          as _i13.Future<List<_i11.WorkoutSession>>);
-
-  @override
-  _i13.Future<void> addSession(_i11.WorkoutSession? session, int? routineId) =>
-      (super.noSuchMethod(
-            Invocation.method(#addSession, [session, routineId]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> editSession(_i11.WorkoutSession? session) =>
-      (super.noSuchMethod(
-            Invocation.method(#editSession, [session]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> deleteLog(String? logId, int? routineId) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteLog, [logId, routineId]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
   void addListener(_i16.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,

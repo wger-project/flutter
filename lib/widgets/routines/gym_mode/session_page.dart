@@ -42,7 +42,7 @@ class SessionPage extends StatelessWidget {
          (session) => session.date.isSameDayAs(clock.now()),
          orElse: () => WorkoutSession(
            dayId: dayId,
-           routineId: _routine.id!,
+           routineId: _routine.id,
            impression: DEFAULT_IMPRESSION,
            date: clock.now(),
            timeStart: start,
@@ -63,7 +63,7 @@ class SessionPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: SessionForm(
-            _routine.id,
+            _routine.id!,
             onSaved: () => Navigator.of(context).pop(),
             session: _session,
           ),

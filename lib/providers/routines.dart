@@ -24,6 +24,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
@@ -37,6 +38,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/workout_logs.dart';
 import 'package:wger/providers/workout_session.dart';
 
 part 'routines.g.dart';
@@ -58,26 +60,26 @@ RoutinesProvider routinesChangeNotifier(Ref ref) {
   final logger = Logger('RoutinesChangeProvider');
   logger.fine('Creating routinesChangeNotifier notifier');
 
-  final base = ref.read(wgerBaseProvider);
-  final provider = RoutinesProvider(base);
+  final baseProvider = ref.read(wgerBaseProvider);
+  final provider = RoutinesProvider(baseProvider);
 
-  ref.listen<AsyncValue<List<WeightUnit>>>(routineWeightUnitProvider, (_, next) {
+  ref.listen(routineWeightUnitProvider, (_, next) {
     final data = next.asData?.value;
-    if (data != null) {
+    if (data != null && ref.mounted) {
       logger.finer('Setting ${data.length} weight units');
       provider.weightUnits = data;
     }
   });
 
-  ref.listen<AsyncValue<List<RepetitionUnit>>>(routineRepetitionUnitProvider, (_, next) {
+  ref.listen(routineRepetitionUnitProvider, (_, next) {
     final data = next.asData?.value;
-    if (data != null) {
+    if (data != null && ref.mounted) {
       logger.finer('Setting ${data.length} repetition units');
       provider.repetitionUnits = data;
     }
   });
 
-  ref.listen<AsyncValue<List<Exercise>>>(exercisesProvider, (_, next) {
+  ref.listen(exercisesProvider, (_, next) {
     final data = next.asData?.value;
     if (data != null) {
       logger.finer('Setting ${data.length} exercises');
@@ -85,11 +87,23 @@ RoutinesProvider routinesChangeNotifier(Ref ref) {
     }
   });
 
-  ref.listen<AsyncValue<List<WorkoutSession>>>(workoutSessionProvider, (_, next) {
+  ref.listen(workoutSessionProvider, (_, next) {
     final data = next.asData?.value;
     if (data != null) {
       logger.finer('Setting ${data.length} sessions');
       provider.sessions = data;
+    }
+  });
+
+  ref.listen(workoutLogProvider, (_, next) {
+    final data = next.asData?.value;
+    if (data != null) {
+      logger.finer('Setting ${data.length} logs');
+
+      // Merge logs into sessions, matching by date (no time component)
+      for (final session in provider.sessions) {
+        session.logs = data.where((log) => session.date.isSameDayAs(log.date)).toList();
+      }
     }
   });
 
@@ -610,55 +624,5 @@ class RoutinesProvider with ChangeNotifier {
         ),
       );
     }
-  }
-
-  /*
-   * Sessions
-   */
-  Future<List<WorkoutSession>> fetchSessionData() async {
-    final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(_sessionUrlPath, query: {'limit': API_MAX_PAGE_SIZE}),
-    );
-    final sessions = data.map((entry) => WorkoutSession.fromJson(entry)).toList();
-
-    notifyListeners();
-
-    return sessions;
-  }
-
-  Future<void> addSession(WorkoutSession session, int? routineId) async {
-    // final data = await baseProvider.post(
-    //   session.toJson(),
-    //   baseProvider.makeUrl(_sessionUrlPath),
-    // );
-    // final newSession = WorkoutSession.fromJson(data);
-    //
-    // if (routineId != null) {
-    //   final routine = findById(routineId);
-    //   routine.sessions.add(WorkoutSessionApi(session: newSession));
-    // }
-    //
-    notifyListeners();
-    // return newSession;
-  }
-
-  Future<void> editSession(WorkoutSession session) async {
-    // final data = await baseProvider.patch(
-    //   session.toJson(),
-    //   baseProvider.makeUrl(_sessionUrlPath, id: session.id),
-    // );
-    // final newSession = WorkoutSession.fromJson(data);
-    // notifyListeners();
-    // return newSession;
-  }
-
-  /*
-   * Logs
-   */
-
-  Future<void> deleteLog(String logId, int routineId) async {
-    _logger.fine('Deleting log ${logId}');
-    // await baseProvider.deleteRequest(_logsUrlPath, logId);
-    await fetchAndSetRoutineFull(routineId);
   }
 }

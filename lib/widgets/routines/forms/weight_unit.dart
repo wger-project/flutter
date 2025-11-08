@@ -40,7 +40,7 @@ class WeightUnitInputWidget extends ConsumerStatefulWidget {
 class _WeightUnitInputWidgetState extends ConsumerState<WeightUnitInputWidget> {
   @override
   Widget build(BuildContext context) {
-    final weightUnits = ref.read(routineWeightUnitProvider).asData?.value ?? [];
+    final weightUnits = ref.watch(routineWeightUnitProvider).asData?.value ?? [];
 
     WeightUnit? selectedWeightUnit = widget.selectedWeightUnit != null
         ? weightUnits.firstWhere((unit) => unit.id == widget.selectedWeightUnit)

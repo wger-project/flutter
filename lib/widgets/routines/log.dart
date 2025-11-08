@@ -216,7 +216,7 @@ class DayLogWidget extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: ExerciseLogChart(
                     _routine.groupLogsByRepetition(
-                      logs: _routine.filterLogsByExercise(exercise.id!),
+                      logs: _routine.filterLogsByExercise(exercise.id),
                       filterNullReps: true,
                       filterNullWeights: true,
                     ),

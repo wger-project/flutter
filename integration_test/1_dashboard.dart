@@ -31,17 +31,15 @@ Widget createDashboardScreen({String locale = 'en'}) {
     mockWorkoutProvider.currentRoutine,
   ).thenReturn(getTestRoutine(exercises: getScreenshotExercises()));
 
-  when(mockWorkoutProvider.fetchSessionData()).thenAnswer(
-    (a) => Future.value([
-      WorkoutSession(
-        routineId: 1,
-        date: DateTime.now().add(const Duration(days: -1)),
-        timeStart: const TimeOfDay(hour: 17, minute: 34),
-        timeEnd: const TimeOfDay(hour: 19, minute: 3),
-        impression: 3,
-      ),
-    ]),
-  );
+  when(mockWorkoutProvider.sessions).thenReturn([
+    WorkoutSession(
+      routineId: 1,
+      date: DateTime.now().add(const Duration(days: -1)),
+      timeStart: const TimeOfDay(hour: 17, minute: 34),
+      timeEnd: const TimeOfDay(hour: 19, minute: 3),
+      impression: 3,
+    ),
+  ]);
 
   final mockNutritionProvider = weight.MockNutritionPlansProvider();
 

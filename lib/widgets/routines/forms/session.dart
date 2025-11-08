@@ -26,22 +26,21 @@ import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/workout_session.dart';
 
 class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');
   final WorkoutSession _session;
-  final int? _routineId;
   final Function()? _onSaved;
 
   static const SLIDER_START = -0.5;
 
-  SessionForm(this._routineId, {Function()? onSaved, WorkoutSession? session, int? dayId})
+  SessionForm(int routineId, {Function()? onSaved, WorkoutSession? session, int? dayId})
     : _onSaved = onSaved,
       _session =
           session ??
           WorkoutSession(
-            routineId: _routineId,
+            routineId: routineId,
             dayId: dayId,
             impression: DEFAULT_IMPRESSION,
             date: clock.now(),
@@ -90,7 +89,7 @@ class _SessionFormState extends ConsumerState<SessionForm> {
 
   @override
   Widget build(BuildContext context) {
-    final routinesProvider = ref.read(routinesChangeProvider);
+    final sessionProvider = ref.read(workoutSessionProvider.notifier);
 
     return Form(
       key: _form,
@@ -234,10 +233,10 @@ class _SessionFormState extends ConsumerState<SessionForm> {
               try {
                 if (widget._session.id == null) {
                   widget._logger.fine('Adding new session');
-                  await routinesProvider.addSession(widget._session, widget._routineId);
+                  await sessionProvider.addEntry(widget._session);
                 } else {
                   widget._logger.fine('Editing existing session with id ${widget._session.id}');
-                  await routinesProvider.editSession(widget._session);
+                  await sessionProvider.updateEntry(widget._session);
                 }
 
                 setState(() {

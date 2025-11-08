@@ -46,6 +46,7 @@ class EagerInitialization extends riverpod.ConsumerWidget {
     // TODO: do we need all of these here?
     ref.watch(exerciseStateProvider);
     ref.watch(workoutSessionProvider);
+    // ref.watch(workoutLogProvider);
     ref.watch(routinesChangeProvider);
     return HomeTabsScreen();
   }
