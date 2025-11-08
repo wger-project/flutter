@@ -69,7 +69,7 @@ class Routine {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<DayData> dayDataGym = [];
 
-  @JsonKey(required: false, includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, includeToJson: false, includeFromJson: false)
   List<WorkoutSession> sessions = [];
 
   Routine({

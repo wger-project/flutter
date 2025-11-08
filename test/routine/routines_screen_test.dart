@@ -63,7 +63,7 @@ void main() {
     when(mockRoutinesProvider.fetchAndSetRoutineFull(any)).thenAnswer(
       (_) async => routine1,
     );
-    when(mockRoutinesProvider.items).thenReturn([
+    when(mockRoutinesProvider.routines).thenReturn([
       routine1,
       routine2,
     ]);

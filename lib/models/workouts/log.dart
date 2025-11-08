@@ -17,76 +17,37 @@
  */
 
 import 'package:drift/drift.dart' as drift;
-import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
-part 'log.g.dart';
-
-/// Temporary fix for id conversion: the "id" field used in the drift database
-/// is a UUID string, but the JSON data is the database ID.
-String? idFromJson(Object? value) => value?.toString();
-
-@JsonSerializable()
 class Log {
-  @JsonKey(required: true, fromJson: idFromJson)
   String? id;
 
-  @JsonKey(required: true, name: 'exercise')
   late int exerciseId;
+  late Exercise exerciseObj;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late Exercise exercise;
-
-  @JsonKey(required: true, name: 'routine')
   late int routineId;
-
-  @JsonKey(required: true, name: 'session')
   late int? sessionId;
-
-  @JsonKey(required: true)
   int? iteration;
-
-  @JsonKey(required: true, name: 'slot_entry')
   int? slotEntryId;
-
-  @JsonKey(required: false, fromJson: stringToNum)
   num? rir;
-
-  @JsonKey(required: false, fromJson: stringToNum, name: 'rir_target')
   num? rirTarget;
 
-  @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions')
   num? repetitions;
-
-  @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions_target')
   num? repetitionsTarget;
-
-  @JsonKey(required: true, name: 'repetitions_unit')
   late int? repetitionsUnitId;
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
   late RepetitionUnit? repetitionsUnitObj;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num? weight;
-
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'weight_target')
   num? weightTarget;
-
-  @JsonKey(required: true, name: 'weight_unit')
   late int? weightUnitId;
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
   late WeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, toJson: dateToUtcIso8601)
   late DateTime date;
 
   Log({
@@ -106,13 +67,11 @@ class Log {
     required this.date,
   });
 
-  Log.empty();
-
   Log.fromSetConfigData(SetConfigData data, {int? routineId, this.iteration}) {
     date = DateTime.now();
     sessionId = null;
     slotEntryId = data.slotEntryId;
-    exerciseBase = data.exercise;
+    exercise = data.exercise;
 
     weight = data.weight;
     weightTarget = data.weight;
@@ -160,14 +119,9 @@ class Log {
     );
   }
 
-  // Boilerplate
-  factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
-
-  Map<String, dynamic> toJson() => _$LogToJson(this);
-
-  set exerciseBase(Exercise base) {
-    exercise = base;
-    exerciseId = base.id!;
+  set exercise(Exercise exercise) {
+    exerciseObj = exercise;
+    exerciseId = exercise.id;
   }
 
   set weightUnit(WeightUnit? weightUnit) {

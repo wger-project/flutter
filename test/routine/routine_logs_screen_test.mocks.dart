@@ -9,18 +9,18 @@ import 'dart:ui' as _i16;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i15;
 import 'package:wger/models/exercises/exercise.dart' as _i12;
-import 'package:wger/models/workouts/base_config.dart' as _i9;
-import 'package:wger/models/workouts/day.dart' as _i6;
+import 'package:wger/models/workouts/base_config.dart' as _i7;
+import 'package:wger/models/workouts/day.dart' as _i4;
 import 'package:wger/models/workouts/day_data.dart' as _i14;
 import 'package:wger/models/workouts/log.dart' as _i18;
-import 'package:wger/models/workouts/repetition_unit.dart' as _i4;
-import 'package:wger/models/workouts/routine.dart' as _i5;
-import 'package:wger/models/workouts/session.dart' as _i11;
-import 'package:wger/models/workouts/slot.dart' as _i7;
-import 'package:wger/models/workouts/slot_entry.dart' as _i8;
-import 'package:wger/models/workouts/weight_unit.dart' as _i3;
+import 'package:wger/models/workouts/repetition_unit.dart' as _i11;
+import 'package:wger/models/workouts/routine.dart' as _i3;
+import 'package:wger/models/workouts/session.dart' as _i10;
+import 'package:wger/models/workouts/slot.dart' as _i5;
+import 'package:wger/models/workouts/slot_entry.dart' as _i6;
+import 'package:wger/models/workouts/weight_unit.dart' as _i9;
 import 'package:wger/providers/base_provider.dart' as _i2;
-import 'package:wger/providers/routines.dart' as _i10;
+import 'package:wger/providers/routines.dart' as _i8;
 import 'package:wger/providers/workout_log_repository.dart' as _i17;
 
 // ignore_for_file: type=lint
@@ -42,39 +42,30 @@ class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvi
     : super(parent, parentInvocation);
 }
 
-class _FakeWeightUnit_1 extends _i1.SmartFake implements _i3.WeightUnit {
-  _FakeWeightUnit_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeRoutine_1 extends _i1.SmartFake implements _i3.Routine {
+  _FakeRoutine_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeRepetitionUnit_2 extends _i1.SmartFake implements _i4.RepetitionUnit {
-  _FakeRepetitionUnit_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeDay_2 extends _i1.SmartFake implements _i4.Day {
+  _FakeDay_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeRoutine_3 extends _i1.SmartFake implements _i5.Routine {
-  _FakeRoutine_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSlot_3 extends _i1.SmartFake implements _i5.Slot {
+  _FakeSlot_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeDay_4 extends _i1.SmartFake implements _i6.Day {
-  _FakeDay_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSlotEntry_4 extends _i1.SmartFake implements _i6.SlotEntry {
+  _FakeSlotEntry_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeSlot_5 extends _i1.SmartFake implements _i7.Slot {
-  _FakeSlot_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeSlotEntry_6 extends _i1.SmartFake implements _i8.SlotEntry {
-  _FakeSlotEntry_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeBaseConfig_7 extends _i1.SmartFake implements _i9.BaseConfig {
-  _FakeBaseConfig_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeBaseConfig_5 extends _i1.SmartFake implements _i7.BaseConfig {
+  _FakeBaseConfig_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [RoutinesProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
+class MockRoutinesProvider extends _i1.Mock implements _i8.RoutinesProvider {
   MockRoutinesProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -91,61 +82,39 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i2.WgerBaseProvider);
 
   @override
-  List<_i3.WeightUnit> get weightUnits =>
+  List<_i9.WeightUnit> get weightUnits =>
       (super.noSuchMethod(
             Invocation.getter(#weightUnits),
-            returnValue: <_i3.WeightUnit>[],
+            returnValue: <_i9.WeightUnit>[],
           )
-          as List<_i3.WeightUnit>);
+          as List<_i9.WeightUnit>);
 
   @override
-  List<_i11.WorkoutSession> get sessions =>
+  List<_i10.WorkoutSession> get sessions =>
       (super.noSuchMethod(
             Invocation.getter(#sessions),
-            returnValue: <_i11.WorkoutSession>[],
+            returnValue: <_i10.WorkoutSession>[],
           )
-          as List<_i11.WorkoutSession>);
+          as List<_i10.WorkoutSession>);
 
   @override
-  List<_i5.Routine> get items =>
+  List<_i3.Routine> get routines =>
       (super.noSuchMethod(
-            Invocation.getter(#items),
-            returnValue: <_i5.Routine>[],
+            Invocation.getter(#routines),
+            returnValue: <_i3.Routine>[],
           )
-          as List<_i5.Routine>);
+          as List<_i3.Routine>);
 
   @override
-  _i3.WeightUnit get defaultWeightUnit =>
-      (super.noSuchMethod(
-            Invocation.getter(#defaultWeightUnit),
-            returnValue: _FakeWeightUnit_1(
-              this,
-              Invocation.getter(#defaultWeightUnit),
-            ),
-          )
-          as _i3.WeightUnit);
-
-  @override
-  List<_i4.RepetitionUnit> get repetitionUnits =>
+  List<_i11.RepetitionUnit> get repetitionUnits =>
       (super.noSuchMethod(
             Invocation.getter(#repetitionUnits),
-            returnValue: <_i4.RepetitionUnit>[],
+            returnValue: <_i11.RepetitionUnit>[],
           )
-          as List<_i4.RepetitionUnit>);
+          as List<_i11.RepetitionUnit>);
 
   @override
-  _i4.RepetitionUnit get defaultRepetitionUnit =>
-      (super.noSuchMethod(
-            Invocation.getter(#defaultRepetitionUnit),
-            returnValue: _FakeRepetitionUnit_2(
-              this,
-              Invocation.getter(#defaultRepetitionUnit),
-            ),
-          )
-          as _i4.RepetitionUnit);
-
-  @override
-  set activeRoutine(_i5.Routine? _activeRoutine) => super.noSuchMethod(
+  set activeRoutine(_i3.Routine? _activeRoutine) => super.noSuchMethod(
     Invocation.setter(#activeRoutine, _activeRoutine),
     returnValueForMissingStub: null,
   );
@@ -157,19 +126,19 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
   );
 
   @override
-  set repetitionUnits(List<_i4.RepetitionUnit>? units) => super.noSuchMethod(
+  set repetitionUnits(List<_i11.RepetitionUnit>? units) => super.noSuchMethod(
     Invocation.setter(#repetitionUnits, units),
     returnValueForMissingStub: null,
   );
 
   @override
-  set weightUnits(List<_i3.WeightUnit>? units) => super.noSuchMethod(
+  set weightUnits(List<_i9.WeightUnit>? units) => super.noSuchMethod(
     Invocation.setter(#weightUnits, units),
     returnValueForMissingStub: null,
   );
 
   @override
-  set sessions(List<_i11.WorkoutSession>? sessions) => super.noSuchMethod(
+  set sessions(List<_i10.WorkoutSession>? sessions) => super.noSuchMethod(
     Invocation.setter(#sessions, sessions),
     returnValueForMissingStub: null,
   );
@@ -179,12 +148,12 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
-  List<_i11.WorkoutSession> getSessionsForRoutine(int? id) =>
+  List<_i10.WorkoutSession> getSessionsForRoutine(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getSessionsForRoutine, [id]),
-            returnValue: <_i11.WorkoutSession>[],
+            returnValue: <_i10.WorkoutSession>[],
           )
-          as List<_i11.WorkoutSession>);
+          as List<_i10.WorkoutSession>);
 
   @override
   void clear() => super.noSuchMethod(
@@ -193,23 +162,23 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
   );
 
   @override
-  List<_i5.Routine> getPlans() =>
+  List<_i3.Routine> getPlans() =>
       (super.noSuchMethod(
             Invocation.method(#getPlans, []),
-            returnValue: <_i5.Routine>[],
+            returnValue: <_i3.Routine>[],
           )
-          as List<_i5.Routine>);
+          as List<_i3.Routine>);
 
   @override
-  _i5.Routine findById(int? id) =>
+  _i3.Routine findById(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#findById, [id]),
-            returnValue: _FakeRoutine_3(
+            returnValue: _FakeRoutine_1(
               this,
               Invocation.method(#findById, [id]),
             ),
           )
-          as _i5.Routine);
+          as _i3.Routine);
 
   @override
   int findIndexById(int? id) =>
@@ -247,43 +216,43 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  _i13.Future<_i5.Routine> fetchAndSetRoutineSparse(int? planId) =>
+  _i13.Future<_i3.Routine> fetchAndSetRoutineSparse(int? planId) =>
       (super.noSuchMethod(
             Invocation.method(#fetchAndSetRoutineSparse, [planId]),
-            returnValue: _i13.Future<_i5.Routine>.value(
-              _FakeRoutine_3(
+            returnValue: _i13.Future<_i3.Routine>.value(
+              _FakeRoutine_1(
                 this,
                 Invocation.method(#fetchAndSetRoutineSparse, [planId]),
               ),
             ),
           )
-          as _i13.Future<_i5.Routine>);
+          as _i13.Future<_i3.Routine>);
 
   @override
-  _i13.Future<_i5.Routine> fetchAndSetRoutineFull(int? routineId) =>
+  _i13.Future<_i3.Routine> fetchAndSetRoutineFull(int? routineId) =>
       (super.noSuchMethod(
             Invocation.method(#fetchAndSetRoutineFull, [routineId]),
-            returnValue: _i13.Future<_i5.Routine>.value(
-              _FakeRoutine_3(
+            returnValue: _i13.Future<_i3.Routine>.value(
+              _FakeRoutine_1(
                 this,
                 Invocation.method(#fetchAndSetRoutineFull, [routineId]),
               ),
             ),
           )
-          as _i13.Future<_i5.Routine>);
+          as _i13.Future<_i3.Routine>);
 
   @override
-  _i13.Future<_i5.Routine> addRoutine(_i5.Routine? routine) =>
+  _i13.Future<_i3.Routine> addRoutine(_i3.Routine? routine) =>
       (super.noSuchMethod(
             Invocation.method(#addRoutine, [routine]),
-            returnValue: _i13.Future<_i5.Routine>.value(
-              _FakeRoutine_3(this, Invocation.method(#addRoutine, [routine])),
+            returnValue: _i13.Future<_i3.Routine>.value(
+              _FakeRoutine_1(this, Invocation.method(#addRoutine, [routine])),
             ),
           )
-          as _i13.Future<_i5.Routine>);
+          as _i13.Future<_i3.Routine>);
 
   @override
-  _i13.Future<void> editRoutine(_i5.Routine? routine) =>
+  _i13.Future<void> editRoutine(_i3.Routine? routine) =>
       (super.noSuchMethod(
             Invocation.method(#editRoutine, [routine]),
             returnValue: _i13.Future<void>.value(),
@@ -301,17 +270,17 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  _i13.Future<_i6.Day> addDay(_i6.Day? day) =>
+  _i13.Future<_i4.Day> addDay(_i4.Day? day) =>
       (super.noSuchMethod(
             Invocation.method(#addDay, [day]),
-            returnValue: _i13.Future<_i6.Day>.value(
-              _FakeDay_4(this, Invocation.method(#addDay, [day])),
+            returnValue: _i13.Future<_i4.Day>.value(
+              _FakeDay_2(this, Invocation.method(#addDay, [day])),
             ),
           )
-          as _i13.Future<_i6.Day>);
+          as _i13.Future<_i4.Day>);
 
   @override
-  _i13.Future<void> editDay(_i6.Day? day) =>
+  _i13.Future<void> editDay(_i4.Day? day) =>
       (super.noSuchMethod(
             Invocation.method(#editDay, [day]),
             returnValue: _i13.Future<void>.value(),
@@ -320,7 +289,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  _i13.Future<void> editDays(List<_i6.Day>? days) =>
+  _i13.Future<void> editDays(List<_i4.Day>? days) =>
       (super.noSuchMethod(
             Invocation.method(#editDays, [days]),
             returnValue: _i13.Future<void>.value(),
@@ -338,14 +307,14 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  _i13.Future<_i7.Slot> addSlot(_i7.Slot? slot, int? routineId) =>
+  _i13.Future<_i5.Slot> addSlot(_i5.Slot? slot, int? routineId) =>
       (super.noSuchMethod(
             Invocation.method(#addSlot, [slot, routineId]),
-            returnValue: _i13.Future<_i7.Slot>.value(
-              _FakeSlot_5(this, Invocation.method(#addSlot, [slot, routineId])),
+            returnValue: _i13.Future<_i5.Slot>.value(
+              _FakeSlot_3(this, Invocation.method(#addSlot, [slot, routineId])),
             ),
           )
-          as _i13.Future<_i7.Slot>);
+          as _i13.Future<_i5.Slot>);
 
   @override
   _i13.Future<void> deleteSlot(int? slotId, int? routineId) =>
@@ -357,7 +326,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  _i13.Future<void> editSlot(_i7.Slot? slot, int? routineId) =>
+  _i13.Future<void> editSlot(_i5.Slot? slot, int? routineId) =>
       (super.noSuchMethod(
             Invocation.method(#editSlot, [slot, routineId]),
             returnValue: _i13.Future<void>.value(),
@@ -366,7 +335,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  _i13.Future<void> editSlots(List<_i7.Slot>? slots, int? routineId) =>
+  _i13.Future<void> editSlots(List<_i5.Slot>? slots, int? routineId) =>
       (super.noSuchMethod(
             Invocation.method(#editSlots, [slots, routineId]),
             returnValue: _i13.Future<void>.value(),
@@ -375,20 +344,20 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  _i13.Future<_i8.SlotEntry> addSlotEntry(
-    _i8.SlotEntry? entry,
+  _i13.Future<_i6.SlotEntry> addSlotEntry(
+    _i6.SlotEntry? entry,
     int? routineId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addSlotEntry, [entry, routineId]),
-            returnValue: _i13.Future<_i8.SlotEntry>.value(
-              _FakeSlotEntry_6(
+            returnValue: _i13.Future<_i6.SlotEntry>.value(
+              _FakeSlotEntry_4(
                 this,
                 Invocation.method(#addSlotEntry, [entry, routineId]),
               ),
             ),
           )
-          as _i13.Future<_i8.SlotEntry>);
+          as _i13.Future<_i6.SlotEntry>);
 
   @override
   _i13.Future<void> deleteSlotEntry(int? id, int? routineId) =>
@@ -400,7 +369,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  _i13.Future<void> editSlotEntry(_i8.SlotEntry? entry, int? routineId) =>
+  _i13.Future<void> editSlotEntry(_i6.SlotEntry? entry, int? routineId) =>
       (super.noSuchMethod(
             Invocation.method(#editSlotEntry, [entry, routineId]),
             returnValue: _i13.Future<void>.value(),
@@ -409,7 +378,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as _i13.Future<void>);
 
   @override
-  String getConfigUrl(_i8.ConfigType? type) =>
+  String getConfigUrl(_i6.ConfigType? type) =>
       (super.noSuchMethod(
             Invocation.method(#getConfigUrl, [type]),
             returnValue: _i15.dummyValue<String>(
@@ -420,39 +389,39 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
           as String);
 
   @override
-  _i13.Future<_i9.BaseConfig> editConfig(
-    _i9.BaseConfig? config,
-    _i8.ConfigType? type,
+  _i13.Future<_i7.BaseConfig> editConfig(
+    _i7.BaseConfig? config,
+    _i6.ConfigType? type,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#editConfig, [config, type]),
-            returnValue: _i13.Future<_i9.BaseConfig>.value(
-              _FakeBaseConfig_7(
+            returnValue: _i13.Future<_i7.BaseConfig>.value(
+              _FakeBaseConfig_5(
                 this,
                 Invocation.method(#editConfig, [config, type]),
               ),
             ),
           )
-          as _i13.Future<_i9.BaseConfig>);
+          as _i13.Future<_i7.BaseConfig>);
 
   @override
-  _i13.Future<_i9.BaseConfig> addConfig(
-    _i9.BaseConfig? config,
-    _i8.ConfigType? type,
+  _i13.Future<_i7.BaseConfig> addConfig(
+    _i7.BaseConfig? config,
+    _i6.ConfigType? type,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addConfig, [config, type]),
-            returnValue: _i13.Future<_i9.BaseConfig>.value(
-              _FakeBaseConfig_7(
+            returnValue: _i13.Future<_i7.BaseConfig>.value(
+              _FakeBaseConfig_5(
                 this,
                 Invocation.method(#addConfig, [config, type]),
               ),
             ),
           )
-          as _i13.Future<_i9.BaseConfig>);
+          as _i13.Future<_i7.BaseConfig>);
 
   @override
-  _i13.Future<void> deleteConfig(int? id, _i8.ConfigType? type) =>
+  _i13.Future<void> deleteConfig(int? id, _i6.ConfigType? type) =>
       (super.noSuchMethod(
             Invocation.method(#deleteConfig, [id, type]),
             returnValue: _i13.Future<void>.value(),
@@ -462,9 +431,9 @@ class MockRoutinesProvider extends _i1.Mock implements _i10.RoutinesProvider {
 
   @override
   _i13.Future<void> handleConfig(
-    _i8.SlotEntry? entry,
+    _i6.SlotEntry? entry,
     num? value,
-    _i8.ConfigType? type,
+    _i6.ConfigType? type,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#handleConfig, [entry, value, type]),

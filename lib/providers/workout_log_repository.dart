@@ -82,7 +82,7 @@ class WorkoutLogRepository {
         }
 
         try {
-          log.exerciseBase = exercisesProvider.getById(log.exerciseId);
+          log.exercise = exercisesProvider.getById(log.exerciseId);
         } catch (e) {
           _logger.warning(
             'Could not find exercise for log entry ${log.id} with exercise ID ${log.exerciseId}',

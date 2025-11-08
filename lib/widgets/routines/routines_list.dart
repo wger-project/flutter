@@ -43,13 +43,13 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
 
     return RefreshIndicator(
       onRefresh: isOnline ? () => routineProvider.fetchAndSetAllRoutinesSparse() : () async {},
-      child: routineProvider.items.isEmpty
+      child: routineProvider.routines.isEmpty
           ? const TextPrompt()
           : ListView.builder(
               padding: const EdgeInsets.all(10.0),
-              itemCount: routineProvider.items.length,
+              itemCount: routineProvider.routines.length,
               itemBuilder: (context, index) {
-                final currentRoutine = routineProvider.items[index];
+                final currentRoutine = routineProvider.routines[index];
 
                 return Card(
                   child: ListTile(

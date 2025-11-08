@@ -18,43 +18,22 @@
 
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 
-part 'session.g.dart';
-
 const IMPRESSION_MAP = {1: 'bad', 2: 'neutral', 3: 'good'};
 
-@JsonSerializable()
 class WorkoutSession {
-  @JsonKey(required: true, name: 'uuid')
   String? id;
-
-  @JsonKey(required: true, name: 'routine')
   late int? routineId;
-
-  @JsonKey(required: true, name: 'day')
   int? dayId;
-
-  @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime date;
-
-  @JsonKey(required: true, fromJson: int.parse, toJson: numToString)
   late int impression;
-
-  @JsonKey(required: false, defaultValue: '')
   late String? notes;
-
-  @JsonKey(required: true, name: 'time_start', toJson: timeToString, fromJson: stringToTimeNull)
   late TimeOfDay? timeStart;
-
-  @JsonKey(required: true, name: 'time_end', toJson: timeToString, fromJson: stringToTimeNull)
   late TimeOfDay? timeEnd;
 
-  @JsonKey(required: false, includeToJson: false, defaultValue: [])
   List<Log> logs = [];
 
   WorkoutSession({
@@ -65,7 +44,7 @@ class WorkoutSession {
     this.notes = '',
     this.timeStart,
     this.timeEnd,
-    this.logs = const <Log>[],
+    this.logs = const [],
     DateTime? date,
   }) {
     this.date = date ?? DateTime.now();
@@ -87,15 +66,10 @@ class WorkoutSession {
   List<Exercise> get exercises {
     final Set<Exercise> exerciseSet = {};
     for (final log in logs) {
-      exerciseSet.add(log.exercise);
+      exerciseSet.add(log.exerciseObj);
     }
     return exerciseSet.toList();
   }
-
-  // Boilerplate
-  factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
 
   String get impressionAsString {
     return IMPRESSION_MAP[impression]!;

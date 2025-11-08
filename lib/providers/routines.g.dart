@@ -126,4 +126,4 @@ final class RoutinesChangeNotifierProvider
   }
 }
 
-String _$routinesChangeNotifierHash() => r'18a1217d2e77ffc1c557d33aeb8ed6fe1fe75095';
+String _$routinesChangeNotifierHash() => r'fcdf8c1101761d0cfd26fce6b169e348dcbd55cb';

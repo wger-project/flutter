@@ -55,7 +55,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     repetitions: 10,
     routineId: 1,
   );
-  log1.exerciseBase = testExercises[0];
+  log1.exercise = testExercises[0];
   log1.weightUnit = testWeightUnit1;
   log1.repetitionUnit = testRepetitionUnit1;
 
@@ -70,7 +70,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     repetitions: 12,
     routineId: 1,
   );
-  log2.exerciseBase = testExercises[0];
+  log2.exercise = testExercises[0];
   log2.weightUnit = testWeightUnit1;
   log2.repetitionUnit = testRepetitionUnit1;
 
@@ -85,7 +85,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     repetitions: 8,
     routineId: 1,
   );
-  log3.exerciseBase = testExercises[1];
+  log3.exercise = testExercises[1];
   log3.weightUnit = testWeightUnit1;
   log3.repetitionUnit = testRepetitionUnit1;
 

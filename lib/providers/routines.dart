@@ -89,7 +89,7 @@ RoutinesProvider routinesChangeNotifier(Ref ref) {
 
   ref.listen(workoutSessionProvider, (_, next) {
     final data = next.asData?.value;
-    if (data != null) {
+    if (data != null && ref.mounted) {
       logger.finer('Setting ${data.length} sessions');
       provider.sessions = data;
     }
@@ -97,7 +97,7 @@ RoutinesProvider routinesChangeNotifier(Ref ref) {
 
   ref.listen(workoutLogProvider, (_, next) {
     final data = next.asData?.value;
-    if (data != null) {
+    if (data != null && ref.mounted) {
       logger.finer('Setting ${data.length} logs');
 
       // Merge logs into sessions, matching by date (no time component)
@@ -115,14 +115,11 @@ class RoutinesProvider with ChangeNotifier {
 
   static const _routinesUrlPath = 'routine';
   static const _routinesStructureSubpath = 'structure';
-  static const _routinesLogsSubpath = 'logs';
   static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
   static const _routinesDateSequenceGymSubpath = 'date-sequence-gym';
   static const _daysUrlPath = 'day';
   static const _slotsUrlPath = 'slot';
   static const _slotEntriesUrlPath = 'slot-entry';
-  static const _logsUrlPath = 'workoutlog';
-  static const _sessionUrlPath = 'workoutsession';
   static const _routineConfigSets = 'sets-config';
   static const _routineConfigMaxSets = 'max-sets-config';
   static const _routineConfigWeights = 'weight-config';
@@ -192,6 +189,9 @@ class RoutinesProvider with ChangeNotifier {
   set sessions(List<WorkoutSession> sessions) {
     _logger.finer('Setting ${sessions.length} sessions');
     _sessions = sessions;
+    for (final routine in _routines) {
+      routine.sessions = getSessionsForRoutine(routine.id!);
+    }
   }
 
   List<WorkoutSession> get sessions {
@@ -210,7 +210,7 @@ class RoutinesProvider with ChangeNotifier {
     return null;
   }
 
-  List<Routine> get items {
+  List<Routine> get routines {
     return [..._routines];
   }
 
@@ -219,20 +219,12 @@ class RoutinesProvider with ChangeNotifier {
     _routines = [];
     _weightUnits = [];
     _repetitionUnits = [];
-  }
-
-  /// Return the default weight unit (kg)
-  WeightUnit get defaultWeightUnit {
-    return _weightUnits.firstWhere((element) => element.id == WEIGHT_UNIT_KG);
+    _sessions = [];
+    _exercises = [];
   }
 
   List<RepetitionUnit> get repetitionUnits {
     return [..._repetitionUnits];
-  }
-
-  /// Return the default weight unit (reps)
-  RepetitionUnit get defaultRepetitionUnit {
-    return _repetitionUnits.firstWhere((element) => element.id == REP_UNIT_REPETITIONS_ID);
   }
 
   List<Routine> getPlans() {

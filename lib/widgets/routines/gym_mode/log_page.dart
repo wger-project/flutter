@@ -120,7 +120,7 @@ class _LogPageState extends ConsumerState<LogPage> {
             ),
           ),
         ),
-        if (widget._log.exercise.showPlateCalculator) const LogsPlatesWidget(),
+        if (widget._log.exerciseObj.showPlateCalculator) const LogsPlatesWidget(),
         if (widget._slotData.comment.isNotEmpty)
           Text(widget._slotData.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),

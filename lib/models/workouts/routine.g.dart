@@ -32,11 +32,6 @@ Routine _$RoutineFromJson(Map<String, dynamic> json) {
             ?.map((e) => Day.fromJson(e as Map<String, dynamic>))
             .toList() ??
         const [],
-    sessions:
-        (json['sessions'] as List<dynamic>?)
-            ?.map((e) => WorkoutSession.fromJson(e as Map<String, dynamic>))
-            .toList() ??
-        [],
   );
 }
 
