@@ -130,6 +130,7 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
       // await ref.read(workoutLogProvider.future);
 
       final routinesProvider = ref.read(routinesRiverpodProvider.notifier);
+      final routines = ref.read(routinesRiverpodProvider);
 
       //
       // Plans, weight and gallery
@@ -152,10 +153,10 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
       //
       // Current routine
       // widget._logger.info('Loading current routine');
-      if (routinesProvider.currentRoutine != null) {
-        final routineId = routinesProvider.currentRoutine!.id!;
+      if (routines.currentRoutine != null) {
+        final routineId = routines.currentRoutine!.id!;
         widget._logger.finer('Current routine ID: $routineId');
-        await routinesProvider.fetchAndSetRoutineFull(routinesProvider.currentRoutine!.id!);
+        await routinesProvider.fetchAndSetRoutineFull(routines.currentRoutine!.id!);
       }
     }
 

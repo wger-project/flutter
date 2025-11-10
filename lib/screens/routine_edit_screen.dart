@@ -30,7 +30,7 @@ class RoutineEditScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final routineId = ModalRoute.of(context)!.settings.arguments as int;
-    final routine = ref.read(routinesRiverpodProvider.notifier).findById(routineId);
+    final routine = ref.read(routinesRiverpodProvider).findById(routineId);
 
     return Scaffold(
       appBar: EmptyAppBar(routine.name),

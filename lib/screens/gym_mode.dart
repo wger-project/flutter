@@ -38,7 +38,7 @@ class GymModeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final args = ModalRoute.of(context)!.settings.arguments as GymModeArguments;
 
-    final routineProvider = ref.read(routinesRiverpodProvider.notifier);
+    final routineProvider = ref.read(routinesRiverpodProvider);
     final routine = routineProvider.findById(args.routineId);
     final dayDataDisplay = routine.dayData.firstWhere(
       (e) => e.iteration == args.iteration && e.day?.id == args.dayId,

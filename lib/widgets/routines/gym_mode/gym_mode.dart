@@ -123,7 +123,7 @@ class _GymModeState extends ConsumerState<GymMode> {
   List<Widget> getContent() {
     final state = ref.watch(gymStateProvider);
     final exercisesProvider = ref.read(exerciseStateProvider.notifier);
-    final routinesProvider = ref.watch(routinesRiverpodProvider.notifier);
+    final routinesProvider = ref.watch(routinesRiverpodProvider);
     var currentElement = 1;
     final List<Widget> out = [];
 
@@ -204,7 +204,7 @@ class _GymModeState extends ConsumerState<GymMode> {
           StartPage(_controller, widget._dayDataDisplay, _exercisePages),
           ...getContent(),
           SessionPage(
-            ref.read(routinesRiverpodProvider.notifier).findById(widget._dayDataGym.day!.routineId),
+            ref.read(routinesRiverpodProvider).findById(widget._dayDataGym.day!.routineId),
             _controller,
             ref.read(gymStateProvider).startTime,
             _exercisePages,

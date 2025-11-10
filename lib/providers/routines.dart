@@ -66,6 +66,19 @@ class RoutinesState {
     );
   }
 
+  /// Returns the current active routine. At the moment this is just
+  /// the latest, but this might change in the future.
+  Routine? get currentRoutine {
+    if (routines.isNotEmpty) {
+      return routines.first;
+    }
+    return null;
+  }
+
+  Routine findById(int id) {
+    return routines.firstWhere((routine) => routine.id == id);
+  }
+
   /// Return all sessions from all routines
   List<WorkoutSession> get sessions {
     if (routines.isNotEmpty) {
@@ -84,20 +97,6 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   RoutinesState build() {
     _logger.fine('Building Routines Riverpod notifier');
     return const RoutinesState();
-  }
-
-  Routine findById(int id) {
-    return state.routines.firstWhere((routine) => routine.id == id);
-    // return state.routines.firstWhereOrNull((routine) => routine.id == id);
-  }
-
-  /// Returns the current active routine. At the moment this is just
-  /// the latest, but this might change in the future.
-  Routine? get currentRoutine {
-    if (state.routines.isNotEmpty) {
-      return state.routines.first;
-    }
-    return null;
   }
 
   /*
