@@ -176,9 +176,7 @@ class DayLogWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isOnline = ref.watch(networkStatusProvider);
 
-    final session = _routine.sessions.firstWhere(
-      (sessionApi) => sessionApi.date.isSameDayAs(_date),
-    );
+    final session = _routine.sessions.firstWhere((s) => s.date.isSameDayAs(_date));
     final exercises = session.exercises;
 
     return Card(

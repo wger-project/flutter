@@ -19,31 +19,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 
 import '../../test_data/routines.dart';
-import 'routine_edit_screen_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
 void main() {
   final key = GlobalKey<NavigatorState>();
 
   testWidgets('RoutineEditScreen smoke test', (WidgetTester tester) async {
-    // Create a mock RoutinesProvider
-    final mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) async => getTestRoutine());
-    when(mockRoutinesProvider.findById(1)).thenReturn(getTestRoutine());
+    final container = ProviderContainer.test();
 
-    // Build the RoutineEditScreen widget with the correct arguments
+    container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
+      routines: [getTestRoutine()],
+    );
+
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
-        ],
+      UncontrolledProviderScope(
+        container: container,
         child: MaterialApp(
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -68,7 +62,6 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify the title is correct
-    verify(mockRoutinesProvider.findById(1));
     expect(find.text('3 day workout'), findsNWidgets(2));
   });
 }

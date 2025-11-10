@@ -25,7 +25,6 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/about.dart';
@@ -132,7 +131,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
                         onTap: () {
                           final auth = context.read<AuthProvider>();
                           auth.logout();
-                          ref.read(routinesChangeProvider).clear();
+                          // ref.read(routinesChangeProvider).clear();
                           context.read<NutritionPlansProvider>().clear();
                           // ref.read(bodyWeightStateProvider.notifier).clear();
                           context.read<GalleryProvider>().clear();

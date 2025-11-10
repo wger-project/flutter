@@ -33,14 +33,18 @@ import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import '../../test_data/routines.dart';
 import './slot_entry_form_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesRepository])
 void main() {
-  var mockRoutinesProvider = MockRoutinesProvider();
-
-  final slotEntry = getTestRoutine().days[0].slots[0].entries[0];
+  late MockRoutinesRepository mockRoutinesRepository;
+  late SlotEntry slotEntry;
 
   setUp(() {
-    mockRoutinesProvider = MockRoutinesProvider();
+    slotEntry = getTestRoutine().days[0].slots[0].entries[0];
+
+    mockRoutinesRepository = MockRoutinesRepository();
+    when(
+      mockRoutinesRepository.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) => Future.value(getTestRoutine()));
   });
 
   Widget renderWidget({simpleMode = true, locale = 'en'}) {
@@ -54,7 +58,7 @@ void main() {
         routineRepetitionUnitProvider.overrideWithValue(
           const AsyncValue.data(testRepetitionUnits),
         ),
-        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+        routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -125,7 +129,7 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(
-      mockRoutinesProvider.editSlotEntry(
+      mockRoutinesRepository.editSlotEntryServer(
         argThat(
           isA<SlotEntry>()
               .having((d) => d.id, 'id', null)
@@ -133,12 +137,11 @@ void main() {
               .having((d) => d.order, 'order', 1)
               .having((d) => d.type, 'type', SlotEntryType.myo),
         ),
-        1,
       ),
     );
 
     final verification = verify(
-      mockRoutinesProvider.handleConfig(captureAny, captureAny, captureAny),
+      mockRoutinesRepository.handleConfigServer(captureAny, captureAny, captureAny),
     );
     final capturedArgs = verification.captured; // List with 8*3 arguments (3 per call)
 

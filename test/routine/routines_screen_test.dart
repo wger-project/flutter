@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -33,9 +33,9 @@ import 'package:wger/widgets/routines/forms/routine.dart';
 
 import 'routines_screen_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesRepository])
 void main() {
-  MockRoutinesProvider mockRoutinesProvider = MockRoutinesProvider();
+  late MockRoutinesRepository mockRoutinesRepository;
 
   final routine1 = Routine(
     id: 1,
@@ -56,24 +56,23 @@ void main() {
   );
 
   setUp(() {
-    mockRoutinesProvider = MockRoutinesProvider();
+    mockRoutinesRepository = MockRoutinesRepository();
+    when(mockRoutinesRepository.editDayServer(any)).thenAnswer((_) async => {});
   });
 
   Widget renderWidget({locale = 'en', isOnline = true}) {
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(any)).thenAnswer(
-      (_) async => routine1,
-    );
-    when(mockRoutinesProvider.routines).thenReturn([
-      routine1,
-      routine2,
-    ]);
-    when(mockRoutinesProvider.findById(1)).thenReturn(routine1);
-
-    return riverpod.ProviderScope(
+    final container = ProviderContainer.test(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
-        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+        routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
       ],
+    );
+    container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
+      routines: [routine1, routine2],
+    );
+
+    return UncontrolledProviderScope(
+      container: container,
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -109,17 +108,17 @@ void main() {
     // Confirm
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
-    verify(mockRoutinesProvider.deleteRoutine(1)).called(1);
+    verify(mockRoutinesRepository.deleteRoutineServer(1)).called(1);
   });
 
   testWidgets('Handle offline status', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget(isOnline: false));
-    await tester.tap(find.byIcon(Icons.delete).first);
     await tester.pumpAndSettle();
 
-    // No confirmation dialog (button is disabled)
-    expect(find.byType(AlertDialog), findsNothing);
-    verifyNever(mockRoutinesProvider.deleteRoutine(1));
+    final deleteButton = tester.widget<IconButton>(
+      find.widgetWithIcon(IconButton, Icons.delete).first,
+    );
+    expect(deleteButton.onPressed, isNull);
   });
 
   /*
@@ -128,7 +127,7 @@ void main() {
     await tester.fling(find.byKey(const Key('1')), const Offset(0, 300), 1000);
     await tester.pumpAndSettle();
 
-    //verify(mockRoutinesProvider.fetchAndSetAllPlansSparse());
+    //verify(mockRoutinesRepository.fetchAndSetAllPlansSparse());
   });
    */
 

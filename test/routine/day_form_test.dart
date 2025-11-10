@@ -28,21 +28,24 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/forms/day.dart';
 
 import '../../test_data/routines.dart';
-import 'routine_edit_test.mocks.dart';
+import 'day_form_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesRepository])
 void main() {
-  late MockRoutinesProvider mockRoutinesProvider;
+  late MockRoutinesRepository mockRoutinesRepository;
 
   setUp(() {
-    mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.editDay(any)).thenAnswer((_) async => getTestRoutine().days[0]);
+    mockRoutinesRepository = MockRoutinesRepository();
+    when(mockRoutinesRepository.editDayServer(any)).thenAnswer((_) async => {});
+    when(
+      mockRoutinesRepository.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) => Future.value(getTestRoutine()));
   });
 
   Widget renderWidget() {
     return ProviderScope(
       overrides: [
-        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+        routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
       ],
       child: MaterialApp(
         locale: const Locale('en'),
@@ -96,7 +99,7 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(
-        mockRoutinesProvider.editDay(
+        mockRoutinesRepository.editDayServer(
           argThat(
             isA<Day>()
                 .having((d) => d.routineId, 'routineId', 1)

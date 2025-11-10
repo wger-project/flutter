@@ -18,14 +18,9 @@
 
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/date.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -55,64 +50,253 @@ Stream<List<RepetitionUnit>> routineRepetitionUnit(Ref ref) {
   return db.select(db.routineRepetitionUnitTable).watch();
 }
 
-@riverpod
-RoutinesProvider routinesChangeNotifier(Ref ref) {
-  final logger = Logger('RoutinesChangeProvider');
-  logger.fine('Creating routinesChangeNotifier notifier');
-
-  final baseProvider = ref.read(wgerBaseProvider);
-  final provider = RoutinesProvider(baseProvider);
-
-  ref.listen(routineWeightUnitProvider, (_, next) {
-    final data = next.asData?.value;
-    if (data != null && ref.mounted) {
-      logger.finer('Setting ${data.length} weight units');
-      provider.weightUnits = data;
-    }
+class RoutinesState {
+  const RoutinesState({
+    this.routines = const [],
   });
 
-  ref.listen(routineRepetitionUnitProvider, (_, next) {
-    final data = next.asData?.value;
-    if (data != null && ref.mounted) {
-      logger.finer('Setting ${data.length} repetition units');
-      provider.repetitionUnits = data;
+  final List<Routine> routines;
+
+  RoutinesState copyWith({
+    List<Routine>? routines,
+    Routine? activeRoutine,
+  }) {
+    return RoutinesState(
+      routines: routines ?? this.routines,
+    );
+  }
+
+  /// Return all sessions from all routines
+  List<WorkoutSession> get sessions {
+    if (routines.isNotEmpty) {
+      return routines.expand((routine) => routine.sessions).toList();
     }
-  });
 
-  ref.listen(exercisesProvider, (_, next) {
-    final data = next.asData?.value;
-    if (data != null) {
-      logger.finer('Setting ${data.length} exercises');
-      provider.exercises = data;
-    }
-  });
-
-  ref.listen(workoutSessionProvider, (_, next) {
-    final data = next.asData?.value;
-    if (data != null && ref.mounted) {
-      logger.finer('Setting ${data.length} sessions');
-      provider.sessions = data;
-    }
-  });
-
-  ref.listen(workoutLogProvider, (_, next) {
-    final data = next.asData?.value;
-    if (data != null && ref.mounted) {
-      logger.finer('Setting ${data.length} logs');
-
-      // Merge logs into sessions, matching by date (no time component)
-      for (final session in provider.sessions) {
-        session.logs = data.where((log) => session.date.isSameDayAs(log.date)).toList();
-      }
-    }
-  });
-
-  return provider;
+    return [];
+  }
 }
 
-class RoutinesProvider with ChangeNotifier {
-  final _logger = Logger('RoutinesProvider');
+@Riverpod(keepAlive: true)
+class RoutinesRiverpod extends _$RoutinesRiverpod {
+  final _logger = Logger('RoutinesRiverpod');
 
+  @override
+  RoutinesState build() {
+    _logger.fine('Building Routines Riverpod notifier');
+    return const RoutinesState();
+  }
+
+  Routine findById(int id) {
+    return state.routines.firstWhere((routine) => routine.id == id);
+    // return state.routines.firstWhereOrNull((routine) => routine.id == id);
+  }
+
+  /// Returns the current active routine. At the moment this is just
+  /// the latest, but this might change in the future.
+  Routine? get currentRoutine {
+    if (state.routines.isNotEmpty) {
+      return state.routines.first;
+    }
+    return null;
+  }
+
+  /*
+   * Routines
+   */
+  Future<void> fetchAllRoutinesSparse() async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final routines = await repo.fetchAllRoutinesSparseServer();
+    state = state.copyWith(routines: routines);
+  }
+
+  Future<Routine> addRoutine(Routine routine) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final created = await repo.addRoutineServer(routine);
+    state = state.copyWith(routines: [created, ...state.routines]);
+    return created;
+  }
+
+  Future<void> fetchAndSetRoutineFull(int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final exercises = await ref.read(exercisesProvider.future);
+    final repetitionUnits = await ref.read(routineRepetitionUnitProvider.future);
+    final weightUnits = await ref.read(routineWeightUnitProvider.future);
+    final sessions = await ref.read(workoutSessionProvider.future);
+    final logs = await ref.read(workoutLogProvider.future);
+
+    final routine = await repo.fetchAndSetRoutineFullServer(routineId);
+
+    // Hydrate data
+    Future<void> setExercisesAndUnits(List<DayData> entries) async {
+      for (final entry in entries) {
+        for (final slot in entry.slots) {
+          for (final setConfig in slot.setConfigs) {
+            final exerciseId = setConfig.exerciseId;
+            setConfig.exercise = exercises.firstWhere((e) => e.id == exerciseId);
+            setConfig.repetitionsUnit = repetitionUnits.firstWhere(
+              (e) => e.id == setConfig.repetitionsUnitId,
+            );
+            setConfig.weightUnit = weightUnits.firstWhere((e) => e.id == setConfig.weightUnitId);
+          }
+        }
+      }
+    }
+
+    setExercisesAndUnits(routine.dayDataGym);
+    setExercisesAndUnits(routine.dayData);
+
+    // Update state
+    final updatedRoutines = [...state.routines];
+    final index = updatedRoutines.indexWhere((r) => r.id == routineId);
+    if (index != -1) {
+      updatedRoutines[index] = routine;
+    } else {
+      updatedRoutines.add(routine);
+    }
+    state = state.copyWith(routines: updatedRoutines);
+  }
+
+  Future<void> deleteRoutine(int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.deleteRoutineServer(routineId);
+
+    final routineIndex = state.routines.indexWhere((element) => element.id == routineId);
+    state.routines.removeAt(routineIndex);
+  }
+
+  Future<void> editRoutine(Routine routine) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final updatedRoutine = await repo.editRoutineServer(routine);
+
+    final updatedRoutines = [...state.routines];
+    final index = updatedRoutines.indexWhere((r) => r.id == routine.id);
+    if (index != -1) {
+      updatedRoutines[index] = updatedRoutine;
+      state = state.copyWith(routines: updatedRoutines);
+    }
+  }
+
+  /*
+   * Days
+   */
+  Future<Day> addDay(Day day) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final newDay = await repo.addDayServer(day);
+    await repo.fetchAndSetRoutineFullServer(day.routineId);
+
+    return newDay;
+  }
+
+  Future<void> editDay(Day day) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.editDayServer(day);
+    await repo.fetchAndSetRoutineFullServer(day.routineId);
+  }
+
+  Future<void> editDays(List<Day> days) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    for (final day in days) {
+      await repo.editDayServer(day);
+    }
+  }
+
+  Future<void> deleteDay(int dayId, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.deleteDayServer(dayId);
+    await repo.fetchAndSetRoutineFullServer(routineId);
+  }
+
+  /*
+   * Slots
+   */
+  Future<Slot> addSlot(Slot slot, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final newSlot = await repo.addSlotServer(slot);
+    await repo.fetchAndSetRoutineFullServer(routineId);
+    return newSlot;
+  }
+
+  Future<void> deleteSlot(int slotId, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.deleteSlotServer(slotId);
+    await repo.fetchAndSetRoutineFullServer(routineId);
+  }
+
+  Future<void> editSlot(Slot slot, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.editSlotServer(slot);
+    await repo.fetchAndSetRoutineFullServer(routineId);
+  }
+
+  Future<void> editSlots(List<Slot> slots, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    for (final slot in slots) {
+      await repo.editSlotServer(slot);
+    }
+
+    await repo.fetchAndSetRoutineFullServer(routineId);
+  }
+
+  /*
+   * Slot entries
+   */
+  Future<SlotEntry> addSlotEntry(SlotEntry entry, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final newEntry = await repo.addSlotEntryServer(entry);
+    await repo.fetchAndSetRoutineFullServer(routineId);
+
+    return newEntry;
+  }
+
+  Future<void> deleteSlotEntry(int id, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.deleteSlotEntryServer(id);
+
+    await repo.fetchAndSetRoutineFullServer(routineId);
+  }
+
+  Future<void> editSlotEntry(SlotEntry entry, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.editSlotEntryServer(entry);
+
+    await repo.fetchAndSetRoutineFullServer(routineId);
+  }
+
+  /*
+   * Configs
+   */
+  Future<void> editConfig(SlotEntry entry, num? value, ConfigType type, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.handleConfigServer(entry, value, type);
+    await repo.fetchAndSetRoutineFullServer(routineId);
+  }
+
+  Future<BaseConfig> addConfig(BaseConfig config, ConfigType type) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    return repo.addConfigServer(config, type);
+  }
+
+  Future<void> deleteConfig(int id, ConfigType type) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.deleteConfigServer(id, type);
+  }
+
+  Future<void> handleConfig(SlotEntry entry, num? value, ConfigType type) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.handleConfigServer(entry, value, type);
+  }
+}
+
+@riverpod
+RoutinesRepository routinesRepository(Ref ref) {
+  final baseProvider = ref.watch(wgerBaseProvider);
+  return RoutinesRepository(baseProvider);
+}
+
+class RoutinesRepository {
+  RoutinesRepository(this._baseProvider);
+
+  final WgerBaseProvider _baseProvider;
   static const _routinesUrlPath = 'routine';
   static const _routinesStructureSubpath = 'structure';
   static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
@@ -131,421 +315,151 @@ class RoutinesProvider with ChangeNotifier {
   static const _routineConfigRestTime = 'rest-config';
   static const _routineConfigMaxRestTime = 'max-rest-config';
 
-  Routine? activeRoutine;
-  final WgerBaseProvider baseProvider;
-  List<Routine> _routines = [];
-  List<Exercise> _exercises = [];
-  List<WorkoutSession> _sessions = [];
-  List<WeightUnit> _weightUnits = [];
-  List<RepetitionUnit> _repetitionUnits = [];
-
-  RoutinesProvider(
-    this.baseProvider, {
-    List<Routine>? entries,
-    List<WeightUnit>? weightUnits,
-    List<RepetitionUnit>? repetitionUnits,
-    List<Exercise>? exercises,
-    List<WorkoutSession>? sessions,
-  }) {
-    _routines = entries ?? [];
-    _weightUnits = weightUnits ?? [];
-    _repetitionUnits = repetitionUnits ?? [];
-    _exercises = exercises ?? [];
-    _sessions = sessions ?? [];
-  }
-
-  Exercise _getExerciseById(int id) {
-    // if (ref != null) {
-    //   final exercises = ref!.read(exercisesProvider);
-    //   return exercises.firstWhere((element) => element.id == id);
-    // }
-    return _exercises.firstWhere((element) => element.id == id);
-  }
-
-  set exercises(List<Exercise> exercises) {
-    _exercises = exercises;
-    notifyListeners();
-  }
-
-  set repetitionUnits(List<RepetitionUnit> units) {
-    _repetitionUnits = units;
-    notifyListeners();
-  }
-
-  RepetitionUnit _getRepetitionUnitById(int? id) =>
-      _repetitionUnits.firstWhere((element) => element.id == id);
-
-  set weightUnits(List<WeightUnit> units) {
-    _weightUnits = units;
-    notifyListeners();
-  }
-
-  List<WeightUnit> get weightUnits {
-    return [..._weightUnits];
-  }
-
-  WeightUnit _getWeightUnitById(int? id) => _weightUnits.firstWhere((element) => element.id == id);
-
-  set sessions(List<WorkoutSession> sessions) {
-    _logger.finer('Setting ${sessions.length} sessions');
-    _sessions = sessions;
-    for (final routine in _routines) {
-      routine.sessions = getSessionsForRoutine(routine.id!);
-    }
-  }
-
-  List<WorkoutSession> get sessions {
-    return [..._sessions];
-  }
-
-  List<WorkoutSession> getSessionsForRoutine(int id) =>
-      _sessions.where((s) => s.routineId == id).toList();
-
-  /// Returns the current active nutritional plan. At the moment this is just
-  /// the latest, but this might change in the future.
-  Routine? get currentRoutine {
-    if (_routines.isNotEmpty) {
-      return _routines.first;
-    }
-    return null;
-  }
-
-  List<Routine> get routines {
-    return [..._routines];
-  }
-
-  /// Clears all lists
-  void clear() {
-    _routines = [];
-    _weightUnits = [];
-    _repetitionUnits = [];
-    _sessions = [];
-    _exercises = [];
-  }
-
-  List<RepetitionUnit> get repetitionUnits {
-    return [..._repetitionUnits];
-  }
-
-  List<Routine> getPlans() {
-    return _routines;
-  }
-
-  Routine findById(int id) {
-    return _routines.firstWhere((routine) => routine.id == id);
-  }
-
-  int findIndexById(int id) {
-    return _routines.indexWhere((routine) => routine.id == id);
-  }
-
   /*
    * Routines
    */
-
-  /// Fetches and sets all workout plans fully, i.e. with all corresponding child
-  /// attributes
-  Future<void> fetchAndSetAllRoutinesFull() async {
-    _logger.fine('Fetching all routines fully');
-    final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(
+  Future<List<Routine>> fetchAllRoutinesSparseServer() async {
+    final data = await _baseProvider.fetch(
+      _baseProvider.makeUrl(
         _routinesUrlPath,
-        query: {'ordering': '-creation_date', 'limit': API_MAX_PAGE_SIZE, 'is_template': 'false'},
+        query: {'limit': '1000', 'is_template': 'false'},
       ),
     );
-    for (final entry in data) {
-      await fetchAndSetRoutineFull(entry['id']);
-    }
-
-    notifyListeners();
+    final results = data['results'] as List;
+    return results.map((json) => Routine.fromJson(json)).toList();
   }
 
-  /// Fetches all routines sparsely, i.e. only with the data on the object itself
-  /// and no child attributes
-  Future<void> fetchAndSetAllRoutinesSparse() async {
-    _logger.fine('Fetching all routines sparsely');
-    final data = await baseProvider.fetch(
-      baseProvider.makeUrl(
-        _routinesUrlPath,
-        query: {'limit': API_MAX_PAGE_SIZE, 'is_template': 'false'},
-      ),
-    );
-    _routines = [];
-    for (final workoutPlanData in data['results']) {
-      final plan = Routine.fromJson(workoutPlanData);
-      _routines.add(plan);
-    }
-
-    notifyListeners();
-  }
-
-  Future<void> setExercisesAndUnits(List<DayData> entries) async {
-    for (final entry in entries) {
-      for (final slot in entry.slots) {
-        for (final setConfig in slot.setConfigs) {
-          final exerciseId = setConfig.exerciseId;
-          setConfig.exercise = _getExerciseById(exerciseId);
-          setConfig.repetitionsUnit = _getRepetitionUnitById(setConfig.repetitionsUnitId);
-          setConfig.weightUnit = _getWeightUnitById(setConfig.weightUnitId);
-        }
-      }
-    }
-  }
-
-  /// Fetches a routine sparsely, i.e. only with the data on the object itself
-  /// and no child attributes
-  Future<Routine> fetchAndSetRoutineSparse(int planId) async {
-    final fullPlanData = await baseProvider.fetch(
-      baseProvider.makeUrl(_routinesUrlPath, id: planId, query: {'limit': API_MAX_PAGE_SIZE}),
-    );
-    final routine = Routine.fromJson(fullPlanData);
-    _routines.add(routine);
-    _routines.sort((a, b) => b.created.compareTo(a.created));
-
-    notifyListeners();
-    return routine;
-  }
-
-  /// Fetches a workout plan fully, i.e. with all corresponding child attributes
-  Future<Routine> fetchAndSetRoutineFull(int routineId) async {
+  Future<Routine> fetchAndSetRoutineFullServer(int routineId) async {
     // Fetch structure and computed data
     final results = await Future.wait([
-      baseProvider.fetch(
-        baseProvider.makeUrl(
+      _baseProvider.fetch(
+        _baseProvider.makeUrl(
           _routinesUrlPath,
           objectMethod: _routinesStructureSubpath,
           id: routineId,
         ),
       ),
-      baseProvider.fetch(
-        baseProvider.makeUrl(
+      _baseProvider.fetch(
+        _baseProvider.makeUrl(
           _routinesUrlPath,
           id: routineId,
           objectMethod: _routinesDateSequenceDisplaySubpath,
         ),
       ),
-      baseProvider.fetch(
-        baseProvider.makeUrl(
+      _baseProvider.fetch(
+        _baseProvider.makeUrl(
           _routinesUrlPath,
           id: routineId,
           objectMethod: _routinesDateSequenceGymSubpath,
         ),
       ),
-      // baseProvider.fetch(
-      //   baseProvider.makeUrl(
-      //     _routinesUrlPath,
-      //     id: routineId,
-      //     objectMethod: _routinesLogsSubpath,
-      //   ),
-      // ),
     ]);
 
     final routine = Routine.fromJson(results[0] as Map<String, dynamic>);
     final dayData = results[1] as List<dynamic>;
     final dayDataGym = results[2] as List<dynamic>;
-    // final sessionData = results[3] as List<dynamic>;
 
-    /*
-     * Set exercise, repetition and weight unit objects
-     *
-     * note that setExercisesAndUnits modifies the list in-place
-     */
-    final dayDataEntriesDisplay = dayData.map((entry) => DayData.fromJson(entry)).toList();
-    await setExercisesAndUnits(dayDataEntriesDisplay);
+    routine.dayData = dayData.map((entry) => DayData.fromJson(entry)).toList();
+    routine.dayDataGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
 
-    final dayDataEntriesGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
-    await setExercisesAndUnits(dayDataEntriesGym);
-
-    // final sessionDataEntries = sessionData
-    //     .map((entry) => WorkoutSessionApi.fromJson(entry))
-    //     .toList();
-
-    for (final day in routine.days) {
-      for (final slot in day.slots) {
-        for (final slotEntry in slot.entries) {
-          final exerciseId = slotEntry.exerciseId;
-          slotEntry.exerciseObj = _getExerciseById(exerciseId);
-
-          if (slotEntry.repetitionUnitId != null) {
-            slotEntry.repetitionUnitObj = _getRepetitionUnitById(slotEntry.repetitionUnitId);
-          }
-
-          if (slotEntry.weightUnitId != null) {
-            slotEntry.weightUnitObj = _getWeightUnitById(slotEntry.weightUnitId);
-          }
-        }
-      }
-    }
-
-    routine.dayData = dayDataEntriesDisplay;
-    routine.dayDataGym = dayDataEntriesGym;
-
-    // Logs
-    routine.sessions = getSessionsForRoutine(routine.id!);
-
-    // ... and done
-    final routineIndex = _routines.indexWhere((r) => r.id == routineId);
-    if (routineIndex != -1) {
-      _routines[routineIndex] = routine;
-    } else {
-      _routines.add(routine);
-    }
-
-    notifyListeners();
     return routine;
   }
 
-  Future<Routine> addRoutine(Routine routine) async {
-    final data = await baseProvider.post(
+  Future<Routine> addRoutineServer(Routine routine) async {
+    final data = await _baseProvider.post(
       routine.toJson(),
-      baseProvider.makeUrl(_routinesUrlPath),
+      _baseProvider.makeUrl(_routinesUrlPath),
     );
-    final plan = Routine.fromJson(data);
-    _routines.insert(0, plan);
-    notifyListeners();
-    return plan;
+    return Routine.fromJson(data);
   }
 
-  Future<void> editRoutine(Routine routine) async {
-    await baseProvider.patch(
+  Future<Routine> editRoutineServer(Routine routine) async {
+    await _baseProvider.patch(
       routine.toJson(),
-      baseProvider.makeUrl(_routinesUrlPath, id: routine.id),
+      _baseProvider.makeUrl(_routinesUrlPath, id: routine.id),
     );
-    await fetchAndSetRoutineFull(routine.id!);
+    return fetchAndSetRoutineFullServer(routine.id!);
   }
 
-  Future<void> deleteRoutine(int id) async {
-    final routineIndex = _routines.indexWhere((element) => element.id == id);
-    final routine = _routines[routineIndex];
-    _routines.removeAt(routineIndex);
-    notifyListeners();
-
-    final response = await baseProvider.deleteRequest(_routinesUrlPath, id);
-
-    if (response.statusCode >= 400) {
-      _routines.insert(routineIndex, routine);
-      notifyListeners();
-      throw WgerHttpException(response.body);
-    }
+  Future<void> deleteRoutineServer(int id) async {
+    await _baseProvider.deleteRequest(_routinesUrlPath, id);
   }
 
   /*
    * Days
    */
-  Future<Day> addDay(Day day) async {
-    /*
-     * Saves a new day instance to the DB and adds it to the given workout
-     */
-    final data = await baseProvider.post(
+  Future<Day> addDayServer(Day day) async {
+    final data = await _baseProvider.post(
       day.toJson(),
-      baseProvider.makeUrl(_daysUrlPath),
+      _baseProvider.makeUrl(_daysUrlPath),
     );
     day = Day.fromJson(data);
 
-    fetchAndSetRoutineFull(day.routineId);
+    fetchAndSetRoutineFullServer(day.routineId);
 
     return day;
   }
 
-  Future<void> editDay(Day day) async {
-    await baseProvider.patch(
+  Future<void> editDayServer(Day day) async {
+    await _baseProvider.patch(
       day.toJson(),
-      baseProvider.makeUrl(_daysUrlPath, id: day.id),
+      _baseProvider.makeUrl(_daysUrlPath, id: day.id),
     );
-
-    fetchAndSetRoutineFull(day.routineId);
   }
 
-  Future<void> editDays(List<Day> days) async {
-    if (days.isEmpty) {
-      return;
-    }
-
-    for (final day in days) {
-      await baseProvider.patch(
-        day.toJson(),
-        baseProvider.makeUrl(_daysUrlPath, id: day.id),
-      );
-    }
-
-    await fetchAndSetRoutineFull(days.first.routineId);
-  }
-
-  Future<void> deleteDay(int dayId) async {
-    await baseProvider.deleteRequest(_daysUrlPath, dayId);
-    final routine = _routines.firstWhere((routine) => routine.days.any((day) => day.id == dayId));
-
-    fetchAndSetRoutineFull(routine.id!);
+  Future<void> deleteDayServer(int dayId) async {
+    await _baseProvider.deleteRequest(_daysUrlPath, dayId);
   }
 
   /*
-   * Sets
+   * Slots
    */
-  Future<Slot> addSlot(Slot slot, int routineId) async {
-    final data = await baseProvider.post(
+  Future<Slot> addSlotServer(Slot slot) async {
+    final data = await _baseProvider.post(
       slot.toJson(),
-      baseProvider.makeUrl(_slotsUrlPath),
+      _baseProvider.makeUrl(_slotsUrlPath),
     );
     final newSlot = Slot.fromJson(data);
-
-    await fetchAndSetRoutineFull(routineId);
-
     return newSlot;
   }
 
-  Future<void> deleteSlot(int slotId, int routineId) async {
-    await baseProvider.deleteRequest(_slotsUrlPath, slotId);
-
-    await fetchAndSetRoutineFull(routineId);
+  Future<void> deleteSlotServer(int slotId) async {
+    await _baseProvider.deleteRequest(_slotsUrlPath, slotId);
   }
 
-  Future<void> editSlot(Slot slot, int routineId) async {
-    await baseProvider.patch(
+  Future<void> editSlotServer(Slot slot) async {
+    await _baseProvider.patch(
       slot.toJson(),
-      baseProvider.makeUrl(_slotsUrlPath, id: slot.id),
+      _baseProvider.makeUrl(_slotsUrlPath, id: slot.id),
     );
-
-    await fetchAndSetRoutineFull(routineId);
   }
 
-  Future<void> editSlots(List<Slot> slots, int routineId) async {
-    for (final slot in slots) {
-      await baseProvider.patch(
-        slot.toJson(),
-        baseProvider.makeUrl(_slotsUrlPath, id: slot.id),
-      );
-    }
-
-    await fetchAndSetRoutineFull(routineId);
-  }
-
-  Future<SlotEntry> addSlotEntry(SlotEntry entry, int routineId) async {
-    final data = await baseProvider.post(
+  /*
+   * Slot entries
+   */
+  Future<SlotEntry> addSlotEntryServer(SlotEntry entry) async {
+    final data = await _baseProvider.post(
       entry.toJson(),
-      baseProvider.makeUrl(_slotEntriesUrlPath),
+      _baseProvider.makeUrl(_slotEntriesUrlPath),
     );
-    final newEntry = SlotEntry.fromJson(data);
-    await fetchAndSetRoutineFull(routineId);
-
-    return newEntry;
+    return SlotEntry.fromJson(data);
   }
 
-  Future<void> deleteSlotEntry(int id, int routineId) async {
-    await baseProvider.deleteRequest(_slotEntriesUrlPath, id);
-
-    await fetchAndSetRoutineFull(routineId);
+  Future<void> deleteSlotEntryServer(int id) async {
+    await _baseProvider.deleteRequest(_slotEntriesUrlPath, id);
   }
 
-  Future<void> editSlotEntry(SlotEntry entry, int routineId) async {
-    await baseProvider.patch(
+  Future<void> editSlotEntryServer(SlotEntry entry) async {
+    await _baseProvider.patch(
       entry.toJson(),
-      baseProvider.makeUrl(_slotEntriesUrlPath, id: entry.id),
+      _baseProvider.makeUrl(_slotEntriesUrlPath, id: entry.id),
     );
-
-    await fetchAndSetRoutineFull(routineId);
   }
 
-  String getConfigUrl(ConfigType type) {
+  /*
+   * Configs
+   */
+  String _getConfigUrl(ConfigType type) {
     switch (type) {
       case ConfigType.sets:
         return _routineConfigSets;
@@ -570,31 +484,28 @@ class RoutinesProvider with ChangeNotifier {
     }
   }
 
-  Future<BaseConfig> editConfig(BaseConfig config, ConfigType type) async {
-    final data = await baseProvider.patch(
+  Future<BaseConfig> editConfigServer(BaseConfig config, ConfigType type) async {
+    final data = await _baseProvider.patch(
       config.toJson(),
-      baseProvider.makeUrl(getConfigUrl(type), id: config.id),
+      _baseProvider.makeUrl(_getConfigUrl(type), id: config.id),
     );
 
-    notifyListeners();
     return BaseConfig.fromJson(data);
   }
 
-  Future<BaseConfig> addConfig(BaseConfig config, ConfigType type) async {
-    final data = await baseProvider.post(
+  Future<BaseConfig> addConfigServer(BaseConfig config, ConfigType type) async {
+    final data = await _baseProvider.post(
       config.toJson(),
-      baseProvider.makeUrl(getConfigUrl(type)),
+      _baseProvider.makeUrl(_getConfigUrl(type)),
     );
-    notifyListeners();
     return BaseConfig.fromJson(data);
   }
 
-  Future<void> deleteConfig(int id, ConfigType type) async {
-    await baseProvider.deleteRequest(getConfigUrl(type), id);
-    notifyListeners();
+  Future<void> deleteConfigServer(int id, ConfigType type) async {
+    await _baseProvider.deleteRequest(_getConfigUrl(type), id);
   }
 
-  Future<void> handleConfig(SlotEntry entry, num? value, ConfigType type) async {
+  Future<void> handleConfigServer(SlotEntry entry, num? value, ConfigType type) async {
     final configs = entry.getConfigsByType(type);
     final config = configs.isNotEmpty ? configs.first : null;
     // final value = input.isNotEmpty ? num.parse(input) : null;
@@ -602,15 +513,15 @@ class RoutinesProvider with ChangeNotifier {
     if (value == null && config != null) {
       // Value removed, delete entry
       configs.removeWhere((c) => c.id! == config.id!);
-      await deleteConfig(config.id!, type);
+      await deleteConfigServer(config.id!, type);
     } else if (config != null) {
       // Update existing value
       configs.first.value = value!;
-      await editConfig(configs.first, type);
+      await editConfigServer(configs.first, type);
     } else if (value != null && config == null) {
       // Create new config
       configs.add(
-        await addConfig(
+        await addConfigServer(
           BaseConfig.firstIteration(value, entry.id!),
           type,
         ),

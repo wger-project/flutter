@@ -30,7 +30,7 @@ class RoutineScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final routineId = ModalRoute.of(context)!.settings.arguments as int;
-    final routineProvider = ref.read(routinesChangeProvider);
+    final routineProvider = ref.read(routinesRiverpodProvider.notifier);
 
     final routine = routineProvider.findById(routineId);
 

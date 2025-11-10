@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -13,18 +14,13 @@ import '../test_data/routines.dart';
 Widget createWorkoutDetailScreen({locale = 'en'}) {
   final key = GlobalKey<NavigatorState>();
 
-  final mockRoutinesProvider = MockRoutinesProvider();
-  final routine = getTestRoutine(exercises: getScreenshotExercises());
-  // when(mockRoutinesProvider.activeRoutine).thenReturn(routine);
-  when(mockRoutinesProvider.findById(1)).thenReturn(routine);
-  // when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) => Future.value(routine));
+  final container = riverpod.ProviderContainer.test();
+  container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
+    routines: [getTestRoutine(exercises: getScreenshotExercises())],
+  );
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockRoutinesProvider,
-      ),
-    ],
+  return riverpod.UncontrolledProviderScope(
+    container: container,
     child: MaterialApp(
       locale: Locale(locale),
       debugShowCheckedModeBanner: false,

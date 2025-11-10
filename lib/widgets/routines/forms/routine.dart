@@ -216,7 +216,7 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
 
                 // Save to DB
                 try {
-                  final routinesProvider = ref.read(routinesChangeProvider);
+                  final routinesProvider = ref.read(routinesRiverpodProvider.notifier);
 
                   if (widget._routine.id != null) {
                     await routinesProvider.editRoutine(widget._routine);

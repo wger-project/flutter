@@ -21,8 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -43,23 +41,17 @@ import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
-import 'gym_mode_screen_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
 void main() {
   final key = GlobalKey<NavigatorState>();
 
-  final mockRoutinesProvider = MockRoutinesProvider();
-
   setUp(() {
-    when(mockRoutinesProvider.findById(any)).thenReturn(getTestRoutine());
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
   });
 
   Widget renderGymMode({locale = 'en'}) {
-    return ProviderScope(
+    final container = ProviderContainer.test(
       overrides: [
-        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
         exercisesProvider.overrideWithValue(riverpod.AsyncValue.data(getTestExercises())),
         exerciseEquipmentProvider.overrideWithValue(
           const riverpod.AsyncValue.data(<Equipment>[]),
@@ -74,6 +66,14 @@ void main() {
           const riverpod.AsyncValue.data(testWeightUnits),
         ),
       ],
+    );
+
+    container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
+      routines: [getTestRoutine()],
+    );
+
+    return UncontrolledProviderScope(
+      container: container,
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

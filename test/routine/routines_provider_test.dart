@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,16 +22,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
-import 'package:wger/core/locator.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/routines.dart';
 
-import '../../test_data/exercises.dart';
-import '../../test_data/routines.dart';
 import '../fixtures/fixture_reader.dart';
 import 'routines_provider_test.mocks.dart';
 
@@ -39,21 +33,15 @@ import 'routines_provider_test.mocks.dart';
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
 
-  /// Replacement for SharedPreferences.setMockInitialValues()
-  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-
-  setUpAll(() async {
-    // Needs to be configured here, setUp runs on every test, setUpAll only once
-    await ServiceLocator().configure();
-  });
-
-  group('test the workout routine provider', () {
-    test('Test fetching and setting a routine', () async {
-      final uri = Uri.https('localhost', 'api/v2/routine/325397/');
+  group('test the routine provider repository', () {
+    test('Test creating a new routine', () async {
+      // Arrange
+      final repo = RoutinesRepository(mockBaseProvider);
+      final uri = Uri.https('localhost', 'api/v2/routine/');
       when(
-        mockBaseProvider.makeUrl('routine', id: 325397, query: {'limit': API_MAX_PAGE_SIZE}),
+        mockBaseProvider.makeUrl('routine'),
       ).thenReturn(uri);
-      when(mockBaseProvider.fetch(uri)).thenAnswer(
+      when(mockBaseProvider.post(any, uri)).thenAnswer(
         (_) async => Future.value({
           'id': 325397,
           'created': '2022-10-10',
@@ -65,43 +53,34 @@ void main() {
         }),
       );
 
-      // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercises: getTestExercises());
-      final plan = await provider.fetchAndSetRoutineSparse(325397);
-      final plans = provider.getPlans();
+      // Act
+      final plan = await repo.addRoutineServer(
+        Routine(
+          id: 325397,
+          name: 'Test workout',
+          description: 'Test workout abcd',
+        ),
+      );
 
-      // Check that everything is ok
+      // Assert
       expect(plan, isA<Routine>());
       expect(plan.id, 325397);
       expect(plan.description, 'Test workout abcd');
-      expect(plans.length, 1);
     });
 
     test('Test deleting a workout plan', () async {
-      final uri = Uri.https('localhost', 'api/v2/workout/325397/');
-      when(mockBaseProvider.makeUrl('workout', id: 325397)).thenReturn(uri);
-      when(mockBaseProvider.fetch(uri)).thenAnswer(
-        (_) async => Future.value({
-          'id': 325397,
-          'name': 'Test workout',
-          'creation_date': '2022-10-10',
-          'description': 'Test workout abcd',
-        }),
-      );
+      // Arrange
       when(mockBaseProvider.deleteRequest('routine', 325397)).thenAnswer(
         (_) => Future.value(Response('', 204)),
       );
 
-      // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercises: getTestExercises());
-
-      await provider.fetchAndSetRoutineSparse(325397);
-      await provider.deleteRoutine(325397);
-      final plans = provider.getPlans();
-      expect(plans.length, 0);
+      // Act
+      final repo = RoutinesRepository(mockBaseProvider);
+      await repo.deleteRoutineServer(325397);
+      verify(mockBaseProvider.deleteRequest('routine', 325397)).called(1);
     });
 
-    test('Smoke test fetchAndSetRoutineFull', () async {
+    test('Smoke test fetchAndSetRoutineFullServer', () async {
       //Arrange
       final structureUri = Uri.https('localhost', 'api/v2/routine/101/structure/');
       when(
@@ -136,23 +115,10 @@ void main() {
         ),
       );
 
-      final logsUri = Uri.https('localhost', 'api/v2/routine/101/logs/');
-      when(mockBaseProvider.makeUrl('routine', objectMethod: 'logs', id: 101)).thenReturn(logsUri);
-      when(mockBaseProvider.fetch(logsUri)).thenAnswer(
-        (_) async => Future.value(
-          jsonDecode(fixture('routines/routine_logs.json')),
-        ),
-      );
-
-      final provider = RoutinesProvider(
-        mockBaseProvider,
-        exercises: getTestExercises(),
-        repetitionUnits: testRepetitionUnits,
-        weightUnits: testWeightUnits,
-      );
+      final repo = RoutinesRepository(mockBaseProvider);
 
       // Act
-      final result = await provider.fetchAndSetRoutineFull(101);
+      final result = await repo.fetchAndSetRoutineFullServer(101);
 
       // Assert
       expect(result, isA<Routine>());

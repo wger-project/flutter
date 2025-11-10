@@ -49,7 +49,7 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
             TextButton(
               onPressed: () async {
                 widget.days.remove(day);
-                await ref.read(routinesChangeProvider).deleteDay(day.id!);
+                await ref.read(routinesRiverpodProvider.notifier).deleteDay(day.id!, day.routineId);
                 Navigator.of(context).pop();
               },
               child: const Text('Delete'),
@@ -63,7 +63,7 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = ref.read(routinesChangeProvider);
+    final provider = ref.read(routinesRiverpodProvider.notifier);
 
     return Column(
       children: [
@@ -151,9 +151,6 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
                 name: '${i18n.newDay} ${widget.days.length + 1}',
                 order: widget.days.length + 1,
               );
-              day.name = '${i18n.newDay} ${widget.days.length + 1}';
-              day.routineId = widget.routineId;
-              day.order = widget.days.length + 1;
               final newDay = await provider.addDay(day);
 
               widget.onDaySelected(newDay.id!);
@@ -324,7 +321,7 @@ class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
                     setState(() => isSaving = true);
 
                     try {
-                      await ref.read(routinesChangeProvider).editDay(widget.day);
+                      await ref.read(routinesRiverpodProvider.notifier).editDay(widget.day);
                       if (context.mounted) {
                         setState(() {
                           errorMessage = const SizedBox.shrink();

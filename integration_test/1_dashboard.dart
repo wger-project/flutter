@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -14,7 +13,6 @@ import 'package:wger/theme/theme.dart';
 
 import '../test/exercises/contribute_exercise_test.mocks.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
-import '../test/routine/gym_mode_screen_test.mocks.dart';
 import '../test/weight/weight_provider_test.mocks.dart';
 import '../test/weight/weight_screen_test.mocks.dart' as weight;
 import '../test_data/body_weight.dart';
@@ -25,24 +23,6 @@ import '../test_data/profile.dart';
 import '../test_data/routines.dart';
 
 Widget createDashboardScreen({String locale = 'en'}) {
-  final mockWorkoutProvider = MockRoutinesProvider();
-  when(
-    mockWorkoutProvider.routines,
-  ).thenReturn([getTestRoutine(exercises: getScreenshotExercises())]);
-  when(
-    mockWorkoutProvider.currentRoutine,
-  ).thenReturn(getTestRoutine(exercises: getScreenshotExercises()));
-
-  when(mockWorkoutProvider.sessions).thenReturn([
-    WorkoutSession(
-      routineId: 1,
-      date: DateTime.now().add(const Duration(days: -1)),
-      timeStart: const TimeOfDay(hour: 17, minute: 34),
-      timeEnd: const TimeOfDay(hour: 19, minute: 3),
-      impression: 3,
-    ),
-  ]);
-
   final mockNutritionProvider = weight.MockNutritionPlansProvider();
 
   when(
@@ -61,18 +41,23 @@ Widget createDashboardScreen({String locale = 'en'}) {
   final mockUserProvider = MockUserProvider();
   when(mockUserProvider.profile).thenReturn(tProfile1);
 
-  return riverpod.ProviderScope(
+  final container = riverpod.ProviderContainer.test(
     overrides: [
       bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
     ],
+  );
+  container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
+    routines: [getTestRoutine(exercises: getScreenshotExercises())],
+  );
+
+  return riverpod.UncontrolledProviderScope(
+    container: container,
     child: MultiProvider(
       providers: [
         ChangeNotifierProvider<UserProvider>(
           create: (context) => mockUserProvider,
         ),
-        ChangeNotifierProvider<RoutinesProvider>(
-          create: (context) => mockWorkoutProvider,
-        ),
+
         ChangeNotifierProvider<NutritionPlansProvider>(
           create: (context) => mockNutritionProvider,
         ),

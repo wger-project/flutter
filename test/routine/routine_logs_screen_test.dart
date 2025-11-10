@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -36,29 +36,32 @@ import 'package:wger/widgets/routines/workout_logs.dart';
 import '../../test_data/routines.dart';
 import 'routine_logs_screen_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider, WorkoutLogRepository])
+@GenerateMocks([WorkoutLogRepository])
 void main() {
   late Routine routine;
-  final mockRoutinesProvider = MockRoutinesProvider();
   final mockWorkoutLogRepository = MockWorkoutLogRepository();
 
   setUp(() {
     routine = getTestRoutine();
     routine.sessions[0].date = DateTime(2025, 3, 29);
 
-    when(mockRoutinesProvider.findById(any)).thenAnswer((_) => routine);
     when(mockWorkoutLogRepository.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
   });
 
   Widget renderWidget({locale = 'en', isOnline = true}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ProviderScope(
+    final container = ProviderContainer.test(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
         workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepository),
-        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
       ],
+    );
+
+    container.read(routinesRiverpodProvider.notifier).state = RoutinesState(routines: [routine]);
+
+    return UncontrolledProviderScope(
+      container: container,
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

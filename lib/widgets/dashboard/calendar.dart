@@ -87,7 +87,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   /// This method asynchronously fetches and processes data from multiple sources:
   /// - **Weight entries**: Retrieves weight measurements from [BodyWeightProvider]
   /// - **Measurements**: Retrieves body measurements from [MeasurementProvider]
-  /// - **Workout sessions**: Fetches workout session data from [RoutinesProvider]
+  /// - **Workout sessions**: Fetches workout session data from [RoutinesRiverpod]
   /// - **Nutritional plans**: Retrieves calorie diary entries from [NutritionPlansProvider]
   ///
   /// Each event is formatted according to the current locale and stored in the
@@ -144,7 +144,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     }
 
     // Process workout sessions
-    final routinesProvider = ref.read(routinesChangeProvider);
+    final routinesProvider = ref.read(routinesRiverpodProvider);
     for (final session in routinesProvider.sessions) {
       final date = DateFormatLists.format(session.date);
       if (!newEvents.containsKey(date)) {

@@ -122,8 +122,8 @@ class _GymModeState extends ConsumerState<GymMode> {
 
   List<Widget> getContent() {
     final state = ref.watch(gymStateProvider);
-    final exercisesAsync = ref.read(exerciseStateProvider.notifier);
-    final routinesProvider = ref.watch(routinesChangeProvider);
+    final exercisesProvider = ref.read(exerciseStateProvider.notifier);
+    final routinesProvider = ref.watch(routinesRiverpodProvider.notifier);
     var currentElement = 1;
     final List<Widget> out = [];
 
@@ -131,7 +131,7 @@ class _GymModeState extends ConsumerState<GymMode> {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
         final ratioCompleted = currentElement / _totalElements;
-        final exercise = exercisesAsync.getById(config.exerciseId);
+        final exercise = exercisesProvider.getById(config.exerciseId);
         currentElement++;
 
         if (firstPage && state.showExercisePages) {
@@ -204,7 +204,7 @@ class _GymModeState extends ConsumerState<GymMode> {
           StartPage(_controller, widget._dayDataDisplay, _exercisePages),
           ...getContent(),
           SessionPage(
-            ref.read(routinesChangeProvider).findById(widget._dayDataGym.day!.routineId),
+            ref.read(routinesRiverpodProvider.notifier).findById(widget._dayDataGym.day!.routineId),
             _controller,
             ref.read(gymStateProvider).startTime,
             _exercisePages,

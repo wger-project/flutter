@@ -19,53 +19,40 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 
-import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
-import 'routine_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
 void main() {
-  final mockBaseProvider = MockWgerBaseProvider();
-
   Widget renderWidget({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return riverpod.ProviderScope(
-      child: ProviderScope(
-        overrides: [
-          routinesChangeProvider.overrideWithValue(
-            RoutinesProvider(
-              mockBaseProvider,
-              entries: [getTestRoutine()],
-              exercises: getTestExercises(),
+    final container = ProviderContainer.test();
+    container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
+      routines: [getTestRoutine()],
+    );
+
+    return UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: const RouteSettings(arguments: 1),
+              builder: (_) => const RoutineScreen(),
             ),
           ),
-        ],
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: key,
-          home: TextButton(
-            onPressed: () => key.currentState!.push(
-              MaterialPageRoute<void>(
-                settings: const RouteSettings(arguments: 1),
-                builder: (_) => const RoutineScreen(),
-              ),
-            ),
-            child: const SizedBox(),
-          ),
-          routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
+          child: const SizedBox(),
         ),
+        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
   }

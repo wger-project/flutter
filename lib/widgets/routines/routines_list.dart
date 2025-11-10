@@ -39,17 +39,18 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
   Widget build(BuildContext context) {
     final isOnline = ref.watch(networkStatusProvider);
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    final routineProvider = ref.read(routinesChangeProvider);
+    final routineProvider = ref.read(routinesRiverpodProvider.notifier);
+    final routinesState = ref.read(routinesRiverpodProvider);
 
     return RefreshIndicator(
-      onRefresh: isOnline ? () => routineProvider.fetchAndSetAllRoutinesSparse() : () async {},
-      child: routineProvider.routines.isEmpty
+      onRefresh: isOnline ? () => routineProvider.fetchAllRoutinesSparse() : () async {},
+      child: routinesState.routines.isEmpty
           ? const TextPrompt()
           : ListView.builder(
               padding: const EdgeInsets.all(10.0),
-              itemCount: routineProvider.routines.length,
+              itemCount: routinesState.routines.length,
               itemBuilder: (context, index) {
-                final currentRoutine = routineProvider.routines[index];
+                final currentRoutine = routinesState.routines[index];
 
                 return Card(
                   child: ListTile(

@@ -30,31 +30,34 @@ import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
+import '../../test_data/routines.dart';
 import './routine_form_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesRepository])
 void main() {
-  var mockRoutinesProvider = MockRoutinesProvider();
-
-  final existingRoutine = Routine(
-    id: 1,
-    created: DateTime(2021, 1, 1),
-    start: DateTime(2024, 11, 1),
-    end: DateTime(2024, 12, 1),
-    name: 'test 1',
-    description: 'description 1',
-    fitInWeek: false,
-  );
-  var newRoutine = Routine.empty();
+  late MockRoutinesRepository mockRoutinesRepository;
+  late Routine existingRoutine;
+  late Routine newRoutine;
 
   setUp(() {
     newRoutine = Routine.empty();
-    mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.findById(any)).thenAnswer((_) => existingRoutine);
-    when(mockRoutinesProvider.editRoutine(any)).thenAnswer((_) => Future.value(existingRoutine));
+    existingRoutine = Routine(
+      id: 1,
+      created: DateTime(2021, 1, 1),
+      start: DateTime(2024, 11, 1),
+      end: DateTime(2024, 12, 1),
+      name: 'test 1',
+      description: 'description 1',
+      fitInWeek: false,
+    );
+
+    mockRoutinesRepository = MockRoutinesRepository();
     when(
-      mockRoutinesProvider.fetchAndSetRoutineFull(any),
-    ).thenAnswer((_) => Future.value(existingRoutine));
+      mockRoutinesRepository.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) async => getTestRoutine());
+    when(
+      mockRoutinesRepository.editRoutineServer(any),
+    ).thenAnswer((_) async => existingRoutine);
   });
 
   Widget renderWidget(Routine routine, {locale = 'en'}) {
@@ -62,7 +65,7 @@ void main() {
 
     return ProviderScope(
       overrides: [
-        routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+        routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -104,8 +107,8 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verify(mockRoutinesProvider.editRoutine(any));
-    verifyNever(mockRoutinesProvider.addRoutine(any));
+    verify(mockRoutinesRepository.editRoutineServer(any));
+    verifyNever(mockRoutinesRepository.addRoutineServer(any));
 
     // TODO(x): edit calls Navigator.pop(), since the form can only be reached from the
     //       detail page. The test needs to add the detail page to the stack so that
@@ -118,7 +121,7 @@ void main() {
 
   testWidgets('Test editing an existing routine - server error', (WidgetTester tester) async {
     // Arrange
-    when(mockRoutinesProvider.editRoutine(any)).thenThrow(
+    when(mockRoutinesRepository.editRoutineServer(any)).thenThrow(
       WgerHttpException.fromMap({
         'name': ['The name is not valid'],
       }),
@@ -142,8 +145,7 @@ void main() {
       name: 'New cool routine',
     );
 
-    when(mockRoutinesProvider.addRoutine(any)).thenAnswer((_) => Future.value(editRoutine));
-    when(mockRoutinesProvider.findById(any)).thenAnswer((_) => editRoutine);
+    when(mockRoutinesRepository.addRoutineServer(any)).thenAnswer((_) => Future.value(editRoutine));
 
     await tester.pumpWidget(renderWidget(newRoutine));
     await tester.pumpAndSettle();
@@ -152,8 +154,8 @@ void main() {
     await tester.enterText(find.byKey(const Key('field-name')), editRoutine.name);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockRoutinesProvider.editRoutine(any));
-    verify(mockRoutinesProvider.addRoutine(any));
+    verifyNever(mockRoutinesRepository.editRoutineServer(any));
+    verify(mockRoutinesRepository.addRoutineServer(any));
 
     // Detail page
     await tester.pumpAndSettle();
@@ -169,8 +171,7 @@ void main() {
       name: 'My routine',
       description: 'Get yuuuge',
     );
-    when(mockRoutinesProvider.addRoutine(any)).thenAnswer((_) => Future.value(editRoutine));
-    when(mockRoutinesProvider.findById(any)).thenAnswer((_) => editRoutine);
+    when(mockRoutinesRepository.addRoutineServer(any)).thenAnswer((_) => Future.value(editRoutine));
 
     await tester.pumpWidget(renderWidget(newRoutine));
     await tester.pumpAndSettle();
@@ -180,8 +181,8 @@ void main() {
     await tester.enterText(find.byKey(const Key('field-description')), editRoutine.description);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockRoutinesProvider.editRoutine(any));
-    verify(mockRoutinesProvider.addRoutine(any));
+    verifyNever(mockRoutinesRepository.editRoutineServer(any));
+    verify(mockRoutinesRepository.addRoutineServer(any));
 
     // Detail page
     await tester.pumpAndSettle();
@@ -190,7 +191,7 @@ void main() {
 
   testWidgets('Test creating a new routine - server error', (WidgetTester tester) async {
     // Arrange
-    when(mockRoutinesProvider.addRoutine(any)).thenThrow(
+    when(mockRoutinesRepository.addRoutineServer(any)).thenThrow(
       WgerHttpException.fromMap({
         'name': ['The name is not valid'],
       }),

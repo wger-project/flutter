@@ -88,7 +88,7 @@ class RoutineDetailAppBar extends ConsumerWidget implements PreferredSizeWidget 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
-    final provider = ref.read(routinesChangeProvider);
+    final provider = ref.read(routinesRiverpodProvider.notifier);
     final isOnline = ref.watch(networkStatusProvider);
 
     return AppBar(

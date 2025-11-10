@@ -124,7 +124,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
     final languageCode = Localizations.localeOf(context).languageCode;
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
-    final provider = ref.read(routinesChangeProvider);
+    final provider = ref.read(routinesRiverpodProvider.notifier);
 
     return Form(
       key: _form,
@@ -438,7 +438,7 @@ class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = ref.read(routinesChangeProvider);
+    final provider = ref.read(routinesRiverpodProvider.notifier);
 
     return Column(
       children: [
@@ -507,7 +507,7 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = ref.read(routinesChangeProvider);
+    final provider = ref.read(routinesRiverpodProvider.notifier);
     final languageCode = Localizations.localeOf(context).languageCode;
 
     return Column(

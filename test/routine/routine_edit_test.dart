@@ -29,13 +29,15 @@ import 'package:wger/widgets/routines/routine_edit.dart';
 import '../../test_data/routines.dart';
 import 'routine_edit_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesRepository])
 void main() {
-  late MockRoutinesProvider mockRoutinesProvider;
+  late MockRoutinesRepository mockRoutinesRepository;
 
   setUp(() {
-    mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) async => getTestRoutine());
+    mockRoutinesRepository = MockRoutinesRepository();
+    when(
+      mockRoutinesRepository.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) => Future.value(getTestRoutine()));
   });
 
   testWidgets('RoutineEditScreen smoke test', (WidgetTester tester) async {
@@ -43,7 +45,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          routinesChangeProvider.overrideWithValue(mockRoutinesProvider),
+          routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
         ],
         child: MaterialApp(
           locale: const Locale('en'),
