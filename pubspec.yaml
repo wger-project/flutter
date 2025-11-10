@@ -90,6 +90,8 @@ dev_dependencies:
   network_image_mock: ^2.1.1
   shared_preferences_platform_interface: ^2.0.0
   riverpod_generator: ^3.0.3
+  riverpod_lint: ^3.0.3
+  custom_lint: ^0.8.0
 
   # Script to read out unused translations
   #translations_cleaner: ^0.0.5
