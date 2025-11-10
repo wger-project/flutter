@@ -12,8 +12,10 @@ import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
 import 'package:package_info_plus/package_info_plus.dart' as _i6;
+import 'package:wger/models/body_weight/weight_entry.dart' as _i12;
 import 'package:wger/providers/auth.dart' as _i2;
 import 'package:wger/providers/base_provider.dart' as _i4;
+import 'package:wger/providers/body_weight_repository.dart' as _i11;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -588,4 +590,48 @@ class MockClient extends _i1.Mock implements _i3.Client {
     Invocation.method(#close, []),
     returnValueForMissingStub: null,
   );
+}
+
+/// A class which mocks [BodyWeightRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightRepository {
+  MockBodyWeightRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Stream<List<_i12.WeightEntry>> watchAllDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i5.Stream<List<_i12.WeightEntry>>.empty(),
+          )
+          as _i5.Stream<List<_i12.WeightEntry>>);
+
+  @override
+  _i5.Future<void> deleteLocalDrift(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDrift, [id]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> updateLocalDrift(_i12.WeightEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLocalDrift, [entry]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> addLocalDrift(_i12.WeightEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDrift, [entry]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 }

@@ -36,23 +36,21 @@ void main() {
     when(mockBodyWeightRepository.watchAllDrift()).thenAnswer((_) => Stream.value(<WeightEntry>[]));
     when(mockBodyWeightRepository.deleteLocalDrift(any)).thenAnswer((_) async {});
     when(mockBodyWeightRepository.updateLocalDrift(any)).thenAnswer((_) async {});
-
-    container = ProviderContainer(
+    container = ProviderContainer.test(
       overrides: [bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository)],
     );
-    addTearDown(container.dispose);
   });
 
   group('test body weight provider', () {
     test('deleteEntry correctly calls repository.deleteLocalDrift', () async {
-      final notifier = container.read(weightEntryProvider().notifier);
+      final notifier = container.read(weightEntryProvider.notifier);
 
       await notifier.deleteEntry('123');
       verify(mockBodyWeightRepository.deleteLocalDrift('123')).called(1);
     });
 
     test('updateEntry correctly calls repository.updateLocalDrift', () async {
-      final notifier = container.read(weightEntryProvider().notifier);
+      final notifier = container.read(weightEntryProvider.notifier);
       final entry = WeightEntry(id: '123', date: DateTime.now(), weight: 70.0);
 
       await notifier.updateEntry(entry);

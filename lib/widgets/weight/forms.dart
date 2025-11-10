@@ -209,7 +209,7 @@ class WeightForm extends riverpod.ConsumerWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              final notifier = ref.read(weightEntryProvider().notifier);
+              final notifier = ref.read(weightEntryProvider.notifier);
               _weightEntry.id == null
                   ? await notifier.addEntry(_weightEntry)
                   : await notifier.updateEntry(_weightEntry);

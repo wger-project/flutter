@@ -124,7 +124,7 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
       // await ref.read(routineStateReadyProvider.future);
       // await ref.read(sessionStateReadyProvider.future);
       // ref.watch(workoutLogProvider);
-      // ref.read(weightEntryProvider());
+      // ref.read(weightEntryProvider);
 
       // await ref.watch(workoutLogProvider.future);
       // await ref.read(workoutLogProvider.future);

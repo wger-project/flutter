@@ -37,7 +37,7 @@ class DashboardWeightWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = context.read<UserProvider>().profile;
-    final entriesList = ref.watch(weightEntryProvider());
+    final entriesList = ref.watch(weightEntryProvider);
 
     return Card(
       child: Column(

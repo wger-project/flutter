@@ -39,7 +39,7 @@ class WeightOverview extends riverpod.ConsumerWidget {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final plans = context.read<NutritionPlansProvider>().items;
 
-    final entries = ref.watch(weightEntryProvider());
+    final entries = ref.watch(weightEntryProvider);
     return entries.when(
       data: (entriesList) {
         final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
@@ -105,7 +105,7 @@ class WeightOverview extends riverpod.ConsumerWidget {
                               child: Text(AppLocalizations.of(context).delete),
                               onTap: () async {
                                 await ref
-                                    .read(weightEntryProvider().notifier)
+                                    .read(weightEntryProvider.notifier)
                                     .deleteEntry(currentEntry.id!);
 
                                 // and inform the user

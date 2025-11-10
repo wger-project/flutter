@@ -24,22 +24,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
+import '../../test_data/body_weight.dart';
 import '../../test_data/nutritional_plans.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider, AuthProvider, http.Client])
+@GenerateMocks([WgerBaseProvider, AuthProvider, http.Client, BodyWeightRepository])
 void main() {
   late IngredientDatabase database;
+  late BodyWeightRepository mockRepository;
 
   setUp(() {
+    mockRepository = MockBodyWeightRepository();
+    when(mockRepository.watchAllDrift()).thenAnswer((_) => Stream.value([testWeightEntry1]));
     database = IngredientDatabase.inMemory(NativeDatabase.memory());
   });
 
@@ -53,6 +59,9 @@ void main() {
     final plan = getNutritionalPlan();
 
     return riverpod.ProviderScope(
+      overrides: [
+        bodyWeightRepositoryProvider.overrideWithValue(mockRepository),
+      ],
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider<NutritionPlansProvider>(

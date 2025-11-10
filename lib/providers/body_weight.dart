@@ -31,8 +31,8 @@ final class WeightEntryNotifier extends _$WeightEntryNotifier {
 
   @override
   // BodyWeightState build() {
-  Stream<List<WeightEntry>> build([BodyWeightRepository? repository]) {
-    _repo = repository ?? ref.read(bodyWeightRepositoryProvider);
+  Stream<List<WeightEntry>> build() {
+    _repo = ref.read(bodyWeightRepositoryProvider);
     _logger.finer('Building WeightEntryNotifier');
 
     // final state = BodyWeightState();

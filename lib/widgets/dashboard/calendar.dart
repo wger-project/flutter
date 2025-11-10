@@ -109,9 +109,9 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     // Process weight entries
     List<WeightEntry> entries = [];
     try {
-      entries = await ref.read(weightEntryProvider().future);
+      entries = await ref.read(weightEntryProvider.future);
     } catch (_) {
-      entries = ref.watch(weightEntryProvider()).asData?.value ?? [];
+      entries = ref.watch(weightEntryProvider).asData?.value ?? [];
     }
     for (final entry in entries) {
       final date = DateFormatLists.format(entry.date);
