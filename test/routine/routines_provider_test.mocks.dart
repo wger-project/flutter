@@ -3,12 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i8;
 
-import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/providers/auth.dart' as _i2;
-import 'package:wger/providers/base_provider.dart' as _i4;
+import 'package:wger/models/workouts/base_config.dart' as _i6;
+import 'package:wger/models/workouts/day.dart' as _i3;
+import 'package:wger/models/workouts/routine.dart' as _i2;
+import 'package:wger/models/workouts/slot.dart' as _i4;
+import 'package:wger/models/workouts/slot_entry.dart' as _i5;
+import 'package:wger/providers/routines.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -24,141 +27,228 @@ import 'package:wger/providers/base_provider.dart' as _i4;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeRoutine_0 extends _i1.SmartFake implements _i2.Routine {
+  _FakeRoutine_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeDay_1 extends _i1.SmartFake implements _i3.Day {
+  _FakeDay_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSlot_2 extends _i1.SmartFake implements _i4.Slot {
+  _FakeSlot_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSlotEntry_3 extends _i1.SmartFake implements _i5.SlotEntry {
+  _FakeSlotEntry_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-/// A class which mocks [WgerBaseProvider].
+class _FakeBaseConfig_4 extends _i1.SmartFake implements _i6.BaseConfig {
+  _FakeBaseConfig_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+}
+
+/// A class which mocks [RoutinesRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
-  MockWgerBaseProvider() {
+class MockRoutinesRepository extends _i1.Mock implements _i7.RoutinesRepository {
+  MockRoutinesRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.AuthProvider get auth =>
+  _i8.Future<List<_i2.Routine>> fetchAllRoutinesSparseServer() =>
       (super.noSuchMethod(
-            Invocation.getter(#auth),
-            returnValue: _FakeAuthProvider_0(this, Invocation.getter(#auth)),
+            Invocation.method(#fetchAllRoutinesSparseServer, []),
+            returnValue: _i8.Future<List<_i2.Routine>>.value(<_i2.Routine>[]),
           )
-          as _i2.AuthProvider);
+          as _i8.Future<List<_i2.Routine>>);
 
   @override
-  _i3.Client get client =>
+  _i8.Future<_i2.Routine> fetchAndSetRoutineFullServer(int? routineId) =>
       (super.noSuchMethod(
-            Invocation.getter(#client),
-            returnValue: _FakeClient_1(this, Invocation.getter(#client)),
-          )
-          as _i3.Client);
-
-  @override
-  set auth(_i2.AuthProvider? _auth) => super.noSuchMethod(
-    Invocation.setter(#auth, _auth),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set client(_i3.Client? _client) => super.noSuchMethod(
-    Invocation.setter(#client, _client),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
-      (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {
-              #includeAuth: includeAuth,
-            }),
-            returnValue: <String, String>{},
-          )
-          as Map<String, String>);
-
-  @override
-  Uri makeUrl(
-    String? path, {
-    int? id,
-    String? objectMethod,
-    Map<String, dynamic>? query,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #makeUrl,
-              [path],
-              {#id: id, #objectMethod: objectMethod, #query: query},
-            ),
-            returnValue: _FakeUri_2(
-              this,
-              Invocation.method(
-                #makeUrl,
-                [path],
-                {#id: id, #objectMethod: objectMethod, #query: query},
+            Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
+            returnValue: _i8.Future<_i2.Routine>.value(
+              _FakeRoutine_0(
+                this,
+                Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
               ),
             ),
           )
-          as Uri);
+          as _i8.Future<_i2.Routine>);
 
   @override
-  _i5.Future<dynamic> fetch(Uri? uri) =>
+  _i8.Future<_i2.Routine> addRoutineServer(_i2.Routine? routine) =>
       (super.noSuchMethod(
-            Invocation.method(#fetch, [uri]),
-            returnValue: _i5.Future<dynamic>.value(),
-          )
-          as _i5.Future<dynamic>);
-
-  @override
-  _i5.Future<List<dynamic>> fetchPaginated(Uri? uri) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchPaginated, [uri]),
-            returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
-          )
-          as _i5.Future<List<dynamic>>);
-
-  @override
-  _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
-      (super.noSuchMethod(
-            Invocation.method(#post, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
+            Invocation.method(#addRoutineServer, [routine]),
+            returnValue: _i8.Future<_i2.Routine>.value(
+              _FakeRoutine_0(
+                this,
+                Invocation.method(#addRoutineServer, [routine]),
+              ),
             ),
           )
-          as _i5.Future<Map<String, dynamic>>);
+          as _i8.Future<_i2.Routine>);
 
   @override
-  _i5.Future<Map<String, dynamic>> patch(
-    Map<String, dynamic>? data,
-    Uri? uri,
+  _i8.Future<_i2.Routine> editRoutineServer(_i2.Routine? routine) =>
+      (super.noSuchMethod(
+            Invocation.method(#editRoutineServer, [routine]),
+            returnValue: _i8.Future<_i2.Routine>.value(
+              _FakeRoutine_0(
+                this,
+                Invocation.method(#editRoutineServer, [routine]),
+              ),
+            ),
+          )
+          as _i8.Future<_i2.Routine>);
+
+  @override
+  _i8.Future<void> deleteRoutineServer(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteRoutineServer, [id]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<_i3.Day> addDayServer(_i3.Day? day) =>
+      (super.noSuchMethod(
+            Invocation.method(#addDayServer, [day]),
+            returnValue: _i8.Future<_i3.Day>.value(
+              _FakeDay_1(this, Invocation.method(#addDayServer, [day])),
+            ),
+          )
+          as _i8.Future<_i3.Day>);
+
+  @override
+  _i8.Future<void> editDayServer(_i3.Day? day) =>
+      (super.noSuchMethod(
+            Invocation.method(#editDayServer, [day]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> deleteDayServer(int? dayId) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteDayServer, [dayId]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<_i4.Slot> addSlotServer(_i4.Slot? slot) =>
+      (super.noSuchMethod(
+            Invocation.method(#addSlotServer, [slot]),
+            returnValue: _i8.Future<_i4.Slot>.value(
+              _FakeSlot_2(this, Invocation.method(#addSlotServer, [slot])),
+            ),
+          )
+          as _i8.Future<_i4.Slot>);
+
+  @override
+  _i8.Future<void> deleteSlotServer(int? slotId) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteSlotServer, [slotId]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> editSlotServer(_i4.Slot? slot) =>
+      (super.noSuchMethod(
+            Invocation.method(#editSlotServer, [slot]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<_i5.SlotEntry> addSlotEntryServer(_i5.SlotEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#addSlotEntryServer, [entry]),
+            returnValue: _i8.Future<_i5.SlotEntry>.value(
+              _FakeSlotEntry_3(
+                this,
+                Invocation.method(#addSlotEntryServer, [entry]),
+              ),
+            ),
+          )
+          as _i8.Future<_i5.SlotEntry>);
+
+  @override
+  _i8.Future<void> deleteSlotEntryServer(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteSlotEntryServer, [id]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> editSlotEntryServer(_i5.SlotEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#editSlotEntryServer, [entry]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<_i6.BaseConfig> editConfigServer(
+    _i6.BaseConfig? config,
+    _i5.ConfigType? type,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#patch, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i5.Future<Map<String, dynamic>>);
-
-  @override
-  _i5.Future<_i3.Response> deleteRequest(String? url, int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteRequest, [url, id]),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            Invocation.method(#editConfigServer, [config, type]),
+            returnValue: _i8.Future<_i6.BaseConfig>.value(
+              _FakeBaseConfig_4(
                 this,
-                Invocation.method(#deleteRequest, [url, id]),
+                Invocation.method(#editConfigServer, [config, type]),
               ),
             ),
           )
-          as _i5.Future<_i3.Response>);
+          as _i8.Future<_i6.BaseConfig>);
+
+  @override
+  _i8.Future<_i6.BaseConfig> addConfigServer(
+    _i6.BaseConfig? config,
+    _i5.ConfigType? type,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addConfigServer, [config, type]),
+            returnValue: _i8.Future<_i6.BaseConfig>.value(
+              _FakeBaseConfig_4(
+                this,
+                Invocation.method(#addConfigServer, [config, type]),
+              ),
+            ),
+          )
+          as _i8.Future<_i6.BaseConfig>);
+
+  @override
+  _i8.Future<void> deleteConfigServer(int? id, _i5.ConfigType? type) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteConfigServer, [id, type]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> handleConfigServer(
+    _i5.SlotEntry? entry,
+    num? value,
+    _i5.ConfigType? type,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#handleConfigServer, [entry, value, type]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
 }
