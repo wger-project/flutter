@@ -1,15 +1,12 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/exercises/exercise.dart';
 
-const DEFAULT_DURATION = Duration(hours: 5);
+part 'gym_state.g.dart';
 
-final StateNotifierProvider<GymStateNotifier, GymState> gymStateProvider =
-    StateNotifierProvider<GymStateNotifier, GymState>((ref) {
-      return GymStateNotifier();
-    });
+const DEFAULT_DURATION = Duration(hours: 5);
 
 class GymState {
   final Map<Exercise, int> exercisePages;
@@ -27,7 +24,7 @@ class GymState {
     DateTime? validUntil,
     TimeOfDay? startTime,
   }) {
-    this.validUntil = validUntil ?? DateTime.now().add(DEFAULT_DURATION);
+    this.validUntil = validUntil ?? clock.now().add(DEFAULT_DURATION);
     this.startTime = startTime ?? TimeOfDay.fromDateTime(clock.now());
   }
 
@@ -44,7 +41,7 @@ class GymState {
       showExercisePages: showExercisePages ?? this.showExercisePages,
       currentPage: currentPage ?? this.currentPage,
       dayId: dayId ?? this.dayId,
-      validUntil: validUntil ?? this.validUntil.add(DEFAULT_DURATION),
+      validUntil: validUntil ?? this.validUntil,
       startTime: startTime ?? this.startTime,
     );
   }
@@ -62,10 +59,12 @@ class GymState {
   }
 }
 
-class GymStateNotifier extends StateNotifier<GymState> {
+@riverpod
+class GymStateNotifier extends _$GymStateNotifier {
   final _logger = Logger('GymStateNotifier');
 
-  GymStateNotifier() : super(GymState());
+  @override
+  GymState build() => GymState();
 
   void setCurrentPage(int page) {
     // _logger.fine('Setting page from ${state.currentPage} to $page');

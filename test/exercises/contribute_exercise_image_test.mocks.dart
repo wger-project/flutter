@@ -8,11 +8,11 @@ import 'dart:ui' as _i15;
 
 import 'package:http/http.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i8;
+import 'package:mockito/src/dummies.dart' as _i7;
 import 'package:wger/models/exercises/category.dart' as _i13;
 import 'package:wger/models/exercises/equipment.dart' as _i9;
 import 'package:wger/models/exercises/exercise_submission.dart' as _i11;
-import 'package:wger/models/exercises/exercise_submission_images.dart' as _i7;
+import 'package:wger/models/exercises/exercise_submission_images.dart' as _i8;
 import 'package:wger/models/exercises/language.dart' as _i12;
 import 'package:wger/models/exercises/muscle.dart' as _i10;
 import 'package:wger/models/exercises/variation.dart' as _i3;
@@ -33,7 +33,6 @@ import 'package:wger/providers/base_provider.dart' as _i2;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
-// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
@@ -72,39 +71,54 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
   _i2.WgerBaseProvider get baseProvider =>
       (super.noSuchMethod(
             Invocation.getter(#baseProvider),
-            returnValue: _FakeWgerBaseProvider_0(this, Invocation.getter(#baseProvider)),
+            returnValue: _FakeWgerBaseProvider_0(
+              this,
+              Invocation.getter(#baseProvider),
+            ),
           )
           as _i2.WgerBaseProvider);
-
-  @override
-  List<_i7.ExerciseSubmissionImage> get exerciseImages =>
-      (super.noSuchMethod(
-            Invocation.getter(#exerciseImages),
-            returnValue: <_i7.ExerciseSubmissionImage>[],
-          )
-          as List<_i7.ExerciseSubmissionImage>);
 
   @override
   String get author =>
       (super.noSuchMethod(
             Invocation.getter(#author),
-            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#author)),
+            returnValue: _i7.dummyValue<String>(
+              this,
+              Invocation.getter(#author),
+            ),
           )
           as String);
 
   @override
   List<String> get alternateNamesEn =>
-      (super.noSuchMethod(Invocation.getter(#alternateNamesEn), returnValue: <String>[])
+      (super.noSuchMethod(
+            Invocation.getter(#alternateNamesEn),
+            returnValue: <String>[],
+          )
           as List<String>);
 
   @override
   List<String> get alternateNamesTrans =>
-      (super.noSuchMethod(Invocation.getter(#alternateNamesTrans), returnValue: <String>[])
+      (super.noSuchMethod(
+            Invocation.getter(#alternateNamesTrans),
+            returnValue: <String>[],
+          )
           as List<String>);
 
   @override
+  List<_i8.ExerciseSubmissionImage> get exerciseImages =>
+      (super.noSuchMethod(
+            Invocation.getter(#exerciseImages),
+            returnValue: <_i8.ExerciseSubmissionImage>[],
+          )
+          as List<_i8.ExerciseSubmissionImage>);
+
+  @override
   List<_i9.Equipment> get equipment =>
-      (super.noSuchMethod(Invocation.getter(#equipment), returnValue: <_i9.Equipment>[])
+      (super.noSuchMethod(
+            Invocation.getter(#equipment),
+            returnValue: <_i9.Equipment>[],
+          )
           as List<_i9.Equipment>);
 
   @override
@@ -121,19 +135,25 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
 
   @override
   List<_i10.Muscle> get primaryMuscles =>
-      (super.noSuchMethod(Invocation.getter(#primaryMuscles), returnValue: <_i10.Muscle>[])
+      (super.noSuchMethod(
+            Invocation.getter(#primaryMuscles),
+            returnValue: <_i10.Muscle>[],
+          )
           as List<_i10.Muscle>);
 
   @override
   List<_i10.Muscle> get secondaryMuscles =>
-      (super.noSuchMethod(Invocation.getter(#secondaryMuscles), returnValue: <_i10.Muscle>[])
+      (super.noSuchMethod(
+            Invocation.getter(#secondaryMuscles),
+            returnValue: <_i10.Muscle>[],
+          )
           as List<_i10.Muscle>);
 
   @override
   _i11.ExerciseSubmissionApi get exerciseApiObject =>
       (super.noSuchMethod(
             Invocation.getter(#exerciseApiObject),
-            returnValue: _i8.dummyValue<_i11.ExerciseSubmissionApi>(
+            returnValue: _i7.dummyValue<_i11.ExerciseSubmissionApi>(
               this,
               Invocation.getter(#exerciseApiObject),
             ),
@@ -141,60 +161,70 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
           as _i11.ExerciseSubmissionApi);
 
   @override
-  set author(String? value) =>
-      super.noSuchMethod(Invocation.setter(#author, value), returnValueForMissingStub: null);
-
-  @override
-  set exerciseNameEn(String? value) => super.noSuchMethod(
-    Invocation.setter(#exerciseNameEn, value),
+  set author(String? _author) => super.noSuchMethod(
+    Invocation.setter(#author, _author),
     returnValueForMissingStub: null,
   );
 
   @override
-  set exerciseNameTrans(String? value) => super.noSuchMethod(
-    Invocation.setter(#exerciseNameTrans, value),
+  set exerciseNameEn(String? _exerciseNameEn) => super.noSuchMethod(
+    Invocation.setter(#exerciseNameEn, _exerciseNameEn),
     returnValueForMissingStub: null,
   );
 
   @override
-  set descriptionEn(String? value) =>
-      super.noSuchMethod(Invocation.setter(#descriptionEn, value), returnValueForMissingStub: null);
-
-  @override
-  set descriptionTrans(String? value) => super.noSuchMethod(
-    Invocation.setter(#descriptionTrans, value),
+  set exerciseNameTrans(String? _exerciseNameTrans) => super.noSuchMethod(
+    Invocation.setter(#exerciseNameTrans, _exerciseNameTrans),
     returnValueForMissingStub: null,
   );
 
   @override
-  set languageEn(_i12.Language? value) =>
-      super.noSuchMethod(Invocation.setter(#languageEn, value), returnValueForMissingStub: null);
-
-  @override
-  set languageTranslation(_i12.Language? value) => super.noSuchMethod(
-    Invocation.setter(#languageTranslation, value),
+  set descriptionEn(String? _descriptionEn) => super.noSuchMethod(
+    Invocation.setter(#descriptionEn, _descriptionEn),
     returnValueForMissingStub: null,
   );
 
   @override
-  set alternateNamesEn(List<String>? value) => super.noSuchMethod(
-    Invocation.setter(#alternateNamesEn, value),
+  set descriptionTrans(String? _descriptionTrans) => super.noSuchMethod(
+    Invocation.setter(#descriptionTrans, _descriptionTrans),
     returnValueForMissingStub: null,
   );
 
   @override
-  set alternateNamesTrans(List<String>? value) => super.noSuchMethod(
-    Invocation.setter(#alternateNamesTrans, value),
+  set languageEn(_i12.Language? _languageEn) => super.noSuchMethod(
+    Invocation.setter(#languageEn, _languageEn),
     returnValueForMissingStub: null,
   );
 
   @override
-  set category(_i13.ExerciseCategory? value) =>
-      super.noSuchMethod(Invocation.setter(#category, value), returnValueForMissingStub: null);
+  set languageTranslation(_i12.Language? _languageTranslation) => super.noSuchMethod(
+    Invocation.setter(#languageTranslation, _languageTranslation),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  set equipment(List<_i9.Equipment>? equipment) =>
-      super.noSuchMethod(Invocation.setter(#equipment, equipment), returnValueForMissingStub: null);
+  set alternateNamesEn(List<String>? _alternateNamesEn) => super.noSuchMethod(
+    Invocation.setter(#alternateNamesEn, _alternateNamesEn),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set alternateNamesTrans(List<String>? _alternateNamesTrans) => super.noSuchMethod(
+    Invocation.setter(#alternateNamesTrans, _alternateNamesTrans),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set category(_i13.ExerciseCategory? _category) => super.noSuchMethod(
+    Invocation.setter(#category, _category),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set equipment(List<_i9.Equipment>? equipment) => super.noSuchMethod(
+    Invocation.setter(#equipment, equipment),
+    returnValueForMissingStub: null,
+  );
 
   @override
   set variationConnectToExercise(int? value) => super.noSuchMethod(
@@ -225,18 +255,22 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
-  void clear() =>
-      super.noSuchMethod(Invocation.method(#clear, []), returnValueForMissingStub: null);
+  void clear() => super.noSuchMethod(
+    Invocation.method(#clear, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void addExerciseImages(List<_i7.ExerciseSubmissionImage>? images) => super.noSuchMethod(
+  void addExerciseImages(List<_i8.ExerciseSubmissionImage>? images) => super.noSuchMethod(
     Invocation.method(#addExerciseImages, [images]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeImage(String? path) =>
-      super.noSuchMethod(Invocation.method(#removeImage, [path]), returnValueForMissingStub: null);
+  void removeImage(String? path) => super.noSuchMethod(
+    Invocation.method(#removeImage, [path]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   _i14.Future<int> postExerciseToServer() =>
@@ -284,12 +318,16 @@ class MockAddExerciseProvider extends _i1.Mock implements _i6.AddExerciseProvide
   );
 
   @override
-  void dispose() =>
-      super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void notifyListeners() =>
-      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
+  void notifyListeners() => super.noSuchMethod(
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
 }
 
 /// A class which mocks [WgerBaseProvider].
@@ -317,23 +355,34 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
           as _i5.Client);
 
   @override
-  set auth(_i4.AuthProvider? value) =>
-      super.noSuchMethod(Invocation.setter(#auth, value), returnValueForMissingStub: null);
+  set auth(_i4.AuthProvider? _auth) => super.noSuchMethod(
+    Invocation.setter(#auth, _auth),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  set client(_i5.Client? value) =>
-      super.noSuchMethod(Invocation.setter(#client, value), returnValueForMissingStub: null);
+  set client(_i5.Client? _client) => super.noSuchMethod(
+    Invocation.setter(#client, _client),
+    returnValueForMissingStub: null,
+  );
 
   @override
   Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
       (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {#includeAuth: includeAuth}),
+            Invocation.method(#getDefaultHeaders, [], {
+              #includeAuth: includeAuth,
+            }),
             returnValue: <String, String>{},
           )
           as Map<String, String>);
 
   @override
-  Uri makeUrl(String? path, {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
+  Uri makeUrl(
+    String? path, {
+    int? id,
+    String? objectMethod,
+    Map<String, dynamic>? query,
+  }) =>
       (super.noSuchMethod(
             Invocation.method(
               #makeUrl,
@@ -368,18 +417,28 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
           as _i14.Future<List<dynamic>>);
 
   @override
-  _i14.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
+  _i14.Future<Map<String, dynamic>> post(
+    Map<String, dynamic>? data,
+    Uri? uri,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#post, [data, uri]),
-            returnValue: _i14.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+            returnValue: _i14.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
           )
           as _i14.Future<Map<String, dynamic>>);
 
   @override
-  _i14.Future<Map<String, dynamic>> patch(Map<String, dynamic>? data, Uri? uri) =>
+  _i14.Future<Map<String, dynamic>> patch(
+    Map<String, dynamic>? data,
+    Uri? uri,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#patch, [data, uri]),
-            returnValue: _i14.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+            returnValue: _i14.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
           )
           as _i14.Future<Map<String, dynamic>>);
 
@@ -388,7 +447,10 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
       (super.noSuchMethod(
             Invocation.method(#deleteRequest, [url, id]),
             returnValue: _i14.Future<_i5.Response>.value(
-              _FakeResponse_5(this, Invocation.method(#deleteRequest, [url, id])),
+              _FakeResponse_5(
+                this,
+                Invocation.method(#deleteRequest, [url, id]),
+              ),
             ),
           )
           as _i14.Future<_i5.Response>);

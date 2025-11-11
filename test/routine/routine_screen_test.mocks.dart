@@ -23,7 +23,6 @@ import 'package:wger/providers/base_provider.dart' as _i4;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
-// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
   _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
@@ -66,14 +65,14 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           as _i3.Client);
 
   @override
-  set auth(_i2.AuthProvider? value) => super.noSuchMethod(
-    Invocation.setter(#auth, value),
+  set auth(_i2.AuthProvider? _auth) => super.noSuchMethod(
+    Invocation.setter(#auth, _auth),
     returnValueForMissingStub: null,
   );
 
   @override
-  set client(_i3.Client? value) => super.noSuchMethod(
-    Invocation.setter(#client, value),
+  set client(_i3.Client? _client) => super.noSuchMethod(
+    Invocation.setter(#client, _client),
     returnValueForMissingStub: null,
   );
 
