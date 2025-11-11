@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart' as provider;
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gym_state.dart';
@@ -45,14 +44,16 @@ class GymMode extends ConsumerStatefulWidget {
 }
 
 class _GymModeState extends ConsumerState<GymMode> {
-  var _totalElements = 1;
-  var _totalPages = 1;
   late Future<int> _initData;
   bool _initialPageJumped = false;
-
-  /// Map with the first (navigation) page for each exercise
-  final Map<Exercise, int> _exercisePages = {};
   late final PageController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController(initialPage: 0);
+    _initData = _loadGymState();
+  }
 
   @override
   void dispose() {
@@ -60,86 +61,36 @@ class _GymModeState extends ConsumerState<GymMode> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _initData = _loadGymState();
-    _controller = PageController(initialPage: 0);
-    _calculatePages();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(gymStateProvider.notifier).setExercisePages(_exercisePages);
-    });
-  }
-
   Future<int> _loadGymState() async {
-    // Re-fetch the current routine data to ensure we have the latest session
-    // data since it is possible that the user created or deleted it from the
-    // web interface.
-    await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
+    await provider.Provider.of<RoutinesProvider>(context, listen: false).fetchAndSetRoutineFull(
       widget._dayDataGym.day!.routineId,
     );
     widget._logger.fine('Refreshed routine data');
 
-    final validUntil = ref.read(gymStateProvider).validUntil;
-    final currentPage = ref.read(gymStateProvider).currentPage;
-    final savedDayId = ref.read(gymStateProvider).dayId;
-    final newDayId = widget._dayDataGym.day!.id!;
-
-    final shouldReset = newDayId != savedDayId || validUntil.isBefore(DateTime.now());
-    if (shouldReset) {
-      widget._logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
-    }
-    final initialPage = shouldReset ? 0 : currentPage;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(gymStateProvider.notifier)
-        ..setDayId(newDayId)
-        ..setCurrentPage(initialPage);
-    });
+    final gymProvider = ref.read(gymStateProvider.notifier);
+    final initialPage = await gymProvider.initForDay(
+      widget._dayDataGym,
+      findExerciseById: (id) =>
+          provider.Provider.of<ExercisesProvider>(context, listen: false).findExerciseById(id),
+    );
 
     return initialPage;
   }
 
-  void _calculatePages() {
-    for (final slot in widget._dayDataGym.slots) {
-      _totalElements += slot.setConfigs.length;
-      // add 1 for each exercise
-      _totalPages += 1;
-      for (final config in slot.setConfigs) {
-        // add nrOfSets * 2, 1 for log page and 1 for timer
-        _totalPages += (config.nrOfSets! * 2).toInt();
-      }
-    }
-    _exercisePages.clear();
-    var currentPage = 1;
-
-    for (final slot in widget._dayDataGym.slots) {
-      var firstPage = true;
-      for (final config in slot.setConfigs) {
-        final exercise = context.read<ExercisesProvider>().findExerciseById(config.exerciseId);
-
-        if (firstPage) {
-          _exercisePages[exercise] = currentPage;
-          currentPage++;
-        }
-        currentPage += 2;
-        firstPage = false;
-      }
-    }
-  }
-
-  List<Widget> getContent() {
-    final state = ref.watch(gymStateProvider);
-    final exerciseProvider = context.read<ExercisesProvider>();
-    final routinesProvider = context.read<RoutinesProvider>();
+  List<Widget> _getContent(GymState state) {
+    final exerciseProvider = provider.Provider.of<ExercisesProvider>(context, listen: false);
+    final routinesProvider = provider.Provider.of<RoutinesProvider>(context, listen: false);
     var currentElement = 1;
     final List<Widget> out = [];
+
+    final totalElements = state.totalElements;
+    final totalPages = state.totalPages;
+    final exercisePages = state.exercisePages;
 
     for (final slotData in widget._dayDataGym.slots) {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
-        final ratioCompleted = currentElement / _totalElements;
+        final ratioCompleted = currentElement / totalElements;
         final exercise = exerciseProvider.findExerciseById(config.exerciseId);
         currentElement++;
 
@@ -149,8 +100,8 @@ class _GymModeState extends ConsumerState<GymMode> {
               _controller,
               exercise,
               ratioCompleted,
-              state.exercisePages,
-              _totalPages,
+              exercisePages,
+              totalPages,
             ),
           );
         }
@@ -163,25 +114,26 @@ class _GymModeState extends ConsumerState<GymMode> {
             exercise,
             routinesProvider.findById(widget._dayDataGym.day!.routineId),
             ratioCompleted,
-            state.exercisePages,
-            _totalPages,
+            exercisePages,
+            totalPages,
             widget._iteration,
           ),
         );
 
-        // If there is a rest time, add a countdown timer
-        if (config.restTime != null) {
-          out.add(
-            TimerCountdownWidget(
-              _controller,
-              config.restTime!.toInt(),
-              ratioCompleted,
-              state.exercisePages,
-              _totalPages,
-            ),
-          );
-        } else {
-          out.add(TimerWidget(_controller, ratioCompleted, state.exercisePages, _totalPages));
+        if (state.showTimerPages) {
+          if (config.restTime != null) {
+            out.add(
+              TimerCountdownWidget(
+                _controller,
+                config.restTime!.toInt(),
+                ratioCompleted,
+                exercisePages,
+                totalPages,
+              ),
+            );
+          } else {
+            out.add(TimerWidget(_controller, ratioCompleted, exercisePages, totalPages));
+          }
         }
 
         firstPage = false;
@@ -209,14 +161,16 @@ class _GymModeState extends ConsumerState<GymMode> {
           }
         });
 
+        final state = ref.watch(gymStateProvider);
+
         final List<Widget> children = [
-          StartPage(_controller, widget._dayDataDisplay, _exercisePages),
-          ...getContent(),
+          StartPage(_controller, widget._dayDataDisplay, state.exercisePages),
+          ..._getContent(state),
           SessionPage(
             context.read<RoutinesProvider>().findById(widget._dayDataGym.day!.routineId),
             _controller,
-            ref.read(gymStateProvider).startTime,
-            _exercisePages,
+            state.startTime,
+            state.exercisePages,
             dayId: widget._dayDataGym.day!.id!,
           ),
         ];
@@ -228,6 +182,7 @@ class _GymModeState extends ConsumerState<GymMode> {
 
             // Check if the last page is reached
             if (page == children.length - 1) {
+              widget._logger.finer('Last page reached, clearing gym state');
               ref.read(gymStateProvider.notifier).clear();
             }
           },
