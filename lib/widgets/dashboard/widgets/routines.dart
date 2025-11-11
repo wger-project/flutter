@@ -130,7 +130,7 @@ class DetailContentWidget extends StatelessWidget {
                       child: Text(
                         dayData.day == null || dayData.day!.isRest
                             ? AppLocalizations.of(context).restDay
-                            : dayData.day!.name,
+                            : dayData.day!.nameWithType,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -175,14 +175,19 @@ class DetailContentWidget extends StatelessWidget {
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(s.exercise
-                                          .getTranslation(
-                                              Localizations.localeOf(context).languageCode)
-                                          .name),
+                                      Text(
+                                        s.exercise
+                                            .getTranslation(
+                                              Localizations.localeOf(context).languageCode,
+                                            )
+                                            .name,
+                                      ),
                                       const SizedBox(width: 10),
                                       Expanded(
-                                        child:
-                                            MutedText(s.textRepr, overflow: TextOverflow.ellipsis),
+                                        child: MutedText(
+                                          s.textRepr,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ],
                                   ),

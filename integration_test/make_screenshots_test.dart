@@ -17,7 +17,7 @@ enum DeviceType {
   sevenInchScreenshots,
   tenInchScreenshots,
   tvScreenshots,
-  wearScreenshots
+  wearScreenshots,
 }
 
 final destination = DeviceType.phoneScreenshots.name;
@@ -42,7 +42,6 @@ Future<void> takeScreenshot(
 const languages = [
   // Note: it seems if too many languages are processed at once, some processes
   // disappear and no images are written. Doing this in smaller steps works fine
-
   'ar',
   'ca',
   'cs-CZ',

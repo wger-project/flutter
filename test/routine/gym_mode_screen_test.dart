@@ -60,8 +60,9 @@ void main() {
     when(mockRoutinesProvider.findRepetitionUnitById(1)).thenReturn(testRepetitionUnit1);
     when(mockRoutinesProvider.weightUnits).thenReturn(testWeightUnits);
     when(mockRoutinesProvider.findWeightUnitById(1)).thenReturn(testWeightUnit1);
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(any))
-        .thenAnswer((_) => Future.value(testRoutine));
+    when(
+      mockRoutinesProvider.fetchAndSetRoutineFull(any),
+    ).thenAnswer((_) => Future.value(testRoutine));
 
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
   });
@@ -96,10 +97,12 @@ void main() {
   testWidgets('Test the widgets on the gym mode screen', (WidgetTester tester) async {
     when(mockExerciseProvider.findExerciseById(1)).thenReturn(testExercises[0]);
     when(mockExerciseProvider.findExerciseById(6)).thenReturn(testExercises[5]);
-    when(mockExerciseProvider.findExercisesByVariationId(
-      null,
-      exerciseIdToExclude: anyNamed('exerciseIdToExclude'),
-    )).thenReturn([]);
+    when(
+      mockExerciseProvider.findExercisesByVariationId(
+        null,
+        exerciseIdToExclude: anyNamed('exerciseIdToExclude'),
+      ),
+    ).thenReturn([]);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
       await tester.pumpWidget(renderGymMode());

@@ -197,12 +197,16 @@ class _ImageFormState extends State<ImageForm> {
               _form.currentState!.save();
 
               if (widget._image.id == null) {
-                Provider.of<GalleryProvider>(context, listen: false)
-                    .addImage(widget._image, _file!);
+                Provider.of<GalleryProvider>(
+                  context,
+                  listen: false,
+                ).addImage(widget._image, _file!);
                 Navigator.of(context).pop();
               } else {
-                Provider.of<GalleryProvider>(context, listen: false)
-                    .editImage(widget._image, _file);
+                Provider.of<GalleryProvider>(
+                  context,
+                  listen: false,
+                ).editImage(widget._image, _file);
                 Navigator.of(context).pop();
               }
             },

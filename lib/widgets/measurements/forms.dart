@@ -284,13 +284,15 @@ class MeasurementEntryForm extends StatelessWidget {
                   ? await Provider.of<MeasurementProvider>(
                       context,
                       listen: false,
-                    ).addEntry(MeasurementEntry(
-                      id: _entryData['id'],
-                      category: _entryData['category'],
-                      date: _entryData['date'],
-                      value: _entryData['value'],
-                      notes: _entryData['notes'],
-                    ))
+                    ).addEntry(
+                      MeasurementEntry(
+                        id: _entryData['id'],
+                        category: _entryData['category'],
+                        date: _entryData['date'],
+                        value: _entryData['value'],
+                        notes: _entryData['notes'],
+                      ),
+                    )
                   : await Provider.of<MeasurementProvider>(
                       context,
                       listen: false,

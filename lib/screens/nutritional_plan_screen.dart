@@ -126,8 +126,10 @@ class NutritionalPlanScreen extends StatelessWidget {
                       );
                       break;
                     case NutritionalPlanOptions.delete:
-                      Provider.of<NutritionPlansProvider>(context, listen: false)
-                          .deletePlan(nutritionalPlan.id!);
+                      Provider.of<NutritionPlansProvider>(
+                        context,
+                        listen: false,
+                      ).deletePlan(nutritionalPlan.id!);
                       Navigator.of(context).pop();
                       break;
                   }
@@ -165,22 +167,22 @@ class NutritionalPlanScreen extends StatelessWidget {
             future: _loadFullPlan(context, nutritionalPlan.id!),
             builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
                 snapshot.connectionState == ConnectionState.waiting
-                    ? SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            const SizedBox(
-                              height: 200,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          ],
+                ? SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        const SizedBox(
+                          height: 200,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
-                      )
-                    : Consumer<NutritionPlansProvider>(
-                        builder: (context, value, child) =>
-                            NutritionalPlanDetailWidget(nutritionalPlan),
-                      ),
+                      ],
+                    ),
+                  )
+                : Consumer<NutritionPlansProvider>(
+                    builder: (context, value, child) =>
+                        NutritionalPlanDetailWidget(nutritionalPlan),
+                  ),
           ),
         ],
       ),

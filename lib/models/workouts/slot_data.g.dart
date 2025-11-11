@@ -16,7 +16,8 @@ SlotData _$SlotDataFromJson(Map<String, dynamic> json) {
     isSuperset: json['is_superset'] as bool,
     exerciseIds:
         (json['exercises'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
-    setConfigs: (json['sets'] as List<dynamic>?)
+    setConfigs:
+        (json['sets'] as List<dynamic>?)
             ?.map((e) => SetConfigData.fromJson(e as Map<String, dynamic>))
             .toList() ??
         const [],
@@ -24,8 +25,8 @@ SlotData _$SlotDataFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$SlotDataToJson(SlotData instance) => <String, dynamic>{
-      'comment': instance.comment,
-      'is_superset': instance.isSuperset,
-      'exercises': instance.exerciseIds,
-      'sets': instance.setConfigs,
-    };
+  'comment': instance.comment,
+  'is_superset': instance.isSuperset,
+  'exercises': instance.exerciseIds,
+  'sets': instance.setConfigs,
+};

@@ -52,8 +52,9 @@ void main() {
     mockRoutinesProvider = MockRoutinesProvider();
     when(mockRoutinesProvider.findById(any)).thenAnswer((_) => existingRoutine);
     when(mockRoutinesProvider.editRoutine(any)).thenAnswer((_) => Future.value(existingRoutine));
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(any))
-        .thenAnswer((_) => Future.value(existingRoutine));
+    when(
+      mockRoutinesProvider.fetchAndSetRoutineFull(any),
+    ).thenAnswer((_) => Future.value(existingRoutine));
   });
 
   Widget renderWidget(Routine routine, {locale = 'en'}) {
@@ -115,9 +116,11 @@ void main() {
 
   testWidgets('Test editing an existing routine - server error', (WidgetTester tester) async {
     // Arrange
-    when(mockRoutinesProvider.editRoutine(any)).thenThrow(WgerHttpException.fromMap({
-      'name': ['The name is not valid'],
-    }));
+    when(mockRoutinesProvider.editRoutine(any)).thenThrow(
+      WgerHttpException.fromMap({
+        'name': ['The name is not valid'],
+      }),
+    );
 
     // Act
     await tester.pumpWidget(renderWidget(existingRoutine));
@@ -185,9 +188,11 @@ void main() {
 
   testWidgets('Test creating a new routine - server error', (WidgetTester tester) async {
     // Arrange
-    when(mockRoutinesProvider.addRoutine(any)).thenThrow(WgerHttpException.fromMap({
-      'name': ['The name is not valid'],
-    }));
+    when(mockRoutinesProvider.addRoutine(any)).thenThrow(
+      WgerHttpException.fromMap({
+        'name': ['The name is not valid'],
+      }),
+    );
 
     // Act
     await tester.pumpWidget(renderWidget(newRoutine));

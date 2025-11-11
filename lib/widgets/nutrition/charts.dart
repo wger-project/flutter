@@ -71,17 +71,21 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
 
     // paint a surplus
     if (val > plan) {
-      return Stack(children: [
-        segment(normWidth * val / plan, COLOR_SURPLUS),
-        segment(normWidth, LIST_OF_COLORS8[0]),
-      ]);
+      return Stack(
+        children: [
+          segment(normWidth * val / plan, COLOR_SURPLUS),
+          segment(normWidth, LIST_OF_COLORS8[0]),
+        ],
+      );
     }
 
     // paint a deficit
-    return Stack(children: [
-      segment(normWidth, Theme.of(context).colorScheme.surface),
-      segment(normWidth * val / plan, LIST_OF_COLORS8[0]),
-    ]);
+    return Stack(
+      children: [
+        segment(normWidth, Theme.of(context).colorScheme.surface),
+        segment(normWidth * val / plan, LIST_OF_COLORS8[0]),
+      ],
+    );
   }
 
   @override
@@ -90,87 +94,102 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
     final goals = plan.nutritionalGoals;
     final today = plan.loggedNutritionalValuesToday;
 
-    return LayoutBuilder(builder: (context, constraints) {
-      // if any of the bars goes over 100%, find the one that goes over the most
-      // that one needs the most horizontal space to show how much it goes over,
-      // and therefore reduces the width of "100%" the most, and this width we want
-      // to be consistent for all other bars.
-      // if none goes over, 100% means fill all available space
-      final maxVal = [
-        1.0,
-        if (goals.energy != null && goals.energy! > 0) today.energy / goals.energy!,
-        if (goals.protein != null && goals.protein! > 0) today.protein / goals.protein!,
-        if (goals.carbohydrates != null && goals.carbohydrates! > 0)
-          today.carbohydrates / goals.carbohydrates!,
-        if (goals.fat != null && goals.fat! > 0) today.fat / goals.fat!,
-        if (goals.fiber != null && goals.fiber! > 0) today.fiber / goals.fiber!,
-      ].reduce(max);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // if any of the bars goes over 100%, find the one that goes over the most
+        // that one needs the most horizontal space to show how much it goes over,
+        // and therefore reduces the width of "100%" the most, and this width we want
+        // to be consistent for all other bars.
+        // if none goes over, 100% means fill all available space
+        final maxVal = [
+          1.0,
+          if (goals.energy != null && goals.energy! > 0) today.energy / goals.energy!,
+          if (goals.protein != null && goals.protein! > 0) today.protein / goals.protein!,
+          if (goals.carbohydrates != null && goals.carbohydrates! > 0)
+            today.carbohydrates / goals.carbohydrates!,
+          if (goals.fat != null && goals.fat! > 0) today.fat / goals.fat!,
+          if (goals.fiber != null && goals.fiber! > 0) today.fiber / goals.fiber!,
+        ].reduce(max);
 
-      final normWidth = constraints.maxWidth / maxVal;
+        final normWidth = constraints.maxWidth / maxVal;
 
-      String fmtMacro(String name, double today, double? goal, String unit) {
-        return '$name: ${today.toStringAsFixed(0)}${goal == null ? '' : ' / ${goal.toStringAsFixed(0)}'} $unit';
-      }
+        String fmtMacro(String name, double today, double? goal, String unit) {
+          return '$name: ${today.toStringAsFixed(0)}${goal == null ? '' : ' / ${goal.toStringAsFixed(0)}'} $unit';
+        }
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(fmtMacro(
-            AppLocalizations.of(context).energy,
-            today.energy,
-            goals.energy,
-            AppLocalizations.of(context).kcal,
-          )),
-          const SizedBox(height: 2),
-          _diyGauge(context, normWidth, goals.energy, today.energy),
-          const SizedBox(height: 8),
-          Text(fmtMacro(
-            AppLocalizations.of(context).protein,
-            today.protein,
-            goals.protein,
-            AppLocalizations.of(context).g,
-          )),
-          const SizedBox(height: 2),
-          _diyGauge(context, normWidth, goals.protein, today.protein),
-          const SizedBox(height: 8),
-          Text(fmtMacro(
-            AppLocalizations.of(context).carbohydrates,
-            today.carbohydrates,
-            goals.carbohydrates,
-            AppLocalizations.of(context).g,
-          )),
-          const SizedBox(height: 2),
-          _diyGauge(
-            context,
-            normWidth,
-            goals.carbohydrates,
-            today.carbohydrates,
-          ),
-          const SizedBox(height: 8),
-          Text(fmtMacro(
-            AppLocalizations.of(context).fat,
-            today.fat,
-            goals.fat,
-            AppLocalizations.of(context).g,
-          )),
-          const SizedBox(height: 2),
-          _diyGauge(context, normWidth, goals.fat, today.fat),
-          // optionally display the advanced macro goals:
-          if (goals.fiber != null)
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const SizedBox(height: 8),
-              Text(fmtMacro(
-                AppLocalizations.of(context).fiber,
-                today.fiber,
-                goals.fiber,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              fmtMacro(
+                AppLocalizations.of(context).energy,
+                today.energy,
+                goals.energy,
+                AppLocalizations.of(context).kcal,
+              ),
+            ),
+            const SizedBox(height: 2),
+            _diyGauge(context, normWidth, goals.energy, today.energy),
+            const SizedBox(height: 8),
+            Text(
+              fmtMacro(
+                AppLocalizations.of(context).protein,
+                today.protein,
+                goals.protein,
                 AppLocalizations.of(context).g,
-              )),
-              const SizedBox(height: 2),
-              _diyGauge(context, normWidth, goals.fiber, today.fiber),
-            ]),
-        ],
-      );
-    });
+              ),
+            ),
+            const SizedBox(height: 2),
+            _diyGauge(context, normWidth, goals.protein, today.protein),
+            const SizedBox(height: 8),
+            Text(
+              fmtMacro(
+                AppLocalizations.of(context).carbohydrates,
+                today.carbohydrates,
+                goals.carbohydrates,
+                AppLocalizations.of(context).g,
+              ),
+            ),
+            const SizedBox(height: 2),
+            _diyGauge(
+              context,
+              normWidth,
+              goals.carbohydrates,
+              today.carbohydrates,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              fmtMacro(
+                AppLocalizations.of(context).fat,
+                today.fat,
+                goals.fat,
+                AppLocalizations.of(context).g,
+              ),
+            ),
+            const SizedBox(height: 2),
+            _diyGauge(context, normWidth, goals.fat, today.fat),
+            // optionally display the advanced macro goals:
+            if (goals.fiber != null)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 8),
+                  Text(
+                    fmtMacro(
+                      AppLocalizations.of(context).fiber,
+                      today.fiber,
+                      goals.fiber,
+                      AppLocalizations.of(context).g,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  _diyGauge(context, normWidth, goals.fiber, today.fiber),
+                ],
+              ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -227,16 +246,19 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            (AppLocalizations.of(context).protein, LIST_OF_COLORS3[1]),
-            (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
-            (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2]),
-          ]
-              .map((e) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Indicator(color: e.$2, text: e.$1, isSquare: true),
-                  ))
-              .toList(),
+          children:
+              [
+                    (AppLocalizations.of(context).protein, LIST_OF_COLORS3[1]),
+                    (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
+                    (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2]),
+                  ]
+                  .map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Indicator(color: e.$2, text: e.$1, isSquare: true),
+                    ),
+                  )
+                  .toList(),
         ),
         const SizedBox(width: 28),
       ],
@@ -433,21 +455,22 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                 spacing: 10.0,
                 runSpacing: 10.0,
                 alignment: WrapAlignment.center,
-                children: [
-                  (AppLocalizations.of(context).deficit, colorPlanned),
-                  (AppLocalizations.of(context).surplus, COLOR_SURPLUS),
-                  (AppLocalizations.of(context).today, colorLoggedToday),
-                  (AppLocalizations.of(context).weekAverage, colorLogged7Day),
-                ]
-                    .map(
-                      (e) => Indicator(
-                        text: e.$1,
-                        color: e.$2,
-                        isSquare: true,
-                        marginRight: 0,
-                      ),
-                    )
-                    .toList(),
+                children:
+                    [
+                          (AppLocalizations.of(context).deficit, colorPlanned),
+                          (AppLocalizations.of(context).surplus, COLOR_SURPLUS),
+                          (AppLocalizations.of(context).today, colorLoggedToday),
+                          (AppLocalizations.of(context).weekAverage, colorLogged7Day),
+                        ]
+                        .map(
+                          (e) => Indicator(
+                            text: e.$1,
+                            color: e.$2,
+                            isSquare: true,
+                            marginRight: 0,
+                          ),
+                        )
+                        .toList(),
               ),
             ),
           ],
@@ -463,8 +486,8 @@ class MealDiaryBarChartWidget extends StatefulWidget {
     super.key,
     required NutritionalValues logged,
     required NutritionalValues planned,
-  })  : _logged = logged,
-        _planned = planned;
+  }) : _logged = logged,
+       _planned = planned;
 
   final NutritionalValues _logged;
   final NutritionalValues _planned;
@@ -489,12 +512,12 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
   }
 
   Widget leftTitles(double value, TitleMeta meta) => SideTitleWidget(
-        meta: meta,
-        child: Text(
-          AppLocalizations.of(context).percentValue(value.toStringAsFixed(0)),
-          style: const TextStyle(fontSize: 10),
-        ),
-      );
+    meta: meta,
+    child: Text(
+      AppLocalizations.of(context).percentValue(value.toStringAsFixed(0)),
+      style: const TextStyle(fontSize: 10),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {

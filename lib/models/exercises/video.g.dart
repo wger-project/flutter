@@ -21,7 +21,7 @@ Video _$VideoFromJson(Map<String, dynamic> json) {
       'codec',
       'codec_long',
       'license',
-      'license_author'
+      'license_author',
     ],
   );
   return Video(
@@ -41,16 +41,16 @@ Video _$VideoFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
-      'id': instance.id,
-      'uuid': instance.uuid,
-      'video': instance.url,
-      'exercise': instance.exerciseId,
-      'size': instance.size,
-      'duration': numToString(instance.duration),
-      'width': instance.width,
-      'height': instance.height,
-      'codec': instance.codec,
-      'codec_long': instance.codecLong,
-      'license': instance.license,
-      'license_author': instance.licenseAuthor,
-    };
+  'id': instance.id,
+  'uuid': instance.uuid,
+  'video': instance.url,
+  'exercise': instance.exerciseId,
+  'size': instance.size,
+  'duration': numToString(instance.duration),
+  'width': instance.width,
+  'height': instance.height,
+  'codec': instance.codec,
+  'codec_long': instance.codecLong,
+  'license': instance.license,
+  'license_author': instance.licenseAuthor,
+};

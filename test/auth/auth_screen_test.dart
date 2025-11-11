@@ -94,21 +94,26 @@ void main() {
       buildSignature: 'buildSignature',
     );
 
-    when(mockClient.post(
-      tLogin,
-      headers: anyNamed('headers'),
-      body: anyNamed('body'),
-    )).thenAnswer((_) => Future(() => Response(json.encode(responseLoginOk), 200)));
+    when(
+      mockClient.post(
+        tLogin,
+        headers: anyNamed('headers'),
+        body: anyNamed('body'),
+      ),
+    ).thenAnswer((_) => Future(() => Response(json.encode(responseLoginOk), 200)));
 
     when(mockClient.get(any)).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
-    when(mockClient.get(any, headers: anyNamed('headers')))
-        .thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
+    when(
+      mockClient.get(any, headers: anyNamed('headers')),
+    ).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
 
-    when(mockClient.post(
-      tRegistration,
-      headers: anyNamed('headers'),
-      body: anyNamed('body'),
-    )).thenAnswer((_) => Future(() => Response(json.encode(responseRegistrationOk), 201)));
+    when(
+      mockClient.post(
+        tRegistration,
+        headers: anyNamed('headers'),
+        body: anyNamed('body'),
+      ),
+    ).thenAnswer((_) => Future(() => Response(json.encode(responseRegistrationOk), 201)));
   });
 
   group('Login mode', () {
@@ -147,11 +152,13 @@ void main() {
       expect(find.byKey(const ValueKey('inputApiToken')), findsNothing);
       expect(find.textContaining('An Error Occurred'), findsNothing);
       verify(mockClient.get(any));
-      verify(mockClient.post(
-        tLogin,
-        headers: anyNamed('headers'),
-        body: json.encode({'username': 'testuser', 'password': '123456789'}),
-      ));
+      verify(
+        mockClient.post(
+          tLogin,
+          headers: anyNamed('headers'),
+          body: json.encode({'username': 'testuser', 'password': '123456789'}),
+        ),
+      );
     });
 
     testWidgets('Login - wrong username & password', (WidgetTester tester) async {
@@ -161,11 +168,13 @@ void main() {
       final response = {
         'non_field_errors': ['Username or password unknown'],
       };
-      when(mockClient.post(
-        tLogin,
-        headers: anyNamed('headers'),
-        body: anyNamed('body'),
-      )).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
+      when(
+        mockClient.post(
+          tLogin,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
 
       await tester.pumpWidget(getWidget());
 
@@ -178,11 +187,13 @@ void main() {
       // Assert
       expect(find.textContaining('Non field errors'), findsOne);
       expect(find.textContaining('Username or password unknown'), findsOne);
-      verify(mockClient.post(
-        tLogin,
-        headers: anyNamed('headers'),
-        body: json.encode({'username': 'testuser', 'password': '123456789'}),
-      ));
+      verify(
+        mockClient.post(
+          tLogin,
+          headers: anyNamed('headers'),
+          body: json.encode({'username': 'testuser', 'password': '123456789'}),
+        ),
+      );
     });
 
     testWidgets('Login - with API token - happy path', (WidgetTester tester) async {
@@ -207,20 +218,26 @@ void main() {
       expect(find.byKey(const Key('inputPassword')), findsNothing);
       expect(find.textContaining('An Error Occurred'), findsNothing);
 
-      verify(mockClient.get(
-        tProfileCheck,
-        headers: argThat(
-          predicate((headers) =>
-              headers is Map<String, String> &&
-              headers['authorization'] == 'Token 1234567890abcdef1234567890abcdef12345678'),
-          named: 'headers',
+      verify(
+        mockClient.get(
+          tProfileCheck,
+          headers: argThat(
+            predicate(
+              (headers) =>
+                  headers is Map<String, String> &&
+                  headers['authorization'] == 'Token 1234567890abcdef1234567890abcdef12345678',
+            ),
+            named: 'headers',
+          ),
         ),
-      ));
-      verifyNever(mockClient.post(
-        any,
-        headers: anyNamed('headers'),
-        body: anyNamed('body'),
-      ));
+      );
+      verifyNever(
+        mockClient.post(
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      );
     });
 
     testWidgets('Login - with API token - wrong key', (WidgetTester tester) async {
@@ -228,8 +245,9 @@ void main() {
       final response = {
         'detail': ['Invalid token'],
       };
-      when(mockClient.get(tProfileCheck, headers: anyNamed('headers')))
-          .thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
+      when(
+        mockClient.get(tProfileCheck, headers: anyNamed('headers')),
+      ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
       await tester.pumpWidget(getWidget());
 
       // Act
@@ -247,20 +265,26 @@ void main() {
       // Assert
       expect(find.textContaining('Detail'), findsOne);
       expect(find.textContaining('Invalid token'), findsOne);
-      verify(mockClient.get(
-        tProfileCheck,
-        headers: argThat(
-          predicate((headers) =>
-              headers is Map<String, String> &&
-              headers['authorization'] == 'Token 31e2ea0322c07b9df583a9b6d1e794f7139e78d4'),
-          named: 'headers',
+      verify(
+        mockClient.get(
+          tProfileCheck,
+          headers: argThat(
+            predicate(
+              (headers) =>
+                  headers is Map<String, String> &&
+                  headers['authorization'] == 'Token 31e2ea0322c07b9df583a9b6d1e794f7139e78d4',
+            ),
+            named: 'headers',
+          ),
         ),
-      ));
-      verifyNever(mockClient.post(
-        any,
-        headers: anyNamed('headers'),
-        body: anyNamed('body'),
-      ));
+      );
+      verifyNever(
+        mockClient.post(
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      );
     });
   });
 
@@ -309,11 +333,13 @@ void main() {
 
       // Assert
       expect(find.textContaining('An Error Occurred'), findsNothing);
-      verify(mockClient.post(
-        tRegistration,
-        headers: anyNamed('headers'),
-        body: json.encode({'username': 'testuser', 'password': '123456789'}),
-      ));
+      verify(
+        mockClient.post(
+          tRegistration,
+          headers: anyNamed('headers'),
+          body: json.encode({'username': 'testuser', 'password': '123456789'}),
+        ),
+      );
     });
 
     testWidgets('Registration - password problems', (WidgetTester tester) async {
@@ -328,11 +354,13 @@ void main() {
         ],
       };
 
-      when(mockClient.post(
-        tRegistration,
-        headers: anyNamed('headers'),
-        body: anyNamed('body'),
-      )).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
+      when(
+        mockClient.post(
+          tRegistration,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
       await tester.pumpWidget(getWidget());
 
       // Act
@@ -348,11 +376,13 @@ void main() {
       expect(find.textContaining('This password is entirely numeric'), findsOne);
       expect(find.textContaining('This field must be unique'), findsOne);
 
-      verify(mockClient.post(
-        tRegistration,
-        headers: anyNamed('headers'),
-        body: json.encode({'username': 'testuser', 'password': '123456789'}),
-      ));
+      verify(
+        mockClient.post(
+          tRegistration,
+          headers: anyNamed('headers'),
+          body: json.encode({'username': 'testuser', 'password': '123456789'}),
+        ),
+      );
     });
   });
 }

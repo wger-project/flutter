@@ -1,12 +1,15 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/providers/add_exercise.dart';
+import 'package:wger/providers/user.dart';
+import 'package:wger/widgets/add_exercise/image_details_form.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
-import 'package:wger/widgets/add_exercise/image_details_form.dart';
 
 /// Step 5 of exercise creation wizard - Image upload with license metadata
 ///
@@ -21,6 +24,7 @@ import 'package:wger/widgets/add_exercise/image_details_form.dart';
 /// 4. Final upload happens in Step 6 when user clicks "Submit"
 class Step5Images extends StatefulWidget {
   final GlobalKey<FormState> formkey;
+
   const Step5Images({required this.formkey});
 
   @override
@@ -30,7 +34,7 @@ class Step5Images extends StatefulWidget {
 class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin {
   /// Currently selected image waiting for metadata input
   /// When non-null, ImageDetailsForm is displayed instead of image picker
-  File? _currentImageToAdd;
+  ExerciseSubmissionImage? _currentImageToAdd;
 
   /// Show dialog to choose between Camera and Gallery
   Future<void> _showImageSourceDialog(BuildContext context) async {
@@ -72,6 +76,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
   ///
   /// [pickFromCamera] - If true, opens camera; otherwise opens gallery
   void _pickAndShowImageDetails(BuildContext context, {bool pickFromCamera = false}) async {
+    final userProvider = context.read<UserProvider>();
     final imagePicker = ImagePicker();
 
     XFile? selectedImage;
@@ -111,7 +116,10 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
 
       // Show metadata collection form for valid image
       setState(() {
-        _currentImageToAdd = imageFile;
+        _currentImageToAdd = ExerciseSubmissionImage(
+          imageFile: imageFile,
+          author: userProvider.profile?.username ?? '',
+        );
       });
     }
   }
@@ -124,19 +132,11 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
   ///
   /// [image] - The image file to add
   /// [details] - Map containing license fields (license_title, license_author, etc.)
-  void _addImageWithDetails(File image, Map<String, String> details) {
+  void _addImageWithDetails(ExerciseSubmissionImage image) {
     final provider = context.read<AddExerciseProvider>();
 
     // Store image with metadata - actual upload happens in addExercise()
-    provider.addExerciseImages(
-      [image],
-      title: details['license_title'],
-      author: details['license_author'],
-      authorUrl: details['license_author_url'],
-      sourceUrl: details['license_object_url'],
-      derivativeSourceUrl: details['license_derivative_source_url'],
-      style: details['style'] ?? '1',
-    );
+    provider.addExerciseImages([image]);
 
     // Reset form state - image is now visible in preview list
     setState(() {
@@ -171,7 +171,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
           // Metadata collection form - shown when image is selected
           if (_currentImageToAdd != null)
             ImageDetailsForm(
-              imageFile: _currentImageToAdd!,
+              submissionImage: _currentImageToAdd!,
               onAdd: _addImageWithDetails,
               onCancel: _cancelImageAdd,
             ),

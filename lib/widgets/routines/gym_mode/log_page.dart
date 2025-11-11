@@ -28,6 +28,7 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/configure_plates_screen.dart';
@@ -44,34 +45,32 @@ class LogPage extends ConsumerStatefulWidget {
   final SetConfigData _configData;
   final SlotData _slotData;
   final Exercise _exercise;
-  final Routine _workoutPlan;
+  final Routine _routine;
   final double _ratioCompleted;
   final Map<Exercise, int> _exercisePages;
   final Log _log;
+  final int _totalPages;
 
   LogPage(
     this._controller,
     this._configData,
     this._slotData,
     this._exercise,
-    this._workoutPlan,
+    this._routine,
     this._ratioCompleted,
     this._exercisePages,
+    this._totalPages,
     int? iteration,
   ) : _log = Log.fromSetConfigData(_configData)
-          ..routineId = _workoutPlan.id!
-          ..iteration = iteration;
+        ..routineId = _routine.id!
+        ..iteration = iteration;
 
   @override
   _LogPageState createState() => _LogPageState();
 }
 
 class _LogPageState extends ConsumerState<LogPage> {
-  final _form = GlobalKey<FormState>();
-  final _repetitionsController = TextEditingController();
-  final _weightController = TextEditingController();
-  var _detailed = false;
-  bool _isSaving = false;
+  final GlobalKey<_LogFormWidgetState> _logFormKey = GlobalKey<_LogFormWidgetState>();
 
   late FocusNode focusNode;
 
@@ -79,222 +78,64 @@ class _LogPageState extends ConsumerState<LogPage> {
   void initState() {
     super.initState();
     focusNode = FocusNode();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final locale = Localizations.localeOf(context).toString();
-      final numberFormat = NumberFormat.decimalPattern(locale);
-
-      if (widget._configData.repetitions != null) {
-        _repetitionsController.text = numberFormat.format(widget._configData.repetitions);
-      }
-
-      if (widget._configData.weight != null) {
-        _weightController.text = numberFormat.format(widget._configData.weight);
-      }
-    });
   }
 
   @override
   void dispose() {
     focusNode.dispose();
-    _repetitionsController.dispose();
-    _weightController.dispose();
     super.dispose();
-  }
-
-  Widget getForm() {
-    return Form(
-      key: _form,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            AppLocalizations.of(context).newEntry,
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          if (!_detailed)
-            Row(
-              children: [
-                Flexible(
-                  child: LogsRepsWidget(
-                    controller: _repetitionsController,
-                    configData: widget._configData,
-                    focusNode: focusNode,
-                    log: widget._log,
-                    setStateCallback: (fn) {
-                      setState(fn);
-                    },
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: LogsWeightWidget(
-                    controller: _weightController,
-                    configData: widget._configData,
-                    focusNode: focusNode,
-                    log: widget._log,
-                    setStateCallback: (fn) {
-                      setState(fn);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          if (_detailed)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: LogsRepsWidget(
-                    controller: _repetitionsController,
-                    configData: widget._configData,
-                    focusNode: focusNode,
-                    log: widget._log,
-                    setStateCallback: (fn) {
-                      setState(fn);
-                    },
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: RepetitionUnitInputWidget(
-                    widget._log.repetitionsUnitId,
-                    onChanged: (v) => {},
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-            ),
-          if (_detailed)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: LogsWeightWidget(
-                    controller: _weightController,
-                    configData: widget._configData,
-                    focusNode: focusNode,
-                    log: widget._log,
-                    setStateCallback: (fn) {
-                      setState(fn);
-                    },
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: WeightUnitInputWidget(widget._log.weightUnitId, onChanged: (v) => {}),
-                ),
-                const SizedBox(width: 8),
-              ],
-            ),
-          if (_detailed)
-            RiRInputWidget(
-              widget._log.rir,
-              onChanged: (value) {
-                if (value == '') {
-                  widget._log.rir = null;
-                } else {
-                  widget._log.rir = num.parse(value);
-                }
-              },
-            ),
-          SwitchListTile(
-            dense: true,
-            title: Text(AppLocalizations.of(context).setUnitsAndRir),
-            value: _detailed,
-            onChanged: (value) {
-              setState(() {
-                _detailed = !_detailed;
-              });
-            },
-          ),
-          FilledButton(
-            onPressed: _isSaving
-                ? null
-                : () async {
-                    // Validate and save the current values to the weightEntry
-                    final isValid = _form.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    _isSaving = true;
-                    _form.currentState!.save();
-
-                    // Save the entry on the server
-                    try {
-                      await provider.Provider.of<RoutinesProvider>(
-                        context,
-                        listen: false,
-                      ).addLog(widget._log);
-
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: const Duration(seconds: 2), // default is 4
-                            content: Text(
-                              AppLocalizations.of(context).successfullySaved,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
-                      }
-                      widget._controller.nextPage(
-                        duration: DEFAULT_ANIMATION_DURATION,
-                        curve: DEFAULT_ANIMATION_CURVE,
-                      );
-                      _isSaving = false;
-                    } on WgerHttpException {
-                      _isSaving = false;
-
-                      rethrow;
-                    }
-                  },
-            child:
-                _isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         NavigationHeader(
           widget._exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           widget._controller,
+          totalPages: widget._totalPages,
           exercisePages: widget._exercisePages,
         ),
 
         Container(
-          color: Theme.of(context).colorScheme.onInverseSurface,
+          color: theme.colorScheme.onInverseSurface,
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Center(
-            child: Text(
-              widget._configData.textRepr,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(color: Theme.of(context).colorScheme.primary),
-              textAlign: TextAlign.center,
+            child: Column(
+              children: [
+                Text(
+                  widget._configData.textRepr,
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                if (widget._configData.type != SlotEntryType.normal)
+                  Text(
+                    widget._configData.type.name.toUpperCase(),
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+              ],
             ),
           ),
         ),
+        if (widget._log.exercise.showPlateCalculator) const LogsPlatesWidget(),
         if (widget._slotData.comment.isNotEmpty)
           Text(widget._slotData.comment, textAlign: TextAlign.center),
-        // Only show calculator for barbell
-        if (widget._log.exercise.equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL))
-          const LogsPlatesWidget(),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._workoutPlan.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
+          child: (widget._routine.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
               ? LogsPastLogsWidget(
-                  weightController: _weightController,
-                  repetitionsController: _repetitionsController,
                   log: widget._log,
-                  pastLogs: widget._workoutPlan.filterLogsByExercise(widget._exercise.id!),
+                  pastLogs: widget._routine.filterLogsByExercise(widget._exercise.id!),
+                  onCopy: (pastLog) {
+                    _logFormKey.currentState?.copyFromPastLog(pastLog);
+                  },
                   setStateCallback: (fn) {
                     setState(fn);
                   },
@@ -309,7 +150,13 @@ class _LogPageState extends ConsumerState<LogPage> {
             // color: Theme.of(context).secondaryHeaderColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
-              child: getForm(),
+              child: LogFormWidget(
+                key: _logFormKey,
+                controller: widget._controller,
+                configData: widget._configData,
+                log: widget._log,
+                focusNode: focusNode,
+              ),
             ),
           ),
         ),
@@ -434,7 +281,6 @@ class LogsRepsWidget extends StatelessWidget {
               _logger.info('Saving new reps value: $newValue');
               setStateCallback(() {
                 log.repetitions = numberFormat.parse(newValue!);
-                // focusNode.unfocus();
               });
             },
             validator: (value) {
@@ -499,7 +345,9 @@ class LogsWeightWidget extends ConsumerWidget {
                 setStateCallback(() {
                   log.weight = newValue;
                   controller.text = numberFormat.format(newValue);
-                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                  ref
+                      .read(plateCalculatorProvider.notifier)
+                      .setWeight(
                         controller.text == '' ? 0 : newValue,
                       );
                 });
@@ -519,7 +367,9 @@ class LogsWeightWidget extends ConsumerWidget {
                 final newValue = numberFormat.parse(value);
                 setStateCallback(() {
                   log.weight = newValue;
-                  ref.read(plateCalculatorProvider.notifier).setWeight(
+                  ref
+                      .read(plateCalculatorProvider.notifier)
+                      .setWeight(
                         controller.text == '' ? 0 : numberFormat.parse(controller.text),
                       );
                 });
@@ -548,7 +398,9 @@ class LogsWeightWidget extends ConsumerWidget {
               setStateCallback(() {
                 log.weight = newValue;
                 controller.text = numberFormat.format(newValue);
-                ref.read(plateCalculatorProvider.notifier).setWeight(
+                ref
+                    .read(plateCalculatorProvider.notifier)
+                    .setWeight(
                       controller.text == '' ? 0 : newValue,
                     );
               });
@@ -563,25 +415,21 @@ class LogsWeightWidget extends ConsumerWidget {
 }
 
 class LogsPastLogsWidget extends StatelessWidget {
-  final TextEditingController weightController;
-  final TextEditingController repetitionsController;
   final Log log;
   final List<Log> pastLogs;
+  final void Function(Log pastLog) onCopy;
   final void Function(VoidCallback fn) setStateCallback;
 
   const LogsPastLogsWidget({
     super.key,
-    required this.weightController,
-    required this.repetitionsController,
     required this.log,
     required this.pastLogs,
+    required this.onCopy,
     required this.setStateCallback,
   });
 
   @override
   Widget build(BuildContext context) {
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: ListView(
@@ -600,26 +448,253 @@ class LogsPastLogsWidget extends StatelessWidget {
               trailing: const Icon(Icons.copy),
               onTap: () {
                 setStateCallback(() {
-                  // Text field
-                  repetitionsController.text =
-                      pastLog.repetitions != null ? numberFormat.format(pastLog.repetitions) : '';
-                  weightController.text =
-                      pastLog.weight != null ? numberFormat.format(pastLog.weight) : '';
-
-                  // Drop downs
                   log.rir = pastLog.rir;
                   log.repetitionUnit = pastLog.repetitionsUnitObj;
                   log.weightUnit = pastLog.weightUnitObj;
 
+                  onCopy(pastLog);
+
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(AppLocalizations.of(context).dataCopied),
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context).dataCopied),
+                    ),
+                  );
                 });
               },
               contentPadding: const EdgeInsets.symmetric(horizontal: 40),
             );
           }),
+        ],
+      ),
+    );
+  }
+}
+
+class LogFormWidget extends ConsumerStatefulWidget {
+  final PageController controller;
+  final SetConfigData configData;
+  final Log log;
+  final FocusNode focusNode;
+
+  const LogFormWidget({
+    super.key,
+    required this.controller,
+    required this.configData,
+    required this.log,
+    required this.focusNode,
+  });
+
+  @override
+  _LogFormWidgetState createState() => _LogFormWidgetState();
+}
+
+class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
+  final _form = GlobalKey<FormState>();
+  var _detailed = false;
+  bool _isSaving = false;
+
+  late final TextEditingController _repetitionsController;
+  late final TextEditingController _weightController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _repetitionsController = TextEditingController();
+    _weightController = TextEditingController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final locale = Localizations.localeOf(context).toString();
+      final numberFormat = NumberFormat.decimalPattern(locale);
+
+      if (widget.configData.repetitions != null) {
+        _repetitionsController.text = numberFormat.format(widget.configData.repetitions);
+      }
+
+      if (widget.configData.weight != null) {
+        _weightController.text = numberFormat.format(widget.configData.weight);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _repetitionsController.dispose();
+    _weightController.dispose();
+    super.dispose();
+  }
+
+  void copyFromPastLog(Log pastLog) {
+    final locale = Localizations.localeOf(context).toString();
+    final numberFormat = NumberFormat.decimalPattern(locale);
+
+    setState(() {
+      _repetitionsController.text = pastLog.repetitions != null
+          ? numberFormat.format(pastLog.repetitions)
+          : '';
+      _weightController.text = pastLog.weight != null ? numberFormat.format(pastLog.weight) : '';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    return Form(
+      key: _form,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            i18n.newEntry,
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          if (!_detailed)
+            Row(
+              children: [
+                Flexible(
+                  child: LogsRepsWidget(
+                    controller: _repetitionsController,
+                    configData: widget.configData,
+                    focusNode: widget.focusNode,
+                    log: widget.log,
+                    setStateCallback: (fn) {
+                      setState(fn);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: LogsWeightWidget(
+                    controller: _weightController,
+                    configData: widget.configData,
+                    focusNode: widget.focusNode,
+                    log: widget.log,
+                    setStateCallback: (fn) {
+                      setState(fn);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          if (_detailed)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: LogsRepsWidget(
+                    controller: _repetitionsController,
+                    configData: widget.configData,
+                    focusNode: widget.focusNode,
+                    log: widget.log,
+                    setStateCallback: (fn) {
+                      setState(fn);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: RepetitionUnitInputWidget(
+                    widget.log.repetitionsUnitId,
+                    onChanged: (v) => {},
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+            ),
+          if (_detailed)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: LogsWeightWidget(
+                    controller: _weightController,
+                    configData: widget.configData,
+                    focusNode: widget.focusNode,
+                    log: widget.log,
+                    setStateCallback: (fn) {
+                      setState(fn);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: WeightUnitInputWidget(widget.log.weightUnitId, onChanged: (v) => {}),
+                ),
+                const SizedBox(width: 8),
+              ],
+            ),
+          if (_detailed)
+            RiRInputWidget(
+              widget.log.rir,
+              onChanged: (value) {
+                if (value == '') {
+                  widget.log.rir = null;
+                } else {
+                  widget.log.rir = num.parse(value);
+                }
+              },
+            ),
+          SwitchListTile(
+            dense: true,
+            title: Text(i18n.setUnitsAndRir),
+            value: _detailed,
+            onChanged: (value) {
+              setState(() {
+                _detailed = !_detailed;
+              });
+            },
+          ),
+          FilledButton(
+            onPressed: _isSaving
+                ? null
+                : () async {
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _isSaving = true;
+                    _form.currentState!.save();
+
+                    try {
+                      await provider.Provider.of<RoutinesProvider>(
+                        context,
+                        listen: false,
+                      ).addLog(widget.log);
+
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 2),
+                            content: Text(
+                              i18n.successfullySaved,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
+                      }
+                      widget.controller.nextPage(
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
+                      );
+                      setState(() {
+                        _isSaving = false;
+                      });
+                    } on WgerHttpException {
+                      setState(() {
+                        _isSaving = false;
+                      });
+                      rethrow;
+                    } finally {
+                      setState(() {
+                        _isSaving = false;
+                      });
+                    }
+                  },
+            child: _isSaving ? const FormProgressIndicator() : Text(i18n.save),
+          ),
         ],
       ),
     );

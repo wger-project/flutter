@@ -60,8 +60,9 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
             ),
             subtitle: Text(
               _hasContent
-                  ? DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                      .format(_plan!.creationDate)
+                  ? DateFormat.yMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(_plan!.creationDate)
                   : '',
             ),
             leading: Icon(

@@ -27,18 +27,18 @@ import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
 List<String> getNutritionColumnNames(BuildContext context) => [
-      AppLocalizations.of(context).energy,
-      AppLocalizations.of(context).protein,
-      AppLocalizations.of(context).carbohydrates,
-      AppLocalizations.of(context).fat,
-    ];
+  AppLocalizations.of(context).energy,
+  AppLocalizations.of(context).protein,
+  AppLocalizations.of(context).carbohydrates,
+  AppLocalizations.of(context).fat,
+];
 
 List<String> getNutritionalValues(NutritionalValues values, BuildContext context) => [
-      AppLocalizations.of(context).kcalValue(values.energy.toStringAsFixed(0)),
-      AppLocalizations.of(context).gValue(values.protein.toStringAsFixed(0)),
-      AppLocalizations.of(context).gValue(values.carbohydrates.toStringAsFixed(0)),
-      AppLocalizations.of(context).gValue(values.fat.toStringAsFixed(0)),
-    ];
+  AppLocalizations.of(context).kcalValue(values.energy.toStringAsFixed(0)),
+  AppLocalizations.of(context).gValue(values.protein.toStringAsFixed(0)),
+  AppLocalizations.of(context).gValue(values.carbohydrates.toStringAsFixed(0)),
+  AppLocalizations.of(context).gValue(values.fat.toStringAsFixed(0)),
+];
 
 List<int> getNutritionColumnFlexes(BuildContext context) {
   return getNutritionColumnNames(context).map((e) {
@@ -51,11 +51,13 @@ List<int> getNutritionColumnFlexes(BuildContext context) {
 }
 
 List<Widget> muted(List<String> children) => children
-    .map((e) => MutedText(
-          e,
-          textAlign: TextAlign.right,
-          overflow: TextOverflow.ellipsis,
-        ))
+    .map(
+      (e) => MutedText(
+        e,
+        textAlign: TextAlign.right,
+        overflow: TextOverflow.ellipsis,
+      ),
+    )
     .toList();
 
 // return a row of elements in the standard macros spacing
@@ -85,15 +87,17 @@ String getShortNutritionValues(NutritionalValues values, BuildContext context) {
 }
 
 String getKcalConsumed(Meal meal, BuildContext context) {
-  final consumed =
-      meal.diaryEntriesToday.map((e) => e.nutritionalValues.energy).fold(0.0, (a, b) => a + b);
+  final consumed = meal.diaryEntriesToday
+      .map((e) => e.nutritionalValues.energy)
+      .fold(0.0, (a, b) => a + b);
   return AppLocalizations.of(context).kcalValue(consumed.toStringAsFixed(0));
 }
 
 String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
   final planned = meal.plannedNutritionalValues.energy;
-  final consumed =
-      meal.diaryEntriesToday.map((e) => e.nutritionalValues.energy).fold(0.0, (a, b) => a + b);
+  final consumed = meal.diaryEntriesToday
+      .map((e) => e.nutritionalValues.energy)
+      .fold(0.0, (a, b) => a + b);
   final loc = AppLocalizations.of(context);
 
   return '${consumed.toStringAsFixed(0)} / ${planned.toStringAsFixed(0)} ${loc.kcal}';

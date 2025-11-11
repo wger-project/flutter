@@ -1,6 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/providers/add_exercise.dart';
 
 /// Widget to preview selected exercise images
@@ -9,16 +11,16 @@ import 'package:wger/providers/add_exercise.dart';
 /// Each image shows a preview thumbnail and optionally a delete button.
 /// Can optionally include an "add more" button at the end of the list.
 class PreviewExerciseImages extends StatelessWidget {
-  final List<File> selectedImages;
+  final List<ExerciseSubmissionImage> selectedImages;
   final VoidCallback? onAddMore;
   final bool allowEdit;
 
   const PreviewExerciseImages({
-    Key? key,
+    super.key,
     required this.selectedImages,
     this.onAddMore,
     this.allowEdit = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class PreviewExerciseImages extends StatelessWidget {
 
           // Show image thumbnail
           final image = selectedImages[index];
-          return _buildImageCard(context, image);
+          return _buildImageCard(context, image.imageFile);
         },
       ),
     );
@@ -53,12 +55,7 @@ class PreviewExerciseImages extends StatelessWidget {
           // Image thumbnail
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.file(
-              image,
-              width: 120,
-              height: 120,
-              fit: BoxFit.cover,
-            ),
+            child: Image.file(image, width: 120, height: 120, fit: BoxFit.cover),
           ),
 
           // Delete button overlay (only shown if editing is allowed)
@@ -75,7 +72,7 @@ class PreviewExerciseImages extends StatelessWidget {
                   padding: const EdgeInsets.all(4),
                 ),
                 onPressed: () {
-                  context.read<AddExerciseProvider>().removeExercise(image.path);
+                  context.read<AddExerciseProvider>().removeImage(image.path);
                 },
               ),
             ),
@@ -100,11 +97,7 @@ class PreviewExerciseImages extends StatelessWidget {
             style: BorderStyle.solid,
           ),
         ),
-        child: Icon(
-          Icons.add,
-          size: 48,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+        child: Icon(Icons.add, size: 48, color: Theme.of(context).colorScheme.onSurfaceVariant),
       ),
     );
   }

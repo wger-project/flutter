@@ -60,7 +60,7 @@ void main() {
       // Arrange
       final errors = {
         'validation_error': {
-          'subkey': ['Error 1', 'Error 2']
+          'subkey': ['Error 1', 'Error 2'],
         },
       };
 
@@ -78,9 +78,9 @@ void main() {
       final errors = {
         'validation_error': [
           {
-            'subkey': ['Error 1', 'Error 2']
+            'subkey': ['Error 1', 'Error 2'],
           },
-          {'otherKey': 'foo'}
+          {'otherKey': 'foo'},
         ],
       };
 

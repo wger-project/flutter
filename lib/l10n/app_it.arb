@@ -1076,5 +1076,29 @@
     "aboutDiscordTitle": "Discord",
     "@aboutDiscordTitle": {},
     "fitInWeek": "Settimana Fit in",
-    "@fitInWeek": {}
+    "@fitInWeek": {},
+    "creationDate": "Data di inizio",
+    "@creationDate": {
+        "description": "The Start date of a nutritional plan"
+    },
+    "openEnded": "Senza fine",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "overview": "Panoramica",
+    "@overview": {},
+    "identicalExercisePleaseDiscard": "Se trovate un esercizio identico a quello che state cercando di aggiungere, per favore scartate la vostra bozza e se necessario modificate l'esercizio esistente.",
+    "@identicalExercisePleaseDiscard": {},
+    "checkInformationBeforeSubmitting": "Verificate che le informazioni siano corrette prima di aggiungere l'esercizio",
+    "@checkInformationBeforeSubmitting": {},
+    "enterTextInLanguage": "Aggiungete il testo usando la lingua giusta!",
+    "@enterTextInLanguage": {},
+    "applicationLogs": "Registri dell'applicazione",
+    "@applicationLogs": {},
+    "dayTypeCustom": "Personalizzato",
+    "@dayTypeCustom": {},
+    "dayTypeAfap": "Più velocemente possibile",
+    "@dayTypeAfap": {},
+    "dayTypeHiit": "Allenamento a intervalli ad alta intensità",
+    "@dayTypeHiit": {}
 }

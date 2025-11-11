@@ -11,13 +11,14 @@ class Step6Overview extends StatelessWidget {
     final i18n = AppLocalizations.of(context);
 
     return Consumer<AddExerciseProvider>(
-      builder: (ctx, provider, __) => Column(
+      builder: (ctx, provider, _) => Column(
         spacing: 8,
         children: [
           Text(i18n.baseData, style: Theme.of(context).textTheme.headlineSmall),
           Table(
             columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(3)},
             children: [
+              TableRow(children: [Text(i18n.author), Text(provider.author)]),
               TableRow(children: [Text(i18n.name), Text(provider.exerciseNameEn ?? '...')]),
               TableRow(
                 children: [

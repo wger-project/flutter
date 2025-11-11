@@ -77,9 +77,9 @@ class NutritionalPlansList extends StatelessWidget {
           Text(
             weightChangeText,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: weightChangeColor,
-                ),
+              fontWeight: FontWeight.bold,
+              color: weightChangeColor,
+            ),
           ),
         ],
       ),
@@ -123,60 +123,64 @@ class NutritionalPlansList extends StatelessWidget {
                         _buildWeightChangeInfo(context, currentPlan.startDate, currentPlan.endDate),
                       ],
                     ),
-                    trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const VerticalDivider(),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        tooltip: AppLocalizations.of(context).delete,
-                        onPressed: () async {
-                          // Delete the plan from DB
-                          await showDialog(
-                            context: context,
-                            builder: (BuildContext contextDialog) {
-                              return AlertDialog(
-                                content: Text(
-                                  AppLocalizations.of(context)
-                                      .confirmDelete(currentPlan.description),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    child: Text(
-                                      MaterialLocalizations.of(context).cancelButtonLabel,
-                                    ),
-                                    onPressed: () => Navigator.of(contextDialog).pop(),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const VerticalDivider(),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          tooltip: AppLocalizations.of(context).delete,
+                          onPressed: () async {
+                            // Delete the plan from DB
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext contextDialog) {
+                                return AlertDialog(
+                                  content: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    ).confirmDelete(currentPlan.description),
                                   ),
-                                  TextButton(
-                                    child: Text(
-                                      AppLocalizations.of(context).delete,
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.error,
+                                  actions: [
+                                    TextButton(
+                                      child: Text(
+                                        MaterialLocalizations.of(context).cancelButtonLabel,
                                       ),
+                                      onPressed: () => Navigator.of(contextDialog).pop(),
                                     ),
-                                    onPressed: () {
-                                      // Confirmed, delete the plan
-                                      _nutritionProvider.deletePlan(currentPlan.id!);
-
-                                      // Close the popup
-                                      Navigator.of(contextDialog).pop();
-
-                                      // and inform the user
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            AppLocalizations.of(context).successfullyDeleted,
-                                            textAlign: TextAlign.center,
-                                          ),
+                                    TextButton(
+                                      child: Text(
+                                        AppLocalizations.of(context).delete,
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.error,
                                         ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ]),
+                                      ),
+                                      onPressed: () {
+                                        // Confirmed, delete the plan
+                                        _nutritionProvider.deletePlan(currentPlan.id!);
+
+                                        // Close the popup
+                                        Navigator.of(contextDialog).pop();
+
+                                        // and inform the user
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              AppLocalizations.of(context).successfullyDeleted,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

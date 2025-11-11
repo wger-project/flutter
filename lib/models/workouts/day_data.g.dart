@@ -7,16 +7,14 @@ part of 'day_data.dart';
 // **************************************************************************
 
 DayData _$DayDataFromJson(Map<String, dynamic> json) {
-  $checkKeys(
-    json,
-    requiredKeys: const ['iteration', 'date', 'label'],
-  );
+  $checkKeys(json, requiredKeys: const ['iteration', 'date', 'label']);
   return DayData(
     iteration: (json['iteration'] as num).toInt(),
     date: DateTime.parse(json['date'] as String),
     label: json['label'] as String? ?? '',
     day: json['day'] == null ? null : Day.fromJson(json['day'] as Map<String, dynamic>),
-    slots: (json['slots'] as List<dynamic>?)
+    slots:
+        (json['slots'] as List<dynamic>?)
             ?.map((e) => SlotData.fromJson(e as Map<String, dynamic>))
             .toList() ??
         const [],
@@ -24,9 +22,9 @@ DayData _$DayDataFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$DayDataToJson(DayData instance) => <String, dynamic>{
-      'iteration': instance.iteration,
-      'date': instance.date.toIso8601String(),
-      'label': instance.label,
-      'day': instance.day,
-      'slots': instance.slots,
-    };
+  'iteration': instance.iteration,
+  'date': instance.date.toIso8601String(),
+  'label': instance.label,
+  'day': instance.day,
+  'slots': instance.slots,
+};

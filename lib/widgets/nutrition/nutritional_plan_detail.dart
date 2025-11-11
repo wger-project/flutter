@@ -35,10 +35,13 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
-    final lastWeightEntry =
-        Provider.of<BodyWeightProvider>(context, listen: false).getNewestEntry();
-    final nutritionalGoalsGperKg =
-        lastWeightEntry != null ? nutritionalGoals / lastWeightEntry.weight.toDouble() : null;
+    final lastWeightEntry = Provider.of<BodyWeightProvider>(
+      context,
+      listen: false,
+    ).getNewestEntry();
+    final nutritionalGoalsGperKg = lastWeightEntry != null
+        ? nutritionalGoals / lastWeightEntry.weight.toDouble()
+        : null;
 
     return SliverList(
       delegate: SliverChildListDelegate(
@@ -57,8 +60,8 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
                       Localizations.localeOf(context).languageCode,
                     ).format(_nutritionalPlan.startDate)} (${AppLocalizations.of(context).openEnded})',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontStyle: FontStyle.italic,
-                  ),
+                fontStyle: FontStyle.italic,
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -73,12 +76,14 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          ..._nutritionalPlan.meals.map((meal) => MealWidget(
-                meal,
-                _nutritionalPlan.dedupMealItems,
-                false,
-                false,
-              )),
+          ..._nutritionalPlan.meals.map(
+            (meal) => MealWidget(
+              meal,
+              _nutritionalPlan.dedupMealItems,
+              false,
+              false,
+            ),
+          ),
           MealWidget(
             _nutritionalPlan.pseudoMealOthers('Other logs'),
             _nutritionalPlan.dedupMealItems,

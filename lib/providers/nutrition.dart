@@ -49,9 +49,11 @@ class NutritionPlansProvider with ChangeNotifier {
   List<NutritionalPlan> _plans = [];
   List<Ingredient> ingredients = [];
 
-  NutritionPlansProvider(this.baseProvider, List<NutritionalPlan> entries,
-      {IngredientDatabase? database})
-      : _plans = entries {
+  NutritionPlansProvider(
+    this.baseProvider,
+    List<NutritionalPlan> entries, {
+    IngredientDatabase? database,
+  }) : _plans = entries {
     this.database = database ?? locator<IngredientDatabase>();
   }
 
@@ -73,8 +75,10 @@ class NutritionPlansProvider with ChangeNotifier {
   NutritionalPlan? get currentPlan {
     final now = DateTime.now();
     return _plans
-        .where((plan) =>
-            plan.startDate.isBefore(now) && (plan.endDate == null || plan.endDate!.isAfter(now)))
+        .where(
+          (plan) =>
+              plan.startDate.isBefore(now) && (plan.endDate == null || plan.endDate!.isAfter(now)),
+        )
         .toList()
         .sorted((a, b) => b.creationDate.compareTo(a.creationDate))
         .firstOrNull;
@@ -114,10 +118,9 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Fetches and sets all plans fully, i.e. with all corresponding child objects
   Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetchPaginated(baseProvider.makeUrl(
-      _nutritionalPlansPath,
-      query: {'limit': API_MAX_PAGE_SIZE},
-    ));
+    final data = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': API_MAX_PAGE_SIZE}),
+    );
     await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
   }
 
@@ -225,10 +228,7 @@ class NutritionPlansProvider with ChangeNotifier {
   /// Adds a meal to a plan
   Future<Meal> addMeal(Meal meal, int planId) async {
     final plan = findById(planId);
-    final data = await baseProvider.post(
-      meal.toJson(),
-      baseProvider.makeUrl(_mealPath),
-    );
+    final data = await baseProvider.post(meal.toJson(), baseProvider.makeUrl(_mealPath));
 
     meal = Meal.fromJson(data);
     plan.meals.add(meal);
@@ -269,10 +269,7 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Adds a meal item to a meal
   Future<MealItem> addMealItem(MealItem mealItem, Meal meal) async {
-    final data = await baseProvider.post(
-      mealItem.toJson(),
-      baseProvider.makeUrl(_mealItemPath),
-    );
+    final data = await baseProvider.post(mealItem.toJson(), baseProvider.makeUrl(_mealItemPath));
 
     mealItem = MealItem.fromJson(data);
     mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
@@ -301,6 +298,7 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   Future<void> clearIngredientCache() async {
+    ingredients = [];
     await database.deleteEverything();
   }
 
@@ -314,9 +312,9 @@ class NutritionPlansProvider with ChangeNotifier {
     try {
       ingredient = ingredients.firstWhere((e) => e.id == ingredientId);
     } on StateError {
-      final ingredientDb = await (database.select(database.ingredients)
-            ..where((e) => e.id.equals(ingredientId)))
-          .getSingleOrNull();
+      final ingredientDb = await (database.select(
+        database.ingredients,
+      )..where((e) => e.id.equals(ingredientId))).getSingleOrNull();
 
       // Try to fetch from local db
       if (ingredientDb != null) {
@@ -325,8 +323,9 @@ class NutritionPlansProvider with ChangeNotifier {
         _logger.info("Loaded ingredient '${ingredient.name}' from db cache");
 
         // Prune old entries
-        if (DateTime.now()
-            .isAfter(ingredientDb.lastFetched.add(const Duration(days: DAYS_TO_CACHE)))) {
+        if (DateTime.now().isAfter(
+          ingredientDb.lastFetched.add(const Duration(days: DAYS_TO_CACHE)),
+        )) {
           (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
         }
       } else {
@@ -336,7 +335,9 @@ class NutritionPlansProvider with ChangeNotifier {
         ingredient = Ingredient.fromJson(data);
         ingredients.add(ingredient);
 
-        database.into(database.ingredients).insert(
+        database
+            .into(database.ingredients)
+            .insert(
               IngredientsCompanion.insert(
                 id: ingredientId,
                 data: jsonEncode(data),
@@ -415,10 +416,7 @@ class NutritionPlansProvider with ChangeNotifier {
       final plan = findById(meal.planId);
       final Log log = Log.fromMealItem(item, plan.id!, meal.id, mealDateTime);
 
-      final data = await baseProvider.post(
-        log.toJson(),
-        baseProvider.makeUrl(_nutritionDiaryPath),
-      );
+      final data = await baseProvider.post(log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
       log.id = data['id'];
       plan.diaryEntries.add(log);
     }
@@ -426,19 +424,12 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Log custom ingredient to nutrition diary
-  Future<void> logIngredientToDiary(
-    MealItem mealItem,
-    int planId, [
-    DateTime? dateTime,
-  ]) async {
+  Future<void> logIngredientToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
     final plan = findById(planId);
     mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
     final log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
 
-    final data = await baseProvider.post(
-      log.toJson(),
-      baseProvider.makeUrl(_nutritionDiaryPath),
-    );
+    final data = await baseProvider.post(log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
     log.id = data['id'];
     plan.diaryEntries.add(log);
     notifyListeners();
@@ -458,11 +449,7 @@ class NutritionPlansProvider with ChangeNotifier {
     final data = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(
         _nutritionDiaryPath,
-        query: {
-          'plan': plan.id?.toString(),
-          'limit': API_MAX_PAGE_SIZE,
-          'ordering': 'datetime',
-        },
+        query: {'plan': plan.id?.toString(), 'limit': API_MAX_PAGE_SIZE, 'ordering': 'datetime'},
       ),
     );
 

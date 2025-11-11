@@ -21,7 +21,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 #   - the version number is taken from the git tag vX.Y.Z
 #   - the build number is computed by reading the last one from the play store
 #     and increasing by one
-version: 1.9.0+100
+version: 1.9.1+110
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
@@ -36,20 +36,20 @@ dependencies:
   clock: ^1.1.2
   collection: ^1.18.0
   cupertino_icons: ^1.0.8
-  drift: ^2.28.2
+  drift: ^2.29.0
   equatable: ^2.0.7
   fl_chart: ^1.1.1
-  flex_color_scheme: ^8.3.0
-  flex_seed_scheme: ^3.5.1
+  flex_color_scheme: ^8.3.1
+  flex_seed_scheme: ^3.6.1
   flutter_html: ^3.0.0
   flutter_staggered_grid_view: ^0.7.0
-  flutter_svg: ^2.2.1
+  flutter_svg: ^2.2.2
   flutter_svg_icons: ^0.0.1
   flutter_typeahead: ^5.2.0
   flutter_zxing: ^2.2.1
-  font_awesome_flutter: ^10.10.0
+  font_awesome_flutter: ^10.12.0
   freezed_annotation: ^3.0.0
-  get_it: ^8.2.0
+  get_it: ^8.3.0
   http: ^1.5.0
   image_picker: ^1.2.0
   intl: ^0.20.0
@@ -61,7 +61,7 @@ dependencies:
   provider: ^6.1.5
   rive: ^0.13.20
   shared_preferences: ^2.5.3
-  sqlite3_flutter_libs: ^0.5.39
+  sqlite3_flutter_libs: ^0.5.40
   table_calendar: ^3.0.8
   url_launcher: ^6.3.2
   version: ^3.0.2
@@ -74,9 +74,9 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  build_runner: ^2.8.0
+  build_runner: ^2.9.0
   cider: ^0.2.7
-  drift_dev: ^2.28.3
+  drift_dev: ^2.29.0
   flutter_lints: ^6.0.0
   freezed: ^3.2.0
   json_serializable: ^6.11.1

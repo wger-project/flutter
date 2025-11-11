@@ -7,10 +7,7 @@ part of 'equipment.dart';
 // **************************************************************************
 
 Equipment _$EquipmentFromJson(Map<String, dynamic> json) {
-  $checkKeys(
-    json,
-    requiredKeys: const ['id', 'name'],
-  );
+  $checkKeys(json, requiredKeys: const ['id', 'name']);
   return Equipment(
     id: (json['id'] as num).toInt(),
     name: json['name'] as String,
@@ -18,6 +15,6 @@ Equipment _$EquipmentFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$EquipmentToJson(Equipment instance) => <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-    };
+  'id': instance.id,
+  'name': instance.name,
+};

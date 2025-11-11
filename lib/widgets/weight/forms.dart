@@ -34,7 +34,7 @@ class WeightForm extends StatelessWidget {
   final WeightEntry _weightEntry;
 
   WeightForm([WeightEntry? weightEntry])
-      : _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
+    : _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
 
   @override
   Widget build(BuildContext context) {

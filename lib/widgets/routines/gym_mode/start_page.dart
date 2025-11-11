@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
@@ -24,12 +25,23 @@ class StartPage extends StatelessWidget {
         Expanded(
           child: ListView(
             children: [
+              if (_dayData.day!.isSpecialType)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Text(
+                      '${_dayData.day!.type.name.toUpperCase()}\n${_dayData.day!.type.i18Label(AppLocalizations.of(context))}',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                  ),
+                ),
               ..._dayData.slots.map((slotData) {
                 return Column(
                   children: [
                     ...slotData.setConfigs
                         .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
-                          acc.putIfAbsent(entry.exercise, () => []).add(entry.textRepr);
+                          acc.putIfAbsent(entry.exercise, () => []).add(entry.textReprWithType);
                           return acc;
                         })
                         .entries
@@ -42,9 +54,11 @@ class StartPage extends StatelessWidget {
                                   width: 45,
                                   child: ExerciseImageWidget(image: exercise.getMainImage),
                                 ),
-                                title: Text(exercise
-                                    .getTranslation(Localizations.localeOf(context).languageCode)
-                                    .name),
+                                title: Text(
+                                  exercise
+                                      .getTranslation(Localizations.localeOf(context).languageCode)
+                                      .name,
+                                ),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: entry.value.map((text) => Text(text)).toList(),

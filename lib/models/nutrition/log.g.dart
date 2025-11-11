@@ -9,7 +9,14 @@ part of 'log.dart';
 Log _$LogFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['id', 'plan', 'datetime', 'ingredient', 'weight_unit', 'amount'],
+    requiredKeys: const [
+      'id',
+      'plan',
+      'datetime',
+      'ingredient',
+      'weight_unit',
+      'amount',
+    ],
   );
   return Log(
     id: (json['id'] as num?)?.toInt(),
@@ -24,12 +31,12 @@ Log _$LogFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$LogToJson(Log instance) => <String, dynamic>{
-      'id': instance.id,
-      'meal': instance.mealId,
-      'plan': instance.planId,
-      'datetime': dateToUtcIso8601(instance.datetime),
-      'comment': instance.comment,
-      'ingredient': instance.ingredientId,
-      'weight_unit': instance.weightUnitId,
-      'amount': instance.amount,
-    };
+  'id': instance.id,
+  'meal': instance.mealId,
+  'plan': instance.planId,
+  'datetime': dateToUtcIso8601(instance.datetime),
+  'comment': instance.comment,
+  'ingredient': instance.ingredientId,
+  'weight_unit': instance.weightUnitId,
+  'amount': instance.amount,
+};

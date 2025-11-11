@@ -57,10 +57,12 @@ void main() {
     when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 9)).thenReturn(tExerciseInfoUri);
     when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 1)).thenReturn(tExerciseInfoUri2);
 
-    when(mockBaseProvider.fetch(tExerciseInfoUri))
-        .thenAnswer((_) => Future.value(tExerciseInfoMap));
-    when(mockBaseProvider.fetch(tExerciseInfoUri2))
-        .thenAnswer((_) => Future.value(tExerciseInfoMap));
+    when(
+      mockBaseProvider.fetch(tExerciseInfoUri),
+    ).thenAnswer((_) => Future.value(tExerciseInfoMap));
+    when(
+      mockBaseProvider.fetch(tExerciseInfoUri2),
+    ).thenAnswer((_) => Future.value(tExerciseInfoMap));
   });
 
   group('Correctly loads and parses data from the server', () {

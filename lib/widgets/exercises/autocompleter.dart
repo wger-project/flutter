@@ -85,30 +85,32 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
               return null;
             }
             return context.read<ExercisesProvider>().searchExercise(
-                  pattern,
-                  languageCode: Localizations.localeOf(context).languageCode,
-                  searchEnglish: _searchEnglish,
-                );
+              pattern,
+              languageCode: Localizations.localeOf(context).languageCode,
+              searchEnglish: _searchEnglish,
+            );
           },
-          itemBuilder: (
-            BuildContext context,
-            Exercise exerciseSuggestion,
-          ) =>
-              ListTile(
-            key: Key('exercise-${exerciseSuggestion.id}'),
-            leading: SizedBox(
-              width: 45,
-              child: ExerciseImageWidget(
-                image: exerciseSuggestion.getMainImage,
+          itemBuilder:
+              (
+                BuildContext context,
+                Exercise exerciseSuggestion,
+              ) => ListTile(
+                key: Key('exercise-${exerciseSuggestion.id}'),
+                leading: SizedBox(
+                  width: 45,
+                  child: ExerciseImageWidget(
+                    image: exerciseSuggestion.getMainImage,
+                  ),
+                ),
+                title: Text(
+                  exerciseSuggestion
+                      .getTranslation(Localizations.localeOf(context).languageCode)
+                      .name,
+                ),
+                subtitle: Text(
+                  '${exerciseSuggestion.category!.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
+                ),
               ),
-            ),
-            title: Text(
-              exerciseSuggestion.getTranslation(Localizations.localeOf(context).languageCode).name,
-            ),
-            subtitle: Text(
-              '${exerciseSuggestion.category!.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
-            ),
-          ),
           emptyBuilder: (context) {
             return Column(
               mainAxisSize: MainAxisSize.min,
@@ -149,7 +151,7 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
               });
             },
             dense: true,
-          )
+          ),
       ],
     );
   }

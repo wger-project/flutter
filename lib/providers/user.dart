@@ -101,10 +101,12 @@ class UserProvider with ChangeNotifier {
 
   /// Verify the user's email
   Future<void> verifyEmail() async {
-    await baseProvider.fetch(baseProvider.makeUrl(
-      PROFILE_URL,
-      objectMethod: VERIFY_EMAIL,
-    ));
+    await baseProvider.fetch(
+      baseProvider.makeUrl(
+        PROFILE_URL,
+        objectMethod: VERIFY_EMAIL,
+      ),
+    );
     //log(verificationData.toString());
   }
 }

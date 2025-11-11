@@ -38,20 +38,20 @@ class IngredientDatabase extends _$IngredientDatabase {
   /// will fetch everything as needed from the server
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (m, from, to) async {
-          // no-op, but needs to be defined
-          return;
-        },
-        beforeOpen: (openingDetails) async {
-          if (openingDetails.hadUpgrade) {
-            final m = createMigrator();
-            for (final table in allTables) {
-              await m.deleteTable(table.actualTableName);
-              await m.createTable(table);
-            }
-          }
-        },
-      );
+    onUpgrade: (m, from, to) async {
+      // no-op, but needs to be defined
+      return;
+    },
+    beforeOpen: (openingDetails) async {
+      if (openingDetails.hadUpgrade) {
+        final m = createMigrator();
+        for (final table in allTables) {
+          await m.deleteTable(table.actualTableName);
+          await m.createTable(table);
+        }
+      }
+    },
+  );
 
   Future<void> deleteEverything() {
     return transaction(() async {

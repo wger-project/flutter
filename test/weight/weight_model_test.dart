@@ -34,8 +34,11 @@ void main() {
     });
 
     test('Test that the weight entries are correctly converted from json', () {
-      final WeightEntry weightEntryObj =
-          WeightEntry(id: 1, weight: 80, date: DateTime(2020, 12, 31));
+      final WeightEntry weightEntryObj = WeightEntry(
+        id: 1,
+        weight: 80,
+        date: DateTime(2020, 12, 31),
+      );
       final WeightEntry weightEntry = WeightEntry.fromJson({
         'id': 1,
         'weight': '80',

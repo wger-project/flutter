@@ -22,13 +22,13 @@ class MacronutrientsTable extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     Widget columnHeader(bool left, String title) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: tablePadding),
-          child: Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-            textAlign: left ? TextAlign.left : TextAlign.right,
-          ),
-        );
+      padding: const EdgeInsets.symmetric(vertical: tablePadding),
+      child: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+        textAlign: left ? TextAlign.left : TextAlign.right,
+      ),
+    );
 
     TableRow macroRow(int indent, bool g, String title, double? Function(NutritionalGoals ng) get) {
       final goal = get(nutritionalGoals);

@@ -16,24 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/image.dart';
+import 'package:wger/widgets/core/image.dart';
 
 class ExerciseImageWidget extends StatelessWidget {
-  const ExerciseImageWidget({this.image, this.height});
+  ExerciseImageWidget({this.image, this.height});
 
+  final _logger = Logger('ExerciseImageWidget');
   final ExerciseImage? image;
   final double? height;
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     return image != null
-        ? FadeInImage(
-            placeholder: const AssetImage('assets/images/placeholder.png'),
-            image: NetworkImage(image!.url),
-            fit: BoxFit.cover,
-            imageSemanticLabel: 'Exercise image',
-            height: height,
+        ? Image.network(
+            image!.url,
+            semanticLabel: 'Exercise image',
+            errorBuilder: (context, error, stackTrace) => handleImageError(
+              context,
+              error,
+              stackTrace,
+              image!.url,
+            ),
           )
         : const Image(
             image: AssetImage('assets/images/placeholder.png'),

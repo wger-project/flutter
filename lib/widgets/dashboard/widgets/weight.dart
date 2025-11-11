@@ -94,9 +94,12 @@ class DashboardWeightWidget extends StatelessWidget {
                                 FormScreen.routeName,
                                 arguments: FormScreenArguments(
                                   AppLocalizations.of(context).newEntry,
-                                  WeightForm(weightProvider
-                                      .getNewestEntry()
-                                      ?.copyWith(id: null, date: DateTime.now())),
+                                  WeightForm(
+                                    weightProvider.getNewestEntry()?.copyWith(
+                                      id: null,
+                                      date: DateTime.now(),
+                                    ),
+                                  ),
                                 ),
                               );
                             },

@@ -102,10 +102,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () => widget._showDeleteConfirmationDialog(
-                        context,
-                        day,
-                      ),
+                      onPressed: () => widget._showDeleteConfirmationDialog(context, day),
                     ),
                   ],
                 ),
@@ -149,7 +146,11 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             onTap: () async {
-              final day = Day.empty();
+              final day = Day(
+                routineId: widget.routineId,
+                name: '${i18n.newDay} ${widget.days.length + 1}',
+                order: widget.days.length + 1,
+              );
               day.name = '${i18n.newDay} ${widget.days.length + 1}';
               day.routineId = widget.routineId;
               day.order = widget.days.length + 1;
@@ -165,11 +166,10 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
 }
 
 class DayFormWidget extends StatefulWidget {
-  final int routineId;
   late final Day day;
 
-  DayFormWidget({required this.routineId, required this.day, super.key}) {
-    day.routineId = routineId;
+  DayFormWidget({required Day day, super.key}) {
+    this.day = day.copyWith();
   }
 
   @override
@@ -181,8 +181,6 @@ class _DayFormWidgetState extends State<DayFormWidget> {
 
   final descriptionController = TextEditingController();
   final nameController = TextEditingController();
-  late bool isRestDay;
-  late bool needLogsToAdvance;
   bool isSaving = false;
 
   final _form = GlobalKey<FormState>();
@@ -190,8 +188,6 @@ class _DayFormWidgetState extends State<DayFormWidget> {
   @override
   void initState() {
     super.initState();
-    isRestDay = widget.day.isRest;
-    needLogsToAdvance = widget.day.needLogsToAdvance;
     descriptionController.text = widget.day.description;
     nameController.text = widget.day.name;
   }
@@ -221,11 +217,13 @@ class _DayFormWidgetState extends State<DayFormWidget> {
             key: const Key('field-is-rest-day'),
             title: Text(i18n.isRestDay),
             subtitle: Text(i18n.isRestDayHelp),
-            value: isRestDay,
+            value: widget.day.isRest,
             contentPadding: const EdgeInsets.all(4),
             onChanged: (value) {
               setState(() {
-                isRestDay = value;
+                widget.day.isRest = value;
+                widget.day.type = DayType.custom;
+                widget.day.needLogsToAdvance = false;
                 nameController.clear();
                 descriptionController.clear();
               });
@@ -235,9 +233,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
           TextFormField(
             enabled: !widget.day.isRest,
             key: const Key('field-name'),
-            decoration: InputDecoration(
-              labelText: i18n.name,
-            ),
+            decoration: InputDecoration(labelText: i18n.name),
             controller: nameController,
             onSaved: (value) {
               widget.day.name = value!;
@@ -259,6 +255,7 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               return null;
             },
           ),
+
           TextFormField(
             key: const Key('field-description'),
             enabled: !widget.day.isRest,
@@ -281,19 +278,37 @@ class _DayFormWidgetState extends State<DayFormWidget> {
               return null;
             },
           ),
+          DropdownButtonFormField<DayType>(
+            key: const Key('field-day-type'),
+            initialValue: widget.day.type,
+            decoration: const InputDecoration(labelText: 'Typ'),
+            items: DayType.values.map((type) {
+              return DropdownMenuItem(
+                key: Key('day-type-option-${type.name}'),
+                value: type,
+                child: Text('${type.name.toUpperCase()} - ${type.i18Label(i18n)}'),
+              );
+            }).toList(),
+            onChanged: widget.day.isRest
+                ? null
+                : (value) {
+                    setState(() {
+                      widget.day.type = value!;
+                    });
+                  },
+          ),
           SwitchListTile(
             key: const Key('field-need-logs-to-advance'),
             title: Text(i18n.needsLogsToAdvance),
             subtitle: Text(i18n.needsLogsToAdvanceHelp),
-            value: needLogsToAdvance,
+            value: widget.day.needLogsToAdvance,
             contentPadding: const EdgeInsets.all(4),
             onChanged: widget.day.isRest
                 ? null
                 : (value) {
                     setState(() {
-                      needLogsToAdvance = value;
+                      widget.day.needLogsToAdvance = value;
                     });
-                    widget.day.needLogsToAdvance = value;
                   },
           ),
           const SizedBox(height: 5),
@@ -309,8 +324,10 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                     setState(() => isSaving = true);
 
                     try {
-                      await Provider.of<RoutinesProvider>(context, listen: false)
-                          .editDay(widget.day);
+                      await Provider.of<RoutinesProvider>(
+                        context,
+                        listen: false,
+                      ).editDay(widget.day);
                       if (context.mounted) {
                         setState(() {
                           errorMessage = const SizedBox.shrink();
@@ -330,8 +347,9 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                       }
                     }
                   },
-            child:
-                isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
+            child: isSaving
+                ? const FormProgressIndicator()
+                : Text(AppLocalizations.of(context).save),
           ),
           const SizedBox(height: 5),
           ReorderableSlotList(widget.day.slots, widget.day),

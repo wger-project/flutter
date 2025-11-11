@@ -20,14 +20,15 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
       'goal_protein',
       'goal_carbohydrates',
       'goal_fat',
-      'goal_fiber'
+      'goal_fiber',
     ],
   );
   return NutritionalPlan(
     id: (json['id'] as num?)?.toInt(),
     description: json['description'] as String,
-    creationDate:
-        json['creation_date'] == null ? null : DateTime.parse(json['creation_date'] as String),
+    creationDate: json['creation_date'] == null
+        ? null
+        : DateTime.parse(json['creation_date'] as String),
     startDate: DateTime.parse(json['start'] as String),
     endDate: json['end'] == null ? null : DateTime.parse(json['end'] as String),
     onlyLogging: json['only_logging'] as bool? ?? false,
@@ -40,15 +41,15 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) => <String, dynamic>{
-      'id': instance.id,
-      'description': instance.description,
-      'creation_date': dateToUtcIso8601(instance.creationDate),
-      'start': dateToYYYYMMDD(instance.startDate),
-      'end': dateToYYYYMMDD(instance.endDate),
-      'only_logging': instance.onlyLogging,
-      'goal_energy': instance.goalEnergy,
-      'goal_protein': instance.goalProtein,
-      'goal_carbohydrates': instance.goalCarbohydrates,
-      'goal_fat': instance.goalFat,
-      'goal_fiber': instance.goalFiber,
-    };
+  'id': instance.id,
+  'description': instance.description,
+  'creation_date': dateToUtcIso8601(instance.creationDate),
+  'start': dateToYYYYMMDD(instance.startDate),
+  'end': dateToYYYYMMDD(instance.endDate),
+  'only_logging': instance.onlyLogging,
+  'goal_energy': instance.goalEnergy,
+  'goal_protein': instance.goalProtein,
+  'goal_carbohydrates': instance.goalCarbohydrates,
+  'goal_fat': instance.goalFat,
+  'goal_fiber': instance.goalFiber,
+};

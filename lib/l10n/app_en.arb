@@ -155,8 +155,26 @@
   "@category": {
     "description": "Category for an exercise, ingredient, etc."
   },
-  "endDate": "End date",
   "startDate": "Start date",
+  "@startDate": {
+    "description": "The start date of a nutritional plan or routine"
+  },
+  "dayTypeCustom": "Custom",
+  "dayTypeEnom": "Every minute on the minute",
+  "dayTypeAmrap": "As many rounds as possible",
+  "dayTypeHiit": "High intensity interval training",
+  "dayTypeTabata": "Tabata",
+  "dayTypeEdt": "Escalating density training",
+  "dayTypeRft": "Rounds for time",
+  "dayTypeAfap": "As fast as possible",
+  "slotEntryTypeNormal": "Normal",
+  "slotEntryTypeDropset": "Dropset",
+  "slotEntryTypeMyo": "Myo",
+  "slotEntryTypePartial": "Partial",
+  "slotEntryTypeForced": "Forced",
+  "slotEntryTypeTut": "Time under Tension",
+  "slotEntryTypeIso": "Isometric hold",
+  "slotEntryTypeJump": "Jump",
   "routines": "Routines",
   "newRoutine": "New routine",
   "noRoutines": "You have no routines",
@@ -387,13 +405,9 @@
   "@date": {
     "description": "The date of a workout log or body weight entry"
   },
-  "creationDate": "Start date",
-  "@creationDate": {
-    "description": "The Start date of a nutritional plan"
-  },
   "endDate": "End date",
   "@endDate": {
-    "description": "The End date of a nutritional plan"
+    "description": "The End date of a nutritional plan or routine"
   },
   "openEnded": "Open ended",
   "@openEnded": {
@@ -719,89 +733,87 @@
       }
     }
   },
-"scanBarcode": "Scan barcode",
-"@scanBarcode": {
-  "description": "Label for scan barcode button"
-},
-"close": "Close",
-"@close": {
-  "description": "Translation for close"
-},
-"identicalExercisePleaseDiscard": "If you notice an exercise that is identical to the one you're adding, please discard your draft and edit that exercise instead.",
-"checkInformationBeforeSubmitting": "Please check that the information you entered is correct before submitting the exercise",
-"add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
-"imageDetailsTitle": "Image details",
-"@imageDetailsTitle": {
-  "description": "Title for image details form"
-},
-"imageDetailsLicenseTitle": "Title",
-"@imageDetailsLicenseTitle": {
-  "description": "Label for image title field"
-},
-"imageDetailsLicenseTitleHint": "Enter image title",
-"@imageDetailsLicenseTitleHint": {
-  "description": "Hint text for image title field"
-},
-"imageDetailsSourceLink": "Link to the source website, if available",
-"@imageDetailsSourceLink": {
-  "description": "Label for source link field"
-},
-"imageDetailsSourceLinkHint": "https://example.com",
-"@imageDetailsSourceLinkHint": {
-  "description": "Hint text for source link field"
-},
-"imageDetailsAuthor": "Author(s)",
-"@imageDetailsAuthor": {
-  "description": "Label for author field"
-},
-"imageDetailsAuthorHint": "Enter author name",
-"@imageDetailsAuthorHint": {
-  "description": "Hint text for author field"
-},
-"imageDetailsAuthorLink": "Link to author website or profile, if available",
-"@imageDetailsAuthorLink": {
-  "description": "Label for author link field"
-},
-"imageDetailsAuthorLinkHint": "https://example.com/author",
-"@imageDetailsAuthorLinkHint": {
-  "description": "Hint text for author link field"
-},
-"imageDetailsDerivativeSource": "Link to the original source, if this is a derivative work",
-"@imageDetailsDerivativeSource": {
-  "description": "Label for derivative source field"
-},
-"imageDetailsDerivativeSourceHint": "https://example.com/original",
-"@imageDetailsDerivativeSourceHint": {
-  "description": "Hint text for derivative source field"
-},
-"imageDetailsDerivativeHelp": "A derivative work is based on a previous work but contains sufficient new, creative content to entitle it to its own copyright.",
-"@imageDetailsDerivativeHelp": {
-  "description": "Helper text explaining derivative works"
-},
-"imageDetailsImageType": "Image Type",
-"@imageDetailsImageType": {
-  "description": "Label for image type selector"
-},
-"imageDetailsLicenseNoticePrefix": "By submitting this image, you agree to release it under the ",
-"@imageDetailsLicenseNoticePrefix": {
-  "description": "First part of license notice text"
-},
-"imageDetailsLicenseNoticeSuffix": " The image must be either your own work or the author must have released it under a license compatible with CC BY-SA 4.0.",
-"@imageDetailsLicenseNoticeSuffix": {
-  "description": "Second part of license notice text"
-},
-"imageDetailsCancel": "CANCEL",
-"@imageDetailsCancel": {
-  "description": "Cancel button text"
-},
-"imageDetailsAdd": "ADD",
-"@imageDetailsAdd": {
-  "description": "Add button text"
-},
-"variations": "Variations",
-"@variations": {
-  "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
-},
+  "scanBarcode": "Scan barcode",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "identicalExercisePleaseDiscard": "If you notice an exercise that is identical to the one you're adding, please discard your draft and edit that exercise instead.",
+  "checkInformationBeforeSubmitting": "Please check that the information you entered is correct before submitting the exercise",
+  "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
+  "imageDetailsTitle": "Image details",
+  "@imageDetailsTitle": {
+    "description": "Title for image details form"
+  },
+  "imageDetailsLicenseTitle": "Title",
+  "@imageDetailsLicenseTitle": {
+    "description": "Label for image title field"
+  },
+  "imageDetailsLicenseTitleHint": "Enter image title",
+  "@imageDetailsLicenseTitleHint": {
+    "description": "Hint text for image title field"
+  },
+  "imageDetailsSourceLink": "Link to the source website",
+  "@imageDetailsSourceLink": {
+    "description": "Label for source link field"
+  },
+  "author": "Author(s)",
+  "@Author": {
+    "description": "Label for author field"
+  },
+  "authorHint": "Enter author name",
+  "@authorHint": {
+    "description": "Hint text for author field"
+  },
+  "imageDetailsAuthorLink": "Link to author website or profile",
+  "@imageDetailsAuthorLink": {
+    "description": "Label for author link field"
+  },
+  "imageDetailsDerivativeSource": "Link to the original source, if this is a derivative work",
+  "@imageDetailsDerivativeSource": {
+    "description": "Label for derivative source field"
+  },
+  "imageDetailsDerivativeHelp": "A derivative work is based on a previous work but contains sufficient new, creative content to entitle it to its own copyright.",
+  "@imageDetailsDerivativeHelp": {
+    "description": "Helper text explaining derivative works"
+  },
+  "imageDetailsImageType": "Image Type",
+  "@imageDetailsImageType": {
+    "description": "Label for image type selector"
+  },
+  "imageDetailsLicenseNotice": "By submitting this image, you agree to release it under the CC-BY-SA-4. The image must be either your own work or the author must have released it under a license compatible with it.",
+  "imageDetailsLicenseNoticeLinkToLicense": "See license text.",
+  "imageFormatNotSupported": "{imageFormat} not supported",
+  "@imageFormatNotSupported": {
+      "description": "Label shown on the error container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "imageFormatNotSupportedDetail": "{imageFormat} images are not supported yet.",
+  "@imageFormatNotSupportedDetail": {
+      "description": "Label shown on the image preview container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "add": "add",
+  "@add": {
+    "description": "Add button text"
+  },
+  "variations": "Variations",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
   "alsoKnownAs": "Also known as: {aliases}",
   "@alsoKnownAs": {
     "placeholders": {
@@ -1051,6 +1063,7 @@
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
   },
+  "endWorkout": "End Workout",
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",

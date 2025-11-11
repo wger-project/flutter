@@ -56,8 +56,9 @@ class _SessionInfoState extends State<SessionInfo> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
-              DateFormat.yMd(Localizations.localeOf(context).languageCode)
-                  .format(widget._session.date),
+              DateFormat.yMd(
+                Localizations.localeOf(context).languageCode,
+              ).format(widget._session.date),
             ),
             onTap: () => setState(() => editMode = !editMode),
             trailing: Icon(editMode ? Icons.edit_off : Icons.edit),
@@ -76,8 +77,9 @@ class _SessionInfoState extends State<SessionInfo> {
                   context,
                   i18n.timeStart,
                   widget._session.timeStart != null
-                      ? MaterialLocalizations.of(context)
-                          .formatTimeOfDay(widget._session.timeStart!)
+                      ? MaterialLocalizations.of(
+                          context,
+                        ).formatTimeOfDay(widget._session.timeStart!)
                       : '-/-',
                 ),
                 _buildInfoRow(
@@ -166,8 +168,9 @@ class DayLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sessionApi =
-        _routine.sessions.firstWhere((sessionApi) => sessionApi.session.date.isSameDayAs(_date));
+    final sessionApi = _routine.sessions.firstWhere(
+      (sessionApi) => sessionApi.session.date.isSameDayAs(_date),
+    );
     final exercises = sessionApi.exercises;
 
     return Card(
@@ -175,15 +178,18 @@ class DayLogWidget extends StatelessWidget {
         children: [
           SessionInfo(sessionApi.session),
           ...exercises.map((exercise) {
-            final translation =
-                exercise.getTranslation(Localizations.localeOf(context).languageCode);
+            final translation = exercise.getTranslation(
+              Localizations.localeOf(context).languageCode,
+            );
             return Column(
               children: [
                 Text(
                   translation.name,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                ...sessionApi.logs.where((l) => l.exerciseId == exercise.id).map(
+                ...sessionApi.logs
+                    .where((l) => l.exerciseId == exercise.id)
+                    .map(
                       (log) => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

@@ -25,6 +25,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/widgets/core/image.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
 import 'forms.dart';
@@ -63,6 +64,12 @@ class Gallery extends StatelessWidget {
                       image: NetworkImage(currentImage.url!),
                       fit: BoxFit.cover,
                       imageSemanticLabel: currentImage.description,
+                      imageErrorBuilder: (context, error, stackTrace) => handleImageError(
+                        context,
+                        error,
+                        stackTrace,
+                        currentImage.url!,
+                      ),
                     ),
                   );
                 },
@@ -92,7 +99,16 @@ class ImageDetail extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           Expanded(
-            child: Image.network(image.url!, semanticLabel: image.description),
+            child: Image.network(
+              image.url!,
+              semanticLabel: image.description,
+              errorBuilder: (context, error, stackTrace) => handleImageError(
+                context,
+                error,
+                stackTrace,
+                image.url!,
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),

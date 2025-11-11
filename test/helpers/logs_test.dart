@@ -36,10 +36,12 @@ void main() {
     });
 
     test('correctly adds LogRecords', () {
+      logStore.add(LogRecord(Level.FINE, 'this is fine!!!', 'testLogger'));
       logStore.add(LogRecord(Level.INFO, 'this is a test', 'testLogger'));
 
-      expect(logStore.logs.length, 1);
-      expect(logStore.formattedLogs.length, 1);
+      expect(logStore.logs.length, 2);
+      expect(logStore.getFormattedLogs(minLevel: Level.INFO).length, 1);
+      expect(logStore.getFormattedLogs(minLevel: Level.FINE).length, 2);
     });
 
     test('total number of logs is limited', () {

@@ -20,7 +20,7 @@ IngredientImage _$IngredientImageFromJson(Map<String, dynamic> json) {
       'license_author_url',
       'license_title',
       'license_object_url',
-      'license_derivative_source_url'
+      'license_derivative_source_url',
     ],
   );
   return IngredientImage(
@@ -39,15 +39,15 @@ IngredientImage _$IngredientImageFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$IngredientImageToJson(IngredientImage instance) => <String, dynamic>{
-      'id': instance.id,
-      'uuid': instance.uuid,
-      'ingredient_id': instance.ingredientId,
-      'image': instance.url,
-      'size': instance.size,
-      'license': instance.licenseId,
-      'license_author': instance.author,
-      'license_author_url': instance.authorUrl,
-      'license_title': instance.title,
-      'license_object_url': instance.objectUrl,
-      'license_derivative_source_url': instance.derivativeSourceUrl,
-    };
+  'id': instance.id,
+  'uuid': instance.uuid,
+  'ingredient_id': instance.ingredientId,
+  'image': instance.url,
+  'size': instance.size,
+  'license': instance.licenseId,
+  'license_author': instance.author,
+  'license_author_url': instance.authorUrl,
+  'license_title': instance.title,
+  'license_object_url': instance.objectUrl,
+  'license_derivative_source_url': instance.derivativeSourceUrl,
+};

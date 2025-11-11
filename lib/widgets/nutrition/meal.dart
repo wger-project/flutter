@@ -36,7 +36,7 @@ import 'package:wger/widgets/nutrition/widgets.dart';
 enum viewMode {
   base, // just highlevel meal info (name, time)
   withIngredients, // + ingredients
-  withAllDetails // + nutritional breakdown of ingredients, + logged today
+  withAllDetails, // + nutritional breakdown of ingredients, + logged today
 }
 
 class MealWidget extends StatefulWidget {
@@ -173,8 +173,9 @@ class _MealWidgetState extends State<MealWidget> {
                   ),
                 )
               else
-                ...widget._meal.mealItems
-                    .map((item) => MealItemEditableFullTile(item, _viewMode, _editing)),
+                ...widget._meal.mealItems.map(
+                  (item) => MealItemEditableFullTile(item, _viewMode, _editing),
+                ),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
               const Divider(),
             if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
@@ -201,12 +202,14 @@ class _MealWidgetState extends State<MealWidget> {
                       planned: widget._meal.plannedNutritionalValues,
                       logged: widget._meal.loggedNutritionalValuesToday,
                     ),
-                  ...widget._meal.diaryEntriesToday.map((item) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [DiaryEntryTile(diaryEntry: item)],
-                        ),
-                      )),
+                  ...widget._meal.diaryEntriesToday.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [DiaryEntryTile(diaryEntry: item)],
+                      ),
+                    ),
+                  ),
                 ],
               ),
           ],
@@ -288,11 +291,11 @@ class MealHeader extends StatelessWidget {
     required viewMode viewMode,
     required Function() toggleEditing,
     required Function() toggleViewMode,
-  })  : _meal = meal,
-        _editing = editing,
-        _viewMode = viewMode,
-        _toggleViewMode = toggleViewMode,
-        _toggleEditing = toggleEditing;
+  }) : _meal = meal,
+       _editing = editing,
+       _viewMode = viewMode,
+       _toggleViewMode = toggleViewMode,
+       _toggleEditing = toggleEditing;
 
   @override
   Widget build(BuildContext context) {

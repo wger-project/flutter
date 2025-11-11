@@ -106,30 +106,36 @@ void main() {
 
     // Mock categories
     when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
-    when(mockBaseProvider.fetchPaginated(tCategoryEntriesUri))
-        .thenAnswer((_) => Future.value(tCategoryMap['results']));
+    when(
+      mockBaseProvider.fetchPaginated(tCategoryEntriesUri),
+    ).thenAnswer((_) => Future.value(tCategoryMap['results']));
 
     // Mock muscles
     when(mockBaseProvider.makeUrl(muscleUrl)).thenReturn(tMuscleEntriesUri);
-    when(mockBaseProvider.fetchPaginated(tMuscleEntriesUri))
-        .thenAnswer((_) => Future.value(tMuscleMap['results']));
+    when(
+      mockBaseProvider.fetchPaginated(tMuscleEntriesUri),
+    ).thenAnswer((_) => Future.value(tMuscleMap['results']));
 
     // Mock equipment
     when(mockBaseProvider.makeUrl(equipmentUrl)).thenReturn(tEquipmentEntriesUri);
-    when(mockBaseProvider.fetchPaginated(tEquipmentEntriesUri))
-        .thenAnswer((_) => Future.value(tEquipmentMap['results']));
+    when(
+      mockBaseProvider.fetchPaginated(tEquipmentEntriesUri),
+    ).thenAnswer((_) => Future.value(tEquipmentMap['results']));
 
     // Mock languages
-    when(mockBaseProvider.makeUrl(languageUrl, query: anyNamed('query')))
-        .thenReturn(tLanguageEntriesUri);
-    when(mockBaseProvider.fetchPaginated(tLanguageEntriesUri))
-        .thenAnswer((_) => Future.value(tLanguageMap['results']));
+    when(
+      mockBaseProvider.makeUrl(languageUrl, query: anyNamed('query')),
+    ).thenReturn(tLanguageEntriesUri);
+    when(
+      mockBaseProvider.fetchPaginated(tLanguageEntriesUri),
+    ).thenAnswer((_) => Future.value(tLanguageMap['results']));
 
     // Mock base info response
     when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 1)).thenReturn(tExerciseInfoUri);
     when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 2)).thenReturn(tExerciseInfoUri);
-    when(mockBaseProvider.fetch(tExerciseInfoUri))
-        .thenAnswer((_) => Future.value(tExerciseInfoMap));
+    when(
+      mockBaseProvider.fetch(tExerciseInfoUri),
+    ).thenAnswer((_) => Future.value(tExerciseInfoMap));
   });
 
   group('findCategoryById()', () {

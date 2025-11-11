@@ -42,8 +42,9 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    final items =
-        provider.categories.map<Widget>((item) => CategoriesCard(item, elevation: 0)).toList();
+    final items = provider.categories
+        .map<Widget>((item) => CategoriesCard(item, elevation: 0))
+        .toList();
     if (items.isNotEmpty) {
       items.add(
         NothingFound(
@@ -115,10 +116,10 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
                                 ),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color:
-                                      Theme.of(context).textTheme.headlineSmall!.color!.withOpacity(
-                                            _current == entry.key ? 0.9 : 0.4,
-                                          ),
+                                  color: Theme.of(context).textTheme.headlineSmall!.color!
+                                      .withOpacity(
+                                        _current == entry.key ? 0.9 : 0.4,
+                                      ),
                                 ),
                               ),
                             );

@@ -144,11 +144,13 @@ class Exercise extends Equatable {
     this.authorsGlobal = authorsGlobal ?? [];
   }
 
+  bool get showPlateCalculator => equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL);
+
   Exercise.fromApiDataString(String baseData, List<Language> languages)
-      : this.fromApiData(ExerciseApiData.fromString(baseData), languages);
+    : this.fromApiData(ExerciseApiData.fromString(baseData), languages);
 
   Exercise.fromApiDataJson(Map<String, dynamic> baseData, List<Language> languages)
-      : this.fromApiData(ExerciseApiData.fromJson(baseData), languages);
+    : this.fromApiData(ExerciseApiData.fromJson(baseData), languages);
 
   Exercise.fromApiData(ExerciseApiData exerciseData, List<Language> languages) {
     id = exerciseData.id;
@@ -228,13 +230,13 @@ class Exercise extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        uuid,
-        created,
-        lastUpdate,
-        category,
-        equipment,
-        muscles,
-        musclesSecondary,
-      ];
+    id,
+    uuid,
+    created,
+    lastUpdate,
+    category,
+    equipment,
+    muscles,
+    musclesSecondary,
+  ];
 }

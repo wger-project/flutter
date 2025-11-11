@@ -14,37 +14,49 @@ Day _$DayFromJson(Map<String, dynamic> json) {
       'routine',
       'name',
       'description',
+      'type',
       'is_rest',
       'need_logs_to_advance',
-      'type',
       'order',
-      'config'
+      'config',
     ],
   );
   return Day(
     id: (json['id'] as num?)?.toInt(),
     routineId: (json['routine'] as num).toInt(),
     name: json['name'] as String,
-    description: json['description'] as String,
+    description: json['description'] as String? ?? '',
     isRest: json['is_rest'] as bool? ?? false,
     needLogsToAdvance: json['need_logs_to_advance'] as bool? ?? false,
-    type: json['type'] as String? ?? 'custom',
-    order: json['order'] as num? ?? 0,
-    config: json['config'] ?? null,
-    slots: (json['slots'] as List<dynamic>?)
+    type: $enumDecodeNullable(_$DayTypeEnumMap, json['type']) ?? DayType.custom,
+    order: json['order'] as num? ?? 1,
+    config: json['config'],
+    slots:
+        (json['slots'] as List<dynamic>?)
             ?.map((e) => Slot.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
   );
 }
 
 Map<String, dynamic> _$DayToJson(Day instance) => <String, dynamic>{
-      'routine': instance.routineId,
-      'name': instance.name,
-      'description': instance.description,
-      'is_rest': instance.isRest,
-      'need_logs_to_advance': instance.needLogsToAdvance,
-      'type': instance.type,
-      'order': instance.order,
-      'config': instance.config,
-    };
+  'routine': instance.routineId,
+  'name': instance.name,
+  'description': instance.description,
+  'type': _$DayTypeEnumMap[instance.type]!,
+  'is_rest': instance.isRest,
+  'need_logs_to_advance': instance.needLogsToAdvance,
+  'order': instance.order,
+  'config': instance.config,
+};
+
+const _$DayTypeEnumMap = {
+  DayType.custom: 'custom',
+  DayType.enom: 'enom',
+  DayType.amrap: 'amrap',
+  DayType.hiit: 'hiit',
+  DayType.tabata: 'tabata',
+  DayType.edt: 'edt',
+  DayType.rft: 'rft',
+  DayType.afap: 'afap',
+};

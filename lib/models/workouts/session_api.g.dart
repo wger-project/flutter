@@ -7,13 +7,11 @@ part of 'session_api.dart';
 // **************************************************************************
 
 WorkoutSessionApi _$WorkoutSessionApiFromJson(Map<String, dynamic> json) {
-  $checkKeys(
-    json,
-    requiredKeys: const ['session'],
-  );
+  $checkKeys(json, requiredKeys: const ['session']);
   return WorkoutSessionApi(
     session: WorkoutSession.fromJson(json['session'] as Map<String, dynamic>),
-    logs: (json['logs'] as List<dynamic>?)
+    logs:
+        (json['logs'] as List<dynamic>?)
             ?.map((e) => Log.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
@@ -21,5 +19,5 @@ WorkoutSessionApi _$WorkoutSessionApiFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$WorkoutSessionApiToJson(WorkoutSessionApi instance) => <String, dynamic>{
-      'session': instance.session,
-    };
+  'session': instance.session,
+};
