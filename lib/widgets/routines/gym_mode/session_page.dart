@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/widgets/routines/forms/session.dart';
@@ -30,13 +29,11 @@ class SessionPage extends StatelessWidget {
   final Routine _routine;
   final WorkoutSession _session;
   final PageController _controller;
-  final Map<Exercise, int> _exercisePages;
 
   SessionPage(
     this._routine,
     this._controller,
-    TimeOfDay start,
-    this._exercisePages, {
+    TimeOfDay start, {
     int? dayId,
   }) : _session = _routine.sessions
            .map((sessionApi) => sessionApi.session)
@@ -59,7 +56,7 @@ class SessionPage extends StatelessWidget {
         NavigationHeader(
           AppLocalizations.of(context).workoutSession,
           _controller,
-          exercisePages: _exercisePages,
+          showEndWorkoutButton: false,
         ),
         Expanded(child: Container()),
         Padding(
@@ -70,7 +67,7 @@ class SessionPage extends StatelessWidget {
             session: _session,
           ),
         ),
-        NavigationFooter(_controller, 1, showNext: false),
+        NavigationFooter(_controller, showNext: false),
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 
@@ -9,24 +10,88 @@ part 'gym_state.g.dart';
 
 const DEFAULT_DURATION = Duration(hours: 5);
 
+enum PageType {
+  overview,
+  set,
+  session,
+}
+
+enum SlotPageType {
+  exerciseOverview,
+  log,
+  timer,
+}
+
+class PageEntry {
+  final PageType type;
+
+  /// Absolute page index
+  final int pageIndex;
+
+  final List<SlotPageEntry> slotPages;
+
+  PageEntry({
+    required this.type,
+    required this.pageIndex,
+    this.slotPages = const [],
+  }) : assert(
+         slotPages.isEmpty || type == PageType.set,
+         'SlotEntries can only be set for set pages',
+       );
+
+  List<int> get exerciseIds {
+    final ids = <int>{};
+    for (final entry in slotPages) {
+      ids.add(entry.exerciseId);
+    }
+    return ids.toList();
+  }
+
+  @override
+  String toString() => 'PageEntry(type: $type, pageIndex: $pageIndex)';
+}
+
+class SlotPageEntry {
+  final SlotPageType type;
+
+  final int exerciseId;
+
+  /// index within a set for overview (e.g. "1 of 5 sets")
+  final int setIndex;
+
+  /// Absolute page index
+  final int pageIndex;
+
+  const SlotPageEntry({
+    required this.type,
+    required this.pageIndex,
+    required this.exerciseId,
+    required this.setIndex,
+  });
+
+  @override
+  String toString() =>
+      'SlotEntry(type: $type, exerciseId: $exerciseId, setIndex: $setIndex, pageIndex: $pageIndex)';
+}
+
 class GymState {
-  final Map<Exercise, int> exercisePages;
+  final _logger = Logger('GymState');
+
+  final List<PageEntry> pages;
   final bool showExercisePages;
   final bool showTimerPages;
   final int currentPage;
   final int totalPages;
-  final int totalElements;
   final int? dayId;
   final TimeOfDay startTime;
   final DateTime validUntil;
 
   GymState({
-    this.exercisePages = const {},
+    this.pages = const [],
     this.showExercisePages = true,
     this.showTimerPages = true,
     this.currentPage = 0,
     this.totalPages = 1,
-    this.totalElements = 1,
     this.dayId,
     DateTime? validUntil,
     TimeOfDay? startTime,
@@ -34,7 +99,7 @@ class GymState {
        startTime = startTime ?? TimeOfDay.fromDateTime(clock.now());
 
   GymState copyWith({
-    Map<Exercise, int>? exercisePages,
+    List<PageEntry>? pages,
     bool? showExercisePages,
     bool? showTimerPages,
     int? currentPage,
@@ -45,16 +110,34 @@ class GymState {
     TimeOfDay? startTime,
   }) {
     return GymState(
-      exercisePages: exercisePages ?? this.exercisePages,
+      pages: pages ?? this.pages,
       showExercisePages: showExercisePages ?? this.showExercisePages,
       showTimerPages: showTimerPages ?? this.showTimerPages,
       currentPage: currentPage ?? this.currentPage,
       totalPages: totalPages ?? this.totalPages,
-      totalElements: totalElements ?? this.totalElements,
       dayId: dayId ?? this.dayId,
       validUntil: validUntil ?? this.validUntil,
       startTime: startTime ?? this.startTime,
     );
+  }
+
+  SlotPageEntry? getSlotPageByIndex([int? pageIndex]) {
+    final index = pageIndex ?? currentPage;
+
+    for (final slotPage in pages.expand((p) => p.slotPages)) {
+      if (slotPage.pageIndex == index) {
+        return slotPage;
+      }
+    }
+    return null;
+  }
+
+  double get ratioCompleted {
+    if (totalPages == 0) {
+      return 0.0;
+    }
+
+    return currentPage / totalPages;
   }
 
   @override
@@ -62,8 +145,7 @@ class GymState {
     return 'GymState('
         'currentPage: $currentPage, '
         'totalPages: $totalPages, '
-        'totalElements: $totalElements, '
-        'exercisePages: ${exercisePages.length} exercises, '
+        'pages: ${pages.length} entries, '
         'dayId: $dayId, '
         'validUntil: $validUntil '
         'startTime: $startTime, '
@@ -80,59 +162,111 @@ class GymStateNotifier extends _$GymStateNotifier {
   @override
   GymState build() {
     _logger.finer('Initializing GymStateNotifier with default state');
+    //loadPrefs();
     return GymState();
   }
 
-  void computePagesForDay(DayData dayData, Exercise Function(int) findExerciseById) {
-    var totalElements = 1;
+  Future<void> loadPrefs() async {
+    final prefs = PreferenceHelper.asyncPref;
+
+    final showExercise = await prefs.getBool('showExercisePrefs');
+    if (showExercise != null && showExercise != state.showExercisePages) {
+      state = state.copyWith(showExercisePages: showExercise);
+    }
+
+    final showTimer = await prefs.getBool('showTimerPrefs');
+    if (showTimer != null && showTimer != state.showTimerPages) {
+      state = state.copyWith(showTimerPages: showTimer);
+    }
+    _logger.finer('Loaded preferences: showExercise=$showExercise showTimer=$showTimer');
+  }
+
+  Future<void> _savePrefs() async {
+    final prefs = PreferenceHelper.asyncPref;
+    await prefs.setBool('showExercisePrefs', state.showExercisePages);
+    await prefs.setBool('showTimerPrefs', state.showTimerPages);
+    _logger.finer(
+      'Saved preferences: showExercise=${state.showExercisePages} showTimer=${state.showTimerPages}',
+    );
+  }
+
+  void calculatePages(DayData dayData) {
     var totalPages = 1;
-    final Map<Exercise, int> exercisePages = {};
+
+    final List<PageEntry> pages = [PageEntry(type: PageType.overview, pageIndex: 1)];
 
     for (final slot in dayData.slots) {
-      totalElements += slot.setConfigs.length;
+      final slotPageIndex = totalPages - 1;
+      final slotEntries = <SlotPageEntry>[];
+
       // exercise overview page
       if (state.showExercisePages) {
-        totalPages += 1;
+        totalPages++;
+        slotEntries.add(
+          SlotPageEntry(
+            type: SlotPageType.exerciseOverview,
+            exerciseId: slot.setConfigs.first.exerciseId,
+            setIndex: 0,
+            pageIndex: totalPages - 1,
+          ),
+        );
       }
 
+      int setNr = 1;
       for (final config in slot.setConfigs) {
-        // log + timer per set
+        // Timer page
         if (state.showTimerPages) {
-          totalPages += (config.nrOfSets! * 2).toInt();
-        } else {
-          totalPages += config.nrOfSets!.toInt();
+          totalPages++;
+          slotEntries.add(
+            SlotPageEntry(
+              type: SlotPageType.timer,
+              exerciseId: config.exerciseId,
+              setIndex: setNr,
+              pageIndex: totalPages - 1,
+            ),
+          );
         }
+
+        // Log page
+        totalPages++;
+        slotEntries.add(
+          SlotPageEntry(
+            type: SlotPageType.log,
+            exerciseId: config.exerciseId,
+            setIndex: setNr,
+            pageIndex: totalPages - 1,
+          ),
+        );
+
+        setNr++;
       }
+
+      pages.add(
+        PageEntry(
+          type: PageType.set,
+          pageIndex: slotPageIndex,
+          slotPages: slotEntries,
+        ),
+      );
     }
 
-    var currentPage = 1;
-    for (final slot in dayData.slots) {
-      var firstPage = true;
-      for (final config in slot.setConfigs) {
-        final exercise = findExerciseById(config.exerciseId);
-        if (firstPage) {
-          exercisePages[exercise] = currentPage;
-          currentPage++;
-        }
-        currentPage += 2;
-        firstPage = false;
-      }
-    }
-
-    _logger.finer('Total pages: $totalPages');
-    _logger.finer('Total elements: $totalElements');
+    pages.add(
+      PageEntry(type: PageType.session, pageIndex: totalPages),
+    );
 
     state = state.copyWith(
-      exercisePages: exercisePages,
+      pages: pages,
       totalPages: totalPages,
-      totalElements: totalElements,
     );
+    _logger.finer('Initialized ${state.pages.length} pages');
   }
 
   Future<int> initForDay(
     DayData dayData, {
     required Exercise Function(int) findExerciseById,
   }) async {
+    calculatePages(dayData);
+
     final newDayId = dayData.day!.id!;
     final validUntil = state.validUntil;
     final currentPage = state.currentPage;
@@ -143,9 +277,6 @@ class GymStateNotifier extends _$GymStateNotifier {
       _logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
     }
     final initialPage = shouldReset ? 0 : currentPage;
-
-    // compute pages (pure, uses callback for exercise lookup)
-    computePagesForDay(dayData, findExerciseById);
 
     // set dayId and initial page
     state = state.copyWith(
@@ -162,22 +293,26 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setShowExercisePages(bool value) {
     state = state.copyWith(showExercisePages: value);
+    _savePrefs();
   }
 
   void setShowTimerPages(bool value) {
     state = state.copyWith(showTimerPages: value);
+    _savePrefs();
   }
 
   void setDayId(int dayId) {
     state = state.copyWith(dayId: dayId);
   }
 
-  void setExercisePages(Map<Exercise, int> exercisePages) {
-    state = state.copyWith(exercisePages: exercisePages);
-  }
-
   void clear() {
     _logger.fine('Clearing state');
-    state = GymState();
+    state = state.copyWith(
+      currentPage: 0,
+      totalPages: 1,
+      dayId: null,
+      validUntil: clock.now().add(DEFAULT_DURATION),
+      startTime: null,
+    );
   }
 }

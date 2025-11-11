@@ -20,17 +20,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
 class TimerWidget extends StatefulWidget {
   final PageController _controller;
-  final double _ratioCompleted;
-  final Map<Exercise, int> _exercisePages;
-  final _totalPages;
 
-  const TimerWidget(this._controller, this._ratioCompleted, this._exercisePages, this._totalPages);
+  const TimerWidget(this._controller);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -69,8 +65,6 @@ class _TimerWidgetState extends State<TimerWidget> {
         NavigationHeader(
           AppLocalizations.of(context).pause,
           widget._controller,
-          totalPages: widget._totalPages,
-          exercisePages: widget._exercisePages,
         ),
         Expanded(
           child: Center(
@@ -80,7 +74,7 @@ class _TimerWidgetState extends State<TimerWidget> {
             ),
           ),
         ),
-        NavigationFooter(widget._controller, widget._ratioCompleted),
+        NavigationFooter(widget._controller),
       ],
     );
   }
@@ -88,17 +82,11 @@ class _TimerWidgetState extends State<TimerWidget> {
 
 class TimerCountdownWidget extends StatefulWidget {
   final PageController _controller;
-  final double _ratioCompleted;
   final int _seconds;
-  final Map<Exercise, int> _exercisePages;
-  final int _totalPages;
 
   const TimerCountdownWidget(
     this._controller,
     this._seconds,
-    this._ratioCompleted,
-    this._exercisePages,
-    this._totalPages,
   );
 
   @override
@@ -137,8 +125,6 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
         NavigationHeader(
           AppLocalizations.of(context).pause,
           widget._controller,
-          totalPages: widget._totalPages,
-          exercisePages: widget._exercisePages,
         ),
         Expanded(
           child: Center(
@@ -148,7 +134,7 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
             ),
           ),
         ),
-        NavigationFooter(widget._controller, widget._ratioCompleted),
+        NavigationFooter(widget._controller),
       ],
     );
   }

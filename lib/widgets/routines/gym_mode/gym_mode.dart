@@ -20,7 +20,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart' as provider;
+import 'package:provider/provider.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gym_state.dart';
@@ -62,48 +62,33 @@ class _GymModeState extends ConsumerState<GymMode> {
   }
 
   Future<int> _loadGymState() async {
-    await provider.Provider.of<RoutinesProvider>(context, listen: false).fetchAndSetRoutineFull(
+    widget._logger.fine('Loading gym state');
+    await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
       widget._dayDataGym.day!.routineId,
     );
-    widget._logger.fine('Refreshed routine data');
 
     final gymProvider = ref.read(gymStateProvider.notifier);
+    await gymProvider.loadPrefs();
     final initialPage = await gymProvider.initForDay(
       widget._dayDataGym,
-      findExerciseById: (id) =>
-          provider.Provider.of<ExercisesProvider>(context, listen: false).findExerciseById(id),
+      findExerciseById: (id) => context.read<ExercisesProvider>().findExerciseById(id),
     );
 
     return initialPage;
   }
 
   List<Widget> _getContent(GymState state) {
-    final exerciseProvider = provider.Provider.of<ExercisesProvider>(context, listen: false);
-    final routinesProvider = provider.Provider.of<RoutinesProvider>(context, listen: false);
-    var currentElement = 1;
+    final exerciseProvider = context.read<ExercisesProvider>();
+    final routinesProvider = context.read<RoutinesProvider>();
     final List<Widget> out = [];
-
-    final totalElements = state.totalElements;
-    final totalPages = state.totalPages;
-    final exercisePages = state.exercisePages;
 
     for (final slotData in widget._dayDataGym.slots) {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
-        final ratioCompleted = currentElement / totalElements;
         final exercise = exerciseProvider.findExerciseById(config.exerciseId);
-        currentElement++;
 
         if (firstPage && state.showExercisePages) {
-          out.add(
-            ExerciseOverview(
-              _controller,
-              exercise,
-              ratioCompleted,
-              exercisePages,
-              totalPages,
-            ),
-          );
+          out.add(ExerciseOverview(_controller, exercise));
         }
 
         out.add(
@@ -113,26 +98,15 @@ class _GymModeState extends ConsumerState<GymMode> {
             slotData,
             exercise,
             routinesProvider.findById(widget._dayDataGym.day!.routineId),
-            ratioCompleted,
-            exercisePages,
-            totalPages,
             widget._iteration,
           ),
         );
 
         if (state.showTimerPages) {
           if (config.restTime != null) {
-            out.add(
-              TimerCountdownWidget(
-                _controller,
-                config.restTime!.toInt(),
-                ratioCompleted,
-                exercisePages,
-                totalPages,
-              ),
-            );
+            out.add(TimerCountdownWidget(_controller, config.restTime!.toInt()));
           } else {
-            out.add(TimerWidget(_controller, ratioCompleted, exercisePages, totalPages));
+            out.add(TimerWidget(_controller));
           }
         }
 
@@ -164,13 +138,12 @@ class _GymModeState extends ConsumerState<GymMode> {
         final state = ref.watch(gymStateProvider);
 
         final List<Widget> children = [
-          StartPage(_controller, widget._dayDataDisplay, state.exercisePages),
+          StartPage(_controller, widget._dayDataDisplay),
           ..._getContent(state),
           SessionPage(
             context.read<RoutinesProvider>().findById(widget._dayDataGym.day!.routineId),
             _controller,
             state.startTime,
-            state.exercisePages,
             dayId: widget._dayDataGym.day!.id!,
           ),
         ];

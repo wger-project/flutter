@@ -62,9 +62,8 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
 class StartPage extends ConsumerWidget {
   final PageController _controller;
   final DayData _dayData;
-  final Map<Exercise, int> _exercisePages;
 
-  const StartPage(this._controller, this._dayData, this._exercisePages);
+  const StartPage(this._controller, this._dayData);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -73,7 +72,7 @@ class StartPage extends ConsumerWidget {
         NavigationHeader(
           AppLocalizations.of(context).todaysWorkout,
           _controller,
-          exercisePages: _exercisePages,
+          showEndWorkoutButton: false,
         ),
 
         Expanded(
@@ -137,7 +136,7 @@ class StartPage extends ConsumerWidget {
             );
           },
         ),
-        NavigationFooter(_controller, 0, showPrevious: false),
+        NavigationFooter(_controller, showPrevious: false),
       ],
     );
   }

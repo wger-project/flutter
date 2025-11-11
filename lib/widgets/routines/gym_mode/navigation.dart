@@ -17,26 +17,29 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/theme/theme.dart';
 
-class NavigationFooter extends StatelessWidget {
+class NavigationFooter extends ConsumerWidget {
   final PageController _controller;
-  final double _ratioCompleted;
   final bool showPrevious;
   final bool showNext;
 
   const NavigationFooter(
-    this._controller,
-    this._ratioCompleted, {
+    this._controller, {
     this.showPrevious = true,
     this.showNext = true,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gymState = ref.watch(gymStateProvider);
+
     return Row(
       children: [
         if (showPrevious)
@@ -54,7 +57,7 @@ class NavigationFooter extends StatelessWidget {
         Expanded(
           child: LinearProgressIndicator(
             minHeight: 3,
-            value: _ratioCompleted,
+            value: gymState.ratioCompleted,
             valueColor: const AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
           ),
         ),
@@ -75,26 +78,22 @@ class NavigationFooter extends StatelessWidget {
   }
 }
 
-class NavigationHeader extends StatelessWidget {
+class NavigationHeader extends ConsumerWidget {
   final PageController _controller;
   final String _title;
-  final Map<Exercise, int> exercisePages;
-  final int? totalPages;
+  final bool showEndWorkoutButton;
 
-  const NavigationHeader(
-    this._title,
-    this._controller, {
-    this.totalPages,
-    required this.exercisePages,
-  });
+  const NavigationHeader(this._title, this._controller, {this.showEndWorkoutButton = true});
 
-  Widget getDialog(BuildContext context) {
-    final TextButton? endWorkoutButton = totalPages != null
+  Widget getDialog(BuildContext context, int totalPages, List<PageEntry> pages) {
+    final exercisesProvider = context.read<ExercisesProvider>();
+
+    final TextButton? endWorkoutButton = showEndWorkoutButton
         ? TextButton(
             child: Text(AppLocalizations.of(context).endWorkout),
             onPressed: () {
               _controller.animateToPage(
-                totalPages!,
+                totalPages,
                 duration: DEFAULT_ANIMATION_DURATION,
                 curve: DEFAULT_ANIMATION_CURVE,
               );
@@ -113,13 +112,25 @@ class NavigationHeader extends StatelessWidget {
       content: SingleChildScrollView(
         child: Column(
           children: [
-            ...exercisePages.keys.map((e) {
+            ...pages.where((page) => page.type == PageType.set).map((e) {
               return ListTile(
-                title: Text(e.getTranslation(Localizations.localeOf(context).languageCode).name),
+                title: Text(
+                  e.exerciseIds
+                      .map(
+                        (id) => exercisesProvider
+                            .findExerciseById(id)
+                            .getTranslation(Localizations.localeOf(context).languageCode)
+                            .name,
+                      )
+                      .toList()
+                      .join('\n'),
+                ),
+
+                //subtitle: e.exerciseIds.length > 1 ? Text('super set') : null,
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   _controller.animateToPage(
-                    exercisePages[e]!,
+                    e.pageIndex,
                     duration: DEFAULT_ANIMATION_DURATION,
                     curve: DEFAULT_ANIMATION_CURVE,
                   );
@@ -143,7 +154,9 @@ class NavigationHeader extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gymState = ref.watch(gymStateProvider);
+
     return Row(
       children: [
         IconButton(
@@ -167,7 +180,7 @@ class NavigationHeader extends StatelessWidget {
           onPressed: () {
             showDialog(
               context: context,
-              builder: (ctx) => getDialog(context),
+              builder: (ctx) => getDialog(ctx, gymState.totalPages, gymState.pages),
             );
           },
         ),

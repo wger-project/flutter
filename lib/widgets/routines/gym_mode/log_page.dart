@@ -29,6 +29,7 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/configure_plates_screen.dart';
@@ -46,10 +47,7 @@ class LogPage extends ConsumerStatefulWidget {
   final SlotData _slotData;
   final Exercise _exercise;
   final Routine _routine;
-  final double _ratioCompleted;
-  final Map<Exercise, int> _exercisePages;
   final Log _log;
-  final int _totalPages;
 
   LogPage(
     this._controller,
@@ -57,9 +55,6 @@ class LogPage extends ConsumerStatefulWidget {
     this._slotData,
     this._exercise,
     this._routine,
-    this._ratioCompleted,
-    this._exercisePages,
-    this._totalPages,
     int? iteration,
   ) : _log = Log.fromSetConfigData(_configData)
         ..routineId = _routine.id!
@@ -89,14 +84,13 @@ class _LogPageState extends ConsumerState<LogPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final slotPage = ref.watch(gymStateProvider).getSlotPageByIndex();
 
     return Column(
       children: [
         NavigationHeader(
           widget._exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           widget._controller,
-          totalPages: widget._totalPages,
-          exercisePages: widget._exercisePages,
         ),
 
         Container(
@@ -115,11 +109,18 @@ class _LogPageState extends ConsumerState<LogPage> {
                 if (widget._configData.type != SlotEntryType.normal)
                   Text(
                     widget._configData.type.name.toUpperCase(),
-                    style: theme.textTheme.headlineMedium?.copyWith(
+                    style: theme.textTheme.headlineSmall?.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     textAlign: TextAlign.center,
                   ),
+                Text(
+                  '${slotPage?.setIndex} / ${widget._slotData.setConfigs.length}',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
           ),
@@ -160,7 +161,7 @@ class _LogPageState extends ConsumerState<LogPage> {
             ),
           ),
         ),
-        NavigationFooter(widget._controller, widget._ratioCompleted),
+        NavigationFooter(widget._controller),
       ],
     );
   }
