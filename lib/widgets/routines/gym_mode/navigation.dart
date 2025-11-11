@@ -79,14 +79,14 @@ class NavigationHeader extends StatelessWidget {
   final PageController _controller;
   final String _title;
   final Map<Exercise, int> exercisePages;
-  final int ?totalPages;
+  final int? totalPages;
 
   const NavigationHeader(
     this._title,
     this._controller, {
-      this.totalPages,
-      required this.exercisePages
-    });
+    this.totalPages,
+    required this.exercisePages,
+  });
 
   Widget getDialog(BuildContext context) {
     final TextButton? endWorkoutButton = totalPages != null
