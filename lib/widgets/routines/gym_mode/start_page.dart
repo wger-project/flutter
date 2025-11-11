@@ -33,12 +33,12 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
             child: Column(
               children: [
                 SwitchListTile(
-                  title: const Text('Show exercise overview pages'),
+                  title: Text(i18n.gymModeShowExercises),
                   value: gymState.showExercisePages,
                   onChanged: (value) => gymNotifier.setShowExercisePages(value),
                 ),
                 SwitchListTile(
-                  title: const Text('Show timer'),
+                  title: Text(i18n.gymModeShowTimer),
                   value: gymState.showTimerPages,
                   onChanged: (value) => gymNotifier.setShowTimerPages(value),
                 ),

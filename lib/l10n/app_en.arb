@@ -263,6 +263,8 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
+  "gymModeShowExercises": "Show exercise overview pages",
+  "gymModeShowTimer": "Show timer between sets",
   "plateCalculator": "Plates",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
