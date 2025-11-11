@@ -23,7 +23,6 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -94,6 +93,7 @@ void main() {
     // Setup AddExerciseProvider properties used by stepper steps
     // Note: All 6 steps are rendered immediately by the Stepper widget,
     // so all their required properties must be mocked
+    when(mockAddExerciseProvider.author).thenReturn('Test Author');
     when(mockAddExerciseProvider.equipment).thenReturn([]);
     when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
@@ -389,7 +389,7 @@ void main() {
     testWidgets('Successful submission shows success dialog', (WidgetTester tester) async {
       // Setup: Create verified user and mock successful submission
       setupVerifiedUser();
-      when(mockAddExerciseProvider.addExercise()).thenAnswer((_) async => 1);
+      when(mockAddExerciseProvider.postExerciseToServer()).thenAnswer((_) async => 1);
       when(mockAddExerciseProvider.addImages(any)).thenAnswer((_) async => {});
       when(mockExerciseProvider.fetchAndSetExercise(any)).thenAnswer((_) async => testBenchPress);
       when(mockAddExerciseProvider.clear()).thenReturn(null);
@@ -409,7 +409,7 @@ void main() {
       final httpException = WgerHttpException({
         'name': ['This field is required'],
       });
-      when(mockAddExerciseProvider.addExercise()).thenThrow(httpException);
+      when(mockAddExerciseProvider.postExerciseToServer()).thenThrow(httpException);
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -425,7 +425,7 @@ void main() {
     ) async {
       // Setup: Mock successful submission flow
       setupVerifiedUser();
-      when(mockAddExerciseProvider.addExercise()).thenAnswer((_) async => 1);
+      when(mockAddExerciseProvider.postExerciseToServer()).thenAnswer((_) async => 1);
       when(mockAddExerciseProvider.addImages(any)).thenAnswer((_) async => {});
       when(mockExerciseProvider.fetchAndSetExercise(any)).thenAnswer((_) async => testBenchPress);
       when(mockAddExerciseProvider.clear()).thenReturn(null);
