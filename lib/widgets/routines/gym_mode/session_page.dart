@@ -62,7 +62,7 @@ class SessionPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: SessionForm(
-            _routine.id!,
+            _routine.id,
             onSaved: () => Navigator.of(context).pop(),
             session: _session,
           ),

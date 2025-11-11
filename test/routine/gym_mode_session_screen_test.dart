@@ -18,6 +18,7 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -46,18 +47,19 @@ void main() {
   });
 
   Widget renderSessionPage({locale = 'en'}) {
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: SessionPage(
-            testRoutine,
-            PageController(),
-            const TimeOfDay(hour: 13, minute: 35),
-            const {},
+    return ProviderScope(
+      child: ChangeNotifierProvider<RoutinesProvider>(
+        create: (context) => mockRoutinesProvider,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: SessionPage(
+              testRoutine,
+              PageController(),
+              const TimeOfDay(hour: 13, minute: 35),
+            ),
           ),
         ),
       ),

@@ -104,7 +104,6 @@ class GymState {
     bool? showTimerPages,
     int? currentPage,
     int? totalPages,
-    int? totalElements,
     int? dayId,
     DateTime? validUntil,
     TimeOfDay? startTime,
@@ -162,7 +161,6 @@ class GymStateNotifier extends _$GymStateNotifier {
   @override
   GymState build() {
     _logger.finer('Initializing GymStateNotifier with default state');
-    //loadPrefs();
     return GymState();
   }
 
