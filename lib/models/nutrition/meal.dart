@@ -18,22 +18,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/models/schema.dart';
+import 'package:wger/powersync.dart';
 
 part 'meal.g.dart';
 
 @JsonSerializable()
 class Meal {
   @JsonKey(required: false)
-  late int? id;
+  late String? id;
 
   @JsonKey(name: 'plan')
-  late int planId;
+  late String planId;
 
   @JsonKey(toJson: timeToString, fromJson: stringToTimeNull)
   TimeOfDay? time;
@@ -52,7 +55,7 @@ class Meal {
 
   Meal({
     this.id,
-    int? plan,
+    String? plan,
     this.time,
     String? name,
     List<MealItem>? mealItems,
@@ -87,11 +90,20 @@ class Meal {
   // Boilerplate
   factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
 
+  factory Meal.fromRow(sqlite.Row row) {
+    return Meal(
+      id: row['id'],
+      plan: row['plan_id'],
+      time: stringToTime(row['time']),
+      name: row['name'],
+    );
+  }
+
   Map<String, dynamic> toJson() => _$MealToJson(this);
 
   Meal copyWith({
-    int? id,
-    int? planId,
+    String? id,
+    String? plan,
     TimeOfDay? time,
     String? name,
     List<MealItem>? mealItems,
@@ -99,11 +111,31 @@ class Meal {
   }) {
     return Meal(
       id: id ?? this.id,
-      plan: planId ?? this.planId,
+      plan: plan ?? planId,
       time: time ?? this.time,
       name: name ?? this.name,
       mealItems: mealItems ?? this.mealItems,
       diaryEntries: diaryEntries ?? this.diaryEntries,
     );
+  }
+
+  Future<Meal> loadChildren() async {
+    print('loadChildren called. plan is $planId');
+    return copyWith(
+      mealItems: await MealItem.readByMealId(id!),
+      diaryEntries: await Log.readByMealId(id!),
+    );
+  }
+
+  static Future<Meal> read(String id) async {
+    final results = await db.get('SELECT * FROM $tableMeals WHERE id = ?', [id]);
+    return Meal.fromRow(results);
+  }
+
+  static Future<List<Meal>> readByPlanId(String planId) async {
+    print('Meal.readByPlanId: SELECT * FROM $tableMeals WHERE plan_id = $planId');
+    final results = await db.getAll('SELECT * FROM $tableMeals WHERE plan_id = ?', [planId]);
+    print(results.rows.length);
+    return Future.wait(results.map((r) => Meal.fromRow(r).loadChildren()));
   }
 }

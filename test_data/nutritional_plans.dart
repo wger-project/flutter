@@ -156,23 +156,23 @@ NutritionalPlan getNutritionalPlan() {
   mealItem3.ingredient = ingredient3;
 
   final meal1 = Meal(
-    id: 1,
-    plan: 1,
+    id: 'deadbeefa',
+    plan: '1',
     time: const TimeOfDay(hour: 17, minute: 0),
     name: 'Initial Name 1',
   );
   meal1.mealItems = [mealItem1, mealItem2];
 
   final meal2 = Meal(
-    id: 2,
-    plan: 1,
+    id: 'deadbeefb',
+    plan: '1',
     time: const TimeOfDay(hour: 22, minute: 5),
     name: 'Initial Name 2',
   );
   meal2.mealItems = [mealItem3];
 
   final NutritionalPlan plan = NutritionalPlan(
-    id: 1,
+    id: 'deadbeefc',
     description: 'Less fat, more protein',
     creationDate: DateTime(2021, 5, 23),
     startDate: DateTime(2021, 5, 23),
@@ -180,9 +180,9 @@ NutritionalPlan getNutritionalPlan() {
   plan.meals = [meal1, meal2];
 
   // Add logs
-  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem1, '1', '1', DateTime(2021, 6, 1)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem2, '1', '1', DateTime(2021, 6, 1)));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem3, '1', '1', DateTime(2021, 6, 10)));
 
   return plan;
 }
@@ -195,23 +195,23 @@ NutritionalPlan getNutritionalPlanScreenshot() {
   final mealItem3 = MealItem(ingredientId: 3, amount: 100, ingredient: apple);
 
   final meal1 = Meal(
-    id: 1,
-    plan: 1,
+    id: 'deadbeefa',
+    plan: '1',
     time: const TimeOfDay(hour: 8, minute: 30),
     name: 'Breakfast',
     mealItems: [mealItem1, mealItem2],
   );
 
   final meal2 = Meal(
-    id: 2,
-    plan: 1,
+    id: 'deadbeefb',
+    plan: '1',
     time: const TimeOfDay(hour: 11, minute: 0),
     name: 'Snack 1',
     mealItems: [mealItem3],
   );
 
   final NutritionalPlan plan = NutritionalPlan(
-    id: 1,
+    id: '1',
     description: 'Diet',
     creationDate: DateTime(2021, 5, 23),
     startDate: DateTime(2021, 5, 23),
@@ -219,9 +219,9 @@ NutritionalPlan getNutritionalPlanScreenshot() {
   );
 
   // Add logs
-  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime.now()));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime.now()));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime.now()));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem1, '1', '1', DateTime.now()));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem2, '1', '1', DateTime.now()));
+  plan.diaryEntries.add(Log.fromMealItem(mealItem3, '1', '1', DateTime.now()));
 
   for (final i in plan.diaryEntries) {
     i.datetime = DateTime.now();

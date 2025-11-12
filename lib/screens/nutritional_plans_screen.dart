@@ -49,7 +49,7 @@ class NutritionalPlansScreen extends StatelessWidget {
         },
       ),
       body: Consumer<NutritionPlansProvider>(
-        builder: (context, nutritionProvider, child) => NutritionalPlansList(nutritionProvider),
+        builder: (context, nutritionProvider, child) => NutritionalPlansList(),
       ),
     );
   }

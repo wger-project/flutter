@@ -8,10 +8,8 @@ import 'package:wger/models/nutrition/nutritional_values.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
 
 class NutritionalDiaryTable extends StatelessWidget {
-  const NutritionalDiaryTable({
-    super.key,
-    required NutritionalPlan nutritionalPlan,
-  }) : plan = nutritionalPlan;
+  const NutritionalDiaryTable({super.key, required NutritionalPlan nutritionalPlan})
+    : plan = nutritionalPlan;
 
   final NutritionalPlan plan;
 
@@ -115,7 +113,7 @@ class NutritionalDiaryTable extends StatelessWidget {
             return GestureDetector(
               onTap: () => Navigator.of(context).pushNamed(
                 NutritionalDiaryScreen.routeName,
-                arguments: NutritionalDiaryArguments(plan, date),
+                arguments: NutritionalDiaryArguments(plan.id!, date),
               ),
               child: element,
             );
