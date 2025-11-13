@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
+import 'package:wger/models/workouts/set_config_data.dart';
 
 part 'gym_state.g.dart';
 
@@ -39,6 +40,18 @@ class PageEntry {
          'SlotEntries can only be set for set pages',
        );
 
+  PageEntry copyWith({
+    PageType? type,
+    int? pageIndex,
+    List<SlotPageEntry>? slotPages,
+  }) {
+    return PageEntry(
+      type: type ?? this.type,
+      pageIndex: pageIndex ?? this.pageIndex,
+      slotPages: slotPages ?? this.slotPages,
+    );
+  }
+
   List<int> get exerciseIds {
     final ids = <int>{};
     for (final entry in slotPages) {
@@ -46,6 +59,10 @@ class PageEntry {
     }
     return ids.toList();
   }
+
+  // Whether all sub-pages (e.g. log pages) are marked as done.
+  bool get allLogsDone =>
+      slotPages.where((entry) => entry.type == SlotPageType.log).every((entry) => entry.logDone);
 
   @override
   String toString() => 'PageEntry(type: $type, pageIndex: $pageIndex)';
@@ -62,12 +79,38 @@ class SlotPageEntry {
   /// Absolute page index
   final int pageIndex;
 
-  const SlotPageEntry({
+  /// Whether the log page has been marked as done
+  final bool logDone;
+
+  /// The associated SetConfigData, only available for SlotPageType.log
+  final SetConfigData? setConfigData;
+
+  SlotPageEntry({
     required this.type,
     required this.pageIndex,
     required this.exerciseId,
     required this.setIndex,
+    this.setConfigData,
+    this.logDone = false,
   });
+
+  SlotPageEntry copyWith({
+    SlotPageType? type,
+    int? exerciseId,
+    int? setIndex,
+    int? pageIndex,
+    SetConfigData? setConfigData,
+    bool? logDone,
+  }) {
+    return SlotPageEntry(
+      type: type ?? this.type,
+      exerciseId: exerciseId ?? this.exerciseId,
+      setIndex: setIndex ?? this.setIndex,
+      pageIndex: pageIndex ?? this.pageIndex,
+      setConfigData: setConfigData ?? this.setConfigData,
+      logDone: logDone ?? this.logDone,
+    );
+  }
 
   @override
   String toString() =>
@@ -190,12 +233,12 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void calculatePages(DayData dayData) {
     var totalPages = 1;
+    final List<PageEntry> pages = [PageEntry(type: PageType.overview, pageIndex: totalPages - 1)];
 
-    final List<PageEntry> pages = [PageEntry(type: PageType.overview, pageIndex: 1)];
-
-    for (final slot in dayData.slots) {
+    for (final slotData in dayData.slots) {
       final slotPageIndex = totalPages - 1;
       final slotEntries = <SlotPageEntry>[];
+      int setIndex = 0;
 
       // exercise overview page
       if (state.showExercisePages) {
@@ -203,15 +246,14 @@ class GymStateNotifier extends _$GymStateNotifier {
         slotEntries.add(
           SlotPageEntry(
             type: SlotPageType.exerciseOverview,
-            exerciseId: slot.setConfigs.first.exerciseId,
-            setIndex: 0,
+            exerciseId: slotData.setConfigs.first.exerciseId,
+            setIndex: setIndex,
             pageIndex: totalPages - 1,
           ),
         );
       }
 
-      int setNr = 1;
-      for (final config in slot.setConfigs) {
+      for (final config in slotData.setConfigs) {
         // Timer page
         if (state.showTimerPages) {
           totalPages++;
@@ -219,7 +261,7 @@ class GymStateNotifier extends _$GymStateNotifier {
             SlotPageEntry(
               type: SlotPageType.timer,
               exerciseId: config.exerciseId,
-              setIndex: setNr,
+              setIndex: setIndex,
               pageIndex: totalPages - 1,
             ),
           );
@@ -231,12 +273,13 @@ class GymStateNotifier extends _$GymStateNotifier {
           SlotPageEntry(
             type: SlotPageType.log,
             exerciseId: config.exerciseId,
-            setIndex: setNr,
+            setIndex: setIndex,
             pageIndex: totalPages - 1,
+            setConfigData: config,
           ),
         );
 
-        setNr++;
+        setIndex++;
       }
 
       pages.add(

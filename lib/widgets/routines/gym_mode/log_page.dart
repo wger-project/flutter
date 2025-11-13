@@ -24,6 +24,7 @@ import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
@@ -39,12 +40,32 @@ import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
+import 'package:wger/widgets/routines/gym_mode/workout.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
+
+void _openWorkoutProgressionDialog(BuildContext context, DayData dayData) {
+  showDialog<void>(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        title: Text(AppLocalizations.of(context).todaysWorkout),
+        content: WorkoutProgression(dayData),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+          ),
+        ],
+      );
+    },
+  );
+}
 
 class LogPage extends ConsumerStatefulWidget {
   final PageController _controller;
   final SetConfigData _configData;
   final SlotData _slotData;
+  final DayData _dayData;
   final Exercise _exercise;
   final Routine _routine;
   final Log _log;
@@ -53,6 +74,7 @@ class LogPage extends ConsumerStatefulWidget {
     this._controller,
     this._configData,
     this._slotData,
+    this._dayData,
     this._exercise,
     this._routine,
     int? iteration,
@@ -120,6 +142,15 @@ class _LogPageState extends ConsumerState<LogPage> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   textAlign: TextAlign.center,
+                ),
+                IconButton(
+                  onPressed: () {
+                    _openWorkoutProgressionDialog(
+                      context,
+                      widget._dayData,
+                    );
+                  },
+                  icon: const Icon(Icons.menu_open),
                 ),
               ],
             ),

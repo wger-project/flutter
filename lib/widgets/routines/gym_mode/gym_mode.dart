@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -78,17 +79,16 @@ class _GymModeState extends ConsumerState<GymMode> {
   }
 
   List<Widget> _getContent(GymState state) {
-    final exerciseProvider = context.read<ExercisesProvider>();
     final routinesProvider = context.read<RoutinesProvider>();
     final List<Widget> out = [];
+
+    out.add(StartPage(_controller, widget._dayDataDisplay));
 
     for (final slotData in widget._dayDataGym.slots) {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
-        final exercise = exerciseProvider.findExerciseById(config.exerciseId);
-
         if (firstPage && state.showExercisePages) {
-          out.add(ExerciseOverview(_controller, exercise));
+          out.add(ExerciseOverview(_controller, config.exercise));
         }
 
         out.add(
@@ -96,7 +96,8 @@ class _GymModeState extends ConsumerState<GymMode> {
             _controller,
             config,
             slotData,
-            exercise,
+            widget._dayDataGym,
+            config.exercise,
             routinesProvider.findById(widget._dayDataGym.day!.routineId),
             widget._iteration,
           ),
@@ -113,6 +114,16 @@ class _GymModeState extends ConsumerState<GymMode> {
         firstPage = false;
       }
     }
+
+    out.add(
+      SessionPage(
+        context.read<RoutinesProvider>().findById(widget._dayDataGym.day!.routineId),
+        _controller,
+        state.startTime,
+        dayId: widget._dayDataGym.day!.id,
+      ),
+    );
+
     return out;
   }
 
@@ -138,14 +149,7 @@ class _GymModeState extends ConsumerState<GymMode> {
         final state = ref.watch(gymStateProvider);
 
         final List<Widget> children = [
-          StartPage(_controller, widget._dayDataDisplay),
           ..._getContent(state),
-          SessionPage(
-            context.read<RoutinesProvider>().findById(widget._dayDataGym.day!.routineId),
-            _controller,
-            state.startTime,
-            dayId: widget._dayDataGym.day!.id!,
-          ),
         ];
 
         return PageView(

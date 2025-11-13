@@ -88,7 +88,7 @@ class NavigationHeader extends ConsumerWidget {
   Widget getDialog(BuildContext context, int totalPages, List<PageEntry> pages) {
     final exercisesProvider = context.read<ExercisesProvider>();
 
-    final TextButton? endWorkoutButton = showEndWorkoutButton
+    final endWorkoutButton = showEndWorkoutButton
         ? TextButton(
             child: Text(AppLocalizations.of(context).endWorkout),
             onPressed: () {
@@ -125,8 +125,6 @@ class NavigationHeader extends ConsumerWidget {
                       .toList()
                       .join('\n'),
                 ),
-
-                //subtitle: e.exerciseIds.length > 1 ? Text('super set') : null,
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   _controller.animateToPage(
