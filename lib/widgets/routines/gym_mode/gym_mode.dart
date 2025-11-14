@@ -22,10 +22,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/models/workouts/day_data.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/gym_mode.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
@@ -33,12 +33,10 @@ import 'package:wger/widgets/routines/gym_mode/start_page.dart';
 import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 class GymMode extends ConsumerStatefulWidget {
-  final DayData _dayDataGym;
-  final DayData _dayDataDisplay;
-  final int _iteration;
+  final GymModeArguments _args;
   final _logger = Logger('GymMode');
 
-  GymMode(this._dayDataGym, this._dayDataDisplay, this._iteration);
+  GymMode(this._args);
 
   @override
   ConsumerState<GymMode> createState() => _GymModeState();
@@ -64,27 +62,28 @@ class _GymModeState extends ConsumerState<GymMode> {
 
   Future<int> _loadGymState() async {
     widget._logger.fine('Loading gym state');
-    await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
-      widget._dayDataGym.day!.routineId,
+    final routine = await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
+      widget._args.routineId,
     );
-
-    final gymProvider = ref.read(gymStateProvider.notifier);
-    await gymProvider.loadPrefs();
-    final initialPage = await gymProvider.initForDay(
-      widget._dayDataGym,
-      findExerciseById: (id) => context.read<ExercisesProvider>().findExerciseById(id),
+    final gymViewModel = ref.read(gymStateProvider.notifier);
+    final initialPage = gymViewModel.initData(
+      routine,
+      widget._args.dayId,
+      widget._args.iteration,
     );
+    await gymViewModel.loadPrefs();
 
     return initialPage;
   }
 
-  List<Widget> _getContent(GymState state) {
-    final routinesProvider = context.read<RoutinesProvider>();
+  List<Widget> _getContent(GymModeState state) {
     final List<Widget> out = [];
 
-    out.add(StartPage(_controller, widget._dayDataDisplay));
+    // Workout overview
+    out.add(StartPage(_controller));
 
-    for (final slotData in widget._dayDataGym.slots) {
+    // Sets
+    for (final slotData in state.dayDataGym.slots) {
       var firstPage = true;
       for (final config in slotData.setConfigs) {
         if (firstPage && state.showExercisePages) {
@@ -92,15 +91,7 @@ class _GymModeState extends ConsumerState<GymMode> {
         }
 
         out.add(
-          LogPage(
-            _controller,
-            config,
-            slotData,
-            widget._dayDataGym,
-            config.exercise,
-            routinesProvider.findById(widget._dayDataGym.day!.routineId),
-            widget._iteration,
-          ),
+          LogPage(_controller, config, slotData),
         );
 
         if (state.showTimerPages) {
@@ -115,13 +106,9 @@ class _GymModeState extends ConsumerState<GymMode> {
       }
     }
 
+    // End (session)
     out.add(
-      SessionPage(
-        context.read<RoutinesProvider>().findById(widget._dayDataGym.day!.routineId),
-        _controller,
-        state.startTime,
-        dayId: widget._dayDataGym.day!.id,
-      ),
+      SessionPage(_controller),
     );
 
     return out;
@@ -133,38 +120,40 @@ class _GymModeState extends ConsumerState<GymMode> {
       future: _initData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const BoxedProgressIndicator();
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(child: Text('Error: ${snapshot.error}: ${snapshot.stackTrace}'));
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          final initialPage = snapshot.data!;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!_initialPageJumped && _controller.hasClients) {
+              _controller.jumpToPage(initialPage);
+              setState(() => _initialPageJumped = true);
+            }
+          });
+
+          final state = ref.watch(gymStateProvider);
+
+          final List<Widget> children = [
+            ..._getContent(state),
+          ];
+
+          return PageView(
+            controller: _controller,
+            onPageChanged: (page) {
+              ref.read(gymStateProvider.notifier).setCurrentPage(page);
+
+              // Check if the last page is reached
+              if (page == children.length - 1) {
+                widget._logger.finer('Last page reached, clearing gym state');
+                ref.read(gymStateProvider.notifier).clear();
+              }
+            },
+            children: children,
+          );
         }
 
-        final initialPage = snapshot.data!;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!_initialPageJumped && _controller.hasClients) {
-            _controller.jumpToPage(initialPage);
-            setState(() => _initialPageJumped = true);
-          }
-        });
-
-        final state = ref.watch(gymStateProvider);
-
-        final List<Widget> children = [
-          ..._getContent(state),
-        ];
-
-        return PageView(
-          controller: _controller,
-          onPageChanged: (page) {
-            ref.read(gymStateProvider.notifier).setCurrentPage(page);
-
-            // Check if the last page is reached
-            if (page == children.length - 1) {
-              widget._logger.finer('Last page reached, clearing gym state');
-              ref.read(gymStateProvider.notifier).clear();
-            }
-          },
-          children: children,
-        );
+        return const Center(child: Text('Unexpected state'));
       },
     );
   }

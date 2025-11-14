@@ -68,26 +68,29 @@ void main() {
   });
 
   Widget renderGymMode({locale = 'en'}) {
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
-      child: ChangeNotifierProvider<ExercisesProvider>(
-        create: (context) => mockExerciseProvider,
-        child: riverpod.ProviderScope(
-          child: MaterialApp(
-            locale: Locale(locale),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            navigatorKey: key,
-            home: TextButton(
-              onPressed: () => key.currentState!.push(
-                MaterialPageRoute<void>(
-                  settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
-                  builder: (_) => const GymModeScreen(),
+    return ExcludeSemantics(
+      excluding: true,
+      child: ChangeNotifierProvider<RoutinesProvider>(
+        create: (context) => mockRoutinesProvider,
+        child: ChangeNotifierProvider<ExercisesProvider>(
+          create: (context) => mockExerciseProvider,
+          child: riverpod.ProviderScope(
+            child: MaterialApp(
+              locale: Locale(locale),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              navigatorKey: key,
+              home: TextButton(
+                onPressed: () => key.currentState!.push(
+                  MaterialPageRoute<void>(
+                    settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
+                    builder: (_) => const GymModeScreen(),
+                  ),
                 ),
+                child: const SizedBox(),
               ),
-              child: const SizedBox(),
+              routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
             ),
-            routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
           ),
         ),
       ),
@@ -144,7 +147,7 @@ void main() {
       expect(find.text('Bench press'), findsOneWidget);
       expect(find.byType(LogPage), findsOneWidget);
       expect(find.byType(Form), findsOneWidget);
-      // print(find.byType(Form));
+      debugDumpApp();
       expect(find.byType(ListTile), findsNWidgets(3), reason: 'Two logs and the switch tile');
       expect(find.text('10 × 10 kg  (1.5 RiR)'), findsOneWidget);
       expect(find.text('12 × 10 kg  (2 RiR)'), findsOneWidget);

@@ -17,40 +17,38 @@
  */
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/widgets/routines/forms/session.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
-class SessionPage extends StatelessWidget {
-  final Routine _routine;
-  final WorkoutSession _session;
+class SessionPage extends ConsumerWidget {
   final PageController _controller;
 
-  SessionPage(
-    this._routine,
-    this._controller,
-    TimeOfDay start, {
-    int? dayId,
-  }) : _session = _routine.sessions
-           .map((sessionApi) => sessionApi.session)
-           .firstWhere(
-             (session) => session.date.isSameDayAs(clock.now()),
-             orElse: () => WorkoutSession(
-               dayId: dayId,
-               routineId: _routine.id!,
-               impression: DEFAULT_IMPRESSION,
-               date: clock.now(),
-               timeStart: start,
-               timeEnd: TimeOfDay.fromDateTime(clock.now()),
-             ),
-           );
+  const SessionPage(this._controller);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(gymStateProvider);
+
+    final session = state.routine.sessions
+        .map((sessionApi) => sessionApi.session)
+        .firstWhere(
+          (session) => session.date.isSameDayAs(clock.now()),
+          orElse: () => WorkoutSession(
+            dayId: state.dayId,
+            routineId: state.routine.id,
+            impression: DEFAULT_IMPRESSION,
+            date: clock.now(),
+            timeStart: state.startTime,
+            timeEnd: TimeOfDay.fromDateTime(clock.now()),
+          ),
+        );
+
     return Column(
       children: [
         NavigationHeader(
@@ -62,9 +60,9 @@ class SessionPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: SessionForm(
-            _routine.id,
+            state.routine.id,
             onSaved: () => Navigator.of(context).pop(),
-            session: _session,
+            session: session,
           ),
         ),
         NavigationFooter(_controller, showNext: false),

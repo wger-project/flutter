@@ -23,10 +23,8 @@ import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
@@ -62,25 +60,17 @@ void _openWorkoutProgressionDialog(BuildContext context, DayData dayData) {
 }
 
 class LogPage extends ConsumerStatefulWidget {
+  final _logger = Logger('LogPage');
+
   final PageController _controller;
   final SetConfigData _configData;
   final SlotData _slotData;
-  final DayData _dayData;
-  final Exercise _exercise;
-  final Routine _routine;
-  final Log _log;
 
   LogPage(
     this._controller,
     this._configData,
     this._slotData,
-    this._dayData,
-    this._exercise,
-    this._routine,
-    int? iteration,
-  ) : _log = Log.fromSetConfigData(_configData)
-        ..routineId = _routine.id!
-        ..iteration = iteration;
+  );
 
   @override
   _LogPageState createState() => _LogPageState();
@@ -106,12 +96,24 @@ class _LogPageState extends ConsumerState<LogPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final slotPage = ref.watch(gymStateProvider).getSlotPageByIndex();
+    final state = ref.watch(gymStateProvider);
+
+    final dayData = state.dayDataGym;
+    final slotPage = state.getSlotPageByIndex();
+
+    final log = Log.fromSetConfigData(widget._configData)
+      ..routineId = state.routine.id!
+      ..iteration = state.iteration;
+
+    if (slotPage == null) {
+      widget._logger.finer('getSlotPageByIndex returned null, showing empty container');
+      return Container();
+    }
 
     return Column(
       children: [
         NavigationHeader(
-          widget._exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
+          log.exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           widget._controller,
         ),
 
@@ -121,50 +123,53 @@ class _LogPageState extends ConsumerState<LogPage> {
           child: Center(
             child: Column(
               children: [
-                Text(
-                  widget._configData.textRepr,
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                GestureDetector(
+                  onTap: () {
+                    _openWorkoutProgressionDialog(
+                      context,
+                      dayData,
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Text(
+                        widget._configData.textRepr,
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      if (widget._configData.type != SlotEntryType.normal)
+                        Text(
+                          widget._configData.type.name.toUpperCase(),
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                if (widget._configData.type != SlotEntryType.normal)
-                  Text(
-                    widget._configData.type.name.toUpperCase(),
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
                 Text(
-                  '${slotPage?.setIndex} / ${widget._slotData.setConfigs.length}',
+                  '${slotPage.setIndex + 1} / ${widget._slotData.setConfigs.length}',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                IconButton(
-                  onPressed: () {
-                    _openWorkoutProgressionDialog(
-                      context,
-                      widget._dayData,
-                    );
-                  },
-                  icon: const Icon(Icons.menu_open),
-                ),
               ],
             ),
           ),
         ),
-        if (widget._log.exercise.showPlateCalculator) const LogsPlatesWidget(),
+        if (log.exercise.showPlateCalculator) const LogsPlatesWidget(),
         if (widget._slotData.comment.isNotEmpty)
           Text(widget._slotData.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._routine.filterLogsByExercise(widget._exercise.id!).isNotEmpty)
+          child: (state.routine.filterLogsByExercise(log.exercise.id!).isNotEmpty)
               ? LogsPastLogsWidget(
-                  log: widget._log,
-                  pastLogs: widget._routine.filterLogsByExercise(widget._exercise.id!),
+                  log: log,
+                  pastLogs: state.routine.filterLogsByExercise(log.exercise.id!),
                   onCopy: (pastLog) {
                     _logFormKey.currentState?.copyFromPastLog(pastLog);
                   },
@@ -186,7 +191,7 @@ class _LogPageState extends ConsumerState<LogPage> {
                 key: _logFormKey,
                 controller: widget._controller,
                 configData: widget._configData,
-                log: widget._log,
+                log: log,
                 focusNode: focusNode,
               ),
             ),

@@ -12,7 +12,7 @@ part of 'gym_state.dart';
 @ProviderFor(GymStateNotifier)
 const gymStateProvider = GymStateNotifierProvider._();
 
-final class GymStateNotifierProvider extends $NotifierProvider<GymStateNotifier, GymState> {
+final class GymStateNotifierProvider extends $NotifierProvider<GymStateNotifier, GymModeState> {
   const GymStateNotifierProvider._()
     : super(
         from: null,
@@ -32,26 +32,31 @@ final class GymStateNotifierProvider extends $NotifierProvider<GymStateNotifier,
   GymStateNotifier create() => GymStateNotifier();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GymState value) {
+  Override overrideWithValue(GymModeState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<GymState>(value),
+      providerOverride: $SyncValueProvider<GymModeState>(value),
     );
   }
 }
 
 String _$gymStateNotifierHash() => r'ee943c23a68e678830c65a0c53bfd609feb6bf62';
 
-abstract class _$GymStateNotifier extends $Notifier<GymState> {
-  GymState build();
+abstract class _$GymStateNotifier extends $Notifier<GymModeState> {
+  GymModeState build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<GymState, GymState>;
+    final ref = this.ref as $Ref<GymModeState, GymModeState>;
     final element =
         ref.element
-            as $ClassProviderElement<AnyNotifier<GymState, GymState>, GymState, Object?, Object?>;
+            as $ClassProviderElement<
+              AnyNotifier<GymModeState, GymModeState>,
+              GymModeState,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

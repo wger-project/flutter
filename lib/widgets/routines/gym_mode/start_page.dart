@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
-import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
@@ -79,12 +78,13 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
 
 class StartPage extends ConsumerWidget {
   final PageController _controller;
-  final DayData _dayData;
 
-  const StartPage(this._controller, this._dayData);
+  const StartPage(this._controller);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final dayDataDisplay = ref.watch(gymStateProvider).dayDataDisplay;
+
     return Column(
       children: [
         NavigationHeader(
@@ -96,18 +96,18 @@ class StartPage extends ConsumerWidget {
         Expanded(
           child: ListView(
             children: [
-              if (_dayData.day!.isSpecialType)
+              if (dayDataDisplay.day!.isSpecialType)
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(15),
                     child: Text(
-                      '${_dayData.day!.type.name.toUpperCase()}\n${_dayData.day!.type.i18Label(AppLocalizations.of(context))}',
+                      '${dayDataDisplay.day!.type.name.toUpperCase()}\n${dayDataDisplay.day!.type.i18Label(AppLocalizations.of(context))}',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
                 ),
-              ..._dayData.slots
+              ...dayDataDisplay.slots
                   .expand((slot) => slot.setConfigs)
                   .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
                     acc.putIfAbsent(entry.exercise, () => []).add(entry.textReprWithType);
