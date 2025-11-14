@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/helpers/uuid.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
@@ -24,6 +25,8 @@ enum SlotPageType {
 }
 
 class PageEntry {
+  final String uuid;
+
   final PageType type;
 
   /// Absolute page index
@@ -35,7 +38,8 @@ class PageEntry {
     required this.type,
     required this.pageIndex,
     this.slotPages = const [],
-  }) : assert(
+  }) : uuid = uuidV4(),
+       assert(
          slotPages.isEmpty || type == PageType.set,
          'SlotEntries can only be set for set pages',
        );
@@ -62,13 +66,16 @@ class PageEntry {
 
   // Whether all sub-pages (e.g. log pages) are marked as done.
   bool get allLogsDone =>
-      slotPages.where((entry) => entry.type == SlotPageType.log).every((entry) => entry.logDone);
+      slotPages.where((entry) => entry.type == SlotPageType.log).any((entry) => entry.logDone);
+  // slotPages.where((entry) => entry.type == SlotPageType.log).every((entry) => entry.logDone);
 
   @override
   String toString() => 'PageEntry(type: $type, pageIndex: $pageIndex)';
 }
 
 class SlotPageEntry {
+  final String uuid;
+
   final SlotPageType type;
 
   final int exerciseId;
@@ -92,7 +99,7 @@ class SlotPageEntry {
     required this.setIndex,
     this.setConfigData,
     this.logDone = false,
-  });
+  }) : uuid = uuidV4();
 
   SlotPageEntry copyWith({
     SlotPageType? type,
@@ -170,7 +177,6 @@ class GymModeState {
     bool? showExercisePages,
     bool? showTimerPages,
     int? currentPage,
-    int? totalPages,
     int? dayId,
     int? iteration,
     DateTime? validUntil,
@@ -208,11 +214,20 @@ class GymModeState {
     (e) => e.iteration == iteration && e.day?.id == dayId,
   );
 
-  SlotPageEntry? getSlotPageByIndex([int? pageIndex]) {
+  SlotPageEntry? getSlotEntryPageByIndex([int? pageIndex]) {
     final index = pageIndex ?? currentPage;
 
     for (final slotPage in pages.expand((p) => p.slotPages)) {
       if (slotPage.pageIndex == index) {
+        return slotPage;
+      }
+    }
+    return null;
+  }
+
+  SlotPageEntry? getSlotPageByUUID(String uuid) {
+    for (final slotPage in pages.expand((p) => p.slotPages)) {
+      if (slotPage.uuid == uuid) {
         return slotPage;
       }
     }
@@ -292,6 +307,7 @@ class GymStateNotifier extends _$GymStateNotifier {
             exerciseId: slotData.setConfigs.first.exerciseId,
             setIndex: setIndex,
             pageIndex: totalPages - 1,
+            setConfigData: slotData.setConfigs.first,
           ),
         );
       }
@@ -306,6 +322,7 @@ class GymStateNotifier extends _$GymStateNotifier {
               exerciseId: config.exerciseId,
               setIndex: setIndex,
               pageIndex: totalPages - 1,
+              setConfigData: config,
             ),
           );
         }
@@ -338,10 +355,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       PageEntry(type: PageType.session, pageIndex: totalPages),
     );
 
-    state = state.copyWith(
-      pages: pages,
-      totalPages: totalPages,
-    );
+    state = state.copyWith(pages: pages);
     _logger.finer('Initialized ${state.pages.length} pages');
   }
 
@@ -386,12 +400,41 @@ class GymStateNotifier extends _$GymStateNotifier {
     _savePrefs();
   }
 
+  void markSlotPageAsDone(String uuid, {required bool isDone}) {
+    final slotPage = state.getSlotPageByUUID(uuid);
+    if (slotPage == null) {
+      _logger.warning('No slot page found for UUID $uuid');
+      return;
+    }
+
+    final updatedSlotPage = slotPage.copyWith(logDone: isDone);
+
+    final updatedPages = state.pages.map((page) {
+      if (page.type != PageType.set) {
+        return page;
+      }
+
+      final updatedSlotPages = page.slotPages.map((sp) {
+        if (sp.uuid == uuid) {
+          return updatedSlotPage;
+        }
+        return sp;
+      }).toList();
+
+      return page.copyWith(slotPages: updatedSlotPages);
+    }).toList();
+
+    state = state.copyWith(pages: updatedPages);
+    _logger.fine('Set logDone=$isDone for slot page UUID $uuid');
+  }
+
   void clear() {
     _logger.fine('Clearing state');
     state = state.copyWith(
       isInitialized: false,
+      pages: [],
       currentPage: 0,
-      totalPages: 1,
+
       validUntil: clock.now().add(DEFAULT_DURATION),
       startTime: null,
     );

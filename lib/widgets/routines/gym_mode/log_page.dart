@@ -23,7 +23,6 @@ import 'package:provider/provider.dart' as provider;
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
@@ -38,16 +37,16 @@ import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
-import 'package:wger/widgets/routines/gym_mode/workout.dart';
+import 'package:wger/widgets/routines/gym_mode/workout_progresion.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
 
-void _openWorkoutProgressionDialog(BuildContext context, DayData dayData) {
+void _openWorkoutProgressionDialog(BuildContext context) {
   showDialog<void>(
     context: context,
     builder: (ctx) {
       return AlertDialog(
         title: Text(AppLocalizations.of(context).todaysWorkout),
-        content: WorkoutProgression(dayData),
+        content: const WorkoutProgression(),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
@@ -63,12 +62,10 @@ class LogPage extends ConsumerStatefulWidget {
   final _logger = Logger('LogPage');
 
   final PageController _controller;
-  final SetConfigData _configData;
   final SlotData _slotData;
 
   LogPage(
     this._controller,
-    this._configData,
     this._slotData,
   );
 
@@ -98,17 +95,27 @@ class _LogPageState extends ConsumerState<LogPage> {
     final theme = Theme.of(context);
     final state = ref.watch(gymStateProvider);
 
-    final dayData = state.dayDataGym;
-    final slotPage = state.getSlotPageByIndex();
+    final slotEntryPage = state.getSlotEntryPageByIndex();
 
-    final log = Log.fromSetConfigData(widget._configData)
-      ..routineId = state.routine.id!
-      ..iteration = state.iteration;
-
-    if (slotPage == null) {
+    if (slotEntryPage == null) {
       widget._logger.finer('getSlotPageByIndex returned null, showing empty container');
       return Container();
     }
+
+    final setConfigData = slotEntryPage.setConfigData!;
+
+    final log = Log.fromSetConfigData(setConfigData)
+      ..routineId = state.routine.id!
+      ..iteration = state.iteration;
+
+    final decorationStyle = slotEntryPage.logDone
+        ? TextDecoration.lineThrough
+        : TextDecoration.none;
+
+    final style = {
+      'textDecoration': decorationStyle,
+      'color': Theme.of(context).colorScheme.primary,
+    };
 
     return Column(
       children: [
@@ -125,33 +132,32 @@ class _LogPageState extends ConsumerState<LogPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    _openWorkoutProgressionDialog(
-                      context,
-                      dayData,
-                    );
+                    _openWorkoutProgressionDialog(context);
                   },
                   child: Column(
                     children: [
                       Text(
-                        widget._configData.textRepr,
+                        setConfigData.textRepr,
+                        textAlign: TextAlign.center,
                         style: theme.textTheme.headlineMedium?.copyWith(
                           color: Theme.of(context).colorScheme.primary,
+                          decoration: decorationStyle,
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                      if (widget._configData.type != SlotEntryType.normal)
+                      if (setConfigData.type != SlotEntryType.normal)
                         Text(
-                          widget._configData.type.name.toUpperCase(),
+                          setConfigData.type.name.toUpperCase(),
+                          textAlign: TextAlign.center,
                           style: theme.textTheme.headlineSmall?.copyWith(
                             color: Theme.of(context).colorScheme.primary,
+                            decoration: decorationStyle,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                     ],
                   ),
                 ),
                 Text(
-                  '${slotPage.setIndex + 1} / ${widget._slotData.setConfigs.length}',
+                  '${slotEntryPage.setIndex + 1} / ${widget._slotData.setConfigs.length}',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -190,7 +196,7 @@ class _LogPageState extends ConsumerState<LogPage> {
               child: LogFormWidget(
                 key: _logFormKey,
                 controller: widget._controller,
-                configData: widget._configData,
+                configData: setConfigData,
                 log: log,
                 focusNode: focusNode,
               ),
@@ -696,10 +702,15 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     _form.currentState!.save();
 
                     try {
+                      final gymState = ref.read(gymStateProvider);
+                      final gymProvider = ref.read(gymStateProvider.notifier);
+
                       await provider.Provider.of<RoutinesProvider>(
                         context,
                         listen: false,
                       ).addLog(widget.log);
+                      final page = gymState.getSlotEntryPageByIndex()!;
+                      gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
 
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(

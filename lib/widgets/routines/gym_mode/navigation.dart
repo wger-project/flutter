@@ -112,10 +112,11 @@ class NavigationHeader extends ConsumerWidget {
       content: SingleChildScrollView(
         child: Column(
           children: [
-            ...pages.where((page) => page.type == PageType.set).map((e) {
+            ...pages.where((page) => page.type == PageType.set).map((page) {
               return ListTile(
+                leading: page.allLogsDone ? const Icon(Icons.check) : null,
                 title: Text(
-                  e.exerciseIds
+                  page.exerciseIds
                       .map(
                         (id) => exercisesProvider
                             .findExerciseById(id)
@@ -124,11 +125,14 @@ class NavigationHeader extends ConsumerWidget {
                       )
                       .toList()
                       .join('\n'),
+                  style: TextStyle(
+                    decoration: page.allLogsDone ? TextDecoration.lineThrough : TextDecoration.none,
+                  ),
                 ),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   _controller.animateToPage(
-                    e.pageIndex,
+                    page.pageIndex,
                     duration: DEFAULT_ANIMATION_DURATION,
                     curve: DEFAULT_ANIMATION_CURVE,
                   );
