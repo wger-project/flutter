@@ -37,26 +37,7 @@ import 'package:wger/widgets/routines/forms/reps_unit.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
-import 'package:wger/widgets/routines/gym_mode/workout_progresion.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
-
-void _openWorkoutProgressionDialog(BuildContext context) {
-  showDialog<void>(
-    context: context,
-    builder: (ctx) {
-      return AlertDialog(
-        title: Text(AppLocalizations.of(context).todaysWorkout),
-        content: const WorkoutProgression(),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-          ),
-        ],
-      );
-    },
-  );
-}
 
 class LogPage extends ConsumerStatefulWidget {
   final _logger = Logger('LogPage');
@@ -108,14 +89,10 @@ class _LogPageState extends ConsumerState<LogPage> {
       ..routineId = state.routine.id!
       ..iteration = state.iteration;
 
+    // Mark done sets
     final decorationStyle = slotEntryPage.logDone
         ? TextDecoration.lineThrough
         : TextDecoration.none;
-
-    final style = {
-      'textDecoration': decorationStyle,
-      'color': Theme.of(context).colorScheme.primary,
-    };
 
     return Column(
       children: [
@@ -130,31 +107,26 @@ class _LogPageState extends ConsumerState<LogPage> {
           child: Center(
             child: Column(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    _openWorkoutProgressionDialog(context);
-                  },
-                  child: Column(
-                    children: [
+                Column(
+                  children: [
+                    Text(
+                      setConfigData.textRepr,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        decoration: decorationStyle,
+                      ),
+                    ),
+                    if (setConfigData.type != SlotEntryType.normal)
                       Text(
-                        setConfigData.textRepr,
+                        setConfigData.type.name.toUpperCase(),
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.headlineMedium?.copyWith(
+                        style: theme.textTheme.headlineSmall?.copyWith(
                           color: Theme.of(context).colorScheme.primary,
                           decoration: decorationStyle,
                         ),
                       ),
-                      if (setConfigData.type != SlotEntryType.normal)
-                        Text(
-                          setConfigData.type.name.toUpperCase(),
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            decoration: decorationStyle,
-                          ),
-                        ),
-                    ],
-                  ),
+                  ],
                 ),
                 Text(
                   '${slotEntryPage.setIndex + 1} / ${widget._slotData.setConfigs.length}',

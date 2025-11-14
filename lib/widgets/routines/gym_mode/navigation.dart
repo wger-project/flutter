@@ -24,6 +24,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/routines/gym_mode/workout_menu.dart';
 
 class NavigationFooter extends ConsumerWidget {
   final PageController _controller;
@@ -109,39 +110,10 @@ class NavigationHeader extends ConsumerWidget {
         textAlign: TextAlign.center,
       ),
       contentPadding: EdgeInsets.zero,
-      content: SingleChildScrollView(
-        child: Column(
-          children: [
-            ...pages.where((page) => page.type == PageType.set).map((page) {
-              return ListTile(
-                leading: page.allLogsDone ? const Icon(Icons.check) : null,
-                title: Text(
-                  page.exerciseIds
-                      .map(
-                        (id) => exercisesProvider
-                            .findExerciseById(id)
-                            .getTranslation(Localizations.localeOf(context).languageCode)
-                            .name,
-                      )
-                      .toList()
-                      .join('\n'),
-                  style: TextStyle(
-                    decoration: page.allLogsDone ? TextDecoration.lineThrough : TextDecoration.none,
-                  ),
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  _controller.animateToPage(
-                    page.pageIndex,
-                    duration: DEFAULT_ANIMATION_DURATION,
-                    curve: DEFAULT_ANIMATION_CURVE,
-                  );
-                  Navigator.of(context).pop();
-                },
-              );
-            }),
-          ],
-        ),
+      content: SizedBox(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        child: WorkoutMenu(_controller),
       ),
       actions: [
         ?endWorkoutButton,
