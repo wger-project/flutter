@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/helpers/uuid.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
@@ -56,18 +57,17 @@ class PageEntry {
     );
   }
 
-  List<int> get exerciseIds {
-    final ids = <int>{};
+  List<Exercise> get exercises {
+    final ids = <Exercise>{};
     for (final entry in slotPages) {
-      ids.add(entry.exerciseId);
+      ids.add(entry.setConfigData!.exercise);
     }
     return ids.toList();
   }
 
   // Whether all sub-pages (e.g. log pages) are marked as done.
   bool get allLogsDone =>
-      slotPages.where((entry) => entry.type == SlotPageType.log).any((entry) => entry.logDone);
-  // slotPages.where((entry) => entry.type == SlotPageType.log).every((entry) => entry.logDone);
+      slotPages.where((entry) => entry.type == SlotPageType.log).every((entry) => entry.logDone);
 
   @override
   String toString() => 'PageEntry(type: $type, pageIndex: $pageIndex)';
@@ -77,8 +77,6 @@ class SlotPageEntry {
   final String uuid;
 
   final SlotPageType type;
-
-  final int exerciseId;
 
   /// index within a set for overview (e.g. "1 of 5 sets")
   final int setIndex;
@@ -95,7 +93,6 @@ class SlotPageEntry {
   SlotPageEntry({
     required this.type,
     required this.pageIndex,
-    required this.exerciseId,
     required this.setIndex,
     this.setConfigData,
     this.logDone = false,
@@ -111,7 +108,6 @@ class SlotPageEntry {
   }) {
     return SlotPageEntry(
       type: type ?? this.type,
-      exerciseId: exerciseId ?? this.exerciseId,
       setIndex: setIndex ?? this.setIndex,
       pageIndex: pageIndex ?? this.pageIndex,
       setConfigData: setConfigData ?? this.setConfigData,
@@ -120,8 +116,7 @@ class SlotPageEntry {
   }
 
   @override
-  String toString() =>
-      'SlotPageEntry(type: $type, exerciseId: $exerciseId, setIndex: $setIndex, pageIndex: $pageIndex)';
+  String toString() => 'SlotPageEntry(type: $type, setIndex: $setIndex, pageIndex: $pageIndex)';
 }
 
 class GymModeState {
@@ -294,7 +289,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     final List<PageEntry> pages = [PageEntry(type: PageType.start, pageIndex: totalPages - 1)];
 
     for (final slotData in state.dayDataGym.slots) {
-      final slotPageIndex = totalPages - 1;
+      final slotPageIndex = totalPages;
       final slotEntries = <SlotPageEntry>[];
       int setIndex = 0;
 
@@ -304,7 +299,6 @@ class GymStateNotifier extends _$GymStateNotifier {
         slotEntries.add(
           SlotPageEntry(
             type: SlotPageType.exerciseOverview,
-            exerciseId: slotData.setConfigs.first.exerciseId,
             setIndex: setIndex,
             pageIndex: totalPages - 1,
             setConfigData: slotData.setConfigs.first,
@@ -319,7 +313,6 @@ class GymStateNotifier extends _$GymStateNotifier {
           slotEntries.add(
             SlotPageEntry(
               type: SlotPageType.timer,
-              exerciseId: config.exerciseId,
               setIndex: setIndex,
               pageIndex: totalPages - 1,
               setConfigData: config,
@@ -332,7 +325,6 @@ class GymStateNotifier extends _$GymStateNotifier {
         slotEntries.add(
           SlotPageEntry(
             type: SlotPageType.log,
-            exerciseId: config.exerciseId,
             setIndex: setIndex,
             pageIndex: totalPages - 1,
             setConfigData: config,
