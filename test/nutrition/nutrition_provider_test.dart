@@ -207,11 +207,13 @@ void main() {
         description: 'Old active plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
+        creationDate: now.subtract(const Duration(days: 10)),
       );
       final newerPlan = NutritionalPlan(
         description: 'Newer active plan',
         startDate: now.subtract(const Duration(days: 5)),
         endDate: now.add(const Duration(days: 5)),
+        creationDate: now.subtract(const Duration(days: 1)),
       );
       nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
         olderPlan,
@@ -222,6 +224,19 @@ void main() {
   });
 
   group('Ingredient cache DB', () {
+    test('cacheIngredient saves to both in-memory and database cache', () async {
+      nutritionProvider.ingredients = [];
+      final ingredient = Ingredient.fromJson(ingredient59887Response);
+
+      await nutritionProvider.cacheIngredient(ingredient, database: database);
+
+      expect(nutritionProvider.ingredients.length, 1);
+      expect(nutritionProvider.ingredients.first.id, 59887);
+
+      final rows = await database.select(database.ingredients).get();
+      expect(rows.length, 1);
+      expect(rows.first.id, ingredient.id);
+    });
     test('that if there is already valid data in the DB, the API is not hit', () async {
       // Arrange
       nutritionProvider.ingredients = [];

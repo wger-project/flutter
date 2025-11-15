@@ -49,6 +49,10 @@ class NutritionPlansProvider with ChangeNotifier {
   List<NutritionalPlan> _plans = [];
   List<Ingredient> ingredients = [];
 
+  // Track current search to prevent multiple concurrent requests
+  String? _currentSearchQuery;
+  int _searchCounter = 0;
+
   NutritionPlansProvider(
     this.baseProvider,
     List<NutritionalPlan> entries, {
@@ -302,6 +306,25 @@ class NutritionPlansProvider with ChangeNotifier {
     await database.deleteEverything();
   }
 
+  /// Saves an ingredient to the cache
+  Future<void> cacheIngredient(Ingredient ingredient, {IngredientDatabase? database}) async {
+    database ??= this.database;
+
+    ingredients.add(ingredient);
+
+    final data = ingredient.toJson();
+    await database
+        .into(database.ingredients)
+        .insert(
+          IngredientsCompanion.insert(
+            id: ingredient.id,
+            data: jsonEncode(data),
+            lastFetched: DateTime.now(),
+          ),
+        );
+    _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
+  }
+
   /// Fetch and return an ingredient
   ///
   /// If the ingredient is not known locally, it is fetched from the server
@@ -329,22 +352,14 @@ class NutritionPlansProvider with ChangeNotifier {
           (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
         }
       } else {
+        _logger.info("Fetching ingredient ID $ingredientId from server");
         final data = await baseProvider.fetch(
           baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
         );
         ingredient = Ingredient.fromJson(data);
-        ingredients.add(ingredient);
 
-        database
-            .into(database.ingredients)
-            .insert(
-              IngredientsCompanion.insert(
-                id: ingredientId,
-                data: jsonEncode(data),
-                lastFetched: DateTime.now(),
-              ),
-            );
-        _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
+        // Cache the ingredient
+        await cacheIngredient(ingredient, database: database);
       }
     }
 
@@ -376,6 +391,7 @@ class NutritionPlansProvider with ChangeNotifier {
     }
 
     // Send the request
+    _logger.info("Fetching ingredients from server");
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
         _ingredientInfoPath,
@@ -406,6 +422,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (data['count'] == 0) {
       return null;
     }
+
     // TODO we should probably add it to ingredient cache.
     return Ingredient.fromJson(data['results'][0]);
   }
