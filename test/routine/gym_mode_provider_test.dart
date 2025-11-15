@@ -18,7 +18,6 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/providers/gym_state.dart';
 
 import '../../test_data/routines.dart';
@@ -27,22 +26,26 @@ void main() {
   group('GymStateNotifier.calculatePages', () {
     late GymStateNotifier notifier;
     late ProviderContainer container;
-    late DayData day;
 
     setUp(() {
       container = ProviderContainer.test();
       notifier = container.read(gymStateProvider.notifier);
-      day = getTestRoutine().dayData.first;
     });
 
     test(
       'Correctly generates pages: exercise and timer',
       () {
         // Arrange
-        notifier.state = notifier.state.copyWith(showExercisePages: true, showTimerPages: true);
+        notifier.state = notifier.state.copyWith(
+          showExercisePages: true,
+          showTimerPages: true,
+          dayId: 1,
+          iteration: 1,
+          routine: getTestRoutine(),
+        );
 
         // Act
-        notifier.calculatePages(day);
+        notifier.calculatePages();
 
         // Assert
         final pages = notifier.state.pages;
@@ -61,10 +64,16 @@ void main() {
 
     test('Correctly generates pages: no exercises and no timer', () {
       // Arrange
-      notifier.state = notifier.state.copyWith(showExercisePages: false, showTimerPages: false);
+      notifier.state = notifier.state.copyWith(
+        showExercisePages: false,
+        showTimerPages: false,
+        dayId: 1,
+        iteration: 1,
+        routine: getTestRoutine(),
+      );
 
       // Act
-      notifier.calculatePages(day);
+      notifier.calculatePages();
 
       // Assert
       final pages = notifier.state.pages;
@@ -78,10 +87,16 @@ void main() {
 
     test('Correctly generates pages: exercises and no timer', () {
       // Arrange
-      notifier.state = notifier.state.copyWith(showExercisePages: true, showTimerPages: false);
+      notifier.state = notifier.state.copyWith(
+        showExercisePages: true,
+        showTimerPages: false,
+        dayId: 1,
+        iteration: 1,
+        routine: getTestRoutine(),
+      );
 
       // Act
-      notifier.calculatePages(day);
+      notifier.calculatePages();
 
       // Assert
       final pages = notifier.state.pages;

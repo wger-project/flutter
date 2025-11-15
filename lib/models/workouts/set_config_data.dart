@@ -135,6 +135,58 @@ class SetConfigData {
     }
   }
 
+  SetConfigData copyWith({
+    int? exerciseId,
+    int? slotEntryId,
+    SlotEntryType? type,
+    String? textRepr,
+    num? nrOfSets,
+    num? maxNrOfSets,
+    num? weight,
+    num? maxWeight,
+    int? weightUnitId,
+    num? weightRounding,
+    num? repetitions,
+    num? maxRepetitions,
+    int? repetitionsUnitId,
+    num? repetitionsRounding,
+    num? rir,
+    num? maxRir,
+    num? rpe,
+    num? restTime,
+    num? maxRestTime,
+    String? comment,
+    Exercise? exercise,
+    WeightUnit? weightUnit,
+    RepetitionUnit? repetitionsUnit,
+  }) {
+    return SetConfigData(
+      exerciseId: exerciseId ?? this.exerciseId,
+      slotEntryId: slotEntryId ?? this.slotEntryId,
+      type: type ?? this.type,
+      textRepr: textRepr ?? this.textRepr,
+      nrOfSets: nrOfSets ?? this.nrOfSets,
+      maxNrOfSets: maxNrOfSets ?? this.maxNrOfSets,
+      weight: weight ?? this.weight,
+      maxWeight: maxWeight ?? this.maxWeight,
+      weightUnitId: weightUnitId ?? this.weightUnitId,
+      weightRounding: weightRounding ?? this.weightRounding,
+      repetitions: repetitions ?? this.repetitions,
+      maxRepetitions: maxRepetitions ?? this.maxRepetitions,
+      repetitionsUnitId: repetitionsUnitId ?? this.repetitionsUnitId,
+      repetitionsRounding: repetitionsRounding ?? this.repetitionsRounding,
+      rir: rir ?? this.rir,
+      maxRir: maxRir ?? this.maxRir,
+      rpe: rpe ?? this.rpe,
+      restTime: restTime ?? this.restTime,
+      maxRestTime: maxRestTime ?? this.maxRestTime,
+      comment: comment ?? this.comment,
+      exercise: exercise ?? this.exercise,
+      weightUnit: weightUnit ?? this.weightUnit,
+      repetitionsUnit: repetitionsUnit ?? this.repetitionsUnit,
+    );
+  }
+
   // Boilerplate
   factory SetConfigData.fromJson(Map<String, dynamic> json) => _$SetConfigDataFromJson(json);
 

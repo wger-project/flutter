@@ -18,10 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/gym_mode/workout_menu.dart';
@@ -87,8 +85,6 @@ class NavigationHeader extends ConsumerWidget {
   const NavigationHeader(this._title, this._controller, {this.showEndWorkoutButton = true});
 
   Widget getDialog(BuildContext context, int totalPages, List<PageEntry> pages) {
-    final exercisesProvider = context.read<ExercisesProvider>();
-
     final endWorkoutButton = showEndWorkoutButton
         ? TextButton(
             child: Text(AppLocalizations.of(context).endWorkout),

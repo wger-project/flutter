@@ -420,6 +420,43 @@ class GymStateNotifier extends _$GymStateNotifier {
     _logger.fine('Set logDone=$isDone for slot page UUID $uuid');
   }
 
+  void replaceExercises(
+    String pageEntryUUID, {
+    required int originalExerciseId,
+    required Exercise newExercise,
+  }) {
+    final updatedPages = state.pages.map((page) {
+      if (page.type != PageType.set) {
+        return page;
+      }
+
+      if (page.uuid != pageEntryUUID) {
+        return page;
+      }
+
+      final updatedSlotPages = page.slotPages.map((slotPage) {
+        if (slotPage.setConfigData != null &&
+            slotPage.setConfigData!.exercise.id == originalExerciseId) {
+          final updatedSetConfigData = slotPage.setConfigData!.copyWith(
+            exerciseId: newExercise.id,
+            exercise: newExercise,
+          );
+          return slotPage.copyWith(setConfigData: updatedSetConfigData);
+        }
+        return slotPage;
+      }).toList();
+
+      return page.copyWith(slotPages: updatedSlotPages);
+    }).toList();
+
+    // TODO: this should not be done in-place!
+    state.routine.replaceExercise(originalExerciseId, newExercise);
+    state = state.copyWith(
+      pages: updatedPages,
+    );
+    _logger.fine('Replaced exercise $originalExerciseId with ${newExercise.id}');
+  }
+
   void clear() {
     _logger.fine('Clearing state');
     state = state.copyWith(

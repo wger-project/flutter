@@ -18,8 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/providers/gym_state.dart';
+import 'package:wger/widgets/exercises/autocompleter.dart';
 
 class WorkoutMenu extends StatelessWidget {
   final PageController _controller;
@@ -47,6 +49,14 @@ class WorkoutMenu extends StatelessWidget {
                   ProgressionTab(_controller),
                 ],
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Swapping an exercise only affects the current workout, no changes are saved.',
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -97,100 +107,180 @@ class NavigationTab extends ConsumerWidget {
   }
 }
 
-class ProgressionTab extends ConsumerWidget {
+class ProgressionTab extends ConsumerStatefulWidget {
+  final _logger = Logger('ProgressionTab');
   final PageController _controller;
 
-  const ProgressionTab(this._controller);
+  ProgressionTab(this._controller, {super.key});
+
+  @override
+  ConsumerState<ProgressionTab> createState() => _ProgressionTabState();
+}
+
+class _ProgressionTabState extends ConsumerState<ProgressionTab> {
+  String? showDetailsForPageId;
+  _ProgressionTabState();
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(gymStateProvider);
+    final theme = Theme.of(context);
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          children: [
+            ...state.pages.where((page) => page.type == PageType.set).map((page) {
+              return Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...page.slotPages.where((slotPage) => slotPage.type == SlotPageType.log).map(
+                    (
+                      slotPage,
+                    ) {
+                      final exercise = slotPage.setConfigData!.exercise
+                          .getTranslation(
+                            Localizations.localeOf(context).languageCode,
+                          )
+                          .name;
+
+                      // Sets that are done are marked with a strikethrough
+                      final decoration = slotPage.logDone
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none;
+
+                      // Sets that are done have a lighter color
+                      final color = slotPage.logDone
+                          ? theme.colorScheme.onSurface.withValues(alpha: 0.6)
+                          : null;
+
+                      // The row for the current page is highlighted in bold
+                      final fontWeight = state.currentPage == slotPage.pageIndex
+                          ? FontWeight.bold
+                          : null;
+
+                      return Text.rich(
+                        TextSpan(
+                          children: [
+                            if (slotPage.logDone) const TextSpan(text: '✅ '),
+                            TextSpan(
+                              text: '$exercise -  ${slotPage.setConfigData!.textReprWithType}',
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                decoration: decoration,
+                                fontWeight: fontWeight,
+                                color: color,
+                              ),
+                            ),
+                          ],
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      );
+                    },
+                  ),
+
+                  if (showDetailsForPageId == page.uuid) ExerciseSwapWidget(page.uuid),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          if (showDetailsForPageId == page.uuid) {
+                            setState(() {
+                              widget._logger.fine('Hiding details');
+                              showDetailsForPageId = null;
+                            });
+                          } else {
+                            setState(() {
+                              widget._logger.fine('Showing details for page ${page.uuid}');
+                              showDetailsForPageId = page.uuid;
+                            });
+                          }
+                        },
+                        icon: Icon(
+                          showDetailsForPageId == page.uuid
+                              ? Icons.change_circle
+                              : Icons.change_circle_outlined,
+                        ),
+                      ),
+                      // IconButton(
+                      //   onPressed: () {},
+                      //   icon: const Icon(Icons.add),
+                      // ),
+                      Expanded(child: Container()),
+                      IconButton(
+                        onPressed: () {
+                          widget._controller.animateToPage(
+                            page.pageIndex,
+                            duration: DEFAULT_ANIMATION_DURATION,
+                            curve: DEFAULT_ANIMATION_CURVE,
+                          );
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(Icons.chevron_right),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ExerciseSwapWidget extends ConsumerWidget {
+  final _logger = Logger('ExerciseSwapWidget');
+
+  final String pageUUID;
+
+  ExerciseSwapWidget(this.pageUUID, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(gymStateProvider);
-    final theme = Theme.of(context);
+    final gymProvider = ref.read(gymStateProvider.notifier);
+    final page = state.pages.firstWhere((p) => p.uuid == pageUUID);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(
-        children: [
-          ...state.pages.where((page) => page.type == PageType.set).map((page) {
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...page.slotPages.where((slotPage) => slotPage.type == SlotPageType.log).map(
-                  (
-                    slotPage,
-                  ) {
-                    final exercise = slotPage.setConfigData!.exercise
-                        .getTranslation(
-                          Localizations.localeOf(context).languageCode,
-                        )
-                        .name;
-
-                    // Sets that are done are marked with a strikethrough
-                    final decoration = slotPage.logDone
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none;
-
-                    // Sets that are done have a lighter color
-                    final color = slotPage.logDone
-                        ? theme.colorScheme.onSurface.withValues(alpha: 0.6)
-                        : null;
-
-                    // he row for the current page is highlighted in bold
-                    final fontWeight = state.currentPage == slotPage.pageIndex
-                        ? FontWeight.bold
-                        : null;
-
-                    return Text.rich(
-                      TextSpan(
-                        children: [
-                          if (slotPage.logDone) const TextSpan(text: '✅ '),
-                          TextSpan(
-                            text: '$exercise -  ${slotPage.setConfigData!.textReprWithType}',
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              decoration: decoration,
-                              fontWeight: fontWeight,
-                              color: color,
-                            ),
-                          ),
-                        ],
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    );
-                  },
-                ),
-                Row(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            children: [
+              ...page.exercises.map((e) {
+                return Column(
                   mainAxisSize: MainAxisSize.max,
-                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.swap_horiz, size: 18),
+                    Text(
+                      e.getTranslation('en').name,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.add, size: 18),
-                    ),
-                    Expanded(child: Container()),
-                    IconButton(
-                      onPressed: () {
-                        _controller.animateToPage(
-                          page.pageIndex,
-                          duration: DEFAULT_ANIMATION_DURATION,
-                          curve: DEFAULT_ANIMATION_CURVE,
+                    const Icon(Icons.swap_vert),
+                    ExerciseAutocompleter(
+                      onExerciseSelected: (exercise) {
+                        gymProvider.replaceExercises(
+                          page.uuid,
+                          originalExerciseId: e.id!,
+                          newExercise: exercise,
                         );
-                        Navigator.of(context).pop();
+                        _logger.fine('Replaced exercise ${e.id} with ${exercise.id}');
                       },
-                      icon: const Icon(Icons.chevron_right),
                     ),
+                    const SizedBox(height: 10),
                   ],
-                ),
-                const SizedBox(height: 8),
-              ],
-            );
-          }),
-        ],
+                );
+              }),
+            ],
+          ),
+        ),
       ),
     );
   }
