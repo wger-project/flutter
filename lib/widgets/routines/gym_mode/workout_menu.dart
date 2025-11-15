@@ -199,6 +199,7 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                                 }
                               },
                         icon: Icon(
+                          key: ValueKey('swap-icon-${page.uuid}'),
                           showDetailsForPageId == page.uuid
                               ? Icons.change_circle
                               : Icons.change_circle_outlined,
