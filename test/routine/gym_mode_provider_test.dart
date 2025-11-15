@@ -20,28 +20,76 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/providers/gym_state.dart';
 
+import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
 
 void main() {
-  group('GymStateNotifier.calculatePages', () {
-    late GymStateNotifier notifier;
-    late ProviderContainer container;
+  late GymStateNotifier notifier;
+  late ProviderContainer container;
 
-    setUp(() {
-      container = ProviderContainer.test();
-      notifier = container.read(gymStateProvider.notifier);
+  setUp(() {
+    container = ProviderContainer.test();
+    notifier = container.read(gymStateProvider.notifier);
+    notifier.state = notifier.state.copyWith(
+      showExercisePages: true,
+      showTimerPages: true,
+      dayId: 1,
+      iteration: 1,
+      routine: getTestRoutine(),
+    );
+    notifier.calculatePages();
+  });
+
+  group('GymStateNotifier.markSlotPageAsDone', () {
+    test('Correctly changes the flag', () {
+      // Arrange
+      final slotPage = notifier.state.pages[1].slotPages[2];
+      expect(slotPage.type, SlotPageType.log);
+      expect(
+        notifier.state.pages.every((p) => p.slotPages.every((s) => !s.logDone)),
+        true,
+        reason: 'All slot pages are initially not done',
+      );
+
+      // Act
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true);
+
+      // Assert
+      for (final page in notifier.state.pages.where((p) => p.type == PageType.set)) {
+        for (final slot in page.slotPages.where((s) => s.type == SlotPageType.log)) {
+          if (slot.uuid == slotPage.uuid) {
+            expect(slot.logDone, true);
+          } else {
+            expect(slot.logDone, false);
+          }
+        }
+      }
     });
+  });
 
+  group('GymStateNotifier.replaceExercises', () {
+    test('Correctly swaps an exercise', () {
+      // Arrange
+      final slotPage = notifier.state.pages[1].slotPages[2];
+      notifier.state.pages.every((p) => p.exercises.every((s) => s.id != testSquats.id));
+      expect(slotPage.type, SlotPageType.log);
+
+      // Act
+      notifier.replaceExercises(slotPage.uuid, originalExerciseId: 1, newExercise: testSquats);
+
+      // Assert
+      expect(notifier.state.pages[1].exercises.first.id, testSquats.id);
+    });
+  });
+
+  group('GymStateNotifier.calculatePages', () {
     test(
-      'Correctly generates pages: exercise and timer',
+      'Correctly generates pages - exercise and timer',
       () {
         // Arrange
         notifier.state = notifier.state.copyWith(
           showExercisePages: true,
           showTimerPages: true,
-          dayId: 1,
-          iteration: 1,
-          routine: getTestRoutine(),
         );
 
         // Act
@@ -49,27 +97,35 @@ void main() {
 
         // Assert
         final pages = notifier.state.pages;
-        expect(pages.length, 4, reason: '4 PageEntries (start, set 1, set 2, session)');
-
         final setEntry = pages.firstWhere((p) => p.type == PageType.set);
-        expect(setEntry.slotPages.length, 3, reason: 'Three sets for the exercise');
-
+        expect(pages.length, 4, reason: '4 PageEntries (start, set 1, set 2, session)');
+        expect(
+          setEntry.slotPages.where((p) => p.type == SlotPageType.log).length,
+          3,
+          reason: 'Three sets',
+        );
+        expect(
+          setEntry.slotPages.where((p) => p.type == SlotPageType.timer).length,
+          3,
+          reason: 'One timer after each set',
+        );
+        expect(
+          setEntry.slotPages.where((p) => p.type == SlotPageType.exerciseOverview).length,
+          1,
+          reason: 'One exercise overview at the start',
+        );
         expect(setEntry.slotPages[0].type, SlotPageType.exerciseOverview);
         expect(setEntry.slotPages[1].type, SlotPageType.timer);
         expect(setEntry.slotPages[2].type, SlotPageType.log);
-
-        expect(notifier.state.totalPages, 7);
+        expect(notifier.state.totalPages, 16);
       },
     );
 
-    test('Correctly generates pages: no exercises and no timer', () {
+    test('Correctly generates pages - no exercises and no timer', () {
       // Arrange
       notifier.state = notifier.state.copyWith(
         showExercisePages: false,
         showTimerPages: false,
-        dayId: 1,
-        iteration: 1,
-        routine: getTestRoutine(),
       );
 
       // Act
@@ -77,22 +133,34 @@ void main() {
 
       // Assert
       final pages = notifier.state.pages;
-      expect(pages.length, 4, reason: '4 PageEntries (start, set 1, set 2, session)');
-
       final setEntry = pages.firstWhere((p) => p.type == PageType.set);
-      expect(setEntry.slotPages.length, 1);
+      expect(pages.length, 4, reason: '4 PageEntries (start, set 1, set 2, session)');
+      expect(
+        setEntry.slotPages.where((p) => p.type == SlotPageType.log).length,
+        3,
+        reason: 'Three sets',
+      );
+      expect(
+        setEntry.slotPages.where((p) => p.type == SlotPageType.timer).length,
+        0,
+        reason: 'No timer',
+      );
+      expect(
+        setEntry.slotPages.where((p) => p.type == SlotPageType.exerciseOverview).length,
+        0,
+        reason: 'No overview',
+      );
       expect(setEntry.slotPages[0].type, SlotPageType.log);
-      expect(notifier.state.totalPages, 3);
+      expect(setEntry.slotPages[1].type, SlotPageType.log);
+      expect(setEntry.slotPages[2].type, SlotPageType.log);
+      expect(notifier.state.totalPages, 8);
     });
 
-    test('Correctly generates pages: exercises and no timer', () {
+    test('Correctly generates pages - exercises and no timer', () {
       // Arrange
       notifier.state = notifier.state.copyWith(
         showExercisePages: true,
         showTimerPages: false,
-        dayId: 1,
-        iteration: 1,
-        routine: getTestRoutine(),
       );
 
       // Act
@@ -100,13 +168,29 @@ void main() {
 
       // Assert
       final pages = notifier.state.pages;
-      expect(pages.length, 4, reason: '4 PageEntries (start, set 1, set 2, session)');
-
       final setEntry = pages.firstWhere((p) => p.type == PageType.set);
-      expect(setEntry.slotPages.length, 2);
+      expect(pages.length, 4, reason: '4 PageEntries (start, set 1, set 2, session)');
+      expect(
+        setEntry.slotPages.where((p) => p.type == SlotPageType.log).length,
+        3,
+        reason: 'Three sets',
+      );
+      expect(
+        setEntry.slotPages.where((p) => p.type == SlotPageType.timer).length,
+        0,
+        reason: 'No timer',
+      );
+      expect(
+        setEntry.slotPages.where((p) => p.type == SlotPageType.exerciseOverview).length,
+        1,
+        reason: 'One exercise overview at the start',
+      );
+      expect(setEntry.slotPages.length, 4);
       expect(setEntry.slotPages[0].type, SlotPageType.exerciseOverview);
       expect(setEntry.slotPages[1].type, SlotPageType.log);
-      expect(notifier.state.totalPages, 5);
+      expect(setEntry.slotPages[2].type, SlotPageType.log);
+      expect(setEntry.slotPages[3].type, SlotPageType.log);
+      expect(notifier.state.totalPages, 10);
     });
   });
 }

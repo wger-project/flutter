@@ -146,7 +146,7 @@ class NavigationHeader extends ConsumerWidget {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.toc),
+          icon: const Icon(Icons.menu),
           onPressed: () {
             showDialog(
               context: context,

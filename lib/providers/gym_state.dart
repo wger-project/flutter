@@ -39,18 +39,21 @@ class PageEntry {
     required this.type,
     required this.pageIndex,
     this.slotPages = const [],
-  }) : uuid = uuidV4(),
+    String? uuid,
+  }) : uuid = uuid ?? uuidV4(),
        assert(
          slotPages.isEmpty || type == PageType.set,
          'SlotEntries can only be set for set pages',
        );
 
   PageEntry copyWith({
+    String? uuid,
     PageType? type,
     int? pageIndex,
     List<SlotPageEntry>? slotPages,
   }) {
     return PageEntry(
+      uuid: uuid ?? this.uuid,
       type: type ?? this.type,
       pageIndex: pageIndex ?? this.pageIndex,
       slotPages: slotPages ?? this.slotPages,
@@ -58,11 +61,11 @@ class PageEntry {
   }
 
   List<Exercise> get exercises {
-    final ids = <Exercise>{};
+    final exerciseSet = <Exercise>{};
     for (final entry in slotPages) {
-      ids.add(entry.setConfigData!.exercise);
+      exerciseSet.add(entry.setConfigData!.exercise);
     }
-    return ids.toList();
+    return exerciseSet.toList();
   }
 
   // Whether all sub-pages (e.g. log pages) are marked as done.
@@ -96,9 +99,11 @@ class SlotPageEntry {
     required this.setIndex,
     this.setConfigData,
     this.logDone = false,
-  }) : uuid = uuidV4();
+    String? uuid,
+  }) : uuid = uuid ?? uuidV4();
 
   SlotPageEntry copyWith({
+    String? uuid,
     SlotPageType? type,
     int? exerciseId,
     int? setIndex,
@@ -107,6 +112,7 @@ class SlotPageEntry {
     bool? logDone,
   }) {
     return SlotPageEntry(
+      uuid: uuid ?? this.uuid,
       type: type ?? this.type,
       setIndex: setIndex ?? this.setIndex,
       pageIndex: pageIndex ?? this.pageIndex,
@@ -116,7 +122,14 @@ class SlotPageEntry {
   }
 
   @override
-  String toString() => 'SlotPageEntry(type: $type, setIndex: $setIndex, pageIndex: $pageIndex)';
+  String toString() =>
+      'SlotPageEntry('
+      'uuid: $uuid, '
+      'type: $type, '
+      'setIndex: $setIndex, '
+      'pageIndex: $pageIndex, '
+      'logDone: $logDone'
+      ')';
 }
 
 class GymModeState {
