@@ -51,14 +51,6 @@ class WorkoutMenu extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Swapping an exercise only affects the current workout, no changes are saved.',
-              style: Theme.of(context).textTheme.bodySmall,
-              textAlign: TextAlign.center,
-            ),
-          ),
         ],
       ),
     );
@@ -119,6 +111,7 @@ class ProgressionTab extends ConsumerStatefulWidget {
 
 class _ProgressionTabState extends ConsumerState<ProgressionTab> {
   String? showDetailsForPageId;
+  String? showAddExerciseAfterPageId;
   _ProgressionTabState();
 
   @override
@@ -187,19 +180,21 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                     //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed: () {
-                          if (showDetailsForPageId == page.uuid) {
-                            setState(() {
-                              widget._logger.fine('Hiding details');
-                              showDetailsForPageId = null;
-                            });
-                          } else {
-                            setState(() {
-                              widget._logger.fine('Showing details for page ${page.uuid}');
-                              showDetailsForPageId = page.uuid;
-                            });
-                          }
-                        },
+                        onPressed: page.allLogsDone
+                            ? null
+                            : () {
+                                if (showDetailsForPageId == page.uuid) {
+                                  setState(() {
+                                    widget._logger.fine('Hiding details');
+                                    showDetailsForPageId = null;
+                                  });
+                                } else {
+                                  setState(() {
+                                    widget._logger.fine('Showing details for page ${page.uuid}');
+                                    showDetailsForPageId = page.uuid;
+                                  });
+                                }
+                              },
                         icon: Icon(
                           showDetailsForPageId == page.uuid
                               ? Icons.change_circle
@@ -228,6 +223,14 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                 ],
               );
             }),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Swapping an exercise only affects the current workout, no changes are saved.',
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ],
         ),
       ),
