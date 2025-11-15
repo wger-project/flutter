@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -27,18 +27,32 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 
-import '../../test_data/routines.dart';
+import '../../../test_data/routines.dart';
 import 'gym_mode_session_screen_test.mocks.dart';
 
 @GenerateMocks([RoutinesProvider])
 void main() {
   final mockRoutinesProvider = MockRoutinesProvider();
   late Routine testRoutine;
+  late GymStateNotifier notifier;
+  late ProviderContainer container;
 
   setUp(() {
+    container = ProviderContainer.test();
+    notifier = container.read(gymStateProvider.notifier);
+    notifier.state = notifier.state.copyWith(
+      showExercisePages: true,
+      showTimerPages: true,
+      dayId: 1,
+      iteration: 1,
+      routine: getTestRoutine(),
+    );
+    notifier.calculatePages();
+
     testRoutine = getTestRoutine();
 
     when(mockRoutinesProvider.editSession(any)).thenAnswer(
@@ -47,7 +61,8 @@ void main() {
   });
 
   Widget renderSessionPage({locale = 'en'}) {
-    return ProviderScope(
+    return UncontrolledProviderScope(
+      container: container,
       child: ChangeNotifierProvider<RoutinesProvider>(
         create: (context) => mockRoutinesProvider,
         child: MaterialApp(
@@ -56,9 +71,7 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: SessionPage(
-              testRoutine,
               PageController(),
-              const TimeOfDay(hour: 13, minute: 35),
             ),
           ),
         ),
@@ -95,10 +108,17 @@ void main() {
   });
 
   testWidgets('Test correct default data (no existing session)', (WidgetTester tester) async {
+    // Arrange
     testRoutine.sessions = [];
     final timeNow = timeToString(TimeOfDay.now())!;
+    notifier.state = notifier.state.copyWith(
+      startTime: const TimeOfDay(hour: 13, minute: 35),
+    );
 
+    // Act
     await tester.pumpWidget(renderSessionPage());
+
+    // Assert
     expect(find.text('13:35'), findsOneWidget);
     expect(find.text(timeNow), findsOneWidget);
     final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
