@@ -9,7 +9,7 @@ import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/routine/gym_mode_screen_test.mocks.dart';
+import '../test/routine/gym_mode_test.mocks.dart';
 import '../test_data/exercises.dart';
 import '../test_data/routines.dart';
 

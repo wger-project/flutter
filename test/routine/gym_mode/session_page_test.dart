@@ -32,7 +32,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 
 import '../../../test_data/routines.dart';
-import 'gym_mode_session_screen_test.mocks.dart';
+import 'session_page_test.mocks.dart';
 
 @GenerateMocks([RoutinesProvider])
 void main() {
