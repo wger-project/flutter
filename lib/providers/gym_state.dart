@@ -298,52 +298,57 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   /// Calculates the page entries
   void calculatePages() {
-    var totalPages = 1;
-    final List<PageEntry> pages = [PageEntry(type: PageType.start, pageIndex: totalPages - 1)];
+    var pageIndex = 0;
 
+    final List<PageEntry> pages = [
+      // Start page
+      PageEntry(type: PageType.start, pageIndex: pageIndex),
+    ];
+
+    pageIndex++;
     for (final slotData in state.dayDataGym.slots) {
-      final slotPageIndex = totalPages;
+      final slotPageIndex = pageIndex;
       final slotEntries = <SlotPageEntry>[];
       int setIndex = 0;
 
       // exercise overview page
       if (state.showExercisePages) {
-        totalPages++;
         slotEntries.add(
           SlotPageEntry(
             type: SlotPageType.exerciseOverview,
             setIndex: setIndex,
-            pageIndex: totalPages - 1,
+            pageIndex: pageIndex,
             setConfigData: slotData.setConfigs.first,
           ),
         );
+        pageIndex++;
       }
 
       for (final config in slotData.setConfigs) {
         // Timer page
         if (state.showTimerPages) {
-          totalPages++;
           slotEntries.add(
             SlotPageEntry(
               type: SlotPageType.timer,
               setIndex: setIndex,
-              pageIndex: totalPages - 1,
+              pageIndex: pageIndex,
               setConfigData: config,
             ),
           );
+          pageIndex++;
         }
 
         // Log page
-        totalPages++;
         slotEntries.add(
           SlotPageEntry(
             type: SlotPageType.log,
             setIndex: setIndex,
-            pageIndex: totalPages - 1,
+            pageIndex: pageIndex,
             setConfigData: config,
           ),
         );
 
+        pageIndex++;
         setIndex++;
       }
 
@@ -357,11 +362,63 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
 
     pages.add(
-      PageEntry(type: PageType.session, pageIndex: totalPages),
+      // Session page
+      PageEntry(type: PageType.session, pageIndex: pageIndex),
     );
 
     state = state.copyWith(pages: pages);
+    debugStructure();
     _logger.finer('Initialized ${state.pages.length} pages');
+  }
+
+  // Recalculates the indices of all pages
+  void recalculateIndices() {
+    var pageIndex = 0;
+    final updatedPages = <PageEntry>[];
+
+    for (final page in state.pages) {
+      final slotPageIndex = pageIndex;
+      var setIndex = 0;
+      final updatedSlotPages = <SlotPageEntry>[];
+
+      for (final slotPage in page.slotPages) {
+        updatedSlotPages.add(
+          slotPage.copyWith(
+            pageIndex: pageIndex,
+            setIndex: setIndex,
+          ),
+        );
+        setIndex++;
+        pageIndex++;
+      }
+
+      if (page.type != PageType.set) {
+        pageIndex++;
+      }
+
+      updatedPages.add(
+        page.copyWith(
+          pageIndex: slotPageIndex,
+          slotPages: updatedSlotPages,
+        ),
+      );
+    }
+
+    state = state.copyWith(pages: updatedPages);
+    debugStructure();
+    _logger.fine('Recalculated page indices');
+  }
+
+  void debugStructure() {
+    _logger.fine('GymModeState structure:');
+    for (final page in state.pages) {
+      _logger.fine('Page ${page.pageIndex}: ${page.type}');
+      for (final slotPage in page.slotPages) {
+        _logger.fine(
+          '  SlotPage ${slotPage.pageIndex.toString().padLeft(2, ' ')} (set index ${slotPage.setIndex}): ${slotPage.type}',
+        );
+      }
+    }
   }
 
   int initData(Routine routine, int dayId, int iteration) {
@@ -468,6 +525,46 @@ class GymStateNotifier extends _$GymStateNotifier {
       pages: updatedPages,
     );
     _logger.fine('Replaced exercise $originalExerciseId with ${newExercise.id}');
+  }
+
+  void addExerciseAfterPage(
+    String pageEntryUUID, {
+    required Exercise newExercise,
+  }) {
+    final List<PageEntry> pages = [];
+    for (final page in state.pages) {
+      pages.add(page);
+
+      if (page.uuid == pageEntryUUID) {
+        final setConfigData = page.slotPages.first.setConfigData!;
+
+        final List<SlotPageEntry> newSlotPages = [];
+        for (var i = 1; i <= 4; i++) {
+          newSlotPages.add(
+            SlotPageEntry(
+              type: SlotPageType.log,
+              pageIndex: 1,
+              setIndex: 0,
+              setConfigData: SetConfigData(
+                exerciseId: newExercise.id!,
+                exercise: newExercise,
+                slotEntryId: setConfigData.slotEntryId,
+              ),
+            ),
+          );
+        }
+
+        final newPage = PageEntry(type: PageType.set, pageIndex: 1, slotPages: newSlotPages);
+
+        pages.add(newPage);
+      }
+    }
+
+    state = state.copyWith(
+      pages: pages,
+    );
+
+    recalculateIndices();
   }
 
   void clear() {

@@ -113,8 +113,8 @@ class ProgressionTab extends ConsumerStatefulWidget {
 }
 
 class _ProgressionTabState extends ConsumerState<ProgressionTab> {
-  String? showDetailsForPageId;
-  String? showAddExerciseAfterPageId;
+  String? showSwapWidgetToPage;
+  String? showAddExerciseWidgetToPage;
   _ProgressionTabState();
 
   @override
@@ -177,7 +177,6 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                     },
                   ),
 
-                  if (showDetailsForPageId == page.uuid) ExerciseSwapWidget(page.uuid),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,29 +185,46 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                         onPressed: page.allLogsDone
                             ? null
                             : () {
-                                if (showDetailsForPageId == page.uuid) {
+                                if (showSwapWidgetToPage == page.uuid) {
                                   setState(() {
                                     widget._logger.fine('Hiding details');
-                                    showDetailsForPageId = null;
+                                    showSwapWidgetToPage = null;
                                   });
                                 } else {
                                   setState(() {
                                     widget._logger.fine('Showing details for page ${page.uuid}');
-                                    showDetailsForPageId = page.uuid;
+                                    showSwapWidgetToPage = page.uuid;
+                                    showAddExerciseWidgetToPage = null;
                                   });
                                 }
                               },
                         icon: Icon(
                           key: ValueKey('swap-icon-${page.uuid}'),
-                          showDetailsForPageId == page.uuid
+                          showSwapWidgetToPage == page.uuid
                               ? Icons.change_circle
                               : Icons.change_circle_outlined,
                         ),
                       ),
-                      // IconButton(
-                      //   onPressed: () {},
-                      //   icon: const Icon(Icons.add),
-                      // ),
+                      IconButton(
+                        onPressed: page.allLogsDone
+                            ? null
+                            : () {
+                                if (showAddExerciseWidgetToPage == page.uuid) {
+                                  setState(() {
+                                    showAddExerciseWidgetToPage = null;
+                                  });
+                                } else {
+                                  setState(() {
+                                    showAddExerciseWidgetToPage = page.uuid;
+                                    showSwapWidgetToPage = null;
+                                  });
+                                }
+                              },
+                        icon: Icon(
+                          key: ValueKey('add-icon-${page.uuid}'),
+                          showAddExerciseWidgetToPage == page.uuid ? Icons.add_circle : Icons.add,
+                        ),
+                      ),
                       Expanded(child: Container()),
                       IconButton(
                         onPressed: () {
@@ -223,6 +239,24 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                       ),
                     ],
                   ),
+                  if (showSwapWidgetToPage == page.uuid)
+                    ExerciseSwapWidget(
+                      page.uuid,
+                      onDone: () {
+                        setState(() {
+                          showSwapWidgetToPage = null;
+                        });
+                      },
+                    ),
+                  if (showAddExerciseWidgetToPage == page.uuid)
+                    ExerciseAddWidget(
+                      page.uuid,
+                      onDone: () {
+                        setState(() {
+                          showAddExerciseWidgetToPage = null;
+                        });
+                      },
+                    ),
                   const SizedBox(height: 8),
                 ],
               );
@@ -246,8 +280,9 @@ class ExerciseSwapWidget extends ConsumerWidget {
   final _logger = Logger('ExerciseSwapWidget');
 
   final String pageUUID;
+  final VoidCallback? onDone;
 
-  ExerciseSwapWidget(this.pageUUID, {super.key});
+  ExerciseSwapWidget(this.pageUUID, {this.onDone, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -278,9 +313,58 @@ class ExerciseSwapWidget extends ConsumerWidget {
                           originalExerciseId: e.id!,
                           newExercise: exercise,
                         );
+                        onDone?.call();
                         _logger.fine('Replaced exercise ${e.id} with ${exercise.id}');
                       },
                     ),
+                    const SizedBox(height: 10),
+                  ],
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ExerciseAddWidget extends ConsumerWidget {
+  final _logger = Logger('ExerciseAddWidget');
+
+  final String pageUUID;
+  final VoidCallback? onDone;
+
+  ExerciseAddWidget(this.pageUUID, {this.onDone, super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(gymStateProvider);
+    final gymProvider = ref.read(gymStateProvider.notifier);
+    final page = state.pages.firstWhere((p) => p.uuid == pageUUID);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            children: [
+              ...page.exercises.map((e) {
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    ExerciseAutocompleter(
+                      onExerciseSelected: (exercise) {
+                        gymProvider.addExerciseAfterPage(
+                          page.uuid,
+                          newExercise: exercise,
+                        );
+                        onDone?.call();
+                        _logger.fine('Added exercise ${exercise.id} after page $pageUUID');
+                      },
+                    ),
+                    const Icon(Icons.arrow_downward),
                     const SizedBox(height: 10),
                   ],
                 );
