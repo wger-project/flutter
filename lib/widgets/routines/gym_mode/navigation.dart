@@ -19,10 +19,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/gym_mode/workout_menu.dart';
+
+class NavigationHeader extends StatelessWidget {
+  final PageController _controller;
+  final String _title;
+  final bool showEndWorkoutButton;
+
+  const NavigationHeader(this._title, this._controller, {this.showEndWorkoutButton = true});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              _title,
+              style: Theme.of(context).textTheme.headlineSmall,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (ctx) => WorkoutMenuDialog(_controller),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
 
 class NavigationFooter extends ConsumerWidget {
   final PageController _controller;
@@ -54,10 +94,19 @@ class NavigationFooter extends ConsumerWidget {
         else
           const SizedBox(width: 48),
         Expanded(
-          child: LinearProgressIndicator(
-            minHeight: 3,
-            value: gymState.ratioCompleted,
-            valueColor: const AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
+          child: GestureDetector(
+            onTap: () => showDialog(
+              context: context,
+              builder: (ctx) => WorkoutMenuDialog(_controller, initialIndex: 1),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: LinearProgressIndicator(
+                minHeight: 3,
+                value: gymState.ratioCompleted,
+                valueColor: const AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
+              ),
+            ),
           ),
         ),
         if (showNext)
@@ -72,88 +121,6 @@ class NavigationFooter extends ConsumerWidget {
           )
         else
           const SizedBox(width: 48),
-      ],
-    );
-  }
-}
-
-class NavigationHeader extends ConsumerWidget {
-  final PageController _controller;
-  final String _title;
-  final bool showEndWorkoutButton;
-
-  const NavigationHeader(this._title, this._controller, {this.showEndWorkoutButton = true});
-
-  Widget getDialog(BuildContext context, int totalPages, List<PageEntry> pages) {
-    final endWorkoutButton = showEndWorkoutButton
-        ? TextButton(
-            child: Text(AppLocalizations.of(context).endWorkout),
-            onPressed: () {
-              _controller.animateToPage(
-                totalPages,
-                duration: DEFAULT_ANIMATION_DURATION,
-                curve: DEFAULT_ANIMATION_CURVE,
-              );
-
-              Navigator.of(context).pop();
-            },
-          )
-        : null;
-
-    return AlertDialog(
-      title: Text(
-        AppLocalizations.of(context).jumpTo,
-        textAlign: TextAlign.center,
-      ),
-      contentPadding: EdgeInsets.zero,
-      content: SizedBox(
-        height: double.maxFinite,
-        width: double.maxFinite,
-        child: WorkoutMenu(_controller),
-      ),
-      actions: [
-        ?endWorkoutButton,
-        TextButton(
-          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final gymState = ref.watch(gymStateProvider);
-
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              _title,
-              style: Theme.of(context).textTheme.headlineSmall,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (ctx) => getDialog(ctx, gymState.totalPages, gymState.pages),
-            );
-          },
-        ),
       ],
     );
   }

@@ -20,17 +20,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
 
 class WorkoutMenu extends StatelessWidget {
   final PageController _controller;
+  final int initialIndex;
 
-  const WorkoutMenu(this._controller);
+  const WorkoutMenu(this._controller, {this.initialIndex = 0, super.key});
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      initialIndex: initialIndex,
       length: 2,
       child: Column(
         children: [
@@ -285,6 +288,61 @@ class ExerciseSwapWidget extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class WorkoutMenuDialog extends ConsumerWidget {
+  final PageController controller;
+  final bool showEndWorkoutButton;
+  final int initialIndex;
+
+  const WorkoutMenuDialog(
+    this.controller, {
+    super.key,
+    this.showEndWorkoutButton = true,
+    this.initialIndex = 0,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gymState = ref.watch(gymStateProvider);
+
+    final endWorkoutButton = true
+        ? TextButton(
+            child: Text(AppLocalizations.of(context).endWorkout),
+            onPressed: () {
+              controller.animateToPage(
+                gymState.totalPages,
+                duration: DEFAULT_ANIMATION_DURATION,
+                curve: DEFAULT_ANIMATION_CURVE,
+              );
+
+              Navigator.of(context).pop();
+            },
+          )
+        : null;
+
+    return AlertDialog(
+      title: Text(
+        AppLocalizations.of(context).jumpTo,
+        textAlign: TextAlign.center,
+      ),
+      contentPadding: EdgeInsets.zero,
+      content: SizedBox(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        child: WorkoutMenu(controller, initialIndex: initialIndex),
+      ),
+      actions: [
+        ?endWorkoutButton,
+        TextButton(
+          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 }
