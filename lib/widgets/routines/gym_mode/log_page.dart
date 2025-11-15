@@ -25,7 +25,6 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
-import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/plate_weights.dart';
@@ -43,12 +42,8 @@ class LogPage extends ConsumerStatefulWidget {
   final _logger = Logger('LogPage');
 
   final PageController _controller;
-  final SlotData _slotData;
 
-  LogPage(
-    this._controller,
-    this._slotData,
-  );
+  LogPage(this._controller);
 
   @override
   _LogPageState createState() => _LogPageState();
@@ -76,6 +71,7 @@ class _LogPageState extends ConsumerState<LogPage> {
     final theme = Theme.of(context);
     final state = ref.watch(gymStateProvider);
 
+    final page = state.getPageByIndex()!;
     final slotEntryPage = state.getSlotEntryPageByIndex();
 
     if (slotEntryPage == null) {
@@ -129,7 +125,7 @@ class _LogPageState extends ConsumerState<LogPage> {
                   ],
                 ),
                 Text(
-                  '${slotEntryPage.setIndex + 1} / ${widget._slotData.setConfigs.length}',
+                  '${slotEntryPage.setIndex + 1} / ${page.slotPages.length}',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -140,8 +136,8 @@ class _LogPageState extends ConsumerState<LogPage> {
           ),
         ),
         if (log.exercise.showPlateCalculator) const LogsPlatesWidget(),
-        if (widget._slotData.comment.isNotEmpty)
-          Text(widget._slotData.comment, textAlign: TextAlign.center),
+        if (slotEntryPage.setConfigData!.comment.isNotEmpty)
+          Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
           child: (state.routine.filterLogsByExercise(log.exercise.id!).isNotEmpty)

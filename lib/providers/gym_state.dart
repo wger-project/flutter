@@ -222,6 +222,19 @@ class GymModeState {
     (e) => e.iteration == iteration && e.day?.id == dayId,
   );
 
+  PageEntry? getPageByIndex([int? pageIndex]) {
+    final index = pageIndex ?? currentPage;
+
+    for (final page in pages) {
+      for (final slotPage in page.slotPages) {
+        if (slotPage.pageIndex == index) {
+          return page;
+        }
+      }
+    }
+    return null;
+  }
+
   SlotPageEntry? getSlotEntryPageByIndex([int? pageIndex]) {
     final index = pageIndex ?? currentPage;
 
@@ -546,6 +559,7 @@ class GymStateNotifier extends _$GymStateNotifier {
               pageIndex: 1,
               setIndex: 0,
               setConfigData: SetConfigData(
+                textRepr: '-/-',
                 exerciseId: newExercise.id!,
                 exercise: newExercise,
                 slotEntryId: setConfigData.slotEntryId,

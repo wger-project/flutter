@@ -91,7 +91,7 @@ class _GymModeState extends ConsumerState<GymMode> {
         }
 
         out.add(
-          LogPage(_controller, slotData),
+          LogPage(_controller),
         );
 
         if (state.showTimerPages) {
