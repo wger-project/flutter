@@ -71,11 +71,15 @@ class _LogPageState extends ConsumerState<LogPage> {
     final theme = Theme.of(context);
     final state = ref.watch(gymStateProvider);
 
-    final page = state.getPageByIndex()!;
-    final slotEntryPage = state.getSlotEntryPageByIndex();
+    final page = state.getPageByIndex();
+    if (page == null) {
+      widget._logger.warning('getPageByIndex returned null, showing empty container');
+      return Container();
+    }
 
+    final slotEntryPage = state.getSlotEntryPageByIndex();
     if (slotEntryPage == null) {
-      widget._logger.finer('getSlotPageByIndex returned null, showing empty container');
+      widget._logger.warning('getSlotPageByIndex returned null, showing empty container');
       return Container();
     }
 
