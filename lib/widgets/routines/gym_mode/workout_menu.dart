@@ -44,14 +44,11 @@ class WorkoutMenu extends StatelessWidget {
             ],
           ),
           Flexible(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: TabBarView(
-                children: [
-                  NavigationTab(_controller),
-                  ProgressionTab(_controller),
-                ],
-              ),
+            child: TabBarView(
+              children: [
+                NavigationTab(_controller),
+                ProgressionTab(_controller),
+              ],
             ),
           ),
         ],
@@ -121,6 +118,7 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
   Widget build(BuildContext context) {
     final state = ref.watch(gymStateProvider);
     final theme = Theme.of(context);
+    final languageCode = Localizations.localeOf(context).languageCode;
 
     return SingleChildScrollView(
       child: Padding(
@@ -128,19 +126,44 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
         child: Column(
           children: [
             ...state.pages.where((page) => page.type == PageType.set).map((page) {
+              if (page.exercises.isEmpty) {
+                widget._logger.warning('Page ${page.uuid} has no exercises, skipping');
+                return Container();
+              }
+
+              // For supersets, prefix the exercise with A, B, C so it can be identified
+              // in the set list below
+              final isSuperset = page.exercises.length > 1;
+              final pageExerciseTitle = isSuperset
+                  ? page.exercises
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                          final label = String.fromCharCode(65 + entry.key);
+                          final name = entry.value
+                              .getTranslation(Localizations.localeOf(context).languageCode)
+                              .name;
+                          return '$label: $name';
+                        })
+                        .join('\n')
+                  : page.exercises.first.getTranslation(languageCode).name;
+
               return Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(pageExerciseTitle, style: Theme.of(context).textTheme.bodyLarge),
                   ...page.slotPages.where((slotPage) => slotPage.type == SlotPageType.log).map(
-                    (
-                      slotPage,
-                    ) {
-                      final exercise = slotPage.setConfigData!.exercise
-                          .getTranslation(
-                            Localizations.localeOf(context).languageCode,
-                          )
-                          .name;
+                    (slotPage) {
+                      String setPrefix = '';
+                      if (isSuperset) {
+                        final exerciseIndex = page.exercises.indexWhere(
+                          (ex) => ex.id == slotPage.setConfigData!.exercise.id,
+                        );
+                        if (exerciseIndex != -1) {
+                          setPrefix = '${String.fromCharCode(65 + exerciseIndex)}: ';
+                        }
+                      }
 
                       // Sets that are done are marked with a strikethrough
                       final decoration = slotPage.logDone
@@ -157,22 +180,26 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                           ? FontWeight.bold
                           : null;
 
-                      return Text.rich(
-                        TextSpan(
-                          children: [
-                            if (slotPage.logDone) const TextSpan(text: '✅ '),
-                            TextSpan(
-                              text: '$exercise -  ${slotPage.setConfigData!.textReprWithType}',
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                decoration: decoration,
-                                fontWeight: fontWeight,
-                                color: color,
-                              ),
+                      IconData icon = Icons.circle_outlined;
+                      if (slotPage.logDone) {
+                        icon = Icons.check_circle_rounded;
+                      } else if (state.currentPage == slotPage.pageIndex) {
+                        icon = Icons.play_circle_fill;
+                      }
+
+                      return Row(
+                        children: [
+                          Icon(icon, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            '$setPrefix${slotPage.setConfigData!.textReprWithType}',
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                              decoration: decoration,
+                              fontWeight: fontWeight,
+                              color: color,
                             ),
-                          ],
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                          ),
+                        ],
                       );
                     },
                   ),
@@ -187,12 +214,10 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                             : () {
                                 if (showSwapWidgetToPage == page.uuid) {
                                   setState(() {
-                                    widget._logger.fine('Hiding details');
                                     showSwapWidgetToPage = null;
                                   });
                                 } else {
                                   setState(() {
-                                    widget._logger.fine('Showing details for page ${page.uuid}');
                                     showSwapWidgetToPage = page.uuid;
                                     showAddExerciseWidgetToPage = null;
                                   });
@@ -264,7 +289,8 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Swapping an exercise only affects the current workout, no changes are saved.',
+                'Swapping or adding an exercise only affects the current workout, '
+                'no changes are saved.',
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),
@@ -414,6 +440,7 @@ class WorkoutMenuDialog extends ConsumerWidget {
         textAlign: TextAlign.center,
       ),
       contentPadding: EdgeInsets.zero,
+      insetPadding: EdgeInsets.zero,
       content: SizedBox(
         height: double.maxFinite,
         width: double.maxFinite,
