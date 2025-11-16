@@ -58,16 +58,20 @@ void main() {
     );
   }
 
-  testWidgets('Smoke and golden test', (WidgetTester tester) async {
-    await tester.pumpWidget(renderWidget());
+  testWidgets(
+    'Smoke and golden test',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(renderWidget());
 
-    if (Platform.isLinux) {
-      await expectLater(
-        find.byType(MaterialApp),
-        matchesGoldenFile('goldens/gym_mode_progression_tab.png'),
-      );
-    }
-  });
+      if (Platform.isLinux) {
+        await expectLater(
+          find.byType(MaterialApp),
+          matchesGoldenFile('goldens/gym_mode_progression_tab.png'),
+        );
+      }
+    },
+    tags: ['golden'],
+  );
 
   testWidgets('Opens the exercise swap', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
