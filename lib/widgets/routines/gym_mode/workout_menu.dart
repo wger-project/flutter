@@ -376,25 +376,18 @@ class ExerciseAddWidget extends ConsumerWidget {
           padding: const EdgeInsets.all(5),
           child: Column(
             children: [
-              ...page.exercises.map((e) {
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    ExerciseAutocompleter(
-                      onExerciseSelected: (exercise) {
-                        gymProvider.addExerciseAfterPage(
-                          page.uuid,
-                          newExercise: exercise,
-                        );
-                        onDone?.call();
-                        _logger.fine('Added exercise ${exercise.id} after page $pageUUID');
-                      },
-                    ),
-                    const Icon(Icons.arrow_downward),
-                    const SizedBox(height: 10),
-                  ],
-                );
-              }),
+              ExerciseAutocompleter(
+                onExerciseSelected: (exercise) {
+                  gymProvider.addExerciseAfterPage(
+                    page.uuid,
+                    newExercise: exercise,
+                  );
+                  onDone?.call();
+                  _logger.fine('Added exercise ${exercise.id} after page $pageUUID');
+                },
+              ),
+              const Icon(Icons.arrow_downward),
+              const SizedBox(height: 10),
             ],
           ),
         ),
