@@ -455,7 +455,9 @@ class GymStateNotifier extends _$GymStateNotifier {
     );
 
     // Calculate the pages
-    calculatePages();
+    if (shouldReset) {
+      calculatePages();
+    }
 
     _logger.fine('Initialized GymModeState, initialPage=$initialPage');
     return initialPage;
