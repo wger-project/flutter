@@ -67,6 +67,84 @@ void main() {
     });
   });
 
+  group('GymStateNotifier.recalculateIndices', () {
+    test('Correctly recalculates indices if new pages are added', () {
+      // Arrange
+      final newPages = [
+        ...notifier.state.pages.sublist(0, 2),
+        PageEntry(
+          type: PageType.set,
+          pageIndex: 1111,
+          uuid: 'new-page-1',
+        ),
+        PageEntry(
+          type: PageType.set,
+          pageIndex: 9,
+          uuid: 'new-page-2',
+        ),
+        ...notifier.state.pages.sublist(2),
+        PageEntry(
+          type: PageType.set,
+          pageIndex: 0,
+          uuid: 'new-page-3',
+          slotPages: [
+            SlotPageEntry(
+              type: SlotPageType.timer,
+              pageIndex: 10,
+              setIndex: 9,
+              uuid: 'new-slot-1',
+            ),
+            SlotPageEntry(
+              type: SlotPageType.timer,
+              pageIndex: 10,
+              setIndex: 6,
+              uuid: 'new-slot-2',
+            ),
+            SlotPageEntry(
+              type: SlotPageType.timer,
+              pageIndex: 100,
+              setIndex: 100,
+              uuid: 'new-slot-3',
+            ),
+          ],
+        ),
+      ];
+      notifier.state = notifier.state.copyWith(pages: newPages);
+
+      // Act
+      notifier.recalculateIndices();
+
+      // Assert
+      final pages = notifier.state.pages;
+      expect(pages[0].pageIndex, 0);
+      expect(pages[1].pageIndex, 1);
+
+      // These three have the same pageIndex because the new ones don't have any slot
+      // pages (this should not happen in practice)
+      expect(pages[2].pageIndex, 8);
+      expect(pages[3].pageIndex, 8);
+      expect(pages[4].pageIndex, 8);
+
+      expect(pages[5].pageIndex, 15);
+      expect(pages[6].pageIndex, 16);
+
+      // Preserve the order of new pages
+      expect(pages[6].uuid, 'new-page-3');
+
+      // Slot pages have correct indices, the original order is preserved
+      final slotPages = pages[6].slotPages;
+      expect(slotPages[0].uuid, 'new-slot-1');
+      expect(slotPages[0].pageIndex, 16);
+      expect(slotPages[0].setIndex, 0);
+      expect(slotPages[1].uuid, 'new-slot-2');
+      expect(slotPages[1].pageIndex, 17);
+      expect(slotPages[1].setIndex, 1);
+      expect(slotPages[2].uuid, 'new-slot-3');
+      expect(slotPages[2].pageIndex, 18);
+      expect(slotPages[2].setIndex, 2);
+    });
+  });
+
   group('GymStateNotifier.replaceExercises', () {
     test('Correctly swaps an exercise', () {
       // Arrange
