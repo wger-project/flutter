@@ -53,7 +53,7 @@ class NavigationHeader extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {
-            showModalBottomSheet(
+            showDialog(
               context: context,
               builder: (ctx) => WorkoutMenuDialog(_controller),
             );
@@ -95,7 +95,7 @@ class NavigationFooter extends ConsumerWidget {
           const SizedBox(width: 48),
         Expanded(
           child: GestureDetector(
-            onTap: () => showModalBottomSheet(
+            onTap: () => showDialog(
               context: context,
               builder: (ctx) => WorkoutMenuDialog(_controller, initialIndex: 1),
             ),

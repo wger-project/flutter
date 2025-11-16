@@ -66,35 +66,38 @@ class NavigationTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(gymStateProvider);
 
-    return Column(
-      children: [
-        ...state.pages.where((pageEntry) => pageEntry.type == PageType.set).map((page) {
-          return ListTile(
-            leading: page.allLogsDone ? const Icon(Icons.check) : null,
-            title: Text(
-              page.exercises
-                  .map(
-                    (exercise) =>
-                        exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
-                  )
-                  .toList()
-                  .join('\n'),
-              style: TextStyle(
-                decoration: page.allLogsDone ? TextDecoration.lineThrough : TextDecoration.none,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          ...state.pages.where((pageEntry) => pageEntry.type == PageType.set).map((page) {
+            return ListTile(
+              leading: page.allLogsDone ? const Icon(Icons.check) : null,
+              title: Text(
+                page.exercises
+                    .map(
+                      (exercise) => exercise
+                          .getTranslation(Localizations.localeOf(context).languageCode)
+                          .name,
+                    )
+                    .toList()
+                    .join('\n'),
+                style: TextStyle(
+                  decoration: page.allLogsDone ? TextDecoration.lineThrough : TextDecoration.none,
+                ),
               ),
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              _controller.animateToPage(
-                page.pageIndex,
-                duration: DEFAULT_ANIMATION_DURATION,
-                curve: DEFAULT_ANIMATION_CURVE,
-              );
-              Navigator.of(context).pop();
-            },
-          );
-        }),
-      ],
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                _controller.animateToPage(
+                  page.pageIndex,
+                  duration: DEFAULT_ANIMATION_DURATION,
+                  curve: DEFAULT_ANIMATION_CURVE,
+                );
+                Navigator.of(context).pop();
+              },
+            );
+          }),
+        ],
+      ),
     );
   }
 }
@@ -328,7 +331,7 @@ class ExerciseSwapWidget extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      e.getTranslation('en').name,
+                      e.getTranslation(Localizations.localeOf(context).languageCode).name,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const Icon(Icons.swap_vert),
@@ -433,9 +436,7 @@ class WorkoutMenuDialog extends ConsumerWidget {
         textAlign: TextAlign.center,
       ),
       contentPadding: EdgeInsets.zero,
-      insetPadding: EdgeInsets.zero,
       content: SizedBox(
-        height: double.maxFinite,
         width: double.maxFinite,
         child: WorkoutMenu(controller, initialIndex: initialIndex),
       ),

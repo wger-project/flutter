@@ -90,9 +90,7 @@ class _GymModeState extends ConsumerState<GymMode> {
           out.add(ExerciseOverview(_controller, config.exercise));
         }
 
-        out.add(
-          LogPage(_controller),
-        );
+        out.add(LogPage(_controller));
 
         if (state.showTimerPages) {
           if (config.restTime != null) {
@@ -107,9 +105,7 @@ class _GymModeState extends ConsumerState<GymMode> {
     }
 
     // End (session)
-    out.add(
-      SessionPage(_controller),
-    );
+    out.add(SessionPage(_controller));
 
     return out;
   }
@@ -125,6 +121,7 @@ class _GymModeState extends ConsumerState<GymMode> {
           return Center(child: Text('Error: ${snapshot.error}: ${snapshot.stackTrace}'));
         } else if (snapshot.connectionState == ConnectionState.done) {
           final initialPage = snapshot.data!;
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!_initialPageJumped && _controller.hasClients) {
               _controller.jumpToPage(initialPage);
@@ -133,8 +130,7 @@ class _GymModeState extends ConsumerState<GymMode> {
           });
 
           final state = ref.watch(gymStateProvider);
-
-          final List<Widget> children = [
+          final children = [
             ..._getContent(state),
           ];
 
