@@ -43,7 +43,7 @@ void main() {
   group('GymStateNotifier.markSlotPageAsDone', () {
     test('Correctly changes the flag', () {
       // Arrange
-      final slotPage = notifier.state.pages[1].slotPages[2];
+      final slotPage = notifier.state.pages[1].slotPages[1];
       expect(slotPage.type, SlotPageType.log);
       expect(
         notifier.state.pages.every((p) => p.slotPages.every((s) => !s.logDone)),
@@ -148,12 +148,13 @@ void main() {
   group('GymStateNotifier.replaceExercises', () {
     test('Correctly swaps an exercise', () {
       // Arrange
-      final slotPage = notifier.state.pages[1].slotPages[2];
-      notifier.state.pages.every((p) => p.exercises.every((s) => s.id != testSquats.id));
+      final slotPage = notifier.state.pages[1].slotPages[1];
       expect(slotPage.type, SlotPageType.log);
+      notifier.state.pages.every((p) => p.exercises.every((s) => s.id != testSquats.id));
 
       // Act
       notifier.replaceExercises(slotPage.uuid, originalExerciseId: 1, newExercise: testSquats);
+      // print(notifier.readPageStructure());
 
       // Assert
       expect(notifier.state.pages[1].exercises.first.id, testSquats.id);
@@ -193,8 +194,8 @@ void main() {
           reason: 'One exercise overview at the start',
         );
         expect(setEntry.slotPages[0].type, SlotPageType.exerciseOverview);
-        expect(setEntry.slotPages[1].type, SlotPageType.timer);
-        expect(setEntry.slotPages[2].type, SlotPageType.log);
+        expect(setEntry.slotPages[1].type, SlotPageType.log);
+        expect(setEntry.slotPages[2].type, SlotPageType.timer);
         expect(notifier.state.totalPages, 16);
       },
     );

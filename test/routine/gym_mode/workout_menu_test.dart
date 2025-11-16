@@ -76,7 +76,7 @@ void main() {
     tags: ['golden'],
   );
 
-  testWidgets('Opens the exercise swap', (WidgetTester tester) async {
+  testWidgets('Opens the exercise swap widget', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
 
     expect(find.byType(ExerciseSwapWidget), findsNothing);
@@ -84,5 +84,15 @@ void main() {
     await tester.tap(find.byKey(Key('swap-icon-${notifier.state.pages[1].uuid}')));
     await tester.pumpAndSettle();
     expect(find.byType(ExerciseSwapWidget), findsOne);
+  });
+
+  testWidgets('Opens the add exercise widget', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget());
+
+    expect(find.byType(ExerciseAddWidget), findsNothing);
+
+    await tester.tap(find.byKey(Key('add-icon-${notifier.state.pages[1].uuid}')));
+    await tester.pumpAndSettle();
+    expect(find.byType(ExerciseAddWidget), findsOne);
   });
 }

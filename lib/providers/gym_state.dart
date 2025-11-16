@@ -90,7 +90,7 @@ class SlotPageEntry {
   /// Whether the log page has been marked as done
   final bool logDone;
 
-  /// The associated SetConfigData, only available for SlotPageType.log
+  /// The associated SetConfigData
   final SetConfigData? setConfigData;
 
   SlotPageEntry({
@@ -338,6 +338,18 @@ class GymStateNotifier extends _$GymStateNotifier {
       }
 
       for (final config in slotData.setConfigs) {
+        // Log page
+        slotEntries.add(
+          SlotPageEntry(
+            type: SlotPageType.log,
+            setIndex: setIndex,
+            pageIndex: pageIndex,
+            setConfigData: config,
+          ),
+        );
+        pageIndex++;
+        setIndex++;
+
         // Timer page
         if (state.showTimerPages) {
           slotEntries.add(
@@ -350,19 +362,6 @@ class GymStateNotifier extends _$GymStateNotifier {
           );
           pageIndex++;
         }
-
-        // Log page
-        slotEntries.add(
-          SlotPageEntry(
-            type: SlotPageType.log,
-            setIndex: setIndex,
-            pageIndex: pageIndex,
-            setConfigData: config,
-          ),
-        );
-
-        pageIndex++;
-        setIndex++;
       }
 
       pages.add(
@@ -380,7 +379,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     );
 
     state = state.copyWith(pages: pages);
-    debugStructure();
+    readPageStructure();
     _logger.finer('Initialized ${state.pages.length} pages');
   }
 
@@ -418,20 +417,23 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
 
     state = state.copyWith(pages: updatedPages);
-    debugStructure();
+    // _logger.fine(readPageStructure());
     _logger.fine('Recalculated page indices');
   }
 
-  void debugStructure() {
-    _logger.fine('GymModeState structure:');
+  String readPageStructure() {
+    final List<String> out = [];
+    out.add('GymModeState structure:');
     for (final page in state.pages) {
-      _logger.fine('Page ${page.pageIndex}: ${page.type}');
+      out.add('Page ${page.pageIndex}: ${page.type}');
       for (final slotPage in page.slotPages) {
-        _logger.fine(
+        out.add(
           '  SlotPage ${slotPage.pageIndex.toString().padLeft(2, ' ')} (set index ${slotPage.setIndex}): ${slotPage.type}',
         );
       }
     }
+
+    return out.join('\n');
   }
 
   int initData(Routine routine, int dayId, int iteration) {
@@ -439,7 +441,8 @@ class GymStateNotifier extends _$GymStateNotifier {
     final currentPage = state.currentPage;
 
     final shouldReset =
-        (state.isInitialized && dayId != state.dayId) || validUntil.isBefore(DateTime.now());
+        (!state.isInitialized || state.isInitialized && dayId != state.dayId) ||
+        validUntil.isBefore(DateTime.now());
     if (shouldReset) {
       _logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
     }
@@ -454,7 +457,9 @@ class GymStateNotifier extends _$GymStateNotifier {
       currentPage: initialPage,
     );
 
-    // Calculate the pages
+    // Calculate the pages.
+    // Note that this is only done if we need to reset, otherwise we keep the
+    // existing state like the exercises that have already been done
     if (shouldReset) {
       calculatePages();
     }
@@ -469,11 +474,13 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setShowExercisePages(bool value) {
     state = state.copyWith(showExercisePages: value);
+    calculatePages();
     _savePrefs();
   }
 
   void setShowTimerPages(bool value) {
     state = state.copyWith(showTimerPages: value);
+    calculatePages();
     _savePrefs();
   }
 

@@ -73,13 +73,17 @@ class _LogPageState extends ConsumerState<LogPage> {
 
     final page = state.getPageByIndex();
     if (page == null) {
-      widget._logger.warning('getPageByIndex returned null, showing empty container');
+      widget._logger.info(
+        'getPageByIndex for ${state.currentPage} returned null, showing empty container.',
+      );
       return Container();
     }
 
     final slotEntryPage = state.getSlotEntryPageByIndex();
     if (slotEntryPage == null) {
-      widget._logger.warning('getSlotPageByIndex returned null, showing empty container');
+      widget._logger.info(
+        'getSlotPageByIndex for ${state.currentPage} returned null, showing empty container',
+      );
       return Container();
     }
 
@@ -129,7 +133,7 @@ class _LogPageState extends ConsumerState<LogPage> {
                   ],
                 ),
                 Text(
-                  '${slotEntryPage.setIndex + 1} / ${page.slotPages.length}',
+                  '${slotEntryPage.setIndex + 1} / ${page.slotPages.where((e) => e.type == SlotPageType.log).length}',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),

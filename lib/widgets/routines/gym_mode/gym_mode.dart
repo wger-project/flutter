@@ -83,24 +83,23 @@ class _GymModeState extends ConsumerState<GymMode> {
     out.add(StartPage(_controller));
 
     // Sets
-    for (final slotData in state.dayDataGym.slots) {
-      var firstPage = true;
-      for (final config in slotData.setConfigs) {
-        if (firstPage && state.showExercisePages) {
-          out.add(ExerciseOverview(_controller, config.exercise));
+    for (final page in state.pages) {
+      for (final slotPage in page.slotPages) {
+        if (slotPage.type == SlotPageType.exerciseOverview) {
+          out.add(ExerciseOverview(_controller));
         }
 
-        out.add(LogPage(_controller));
+        if (slotPage.type == SlotPageType.log) {
+          out.add(LogPage(_controller));
+        }
 
-        if (state.showTimerPages) {
-          if (config.restTime != null) {
-            out.add(TimerCountdownWidget(_controller, config.restTime!.toInt()));
+        if (slotPage.type == SlotPageType.timer) {
+          if (slotPage.setConfigData!.restTime != null) {
+            out.add(TimerCountdownWidget(_controller, slotPage.setConfigData!.restTime!.toInt()));
           } else {
             out.add(TimerWidget(_controller));
           }
         }
-
-        firstPage = false;
       }
     }
 
