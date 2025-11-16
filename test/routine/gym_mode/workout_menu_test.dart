@@ -61,6 +61,9 @@ void main() {
   testWidgets(
     'Smoke and golden test',
     (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(500, 1000);
+      tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+
       await tester.pumpWidget(renderWidget());
 
       if (Platform.isLinux) {
