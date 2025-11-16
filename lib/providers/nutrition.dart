@@ -49,10 +49,6 @@ class NutritionPlansProvider with ChangeNotifier {
   List<NutritionalPlan> _plans = [];
   List<Ingredient> ingredients = [];
 
-  // Track current search to prevent multiple concurrent requests
-  String? _currentSearchQuery;
-  int _searchCounter = 0;
-
   NutritionPlansProvider(
     this.baseProvider,
     List<NutritionalPlan> entries, {
