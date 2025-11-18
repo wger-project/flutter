@@ -23,6 +23,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -71,29 +72,27 @@ void main() {
     );
   }
 
-  /// Sets up a verified user profile with all required mock data.
-  ///
-  /// This includes:
-  /// - User profile with isTrustworthy = true
-  /// - Categories, muscles, equipment, and languages data
-  /// - All properties required by the 6-step stepper form
+  /// Sets up a verified user profile (isTrustworthy = true).
   void setupVerifiedUser() {
-    // Setup user profile
     tProfile1.isTrustworthy = true;
     when(mockUserProvider.profile).thenReturn(tProfile1);
+  }
 
-    // Setup exercise data from providers
+  /// Sets up exercise provider data (categories, muscles, equipment, languages).
+  void setupExerciseProviderData() {
     when(mockExerciseProvider.categories).thenReturn(testCategories);
     when(mockExerciseProvider.muscles).thenReturn(testMuscles);
     when(mockExerciseProvider.equipment).thenReturn(testEquipment);
     when(mockExerciseProvider.exerciseByVariation).thenReturn({});
     when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
     when(mockExerciseProvider.languages).thenReturn(testLanguages);
+  }
 
-    // Setup AddExerciseProvider properties used by stepper steps
-    // Note: All 6 steps are rendered immediately by the Stepper widget,
-    // so all their required properties must be mocked
-    when(mockAddExerciseProvider.author).thenReturn('Test Author');
+  /// Sets up AddExerciseProvider default values.
+  ///
+  /// Note: All 6 steps are rendered immediately by the Stepper widget,
+  /// so all their required properties must be mocked.
+  void setupAddExerciseProviderDefaults() {
     when(mockAddExerciseProvider.equipment).thenReturn([]);
     when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
@@ -115,6 +114,18 @@ void main() {
     when(mockAddExerciseProvider.alternateNamesTrans).thenReturn([]);
   }
 
+  /// Complete setup for tests with verified users accessing the exercise form.
+  ///
+  /// This includes:
+  /// - User profile with isTrustworthy = true
+  /// - Categories, muscles, equipment, and languages data
+  /// - All properties required by the 6-step stepper form
+  void setupFullVerifiedUserContext() {
+    setupVerifiedUser();
+    setupExerciseProviderData();
+    setupAddExerciseProviderDefaults();
+  }
+
   // ============================================================================
   // Form Field Validation Tests
   // ============================================================================
@@ -127,7 +138,7 @@ void main() {
       WidgetTester tester,
     ) async {
       // Setup: Create verified user with required data
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -156,7 +167,7 @@ void main() {
 
     testWidgets('User can enter exercise name in text field', (WidgetTester tester) async {
       // Setup: Create verified user
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -178,7 +189,7 @@ void main() {
       WidgetTester tester,
     ) async {
       // Setup: Create verified user
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -197,11 +208,16 @@ void main() {
 
       // Verify that multi-line text was accepted and is displayed
       expect(find.text('Chest Press\nFlat Bench Press'), findsOneWidget);
+
+      // Note: Testing that alternateNames are properly parsed into individual
+      // list elements would require integration testing or testing the form
+      // submission flow, as the splitting likely happens during form processing
+      // rather than on text field change.
     });
 
     testWidgets('Category dropdown is required for form submission', (WidgetTester tester) async {
       // Setup: Create verified user
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -243,7 +259,7 @@ void main() {
   group('Form Navigation and Data Persistence Tests', () {
     testWidgets('Form data persists when navigating between steps', (WidgetTester tester) async {
       // Setup: Create verified user
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -261,7 +277,7 @@ void main() {
 
     testWidgets('Previous button navigates back to previous step', (WidgetTester tester) async {
       // Setup: Create verified user
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -294,7 +310,7 @@ void main() {
   group('Dropdown Selection Tests', () {
     testWidgets('Category selection widgets exist in form', (WidgetTester tester) async {
       // Setup: Create verified user with categories data
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -312,7 +328,7 @@ void main() {
 
     testWidgets('Form contains multiple selection fields', (WidgetTester tester) async {
       // Setup: Create verified user with all required data
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -340,7 +356,7 @@ void main() {
   group('Provider Integration Tests', () {
     testWidgets('Selecting category updates provider state', (WidgetTester tester) async {
       // Setup: Create verified user
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -352,7 +368,7 @@ void main() {
 
     testWidgets('Selecting muscles updates provider state', (WidgetTester tester) async {
       // Setup: Create verified user
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -366,7 +382,7 @@ void main() {
 
     testWidgets('Equipment list is retrieved from provider', (WidgetTester tester) async {
       // Setup: Create verified user
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -388,8 +404,8 @@ void main() {
   group('Exercise Submission Tests', () {
     testWidgets('Successful submission shows success dialog', (WidgetTester tester) async {
       // Setup: Create verified user and mock successful submission
-      setupVerifiedUser();
-      when(mockAddExerciseProvider.postExerciseToServer()).thenAnswer((_) async => 1);
+      setupFullVerifiedUserContext();
+      when(mockAddExerciseProvider.addExercise()).thenAnswer((_) async => 1);
       when(mockAddExerciseProvider.addImages(any)).thenAnswer((_) async => {});
       when(mockExerciseProvider.fetchAndSetExercise(any)).thenAnswer((_) async => testBenchPress);
       when(mockAddExerciseProvider.clear()).thenReturn(null);
@@ -405,11 +421,11 @@ void main() {
 
     testWidgets('Failed submission displays error message', (WidgetTester tester) async {
       // Setup: Create verified user and mock failed submission
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
       final httpException = WgerHttpException({
         'name': ['This field is required'],
       });
-      when(mockAddExerciseProvider.postExerciseToServer()).thenThrow(httpException);
+      when(mockAddExerciseProvider.addExercise()).thenThrow(httpException);
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -424,8 +440,8 @@ void main() {
       WidgetTester tester,
     ) async {
       // Setup: Mock successful submission flow
-      setupVerifiedUser();
-      when(mockAddExerciseProvider.postExerciseToServer()).thenAnswer((_) async => 1);
+      setupFullVerifiedUserContext();
+      when(mockAddExerciseProvider.addExercise()).thenAnswer((_) async => 1);
       when(mockAddExerciseProvider.addImages(any)).thenAnswer((_) async => {});
       when(mockExerciseProvider.fetchAndSetExercise(any)).thenAnswer((_) async => testBenchPress);
       when(mockAddExerciseProvider.clear()).thenReturn(null);
@@ -465,7 +481,7 @@ void main() {
 
     testWidgets('Verified users can access all form fields', (WidgetTester tester) async {
       // Setup: Create verified user
-      setupVerifiedUser();
+      setupFullVerifiedUserContext();
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
