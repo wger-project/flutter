@@ -306,19 +306,31 @@ class NutritionPlansProvider with ChangeNotifier {
   Future<void> cacheIngredient(Ingredient ingredient, {IngredientDatabase? database}) async {
     database ??= this.database;
 
-    ingredients.add(ingredient);
+    if (!ingredients.any((e) => e.id == ingredient.id)) {
+      ingredients.add(ingredient);
+    }
 
-    final data = ingredient.toJson();
-    await database
-        .into(database.ingredients)
-        .insert(
-          IngredientsCompanion.insert(
-            id: ingredient.id,
-            data: jsonEncode(data),
-            lastFetched: DateTime.now(),
-          ),
-        );
-    _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
+    final ingredientDb = await (database.select(
+      database.ingredients,
+    )..where((e) => e.id.equals(ingredient.id))).getSingleOrNull();
+
+    if (ingredientDb == null) {
+      final data = ingredient.toJson();
+      try {
+        await database
+            .into(database.ingredients)
+            .insert(
+              IngredientsCompanion.insert(
+                id: ingredient.id,
+                data: jsonEncode(data),
+                lastFetched: DateTime.now(),
+              ),
+            );
+        _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
+      } catch (e) {
+        _logger.finer("Error caching ingredient '${ingredient.name}': $e");
+      }
+    }
   }
 
   /// Fetch and return an ingredient
