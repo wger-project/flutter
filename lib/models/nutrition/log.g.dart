@@ -25,7 +25,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     weightUnitId: (json['weight_unit'] as num?)?.toInt(),
     amount: stringToNum(json['amount'] as String?),
     planId: (json['plan'] as num).toInt(),
-    datetime: DateTime.parse(json['datetime'] as String),
+    datetime: utcIso8601ToLocalDate(json['datetime'] as String),
     comment: json['comment'] as String?,
   );
 }

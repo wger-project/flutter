@@ -62,6 +62,14 @@ String dateToUtcIso8601(DateTime dateTime) {
   return dateTime.toUtc().toIso8601String();
 }
 
+/// Converts an ISO8601 datetime string in UTC to a local DateTime object.
+///
+/// Needs to be used in conjunction with [dateToUtcIso8601] in the models to
+/// correctly handle timezones.
+DateTime utcIso8601ToLocalDate(String dateTime) {
+  return DateTime.parse(dateTime).toLocal();
+}
+
 /*
  * Converts a time to a date object.
  * Needed e.g. when the wger api only sends a time but no date information.

@@ -80,7 +80,7 @@ class Log {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late WeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, toJson: dateToUtcIso8601)
+  @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime date;
 
   Log({
