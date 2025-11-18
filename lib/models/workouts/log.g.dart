@@ -39,7 +39,7 @@ Log _$LogFromJson(Map<String, dynamic> json) {
     weight: stringToNum(json['weight'] as String?),
     weightTarget: stringToNum(json['weight_target'] as String?),
     weightUnitId: (json['weight_unit'] as num?)?.toInt() ?? WEIGHT_UNIT_KG,
-    date: DateTime.parse(json['date'] as String),
+    date: utcIso8601ToLocalDate(json['date'] as String),
   )..sessionId = (json['session'] as num?)?.toInt();
 }
 
