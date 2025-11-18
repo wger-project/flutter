@@ -93,6 +93,7 @@ void main() {
   /// Note: All 6 steps are rendered immediately by the Stepper widget,
   /// so all their required properties must be mocked.
   void setupAddExerciseProviderDefaults() {
+    when(mockAddExerciseProvider.author).thenReturn('');
     when(mockAddExerciseProvider.equipment).thenReturn([]);
     when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
@@ -135,8 +136,8 @@ void main() {
 
   group('Form Field Validation Tests', () {
     testWidgets('Exercise name field is required and displays validation error', (
-      WidgetTester tester,
-    ) async {
+        WidgetTester tester,
+        ) async {
       // Setup: Create verified user with required data
       setupFullVerifiedUserContext();
 
@@ -186,8 +187,8 @@ void main() {
     });
 
     testWidgets('Alternative names field accepts multiple lines of text', (
-      WidgetTester tester,
-    ) async {
+        WidgetTester tester,
+        ) async {
       // Setup: Create verified user
       setupFullVerifiedUserContext();
 
@@ -405,7 +406,7 @@ void main() {
     testWidgets('Successful submission shows success dialog', (WidgetTester tester) async {
       // Setup: Create verified user and mock successful submission
       setupFullVerifiedUserContext();
-      when(mockAddExerciseProvider.addExercise()).thenAnswer((_) async => 1);
+      when(mockAddExerciseProvider.postExerciseToServer()).thenAnswer((_) async => 1);
       when(mockAddExerciseProvider.addImages(any)).thenAnswer((_) async => {});
       when(mockExerciseProvider.fetchAndSetExercise(any)).thenAnswer((_) async => testBenchPress);
       when(mockAddExerciseProvider.clear()).thenReturn(null);
@@ -425,7 +426,7 @@ void main() {
       final httpException = WgerHttpException({
         'name': ['This field is required'],
       });
-      when(mockAddExerciseProvider.addExercise()).thenThrow(httpException);
+      when(mockAddExerciseProvider.postExerciseToServer()).thenThrow(httpException);
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -437,11 +438,11 @@ void main() {
     });
 
     testWidgets('Provider clear method is called after successful submission', (
-      WidgetTester tester,
-    ) async {
+        WidgetTester tester,
+        ) async {
       // Setup: Mock successful submission flow
       setupFullVerifiedUserContext();
-      when(mockAddExerciseProvider.addExercise()).thenAnswer((_) async => 1);
+      when(mockAddExerciseProvider.postExerciseToServer()).thenAnswer((_) async => 1);
       when(mockAddExerciseProvider.addImages(any)).thenAnswer((_) async => {});
       when(mockExerciseProvider.fetchAndSetExercise(any)).thenAnswer((_) async => testBenchPress);
       when(mockAddExerciseProvider.clear()).thenReturn(null);

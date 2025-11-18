@@ -4,18 +4,18 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i15;
-import 'dart:io' as _i12;
 import 'dart:ui' as _i16;
 
 import 'package:flutter/material.dart' as _i18;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i14;
+import 'package:mockito/src/dummies.dart' as _i13;
 import 'package:shared_preferences/shared_preferences.dart' as _i4;
 import 'package:wger/database/exercises/exercise_database.dart' as _i5;
 import 'package:wger/models/exercises/category.dart' as _i7;
 import 'package:wger/models/exercises/equipment.dart' as _i8;
 import 'package:wger/models/exercises/exercise.dart' as _i6;
-import 'package:wger/models/exercises/exercise_submission.dart' as _i13;
+import 'package:wger/models/exercises/exercise_submission.dart' as _i14;
+import 'package:wger/models/exercises/exercise_submission_images.dart' as _i12;
 import 'package:wger/models/exercises/language.dart' as _i10;
 import 'package:wger/models/exercises/muscle.dart' as _i9;
 import 'package:wger/models/exercises/variation.dart' as _i3;
@@ -110,12 +110,23 @@ class MockAddExerciseProvider extends _i1.Mock
           as _i2.WgerBaseProvider);
 
   @override
-  List<_i12.File> get exerciseImages =>
+  List<_i12.ExerciseSubmissionImage> get exerciseImages =>
       (super.noSuchMethod(
             Invocation.getter(#exerciseImages),
-            returnValue: <_i12.File>[],
+            returnValue: <_i12.ExerciseSubmissionImage>[],
           )
-          as List<_i12.File>);
+          as List<_i12.ExerciseSubmissionImage>);
+
+  @override
+  String get author =>
+      (super.noSuchMethod(
+            Invocation.getter(#author),
+            returnValue: _i13.dummyValue<String>(
+              this,
+              Invocation.getter(#author),
+            ),
+          )
+          as String);
 
   @override
   List<String> get alternateNamesEn =>
@@ -171,15 +182,21 @@ class MockAddExerciseProvider extends _i1.Mock
           as List<_i9.Muscle>);
 
   @override
-  _i13.ExerciseSubmissionApi get exerciseApiObject =>
+  _i14.ExerciseSubmissionApi get exerciseApiObject =>
       (super.noSuchMethod(
             Invocation.getter(#exerciseApiObject),
-            returnValue: _i14.dummyValue<_i13.ExerciseSubmissionApi>(
+            returnValue: _i13.dummyValue<_i14.ExerciseSubmissionApi>(
               this,
               Invocation.getter(#exerciseApiObject),
             ),
           )
-          as _i13.ExerciseSubmissionApi);
+          as _i14.ExerciseSubmissionApi);
+
+  @override
+  set author(String? value) => super.noSuchMethod(
+    Invocation.setter(#author, value),
+    returnValueForMissingStub: null,
+  );
 
   @override
   set exerciseNameEn(String? value) => super.noSuchMethod(
@@ -277,40 +294,22 @@ class MockAddExerciseProvider extends _i1.Mock
   );
 
   @override
-  void addExerciseImages(
-    List<_i12.File>? images, {
-    String? title,
-    String? author,
-    String? authorUrl,
-    String? sourceUrl,
-    String? derivativeSourceUrl,
-    String? style = '1',
-  }) => super.noSuchMethod(
-    Invocation.method(
-      #addExerciseImages,
-      [images],
-      {
-        #title: title,
-        #author: author,
-        #authorUrl: authorUrl,
-        #sourceUrl: sourceUrl,
-        #derivativeSourceUrl: derivativeSourceUrl,
-        #style: style,
-      },
-    ),
+  void addExerciseImages(List<_i12.ExerciseSubmissionImage>? images) =>
+      super.noSuchMethod(
+        Invocation.method(#addExerciseImages, [images]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void removeImage(String? path) => super.noSuchMethod(
+    Invocation.method(#removeImage, [path]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeExercise(String? path) => super.noSuchMethod(
-    Invocation.method(#removeExercise, [path]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i15.Future<int> addExercise() =>
+  _i15.Future<int> postExerciseToServer() =>
       (super.noSuchMethod(
-            Invocation.method(#addExercise, []),
+            Invocation.method(#postExerciseToServer, []),
             returnValue: _i15.Future<int>.value(0),
           )
           as _i15.Future<int>);
