@@ -15,9 +15,7 @@ Widget createMeasurementScreen({locale = 'en'}) {
 
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<MeasurementProvider>(
-        create: (context) => mockMeasurementProvider,
-      ),
+      ChangeNotifierProvider<MeasurementProvider>(create: (context) => mockMeasurementProvider),
     ],
     child: MaterialApp(
       locale: Locale(locale),

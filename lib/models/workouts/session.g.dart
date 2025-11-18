@@ -9,7 +9,15 @@ part of 'session.dart';
 WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['id', 'routine', 'day', 'date', 'impression', 'time_start', 'time_end'],
+    requiredKeys: const [
+      'id',
+      'routine',
+      'day',
+      'date',
+      'impression',
+      'time_start',
+      'time_end',
+    ],
   );
   return WorkoutSession(
     id: (json['id'] as num?)?.toInt(),

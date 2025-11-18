@@ -56,10 +56,7 @@ class WeightOverview extends StatelessWidget {
           context,
         ),
         TextButton(
-          onPressed: () => Navigator.pushNamed(
-            context,
-            MeasurementCategoriesScreen.routeName,
-          ),
+          onPressed: () => Navigator.pushNamed(context, MeasurementCategoriesScreen.routeName),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

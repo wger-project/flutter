@@ -22,6 +22,7 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/powersync.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
@@ -55,6 +56,10 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
+
+    // do we need to await this? or if it's async, how do we handle failures?
+    _setupPowersync();
+
     // Loading data here, since the build method can be called more than once
     _initialData = _loadEntries();
   }
@@ -72,6 +77,25 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
     const WeightScreen(),
     const GalleryScreen(),
   ];
+
+  Future<void> _setupPowersync() async {
+    final authProvider = context.read<AuthProvider>();
+    final baseUrl = authProvider.serverUrl!;
+    final powerSyncUrl = baseUrl.replaceAll(':8000', ':8080');
+
+    await openDatabase(false, baseUrl, powerSyncUrl);
+
+    final connector = DjangoConnector(db, baseUrl, powerSyncUrl);
+    try {
+      // TODO: should we cache these credentials? that's what their demo does?
+      // we could maybe get the initial token from the /api/v2/login call
+      final credentials = await connector.fetchCredentials();
+      print('fetched credentials' + credentials.toString());
+      await openDatabase(true, baseUrl, powerSyncUrl);
+    } catch (e) {
+      print('failed to fetchCredentials()' + e.toString());
+    }
+  }
 
   /// Load initial data from the server
   Future<void> _loadEntries() async {
@@ -112,7 +136,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
       widget._logger.info('Loading routines, weight, measurements and gallery');
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
-        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+        // nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         routinesProvider.fetchAndSetAllRoutinesSparse(),
         // routinesProvider.fetchAndSetAllRoutinesFull(),
         weightProvider.fetchAndSetEntries(),
@@ -121,11 +145,11 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
       //
       // Current nutritional plan
-      widget._logger.info('Loading current nutritional plan');
-      if (nutritionPlansProvider.currentPlan != null) {
-        final plan = nutritionPlansProvider.currentPlan!;
-        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
-      }
+      // widget._logger.info('Loading current nutritional plan');
+      // if (nutritionPlansProvider.currentPlan != null) {
+      //   final plan = nutritionPlansProvider.currentPlan!;
+      //   await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
+      // }
 
       //
       // Current routine

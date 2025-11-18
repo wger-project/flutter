@@ -38,7 +38,9 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
           .toList(),
       category: json['categories'] == null
           ? null
-          : ExerciseCategory.fromJson(json['categories'] as Map<String, dynamic>),
+          : ExerciseCategory.fromJson(
+              json['categories'] as Map<String, dynamic>,
+            ),
     )
     ..categoryId = (json['category'] as num).toInt()
     ..musclesIds = (json['muscles'] as List<dynamic>).map((e) => (e as num).toInt()).toList()

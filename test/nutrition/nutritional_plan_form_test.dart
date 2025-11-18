@@ -35,7 +35,7 @@ void main() {
   var mockNutrition = MockNutritionPlansProvider();
 
   final plan1 = NutritionalPlan(
-    id: 1,
+    id: 'deadbeef',
     creationDate: DateTime(2021, 1, 1),
     startDate: DateTime(2021, 1, 1),
     endDate: DateTime(2021, 2, 10),
@@ -61,9 +61,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: PlanForm(plan)),
-        routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-        },
+        routes: {NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen()},
       ),
     );
   }

@@ -12,11 +12,7 @@ List<Widget> getOverviewWidgets(
   BuildContext context,
 ) {
   return [
-    Text(
-      title,
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.titleLarge,
-    ),
+    Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
     Container(
       padding: const EdgeInsets.all(15),
       height: 220,

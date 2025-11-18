@@ -194,9 +194,7 @@ class IngredientScanResultDialog extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done && ingredient == null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(barcode),
-                  ),
+                  child: Text(AppLocalizations.of(context).productNotFoundDescription(barcode)),
                 ),
               if (ingredient != null)
                 Padding(

@@ -62,10 +62,7 @@ class WeightForm extends StatelessWidget {
             readOnly: true,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).date,
-              suffixIcon: const Icon(
-                Icons.calendar_today,
-                key: Key('calendarIcon'),
-              ),
+              suffixIcon: const Icon(Icons.calendar_today, key: Key('calendarIcon')),
             ),
             enableInteractiveSelection: false,
             controller: dateController,

@@ -9,7 +9,15 @@ part of 'routine.dart';
 Routine _$RoutineFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['id', 'created', 'name', 'description', 'fit_in_week', 'start', 'end'],
+    requiredKeys: const [
+      'id',
+      'created',
+      'name',
+      'description',
+      'fit_in_week',
+      'start',
+      'end',
+    ],
   );
   return Routine(
     id: (json['id'] as num?)?.toInt(),

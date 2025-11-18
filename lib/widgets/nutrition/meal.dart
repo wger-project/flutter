@@ -45,12 +45,7 @@ class MealWidget extends StatefulWidget {
   final bool popTwice;
   final bool readOnly;
 
-  const MealWidget(
-    this._meal,
-    this._recentMealItems,
-    this.popTwice,
-    this.readOnly,
-  );
+  const MealWidget(this._meal, this._recentMealItems, this.popTwice, this.readOnly);
 
   @override
   _MealWidgetState createState() => _MealWidgetState();

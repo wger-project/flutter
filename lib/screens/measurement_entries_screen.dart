@@ -24,10 +24,7 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/entries.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
-enum MeasurementOptions {
-  edit,
-  delete,
-}
+enum MeasurementOptions { edit, delete }
 
 class MeasurementEntriesScreen extends StatelessWidget {
   const MeasurementEntriesScreen();
@@ -63,9 +60,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
                     context: context,
                     builder: (BuildContext contextDialog) {
                       return AlertDialog(
-                        content: Text(
-                          AppLocalizations.of(context).confirmDelete(category.name),
-                        ),
+                        content: Text(AppLocalizations.of(context).confirmDelete(category.name)),
                         actions: [
                           TextButton(
                             child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
@@ -74,9 +69,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
                           TextButton(
                             child: Text(
                               AppLocalizations.of(context).delete,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
+                              style: TextStyle(color: Theme.of(context).colorScheme.error),
                             ),
                             onPressed: () {
                               // Confirmed, delete the workout
