@@ -16,11 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/// Returns a timezone aware DateTime object from a date and time string.
-DateTime getDateTimeFromDateAndTime(String date, String time) {
-  return DateTime.parse('$date $time');
-}
-
 /// Returns a list of [DateTime] objects from [first] to [last], inclusive.
 List<DateTime> daysInRange(DateTime first, DateTime last) {
   final dayCount = last.difference(first).inDays + 1;

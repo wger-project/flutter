@@ -26,9 +26,7 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
   return NutritionalPlan(
     id: (json['id'] as num?)?.toInt(),
     description: json['description'] as String,
-    creationDate: json['creation_date'] == null
-        ? null
-        : DateTime.parse(json['creation_date'] as String),
+    creationDate: utcIso8601ToLocalDate(json['creation_date'] as String),
     startDate: DateTime.parse(json['start'] as String),
     endDate: json['end'] == null ? null : DateTime.parse(json['end'] as String),
     onlyLogging: json['only_logging'] as bool? ?? false,
