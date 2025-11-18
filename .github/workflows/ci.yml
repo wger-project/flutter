@@ -7,8 +7,10 @@ on:
   pull_request:
     branches: [ master, ]
     paths:
-      - '**.dart'
+      - '**/*.dart'
       - 'pubspec.yaml'
+      - '.github/actions/flutter-common/action.yml'
+      - '.github/workflows/ci.yml'
   workflow_call:
   workflow_dispatch:
 
