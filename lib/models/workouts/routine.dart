@@ -43,7 +43,7 @@ class Routine {
   @JsonKey(required: true, includeToJson: false)
   int? id;
 
-  @JsonKey(required: true, toJson: dateToUtcIso8601)
+  @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime created;
 
   @JsonKey(required: true, name: 'name')
