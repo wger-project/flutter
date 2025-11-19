@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
@@ -24,6 +25,7 @@ import 'package:wger/widgets/dashboard/widgets/measurements.dart';
 import 'package:wger/widgets/dashboard/widgets/nutrition.dart';
 import 'package:wger/widgets/dashboard/widgets/routines.dart';
 import 'package:wger/widgets/dashboard/widgets/weight.dart';
+import 'package:wger/providers/user.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen();
@@ -32,17 +34,19 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context);
+
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.all(10),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             DashboardRoutineWidget(),
-            DashboardNutritionWidget(),
             DashboardWeightWidget(),
             DashboardMeasurementWidget(),
             DashboardCalendarWidget(),
+            if (!user.hideNutrition) DashboardNutritionWidget(),
           ],
         ),
       ),
