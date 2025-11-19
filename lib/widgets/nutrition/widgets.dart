@@ -184,7 +184,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             opacity: CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
             child: child,
           ),
-          onSelected: (suggestion) {
+          onSelected: (suggestion) async {
+            // Cache selected ingredient
+            final provider = Provider.of<NutritionPlansProvider>(context, listen: false);
+            await provider.cacheIngredient(suggestion);
             widget.selectIngredient(suggestion.id, suggestion.name, null);
           },
         ),
