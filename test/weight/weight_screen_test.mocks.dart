@@ -538,6 +538,22 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
           as _i11.Future<void>);
 
   @override
+  _i11.Future<void> cacheIngredient(
+    _i9.Ingredient? ingredient, {
+    _i5.IngredientDatabase? database,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #cacheIngredient,
+              [ingredient],
+              {#database: database},
+            ),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
   _i11.Future<_i9.Ingredient> fetchIngredient(
     int? ingredientId, {
     _i5.IngredientDatabase? database,

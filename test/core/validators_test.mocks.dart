@@ -1074,6 +1074,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get gymModeShowExercises =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeShowExercises),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeShowExercises),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeShowTimer =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeShowTimer),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeShowTimer),
+            ),
+          )
+          as String);
+
+  @override
   String get plateCalculator =>
       (super.noSuchMethod(
             Invocation.getter(#plateCalculator),
@@ -2853,6 +2875,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#addSuperset),
+            ),
+          )
+          as String);
+
+  @override
+  String get superset =>
+      (super.noSuchMethod(
+            Invocation.getter(#superset),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#superset),
             ),
           )
           as String);
