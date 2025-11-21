@@ -46,55 +46,55 @@ class SetConfigData {
   String get textReprWithType => '$textRepr${type.typeLabel}';
 
   @JsonKey(required: true, name: 'sets')
-  late num? nrOfSets;
+  num? nrOfSets;
 
   @JsonKey(required: true, name: 'max_sets')
-  late num? maxNrOfSets;
+  num? maxNrOfSets;
 
   @JsonKey(required: true, fromJson: stringToNumNull)
-  late num? weight;
+  num? weight;
 
   @JsonKey(required: true, name: 'max_weight', fromJson: stringToNumNull)
-  late num? maxWeight;
+  num? maxWeight;
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int? weightUnitId;
+  int? weightUnitId;
 
   @JsonKey(includeToJson: false, includeFromJson: false)
-  late WeightUnit? weightUnit;
+  WeightUnit? weightUnit;
 
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNumNull)
-  late num? weightRounding;
+  num? weightRounding;
 
   @JsonKey(required: true, name: 'repetitions', fromJson: stringToNumNull)
-  late num? repetitions;
+  num? repetitions;
 
   @JsonKey(required: true, name: 'max_repetitions', fromJson: stringToNumNull)
-  late num? maxRepetitions;
+  num? maxRepetitions;
 
   @JsonKey(required: true, name: 'repetitions_unit')
-  late int? repetitionsUnitId;
+  int? repetitionsUnitId;
 
   @JsonKey(includeToJson: false, includeFromJson: false)
-  late RepetitionUnit? repetitionsUnit;
+  RepetitionUnit? repetitionsUnit;
 
   @JsonKey(required: true, name: 'repetitions_rounding', fromJson: stringToNumNull)
-  late num? repetitionsRounding;
+  num? repetitionsRounding;
 
   @JsonKey(required: true, fromJson: stringToNumNull)
-  late num? rir;
+  num? rir;
 
   @JsonKey(required: true, name: 'max_rir', fromJson: stringToNumNull)
-  late num? maxRir;
+  num? maxRir;
 
   @JsonKey(required: true, fromJson: stringToNumNull)
-  late num? rpe;
+  num? rpe;
 
   @JsonKey(required: true, name: 'rest', fromJson: stringToNumNull)
-  late num? restTime;
+  num? restTime;
 
   @JsonKey(required: true, name: 'max_rest', fromJson: stringToNumNull)
-  late num? maxRestTime;
+  num? maxRestTime;
 
   @JsonKey(required: true)
   late String comment;
@@ -103,20 +103,20 @@ class SetConfigData {
     required this.exerciseId,
     required this.slotEntryId,
     this.type = SlotEntryType.normal,
-    required this.nrOfSets,
+    this.nrOfSets,
     this.maxNrOfSets,
-    required this.weight,
+    this.weight,
     this.maxWeight,
     this.weightUnitId = WEIGHT_UNIT_KG,
     this.weightRounding,
-    required this.repetitions,
+    this.repetitions,
     this.maxRepetitions,
     this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
     this.repetitionsRounding,
-    required this.rir,
+    this.rir,
     this.maxRir,
-    required this.rpe,
-    required this.restTime,
+    this.rpe,
+    this.restTime,
     this.maxRestTime,
     this.comment = '',
     this.textRepr = '',
@@ -133,6 +133,58 @@ class SetConfigData {
     if (repetitionsUnit != null) {
       this.repetitionsUnit = repetitionsUnit;
     }
+  }
+
+  SetConfigData copyWith({
+    int? exerciseId,
+    int? slotEntryId,
+    SlotEntryType? type,
+    String? textRepr,
+    num? nrOfSets,
+    num? maxNrOfSets,
+    num? weight,
+    num? maxWeight,
+    int? weightUnitId,
+    num? weightRounding,
+    num? repetitions,
+    num? maxRepetitions,
+    int? repetitionsUnitId,
+    num? repetitionsRounding,
+    num? rir,
+    num? maxRir,
+    num? rpe,
+    num? restTime,
+    num? maxRestTime,
+    String? comment,
+    Exercise? exercise,
+    WeightUnit? weightUnit,
+    RepetitionUnit? repetitionsUnit,
+  }) {
+    return SetConfigData(
+      exerciseId: exerciseId ?? this.exerciseId,
+      slotEntryId: slotEntryId ?? this.slotEntryId,
+      type: type ?? this.type,
+      textRepr: textRepr ?? this.textRepr,
+      nrOfSets: nrOfSets ?? this.nrOfSets,
+      maxNrOfSets: maxNrOfSets ?? this.maxNrOfSets,
+      weight: weight ?? this.weight,
+      maxWeight: maxWeight ?? this.maxWeight,
+      weightUnitId: weightUnitId ?? this.weightUnitId,
+      weightRounding: weightRounding ?? this.weightRounding,
+      repetitions: repetitions ?? this.repetitions,
+      maxRepetitions: maxRepetitions ?? this.maxRepetitions,
+      repetitionsUnitId: repetitionsUnitId ?? this.repetitionsUnitId,
+      repetitionsRounding: repetitionsRounding ?? this.repetitionsRounding,
+      rir: rir ?? this.rir,
+      maxRir: maxRir ?? this.maxRir,
+      rpe: rpe ?? this.rpe,
+      restTime: restTime ?? this.restTime,
+      maxRestTime: maxRestTime ?? this.maxRestTime,
+      comment: comment ?? this.comment,
+      exercise: exercise ?? this.exercise,
+      weightUnit: weightUnit ?? this.weightUnit,
+      repetitionsUnit: repetitionsUnit ?? this.repetitionsUnit,
+    );
   }
 
   // Boilerplate

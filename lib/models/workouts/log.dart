@@ -105,16 +105,25 @@ class Log {
   Log.fromSetConfigData(SetConfigData data) {
     date = DateTime.now();
     sessionId = null;
+
     slotEntryId = data.slotEntryId;
     exerciseBase = data.exercise;
 
-    weight = data.weight;
-    weightTarget = data.weight;
-    weightUnit = data.weightUnit;
+    if (data.weight != null) {
+      weight = data.weight;
+      weightTarget = data.weight;
+    }
+    if (data.weightUnit != null) {
+      weightUnit = data.weightUnit;
+    }
 
-    repetitions = data.repetitions;
-    repetitionsTarget = data.repetitions;
-    repetitionUnit = data.repetitionsUnit;
+    if (data.repetitions != null) {
+      repetitions = data.repetitions;
+      repetitionsTarget = data.repetitions;
+    }
+    if (data.repetitionsUnit != null) {
+      repetitionUnit = data.repetitionsUnit;
+    }
 
     rir = data.rir;
     rirTarget = data.rir;

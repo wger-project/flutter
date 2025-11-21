@@ -17,27 +17,21 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 
 /// Input widget for Reps In Reserve
 class RiRInputWidget extends StatefulWidget {
+  final _logger = Logger('RiRInputWidget');
+
   final num? _initialValue;
   final ValueChanged<String> onChanged;
-  late String dropdownValue;
-  late double _currentSetSliderValue;
 
   static const SLIDER_START = -0.5;
 
   RiRInputWidget(this._initialValue, {required this.onChanged}) {
-    dropdownValue = _initialValue != null ? _initialValue.toString() : SlotEntry.DEFAULT_RIR;
-
-    // Read string RiR into a double
-    if (_initialValue != null) {
-      _currentSetSliderValue = _initialValue.toDouble();
-    } else {
-      _currentSetSliderValue = SLIDER_START;
-    }
+    _logger.finer('Initializing with initial value: $_initialValue');
   }
 
   @override
@@ -45,6 +39,28 @@ class RiRInputWidget extends StatefulWidget {
 }
 
 class _RiRInputWidgetState extends State<RiRInputWidget> {
+  late double _currentSetSliderValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentSetSliderValue = widget._initialValue?.toDouble() ?? RiRInputWidget.SLIDER_START;
+    widget._logger.finer('initState - starting slider value: ${widget._initialValue}');
+  }
+
+  @override
+  void didUpdateWidget(covariant RiRInputWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final newValue = widget._initialValue?.toDouble() ?? RiRInputWidget.SLIDER_START;
+    if (widget._initialValue != oldWidget._initialValue) {
+      widget._logger.finer('didUpdateWidget - new initial value: ${widget._initialValue}');
+      setState(() {
+        _currentSetSliderValue = newValue;
+      });
+    }
+  }
+
   /// Returns the string used in the slider
   String getSliderLabel(double value) {
     if (value < 0) {
@@ -77,15 +93,15 @@ class _RiRInputWidgetState extends State<RiRInputWidget> {
         Text(AppLocalizations.of(context).rir),
         Expanded(
           child: Slider(
-            value: widget._currentSetSliderValue,
+            value: _currentSetSliderValue,
             min: RiRInputWidget.SLIDER_START,
             max: (SlotEntry.POSSIBLE_RIR_VALUES.length - 2) / 2,
             divisions: SlotEntry.POSSIBLE_RIR_VALUES.length - 1,
-            label: getSliderLabel(widget._currentSetSliderValue),
+            label: getSliderLabel(_currentSetSliderValue),
             onChanged: (double value) {
               widget.onChanged(mapDoubleToAllowedRir(value));
               setState(() {
-                widget._currentSetSliderValue = value;
+                _currentSetSliderValue = value;
               });
             },
           ),
