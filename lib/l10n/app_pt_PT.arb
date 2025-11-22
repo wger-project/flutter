@@ -1074,5 +1074,23 @@
     "openEnded": "Sem fim definido",
     "@openEnded": {
         "description": "When a nutrition plan has no pre-defined end date"
-    }
+    },
+    "dayTypeCustom": "Customizado",
+    "@dayTypeCustom": {},
+    "dayTypeEnom": "A cada minuto",
+    "@dayTypeEnom": {},
+    "dayTypeAmrap": "O máximo de rondas possível",
+    "@dayTypeAmrap": {},
+    "dayTypeHiit": "Treino intervalado de alta intensidade",
+    "@dayTypeHiit": {},
+    "dayTypeTabata": "Tabata",
+    "@dayTypeTabata": {},
+    "dayTypeEdt": "Treino de densidade crescente",
+    "@dayTypeEdt": {},
+    "dayTypeRft": "Rondas por tempo",
+    "@dayTypeRft": {},
+    "dayTypeAfap": "O mais rápido possível",
+    "@dayTypeAfap": {},
+    "slotEntryTypeNormal": "Normal",
+    "@slotEntryTypeNormal": {}
 }
