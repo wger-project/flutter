@@ -20,7 +20,9 @@ class Step3Description extends StatelessWidget {
       child: Column(
         children: [
           AddExerciseTextArea(
-            onChange: (value) => {},
+            onChange: (value) => {
+              addExerciseProvider.descriptionEn = value
+            },
             title: '${i18n.description}*',
             helperText: i18n.enterTextInLanguage,
             isMultiline: true,
