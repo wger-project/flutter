@@ -21,7 +21,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 #   - the version number is taken from the git tag vX.Y.Z
 #   - the build number is computed by reading the last one from the play store
 #     and increasing by one
-version: 1.9.0+100
+version: 1.9.1+110
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
@@ -36,20 +36,20 @@ dependencies:
   clock: ^1.1.2
   collection: ^1.18.0
   cupertino_icons: ^1.0.8
-  drift: ^2.28.2
+  drift: ^2.29.0
   equatable: ^2.0.7
   fl_chart: ^1.1.1
-  flex_color_scheme: ^8.3.0
-  flex_seed_scheme: ^3.5.1
+  flex_color_scheme: ^8.3.1
+  flex_seed_scheme: ^3.6.1
   flutter_html: ^3.0.0
   flutter_staggered_grid_view: ^0.7.0
-  flutter_svg: ^2.2.1
+  flutter_svg: ^2.2.3
   flutter_svg_icons: ^0.0.1
   flutter_typeahead: ^5.2.0
   flutter_zxing: ^2.2.1
-  font_awesome_flutter: ^10.10.0
+  font_awesome_flutter: ^10.12.0
   freezed_annotation: ^3.0.0
-  get_it: ^8.2.0
+  get_it: ^8.3.0
   http: ^1.5.0
   image_picker: ^1.2.0
   intl: ^0.20.0
@@ -80,13 +80,13 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  build_runner: ^2.7.1
+  build_runner: ^2.10.4
   cider: ^0.2.7
   drift_dev: ^2.29.0
   flutter_lints: ^6.0.0
   freezed: ^3.2.0
   json_serializable: ^6.11.1
-  mockito: ^5.4.4
+  mockito: ^5.6.1
   network_image_mock: ^2.1.1
   shared_preferences_platform_interface: ^2.0.0
   riverpod_generator: ^3.0.3
@@ -95,9 +95,6 @@ dev_dependencies:
 
   # Script to read out unused translations
   #translations_cleaner: ^0.0.5
-
-#dependency_overrides:
-#  riverpod_generator: ^2.6.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -182,17 +181,9 @@ class IngredientFormState extends State<IngredientForm> {
   final _ingredientIdController = TextEditingController();
   final _amountController = TextEditingController();
   final _dateController = TextEditingController(); // optional
-  final _timeController = TextEditingController(); // optional
+  final _timeController = TextEditingController(text: ''); // optional
   final _mealItem = MealItem.empty();
   var _searchQuery = ''; // copy from typeahead. for filtering suggestions
-
-  @override
-  void initState() {
-    super.initState();
-    final now = DateTime.now();
-    _dateController.text = dateToYYYYMMDD(now)!;
-    _timeController.text = timeToString(TimeOfDay.fromDateTime(now))!;
-  }
 
   @override
   void dispose() {
@@ -236,6 +227,17 @@ class IngredientFormState extends State<IngredientForm> {
 
   @override
   Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
+
+    if (_dateController.text.isEmpty) {
+      _dateController.text = dateFormat.format(DateTime.now());
+    }
+
+    if (_timeController.text.isEmpty) {
+      _timeController.text = timeFormat.format(DateTime.now());
+    }
+
     final String unit = AppLocalizations.of(context).g;
     final queryLower = _searchQuery.toLowerCase();
     final suggestions = widget.recent
@@ -311,7 +313,7 @@ class IngredientFormState extends State<IngredientForm> {
                         );
 
                         if (pickedDate != null) {
-                          _dateController.text = dateToYYYYMMDD(pickedDate)!;
+                          _dateController.text = dateFormat.format(pickedDate);
                         }
                       },
                       onSaved: (newValue) {
@@ -402,9 +404,8 @@ class IngredientFormState extends State<IngredientForm> {
                 _form.currentState!.save();
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
-                final loggedDate = getDateTimeFromDateAndTime(
-                  _dateController.text,
-                  _timeController.text,
+                final loggedDate = dateFormat.parse(
+                  '${_dateController.text} ${_timeController.text}',
                 );
                 widget.onSave(context, _mealItem, loggedDate);
 

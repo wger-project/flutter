@@ -1,10 +1,10 @@
 Od ljubitelja fitnessa za ljubitelje fitnessa – organiziraj svoje zdravlje s WGER, tvojim upravljačem treninga!
 
-Već si pronašao/la omiljeni program za fitness i voliš stvarati vlastite sportske rutine? Bez obzira na vrstu sportske zvijeri – svi imamo nešto zajedničko: Volimo pratiti naše zdravstvene podatke <3
+Već si pronašao/la omiljeni program za fitness i voliš stvarati vlastite sportske rutine? Bez obzira na vrstu sporta kojim se baviš – svi imamo nešto zajedničko: Volimo pratiti naše zdravstvene podatke <3
 
 Stoga te ne osuđujemo što još uvijek upravljaš svojim fitnessom sa svojim praktičnim malim dnevnikom vježbanja, ali nalazimo se u 2025. godini!
 
-Razvili smo 100 % besplatan program za digitalno praćenje zdravlja i fitnessa, s najrelevantnijim funkcijama koje će ti olakšati život. Započni, nastavi trenirati i proslavi svoj napredak!
+Razvili smo 100 % besplatan program za digitalno praćenje zdravlja i fitnessa, s najrelevantnijim funkcijama koje će ti olakšati život. Započni i nastavi trenirati te slavi svoj napredak!
 
 wger je projekt otvorenog koda za:
 * Tvoje tijelo
@@ -28,12 +28,12 @@ Napomena: Ovaj besplatni program ne temelji se na dodatnim sredstvima i ne traž
 
 #Otvoreni kod – što to znači?
 
-Otvoreni kod znači da je cijeli izvorni kod za ovaj program i poslužitelj s kojim razgovara besplatan i dostupan svima:
-* Želiš pokrenuti wger na vlastitom poslužitelju za sebe ili lokalnu teretanu? Izvoli!
+Otvoreni kod znači da je cijeli izvorni kod za ovaj program i server s kojim razgovara besplatan i dostupan svima:
+* Želiš pokrenuti wger na vlastitom serveru za sebe ili lokalnu teretanu? Izvoli!
 * Nedostaje ti funkcija i želiš je implementirati? Počni odmah!
 * Želiš provjeriti da se nigdje ništa ne šalje? Možeš!
 
 Pridruži se našoj zajednici i postani dio sportskih entuzijasta i IT geekova iz cijelog svijeta. Nastavljamo raditi na prilagodbi i optimizaciji programa prilagođen našim potrebama. Volimo tvoj doprinos, stoga se slobodno uključi u bilo koje vrijeme i predloži tvoje želje i ideje!
 
 -> pronađi izvorni kod na https://github.com/wger-project
--> postavljaj pitanja ili se jednostavno predstavi na našem Discord poslužitelju https://discord.gg/rPWFv6W
+-> postavljaj pitanja ili se jednostavno predstavi na našem Discord serveru https://discord.gg/rPWFv6W

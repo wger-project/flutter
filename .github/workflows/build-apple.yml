@@ -11,7 +11,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout application
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref }}
 
@@ -31,7 +31,7 @@ jobs:
           cd build/ios/iphoneos
           zip -r Runner.app.zip Runner.app
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: builds-ios
           path: build/ios/iphoneos/Runner.app.zip
@@ -41,7 +41,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout application
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref }}
 
@@ -61,7 +61,7 @@ jobs:
           cd build/ios/archive
           zip -r Runner.xcarchive.zip Runner.xcarchive
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: builds-ipa
           path: build/ios/archive/Runner.xcarchive.zip
@@ -71,7 +71,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout application
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref }}
 
@@ -84,7 +84,7 @@ jobs:
           cd build/macos/Build/Products/Release
           zip -r wger.app.zip wger.app
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: builds-macos
           path: build/macos/Build/Products/Release/wger.app.zip
