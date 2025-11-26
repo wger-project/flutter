@@ -313,8 +313,10 @@ class LogsRepsWidget extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
+            final value = controller.text.isNotEmpty ? controller.text : '0';
+
             try {
-              final newValue = numberFormat.parse(controller.text) + repsValueChange;
+              final newValue = numberFormat.parse(value) + repsValueChange;
               setStateCallback(() {
                 log.repetitions = newValue;
                 controller.text = numberFormat.format(newValue);
@@ -412,8 +414,10 @@ class LogsWeightWidget extends ConsumerWidget {
         IconButton(
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
+            final value = controller.text.isNotEmpty ? controller.text : '0';
+
             try {
-              final newValue = numberFormat.parse(controller.text) + weightValueChange;
+              final newValue = numberFormat.parse(value) + weightValueChange;
               setStateCallback(() {
                 log.weight = newValue;
                 controller.text = numberFormat.format(newValue);
