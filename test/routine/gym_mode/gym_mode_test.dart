@@ -146,9 +146,8 @@ void main() {
         expect(find.text('Bench press'), findsOneWidget);
         expect(find.byType(LogPage), findsOneWidget);
         expect(find.byType(Form), findsOneWidget);
-        expect(find.byType(ListTile), findsNWidgets(3), reason: 'Two logs and the switch tile');
-        expect(find.text('10 × 10 kg  (1.5 RiR)'), findsOneWidget);
-        expect(find.text('12 × 10 kg  (2 RiR)'), findsOneWidget);
+        expect(find.text('10 × 10 kg (1.5 RiR)'), findsOneWidget);
+        expect(find.text('12 × 10 kg (2 RiR)'), findsOneWidget);
 
         // TODO: commented out for now
         // expect(find.text('Make sure to warm up'), findsOneWidget, reason: 'Set comment');

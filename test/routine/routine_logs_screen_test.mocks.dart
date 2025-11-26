@@ -35,6 +35,7 @@ import 'package:wger/providers/routines.dart' as _i12;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
@@ -145,8 +146,8 @@ class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
           as _i4.RepetitionUnit);
 
   @override
-  set activeRoutine(_i5.Routine? _activeRoutine) => super.noSuchMethod(
-    Invocation.setter(#activeRoutine, _activeRoutine),
+  set activeRoutine(_i5.Routine? value) => super.noSuchMethod(
+    Invocation.setter(#activeRoutine, value),
     returnValueForMissingStub: null,
   );
 

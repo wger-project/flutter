@@ -26,11 +26,13 @@ import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
-import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';
-import 'package:wger/widgets/routines/gym_mode/log_page.dart';
-import 'package:wger/widgets/routines/gym_mode/session_page.dart';
-import 'package:wger/widgets/routines/gym_mode/start_page.dart';
-import 'package:wger/widgets/routines/gym_mode/timer.dart';
+
+import 'exercise_overview.dart';
+import 'log_page.dart';
+import 'result.dart';
+import 'session_page.dart';
+import 'start_page.dart';
+import 'timer.dart';
 
 class GymMode extends ConsumerStatefulWidget {
   final GymModeArguments _args;
@@ -105,6 +107,7 @@ class _GymModeState extends ConsumerState<GymMode> {
 
     // End (session)
     out.add(SessionPage(_controller));
+    out.add(ResultsWidget(_controller));
 
     return out;
   }
@@ -141,7 +144,7 @@ class _GymModeState extends ConsumerState<GymMode> {
               // Check if the last page is reached
               if (page == children.length - 1) {
                 widget._logger.finer('Last page reached, clearing gym state');
-                ref.read(gymStateProvider.notifier).clear();
+                // ref.read(gymStateProvider.notifier).clear();
               }
             },
             children: children,

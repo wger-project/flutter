@@ -9,126 +9,124 @@ import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-String getTranslation(String value, BuildContext context) {
-  final logger = Logger('getTranslation');
+String getServerStringTranslation(String value, BuildContext context) {
+  final logger = Logger('getServerStringTranslation');
+  final i18n = AppLocalizations.of(context);
 
   switch (value) {
     case 'Abs':
-      return AppLocalizations.of(context).abs;
+      return i18n.abs;
 
     case 'Arms':
-      return AppLocalizations.of(context).arms;
+      return i18n.arms;
 
     case 'Back':
-      return AppLocalizations.of(context).back;
+      return i18n.back;
 
     case 'Barbell':
-      return AppLocalizations.of(context).barbell;
+      return i18n.barbell;
 
     case 'Bench':
-      return AppLocalizations.of(context).bench;
+      return i18n.bench;
 
     case 'Biceps':
-      return AppLocalizations.of(context).biceps;
+      return i18n.biceps;
 
     case 'Body Weight':
-      return AppLocalizations.of(context).body_weight;
+      return i18n.body_weight;
 
     case 'Calves':
-      return AppLocalizations.of(context).calves;
+      return i18n.calves;
 
     case 'Cardio':
-      return AppLocalizations.of(context).cardio;
+      return i18n.cardio;
 
     case 'Chest':
-      return AppLocalizations.of(context).chest;
+      return i18n.chest;
 
     case 'Dumbbell':
-      return AppLocalizations.of(context).dumbbell;
+      return i18n.dumbbell;
 
     case 'Glutes':
-      return AppLocalizations.of(context).glutes;
+      return i18n.glutes;
 
     case 'Gym mat':
-      return AppLocalizations.of(context).gym_mat;
+      return i18n.gym_mat;
 
     case 'Hamstrings':
-      return AppLocalizations.of(context).hamstrings;
+      return i18n.hamstrings;
 
     case 'Incline bench':
-      return AppLocalizations.of(context).incline_bench;
+      return i18n.incline_bench;
 
     case 'Kettlebell':
-      return AppLocalizations.of(context).kettlebell;
+      return i18n.kettlebell;
 
     case 'Kilometers':
-      return AppLocalizations.of(context).kilometers;
+      return i18n.kilometers;
 
     case 'Kilometers Per Hour':
-      return AppLocalizations.of(context).kilometers_per_hour;
+      return i18n.kilometers_per_hour;
 
     case 'Lats':
-      return AppLocalizations.of(context).lats;
+      return i18n.lats;
 
     case 'Legs':
-      return AppLocalizations.of(context).legs;
+      return i18n.legs;
 
     case 'Lower back':
-      return AppLocalizations.of(context).lower_back;
-
-    case 'Max Reps':
-      return AppLocalizations.of(context).max_reps;
+      return i18n.lower_back;
 
     case 'Miles':
-      return AppLocalizations.of(context).miles;
+      return i18n.miles;
 
     case 'Miles Per Hour':
-      return AppLocalizations.of(context).miles_per_hour;
+      return i18n.miles_per_hour;
 
     case 'Minutes':
-      return AppLocalizations.of(context).minutes;
+      return i18n.minutes;
 
     case 'Plates':
-      return AppLocalizations.of(context).plates;
+      return i18n.plates;
 
     case 'Pull-up bar':
-      return AppLocalizations.of(context).pull_up_bar;
+      return i18n.pull_up_bar;
 
     case 'Quads':
-      return AppLocalizations.of(context).quads;
+      return i18n.quads;
 
     case 'Repetitions':
-      return AppLocalizations.of(context).repetitions;
+      return i18n.repetitions;
 
     case 'Resistance band':
-      return AppLocalizations.of(context).resistance_band;
+      return i18n.resistance_band;
 
     case 'SZ-Bar':
-      return AppLocalizations.of(context).sz_bar;
+      return i18n.sz_bar;
 
     case 'Seconds':
-      return AppLocalizations.of(context).seconds;
+      return i18n.seconds;
 
     case 'Shoulders':
-      return AppLocalizations.of(context).shoulders;
+      return i18n.shoulders;
 
     case 'Swiss Ball':
-      return AppLocalizations.of(context).swiss_ball;
+      return i18n.swiss_ball;
 
     case 'Triceps':
-      return AppLocalizations.of(context).triceps;
+      return i18n.triceps;
 
     case 'Until Failure':
-      return AppLocalizations.of(context).until_failure;
+      return i18n.until_failure;
 
     case 'kg':
-      return AppLocalizations.of(context).kg;
+      return i18n.kg;
 
     case 'lb':
-      return AppLocalizations.of(context).lb;
+      return i18n.lb;
 
     case 'none (bodyweight exercise)':
-      return AppLocalizations.of(context).none__bodyweight_exercise_;
+      return i18n.none__bodyweight_exercise_;
 
     default:
       logger.warning('Could not translate the server string $value');

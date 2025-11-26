@@ -68,6 +68,16 @@ class WorkoutSession {
     this.date = date ?? DateTime.now();
   }
 
+  Duration? get duration {
+    if (timeStart == null || timeEnd == null) {
+      return null;
+    }
+    final now = DateTime.now();
+    final startDate = DateTime(now.year, now.month, now.day, timeStart!.hour, timeStart!.minute);
+    final endDate = DateTime(now.year, now.month, now.day, timeEnd!.hour, timeEnd!.minute);
+    return endDate.difference(startDate);
+  }
+
   // Boilerplate
   factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
 

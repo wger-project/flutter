@@ -1259,7 +1259,10 @@ class $$ExercisesTableTableManager
           $$ExercisesTableAnnotationComposer,
           $$ExercisesTableCreateCompanionBuilder,
           $$ExercisesTableUpdateCompanionBuilder,
-          (ExerciseTable, BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>),
+          (
+            ExerciseTable,
+            BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>,
+          ),
           ExerciseTable,
           PrefetchHooks Function()
         > {
@@ -1317,7 +1320,10 @@ typedef $$ExercisesTableProcessedTableManager =
       $$ExercisesTableAnnotationComposer,
       $$ExercisesTableCreateCompanionBuilder,
       $$ExercisesTableUpdateCompanionBuilder,
-      (ExerciseTable, BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>),
+      (
+        ExerciseTable,
+        BaseReferences<_$ExerciseDatabase, $ExercisesTable, ExerciseTable>,
+      ),
       ExerciseTable,
       PrefetchHooks Function()
     >;
@@ -1397,7 +1403,10 @@ class $$MusclesTableTableManager
           $$MusclesTableAnnotationComposer,
           $$MusclesTableCreateCompanionBuilder,
           $$MusclesTableUpdateCompanionBuilder,
-          (MuscleTable, BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>),
+          (
+            MuscleTable,
+            BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>,
+          ),
           MuscleTable,
           PrefetchHooks Function()
         > {
@@ -1439,7 +1448,10 @@ typedef $$MusclesTableProcessedTableManager =
       $$MusclesTableAnnotationComposer,
       $$MusclesTableCreateCompanionBuilder,
       $$MusclesTableUpdateCompanionBuilder,
-      (MuscleTable, BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>),
+      (
+        MuscleTable,
+        BaseReferences<_$ExerciseDatabase, $MusclesTable, MuscleTable>,
+      ),
       MuscleTable,
       PrefetchHooks Function()
     >;
@@ -1519,7 +1531,10 @@ class $$EquipmentsTableTableManager
           $$EquipmentsTableAnnotationComposer,
           $$EquipmentsTableCreateCompanionBuilder,
           $$EquipmentsTableUpdateCompanionBuilder,
-          (EquipmentTable, BaseReferences<_$ExerciseDatabase, $EquipmentsTable, EquipmentTable>),
+          (
+            EquipmentTable,
+            BaseReferences<_$ExerciseDatabase, $EquipmentsTable, EquipmentTable>,
+          ),
           EquipmentTable,
           PrefetchHooks Function()
         > {
@@ -1561,7 +1576,10 @@ typedef $$EquipmentsTableProcessedTableManager =
       $$EquipmentsTableAnnotationComposer,
       $$EquipmentsTableCreateCompanionBuilder,
       $$EquipmentsTableUpdateCompanionBuilder,
-      (EquipmentTable, BaseReferences<_$ExerciseDatabase, $EquipmentsTable, EquipmentTable>),
+      (
+        EquipmentTable,
+        BaseReferences<_$ExerciseDatabase, $EquipmentsTable, EquipmentTable>,
+      ),
       EquipmentTable,
       PrefetchHooks Function()
     >;
@@ -1642,7 +1660,10 @@ class $$CategoriesTableTableManager
           $$CategoriesTableAnnotationComposer,
           $$CategoriesTableCreateCompanionBuilder,
           $$CategoriesTableUpdateCompanionBuilder,
-          (CategoryTable, BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>),
+          (
+            CategoryTable,
+            BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>,
+          ),
           CategoryTable,
           PrefetchHooks Function()
         > {
@@ -1684,7 +1705,10 @@ typedef $$CategoriesTableProcessedTableManager =
       $$CategoriesTableAnnotationComposer,
       $$CategoriesTableCreateCompanionBuilder,
       $$CategoriesTableUpdateCompanionBuilder,
-      (CategoryTable, BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>),
+      (
+        CategoryTable,
+        BaseReferences<_$ExerciseDatabase, $CategoriesTable, CategoryTable>,
+      ),
       CategoryTable,
       PrefetchHooks Function()
     >;
@@ -1764,7 +1788,10 @@ class $$LanguagesTableTableManager
           $$LanguagesTableAnnotationComposer,
           $$LanguagesTableCreateCompanionBuilder,
           $$LanguagesTableUpdateCompanionBuilder,
-          (LanguagesTable, BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>),
+          (
+            LanguagesTable,
+            BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>,
+          ),
           LanguagesTable,
           PrefetchHooks Function()
         > {
@@ -1806,7 +1833,10 @@ typedef $$LanguagesTableProcessedTableManager =
       $$LanguagesTableAnnotationComposer,
       $$LanguagesTableCreateCompanionBuilder,
       $$LanguagesTableUpdateCompanionBuilder,
-      (LanguagesTable, BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>),
+      (
+        LanguagesTable,
+        BaseReferences<_$ExerciseDatabase, $LanguagesTable, LanguagesTable>,
+      ),
       LanguagesTable,
       PrefetchHooks Function()
     >;

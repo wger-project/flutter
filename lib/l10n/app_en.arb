@@ -265,6 +265,21 @@
   },
   "gymModeShowExercises": "Show exercise overview pages",
   "gymModeShowTimer": "Show timer between sets",
+  "duration": "Duration",
+  "durationHoursMinutes": "{hours}h {minutes}m",
+  "@durationHoursMinutes": {
+    "description": "A duration, in hours and minutes",
+    "type": "text",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "finishWorkout": "Finish workout",
   "plateCalculator": "Plates",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"

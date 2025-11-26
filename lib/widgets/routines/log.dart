@@ -193,7 +193,7 @@ class DayLogWidget extends StatelessWidget {
                       (log) => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(log.singleLogRepTextNoNl),
+                          Text(log.repTextNoNl(context)),
                           IconButton(
                             icon: const Icon(Icons.delete),
                             key: ValueKey('delete-log-${log.id}'),

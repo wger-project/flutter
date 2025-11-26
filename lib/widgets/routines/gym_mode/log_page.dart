@@ -464,7 +464,8 @@ class LogsPastLogsWidget extends StatelessWidget {
           ),
           ...pastLogs.map((pastLog) {
             return ListTile(
-              title: Text(pastLog.singleLogRepTextNoNl),
+              key: ValueKey('past-log-${pastLog.id}'),
+              title: Text(pastLog.repTextNoNl(context)),
               subtitle: Text(
                 DateFormat.yMd(Localizations.localeOf(context).languageCode).format(pastLog.date),
               ),

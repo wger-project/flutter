@@ -31,6 +31,7 @@ import 'package:wger/providers/exercises.dart' as _i12;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
   _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
@@ -104,14 +105,14 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           as _i3.Client);
 
   @override
-  set auth(_i2.AuthProvider? _auth) => super.noSuchMethod(
-    Invocation.setter(#auth, _auth),
+  set auth(_i2.AuthProvider? value) => super.noSuchMethod(
+    Invocation.setter(#auth, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set client(_i3.Client? _client) => super.noSuchMethod(
-    Invocation.setter(#client, _client),
+  set client(_i3.Client? value) => super.noSuchMethod(
+    Invocation.setter(#client, value),
     returnValueForMissingStub: null,
   );
 
@@ -292,14 +293,14 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
           as List<_i10.Language>);
 
   @override
-  set database(_i5.ExerciseDatabase? _database) => super.noSuchMethod(
-    Invocation.setter(#database, _database),
+  set database(_i5.ExerciseDatabase? value) => super.noSuchMethod(
+    Invocation.setter(#database, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set exercises(List<_i6.Exercise>? _exercises) => super.noSuchMethod(
-    Invocation.setter(#exercises, _exercises),
+  set exercises(List<_i6.Exercise>? value) => super.noSuchMethod(
+    Invocation.setter(#exercises, value),
     returnValueForMissingStub: null,
   );
 

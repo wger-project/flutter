@@ -34,6 +34,7 @@ import 'package:wger/providers/user.dart' as _i13;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
@@ -231,20 +232,20 @@ class MockUserProvider extends _i1.Mock implements _i13.UserProvider {
           as _i4.SharedPreferencesAsync);
 
   @override
-  set themeMode(_i14.ThemeMode? _themeMode) => super.noSuchMethod(
-    Invocation.setter(#themeMode, _themeMode),
+  set themeMode(_i14.ThemeMode? value) => super.noSuchMethod(
+    Invocation.setter(#themeMode, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set prefs(_i4.SharedPreferencesAsync? _prefs) => super.noSuchMethod(
-    Invocation.setter(#prefs, _prefs),
+  set prefs(_i4.SharedPreferencesAsync? value) => super.noSuchMethod(
+    Invocation.setter(#prefs, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set profile(_i15.Profile? _profile) => super.noSuchMethod(
-    Invocation.setter(#profile, _profile),
+  set profile(_i15.Profile? value) => super.noSuchMethod(
+    Invocation.setter(#profile, value),
     returnValueForMissingStub: null,
   );
 
@@ -363,14 +364,14 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
           as List<_i6.NutritionalPlan>);
 
   @override
-  set database(_i5.IngredientDatabase? _database) => super.noSuchMethod(
-    Invocation.setter(#database, _database),
+  set database(_i5.IngredientDatabase? value) => super.noSuchMethod(
+    Invocation.setter(#database, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set ingredients(List<_i9.Ingredient>? _ingredients) => super.noSuchMethod(
-    Invocation.setter(#ingredients, _ingredients),
+  set ingredients(List<_i9.Ingredient>? value) => super.noSuchMethod(
+    Invocation.setter(#ingredients, value),
     returnValueForMissingStub: null,
   );
 

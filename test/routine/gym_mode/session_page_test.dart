@@ -59,6 +59,8 @@ void main() {
   });
 
   Widget renderSessionPage({locale = 'en'}) {
+    final controller = PageController(initialPage: 0);
+
     return UncontrolledProviderScope(
       container: container,
       child: ChangeNotifierProvider<RoutinesProvider>(
@@ -68,8 +70,11 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
-            body: SessionPage(
-              PageController(),
+            body: PageView(
+              controller: controller,
+              children: [
+                SessionPage(controller),
+              ],
             ),
           ),
         ),
@@ -133,6 +138,7 @@ void main() {
       final captured =
           verify(mockRoutinesProvider.editSession(captureAny)).captured.single as WorkoutSession;
 
+      print(captured);
       expect(captured.id, 1);
       expect(captured.impression, 3);
       expect(captured.notes, equals('This is a note'));

@@ -61,7 +61,10 @@ class SessionPage extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: SessionForm(
             state.routine.id,
-            onSaved: () => Navigator.of(context).pop(),
+            onSaved: () => _controller.nextPage(
+              duration: DEFAULT_ANIMATION_DURATION,
+              curve: DEFAULT_ANIMATION_CURVE,
+            ),
             session: session,
           ),
         ),
