@@ -39,11 +39,13 @@ class DayLogWidget extends StatelessWidget {
     final exercises = sessionApi.exercises;
 
     return Column(
+      spacing: 10,
       children: [
         Card(child: SessionInfo(sessionApi.session)),
         MuscleGroupsCard(sessionApi.logs),
 
         Column(
+          spacing: 10,
           children: [
             ...exercises.map((exercise) {
               final translation = exercise.getTranslation(

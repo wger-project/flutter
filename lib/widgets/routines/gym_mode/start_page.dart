@@ -50,11 +50,13 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
             child: Column(
               children: [
                 SwitchListTile(
+                  key: const ValueKey('gym-mode-option-show-exercises'),
                   title: Text(i18n.gymModeShowExercises),
                   value: gymState.showExercisePages,
                   onChanged: (value) => gymNotifier.setShowExercisePages(value),
                 ),
                 SwitchListTile(
+                  key: const ValueKey('gym-mode-option-show-timer'),
                   title: Text(i18n.gymModeShowTimer),
                   value: gymState.showTimerPages,
                   onChanged: (value) => gymNotifier.setShowTimerPages(value),
@@ -67,6 +69,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
         ),
 
         ListTile(
+          key: const ValueKey('gym-mode-options-tile'),
           title: Text(i18n.settingsTitle),
           leading: const Icon(Icons.settings),
           onTap: () => setState(() => _showOptions = !_showOptions),

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,7 +84,7 @@ class _ResultsWidgetState extends ConsumerState<ResultsWidget> {
               } else if (snapshot.connectionState == ConnectionState.done) {
                 return WorkoutSessionStats(
                   _routine.sessions.firstWhereOrNull(
-                    (s) => s.session.date.isSameDayAs(DateTime.now()),
+                    (s) => s.session.date.isSameDayAs(clock.now()),
                   ),
                 );
               }
