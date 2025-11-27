@@ -9,7 +9,15 @@ part of 'translation.dart';
 Translation _$TranslationFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['id', 'uuid', 'language', 'created', 'exercise', 'name', 'description'],
+    requiredKeys: const [
+      'id',
+      'uuid',
+      'language',
+      'created',
+      'exercise',
+      'name',
+      'description',
+    ],
   );
   return Translation(
       id: (json['id'] as num?)?.toInt(),

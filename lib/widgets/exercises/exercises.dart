@@ -229,7 +229,7 @@ class ExerciseDetail extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Chip(
-          label: Text(getTranslation(_exercise.category!.name, context)),
+          label: Text(getServerStringTranslation(_exercise.category!.name, context)),
           padding: EdgeInsets.zero,
           backgroundColor: theme.splashColor,
         ),
@@ -241,7 +241,7 @@ class ExerciseDetail extends StatelessWidget {
             (e) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Chip(
-                label: Text(getTranslation(e.name, context)),
+                label: Text(getServerStringTranslation(e.name, context)),
                 padding: EdgeInsets.zero,
                 backgroundColor: theme.splashColor,
               ),

@@ -67,7 +67,7 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
               body: Column(
                 children: filterCategory.items.entries.map((currentEntry) {
                   return SwitchListTile(
-                    title: Text(getTranslation(currentEntry.key.name, context)),
+                    title: Text(getServerStringTranslation(currentEntry.key.name, context)),
                     value: currentEntry.value,
                     onChanged: (_) {
                       setState(() {

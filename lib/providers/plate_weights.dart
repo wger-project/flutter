@@ -16,10 +16,9 @@ const DEFAULT_BAR_WEIGHT_LB = 45;
 
 const PREFS_KEY_PLATES = 'selectedPlates';
 
-final plateCalculatorProvider =
-    StateNotifierProvider<PlateCalculatorNotifier, PlateCalculatorState>((ref) {
-      return PlateCalculatorNotifier();
-    });
+final plateCalculatorProvider = NotifierProvider<PlateCalculatorNotifier, PlateCalculatorState>(
+  PlateCalculatorNotifier.new,
+);
 
 class PlateCalculatorState {
   final _logger = Logger('PlateWeightsState');
@@ -135,14 +134,19 @@ class PlateCalculatorState {
   }
 }
 
-class PlateCalculatorNotifier extends StateNotifier<PlateCalculatorState> {
+class PlateCalculatorNotifier extends Notifier<PlateCalculatorState> {
   final _logger = Logger('PlateCalculatorNotifier');
 
   late SharedPreferencesAsync prefs;
 
-  PlateCalculatorNotifier({SharedPreferencesAsync? prefs}) : super(PlateCalculatorState()) {
+  PlateCalculatorNotifier({SharedPreferencesAsync? prefs}) : super() {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
+  }
+
+  @override
+  PlateCalculatorState build() {
     _readDataFromSharedPrefs();
+    return PlateCalculatorState();
   }
 
   Future<void> saveToSharedPrefs() async {

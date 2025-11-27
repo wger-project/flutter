@@ -18,50 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/workouts/repetition_unit.dart';
-import 'package:wger/models/workouts/weight_unit.dart';
-
-/// Returns the text representation for a single setting, used in the gym mode
-String repText(
-  num? repetitions,
-  RepetitionUnit? repetitionUnitObj,
-  num? weight,
-  WeightUnit? weightUnitObj,
-  num? rir,
-) {
-  // TODO(x): how to (easily?) translate strings like the units or 'RiR'
-
-  final List<String> out = [];
-
-  if (repetitions != null) {
-    out.add(formatNum(repetitions).toString());
-
-    // The default repetition unit is 'reps', which we don't show unless there
-    // is no weight defined so that we don't just output something like "8" but
-    // rather "8 repetitions". If there is weight we want to output "8 x 50kg",
-    // since the repetitions are implied. If other units are used, we always
-    // print them
-    if (repetitionUnitObj != null && repetitionUnitObj.id != REP_UNIT_REPETITIONS_ID ||
-        weight == 0 ||
-        weight == null) {
-      out.add(repetitionUnitObj!.name);
-    }
-  }
-
-  if (weight != null && weight != 0) {
-    out.add('×');
-    out.add(formatNum(weight).toString());
-    out.add(weightUnitObj!.name);
-  }
-
-  if (rir != null && rir != '') {
-    out.add('\n');
-    out.add('($rir RiR)');
-  }
-
-  return out.join(' ');
-}
 
 void launchURL(String url, BuildContext context) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);

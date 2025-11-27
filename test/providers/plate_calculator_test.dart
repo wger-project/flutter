@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart'; // Added for annotations
 import 'package:mockito/mockito.dart'; // Added for mockito
@@ -12,6 +13,7 @@ import 'plate_calculator_test.mocks.dart';
 void main() {
   group('PlateWeightsNotifier', () {
     late PlateCalculatorNotifier notifier;
+    late ProviderContainer container;
     late MockSharedPreferencesAsync mockPrefs;
 
     setUp(() {
@@ -19,7 +21,14 @@ void main() {
       when(mockPrefs.getString(PREFS_KEY_PLATES)).thenAnswer((_) async => null);
       when(mockPrefs.setString(any, any)).thenAnswer((_) async => true);
 
-      notifier = PlateCalculatorNotifier(prefs: mockPrefs);
+      container = ProviderContainer.test(
+        overrides: [
+          plateCalculatorProvider.overrideWith(
+            () => PlateCalculatorNotifier(prefs: mockPrefs),
+          ),
+        ],
+      );
+      notifier = container.read(plateCalculatorProvider.notifier);
     });
 
     test('toggleSelection adds and removes plates', () async {

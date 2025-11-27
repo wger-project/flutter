@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +23,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/routines/log.dart';
+import 'package:wger/widgets/routines/logs/day_logs_container.dart';
 
 class WorkoutLogs extends StatelessWidget {
   final Routine _routine;
@@ -38,14 +38,6 @@ class WorkoutLogs extends StatelessWidget {
         Text(
           AppLocalizations.of(context).labelWorkoutLogs,
           style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        Text(
-          AppLocalizations.of(context).logHelpEntries,
-          textAlign: TextAlign.justify,
-        ),
-        Text(
-          AppLocalizations.of(context).logHelpEntriesUnits,
-          textAlign: TextAlign.justify,
         ),
         SizedBox(
           width: double.infinity,
@@ -141,16 +133,29 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
           },
         ),
         const SizedBox(height: 8.0),
-        SizedBox(
-          child: ValueListenableBuilder<List<DateTime>>(
-            valueListenable: _selectedEvents,
-            builder: (context, logEvents, _) {
-              // At the moment there is only one "event" per day
-              return logEvents.isNotEmpty
-                  ? DayLogWidget(logEvents.first, widget._routine)
-                  : Container();
-            },
-          ),
+        ExpansionTile(
+          showTrailingIcon: false,
+          dense: true,
+          title: const Align(alignment: Alignment.centerLeft, child: Icon(Icons.info_outline)),
+          children: [
+            Text(
+              AppLocalizations.of(context).logHelpEntries,
+              textAlign: TextAlign.justify,
+            ),
+            Text(
+              AppLocalizations.of(context).logHelpEntriesUnits,
+              textAlign: TextAlign.justify,
+            ),
+          ],
+        ),
+        ValueListenableBuilder<List<DateTime>>(
+          valueListenable: _selectedEvents,
+          builder: (context, logEvents, _) {
+            // At the moment there is only one "event" per day
+            return logEvents.isNotEmpty
+                ? DayLogWidget(logEvents.first, widget._routine)
+                : Container();
+          },
         ),
       ],
     );
