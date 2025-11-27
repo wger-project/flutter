@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
 
 part 'session.g.dart';
@@ -76,6 +77,28 @@ class WorkoutSession {
     final startDate = DateTime(now.year, now.month, now.day, timeStart!.hour, timeStart!.minute);
     final endDate = DateTime(now.year, now.month, now.day, timeEnd!.hour, timeEnd!.minute);
     return endDate.difference(startDate);
+  }
+
+  String durationTxt(BuildContext context) {
+    final duration = this.duration;
+    if (duration == null) {
+      return '-/-';
+    }
+    return AppLocalizations.of(
+      context,
+    ).durationHoursMinutes(duration.inHours, duration.inMinutes.remainder(60));
+  }
+
+  String durationTxtWithStartEnd(BuildContext context) {
+    final duration = this.duration;
+    if (duration == null) {
+      return '-/-';
+    }
+
+    final startTime = MaterialLocalizations.of(context).formatTimeOfDay(timeStart!);
+    final endTime = MaterialLocalizations.of(context).formatTimeOfDay(timeEnd!);
+
+    return '${durationTxt(context)} ($startTime - $endTime)';
   }
 
   // Boilerplate
