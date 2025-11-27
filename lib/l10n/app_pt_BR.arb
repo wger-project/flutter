@@ -1074,5 +1074,11 @@
         "description": "The End date of a nutritional plan"
     },
     "startDate": "Data inicial",
-    "@startDate": {}
+    "@startDate": {},
+    "dayTypeCustom": "Personalizado",
+    "@dayTypeCustom": {},
+    "dayTypeHiit": "Treino de alta intensidade",
+    "@dayTypeHiit": {},
+    "dayTypeTabata": "Tabata",
+    "@dayTypeTabata": {}
 }
