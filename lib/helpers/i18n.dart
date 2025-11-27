@@ -77,6 +77,9 @@ String getServerStringTranslation(String value, BuildContext context) {
     case 'Lower back':
       return i18n.lower_back;
 
+    case 'Max Reps':
+      return i18n.max_reps;
+
     case 'Miles':
       return i18n.miles;
 

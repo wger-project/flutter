@@ -51,7 +51,7 @@ class _ResultsWidgetState extends ConsumerState<ResultsWidget> {
     return Column(
       children: [
         NavigationHeader(
-          'Workout complete',
+          AppLocalizations.of(context).workoutCompleted,
           widget._controller,
           showEndWorkoutButton: false,
         ),
@@ -123,7 +123,7 @@ class WorkoutStats extends ConsumerWidget {
             const SizedBox(width: 10),
             Expanded(
               child: InfoCard(
-                title: 'Volume',
+                title: i18n.volume,
                 value: totalVolume.toStringAsFixed(0),
               ),
             ),
@@ -144,7 +144,7 @@ class WorkoutStats extends ConsumerWidget {
             ref.read(gymStateProvider.notifier).clear();
             Navigator.of(context).pop();
           },
-          child: Text(i18n.finishWorkout),
+          child: Text(i18n.endWorkout),
         ),
       ],
     );

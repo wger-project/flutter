@@ -279,7 +279,11 @@
       }
     }
   },
-  "finishWorkout": "Finish workout",
+  "volume": "Volume",
+  "@volume": {
+    "description": "The volume of a workout or set, i.e. weight x reps"
+  },
+  "workoutCompleted": "Workout completed",
   "plateCalculator": "Plates",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
@@ -1081,7 +1085,10 @@
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
   },
-  "endWorkout": "End Workout",
+  "endWorkout": "End workout",
+  "@endWorkout": {
+    "description": "Use the imperative, label on button to finish the current workout in gym mode"
+  },
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
