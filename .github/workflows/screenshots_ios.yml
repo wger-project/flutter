@@ -1,0 +1,52 @@
+name: Screenshots iOS
+on:
+  workflow_dispatch:
+
+jobs:
+  screenshots:
+    name: 'Generate screenshots'
+    runs-on: macos-latest
+    env:
+      GIT_AUTHOR_NAME: 'github-actions[bot]'
+      GIT_AUTHOR_EMAIL: 'github-actions[bot]@users.noreply.github.com'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Install CocoaPods
+        run: |
+          brew install cocoapods || true
+          cd ios || true
+          pod install || true
+          cd ..
+
+      - name: Boot iOS simulator
+        id: boot
+        run: |
+          SIMULATOR=$(xcrun simctl list devices available | awk -F '[()]' '/iPhone 17/{print $2; exit}')
+          SIMULATOR=${SIMULATOR:-$(xcrun simctl list devices available | awk -F '[()]' '/iPhone/{print $2; exit}')}
+          echo "SIMULATOR=$SIMULATOR" >> $GITHUB_ENV
+          xcrun simctl boot "$SIMULATOR" || true
+          open -a Simulator || true
+          n=0; until xcrun simctl bootstatus "$SIMULATOR" -b || [ $n -ge 60 ]; do sleep 1; n=$((n+1)); done
+
+      - name: Generate screenshots on iOS simulator
+        run: |
+          flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=iOSPhoneBig -d "$SIMULATOR"
+
+      - name: Commit screenshots to repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "${GIT_AUTHOR_NAME}"
+          git config user.email "${GIT_AUTHOR_EMAIL}"
+          git add fastlane/metadata/ios || true
+          if git diff --staged --quiet; then
+            echo "No new/changed iOS screenshots to commit."
+          else
+            BRANCH=$(git rev-parse --abbrev-ref HEAD)
+            git commit -m "Updated iOS screenshots"
+            git push origin HEAD:"${BRANCH}"
+          fi

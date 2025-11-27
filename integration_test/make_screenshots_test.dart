@@ -16,8 +16,8 @@ import '6_weight.dart';
 /// For Apple: https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications
 enum DeviceType {
   androidPhone('phoneScreenshots'),
-  androidTableSmall('7inchScreenshots'),
-  androidTabletBig('10inchScreenshots'),
+  androidTabletSmall('sevenInchScreenshots'),
+  androidTabletBig('tenInchScreenshots'),
   androidTv('tvScreenshots'),
   androidWear('wearScreenshots'),
 
@@ -66,9 +66,34 @@ Future<void> takeScreenshot(
 // Available languages in weblate for the fastlane/metadata/android folder (not necessarily
 // those for which the application is translated)
 const languages = [
-  // Note: it seems if too many languages are processed at once, some processes
+  // Note: it seems if too many languages are processed at once, sometimes the process
   // disappear and no images are written. Doing this in smaller steps works fine
+
+  // 'ar',
+  // 'ca',
+  // 'cs-CZ',
   'de-DE',
+  // 'el-GR',
+  // 'en-US',
+  // 'es-ES',
+  //
+  // 'fr-FR',
+  // 'hi-IN',
+  // 'hr',
+  // 'it-IT',
+  // 'ko-KR',
+  // 'nb-NO',
+  // 'pl-PL',
+  //
+  // 'pt-BR',
+  // 'pt-PT',
+  // 'ru-RU',
+  // 'sr',
+  // 'ta-IN',
+  // 'tr-TR',
+  // 'uk',
+  // 'zh-CN',
+  // 'zh-TW',
 ];
 
 void main() {
