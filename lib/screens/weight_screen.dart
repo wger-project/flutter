@@ -47,9 +47,13 @@ class WeightScreen extends StatelessWidget {
           );
         },
       ),
-      body: SingleChildScrollView(
-        child: Consumer<BodyWeightProvider>(
-          builder: (context, provider, child) => WeightOverview(provider),
+      body: RefreshIndicator(
+        onRefresh: () => Provider.of<BodyWeightProvider>(context, listen: false).fetchAndSetEntries(),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 80.0),
+          child: Consumer<BodyWeightProvider>(
+            builder: (context, provider, child) => WeightOverview(provider),
+          ),
         ),
       ),
     );

@@ -68,66 +68,61 @@ class WeightOverview extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
-          height: 300,
-          child: RefreshIndicator(
-            onRefresh: () => _provider.fetchAndSetEntries(),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: _provider.items.length,
-              itemBuilder: (context, index) {
-                final currentEntry = _provider.items[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(
-                      '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
-                    ),
-                    subtitle: Text(
-                      DateFormat.yMd(
-                        Localizations.localeOf(context).languageCode,
-                      ).add_Hm().format(currentEntry.date),
-                    ),
-                    trailing: PopupMenuButton(
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem(
-                            child: Text(AppLocalizations.of(context).edit),
-                            onTap: () => Navigator.pushNamed(
-                              context,
-                              FormScreen.routeName,
-                              arguments: FormScreenArguments(
-                                AppLocalizations.of(context).edit,
-                                WeightForm(currentEntry),
+        ListView.builder(
+          padding: const EdgeInsets.all(10.0),
+          // shrinkWrap tells the list to only take up as much space as it needs
+          shrinkWrap: true,
+          // NeverScrollable tells the list to let the outer SingleChildScrollView handle the scrolling
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _provider.items.length,
+          itemBuilder: (context, index) {
+            final currentEntry = _provider.items[index];
+            return Card(
+              child: ListTile(
+                title: Text(
+                  '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
+                ),
+                subtitle: Text(
+                  DateFormat.yMd(
+                    Localizations.localeOf(context).languageCode,
+                  ).add_Hm().format(currentEntry.date),
+                ),
+                trailing: PopupMenuButton(
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem(
+                        child: Text(AppLocalizations.of(context).edit),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          FormScreen.routeName,
+                          arguments: FormScreenArguments(
+                            AppLocalizations.of(context).edit,
+                            WeightForm(currentEntry),
+                          ),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        child: Text(AppLocalizations.of(context).delete),
+                        onTap: () async {
+                          await _provider.deleteEntry(currentEntry.id!);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(context).successfullyDeleted,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
-                            ),
-                          ),
-                          PopupMenuItem(
-                            child: Text(AppLocalizations.of(context).delete),
-                            onTap: () async {
-                              // Delete entry from DB
-                              await _provider.deleteEntry(currentEntry.id!);
-
-                              // and inform the user
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      AppLocalizations.of(context).successfullyDeleted,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ];
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+                            );
+                          }
+                        },
+                      ),
+                    ];
+                  },
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
