@@ -19,27 +19,34 @@ Widget createWorkoutDetailScreen({locale = 'en'}) {
   when(mockRoutinesProvider.findById(1)).thenReturn(routine);
   // when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) => Future.value(routine));
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockRoutinesProvider,
-      ),
-    ],
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerLightTheme,
-      navigatorKey: key,
-      home: TextButton(
-        onPressed: () => key.currentState!.push(
-          MaterialPageRoute<void>(
-            settings: RouteSettings(arguments: routine.id),
-            builder: (_) => const RoutineScreen(),
-          ),
+  return MediaQuery(
+    data: const MediaQueryData(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<RoutinesProvider>(
+          create: (context) => mockRoutinesProvider,
         ),
-        child: const SizedBox(),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(arguments: routine.id),
+              builder: (_) => const RoutineScreen(),
+            ),
+          ),
+          child: const SizedBox(),
+        ),
       ),
     ),
   );

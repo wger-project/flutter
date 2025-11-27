@@ -13,19 +13,26 @@ Widget createMeasurementScreen({locale = 'en'}) {
   final mockMeasurementProvider = MockMeasurementProvider();
   when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<MeasurementProvider>(
-        create: (context) => mockMeasurementProvider,
+  return MediaQuery(
+    data: const MediaQueryData(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<MeasurementProvider>(
+          create: (context) => mockMeasurementProvider,
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        home: const MeasurementCategoriesScreen(),
       ),
-    ],
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerLightTheme,
-      home: const MeasurementCategoriesScreen(),
     ),
   );
 }

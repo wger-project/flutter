@@ -28,37 +28,44 @@ Widget createGymModeScreen({locale = 'en'}) {
   //when(mockExerciseProvider.findExerciseBaseById(2)).thenReturn(bases[1]); // crunches
   //when(mockExerciseProvider.findExerciseBaseById(3)).thenReturn(bases[2]); // dead lift
 
-  return riverpod.ProviderScope(
-    child: MultiProvider(
-      providers: [
-        ChangeNotifierProvider<RoutinesProvider>(
-          create: (context) => mockRoutinesProvider,
-        ),
-        ChangeNotifierProvider<ExercisesProvider>(
-          create: (context) => mockExerciseProvider,
-        ),
-      ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        theme: wgerLightTheme,
-        home: TextButton(
-          onPressed: () => key.currentState!.push(
-            MaterialPageRoute<void>(
-              settings: RouteSettings(
-                arguments: GymModeArguments(routine.id!, routine.days.first.id!, 1),
-              ),
-              builder: (_) => const GymModeScreen(),
-            ),
+  return MediaQuery(
+    data: const MediaQueryData(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: riverpod.ProviderScope(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<RoutinesProvider>(
+            create: (context) => mockRoutinesProvider,
           ),
-          child: const SizedBox(),
+          ChangeNotifierProvider<ExercisesProvider>(
+            create: (context) => mockExerciseProvider,
+          ),
+        ],
+        child: MaterialApp(
+          locale: Locale(locale),
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          theme: wgerLightTheme,
+          home: TextButton(
+            onPressed: () => key.currentState!.push(
+              MaterialPageRoute<void>(
+                settings: RouteSettings(
+                  arguments: GymModeArguments(routine.id!, routine.days.first.id!, 1),
+                ),
+                builder: (_) => const GymModeScreen(),
+              ),
+            ),
+            child: const SizedBox(),
+          ),
+          routes: {
+            RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+          },
         ),
-        routes: {
-          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-        },
       ),
     ),
   );

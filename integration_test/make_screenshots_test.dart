@@ -11,16 +11,41 @@ import '4_measurements.dart';
 import '5_nutritional_plan.dart';
 import '6_weight.dart';
 
-// Type of device
+/// Type of device
+///
+/// For Apple: https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications
 enum DeviceType {
-  phoneScreenshots,
-  sevenInchScreenshots,
-  tenInchScreenshots,
-  tvScreenshots,
-  wearScreenshots,
+  androidPhone('phoneScreenshots'),
+  androidTableSmall('7inchScreenshots'),
+  androidTabletBig('10inchScreenshots'),
+  androidTv('tvScreenshots'),
+  androidWear('wearScreenshots'),
+
+  iOSPhoneBig('iPhone 6.9', isAndroid: false),
+  iOSPhoneSmall('iPhone 6.7', isAndroid: false);
+
+  final String folderName;
+  final bool isAndroid;
+
+  const DeviceType(this.folderName, {this.isAndroid = true});
+
+  String fastlanePath(String language, String name) {
+    final os = isAndroid ? 'android' : 'ios';
+
+    return 'fastlane/metadata/$os/$language/images/$folderName/$name.png';
+  }
 }
 
-final destination = DeviceType.phoneScreenshots.name;
+const _deviceArg = String.fromEnvironment('DEVICE_TYPE', defaultValue: 'androidPhone');
+
+// Determine the destination device type based on the provided argument
+final DeviceType destination = DeviceType.values.firstWhere(
+  (d) => d.toString().split('.').last == _deviceArg || ((d.name ?? '') == _deviceArg),
+  orElse: () {
+    print('***** Unknown DEVICE_TYPE="$_deviceArg", defaulting to androidPhone *****');
+    return DeviceType.androidPhone;
+  },
+);
 
 Future<void> takeScreenshot(
   WidgetTester tester,
@@ -33,7 +58,8 @@ Future<void> takeScreenshot(
     await binding.convertFlutterSurfaceToImage();
     await tester.pumpAndSettle();
   }
-  final filename = 'fastlane/metadata/android/$language/images/$destination/$name.png';
+
+  final filename = destination.fastlanePath(language, name);
   await binding.takeScreenshot(filename);
 }
 
@@ -42,31 +68,7 @@ Future<void> takeScreenshot(
 const languages = [
   // Note: it seems if too many languages are processed at once, some processes
   // disappear and no images are written. Doing this in smaller steps works fine
-  'ar',
-  'ca',
-  'cs-CZ',
   'de-DE',
-  'el-GR',
-  'en-US',
-  'es-ES',
-
-  'fr-FR',
-  'hi-IN',
-  'hr',
-  'it-IT',
-  'ko-KR',
-  'nb-NO',
-  'pl-PL',
-
-  'pt-BR',
-  'pt-PT',
-  'ru-RU',
-  'sr',
-  'ta-IN',
-  'tr-TR',
-  'uk',
-  'zh-CN',
-  'zh-TW',
 ];
 
 void main() {

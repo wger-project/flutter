@@ -16,34 +16,41 @@ Widget createNutritionalPlanScreen({locale = 'en'}) {
 
   final key = GlobalKey<NavigatorState>();
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<NutritionPlansProvider>(
-        create: (context) => NutritionPlansProvider(
-          mockBaseProvider,
-          [],
-          database: IngredientDatabase.inMemory(NativeDatabase.memory()),
-        ),
-      ),
-      ChangeNotifierProvider<BodyWeightProvider>(
-        create: (context) => BodyWeightProvider(mockBaseProvider),
-      ),
-    ],
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerLightTheme,
-      navigatorKey: key,
-      home: TextButton(
-        onPressed: () => key.currentState!.push(
-          MaterialPageRoute<void>(
-            settings: RouteSettings(arguments: getNutritionalPlanScreenshot()),
-            builder: (_) => const NutritionalPlanScreen(),
+  return MediaQuery(
+    data: const MediaQueryData(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (context) => NutritionPlansProvider(
+            mockBaseProvider,
+            [],
+            database: IngredientDatabase.inMemory(NativeDatabase.memory()),
           ),
         ),
-        child: const SizedBox(),
+        ChangeNotifierProvider<BodyWeightProvider>(
+          create: (context) => BodyWeightProvider(mockBaseProvider),
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(arguments: getNutritionalPlanScreenshot()),
+              builder: (_) => const NutritionalPlanScreen(),
+            ),
+          ),
+          child: const SizedBox(),
+        ),
       ),
     ),
   );

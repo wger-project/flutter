@@ -26,26 +26,33 @@ Widget createWeightScreen({locale = 'en'}) {
   when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
   when(mockNutritionPlansProvider.items).thenReturn([getNutritionalPlan()]);
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<UserProvider>(
-        create: (context) => mockUserProvider,
+  return MediaQuery(
+    data: const MediaQueryData(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => mockUserProvider,
+        ),
+        ChangeNotifierProvider<BodyWeightProvider>(
+          create: (context) => weightProvider,
+        ),
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (context) => mockNutritionPlansProvider,
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        home: const WeightScreen(),
+        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
       ),
-      ChangeNotifierProvider<BodyWeightProvider>(
-        create: (context) => weightProvider,
-      ),
-      ChangeNotifierProvider<NutritionPlansProvider>(
-        create: (context) => mockNutritionPlansProvider,
-      ),
-    ],
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerLightTheme,
-      home: const WeightScreen(),
-      routes: {FormScreen.routeName: (ctx) => const FormScreen()},
     ),
   );
 }

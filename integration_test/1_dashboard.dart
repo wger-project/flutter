@@ -57,31 +57,38 @@ Widget createDashboardScreen({String locale = 'en'}) {
   final mockUserProvider = MockUserProvider();
   when(mockUserProvider.profile).thenReturn(tProfile1);
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<UserProvider>(
-        create: (context) => mockUserProvider,
+  return MediaQuery(
+    data: const MediaQueryData(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => mockUserProvider,
+        ),
+        ChangeNotifierProvider<RoutinesProvider>(
+          create: (context) => mockWorkoutProvider,
+        ),
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (context) => mockNutritionProvider,
+        ),
+        ChangeNotifierProvider<BodyWeightProvider>(
+          create: (context) => mockWeightProvider,
+        ),
+        ChangeNotifierProvider<MeasurementProvider>(
+          create: (context) => mockMeasurementProvider,
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        home: const DashboardScreen(),
       ),
-      ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockWorkoutProvider,
-      ),
-      ChangeNotifierProvider<NutritionPlansProvider>(
-        create: (context) => mockNutritionProvider,
-      ),
-      ChangeNotifierProvider<BodyWeightProvider>(
-        create: (context) => mockWeightProvider,
-      ),
-      ChangeNotifierProvider<MeasurementProvider>(
-        create: (context) => mockMeasurementProvider,
-      ),
-    ],
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerLightTheme,
-      home: const DashboardScreen(),
     ),
   );
 }
