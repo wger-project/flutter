@@ -11,7 +11,8 @@ import 'package:wger/theme/theme.dart';
 import '../test/user/provider_test.mocks.dart';
 import '../test_data/nutritional_plans.dart';
 
-Widget createNutritionalPlanScreen({locale = 'en'}) {
+Widget createNutritionalPlanScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final mockBaseProvider = MockWgerBaseProvider();
 
   final key = GlobalKey<NavigatorState>();
@@ -36,7 +37,7 @@ Widget createNutritionalPlanScreen({locale = 'en'}) {
         ),
       ],
       child: MaterialApp(
-        locale: Locale(locale),
+        locale: locale,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

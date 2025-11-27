@@ -15,7 +15,8 @@ import '../test_data/body_weight.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
 
-Widget createWeightScreen({locale = 'en'}) {
+Widget createWeightScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final weightProvider = BodyWeightProvider(mockBaseProvider);
   weightProvider.items = getScreenshotWeightEntries();
 
@@ -45,7 +46,7 @@ Widget createWeightScreen({locale = 'en'}) {
         ),
       ],
       child: MaterialApp(
-        locale: Locale(locale),
+        locale: locale,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

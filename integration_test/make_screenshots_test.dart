@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -14,10 +15,11 @@ import '6_weight.dart';
 /// Type of device
 ///
 /// For Apple: https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications
+/// For Android: https://support.google.com/googleplay/android-developer/answer/9866151#zippy=%2Cscreenshots
 enum DeviceType {
   androidPhone('phoneScreenshots'),
-  androidTableSmall('7inchScreenshots'),
-  androidTabletBig('10inchScreenshots'),
+  androidTabletSmall('sevenInchScreenshots'),
+  androidTabletBig('tenInchScreenshots'),
   androidTv('tvScreenshots'),
   androidWear('wearScreenshots'),
 
@@ -66,51 +68,87 @@ Future<void> takeScreenshot(
 // Available languages in weblate for the fastlane/metadata/android folder (not necessarily
 // those for which the application is translated)
 const languages = [
-  // Note: it seems if too many languages are processed at once, some processes
+  // Note: it seems if too many languages are processed at once, sometimes the process
   // disappear and no images are written. Doing this in smaller steps works fine
+  'ar',
+  'ca',
+  'cs-CZ',
   'de-DE',
+  'el-GR',
+  'en-US',
+  'es-ES',
+
+  'fr-FR',
+  'hi-IN',
+  'hr',
+  'it-IT',
+  'ko-KR',
+  'nb-NO',
+  'pl-PL',
+
+  'pt-BR',
+  'pt-PT',
+  'ru-RU',
+  'sr',
+  'ta-IN',
+  'tr-TR',
+  'uk',
+  'zh-CN',
+  'zh-TW',
 ];
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Generate screenshots', () {
+    setUpAll(() async {
+      await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    });
+
+    tearDownAll(() async {
+      await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+    });
+
     for (final language in languages) {
-      final languageCode = language.split('-')[0];
+      final split = language.split('-');
+      final languageCode = split.first;
+      final countryCode = split.length > 1 ? split.last : null;
+
+      final locale = Locale(languageCode, countryCode);
 
       testWidgets('dashboard screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createDashboardScreen(locale: languageCode));
+        await tester.pumpWidget(createDashboardScreen(locale: locale));
         await takeScreenshot(tester, binding, language, '01 - dashboard');
       });
 
       testWidgets('workout detail screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createWorkoutDetailScreen(locale: languageCode));
+        await tester.pumpWidget(createWorkoutDetailScreen(locale: locale));
         await tester.tap(find.byType(TextButton));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '02 - workout detail');
       });
 
       testWidgets('gym mode screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createGymModeScreen(locale: languageCode));
+        await tester.pumpWidget(createGymModeScreen(locale: locale));
         await tester.tap(find.byType(TextButton));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '03 - gym mode');
       });
 
       testWidgets('measurement screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createMeasurementScreen(locale: languageCode));
+        await tester.pumpWidget(createMeasurementScreen(locale: locale));
         await takeScreenshot(tester, binding, language, '04 - measurements');
       });
 
       testWidgets('nutritional plan detail - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createNutritionalPlanScreen(locale: languageCode));
+        await tester.pumpWidget(createNutritionalPlanScreen(locale: locale));
         await tester.tap(find.byType(TextButton));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '05 - nutritional plan');
       });
 
       testWidgets('body weight screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createWeightScreen(locale: languageCode));
+        await tester.pumpWidget(createWeightScreen(locale: locale));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '06 - weight');
       });

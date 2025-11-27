@@ -13,7 +13,8 @@ import '../test/routine/gym_mode_screen_test.mocks.dart';
 import '../test_data/exercises.dart';
 import '../test_data/routines.dart';
 
-Widget createGymModeScreen({locale = 'en'}) {
+Widget createGymModeScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final key = GlobalKey<NavigatorState>();
   final exercises = getTestExercises();
   final routine = getTestRoutine(exercises: getScreenshotExercises());
@@ -45,7 +46,7 @@ Widget createGymModeScreen({locale = 'en'}) {
           ),
         ],
         child: MaterialApp(
-          locale: Locale(locale),
+          locale: locale,
           debugShowCheckedModeBanner: false,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

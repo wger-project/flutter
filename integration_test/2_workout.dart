@@ -10,7 +10,8 @@ import '../test/routine/routine_form_test.mocks.dart';
 import '../test_data/exercises.dart';
 import '../test_data/routines.dart';
 
-Widget createWorkoutDetailScreen({locale = 'en'}) {
+Widget createWorkoutDetailScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final key = GlobalKey<NavigatorState>();
 
   final mockRoutinesProvider = MockRoutinesProvider();
@@ -32,7 +33,7 @@ Widget createWorkoutDetailScreen({locale = 'en'}) {
         ),
       ],
       child: MaterialApp(
-        locale: Locale(locale),
+        locale: locale,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

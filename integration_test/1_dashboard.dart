@@ -22,7 +22,9 @@ import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
 import '../test_data/routines.dart';
 
-Widget createDashboardScreen({String locale = 'en'}) {
+Widget createDashboardScreen({Locale? locale}) {
+  locale ??= const Locale('en');
+
   final mockWorkoutProvider = MockRoutinesProvider();
   when(mockWorkoutProvider.items).thenReturn([getTestRoutine(exercises: getScreenshotExercises())]);
   when(
@@ -82,7 +84,7 @@ Widget createDashboardScreen({String locale = 'en'}) {
         ),
       ],
       child: MaterialApp(
-        locale: Locale(locale),
+        locale: locale,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

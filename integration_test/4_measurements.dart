@@ -9,7 +9,9 @@ import 'package:wger/theme/theme.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
 import '../test_data/measurements.dart';
 
-Widget createMeasurementScreen({locale = 'en'}) {
+Widget createMeasurementScreen({Locale? locale}) {
+  locale ??= const Locale('en');
+
   final mockMeasurementProvider = MockMeasurementProvider();
   when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
 
@@ -26,7 +28,7 @@ Widget createMeasurementScreen({locale = 'en'}) {
         ),
       ],
       child: MaterialApp(
-        locale: Locale(locale),
+        locale: locale,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
