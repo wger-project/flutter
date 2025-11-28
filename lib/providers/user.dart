@@ -29,10 +29,13 @@ class UserProvider with ChangeNotifier {
   ThemeMode themeMode = ThemeMode.system;
   final WgerBaseProvider baseProvider;
   late SharedPreferencesAsync prefs;
+  bool hideNutrition = false; 
 
   UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _loadThemeMode();
+    _loadHideNutrition();
+
   }
 
   static const PROFILE_URL = 'userprofile';
@@ -67,6 +70,13 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> _loadHideNutrition() async {
+    final val = await prefs.getBool('hideNutrition');
+    hideNutrition = val ?? false;
+    notifyListeners();
+  }
+
+
   //  Change mode on switch button click
   void setThemeMode(ThemeMode mode) async {
     themeMode = mode;
@@ -81,6 +91,12 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
+    void setHideNutrition(bool value) async {
+      hideNutrition = value;
+      await prefs.setBool('hideNutrition', value);
+      notifyListeners();
+  }
+
   /// Fetch the current user's profile
   Future<void> fetchAndSetProfile() async {
     final userData = await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));
@@ -90,6 +106,7 @@ class UserProvider with ChangeNotifier {
       rethrow;
     }
   }
+
 
   /// Save the user's profile to the server
   Future<void> saveProfile() async {

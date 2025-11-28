@@ -23,6 +23,9 @@ import 'package:wger/screens/configure_plates_screen.dart';
 import 'package:wger/widgets/core/settings/exercise_cache.dart';
 import 'package:wger/widgets/core/settings/ingredient_cache.dart';
 import 'package:wger/widgets/core/settings/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/user.dart';
+
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
@@ -44,6 +47,18 @@ class SettingsPage extends StatelessWidget {
           const SettingsIngredientCache(),
           ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
           const SettingsTheme(),
+          Consumer<UserProvider>(
+            builder: (context, user, _) {
+              return SwitchListTile(
+                title: const Text('Show nutrition section on dashboard'),
+                value: !user.hideNutrition,
+                onChanged: (v) {
+                  Provider.of<UserProvider>(context, listen: false)
+                      .setHideNutrition(!v);
+                },
+              );
+            },
+          ),
           ListTile(
             title: Text(i18n.selectAvailablePlates),
             onTap: () {
