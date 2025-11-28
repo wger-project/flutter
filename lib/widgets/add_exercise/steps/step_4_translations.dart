@@ -83,17 +83,19 @@ class _Step4TranslationState extends State<Step4Translation> {
                     return null;
                   },
                   onSaved: (String? alternateName) =>
-                      addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
+                  addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
                 ),
                 Consumer<AddExerciseProvider>(
                   builder: (ctx, provider, __) => AddExerciseTextArea(
-                    onChange: (value) => {},
+                    onChange: (value) {
+                      addExerciseProvider.descriptionTrans = value;
+                    },
                     title: '${i18n.description}*',
                     helperText: i18n.enterTextInLanguage,
                     isMultiline: true,
                     validator: (name) => validateExerciseDescription(name, context),
                     onSaved: (String? description) =>
-                        addExerciseProvider.descriptionTrans = description!,
+                    addExerciseProvider.descriptionTrans = description!,
                   ),
                 ),
               ],
