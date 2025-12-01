@@ -65,8 +65,8 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final double width = MediaQuery.of(context).size.width;
-    _isWideScreen = width > MATERIAL_XS_BREAKPOINT;
+    final size = MediaQuery.sizeOf(context);
+    _isWideScreen = size.width > MATERIAL_XS_BREAKPOINT;
   }
 
   void _onItemTapped(int index) {

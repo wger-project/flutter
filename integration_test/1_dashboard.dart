@@ -3,16 +3,21 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/screens/dashboard.dart';
+import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../test/exercises/contribute_exercise_test.mocks.dart';
+import '../test/gallery/gallery_form_test.mocks.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
+import '../test/nutrition/nutritional_plan_screen_test.mocks.dart';
 import '../test/routine/weight_unit_form_widget_test.mocks.dart';
 import '../test/weight/weight_screen_test.mocks.dart' as weight;
 import '../test_data/body_weight.dart';
@@ -24,6 +29,14 @@ import '../test_data/routines.dart';
 
 Widget createDashboardScreen({Locale? locale}) {
   locale ??= const Locale('en');
+
+  final mockGalleryProvider = MockGalleryProvider();
+
+  final mockExercisesProvider = MockExercisesProvider();
+
+  final mockAuthProvider = MockAuthProvider();
+  when(mockAuthProvider.setServerVersion()).thenAnswer((_) async {});
+  when(mockAuthProvider.dataInit).thenReturn(true);
 
   final mockWorkoutProvider = MockRoutinesProvider();
   when(mockWorkoutProvider.items).thenReturn([getTestRoutine(exercises: getScreenshotExercises())]);
@@ -60,13 +73,22 @@ Widget createDashboardScreen({Locale? locale}) {
   when(mockUserProvider.profile).thenReturn(tProfile1);
 
   return MediaQuery(
-    data: const MediaQueryData(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
       padding: EdgeInsets.zero,
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,
     ),
     child: MultiProvider(
       providers: [
+        ChangeNotifierProvider<GalleryProvider>(
+          create: (context) => mockGalleryProvider,
+        ),
+        ChangeNotifierProvider<ExercisesProvider>(
+          create: (context) => mockExercisesProvider,
+        ),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (context) => mockAuthProvider,
+        ),
         ChangeNotifierProvider<UserProvider>(
           create: (context) => mockUserProvider,
         ),
@@ -89,7 +111,7 @@ Widget createDashboardScreen({Locale? locale}) {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: wgerLightTheme,
-        home: const DashboardScreen(),
+        home: HomeTabsScreen(),
       ),
     ),
   );

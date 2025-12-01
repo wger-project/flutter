@@ -3,40 +3,39 @@ on:
   workflow_dispatch:
 
 jobs:
-#  screenshots_apple:
-#    name: 'Apple'
-#    runs-on: macos-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: Common flutter setup
-#        uses: ./.github/actions/flutter-common
-#
-#      - name: Install CocoaPods
-#        run: |
-#          cd ios
-#          pod install || true
-#          cd ..
-#
-#      - name: Boot iOS simulator
-#        id: boot
-#        run: |
-#          SIMULATOR=$(xcrun simctl list devices available | awk -F '[()]' '/iPhone 17/{print $2; exit}')
-#          SIMULATOR=${SIMULATOR:-$(xcrun simctl list devices available | awk -F '[()]' '/iPhone/{print $2; exit}')}
-#          echo "SIMULATOR=$SIMULATOR" >> $GITHUB_ENV
-#          xcrun simctl boot "$SIMULATOR" || true
-#          open -a Simulator || true
-#          n=0; until xcrun simctl bootstatus "$SIMULATOR" -b || [ $n -ge 60 ]; do sleep 1; n=$((n+1)); done
-#
-#      - name: Generate screenshots on iOS simulator
-#        run: |
-#          flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=iOSPhoneBig -d "$SIMULATOR"
-#
-#      - name: Upload screenshots artifacts
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: screenshots-ios
-#          path: fastlane/metadata/ios/**/images/iPhone 6.9/*.png
+  screenshots_apple:
+    name: 'iOS'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install || true
+          cd ..
+
+      - name: Boot iOS simulator
+        id: boot
+        run: |
+          SIMULATOR=$(xcrun simctl list devices available | awk -F '[()]' '/iPhone 17/{print $2; exit}')
+          echo "SIMULATOR=$SIMULATOR" >> $GITHUB_ENV
+          xcrun simctl boot "$SIMULATOR" || true
+          open -a Simulator || true
+          n=0; until xcrun simctl bootstatus "$SIMULATOR" -b || [ $n -ge 60 ]; do sleep 1; n=$((n+1)); done
+
+      - name: Generate screenshots
+        run: |
+          flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=iOSPhoneBig -d "$SIMULATOR"
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-ios
+          path: fastlane/metadata/ios/**/images/iPhone 6.9/*.png
 
   screenshots_android:
     name: 'Android - ${{ matrix.device.name }}'
@@ -101,31 +100,6 @@ jobs:
           sudo apt-get clean || true
           sudo rm -rf /var/lib/apt/lists/*
 
-# TMP -------------------->
-      - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v3
-
-      - name: AVD cache
-        uses: actions/cache@v4
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-api-36
-
-      - name: Run on Android emulator
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 36
-          target: google_apis
-          arch: x86_64
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          profile: ${{ matrix.device.profile }}
-          script: echo "Generated AVD snapshot for caching."
-# <-------------------- TMP
-
       - name: Generate screenshots
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -135,71 +109,49 @@ jobs:
           profile: ${{ matrix.device.profile }}
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |
-            
-            # Values for rotation
-            # 0 for portrait (0°)
-            # 1 for landscape (90°)
-            # 2 for portrait reversed (180°)
-            # 3 for landscape reversed (270°)
-            
-            # turn off auto rotation and rotate to portrait mode
-            #adb shell content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0
-            #adb shell content insert --uri content://settings/system --bind name:s:user_rotation --bind value:i:0
-            
-            echo "Device settings:"
-            adb shell settings put system accelerometer_rotation 0
-            adb shell settings put system user_rotation 0
-            
-            sleep 5
-            
-            adb shell settings get system accelerometer_rotation
-            adb shell settings get system user_rotation
-
-            # Make the screenshots            
+          script: |           
             flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=${{ matrix.device.device_type }}
 
-      - name: Upload screenshots artifacts
+      - name: Upload screenshots
         uses: actions/upload-artifact@v4
         with:
           name: screenshots-android-${{ matrix.device.folder }}
           path: fastlane/metadata/android/**/images/${{ matrix.device.folder }}/*.png
 
-#  commit_screenshots:
-#    name: 'Commit and push'
-#    needs:
-#      - screenshots_apple
-#      - screenshots_android
-#
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: Download all screenshot artifacts
-#        uses: actions/download-artifact@v4
-#        with:
-#          path: screenshots
-#
-#      - name: Merge artifacts into fastlane/metadata
-#        run: |
-#          set -euo pipefail
-#          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-phoneScreenshots/" fastlane/metadata/android/
-#          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-sevenInchScreenshots/" fastlane/metadata/android/
-#          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-tenInchScreenshots/" fastlane/metadata/android/
-#          rsync --archive --checksum --itemize-changes "screenshots/screenshots-ios/" fastlane/metadata/ios/
-#
-#      - name: Commit screenshots to repository
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          git config user.name "github-actions[bot]"
-#          git config user.email "github-actions[bot]@users.noreply.github.com"
-#          git status
-#          git add fastlane/metadata/android fastlane/metadata/ios || true
-#          if git diff --staged --quiet; then
-#            echo "No new/changed screenshots to commit."
-#          else
-#            BRANCH=$(git rev-parse --abbrev-ref HEAD)
-#            # git commit -m "Update screenshots"
-#            # git push origin HEAD:"${BRANCH}"
-#          fi
+  commit_screenshots:
+    name: 'Commit and push'
+    needs:
+      - screenshots_apple
+      - screenshots_android
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all screenshot artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: screenshots
+
+      - name: Merge artifacts into fastlane/metadata
+        run: |
+          set -euo pipefail
+          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-phoneScreenshots/" fastlane/metadata/android/
+          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-sevenInchScreenshots/" fastlane/metadata/android/
+          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-tenInchScreenshots/" fastlane/metadata/android/
+          rsync --archive --checksum --itemize-changes "screenshots/screenshots-ios/" fastlane/metadata/ios/
+
+      - name: Commit screenshots to repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fastlane/metadata/android fastlane/metadata/ios || true
+          if git diff --staged --quiet; then
+            echo "No new or changed screenshots to commit."
+          else
+            BRANCH=$(git rev-parse --abbrev-ref HEAD)
+             git commit -m "Update screenshots"
+             git push origin HEAD:"${BRANCH}"
+          fi

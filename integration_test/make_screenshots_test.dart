@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -100,13 +100,12 @@ const languages = [
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+  binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
+
   group('Generate screenshots', () {
     setUpAll(() async {
-      await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    });
-
-    tearDownAll(() async {
-      await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+      // Suppress warnings about multiple database instances, it's ok during testing
+      driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
     });
 
     for (final language in languages) {
@@ -118,6 +117,7 @@ void main() {
 
       testWidgets('dashboard screen - $language', (WidgetTester tester) async {
         await tester.pumpWidget(createDashboardScreen(locale: locale));
+        await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '01 - dashboard');
       });
 
@@ -137,6 +137,7 @@ void main() {
 
       testWidgets('measurement screen - $language', (WidgetTester tester) async {
         await tester.pumpWidget(createMeasurementScreen(locale: locale));
+        await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '04 - measurements');
       });
 

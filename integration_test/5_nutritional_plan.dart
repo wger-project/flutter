@@ -18,7 +18,7 @@ Widget createNutritionalPlanScreen({Locale? locale}) {
   final key = GlobalKey<NavigatorState>();
 
   return MediaQuery(
-    data: const MediaQueryData(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
       padding: EdgeInsets.zero,
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,

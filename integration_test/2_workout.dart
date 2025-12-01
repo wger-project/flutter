@@ -16,12 +16,10 @@ Widget createWorkoutDetailScreen({Locale? locale}) {
 
   final mockRoutinesProvider = MockRoutinesProvider();
   final routine = getTestRoutine(exercises: getScreenshotExercises());
-  // when(mockRoutinesProvider.activeRoutine).thenReturn(routine);
   when(mockRoutinesProvider.findById(1)).thenReturn(routine);
-  // when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) => Future.value(routine));
 
   return MediaQuery(
-    data: const MediaQueryData(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
       padding: EdgeInsets.zero,
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,

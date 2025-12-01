@@ -28,7 +28,7 @@ Widget createWeightScreen({Locale? locale}) {
   when(mockNutritionPlansProvider.items).thenReturn([getNutritionalPlan()]);
 
   return MediaQuery(
-    data: const MediaQueryData(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
       padding: EdgeInsets.zero,
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,
