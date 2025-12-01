@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/gym_mode/gym_mode.dart';
 
@@ -51,8 +52,10 @@ class GymModeScreen extends StatelessWidget {
       // backgroundColor: Theme.of(context).cardColor,
       // primary: false,
       body: SafeArea(
-        child: Consumer<RoutinesProvider>(
-          builder: (context, value, child) => GymMode(dayDataGym, dayDataDisplay, args.iteration),
+        child: WidescreenWrapper(
+          child: Consumer<RoutinesProvider>(
+            builder: (context, value, child) => GymMode(dayDataGym, dayDataDisplay, args.iteration),
+          ),
         ),
       ),
     );

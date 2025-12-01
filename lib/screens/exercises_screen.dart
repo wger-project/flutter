@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercises.dart';
@@ -23,21 +24,23 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).exercises),
-      body: Column(
-        children: [
-          const FilterRow(),
-          Expanded(
-            child: exercisesList.isEmpty
-                ? const Center(
-                    child: SizedBox(
-                      height: 30,
-                      width: 30,
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : _ExercisesList(exerciseList: exercisesList),
-          ),
-        ],
+      body: WidescreenWrapper(
+        child: Column(
+          children: [
+            const FilterRow(),
+            Expanded(
+              child: exercisesList.isEmpty
+                  ? const Center(
+                      child: SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : _ExercisesList(exerciseList: exercisesList),
+            ),
+          ],
+        ),
       ),
     );
   }
