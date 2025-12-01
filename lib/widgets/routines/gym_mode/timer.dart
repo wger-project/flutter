@@ -18,6 +18,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -76,7 +77,8 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(displayTime),
-              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
+              style:
+                  Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
             ),
           ),
         ),
@@ -109,6 +111,11 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
   late DateTime _endTime;
   late Timer _uiTimer;
 
+  // NEW: settings + one-time notification flag
+  bool _soundEnabled = true;
+  bool _vibrationEnabled = true;
+  bool _hasNotified = false;
+
   @override
   void initState() {
     super.initState();
@@ -130,7 +137,19 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
   Widget build(BuildContext context) {
     final remaining = _endTime.difference(DateTime.now());
     final remainingSeconds = remaining.inSeconds <= 0 ? 0 : remaining.inSeconds;
-    final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
+    final displayTime =
+        DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
+
+    //  When countdown finishes, notify ONCE, and respect settings
+    if (remainingSeconds == 0 && !_hasNotified) {
+      if (_soundEnabled) {
+        SystemSound.play(SystemSoundType.alert);
+      }
+      if (_vibrationEnabled) {
+        HapticFeedback.mediumImpact();
+      }
+      _hasNotified = true;
+    }
 
     return Column(
       children: [
@@ -141,11 +160,56 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
           exercisePages: widget._exercisePages,
         ),
         Expanded(
-          child: Center(
-            child: Text(
-              DateFormat('m:ss').format(displayTime),
-              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // countdown time
+              Text(
+                DateFormat('m:ss').format(displayTime),
+                style: Theme.of(context)
+                    .textTheme
+                    .displayLarge!
+                    .copyWith(color: wgerPrimaryColor),
+              ),
+              const SizedBox(height: 16),
+              // NEW: simple settings row (Sound / Vibration)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Switch(
+                        value: _soundEnabled,
+                        onChanged: (value) {
+                          setState(() {
+                            _soundEnabled = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(width: 4),
+                      const Text('Sound'),
+                    ],
+                  ),
+                  const SizedBox(width: 24),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Switch(
+                        value: _vibrationEnabled,
+                        onChanged: (value) {
+                          setState(() {
+                            _vibrationEnabled = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(width: 4),
+                      const Text('Vibration'),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         NavigationFooter(widget._controller, widget._ratioCompleted),
