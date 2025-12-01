@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,28 +17,19 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/core/wide_screen_wrapper.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/widgets/exercises/exercises.dart';
+import 'package:wger/helpers/material.dart';
 
-class ExerciseDetailScreen extends StatelessWidget {
-  static const routeName = '/exercise-detail';
+class WidescreenWrapper extends StatelessWidget {
+  final Widget child;
 
-  const ExerciseDetailScreen({super.key});
+  const WidescreenWrapper({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final exercise = ModalRoute.of(context)!.settings.arguments as Exercise;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(exercise.getTranslation(Localizations.localeOf(context).languageCode).name),
-      ),
-      body: WidescreenWrapper(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: ExerciseDetail(exercise),
-        ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: MATERIAL_MD_BREAKPOINT),
+        child: child,
       ),
     );
   }

@@ -21,6 +21,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -51,12 +52,21 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
   late Future<void> _initialData;
   bool _errorHandled = false;
   int _selectedIndex = 0;
+  bool _isWideScreen = false;
 
   @override
   void initState() {
     super.initState();
     // Loading data here, since the build method can be called more than once
     _initialData = _loadEntries();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final double width = MediaQuery.of(context).size.width;
+    _isWideScreen = width > MATERIAL_XS_BREAKPOINT;
   }
 
   void _onItemTapped(int index) {
@@ -141,6 +151,57 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final destinations = [
+      NavigationDestination(
+        icon: const Icon(Icons.home),
+        label: AppLocalizations.of(context).labelDashboard,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.fitness_center),
+        label: AppLocalizations.of(context).labelBottomNavWorkout,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.restaurant),
+        label: AppLocalizations.of(context).labelBottomNavNutrition,
+      ),
+      NavigationDestination(
+        icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
+        label: AppLocalizations.of(context).weight,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.photo_library),
+        label: AppLocalizations.of(context).gallery,
+      ),
+    ];
+
+    /// Navigation bar for narrow screens
+    Widget getNavigationBar() {
+      return NavigationBar(
+        destinations: destinations,
+        onDestinationSelected: _onItemTapped,
+        selectedIndex: _selectedIndex,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+      );
+    }
+
+    /// Navigation rail for wide screens
+    Widget getNavigationRail() {
+      return NavigationRail(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        labelType: NavigationRailLabelType.all,
+        scrollable: true,
+        destinations: destinations
+            .map(
+              (d) => NavigationRailDestination(
+                icon: d.icon,
+                label: Text(d.label),
+              ),
+            )
+            .toList(),
+      );
+    }
+
     return FutureBuilder<void>(
       future: _initialData,
       builder: (context, snapshot) {
@@ -173,34 +234,13 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         }
 
         return Scaffold(
-          body: _screenList.elementAt(_selectedIndex),
-          bottomNavigationBar: NavigationBar(
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.home),
-                label: AppLocalizations.of(context).labelDashboard,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.fitness_center),
-                label: AppLocalizations.of(context).labelBottomNavWorkout,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.restaurant),
-                label: AppLocalizations.of(context).labelBottomNavNutrition,
-              ),
-              NavigationDestination(
-                icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
-                label: AppLocalizations.of(context).weight,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.photo_library),
-                label: AppLocalizations.of(context).gallery,
-              ),
+          body: Row(
+            children: [
+              if (_isWideScreen) getNavigationRail(),
+              Expanded(child: _screenList.elementAt(_selectedIndex)),
             ],
-            onDestinationSelected: _onItemTapped,
-            selectedIndex: _selectedIndex,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           ),
+          bottomNavigationBar: _isWideScreen ? null : getNavigationBar(),
         );
       },
     );
