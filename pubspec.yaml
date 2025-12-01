@@ -68,6 +68,8 @@ dependencies:
   video_player: ^2.10.0
   logging: ^1.3.0
   flutter_riverpod: ^2.6.1
+  flutter_ringtone_player: ^3.2.0
+
 
 dev_dependencies:
   flutter_test:

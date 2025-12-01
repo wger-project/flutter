@@ -39,6 +39,9 @@ import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+
 
 class LogPage extends ConsumerStatefulWidget {
   final PageController _controller;
@@ -496,6 +499,198 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
 
   late final TextEditingController _repetitionsController;
   late final TextEditingController _weightController;
+  void _showRestTimer(BuildContext context, int initialSeconds, bool isStopwatch) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.9), // Fast schwarzer Hintergrund
+      pageBuilder: (ctx, anim1, anim2) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return Scaffold(
+              backgroundColor: Colors.transparent, // Damit man den schwarzen Hintergrund sieht
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    // --- KOPFZEILE MIT UMSCHALTER (TABS) ---
+                    Container(
+                      margin: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                if (isStopwatch) { // Nur umschalten wenn nötig
+                                  final prefs = await SharedPreferences.getInstance();
+                                  await prefs.setBool('rest_timer_is_stopwatch', false);
+                                  Navigator.pop(ctx);
+                                  if (context.mounted) _showRestTimer(context, initialSeconds, false);
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: !isStopwatch ? Theme.of(context).primaryColor : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                alignment: Alignment.center,
+                                child: const Text("Countdown", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                if (!isStopwatch) {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  await prefs.setBool('rest_timer_is_stopwatch', true);
+                                  Navigator.pop(ctx);
+                                  if (context.mounted) _showRestTimer(context, initialSeconds, true);
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: isStopwatch ? Theme.of(context).primaryColor : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                alignment: Alignment.center,
+                                child: const Text("Stoppuhr", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const Spacer(), // Schiebt alles in die Mitte
+
+                    // --- DER TIMER (RIESIG) ---
+                    if (!isStopwatch)
+                    // COUNTDOWN
+                      TweenAnimationBuilder<double>(
+                        key: ValueKey("count_$initialSeconds"),
+                        tween: Tween(begin: initialSeconds.toDouble(), end: 0.0),
+                        duration: Duration(seconds: initialSeconds),
+                        builder: (context, value, child) {
+                          return Text(
+                            "${value.toInt()}",
+                            style: const TextStyle(
+                              fontSize: 120, // RIESIG
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFeatures: [FontFeature.tabularFigures()], // Verhindert Wackeln der Zahlen
+                            ),
+                          );
+                        },
+                        onEnd: () {
+                          FlutterRingtonePlayer.playNotification();
+                          Navigator.pop(ctx);
+                        },
+
+                      )
+                    else
+                    // STOPPUHR
+                      TweenAnimationBuilder<double>(
+                        key: ValueKey("stop_$initialSeconds"),
+                        tween: Tween(begin: 0.0, end: 3600.0),
+                        duration: const Duration(seconds: 3600),
+                        builder: (context, value, child) {
+                          final int secs = value.toInt();
+                          final String formatted =
+                              '${(secs ~/ 60).toString().padLeft(2, '0')}:${(secs % 60).toString().padLeft(2, '0')}';
+                          return Text(
+                            formatted,
+                            style: const TextStyle(
+                              fontSize: 90,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFeatures: [FontFeature.tabularFigures()],
+                            ),
+                          );
+                        },
+                      ),
+
+                    const SizedBox(height: 20),
+
+                    // --- EINSTELLUNGEN (+/-) NUR BEI COUNTDOWN ---
+                    if (!isStopwatch)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _circleButton(Icons.remove, () async {
+                            if (initialSeconds > 10) {
+                              final prefs = await SharedPreferences.getInstance();
+                              await prefs.setInt('rest_timer_seconds', initialSeconds - 10);
+                              Navigator.pop(ctx);
+                              if (context.mounted) _showRestTimer(context, initialSeconds - 10, isStopwatch);
+                            }
+                          }),
+                          const SizedBox(width: 30),
+                          Text(
+                              "Ziel: ${initialSeconds}s",
+                              style: const TextStyle(color: Colors.white70, fontSize: 18)
+                          ),
+                          const SizedBox(width: 30),
+                          _circleButton(Icons.add, () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            await prefs.setInt('rest_timer_seconds', initialSeconds + 10);
+                            Navigator.pop(ctx);
+                            if (context.mounted) _showRestTimer(context, initialSeconds + 10, isStopwatch);
+                          }),
+                        ],
+                      ),
+
+                    const Spacer(),
+
+                    // --- BUTTON UNTEN ---
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 40),
+                      child: SizedBox(
+                        width: 200,
+                        height: 60,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                          ),
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Weiter zum Training', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // Hilfs-Widget für die runden Buttons
+  Widget _circleButton(IconData icon, VoidCallback onPressed) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white54, width: 2),
+        ),
+        child: Icon(icon, color: Colors.white, size: 30),
+      ),
+    );
+  }
+
 
   @override
   void initState() {
@@ -674,6 +869,15 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                             ),
                           ),
                         );
+                        // Timer Logik mit gespeicherter Zeit
+                        final prefs = await SharedPreferences.getInstance();
+                        // Versuche 'rest_timer_seconds' zu laden, sonst nimm 90
+                        final restTime = prefs.getInt('rest_timer_seconds') ?? 90;
+                        final isStopwatch = prefs.getBool('rest_timer_is_stopwatch') ?? false;
+                        if (mounted) {
+                          _showRestTimer(context, restTime, isStopwatch);
+                        }
+
                       }
                       widget.controller.nextPage(
                         duration: DEFAULT_ANIMATION_DURATION,
