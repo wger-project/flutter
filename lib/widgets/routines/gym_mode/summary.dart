@@ -34,18 +34,18 @@ import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 import '../logs/exercises_expansion_card.dart';
 import '../logs/muscle_groups.dart';
 
-class ResultsWidget extends ConsumerStatefulWidget {
-  final _logger = Logger('ResultsWidget');
+class WorkoutSummary extends ConsumerStatefulWidget {
+  final _logger = Logger('WorkoutSummary');
 
   final PageController _controller;
 
-  ResultsWidget(this._controller);
+  WorkoutSummary(this._controller);
 
   @override
-  ConsumerState<ResultsWidget> createState() => _ResultsWidgetState();
+  ConsumerState<WorkoutSummary> createState() => _WorkoutSummaryState();
 }
 
-class _ResultsWidgetState extends ConsumerState<ResultsWidget> {
+class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
   late Future<void> _initData;
   late Routine _routine;
 

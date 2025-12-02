@@ -29,9 +29,9 @@ import 'package:wger/widgets/core/progress_indicator.dart';
 
 import 'exercise_overview.dart';
 import 'log_page.dart';
-import 'result.dart';
 import 'session_page.dart';
 import 'start_page.dart';
+import 'summary.dart';
 import 'timer.dart';
 
 class GymMode extends ConsumerStatefulWidget {
@@ -105,9 +105,9 @@ class _GymModeState extends ConsumerState<GymMode> {
       }
     }
 
-    // End (session)
+    // End
     out.add(SessionPage(_controller));
-    out.add(ResultsWidget(_controller));
+    out.add(WorkoutSummary(_controller));
 
     return out;
   }

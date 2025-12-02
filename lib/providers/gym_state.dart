@@ -13,10 +13,14 @@ part 'gym_state.g.dart';
 
 const DEFAULT_DURATION = Duration(hours: 5);
 
+const PREFS_SHOW_EXERCISES = 'showExercisePrefs';
+const PREFS_SHOW_TIMER = 'showTimerPrefs';
+
 enum PageType {
   start,
   set,
   session,
+  workoutSummary,
 }
 
 enum SlotPageType {
@@ -260,7 +264,8 @@ class GymModeState {
       return 0.0;
     }
 
-    return currentPage / totalPages;
+    // Note: add 1 to currentPage to make it 1-based
+    return (currentPage + 1) / totalPages;
   }
 
   @override
@@ -288,12 +293,12 @@ class GymStateNotifier extends _$GymStateNotifier {
   Future<void> loadPrefs() async {
     final prefs = PreferenceHelper.asyncPref;
 
-    final showExercise = await prefs.getBool('showExercisePrefs');
+    final showExercise = await prefs.getBool(PREFS_SHOW_EXERCISES);
     if (showExercise != null && showExercise != state.showExercisePages) {
       state = state.copyWith(showExercisePages: showExercise);
     }
 
-    final showTimer = await prefs.getBool('showTimerPrefs');
+    final showTimer = await prefs.getBool(PREFS_SHOW_TIMER);
     if (showTimer != null && showTimer != state.showTimerPages) {
       state = state.copyWith(showTimerPages: showTimer);
     }
@@ -302,8 +307,8 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   Future<void> _savePrefs() async {
     final prefs = PreferenceHelper.asyncPref;
-    await prefs.setBool('showExercisePrefs', state.showExercisePages);
-    await prefs.setBool('showTimerPrefs', state.showTimerPages);
+    await prefs.setBool(PREFS_SHOW_EXERCISES, state.showExercisePages);
+    await prefs.setBool(PREFS_SHOW_TIMER, state.showTimerPages);
     _logger.finer(
       'Saved preferences: showExercise=${state.showExercisePages} showTimer=${state.showTimerPages}',
     );
@@ -373,13 +378,12 @@ class GymStateNotifier extends _$GymStateNotifier {
       );
     }
 
-    pages.add(
-      // Session page
-      PageEntry(type: PageType.session, pageIndex: pageIndex),
-    );
+    // Session and summary page
+    pages.add(PageEntry(type: PageType.session, pageIndex: pageIndex));
+    pages.add(PageEntry(type: PageType.workoutSummary, pageIndex: pageIndex + 1));
 
     state = state.copyWith(pages: pages);
-    readPageStructure();
+    // _logger.finer(readPageStructure());
     _logger.finer('Initialized ${state.pages.length} pages');
   }
 

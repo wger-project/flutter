@@ -10,7 +10,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/routines/gym_mode/result.dart';
+import 'package:wger/widgets/routines/gym_mode/summary.dart';
 
 import '../test/routine/gym_mode/gym_mode_test.mocks.dart';
 import '../test_data/exercises.dart';
@@ -120,7 +120,7 @@ Widget createGymModeResultsScreen({String locale = 'en'}) {
           body: PageView(
             controller: controller,
             children: [
-              ResultsWidget(controller),
+              WorkoutSummary(controller),
             ],
           ),
         ),
