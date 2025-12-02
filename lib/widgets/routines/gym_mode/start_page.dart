@@ -86,10 +86,11 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                         onChanged: (value) => gymNotifier.setShowTimerPages(value),
                       ),
                       ListTile(
+                        key: const ValueKey('gym-mode-timer-type'),
                         enabled: gymState.showTimerPages,
                         title: Text(i18n.gymModeTimerType),
                         trailing: DropdownButton<bool>(
-                          key: const ValueKey('themeModeDropdown'),
+                          key: const ValueKey('countdown-type-dropdown'),
                           value: gymState.useCountdownBetweenSets,
                           onChanged: gymState.showTimerPages
                               ? (bool? newValue) {
@@ -107,6 +108,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                         subtitle: Text(i18n.gymModeTimerTypeHelText),
                       ),
                       ListTile(
+                        key: const ValueKey('gym-mode-default-countdown-time'),
                         enabled: gymState.showTimerPages,
                         title: TextFormField(
                           controller: _countdownController,
@@ -145,14 +147,6 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                           },
                           enabled: gymState.showTimerPages && gymState.useCountdownBetweenSets,
                         ),
-                        // trailing: IconButton(
-                        //   onPressed: gymState.showTimerPages && gymState.useCountdownBetweenSets
-                        //       ? () => gymNotifier.setDefaultCountdownDuration(
-                        //           DEFAULT_COUNTDOWN_DURATION,
-                        //         )
-                        //       : null,
-                        //   icon: const Icon(Icons.refresh),
-                        // ),
                       ),
                       SwitchListTile(
                         key: const ValueKey('gym-mode-notify-countdown'),
