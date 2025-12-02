@@ -265,6 +265,12 @@
   },
   "gymModeShowExercises": "Show exercise overview pages",
   "gymModeShowTimer": "Show timer between sets",
+  "gymModeTimerType": "Timer type",
+  "gymModeTimerTypeHelText": "If a set has pause time, a countdown is always used.",
+  "countdown": "Countdown",
+  "stopwatch": "Stopwatch",
+  "gymModeDefaultCountdownTime": "Default countdown time, in seconds",
+  "gymModeNotifyOnCountdownFinish": "Notify on countdown end",
   "duration": "Duration",
   "durationHoursMinutes": "{hours}h {minutes}m",
   "@durationHoursMinutes": {
@@ -661,6 +667,19 @@
       },
       "max": {
         "type": "String"
+      }
+    }
+  },
+  "formMinMaxValues": "Please enter a value between {min} and {max}",
+  "@formMinMaxValues": {
+    "description": "Error message when the user needs to enter a value between min and max",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
       }
     }
   },

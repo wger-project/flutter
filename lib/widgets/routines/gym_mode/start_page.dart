@@ -34,6 +34,20 @@ class GymModeOptions extends ConsumerStatefulWidget {
 
 class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
   bool _showOptions = false;
+  late TextEditingController _countdownController;
+
+  @override
+  void initState() {
+    super.initState();
+    final initial = ref.read(gymStateProvider).defaultCountdownDuration.inSeconds.toString();
+    _countdownController = TextEditingController(text: initial);
+  }
+
+  @override
+  void dispose() {
+    _countdownController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,27 +55,117 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
     final gymNotifier = ref.watch(gymStateProvider.notifier);
     final i18n = AppLocalizations.of(context);
 
+    // If the value in the provider changed, update the controller text
+    final currentText = gymState.defaultCountdownDuration.inSeconds.toString();
+    if (_countdownController.text != currentText) {
+      _countdownController.text = currentText;
+    }
+
     return Column(
       children: [
         AnimatedCrossFade(
           firstChild: const SizedBox.shrink(),
           secondChild: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: Column(
-              children: [
-                SwitchListTile(
-                  key: const ValueKey('gym-mode-option-show-exercises'),
-                  title: Text(i18n.gymModeShowExercises),
-                  value: gymState.showExercisePages,
-                  onChanged: (value) => gymNotifier.setShowExercisePages(value),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 400),
+              child: Card(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SwitchListTile(
+                        key: const ValueKey('gym-mode-option-show-exercises'),
+                        title: Text(i18n.gymModeShowExercises),
+                        value: gymState.showExercisePages,
+                        onChanged: (value) => gymNotifier.setShowExercisePages(value),
+                      ),
+                      SwitchListTile(
+                        key: const ValueKey('gym-mode-option-show-timer'),
+                        title: Text(i18n.gymModeShowTimer),
+                        value: gymState.showTimerPages,
+                        onChanged: (value) => gymNotifier.setShowTimerPages(value),
+                      ),
+                      ListTile(
+                        enabled: gymState.showTimerPages,
+                        title: Text(i18n.gymModeTimerType),
+                        trailing: DropdownButton<bool>(
+                          key: const ValueKey('themeModeDropdown'),
+                          value: gymState.useCountdownBetweenSets,
+                          onChanged: gymState.showTimerPages
+                              ? (bool? newValue) {
+                                  if (newValue != null) {
+                                    gymNotifier.setUseCountdownBetweenSets(newValue);
+                                  }
+                                }
+                              : null,
+                          items: [false, true].map<DropdownMenuItem<bool>>((bool value) {
+                            final label = value ? i18n.countdown : i18n.stopwatch;
+
+                            return DropdownMenuItem<bool>(value: value, child: Text(label));
+                          }).toList(),
+                        ),
+                        subtitle: Text(i18n.gymModeTimerTypeHelText),
+                      ),
+                      ListTile(
+                        enabled: gymState.showTimerPages,
+                        title: TextFormField(
+                          controller: _countdownController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: i18n.gymModeDefaultCountdownTime,
+                            suffix: IconButton(
+                              onPressed: gymState.showTimerPages && gymState.useCountdownBetweenSets
+                                  ? () => gymNotifier.setDefaultCountdownDuration(
+                                      DEFAULT_COUNTDOWN_DURATION,
+                                    )
+                                  : null,
+                              icon: const Icon(Icons.refresh),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            final intValue = int.tryParse(value);
+                            if (intValue != null &&
+                                intValue > 0 &&
+                                intValue < MAX_COUNTDOWN_DURATION) {
+                              gymNotifier.setDefaultCountdownDuration(intValue);
+                            }
+                          },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (String? value) {
+                            final intValue = int.tryParse(value!);
+                            if (intValue == null ||
+                                intValue < MIN_COUNTDOWN_DURATION ||
+                                intValue > MAX_COUNTDOWN_DURATION) {
+                              return i18n.formMinMaxValues(
+                                MIN_COUNTDOWN_DURATION,
+                                MAX_COUNTDOWN_DURATION,
+                              );
+                            }
+                            return null;
+                          },
+                          enabled: gymState.showTimerPages && gymState.useCountdownBetweenSets,
+                        ),
+                        // trailing: IconButton(
+                        //   onPressed: gymState.showTimerPages && gymState.useCountdownBetweenSets
+                        //       ? () => gymNotifier.setDefaultCountdownDuration(
+                        //           DEFAULT_COUNTDOWN_DURATION,
+                        //         )
+                        //       : null,
+                        //   icon: const Icon(Icons.refresh),
+                        // ),
+                      ),
+                      SwitchListTile(
+                        key: const ValueKey('gym-mode-notify-countdown'),
+                        title: Text(i18n.gymModeNotifyOnCountdownFinish),
+                        value: gymState.alertOnCountdownEnd,
+                        onChanged: (gymState.showTimerPages && gymState.useCountdownBetweenSets)
+                            ? (value) => gymNotifier.setAlertOnCountdownEnd(value)
+                            : null,
+                      ),
+                    ],
+                  ),
                 ),
-                SwitchListTile(
-                  key: const ValueKey('gym-mode-option-show-timer'),
-                  title: Text(i18n.gymModeShowTimer),
-                  value: gymState.showTimerPages,
-                  onChanged: (value) => gymNotifier.setShowTimerPages(value),
-                ),
-              ],
+              ),
             ),
           ),
           crossFadeState: _showOptions ? CrossFadeState.showSecond : CrossFadeState.showFirst,

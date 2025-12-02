@@ -16,6 +16,14 @@ const DEFAULT_DURATION = Duration(hours: 5);
 
 const PREFS_SHOW_EXERCISES = 'showExercisePrefs';
 const PREFS_SHOW_TIMER = 'showTimerPrefs';
+const PREFS_ALERT_COUNTDOWN = 'alertCountdownPrefs';
+const PREFS_USE_COUNTDOWN_BETWEEN_SETS = 'useCountdownBetweenSetsPrefs';
+const PREFS_COUNTDOWN_DURATION = 'countdownDurationSecondsPrefs';
+
+/// In seconds
+const DEFAULT_COUNTDOWN_DURATION = 180;
+const MIN_COUNTDOWN_DURATION = 10;
+const MAX_COUNTDOWN_DURATION = 1800;
 
 enum PageType {
   start,
@@ -140,17 +148,23 @@ class SlotPageEntry {
 class GymModeState {
   final _logger = Logger('GymModeState');
 
+  // Navigation data
   final bool isInitialized;
 
   final List<PageEntry> pages;
   final int currentPage;
 
-  final bool showExercisePages;
-  final bool showTimerPages;
-
   final TimeOfDay startTime;
   final DateTime validUntil;
 
+  // User settings
+  final bool showExercisePages;
+  final bool showTimerPages;
+  final bool alertOnCountdownEnd;
+  final bool useCountdownBetweenSets;
+  final Duration defaultCountdownDuration;
+
+  // Routine data
   late final int dayId;
   late final int iteration;
   late final Routine routine;
@@ -162,6 +176,9 @@ class GymModeState {
 
     this.showExercisePages = true,
     this.showTimerPages = true,
+    this.alertOnCountdownEnd = false,
+    this.useCountdownBetweenSets = false,
+    this.defaultCountdownDuration = const Duration(seconds: DEFAULT_COUNTDOWN_DURATION),
 
     int? dayId,
     int? iteration,
@@ -185,28 +202,43 @@ class GymModeState {
   }
 
   GymModeState copyWith({
+    // Navigation data
     bool? isInitialized,
     List<PageEntry>? pages,
-    bool? showExercisePages,
-    bool? showTimerPages,
     int? currentPage,
+
+    // Routine data
     int? dayId,
     int? iteration,
     DateTime? validUntil,
     TimeOfDay? startTime,
     Routine? routine,
+
+    // User settings
+    bool? showExercisePages,
+    bool? showTimerPages,
+    bool? alertOnCountdownEnd,
+    bool? useCountdownBetweenSets,
+    int? defaultCountdownDuration,
   }) {
     return GymModeState(
       isInitialized: isInitialized ?? this.isInitialized,
       pages: pages ?? this.pages,
-      showExercisePages: showExercisePages ?? this.showExercisePages,
-      showTimerPages: showTimerPages ?? this.showTimerPages,
       currentPage: currentPage ?? this.currentPage,
+
       dayId: dayId ?? this.dayId,
       iteration: iteration ?? this.iteration,
       validUntil: validUntil ?? this.validUntil,
       startTime: startTime ?? this.startTime,
       routine: routine ?? this.routine,
+
+      showExercisePages: showExercisePages ?? this.showExercisePages,
+      showTimerPages: showTimerPages ?? this.showTimerPages,
+      alertOnCountdownEnd: alertOnCountdownEnd ?? this.alertOnCountdownEnd,
+      useCountdownBetweenSets: useCountdownBetweenSets ?? this.useCountdownBetweenSets,
+      defaultCountdownDuration: Duration(
+        seconds: defaultCountdownDuration ?? this.defaultCountdownDuration.inSeconds,
+      ),
     );
   }
 
@@ -303,15 +335,53 @@ class GymStateNotifier extends _$GymStateNotifier {
     if (showTimer != null && showTimer != state.showTimerPages) {
       state = state.copyWith(showTimerPages: showTimer);
     }
-    _logger.finer('Loaded preferences: showExercise=$showExercise showTimer=$showTimer');
+
+    final alertOnCountdownEnd = await prefs.getBool(PREFS_ALERT_COUNTDOWN);
+    if (alertOnCountdownEnd != null && alertOnCountdownEnd != state.alertOnCountdownEnd) {
+      state = state.copyWith(alertOnCountdownEnd: alertOnCountdownEnd);
+    }
+
+    final useCountdownBetweenSets = await prefs.getBool(PREFS_USE_COUNTDOWN_BETWEEN_SETS);
+    if (useCountdownBetweenSets != null &&
+        useCountdownBetweenSets != state.useCountdownBetweenSets) {
+      state = state.copyWith(useCountdownBetweenSets: useCountdownBetweenSets);
+    }
+
+    final defaultCountdownDurationSeconds = await prefs.getInt(PREFS_COUNTDOWN_DURATION);
+    if (defaultCountdownDurationSeconds != null &&
+        defaultCountdownDurationSeconds != state.defaultCountdownDuration.inSeconds) {
+      state = state.copyWith(
+        defaultCountdownDuration: defaultCountdownDurationSeconds,
+      );
+    }
+
+    _logger.finer(
+      'Loaded saved preferences: '
+      'showExercise=$showExercise '
+      'showTimer=$showTimer '
+      'alertOnCountdownEnd=$alertOnCountdownEnd '
+      'useCountdownBetweenSets=$useCountdownBetweenSets '
+      'defaultCountdownDurationSeconds=$defaultCountdownDurationSeconds',
+    );
   }
 
   Future<void> _savePrefs() async {
     final prefs = PreferenceHelper.asyncPref;
     await prefs.setBool(PREFS_SHOW_EXERCISES, state.showExercisePages);
     await prefs.setBool(PREFS_SHOW_TIMER, state.showTimerPages);
+    await prefs.setBool(PREFS_ALERT_COUNTDOWN, state.alertOnCountdownEnd);
+    await prefs.setBool(PREFS_USE_COUNTDOWN_BETWEEN_SETS, state.useCountdownBetweenSets);
+    await prefs.setInt(
+      PREFS_COUNTDOWN_DURATION,
+      state.defaultCountdownDuration.inSeconds,
+    );
     _logger.finer(
-      'Saved preferences: showExercise=${state.showExercisePages} showTimer=${state.showTimerPages}',
+      'Saved preferences: '
+      'showExercise=${state.showExercisePages} '
+      'showTimer=${state.showTimerPages} '
+      'alertOnCountdownEnd=${state.alertOnCountdownEnd} '
+      'useCountdownBetweenSets=${state.useCountdownBetweenSets} '
+      'defaultCountdownDuration=${state.defaultCountdownDuration.inSeconds}',
     );
   }
 
@@ -496,6 +566,21 @@ class GymStateNotifier extends _$GymStateNotifier {
   void setShowTimerPages(bool value) {
     state = state.copyWith(showTimerPages: value);
     calculatePages();
+    _savePrefs();
+  }
+
+  void setAlertOnCountdownEnd(bool value) {
+    state = state.copyWith(alertOnCountdownEnd: value);
+    _savePrefs();
+  }
+
+  void setUseCountdownBetweenSets(bool value) {
+    state = state.copyWith(useCountdownBetweenSets: value);
+    _savePrefs();
+  }
+
+  void setDefaultCountdownDuration(int duration) {
+    state = state.copyWith(defaultCountdownDuration: duration);
     _savePrefs();
   }
 

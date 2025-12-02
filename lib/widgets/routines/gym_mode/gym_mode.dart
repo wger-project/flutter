@@ -79,6 +79,7 @@ class _GymModeState extends ConsumerState<GymMode> {
   }
 
   List<Widget> _getContent(GymModeState state) {
+    final gymState = ref.watch(gymStateProvider);
     final List<Widget> out = [];
 
     // Workout overview
@@ -95,12 +96,17 @@ class _GymModeState extends ConsumerState<GymMode> {
           out.add(LogPage(_controller));
         }
 
+        // Timer. Use rest time from config data if available, otherwise use user settings
+        final rest = slotPage.setConfigData?.restTime;
         if (slotPage.type == SlotPageType.timer) {
-          if (slotPage.setConfigData!.restTime != null) {
-            out.add(TimerCountdownWidget(_controller, slotPage.setConfigData!.restTime!.toInt()));
-          } else {
-            out.add(TimerWidget(_controller));
-          }
+          out.add(
+            (rest != null || gymState.useCountdownBetweenSets)
+                ? TimerCountdownWidget(
+                    _controller,
+                    (rest ?? gymState.defaultCountdownDuration.inSeconds).toInt(),
+                  )
+                : TimerWidget(_controller),
+          );
         }
       }
     }
@@ -144,7 +150,7 @@ class _GymModeState extends ConsumerState<GymMode> {
               // Check if the last page is reached
               if (page == children.length - 1) {
                 widget._logger.finer('Last page reached, clearing gym state');
-                // ref.read(gymStateProvider.notifier).clear();
+                ref.read(gymStateProvider.notifier).clear();
               }
             },
             children: children,
