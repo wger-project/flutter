@@ -10,36 +10,42 @@ import '../test/routine/routine_form_test.mocks.dart';
 import '../test_data/exercises.dart';
 import '../test_data/routines.dart';
 
-Widget createWorkoutDetailScreen({locale = 'en'}) {
+Widget createWorkoutDetailScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final key = GlobalKey<NavigatorState>();
 
   final mockRoutinesProvider = MockRoutinesProvider();
   final routine = getTestRoutine(exercises: getScreenshotExercises());
-  // when(mockRoutinesProvider.activeRoutine).thenReturn(routine);
   when(mockRoutinesProvider.findById(1)).thenReturn(routine);
-  // when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) => Future.value(routine));
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockRoutinesProvider,
-      ),
-    ],
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerLightTheme,
-      navigatorKey: key,
-      home: TextButton(
-        onPressed: () => key.currentState!.push(
-          MaterialPageRoute<void>(
-            settings: RouteSettings(arguments: routine.id),
-            builder: (_) => const RoutineScreen(),
-          ),
+  return MediaQuery(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<RoutinesProvider>(
+          create: (context) => mockRoutinesProvider,
         ),
-        child: const SizedBox(),
+      ],
+      child: MaterialApp(
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(arguments: routine.id),
+              builder: (_) => const RoutineScreen(),
+            ),
+          ),
+          child: const SizedBox(),
+        ),
       ),
     ),
   );
