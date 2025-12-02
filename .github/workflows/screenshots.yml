@@ -1,0 +1,157 @@
+name: Update screenshots
+on:
+  workflow_dispatch:
+
+jobs:
+  screenshots_apple:
+    name: 'iOS'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install || true
+          cd ..
+
+      - name: Boot iOS simulator
+        id: boot
+        run: |
+          SIMULATOR=$(xcrun simctl list devices available | awk -F '[()]' '/iPhone 17/{print $2; exit}')
+          echo "SIMULATOR=$SIMULATOR" >> $GITHUB_ENV
+          xcrun simctl boot "$SIMULATOR" || true
+          open -a Simulator || true
+          n=0; until xcrun simctl bootstatus "$SIMULATOR" -b || [ $n -ge 60 ]; do sleep 1; n=$((n+1)); done
+
+      - name: Generate screenshots
+        run: |
+          flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=iOSPhoneBig -d "$SIMULATOR"
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-ios
+          path: fastlane/metadata/ios/**/images/iPhone 6.9/*.png
+
+  screenshots_android:
+    name: 'Android - ${{ matrix.device.name }}'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        device:
+          - name: "Phone"
+            profile: pixel_7_pro
+            device_type: androidPhone
+            folder: phoneScreenshots
+          - name: "Tablet 7in"
+            profile: 7in WSVGA (Tablet)
+            device_type: androidTabletSmall
+            folder: sevenInchScreenshots
+          - name: "Tablet 10in"
+            profile: pixel_tablet
+            device_type: androidTabletBig
+            folder: tenInchScreenshots
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses || true
+
+      # Free up disk space on the runner. List taken from
+      # https://github.com/flathub-infra/vorarbeiter/blob/main/.github/workflows/build.yml
+      #
+      # If needed, consult the list of available software for other candidates to remove:
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
+      - name: Free up disk space
+        run: |
+          sudo swapoff -a || true
+          sudo rm -rf /opt/ghc /usr/local/.ghcup || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          sudo rm -rf /opt/hostedtoolcache/PyPy
+          sudo rm -rf /usr/local/julia* /usr/share/java /usr/share/kotlinc
+          sudo rm -rf /opt/hostedtoolcache/go /opt/az /opt/microsoft /opt/pipx
+          sudo rm -rf /usr/share/miniconda /home/runner/.rustup /home/packer/.rustup /home/runneradmin/.rustup
+          sudo rm -rf /etc/skel/.rustup /opt/hostedtoolcache/node /opt/google-cloud-sdk
+          sudo rm -rf /usr/share/az_* /opt/google /usr/lib/firefox /usr/local/aws-*
+          sudo rm -rf /usr/libexec/gcc /opt/actionarchivecache /opt/hostedtoolcache/Ruby
+          sudo rm -rf /var/lib/mysql /usr/local/n
+          sudo rm -rf /swapfile || true
+          sudo rm -rf /usr/share/dotnet /usr/share/swift
+          sudo rm -rf /usr/local/share/boost /usr/local/share/powershell
+          sudo rm -rf /usr/lib/google-cloud-sdk 
+          sudo rm -rf /usr/local/graalvm /usr/local/share/chromium
+          sudo rm -rf /usr/local/lib/node_modules
+          sudo rm -rf /usr/lib/dotnet /usr/lib/php /usr/share/mysql
+          sudo rm -rf /usr/lib/llvm-*
+          sudo rm -rf /usr/lib/mono
+          sudo apt-get clean || true
+          sudo rm -rf /var/lib/apt/lists/*
+
+      - name: Generate screenshots
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          profile: ${{ matrix.device.profile }}
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |           
+            flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=${{ matrix.device.device_type }}
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-android-${{ matrix.device.folder }}
+          path: fastlane/metadata/android/**/images/${{ matrix.device.folder }}/*.png
+
+  commit_screenshots:
+    name: 'Commit and push'
+    needs:
+      - screenshots_apple
+      - screenshots_android
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all screenshot artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: screenshots
+
+      - name: Merge artifacts into fastlane/metadata
+        run: |
+          set -euo pipefail
+          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-phoneScreenshots/" fastlane/metadata/android/
+          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-sevenInchScreenshots/" fastlane/metadata/android/
+          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-tenInchScreenshots/" fastlane/metadata/android/
+          rsync --archive --checksum --itemize-changes "screenshots/screenshots-ios/" fastlane/metadata/ios/
+
+      - name: Commit screenshots to repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fastlane/metadata/android fastlane/metadata/ios || true
+          if git diff --staged --quiet; then
+            echo "No new or changed screenshots to commit."
+          else
+            BRANCH=$(git rev-parse --abbrev-ref HEAD)
+             git commit -m "Update screenshots"
+             git push origin HEAD:"${BRANCH}"
+          fi
