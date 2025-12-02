@@ -34,6 +34,7 @@ import 'package:wger/providers/user.dart' as _i9;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
@@ -106,20 +107,20 @@ class MockUserProvider extends _i1.Mock implements _i9.UserProvider {
           as _i3.SharedPreferencesAsync);
 
   @override
-  set themeMode(_i10.ThemeMode? _themeMode) => super.noSuchMethod(
-    Invocation.setter(#themeMode, _themeMode),
+  set themeMode(_i10.ThemeMode? value) => super.noSuchMethod(
+    Invocation.setter(#themeMode, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set prefs(_i3.SharedPreferencesAsync? _prefs) => super.noSuchMethod(
-    Invocation.setter(#prefs, _prefs),
+  set prefs(_i3.SharedPreferencesAsync? value) => super.noSuchMethod(
+    Invocation.setter(#prefs, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set profile(_i11.Profile? _profile) => super.noSuchMethod(
-    Invocation.setter(#profile, _profile),
+  set profile(_i11.Profile? value) => super.noSuchMethod(
+    Invocation.setter(#profile, value),
     returnValueForMissingStub: null,
   );
 
@@ -238,14 +239,14 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i14.NutritionPlans
           as List<_i5.NutritionalPlan>);
 
   @override
-  set database(_i4.IngredientDatabase? _database) => super.noSuchMethod(
-    Invocation.setter(#database, _database),
+  set database(_i4.IngredientDatabase? value) => super.noSuchMethod(
+    Invocation.setter(#database, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set ingredients(List<_i8.Ingredient>? _ingredients) => super.noSuchMethod(
-    Invocation.setter(#ingredients, _ingredients),
+  set ingredients(List<_i8.Ingredient>? value) => super.noSuchMethod(
+    Invocation.setter(#ingredients, value),
     returnValueForMissingStub: null,
   );
 
@@ -407,6 +408,22 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i14.NutritionPlans
   _i12.Future<void> clearIngredientCache() =>
       (super.noSuchMethod(
             Invocation.method(#clearIngredientCache, []),
+            returnValue: _i12.Future<void>.value(),
+            returnValueForMissingStub: _i12.Future<void>.value(),
+          )
+          as _i12.Future<void>);
+
+  @override
+  _i12.Future<void> cacheIngredient(
+    _i8.Ingredient? ingredient, {
+    _i4.IngredientDatabase? database,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #cacheIngredient,
+              [ingredient],
+              {#database: database},
+            ),
             returnValue: _i12.Future<void>.value(),
             returnValueForMissingStub: _i12.Future<void>.value(),
           )

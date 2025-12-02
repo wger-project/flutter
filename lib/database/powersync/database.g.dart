@@ -7454,7 +7454,10 @@ class $$ExerciseSecondaryMuscleM2NTableTableManager
           $$ExerciseSecondaryMuscleM2NTableAnnotationComposer,
           $$ExerciseSecondaryMuscleM2NTableCreateCompanionBuilder,
           $$ExerciseSecondaryMuscleM2NTableUpdateCompanionBuilder,
-          (ExerciseSecondaryMuscleM2NData, $$ExerciseSecondaryMuscleM2NTableReferences),
+          (
+            ExerciseSecondaryMuscleM2NData,
+            $$ExerciseSecondaryMuscleM2NTableReferences,
+          ),
           ExerciseSecondaryMuscleM2NData,
           PrefetchHooks Function({bool exerciseId, bool muscleId})
         > {
@@ -7577,7 +7580,10 @@ typedef $$ExerciseSecondaryMuscleM2NTableProcessedTableManager =
       $$ExerciseSecondaryMuscleM2NTableAnnotationComposer,
       $$ExerciseSecondaryMuscleM2NTableCreateCompanionBuilder,
       $$ExerciseSecondaryMuscleM2NTableUpdateCompanionBuilder,
-      (ExerciseSecondaryMuscleM2NData, $$ExerciseSecondaryMuscleM2NTableReferences),
+      (
+        ExerciseSecondaryMuscleM2NData,
+        $$ExerciseSecondaryMuscleM2NTableReferences,
+      ),
       ExerciseSecondaryMuscleM2NData,
       PrefetchHooks Function({bool exerciseId, bool muscleId})
     >;
@@ -9158,7 +9164,10 @@ typedef $$WeightEntryTableTableProcessedTableManager =
       $$WeightEntryTableTableAnnotationComposer,
       $$WeightEntryTableTableCreateCompanionBuilder,
       $$WeightEntryTableTableUpdateCompanionBuilder,
-      (WeightEntry, BaseReferences<_$DriftPowersyncDatabase, $WeightEntryTableTable, WeightEntry>),
+      (
+        WeightEntry,
+        BaseReferences<_$DriftPowersyncDatabase, $WeightEntryTableTable, WeightEntry>,
+      ),
       WeightEntry,
       PrefetchHooks Function()
     >;
@@ -9627,7 +9636,10 @@ class $$WorkoutLogTableTableTableManager
           $$WorkoutLogTableTableAnnotationComposer,
           $$WorkoutLogTableTableCreateCompanionBuilder,
           $$WorkoutLogTableTableUpdateCompanionBuilder,
-          (Log, BaseReferences<_$DriftPowersyncDatabase, $WorkoutLogTableTable, Log>),
+          (
+            Log,
+            BaseReferences<_$DriftPowersyncDatabase, $WorkoutLogTableTable, Log>,
+          ),
           Log,
           PrefetchHooks Function()
         > {
@@ -9733,7 +9745,10 @@ typedef $$WorkoutLogTableTableProcessedTableManager =
       $$WorkoutLogTableTableAnnotationComposer,
       $$WorkoutLogTableTableCreateCompanionBuilder,
       $$WorkoutLogTableTableUpdateCompanionBuilder,
-      (Log, BaseReferences<_$DriftPowersyncDatabase, $WorkoutLogTableTable, Log>),
+      (
+        Log,
+        BaseReferences<_$DriftPowersyncDatabase, $WorkoutLogTableTable, Log>,
+      ),
       Log,
       PrefetchHooks Function()
     >;

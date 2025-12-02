@@ -28,6 +28,7 @@ import 'package:wger/providers/nutrition.dart' as _i8;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
@@ -103,14 +104,14 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
           as List<_i4.NutritionalPlan>);
 
   @override
-  set database(_i3.IngredientDatabase? _database) => super.noSuchMethod(
-    Invocation.setter(#database, _database),
+  set database(_i3.IngredientDatabase? value) => super.noSuchMethod(
+    Invocation.setter(#database, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set ingredients(List<_i7.Ingredient>? _ingredients) => super.noSuchMethod(
-    Invocation.setter(#ingredients, _ingredients),
+  set ingredients(List<_i7.Ingredient>? value) => super.noSuchMethod(
+    Invocation.setter(#ingredients, value),
     returnValueForMissingStub: null,
   );
 
@@ -272,6 +273,22 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
   _i9.Future<void> clearIngredientCache() =>
       (super.noSuchMethod(
             Invocation.method(#clearIngredientCache, []),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
+          )
+          as _i9.Future<void>);
+
+  @override
+  _i9.Future<void> cacheIngredient(
+    _i7.Ingredient? ingredient, {
+    _i3.IngredientDatabase? database,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #cacheIngredient,
+              [ingredient],
+              {#database: database},
+            ),
             returnValue: _i9.Future<void>.value(),
             returnValueForMissingStub: _i9.Future<void>.value(),
           )

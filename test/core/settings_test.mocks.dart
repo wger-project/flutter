@@ -34,6 +34,7 @@ import 'package:wger/providers/user.dart' as _i14;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
@@ -130,14 +131,14 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i11.NutritionPlans
           as List<_i4.NutritionalPlan>);
 
   @override
-  set database(_i3.IngredientDatabase? _database) => super.noSuchMethod(
-    Invocation.setter(#database, _database),
+  set database(_i3.IngredientDatabase? value) => super.noSuchMethod(
+    Invocation.setter(#database, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set ingredients(List<_i7.Ingredient>? _ingredients) => super.noSuchMethod(
-    Invocation.setter(#ingredients, _ingredients),
+  set ingredients(List<_i7.Ingredient>? value) => super.noSuchMethod(
+    Invocation.setter(#ingredients, value),
     returnValueForMissingStub: null,
   );
 
@@ -299,6 +300,22 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i11.NutritionPlans
   _i12.Future<void> clearIngredientCache() =>
       (super.noSuchMethod(
             Invocation.method(#clearIngredientCache, []),
+            returnValue: _i12.Future<void>.value(),
+            returnValueForMissingStub: _i12.Future<void>.value(),
+          )
+          as _i12.Future<void>);
+
+  @override
+  _i12.Future<void> cacheIngredient(
+    _i7.Ingredient? ingredient, {
+    _i3.IngredientDatabase? database,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #cacheIngredient,
+              [ingredient],
+              {#database: database},
+            ),
             returnValue: _i12.Future<void>.value(),
             returnValueForMissingStub: _i12.Future<void>.value(),
           )
@@ -471,20 +488,20 @@ class MockUserProvider extends _i1.Mock implements _i14.UserProvider {
           as _i8.SharedPreferencesAsync);
 
   @override
-  set themeMode(_i15.ThemeMode? _themeMode) => super.noSuchMethod(
-    Invocation.setter(#themeMode, _themeMode),
+  set themeMode(_i15.ThemeMode? value) => super.noSuchMethod(
+    Invocation.setter(#themeMode, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set prefs(_i8.SharedPreferencesAsync? _prefs) => super.noSuchMethod(
-    Invocation.setter(#prefs, _prefs),
+  set prefs(_i8.SharedPreferencesAsync? value) => super.noSuchMethod(
+    Invocation.setter(#prefs, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set profile(_i16.Profile? _profile) => super.noSuchMethod(
-    Invocation.setter(#profile, _profile),
+  set profile(_i16.Profile? value) => super.noSuchMethod(
+    Invocation.setter(#profile, value),
     returnValueForMissingStub: null,
   );
 
@@ -581,14 +598,14 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
           as _i10.Client);
 
   @override
-  set auth(_i9.AuthProvider? _auth) => super.noSuchMethod(
-    Invocation.setter(#auth, _auth),
+  set auth(_i9.AuthProvider? value) => super.noSuchMethod(
+    Invocation.setter(#auth, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set client(_i10.Client? _client) => super.noSuchMethod(
-    Invocation.setter(#client, _client),
+  set client(_i10.Client? value) => super.noSuchMethod(
+    Invocation.setter(#client, value),
     returnValueForMissingStub: null,
   );
 

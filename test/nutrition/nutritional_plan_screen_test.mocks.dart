@@ -30,6 +30,7 @@ import 'package:wger/providers/body_weight_repository.dart' as _i11;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
   _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
@@ -77,14 +78,14 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           as _i3.Client);
 
   @override
-  set auth(_i2.AuthProvider? _auth) => super.noSuchMethod(
-    Invocation.setter(#auth, _auth),
+  set auth(_i2.AuthProvider? value) => super.noSuchMethod(
+    Invocation.setter(#auth, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set client(_i3.Client? _client) => super.noSuchMethod(
-    Invocation.setter(#client, _client),
+  set client(_i3.Client? value) => super.noSuchMethod(
+    Invocation.setter(#client, value),
     returnValueForMissingStub: null,
   );
 
@@ -215,50 +216,50 @@ class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
   bool get isAuth => (super.noSuchMethod(Invocation.getter(#isAuth), returnValue: false) as bool);
 
   @override
-  set token(String? _token) => super.noSuchMethod(
-    Invocation.setter(#token, _token),
+  set token(String? value) => super.noSuchMethod(
+    Invocation.setter(#token, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set serverUrl(String? _serverUrl) => super.noSuchMethod(
-    Invocation.setter(#serverUrl, _serverUrl),
+  set serverUrl(String? value) => super.noSuchMethod(
+    Invocation.setter(#serverUrl, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set serverVersion(String? _serverVersion) => super.noSuchMethod(
-    Invocation.setter(#serverVersion, _serverVersion),
+  set serverVersion(String? value) => super.noSuchMethod(
+    Invocation.setter(#serverVersion, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set applicationVersion(_i6.PackageInfo? _applicationVersion) => super.noSuchMethod(
-    Invocation.setter(#applicationVersion, _applicationVersion),
+  set applicationVersion(_i6.PackageInfo? value) => super.noSuchMethod(
+    Invocation.setter(#applicationVersion, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set metadata(Map<String, String>? _metadata) => super.noSuchMethod(
-    Invocation.setter(#metadata, _metadata),
+  set metadata(Map<String, String>? value) => super.noSuchMethod(
+    Invocation.setter(#metadata, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set state(_i2.AuthState? _state) => super.noSuchMethod(
-    Invocation.setter(#state, _state),
+  set state(_i2.AuthState? value) => super.noSuchMethod(
+    Invocation.setter(#state, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set client(_i3.Client? _client) => super.noSuchMethod(
-    Invocation.setter(#client, _client),
+  set client(_i3.Client? value) => super.noSuchMethod(
+    Invocation.setter(#client, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set dataInit(bool? _dataInit) => super.noSuchMethod(
-    Invocation.setter(#dataInit, _dataInit),
+  set dataInit(bool? value) => super.noSuchMethod(
+    Invocation.setter(#dataInit, value),
     returnValueForMissingStub: null,
   );
 
