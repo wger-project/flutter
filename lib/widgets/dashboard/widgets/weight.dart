@@ -78,33 +78,42 @@ class DashboardWeightWidget extends ConsumerWidget {
                             entries7dAvg.last,
                             weightUnit(profile.isMetric, context),
                           ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton(
-                              child: Text(
-                                AppLocalizations.of(context).goToDetailPage,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(WeightScreen.routeName);
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  FormScreen.routeName,
-                                  arguments: FormScreenArguments(
-                                    AppLocalizations.of(context).newEntry,
-                                    WeightForm(
-                                      entriesList.first.copyWith(id: null, date: DateTime.now()),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      child: Text(
+                                        AppLocalizations.of(context).goToDetailPage,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pushNamed(WeightScreen.routeName);
+                                      },
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
+                                    IconButton(
+                                      icon: const Icon(Icons.add),
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          FormScreen.routeName,
+                                          arguments: FormScreenArguments(
+                                            AppLocalizations.of(context).newEntry,
+                                            WeightForm(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     )

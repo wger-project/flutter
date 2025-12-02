@@ -15,7 +15,8 @@ import '../test/weight/weight_provider_test.mocks.dart';
 import '../test_data/body_weight.dart';
 import '../test_data/nutritional_plans.dart';
 
-Widget createNutritionalPlanScreen({locale = 'en'}) {
+Widget createNutritionalPlanScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final mockBaseProvider = MockWgerBaseProvider();
 
   final key = GlobalKey<NavigatorState>();
@@ -32,31 +33,38 @@ Widget createNutritionalPlanScreen({locale = 'en'}) {
     mockBodyWeightRepository.watchAllDrift(),
   ).thenAnswer((_) => Stream.value(getWeightEntries()));
 
-  return riverpod.ProviderScope(
-    overrides: [
-      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
-    ],
-    child: MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => nutritionProvider,
-        ),
+  return MediaQuery(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: riverpod.ProviderScope(
+      overrides: [
+        bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
       ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        theme: wgerLightTheme,
-        navigatorKey: key,
-        home: TextButton(
-          onPressed: () => key.currentState!.push(
-            MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: getNutritionalPlanScreenshot()),
-              builder: (_) => const NutritionalPlanScreen(),
-            ),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<NutritionPlansProvider>(
+            create: (context) => nutritionProvider,
           ),
-          child: const SizedBox(),
+        ],
+        child: MaterialApp(
+          locale: locale,
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: wgerLightTheme,
+          navigatorKey: key,
+          home: TextButton(
+            onPressed: () => key.currentState!.push(
+              MaterialPageRoute<void>(
+                settings: RouteSettings(arguments: getNutritionalPlanScreenshot()),
+                builder: (_) => const NutritionalPlanScreen(),
+              ),
+            ),
+            child: const SizedBox(),
+          ),
         ),
       ),
     ),

@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
@@ -169,55 +170,57 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).contributeExercise),
-      body: Stepper(
-        controlsBuilder: _controlsBuilder,
-        steps: [
-          Step(
-            title: Text(AppLocalizations.of(context).baseData),
-            content: Step1Basics(formkey: _keys[0]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).variations),
-            content: Step2Variations(formkey: _keys[1]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).description),
-            content: Step3Description(formkey: _keys[2]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).translation),
-            content: Step4Translation(formkey: _keys[3]),
-          ),
-          Step(
-            title: Text(AppLocalizations.of(context).images),
-            content: Step5Images(formkey: _keys[4]),
-          ),
-          Step(title: Text(AppLocalizations.of(context).overview), content: Step6Overview()),
-        ],
-        currentStep: _currentStep,
-        onStepContinue: () {
-          if (_keys[_currentStep].currentState?.validate() ?? false) {
-            _keys[_currentStep].currentState?.save();
+      body: WidescreenWrapper(
+        child: Stepper(
+          controlsBuilder: _controlsBuilder,
+          steps: [
+            Step(
+              title: Text(AppLocalizations.of(context).baseData),
+              content: Step1Basics(formkey: _keys[0]),
+            ),
+            Step(
+              title: Text(AppLocalizations.of(context).variations),
+              content: Step2Variations(formkey: _keys[1]),
+            ),
+            Step(
+              title: Text(AppLocalizations.of(context).description),
+              content: Step3Description(formkey: _keys[2]),
+            ),
+            Step(
+              title: Text(AppLocalizations.of(context).translation),
+              content: Step4Translation(formkey: _keys[3]),
+            ),
+            Step(
+              title: Text(AppLocalizations.of(context).images),
+              content: Step5Images(formkey: _keys[4]),
+            ),
+            Step(title: Text(AppLocalizations.of(context).overview), content: Step6Overview()),
+          ],
+          currentStep: _currentStep,
+          onStepContinue: () {
+            if (_keys[_currentStep].currentState?.validate() ?? false) {
+              _keys[_currentStep].currentState?.save();
 
-            if (_currentStep != lastStepIndex) {
-              setState(() {
-                _currentStep += 1;
-              });
+              if (_currentStep != lastStepIndex) {
+                setState(() {
+                  _currentStep += 1;
+                });
+              }
             }
-          }
-        },
-        onStepCancel: () => setState(() {
-          if (_currentStep != 0) {
-            _currentStep -= 1;
-          }
-        }),
-        /*
-        onStepTapped: (int index) {
-          setState(() {
-            _currentStep = index;
-          });
-        },
-         */
+          },
+          onStepCancel: () => setState(() {
+            if (_currentStep != 0) {
+              _currentStep -= 1;
+            }
+          }),
+          /*
+          onStepTapped: (int index) {
+            setState(() {
+              _currentStep = index;
+            });
+          },
+           */
+        ),
       ),
     );
   }

@@ -11,9 +11,11 @@ import 'package:wger/theme/theme.dart';
 import '../test_data/exercises.dart';
 import '../test_data/routines.dart';
 
-Widget createGymModeScreen({locale = 'en'}) {
+Widget createGymModeScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final key = GlobalKey<NavigatorState>();
 
+  final routine = getTestRoutine(exercises: getScreenshotExercises());
   final container = riverpod.ProviderContainer.test(
     overrides: [
       exerciseStateProvider.overrideWithValue(ExerciseState(exercises: getTestExercises())),
@@ -23,29 +25,36 @@ Widget createGymModeScreen({locale = 'en'}) {
     routines: [getTestRoutine(exercises: getScreenshotExercises())],
   );
 
-  return riverpod.UncontrolledProviderScope(
-    container: container,
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      navigatorKey: key,
-      theme: wgerLightTheme,
-      home: TextButton(
-        onPressed: () => key.currentState!.push(
-          MaterialPageRoute<void>(
-            settings: RouteSettings(
-              arguments: GymModeArguments(routine.id!, routine.days.first.id!, 1),
+  return MediaQuery(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: riverpod.UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        theme: wgerLightTheme,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(
+                arguments: GymModeArguments(routine.id!, routine.days.first.id!, 1),
+              ),
+              builder: (_) => const GymModeScreen(),
             ),
-            builder: (_) => const GymModeScreen(),
           ),
+          child: const SizedBox(),
         ),
-        child: const SizedBox(),
+        routes: {
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+        },
       ),
-      routes: {
-        RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-      },
     ),
   );
 }

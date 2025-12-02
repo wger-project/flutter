@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
@@ -19,17 +20,19 @@ class ExercisesScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).exercises),
-      body: Column(
-        children: [
-          const FilterRow(),
-          Expanded(
-            child: exerciseState.isLoading
-                ? const BoxedProgressIndicator()
-                : _ExercisesList(
-                    exerciseList: exerciseState.filteredExercises,
-                  ),
-          ),
-        ],
+      body: WidescreenWrapper(
+        child: Column(
+          children: [
+            const FilterRow(),
+            Expanded(
+              child: exerciseState.isLoading
+                  ? const BoxedProgressIndicator()
+                  : _ExercisesList(
+                      exerciseList: exerciseState.filteredExercises,
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

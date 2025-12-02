@@ -18,6 +18,7 @@
 
 //import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/configure_plates_screen.dart';
 import 'package:wger/widgets/core/settings/ingredient_cache.dart';
@@ -34,22 +35,27 @@ class SettingsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(i18n.settingsTitle)),
-      body: ListView(
-        children: [
-          ListTile(
-            title: Text(i18n.settingsCacheTitle, style: Theme.of(context).textTheme.headlineSmall),
-          ),
-          const SettingsIngredientCache(),
-          ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
-          const SettingsTheme(),
-          ListTile(
-            title: Text(i18n.selectAvailablePlates),
-            onTap: () {
-              Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
-            },
-            trailing: const Icon(Icons.chevron_right),
-          ),
-        ],
+      body: WidescreenWrapper(
+        child: ListView(
+          children: [
+            ListTile(
+              title: Text(
+                i18n.settingsCacheTitle,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+            const SettingsIngredientCache(),
+            ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
+            const SettingsTheme(),
+            ListTile(
+              title: Text(i18n.selectAvailablePlates),
+              onTap: () {
+                Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
+              },
+              trailing: const Icon(Icons.chevron_right),
+            ),
+          ],
+        ),
       ),
     );
   }

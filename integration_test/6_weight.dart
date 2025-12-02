@@ -15,7 +15,8 @@ import '../test_data/body_weight.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
 
-Widget createWeightScreen({locale = 'en'}) {
+Widget createWeightScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final mockBodyWeightRepository = MockBodyWeightRepository();
   when(
     mockBodyWeightRepository.watchAllDrift(),
@@ -28,27 +29,34 @@ Widget createWeightScreen({locale = 'en'}) {
   when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
   when(mockNutritionPlansProvider.items).thenReturn([getNutritionalPlan()]);
 
-  return riverpod.ProviderScope(
-    overrides: [
-      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
-    ],
-    child: MultiProvider(
-      providers: [
-        ChangeNotifierProvider<UserProvider>(
-          create: (context) => mockUserProvider,
-        ),
-        ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => mockNutritionPlansProvider,
-        ),
+  return MediaQuery(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: riverpod.ProviderScope(
+      overrides: [
+        bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
       ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        theme: wgerLightTheme,
-        home: const WeightScreen(),
-        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<UserProvider>(
+            create: (context) => mockUserProvider,
+          ),
+          ChangeNotifierProvider<NutritionPlansProvider>(
+            create: (context) => mockNutritionPlansProvider,
+          ),
+        ],
+        child: MaterialApp(
+          locale: locale,
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: wgerLightTheme,
+          home: const WeightScreen(),
+          routes: {FormScreen.routeName: (ctx) => const FormScreen()},
+        ),
       ),
     ),
   );

@@ -9,23 +9,32 @@ import 'package:wger/theme/theme.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
 import '../test_data/measurements.dart';
 
-Widget createMeasurementScreen({locale = 'en'}) {
+Widget createMeasurementScreen({Locale? locale}) {
+  locale ??= const Locale('en');
+
   final mockMeasurementProvider = MockMeasurementProvider();
   when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<MeasurementProvider>(
-        create: (context) => mockMeasurementProvider,
+  return MediaQuery(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<MeasurementProvider>(
+          create: (context) => mockMeasurementProvider,
+        ),
+      ],
+      child: MaterialApp(
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        home: const MeasurementCategoriesScreen(),
       ),
-    ],
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerLightTheme,
-      home: const MeasurementCategoriesScreen(),
     ),
   );
 }

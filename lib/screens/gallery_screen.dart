@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gallery.dart';
@@ -52,8 +53,10 @@ class GalleryScreen extends StatelessWidget {
                 );
               },
             ),
-      body: Consumer<GalleryProvider>(
-        builder: (context, workoutProvider, child) => const Gallery(),
+      body: WidescreenWrapper(
+        child: Consumer<GalleryProvider>(
+          builder: (context, workoutProvider, child) => const Gallery(),
+        ),
       ),
     );
   }

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (C) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
@@ -33,19 +34,49 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final isMobile = width < MATERIAL_XS_BREAKPOINT;
+
+    late final int crossAxisCount;
+    if (width < MATERIAL_XS_BREAKPOINT) {
+      crossAxisCount = 1;
+    } else if (width < MATERIAL_MD_BREAKPOINT) {
+      crossAxisCount = 2;
+    } else if (width < MATERIAL_LG_BREAKPOINT) {
+      crossAxisCount = 3;
+    } else {
+      crossAxisCount = 4;
+    }
+
+    final items = [
+      DashboardNetworkInfo(),
+      const DashboardRoutineWidget(),
+      const DashboardNutritionWidget(),
+      const DashboardWeightWidget(),
+      const DashboardMeasurementWidget(),
+      const DashboardCalendarWidget(),
+    ];
+
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            DashboardNetworkInfo(),
-            DashboardRoutineWidget(),
-            DashboardNutritionWidget(),
-            DashboardWeightWidget(),
-            DashboardMeasurementWidget(),
-            DashboardCalendarWidget(),
-          ],
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: MATERIAL_LG_BREAKPOINT.toDouble()),
+          child: isMobile
+              ? ListView.builder(
+                  padding: const EdgeInsets.all(10),
+                  itemBuilder: (context, index) => items[index],
+                  itemCount: items.length,
+                )
+              : GridView.builder(
+                  padding: const EdgeInsets.all(10),
+                  itemBuilder: (context, index) => SingleChildScrollView(child: items[index]),
+                  itemCount: items.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    childAspectRatio: 0.7,
+                  ),
+                ),
         ),
       ),
     );

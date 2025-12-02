@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
@@ -46,8 +47,10 @@ class WeightScreen extends ConsumerWidget {
           );
         },
       ),
-      body: const SingleChildScrollView(
-        child: WeightOverview(),
+      body: WidescreenWrapper(
+        child: SingleChildScrollView(
+          child: WeightOverview(),
+        ),
       ),
     );
   }

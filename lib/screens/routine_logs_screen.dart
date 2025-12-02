@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/routines/workout_logs.dart';
@@ -34,7 +35,7 @@ class WorkoutLogsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: EmptyAppBar(routine.name),
-      body: WorkoutLogs(routine),
+      body: WidescreenWrapper(child: WorkoutLogs(routine)),
     );
   }
 }

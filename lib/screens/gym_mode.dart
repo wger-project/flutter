@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/gym_mode/gym_mode.dart';
 
@@ -51,7 +52,9 @@ class GymModeScreen extends ConsumerWidget {
       // backgroundColor: Theme.of(context).cardColor,
       // primary: false,
       body: SafeArea(
-        child: GymMode(dayDataGym, dayDataDisplay, args.iteration),
+        child: WidescreenWrapper(
+          child: GymMode(dayDataGym, dayDataDisplay, args.iteration),
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
 
@@ -13,7 +14,7 @@ class ConfigurePlatesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(i18n.selectAvailablePlates)),
-      body: const ConfigureAvailablePlates(),
+      body: const WidescreenWrapper(child: ConfigureAvailablePlates()),
     );
   }
 }
