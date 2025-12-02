@@ -1,4 +1,5 @@
 import 'package:clock/clock.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -331,15 +332,24 @@ class GymStateNotifier extends _$GymStateNotifier {
 
       // exercise overview page
       if (state.showExercisePages) {
-        slotEntries.add(
-          SlotPageEntry(
-            type: SlotPageType.exerciseOverview,
-            setIndex: setIndex,
-            pageIndex: pageIndex,
-            setConfigData: slotData.setConfigs.first,
-          ),
-        );
-        pageIndex++;
+        // Add one overview page per exercise in the slot (e.g. for supersets)
+        for (final exerciseId in slotData.exerciseIds) {
+          final setConfig = slotData.setConfigs.firstWhereOrNull((c) => c.exerciseId == exerciseId);
+          if (setConfig == null) {
+            _logger.warning('Exercise with ID $exerciseId not found in slotData!!');
+            continue;
+          }
+
+          slotEntries.add(
+            SlotPageEntry(
+              type: SlotPageType.exerciseOverview,
+              setIndex: setIndex,
+              pageIndex: pageIndex,
+              setConfigData: setConfig,
+            ),
+          );
+          pageIndex++;
+        }
       }
 
       for (final config in slotData.setConfigs) {
@@ -425,6 +435,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     _logger.fine('Recalculated page indices');
   }
 
+  /// Reads the current page structure for debugging purposes
   String readPageStructure() {
     final List<String> out = [];
     out.add('GymModeState structure:');

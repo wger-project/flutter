@@ -54,7 +54,6 @@ class SessionPage extends ConsumerWidget {
         NavigationHeader(
           AppLocalizations.of(context).workoutSession,
           _controller,
-          showEndWorkoutButton: false,
         ),
         Expanded(child: Container()),
         Padding(
@@ -68,7 +67,7 @@ class SessionPage extends ConsumerWidget {
             session: session,
           ),
         ),
-        NavigationFooter(_controller, showNext: false),
+        NavigationFooter(_controller),
       ],
     );
   }

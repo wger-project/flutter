@@ -93,14 +93,14 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
             },
           ),
         ),
-        NavigationFooter(widget._controller),
+        NavigationFooter(widget._controller, showNext: false),
       ],
     );
   }
 }
 
 class WorkoutSessionStats extends ConsumerWidget {
-  final _logger = Logger('WorkoutStats');
+  final _logger = Logger('WorkoutSessionStats');
   final WorkoutSessionApi? _sessionApi;
 
   WorkoutSessionStats(this._sessionApi, {super.key});

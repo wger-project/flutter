@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (c) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,6 +38,7 @@ import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 import 'package:wger/widgets/routines/gym_mode/start_page.dart';
+import 'package:wger/widgets/routines/gym_mode/summary.dart';
 import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 import '../../../test_data/exercises.dart';
@@ -290,6 +291,16 @@ void main() {
         );
         final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
         expect(toggleButtons.isSelected[1], isTrue);
+        expect(find.byIcon(Icons.chevron_left), findsOneWidget);
+        expect(find.byIcon(Icons.close), findsOneWidget);
+        expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+        await tester.tap(find.byIcon(Icons.chevron_right));
+        await tester.pumpAndSettle();
+
+        //
+        // Workout summary
+        //
+        expect(find.byType(WorkoutSummary), findsOneWidget);
         expect(find.byIcon(Icons.chevron_left), findsOneWidget);
         expect(find.byIcon(Icons.close), findsOneWidget);
         expect(find.byIcon(Icons.chevron_right), findsNothing);
