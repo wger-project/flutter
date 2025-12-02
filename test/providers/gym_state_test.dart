@@ -127,20 +127,21 @@ void main() {
 
       expect(pages[5].pageIndex, 15);
       expect(pages[6].pageIndex, 16);
+      expect(pages[7].pageIndex, 17);
 
       // Preserve the order of new pages
-      expect(pages[6].uuid, 'new-page-3');
+      expect(pages[7].uuid, 'new-page-3');
 
       // Slot pages have correct indices, the original order is preserved
-      final slotPages = pages[6].slotPages;
+      final slotPages = pages[7].slotPages;
       expect(slotPages[0].uuid, 'new-slot-1');
-      expect(slotPages[0].pageIndex, 16);
+      expect(slotPages[0].pageIndex, 17);
       expect(slotPages[0].setIndex, 0);
       expect(slotPages[1].uuid, 'new-slot-2');
-      expect(slotPages[1].pageIndex, 17);
+      expect(slotPages[1].pageIndex, 18);
       expect(slotPages[1].setIndex, 1);
       expect(slotPages[2].uuid, 'new-slot-3');
-      expect(slotPages[2].pageIndex, 18);
+      expect(slotPages[2].pageIndex, 19);
       expect(slotPages[2].setIndex, 2);
     });
   });
@@ -177,7 +178,7 @@ void main() {
         // Assert
         final pages = notifier.state.pages;
         final setEntry = pages.firstWhere((p) => p.type == PageType.set);
-        expect(pages.length, 4, reason: '4 PageEntries (start, set 1, set 2, session)');
+        expect(pages.length, 5, reason: '5 PageEntries (start, set 1, set 2, session, summary)');
         expect(
           setEntry.slotPages.where((p) => p.type == SlotPageType.log).length,
           3,
@@ -196,7 +197,7 @@ void main() {
         expect(setEntry.slotPages[0].type, SlotPageType.exerciseOverview);
         expect(setEntry.slotPages[1].type, SlotPageType.log);
         expect(setEntry.slotPages[2].type, SlotPageType.timer);
-        expect(notifier.state.totalPages, 16);
+        expect(notifier.state.totalPages, 17);
       },
     );
 
@@ -213,7 +214,7 @@ void main() {
       // Assert
       final pages = notifier.state.pages;
       final setEntry = pages.firstWhere((p) => p.type == PageType.set);
-      expect(pages.length, 4, reason: '4 PageEntries (start, set 1, set 2, session)');
+      expect(pages.length, 5, reason: '4 PageEntries (start, set 1, set 2, session, summary)');
       expect(
         setEntry.slotPages.where((p) => p.type == SlotPageType.log).length,
         3,
@@ -232,7 +233,7 @@ void main() {
       expect(setEntry.slotPages[0].type, SlotPageType.log);
       expect(setEntry.slotPages[1].type, SlotPageType.log);
       expect(setEntry.slotPages[2].type, SlotPageType.log);
-      expect(notifier.state.totalPages, 8);
+      expect(notifier.state.totalPages, 9);
     });
 
     test('Correctly generates pages - exercises and no timer', () {
@@ -248,7 +249,7 @@ void main() {
       // Assert
       final pages = notifier.state.pages;
       final setEntry = pages.firstWhere((p) => p.type == PageType.set);
-      expect(pages.length, 4, reason: '4 PageEntries (start, set 1, set 2, session)');
+      expect(pages.length, 5, reason: '5 PageEntries (start, set 1, set 2, session, summary)');
       expect(
         setEntry.slotPages.where((p) => p.type == SlotPageType.log).length,
         3,
@@ -269,7 +270,7 @@ void main() {
       expect(setEntry.slotPages[1].type, SlotPageType.log);
       expect(setEntry.slotPages[2].type, SlotPageType.log);
       expect(setEntry.slotPages[3].type, SlotPageType.log);
-      expect(notifier.state.totalPages, 10);
+      expect(notifier.state.totalPages, 11);
     });
   });
 }
