@@ -220,7 +220,6 @@ class MainApp extends StatelessWidget {
         builder: (ctx, auth, _) => Consumer<UserProvider>(
           builder: (ctx, user, _) => MaterialApp(
             title: 'wger',
-            debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
             theme: wgerLightTheme,
             darkTheme: wgerDarkTheme,
