@@ -15,7 +15,8 @@ import '../test_data/body_weight.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
 
-Widget createWeightScreen({locale = 'en'}) {
+Widget createWeightScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final weightProvider = BodyWeightProvider(mockBaseProvider);
   weightProvider.items = getScreenshotWeightEntries();
 
@@ -26,26 +27,33 @@ Widget createWeightScreen({locale = 'en'}) {
   when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
   when(mockNutritionPlansProvider.items).thenReturn([getNutritionalPlan()]);
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<UserProvider>(
-        create: (context) => mockUserProvider,
+  return MediaQuery(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => mockUserProvider,
+        ),
+        ChangeNotifierProvider<BodyWeightProvider>(
+          create: (context) => weightProvider,
+        ),
+        ChangeNotifierProvider<NutritionPlansProvider>(
+          create: (context) => mockNutritionPlansProvider,
+        ),
+      ],
+      child: MaterialApp(
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        home: const WeightScreen(),
+        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
       ),
-      ChangeNotifierProvider<BodyWeightProvider>(
-        create: (context) => weightProvider,
-      ),
-      ChangeNotifierProvider<NutritionPlansProvider>(
-        create: (context) => mockNutritionPlansProvider,
-      ),
-    ],
-    child: MaterialApp(
-      locale: Locale(locale),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: wgerLightTheme,
-      home: const WeightScreen(),
-      routes: {FormScreen.routeName: (ctx) => const FormScreen()},
     ),
   );
 }

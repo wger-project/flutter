@@ -2,7 +2,16 @@ This will generate some screenshots and save them to the Play Store metadata fol
 
 1) Set the correct value for the device size by setting the `destination` variable
 2) Start the correct emulator and
-   run `flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart`
+   run
+   ```
+   flutter drive \
+       --driver=test_driver/screenshot_driver.dart \
+       --target=integration_test/make_screenshots_test.dart \
+       --dart-define=DEVICE_TYPE=androidPhone
+   ```
+   For the values of device type, consult the values of the DeviceType enum in
+   `make_screenshots_test.dart`
+5) flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=androidPhone`
 3) If you get errors or the screenshots are not written to disk, edit the
    `languages` list and comment some of the languages
 
