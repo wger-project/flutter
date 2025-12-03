@@ -24,6 +24,7 @@ import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/entries.dart';
 import 'package:wger/widgets/measurements/forms.dart';
+import '../models/measurements/measurement_category.dart';
 
 enum MeasurementOptions {
   edit,
@@ -38,7 +39,20 @@ class MeasurementEntriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categoryId = ModalRoute.of(context)!.settings.arguments as int;
-    final category = Provider.of<MeasurementProvider>(context).findCategoryById(categoryId);
+    final provider = Provider.of<MeasurementProvider>(context);
+    MeasurementCategory? category;
+
+    try {
+      category = provider.findCategoryById(categoryId);
+    } catch (e) {
+      // Category deleted → prevent red screen
+      Future.microtask(() {
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+      });
+      return const SizedBox(); // Return empty widget until pop happens
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +79,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
                     builder: (BuildContext contextDialog) {
                       return AlertDialog(
                         content: Text(
-                          AppLocalizations.of(context).confirmDelete(category.name),
+                          AppLocalizations.of(context).confirmDelete(category!.name),
                         ),
                         actions: [
                           TextButton(
@@ -84,10 +98,11 @@ class MeasurementEntriesScreen extends StatelessWidget {
                               Provider.of<MeasurementProvider>(
                                 context,
                                 listen: false,
-                              ).deleteCategory(category.id!);
-
+                              ).deleteCategory(category!.id!);
                               // Close the popup
                               Navigator.of(contextDialog).pop();
+
+                              Navigator.of(context).pop(); // Exit detail screen
 
                               // and inform the user
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -138,7 +153,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
       body: WidescreenWrapper(
         child: SingleChildScrollView(
           child: Consumer<MeasurementProvider>(
-            builder: (context, provider, child) => EntriesList(category),
+            builder: (context, provider, child) => EntriesList(category!),
           ),
         ),
       ),
