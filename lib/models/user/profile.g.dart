@@ -23,6 +23,8 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) {
     isTrustworthy: json['is_trustworthy'] as bool,
     email: json['email'] as String,
     weightUnitStr: json['weight_unit'] as String,
+    height: (json['height'] as num?)?.toDouble(),
+    weight: (json['weight'] as num?)?.toDouble(),
   );
 }
 
@@ -32,4 +34,6 @@ Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
   'is_trustworthy': instance.isTrustworthy,
   'weight_unit': instance.weightUnitStr,
   'email': instance.email,
+  'height': instance.height,
+  'weight': instance.weight,
 };

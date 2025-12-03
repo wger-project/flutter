@@ -30,9 +30,15 @@ class UserProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
   late SharedPreferencesAsync prefs;
 
+  // --- NEU: Variable für die BMI-Kachel ---
+  bool _showBmiOnDashboard = true;
+  bool get showBmiOnDashboard => _showBmiOnDashboard;
+  // ----------------------------------------
+
   UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _loadThemeMode();
+    _loadBmiSetting(); // NEU: BMI beim Start laden
   }
 
   static const PROFILE_URL = 'userprofile';
@@ -45,15 +51,6 @@ class UserProvider with ChangeNotifier {
     profile = null;
   }
 
-  // // change the unit of plates
-  // void changeUnit({changeTo = 'kg'}) {
-  //   if (changeTo == 'kg') {
-  //     profile?.weightUnitStr = 'lb';
-  //   } else {
-  //     profile?.weightUnitStr = 'kg';
-  //   }
-  // }
-
   // Load theme mode from SharedPreferences
   Future<void> _loadThemeMode() async {
     final prefsDarkMode = await prefs.getBool(PREFS_USER_DARK_THEME);
@@ -65,6 +62,24 @@ class UserProvider with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  // --- NEU: Lade BMI-Einstellung ---
+  Future<void> _loadBmiSetting() async {
+    final showBmi = await prefs.getBool('show_bmi_dashboard');
+    if (showBmi != null) {
+      _showBmiOnDashboard = showBmi;
+    } else {
+      _showBmiOnDashboard = true; // Standard: Anzeigen
+    }
+    notifyListeners();
+  }
+
+  // --- NEU: Umschalten und Speichern ---
+  void setBmiDashboard(bool value) async {
+    _showBmiOnDashboard = value;
+    notifyListeners();
+    await prefs.setBool('show_bmi_dashboard', value);
   }
 
   //  Change mode on switch button click

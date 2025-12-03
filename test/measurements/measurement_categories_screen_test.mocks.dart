@@ -27,12 +27,14 @@ import 'package:wger/providers/measurement.dart' as _i4;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake
+    implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeMeasurementCategory_1 extends _i1.SmartFake implements _i3.MeasurementCategory {
+class _FakeMeasurementCategory_1 extends _i1.SmartFake
+    implements _i3.MeasurementCategory {
   _FakeMeasurementCategory_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
@@ -40,7 +42,8 @@ class _FakeMeasurementCategory_1 extends _i1.SmartFake implements _i3.Measuremen
 /// A class which mocks [MeasurementProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvider {
+class MockMeasurementProvider extends _i1.Mock
+    implements _i4.MeasurementProvider {
   MockMeasurementProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -49,22 +52,31 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
   _i2.WgerBaseProvider get baseProvider =>
       (super.noSuchMethod(
             Invocation.getter(#baseProvider),
-            returnValue: _FakeWgerBaseProvider_0(this, Invocation.getter(#baseProvider)),
+            returnValue: _FakeWgerBaseProvider_0(
+              this,
+              Invocation.getter(#baseProvider),
+            ),
           )
           as _i2.WgerBaseProvider);
 
   @override
   List<_i3.MeasurementCategory> get categories =>
-      (super.noSuchMethod(Invocation.getter(#categories), returnValue: <_i3.MeasurementCategory>[])
+      (super.noSuchMethod(
+            Invocation.getter(#categories),
+            returnValue: <_i3.MeasurementCategory>[],
+          )
           as List<_i3.MeasurementCategory>);
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
-  void clear() =>
-      super.noSuchMethod(Invocation.method(#clear, []), returnValueForMissingStub: null);
+  void clear() => super.noSuchMethod(
+    Invocation.method(#clear, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   _i3.MeasurementCategory findCategoryById(int? id) =>
@@ -158,7 +170,13 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
     DateTime? newDate,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#editEntry, [id, categoryId, newValue, newNotes, newDate]),
+            Invocation.method(#editEntry, [
+              id,
+              categoryId,
+              newValue,
+              newNotes,
+              newDate,
+            ]),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )
@@ -177,10 +195,14 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
   );
 
   @override
-  void dispose() =>
-      super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void notifyListeners() =>
-      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
+  void notifyListeners() => super.noSuchMethod(
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
 }
