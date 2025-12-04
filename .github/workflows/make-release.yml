@@ -63,6 +63,7 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v6
         with:
+          lfs: true
           ref: ${{ github.event.inputs.version }}
 
       - name: Download builds
