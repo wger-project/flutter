@@ -49,31 +49,37 @@
         <screenshot type="default">
             <caption>wger's dashboard</caption>
             <image type="source">
-                https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20dashboard.png
+                https://media.githubusercontent.com/media/wger-project/flutter/refs/heads/master/fastlane/metadata/android/en-US/images/phoneScreenshots/01%20-%20dashboard.png
             </image>
         </screenshot>
         <screenshot>
             <caption>Workout detail</caption>
             <image type="source">
-                https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/02%20-%20workout%20detail.png
+                https://media.githubusercontent.com/media/wger-project/flutter/refs/heads/master/fastlane/metadata/android/en-US/images/phoneScreenshots/02%20-%20workout%20detail.png
+            </image>
+        </screenshot>
+        <screenshot>
+            <caption>Gym mode</caption>
+            <image type="source">
+                https://media.githubusercontent.com/media/wger-project/flutter/refs/heads/master/fastlane/metadata/android/en-US/images/phoneScreenshots/03%20-%20gym%20mode.png
             </image>
         </screenshot>
         <screenshot>
             <caption>Measurements</caption>
             <image type="source">
-                https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20measurements.png
+                https://media.githubusercontent.com/media/wger-project/flutter/refs/heads/master/fastlane/metadata/android/en-US/images/phoneScreenshots/04%20-%20measurements.png
             </image>
         </screenshot>
         <screenshot>
             <caption>Nutritional plan</caption>
             <image type="source">
-                https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/05%20-%20nutritional%20plan.png
+                https://media.githubusercontent.com/media/wger-project/flutter/refs/heads/master/fastlane/metadata/android/en-US/images/phoneScreenshots/05%20-%20nutritional%20plan.png
             </image>
         </screenshot>
         <screenshot>
             <caption>Body weight</caption>
             <image type="source">
-                https://raw.githubusercontent.com/wger-project/flutter/master/fastlane/metadata/android/en-US/images/phoneScreenshots/06%20-%20weight.png
+                https://media.githubusercontent.com/media/wger-project/flutter/refs/heads/master/fastlane/metadata/android/en-US/images/phoneScreenshots/06%20-%20weight.png
             </image>
         </screenshot>
     </screenshots>
