@@ -44,7 +44,11 @@ void main() {
     testRoutine = getTestRoutine();
     mockRepository = MockWorkoutSessionRepository();
 
-    container = ProviderContainer.test();
+    container = ProviderContainer.test(
+      overrides: [
+        workoutSessionRepositoryProvider.overrideWithValue(mockRepository),
+      ],
+    );
     notifier = container.read(gymStateProvider.notifier);
     notifier.state = notifier.state.copyWith(
       showExercisePages: true,
@@ -54,32 +58,27 @@ void main() {
       routine: getTestRoutine(),
     );
     notifier.calculatePages();
-    when(mockRoutinesProvider.editSession(any)).thenAnswer(
+    when(mockRepository.editLocalDrift(any)).thenAnswer(
       (_) => Future.value(testRoutine.sessions[0]),
     );
   });
 
   Widget renderSessionPage({locale = 'en'}) {
-    //final controller = PageController(initialPage: 0);
+    final pageController = PageController(initialPage: 0);
 
     return UncontrolledProviderScope(
-      overrides: [
-        workoutSessionRepositoryProvider.overrideWithValue(mockRepository),
-      ],
       container: container,
-      child: ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockRoutinesProvider,
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
-            body: PageView(
-              controller: controller,
-              children: [
-                SessionPage(controller),
-              ],
-            ),
+
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: PageView(
+            controller: pageController,
+            children: [
+              SessionPage(pageController),
+            ],
           ),
         ),
       ),

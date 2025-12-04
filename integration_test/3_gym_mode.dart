@@ -11,7 +11,6 @@ import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/gym_mode/summary.dart';
 
-// import '../test/routine/gym_mode/gym_mode_test.mocks.dart';
 import '../test_data/exercises.dart';
 import '../test_data/routines.dart';
 
@@ -70,12 +69,6 @@ Widget createGymModeResultsScreen({String locale = 'en'}) {
   final routine = getTestRoutine(exercises: getScreenshotExercises());
   routine.sessions.first.date = clock.now();
 
-  final mockRoutinesProvider = MockRoutinesProvider();
-  final mockExerciseProvider = MockExercisesProvider();
-
-  when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) async => routine);
-  when(mockRoutinesProvider.findById(1)).thenAnswer((_) => routine);
-
   return riverpod.UncontrolledProviderScope(
     container: riverpod.ProviderContainer.test(
       overrides: [
@@ -88,31 +81,23 @@ Widget createGymModeResultsScreen({String locale = 'en'}) {
             showTimerPages: true,
           ),
         ),
+        routinesRiverpodProvider.overrideWithValue(RoutinesState(routines: [routine])),
       ],
     ),
-    child: MultiProvider(
-      providers: [
-        ChangeNotifierProvider<RoutinesProvider>(
-          create: (context) => mockRoutinesProvider,
-        ),
-        ChangeNotifierProvider<ExercisesProvider>(
-          create: (context) => mockExerciseProvider,
-        ),
-      ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        theme: wgerLightTheme,
-        home: Scaffold(
-          body: PageView(
-            controller: controller,
-            children: [
-              WorkoutSummary(controller),
-            ],
-          ),
+
+    child: MaterialApp(
+      locale: Locale(locale),
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      navigatorKey: key,
+      theme: wgerLightTheme,
+      home: Scaffold(
+        body: PageView(
+          controller: controller,
+          children: [
+            WorkoutSummary(controller),
+          ],
         ),
       ),
     ),
