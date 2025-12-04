@@ -120,7 +120,19 @@ class WorkoutSessionStats extends ConsumerWidget {
 
     final session = _sessionApi.session;
     final sessionDuration = session.duration;
-    final totalVolume = _sessionApi.logs.fold<double>(0, (sum, log) => sum + log.volume());
+    final totalVolume = _sessionApi.volume;
+
+    /// We assume that users will do exercises (mostly) either in metric or imperial
+    /// units so we just display the higher one.
+    String volumeUnit;
+    num volumeValue;
+    if (totalVolume['metric']! > totalVolume['imperial']!) {
+      volumeValue = totalVolume['metric']!;
+      volumeUnit = i18n.kg;
+    } else {
+      volumeValue = totalVolume['imperial']!;
+      volumeUnit = i18n.lb;
+    }
 
     return ListView(
       padding: const EdgeInsets.all(16.0),
@@ -142,7 +154,7 @@ class WorkoutSessionStats extends ConsumerWidget {
             Expanded(
               child: InfoCard(
                 title: i18n.volume,
-                value: totalVolume.toStringAsFixed(0),
+                value: '${volumeValue.toStringAsFixed(0)} $volumeUnit',
               ),
             ),
           ],

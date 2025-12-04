@@ -66,7 +66,7 @@ class _SessionInfoState extends State<SessionInfo> {
               children: [
                 SessionRow(
                   label: i18n.impression,
-                  value: widget._session.impressionAsString,
+                  value: widget._session.impressionAsString(context),
                 ),
                 SessionRow(
                   label: i18n.duration,

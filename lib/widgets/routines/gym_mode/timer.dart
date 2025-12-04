@@ -129,8 +129,10 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
     //  When countdown finishes, notify ONCE, and respect settings
     if (remainingSeconds == 0 && !_hasNotified) {
       if (gymState.alertOnCountdownEnd) {
-        SystemSound.play(SystemSoundType.alert);
         HapticFeedback.mediumImpact();
+
+        // Not that this only works on desktop platforms
+        SystemSound.play(SystemSoundType.alert);
       }
       setState(() {
         _hasNotified = true;

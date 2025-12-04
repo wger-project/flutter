@@ -39,7 +39,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
   @override
   void initState() {
     super.initState();
-    final initial = ref.read(gymStateProvider).defaultCountdownDuration.inSeconds.toString();
+    final initial = ref.read(gymStateProvider).countdownDuration.inSeconds.toString();
     _countdownController = TextEditingController(text: initial);
   }
 
@@ -56,7 +56,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
     final i18n = AppLocalizations.of(context);
 
     // If the value in the provider changed, update the controller text
-    final currentText = gymState.defaultCountdownDuration.inSeconds.toString();
+    final currentText = gymState.countdownDuration.inSeconds.toString();
     if (_countdownController.text != currentText) {
       _countdownController.text = currentText;
     }
@@ -117,7 +117,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                             labelText: i18n.gymModeDefaultCountdownTime,
                             suffix: IconButton(
                               onPressed: gymState.showTimerPages && gymState.useCountdownBetweenSets
-                                  ? () => gymNotifier.setDefaultCountdownDuration(
+                                  ? () => gymNotifier.setCountdownDuration(
                                       DEFAULT_COUNTDOWN_DURATION,
                                     )
                                   : null,
@@ -129,7 +129,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                             if (intValue != null &&
                                 intValue > 0 &&
                                 intValue < MAX_COUNTDOWN_DURATION) {
-                              gymNotifier.setDefaultCountdownDuration(intValue);
+                              gymNotifier.setCountdownDuration(intValue);
                             }
                           },
                           autovalidateMode: AutovalidateMode.onUserInteraction,

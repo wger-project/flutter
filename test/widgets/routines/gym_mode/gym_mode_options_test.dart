@@ -48,7 +48,7 @@ void main() {
       showExercisePages: true,
       showTimerPages: true,
       useCountdownBetweenSets: true,
-      defaultCountdownDuration: const Duration(seconds: DEFAULT_COUNTDOWN_DURATION),
+      countdownDuration: const Duration(seconds: DEFAULT_COUNTDOWN_DURATION),
       alertOnCountdownEnd: false,
       dayId: routine.days.first.id,
       iteration: 1,
@@ -158,7 +158,7 @@ void main() {
     await tester.enterText(textField, '60');
     await tester.pumpAndSettle();
 
-    expect(notifier.state.defaultCountdownDuration.inSeconds, 60);
+    expect(notifier.state.countdownDuration.inSeconds, 60);
 
     // Tap refresh button (suffix icon). Find IconButton inside the input decoration
     final refreshIcon = find.descendant(of: countdownField, matching: find.byIcon(Icons.refresh));
@@ -166,6 +166,6 @@ void main() {
     await tester.tap(refreshIcon);
     await tester.pumpAndSettle();
 
-    expect(notifier.state.defaultCountdownDuration.inSeconds, DEFAULT_COUNTDOWN_DURATION);
+    expect(notifier.state.countdownDuration.inSeconds, DEFAULT_COUNTDOWN_DURATION);
   });
 }

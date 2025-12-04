@@ -162,7 +162,7 @@ class GymModeState {
   final bool showTimerPages;
   final bool alertOnCountdownEnd;
   final bool useCountdownBetweenSets;
-  final Duration defaultCountdownDuration;
+  final Duration countdownDuration;
 
   // Routine data
   late final int dayId;
@@ -176,9 +176,9 @@ class GymModeState {
 
     this.showExercisePages = true,
     this.showTimerPages = true,
-    this.alertOnCountdownEnd = false,
+    this.alertOnCountdownEnd = true,
     this.useCountdownBetweenSets = false,
-    this.defaultCountdownDuration = const Duration(seconds: DEFAULT_COUNTDOWN_DURATION),
+    this.countdownDuration = const Duration(seconds: DEFAULT_COUNTDOWN_DURATION),
 
     int? dayId,
     int? iteration,
@@ -219,7 +219,7 @@ class GymModeState {
     bool? showTimerPages,
     bool? alertOnCountdownEnd,
     bool? useCountdownBetweenSets,
-    int? defaultCountdownDuration,
+    int? countdownDuration,
   }) {
     return GymModeState(
       isInitialized: isInitialized ?? this.isInitialized,
@@ -236,8 +236,8 @@ class GymModeState {
       showTimerPages: showTimerPages ?? this.showTimerPages,
       alertOnCountdownEnd: alertOnCountdownEnd ?? this.alertOnCountdownEnd,
       useCountdownBetweenSets: useCountdownBetweenSets ?? this.useCountdownBetweenSets,
-      defaultCountdownDuration: Duration(
-        seconds: defaultCountdownDuration ?? this.defaultCountdownDuration.inSeconds,
+      countdownDuration: Duration(
+        seconds: countdownDuration ?? this.countdownDuration.inSeconds,
       ),
     );
   }
@@ -349,9 +349,9 @@ class GymStateNotifier extends _$GymStateNotifier {
 
     final defaultCountdownDurationSeconds = await prefs.getInt(PREFS_COUNTDOWN_DURATION);
     if (defaultCountdownDurationSeconds != null &&
-        defaultCountdownDurationSeconds != state.defaultCountdownDuration.inSeconds) {
+        defaultCountdownDurationSeconds != state.countdownDuration.inSeconds) {
       state = state.copyWith(
-        defaultCountdownDuration: defaultCountdownDurationSeconds,
+        countdownDuration: defaultCountdownDurationSeconds,
       );
     }
 
@@ -373,7 +373,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     await prefs.setBool(PREFS_USE_COUNTDOWN_BETWEEN_SETS, state.useCountdownBetweenSets);
     await prefs.setInt(
       PREFS_COUNTDOWN_DURATION,
-      state.defaultCountdownDuration.inSeconds,
+      state.countdownDuration.inSeconds,
     );
     _logger.finer(
       'Saved preferences: '
@@ -381,7 +381,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       'showTimer=${state.showTimerPages} '
       'alertOnCountdownEnd=${state.alertOnCountdownEnd} '
       'useCountdownBetweenSets=${state.useCountdownBetweenSets} '
-      'defaultCountdownDuration=${state.defaultCountdownDuration.inSeconds}',
+      'defaultCountdownDuration=${state.countdownDuration.inSeconds}',
     );
   }
 
@@ -579,8 +579,8 @@ class GymStateNotifier extends _$GymStateNotifier {
     _savePrefs();
   }
 
-  void setDefaultCountdownDuration(int duration) {
-    state = state.copyWith(defaultCountdownDuration: duration);
+  void setCountdownDuration(int duration) {
+    state = state.copyWith(countdownDuration: duration);
     _savePrefs();
   }
 

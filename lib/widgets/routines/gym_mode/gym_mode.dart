@@ -74,6 +74,7 @@ class _GymModeState extends ConsumerState<GymMode> {
       widget._args.iteration,
     );
     await gymViewModel.loadPrefs();
+    gymViewModel.calculatePages();
 
     return initialPage;
   }
@@ -103,7 +104,7 @@ class _GymModeState extends ConsumerState<GymMode> {
             (rest != null || gymState.useCountdownBetweenSets)
                 ? TimerCountdownWidget(
                     _controller,
-                    (rest ?? gymState.defaultCountdownDuration.inSeconds).toInt(),
+                    (rest ?? gymState.countdownDuration.inSeconds).toInt(),
                   )
                 : TimerWidget(_controller),
           );

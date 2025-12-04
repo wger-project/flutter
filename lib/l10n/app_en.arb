@@ -232,6 +232,9 @@
   "@comment": {
     "description": "Comment, additional information"
   },
+  "impressionGood": "Good",
+  "impressionNeutral": "Neutral",
+  "impressionBad": "Bad",
   "impression": "Impression",
   "@impression": {
     "description": "General impression (e.g. for a workout session) such as good, bad, etc."

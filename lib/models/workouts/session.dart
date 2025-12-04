@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -28,6 +29,8 @@ const IMPRESSION_MAP = {1: 'bad', 2: 'neutral', 3: 'good'};
 
 @JsonSerializable()
 class WorkoutSession {
+  final _logger = Logger('WorkoutSession');
+
   @JsonKey(required: true)
   int? id;
 
@@ -101,12 +104,31 @@ class WorkoutSession {
     return '${durationTxt(context)} ($startTime - $endTime)';
   }
 
+  /// Get total volume of the session for metric and imperial units
+  /// (i.e. sets that have "repetitions" as units and weight in kg or lbs).
+  /// Other combinations such as "seconds" are ignored.
+  Map<String, Object> get volume {
+    final volumeMetric = logs.fold<double>(0, (sum, log) => sum + log.volume(metric: true));
+    final volumeImperial = logs.fold<double>(0, (sum, log) => sum + log.volume(metric: false));
+
+    return {'metric': volumeMetric, 'imperial': volumeImperial};
+  }
+
   // Boilerplate
   factory WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
 
   Map<String, dynamic> toJson() => _$WorkoutSessionToJson(this);
 
-  String get impressionAsString {
-    return IMPRESSION_MAP[impression]!;
+  String impressionAsString(BuildContext context) {
+    if (impression == 1) {
+      return AppLocalizations.of(context).impressionBad;
+    } else if (impression == 2) {
+      return AppLocalizations.of(context).impressionNeutral;
+    } else if (impression == 3) {
+      return AppLocalizations.of(context).impressionGood;
+    }
+
+    _logger.warning('Unknown impression value: $impression');
+    return AppLocalizations.of(context).impressionGood;
   }
 }
