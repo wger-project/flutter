@@ -78,14 +78,16 @@ const languages = [
   'en-US',
   'es-ES',
 
+  'fa-IR',
   'fr-FR',
   'hi-IN',
   'hr',
   'it-IT',
+  'iw-IL',
   'ko-KR',
   'nb-NO',
-  'pl-PL',
 
+  'pl-PL',
   'pt-BR',
   'pt-PT',
   'ru-RU',
@@ -128,9 +130,19 @@ void main() {
         await takeScreenshot(tester, binding, language, '02 - workout detail');
       });
 
-      testWidgets('gym mode screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createGymModeScreen(locale: locale));
-        await tester.tap(find.byType(TextButton));
+      // testWidgets('gym mode screen - $language', (WidgetTester tester) async {
+      //   await tester.pumpWidget(createGymModeScreen(locale: locale));
+      //   await tester.tap(find.byType(TextButton));
+      //   await tester.pumpAndSettle();
+      //   await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+      //   await tester.pumpAndSettle();
+      //   await tester.tap(find.byKey(const ValueKey('gym-mode-option-show-exercises')));
+      //   await tester.pumpAndSettle();
+      //   await takeScreenshot(tester, binding, language, '03 - gym mode');
+      // });
+
+      testWidgets('gym mode stats screen - $language', (WidgetTester tester) async {
+        await tester.pumpWidget(createGymModeResultsScreen(locale: languageCode));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '03 - gym mode');
       });

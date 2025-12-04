@@ -50,7 +50,9 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
         : IngredientImage.fromJson(json['image'] as Map<String, dynamic>),
     thumbnails: json['thumbnails'] == null
         ? null
-        : IngredientImageThumbnails.fromJson(json['thumbnails'] as Map<String, dynamic>),
+        : IngredientImageThumbnails.fromJson(
+            json['thumbnails'] as Map<String, dynamic>,
+          ),
   );
 }
 

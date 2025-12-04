@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer;
 import 'package:provider/provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/providers/routines.dart';
@@ -30,31 +31,22 @@ class GymModeArguments {
   const GymModeArguments(this.routineId, this.dayId, this.iteration);
 }
 
-class GymModeScreen extends StatelessWidget {
+class GymModeScreen extends ConsumerWidget {
   const GymModeScreen();
 
   static const routeName = '/gym-mode';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final args = ModalRoute.of(context)!.settings.arguments as GymModeArguments;
-
-    final routinesProvider = context.read<RoutinesProvider>();
-    final routine = routinesProvider.findById(args.routineId);
-    final dayDataDisplay = routine.dayData.firstWhere(
-      (e) => e.iteration == args.iteration && e.day?.id == args.dayId,
-    );
-    final dayDataGym = routine.dayDataGym
-        .where((e) => e.iteration == args.iteration && e.day?.id == args.dayId)
-        .first;
 
     return Scaffold(
       // backgroundColor: Theme.of(context).cardColor,
-      // primary: false,
+      //primary: false,
       body: SafeArea(
         child: WidescreenWrapper(
           child: Consumer<RoutinesProvider>(
-            builder: (context, value, child) => GymMode(dayDataGym, dayDataDisplay, args.iteration),
+            builder: (context, value, child) => GymMode(args),
           ),
         ),
       ),

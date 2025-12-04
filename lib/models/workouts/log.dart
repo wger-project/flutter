@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -26,6 +28,13 @@ import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
 part 'log.g.dart';
+
+enum LogTargetStatus {
+  lessThanTarget,
+  atTarget,
+  moreThanTarget,
+  notSet,
+}
 
 @JsonSerializable()
 class Log {
@@ -50,16 +59,16 @@ class Log {
   @JsonKey(required: true, name: 'slot_entry')
   int? slotEntryId;
 
-  @JsonKey(required: false, fromJson: stringToNum)
+  @JsonKey(required: false, fromJson: stringToNumNull)
   num? rir;
 
-  @JsonKey(required: false, fromJson: stringToNum, name: 'rir_target')
+  @JsonKey(required: false, fromJson: stringToNumNull, name: 'rir_target')
   num? rirTarget;
 
-  @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions')
+  @JsonKey(required: true, fromJson: stringToNumNull, name: 'repetitions')
   num? repetitions;
 
-  @JsonKey(required: true, fromJson: stringToNum, name: 'repetitions_target')
+  @JsonKey(required: true, fromJson: stringToNumNull, name: 'repetitions_target')
   num? repetitionsTarget;
 
   @JsonKey(required: true, name: 'repetitions_unit')
@@ -68,10 +77,10 @@ class Log {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late RepetitionUnit? repetitionsUnitObj;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
+  @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString)
   late num? weight;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'weight_target')
+  @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString, name: 'weight_target')
   num? weightTarget;
 
   @JsonKey(required: true, name: 'weight_unit')
@@ -105,16 +114,25 @@ class Log {
   Log.fromSetConfigData(SetConfigData data) {
     date = DateTime.now();
     sessionId = null;
+
     slotEntryId = data.slotEntryId;
     exerciseBase = data.exercise;
 
-    weight = data.weight;
-    weightTarget = data.weight;
-    weightUnit = data.weightUnit;
+    if (data.weight != null) {
+      weight = data.weight;
+      weightTarget = data.weight;
+    }
+    if (data.weightUnit != null) {
+      weightUnit = data.weightUnit;
+    }
 
-    repetitions = data.repetitions;
-    repetitionsTarget = data.repetitions;
-    repetitionUnit = data.repetitionsUnit;
+    if (data.repetitions != null) {
+      repetitions = data.repetitions;
+      repetitionsTarget = data.repetitions;
+    }
+    if (data.repetitionsUnit != null) {
+      repetitionUnit = data.repetitionsUnit;
+    }
 
     rir = data.rir;
     rirTarget = data.rir;
@@ -140,15 +158,80 @@ class Log {
     repetitionsUnitId = repetitionUnit?.id;
   }
 
-  /// Returns the text representation for a single setting, used in the gym mode
-  String get singleLogRepTextNoNl {
-    return repText(
-      repetitions,
-      repetitionsUnitObj,
-      weight,
-      weightUnitObj,
-      rir,
-    ).replaceAll('\n', '');
+  /// Returns the text representation for a single setting, removes new lines
+  String repTextNoNl(BuildContext context) {
+    return repText(context).replaceAll('\n', '');
+  }
+
+  /// Returns the text representation for a single setting
+  String repText(BuildContext context) {
+    final List<String> out = [];
+
+    if (repetitions != null) {
+      out.add(formatNum(repetitions!).toString());
+
+      // The default repetition unit is 'reps', which we don't show unless there
+      // is no weight defined so that we don't just output something like "8" but
+      // rather "8 repetitions". If there is weight we want to output "8 x 50kg",
+      // since the repetitions are implied. If other units are used, we always
+      // print them
+      if (repetitionsUnitObj != null && repetitionsUnitObj!.id != REP_UNIT_REPETITIONS_ID ||
+          weight == 0 ||
+          weight == null) {
+        out.add(getServerStringTranslation(repetitionsUnitObj!.name, context));
+      }
+    }
+
+    if (weight != null && weight != 0) {
+      out.add('×');
+      out.add(formatNum(weight!).toString());
+      out.add(weightUnitObj!.name);
+    }
+
+    if (rir != null) {
+      out.add('\n($rir RiR)');
+    }
+
+    return out.join(' ');
+  }
+
+  /// Calculates the volume for this log entry
+  num volume({bool metric = true}) {
+    final unitId = metric ? WEIGHT_UNIT_KG : WEIGHT_UNIT_LB;
+
+    if (weight != null &&
+        weightUnitId == unitId &&
+        repetitions != null &&
+        repetitionsUnitId == REP_UNIT_REPETITIONS_ID) {
+      return weight! * repetitions!;
+    }
+    return 0;
+  }
+
+  LogTargetStatus get targetStatus {
+    if (weightTarget == null && repetitionsTarget == null && rirTarget == null) {
+      return LogTargetStatus.notSet;
+    }
+
+    final weightOk = weightTarget == null || (weight != null && weight! >= weightTarget!);
+    final repsOk =
+        repetitionsTarget == null || (repetitions != null && repetitions! >= repetitionsTarget!);
+    final rirOk = rirTarget == null || (rir != null && rir! <= rirTarget!);
+
+    if (weightOk && repsOk && rirOk) {
+      return LogTargetStatus.atTarget;
+    }
+
+    final weightMore = weightTarget != null && weight != null && weight! > weightTarget!;
+    final repsMore =
+        repetitionsTarget != null && repetitions != null && repetitions! > repetitionsTarget!;
+    final rirLess = rirTarget != null && rir != null && rir! < rirTarget!;
+
+    if (weightMore || repsMore || rirLess) {
+      return LogTargetStatus.moreThanTarget;
+    }
+
+    return LogTargetStatus.lessThanTarget;
   }
 
   /// Override the equals operator
