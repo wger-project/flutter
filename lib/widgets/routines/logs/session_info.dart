@@ -74,7 +74,9 @@ class _SessionInfoState extends State<SessionInfo> {
                 ),
                 SessionRow(
                   label: i18n.notes,
-                  value: widget._session.notes.isNotEmpty ? widget._session.notes : '-/-',
+                  value: (widget._session.notes != null && widget._session.notes!.isNotEmpty)
+                      ? widget._session.notes!
+                      : '-/-',
                 ),
               ],
             ),

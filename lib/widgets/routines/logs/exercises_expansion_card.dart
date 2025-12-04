@@ -21,10 +21,10 @@ import 'package:wger/helpers/i18n.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/session_api.dart';
+import 'package:wger/models/workouts/session.dart';
 
 class ExercisesCard extends StatelessWidget {
-  final WorkoutSessionApi session;
+  final WorkoutSession session;
 
   const ExercisesCard(this.session, {super.key});
 

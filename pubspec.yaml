@@ -72,6 +72,7 @@ dependencies:
   stream_transform: ^2.1.1
   state_notifier: ^1.0.0
   connectivity_plus: ^7.0.0
+  powersync: ^1.16.2
 
 dev_dependencies:
   flutter_test:

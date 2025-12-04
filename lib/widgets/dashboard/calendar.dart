@@ -155,15 +155,15 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
         time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
       }
 
-        // Add events to lists
+      // Add events to lists
       newEvents[date]?.add(
-          Event(
-            EventType.session,
-            '${i18n.impression}: ${session.impressionAsString(context)} $time',
-          ),
-        );
-      }
-    });
+        Event(
+          EventType.session,
+          '${i18n.impression}: ${session.impressionAsString(context)} $time',
+        ),
+      );
+    }
+
     if (!mounted) {
       return;
     }

@@ -15,7 +15,6 @@ void main() {
     late PlateCalculatorNotifier notifier;
     late ProviderContainer container;
     late MockSharedPreferencesAsync mockPrefs;
-    late ProviderContainer container;
 
     setUp(() {
       mockPrefs = MockSharedPreferencesAsync();

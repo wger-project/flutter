@@ -99,7 +99,7 @@ class _LogPageState extends ConsumerState<LogPage> {
     return Column(
       children: [
         NavigationHeader(
-          log.exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
+          log.exerciseObj.getTranslation(Localizations.localeOf(context).languageCode).name,
           widget._controller,
         ),
 
@@ -141,15 +141,15 @@ class _LogPageState extends ConsumerState<LogPage> {
             ),
           ),
         ),
-        if (log.exercise.showPlateCalculator) const LogsPlatesWidget(),
+        if (log.exerciseObj.showPlateCalculator) const LogsPlatesWidget(),
         if (slotEntryPage.setConfigData!.comment.isNotEmpty)
           Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (state.routine.filterLogsByExercise(log.exercise.id!).isNotEmpty)
+          child: (state.routine.filterLogsByExercise(log.exerciseId).isNotEmpty)
               ? LogsPastLogsWidget(
                   log: log,
-                  pastLogs: state.routine.filterLogsByExercise(log.exercise.id!),
+                  pastLogs: state.routine.filterLogsByExercise(log.exerciseId),
                   onCopy: (pastLog) {
                     _logFormKey.currentState?.copyFromPastLog(pastLog);
                   },
@@ -693,13 +693,12 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     });
                     _form.currentState!.save();
 
-                    try {
-                      final gymState = ref.read(gymStateProvider);
-                      final gymProvider = ref.read(gymStateProvider.notifier);
+                    final gymState = ref.read(gymStateProvider);
+                    final gymProvider = ref.read(gymStateProvider.notifier);
 
-                      logProvider.addEntry(_log);
-                      final page = gymState.getSlotEntryPageByIndex()!;
-                      gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
+                    logProvider.addEntry(_log);
+                    final page = gymState.getSlotEntryPageByIndex()!;
+                    gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
 
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(

@@ -115,7 +115,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     return created;
   }
 
-  Future<void> fetchAndSetRoutineFull(int routineId) async {
+  Future<Routine> fetchAndSetRoutineFull(int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
     final exercises = await ref.read(exercisesProvider.future);
     final repetitionUnits = await ref.read(routineRepetitionUnitProvider.future);
@@ -153,6 +153,8 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
       updatedRoutines.add(routine);
     }
     state = state.copyWith(routines: updatedRoutines);
+
+    return routine;
   }
 
   Future<void> deleteRoutine(int routineId) async {

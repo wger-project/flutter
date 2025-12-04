@@ -55,7 +55,7 @@ void main() {
     );
     notifier.calculatePages();
     when(mockRoutinesProvider.editSession(any)).thenAnswer(
-          (_) => Future.value(testRoutine.sessions[0].session),
+      (_) => Future.value(testRoutine.sessions[0]),
     );
   });
 

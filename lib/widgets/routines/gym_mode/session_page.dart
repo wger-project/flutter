@@ -35,19 +35,17 @@ class SessionPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(gymStateProvider);
 
-    final session = state.routine.sessions
-        .map((sessionApi) => sessionApi.session)
-        .firstWhere(
-          (session) => session.date.isSameDayAs(clock.now()),
-          orElse: () => WorkoutSession(
-            dayId: state.dayId,
-            routineId: state.routine.id,
-            impression: DEFAULT_IMPRESSION,
-            date: clock.now(),
-            timeStart: state.startTime,
-            timeEnd: TimeOfDay.fromDateTime(clock.now()),
-          ),
-        );
+    final session = state.routine.sessions.firstWhere(
+      (session) => session.date.isSameDayAs(clock.now()),
+      orElse: () => WorkoutSession(
+        dayId: state.dayId,
+        routineId: state.routine.id,
+        impression: DEFAULT_IMPRESSION,
+        date: clock.now(),
+        timeStart: state.startTime,
+        timeEnd: TimeOfDay.fromDateTime(clock.now()),
+      ),
+    );
 
     return Column(
       children: [
@@ -59,7 +57,7 @@ class SessionPage extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: SessionForm(
-            state.routine.id,
+            state.routine.id!,
             onSaved: () => _controller.nextPage(
               duration: DEFAULT_ANIMATION_DURATION,
               curve: DEFAULT_ANIMATION_CURVE,

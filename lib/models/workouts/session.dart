@@ -18,11 +18,10 @@
 
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 
 const IMPRESSION_MAP = {1: 'bad', 2: 'neutral', 3: 'good'};
@@ -103,7 +102,7 @@ class WorkoutSession {
   /// Get total volume of the session for metric and imperial units
   /// (i.e. sets that have "repetitions" as units and weight in kg or lbs).
   /// Other combinations such as "seconds" are ignored.
-  Map<String, Object> get volume {
+  Map<String, num> get volume {
     final volumeMetric = logs.fold<double>(0, (sum, log) => sum + log.volume(metric: true));
     final volumeImperial = logs.fold<double>(0, (sum, log) => sum + log.volume(metric: false));
 

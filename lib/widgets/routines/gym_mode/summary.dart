@@ -21,11 +21,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/models/workouts/session_api.dart';
+import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
@@ -59,9 +58,11 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
     widget._logger.fine('Loading routine data');
     final gymState = ref.read(gymStateProvider);
 
-    _routine = await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
-      gymState.routine.id!,
-    );
+    _routine = await ref
+        .read(routinesRiverpodProvider.notifier)
+        .fetchAndSetRoutineFull(
+          gymState.routine.id!,
+        );
   }
 
   @override
@@ -84,7 +85,7 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
               } else if (snapshot.connectionState == ConnectionState.done) {
                 return WorkoutSessionStats(
                   _routine.sessions.firstWhereOrNull(
-                    (s) => s.session.date.isSameDayAs(clock.now()),
+                    (s) => s.date.isSameDayAs(clock.now()),
                   ),
                 );
               }
@@ -101,15 +102,15 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
 
 class WorkoutSessionStats extends ConsumerWidget {
   final _logger = Logger('WorkoutSessionStats');
-  final WorkoutSessionApi? _sessionApi;
+  final WorkoutSession? _session;
 
-  WorkoutSessionStats(this._sessionApi, {super.key});
+  WorkoutSessionStats(this._session, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
 
-    if (_sessionApi == null) {
+    if (_session == null) {
       return Center(
         child: Text(
           'Nothing logged yet.',
@@ -118,9 +119,8 @@ class WorkoutSessionStats extends ConsumerWidget {
       );
     }
 
-    final session = _sessionApi.session;
-    final sessionDuration = session.duration;
-    final totalVolume = _sessionApi.volume;
+    final sessionDuration = _session.duration;
+    final totalVolume = _session.volume;
 
     /// We assume that users will do exercises (mostly) either in metric or imperial
     /// units so we just display the higher one.
@@ -166,9 +166,9 @@ class WorkoutSessionStats extends ConsumerWidget {
         //   color: theme.colorScheme.tertiaryContainer,
         // ),
         const SizedBox(height: 10),
-        MuscleGroupsCard(_sessionApi.logs),
+        MuscleGroupsCard(_session.logs),
         const SizedBox(height: 10),
-        ExercisesCard(_sessionApi),
+        ExercisesCard(_session),
         FilledButton(
           onPressed: () {
             ref.read(gymStateProvider.notifier).clear();

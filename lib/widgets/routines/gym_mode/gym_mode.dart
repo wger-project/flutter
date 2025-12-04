@@ -21,9 +21,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/day_data.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -66,9 +63,11 @@ class _GymModeState extends ConsumerState<GymMode> {
 
   Future<int> _loadGymState() async {
     widget._logger.fine('Loading gym state');
-    final routine = await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
-      widget._args.routineId,
-    );
+    final routine = await ref
+        .read(routinesRiverpodProvider.notifier)
+        .fetchAndSetRoutineFull(
+          widget._args.routineId,
+        );
     final gymViewModel = ref.read(gymStateProvider.notifier);
     final initialPage = gymViewModel.initData(
       routine,

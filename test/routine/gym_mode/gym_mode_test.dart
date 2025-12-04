@@ -20,14 +20,11 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -43,54 +40,38 @@ import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 import '../../../test_data/exercises.dart';
 import '../../../test_data/routines.dart';
-import 'gym_mode_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider, ExercisesProvider, RoutinesProvider])
 void main() {
   final key = GlobalKey<NavigatorState>();
 
-  final mockRoutinesProvider = MockRoutinesProvider();
-  final mockExerciseProvider = MockExercisesProvider();
   final testRoutine = getTestRoutine();
   final testExercises = getTestExercises();
 
   setUp(() {
-    when(mockRoutinesProvider.findById(any)).thenReturn(testRoutine);
-    when(mockRoutinesProvider.items).thenReturn([testRoutine]);
-    when(mockRoutinesProvider.repetitionUnits).thenReturn(testRepetitionUnits);
-    when(mockRoutinesProvider.findRepetitionUnitById(1)).thenReturn(testRepetitionUnit1);
-    when(mockRoutinesProvider.weightUnits).thenReturn(testWeightUnits);
-    when(mockRoutinesProvider.findWeightUnitById(1)).thenReturn(testWeightUnit1);
-    when(
-      mockRoutinesProvider.fetchAndSetRoutineFull(any),
-    ).thenAnswer((_) => Future.value(testRoutine));
-
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
   });
 
   Widget renderGymMode({locale = 'en'}) {
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
-      child: ChangeNotifierProvider<ExercisesProvider>(
-        create: (context) => mockExerciseProvider,
-        child: riverpod.ProviderScope(
-          child: MaterialApp(
-            locale: Locale(locale),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            navigatorKey: key,
-            home: TextButton(
-              onPressed: () => key.currentState!.push(
-                MaterialPageRoute<void>(
-                  settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
-                  builder: (_) => const GymModeScreen(),
-                ),
-              ),
-              child: const SizedBox(),
+    return riverpod.ProviderScope(
+      overrides: [
+        routinesRiverpodProvider.overrideWithValue(RoutinesState(routines: [testRoutine])),
+        exercisesProvider.overrideWith((ref) => Stream<List<Exercise>>.value(<Exercise>[])),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
+              builder: (_) => const GymModeScreen(),
             ),
-            routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
           ),
+          child: const SizedBox(),
         ),
+        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
   }
@@ -98,15 +79,6 @@ void main() {
   testWidgets(
     'Test the widgets on the gym mode screen',
     (WidgetTester tester) async {
-      when(mockExerciseProvider.findExerciseById(1)).thenReturn(testExercises[0]);
-      when(mockExerciseProvider.findExerciseById(6)).thenReturn(testExercises[5]);
-      when(
-        mockExerciseProvider.findExercisesByVariationId(
-          null,
-          exerciseIdToExclude: anyNamed('exerciseIdToExclude'),
-        ),
-      ).thenReturn([]);
-
       await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
         await tester.pumpWidget(renderGymMode());
 

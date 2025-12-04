@@ -33,16 +33,16 @@ class DayLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sessionApi = _routine.sessions.firstWhere(
-      (sessionApi) => sessionApi.session.date.isSameDayAs(_date),
+    final session = _routine.sessions.firstWhere(
+      (s) => s.date.isSameDayAs(_date),
     );
-    final exercises = sessionApi.exercises;
+    final exercises = session.exercises;
 
     return Column(
       spacing: 10,
       children: [
-        Card(child: SessionInfo(sessionApi.session)),
-        MuscleGroupsCard(sessionApi.logs),
+        Card(child: SessionInfo(session)),
+        MuscleGroupsCard(session.logs),
 
         Column(
           spacing: 10,
@@ -60,7 +60,7 @@ class DayLogWidget extends StatelessWidget {
                         translation.name,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      ...sessionApi.logs
+                      ...session.logs
                           .where((l) => l.exerciseId == exercise.id)
                           .map(
                             (log) => Row(
@@ -71,7 +71,7 @@ class DayLogWidget extends StatelessWidget {
                                   icon: const Icon(Icons.delete),
                                   key: ValueKey('delete-log-${log.id}'),
                                   onPressed: () {
-                                    showDeleteDialog(context, translation.name, log);
+                                    showDeleteLogDialog(context, translation.name, log);
                                   },
                                 ),
                               ],
