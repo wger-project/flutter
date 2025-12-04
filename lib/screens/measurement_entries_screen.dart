@@ -19,12 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/entries.dart';
 import 'package:wger/widgets/measurements/forms.dart';
-import '../models/measurements/measurement_category.dart';
 
 enum MeasurementOptions {
   edit,
@@ -44,10 +45,9 @@ class MeasurementEntriesScreen extends StatelessWidget {
 
     try {
       category = provider.findCategoryById(categoryId);
-    } catch (e) {
-      // Category deleted → prevent red screen
+    } on NoSuchEntryException {
       Future.microtask(() {
-        if (Navigator.of(context).canPop()) {
+        if (context.mounted && Navigator.of(context).canPop()) {
           Navigator.of(context).pop();
         }
       });
