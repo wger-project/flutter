@@ -21,12 +21,10 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
-import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/workout_logs.dart';
 import 'package:wger/screens/configure_plates_screen.dart';
@@ -39,27 +37,11 @@ import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
 
 class LogPage extends ConsumerStatefulWidget {
-  final PageController _controller;
-  final SetConfigData _configData;
-  final SlotData _slotData;
-  final Exercise _exercise;
-  final Routine _routine;
-  final double _ratioCompleted;
-  final Map<Exercise, int> _exercisePages;
-  final Log _log;
-  final int _totalPages;
+  final _logger = Logger('LogPage');
 
-  LogPage(
-    this._controller,
-    this._configData,
-    this._slotData,
-    this._exercise,
-    this._routine,
-    this._ratioCompleted,
-    this._exercisePages,
-    this._totalPages,
-    int? iteration,
-  ) : _log = Log.fromSetConfigData(_configData, routineId: _routine.id, iteration: iteration);
+  final PageController _controller;
+
+  LogPage(this._controller);
 
   @override
   _LogPageState createState() => _LogPageState();
@@ -85,14 +67,40 @@ class _LogPageState extends ConsumerState<LogPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final state = ref.watch(gymStateProvider);
+
+    final page = state.getPageByIndex();
+    if (page == null) {
+      widget._logger.info(
+        'getPageByIndex for ${state.currentPage} returned null, showing empty container.',
+      );
+      return Container();
+    }
+
+    final slotEntryPage = state.getSlotEntryPageByIndex();
+    if (slotEntryPage == null) {
+      widget._logger.info(
+        'getSlotPageByIndex for ${state.currentPage} returned null, showing empty container',
+      );
+      return Container();
+    }
+
+    final setConfigData = slotEntryPage.setConfigData!;
+
+    final log = Log.fromSetConfigData(setConfigData)
+      ..routineId = state.routine.id!
+      ..iteration = state.iteration;
+
+    // Mark done sets
+    final decorationStyle = slotEntryPage.logDone
+        ? TextDecoration.lineThrough
+        : TextDecoration.none;
 
     return Column(
       children: [
         NavigationHeader(
-          widget._exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
+          log.exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           widget._controller,
-          totalPages: widget._totalPages,
-          exercisePages: widget._exercisePages,
         ),
 
         Container(
@@ -101,34 +109,47 @@ class _LogPageState extends ConsumerState<LogPage> {
           child: Center(
             child: Column(
               children: [
+                Column(
+                  children: [
+                    Text(
+                      setConfigData.textRepr,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        decoration: decorationStyle,
+                      ),
+                    ),
+                    if (setConfigData.type != SlotEntryType.normal)
+                      Text(
+                        setConfigData.type.name.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          decoration: decorationStyle,
+                        ),
+                      ),
+                  ],
+                ),
                 Text(
-                  widget._configData.textRepr,
-                  style: theme.textTheme.headlineMedium?.copyWith(
+                  '${slotEntryPage.setIndex + 1} / ${page.slotPages.where((e) => e.type == SlotPageType.log).length}',
+                  style: theme.textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                if (widget._configData.type != SlotEntryType.normal)
-                  Text(
-                    widget._configData.type.name.toUpperCase(),
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
               ],
             ),
           ),
         ),
-        if (widget._log.exerciseObj.showPlateCalculator) const LogsPlatesWidget(),
-        if (widget._slotData.comment.isNotEmpty)
-          Text(widget._slotData.comment, textAlign: TextAlign.center),
+        if (log.exercise.showPlateCalculator) const LogsPlatesWidget(),
+        if (slotEntryPage.setConfigData!.comment.isNotEmpty)
+          Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (widget._routine.filterLogsByExercise(widget._exercise.id).isNotEmpty)
+          child: (state.routine.filterLogsByExercise(log.exercise.id!).isNotEmpty)
               ? LogsPastLogsWidget(
-                  log: widget._log,
-                  pastLogs: widget._routine.filterLogsByExercise(widget._exercise.id),
+                  log: log,
+                  pastLogs: state.routine.filterLogsByExercise(log.exercise.id!),
                   onCopy: (pastLog) {
                     _logFormKey.currentState?.copyFromPastLog(pastLog);
                   },
@@ -149,14 +170,14 @@ class _LogPageState extends ConsumerState<LogPage> {
               child: LogFormWidget(
                 key: _logFormKey,
                 controller: widget._controller,
-                configData: widget._configData,
-                log: widget._log,
+                configData: setConfigData,
+                log: log,
                 focusNode: focusNode,
               ),
             ),
           ),
         ),
-        NavigationFooter(widget._controller, widget._ratioCompleted),
+        NavigationFooter(widget._controller),
       ],
     );
   }
@@ -290,8 +311,10 @@ class LogsRepsWidget extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
+            final value = controller.text.isNotEmpty ? controller.text : '0';
+
             try {
-              final newValue = numberFormat.parse(controller.text) + repsValueChange;
+              final newValue = numberFormat.parse(value) + repsValueChange;
               setStateCallback(() {
                 log.repetitions = newValue;
                 controller.text = numberFormat.format(newValue);
@@ -389,8 +412,10 @@ class LogsWeightWidget extends ConsumerWidget {
         IconButton(
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
+            final value = controller.text.isNotEmpty ? controller.text : '0';
+
             try {
-              final newValue = numberFormat.parse(controller.text) + weightValueChange;
+              final newValue = numberFormat.parse(value) + weightValueChange;
               setStateCallback(() {
                 log.weight = newValue;
                 controller.text = numberFormat.format(newValue);
@@ -437,7 +462,8 @@ class LogsPastLogsWidget extends StatelessWidget {
           ),
           ...pastLogs.map((pastLog) {
             return ListTile(
-              title: Text(pastLog.singleLogRepTextNoNl),
+              key: ValueKey('past-log-${pastLog.id}'),
+              title: Text(pastLog.repTextNoNl(context)),
               subtitle: Text(
                 DateFormat.yMd(Localizations.localeOf(context).languageCode).format(pastLog.date),
               ),
@@ -468,12 +494,14 @@ class LogsPastLogsWidget extends StatelessWidget {
 }
 
 class LogFormWidget extends ConsumerStatefulWidget {
+  final _logger = Logger('LogFormWidget');
+
   final PageController controller;
   final SetConfigData configData;
   final Log log;
   final FocusNode focusNode;
 
-  const LogFormWidget({
+  LogFormWidget({
     super.key,
     required this.controller,
     required this.configData,
@@ -489,6 +517,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   final _form = GlobalKey<FormState>();
   var _detailed = false;
   bool _isSaving = false;
+  late Log _log;
 
   late final TextEditingController _repetitionsController;
   late final TextEditingController _weightController;
@@ -497,6 +526,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   void initState() {
     super.initState();
 
+    _log = widget.log;
     _repetitionsController = TextEditingController();
     _weightController = TextEditingController();
 
@@ -529,7 +559,13 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       _repetitionsController.text = pastLog.repetitions != null
           ? numberFormat.format(pastLog.repetitions)
           : '';
+      widget._logger.finer('Setting log repetitions to ${_repetitionsController.text}');
+
       _weightController.text = pastLog.weight != null ? numberFormat.format(pastLog.weight) : '';
+      widget._logger.finer('Setting log weight to ${_weightController.text}');
+
+      _log.rir = pastLog.rir;
+      widget._logger.finer('Setting log rir to ${_log.rir}');
     });
   }
 
@@ -556,7 +592,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     controller: _repetitionsController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
-                    log: widget.log,
+                    log: _log,
                     setStateCallback: (fn) {
                       setState(fn);
                     },
@@ -568,7 +604,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     controller: _weightController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
-                    log: widget.log,
+                    log: _log,
                     setStateCallback: (fn) {
                       setState(fn);
                     },
@@ -585,7 +621,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     controller: _repetitionsController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
-                    log: widget.log,
+                    log: _log,
                     setStateCallback: (fn) {
                       setState(fn);
                     },
@@ -594,7 +630,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: RepetitionUnitInputWidget(
-                    widget.log.repetitionsUnitId,
+                    _log.repetitionsUnitId,
                     onChanged: (v) => {},
                   ),
                 ),
@@ -610,7 +646,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     controller: _weightController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
-                    log: widget.log,
+                    log: _log,
                     setStateCallback: (fn) {
                       setState(fn);
                     },
@@ -618,19 +654,19 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 ),
                 const SizedBox(width: 8),
                 Flexible(
-                  child: WeightUnitInputWidget(widget.log.weightUnitId, onChanged: (v) => {}),
+                  child: WeightUnitInputWidget(_log.weightUnitId, onChanged: (v) => {}),
                 ),
                 const SizedBox(width: 8),
               ],
             ),
           if (_detailed)
             RiRInputWidget(
-              widget.log.rir,
+              _log.rir,
               onChanged: (value) {
                 if (value == '') {
-                  widget.log.rir = null;
+                  _log.rir = null;
                 } else {
-                  widget.log.rir = num.parse(value);
+                  _log.rir = num.parse(value);
                 }
               },
             ),
@@ -657,8 +693,13 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     });
                     _form.currentState!.save();
 
-                    widget.log.id = null;
-                    logProvider.addEntry(widget.log);
+                    try {
+                      final gymState = ref.read(gymStateProvider);
+                      final gymProvider = ref.read(gymStateProvider.notifier);
+
+                      logProvider.addEntry(_log);
+                      final page = gymState.getSlotEntryPageByIndex()!;
+                      gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
 
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,32 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart';
-import 'package:wger/helpers/i18n.dart';
+import 'dart:math';
+import 'dart:typed_data';
 
-class Muscle extends Equatable {
-  final int id;
-  final String name;
-  final String nameEn;
-  final bool isFront;
-
-  const Muscle({
-    required this.id,
-    required this.name,
-    required this.nameEn,
-    required this.isFront,
-  });
-
-  @override
-  List<Object?> get props => [id, name, isFront];
-
-  String nameTranslated(BuildContext context) {
-    return name + (nameEn.isNotEmpty ? ' (${getServerStringTranslation(nameEn, context)})' : '');
+String uuidV4() {
+  final rnd = Random.secure();
+  final bytes = Uint8List(16);
+  for (var i = 0; i < 16; i++) {
+    bytes[i] = rnd.nextInt(256);
   }
 
-  @override
-  String toString() {
-    return 'Muscle: $id - $name';
+  // Set version to 4 -> xxxx0100
+  bytes[6] = (bytes[6] & 0x0F) | 0x40;
+
+  // Set variant to RFC4122 -> 10xxxxxx
+  bytes[8] = (bytes[8] & 0x3F) | 0x80;
+
+  return _bytesToUuid(bytes);
+}
+
+String _bytesToUuid(Uint8List bytes) {
+  final sb = StringBuffer();
+  for (var i = 0; i < bytes.length; i++) {
+    sb.write(bytes[i].toRadixString(16).padLeft(2, '0'));
+    if (i == 3 || i == 5 || i == 7 || i == 9) sb.write('-');
   }
+  return sb.toString();
 }

@@ -13,6 +13,7 @@ import 'plate_calculator_test.mocks.dart';
 void main() {
   group('PlateWeightsNotifier', () {
     late PlateCalculatorNotifier notifier;
+    late ProviderContainer container;
     late MockSharedPreferencesAsync mockPrefs;
     late ProviderContainer container;
 
@@ -21,9 +22,11 @@ void main() {
       when(mockPrefs.getString(PREFS_KEY_PLATES)).thenAnswer((_) async => null);
       when(mockPrefs.setString(any, any)).thenAnswer((_) async => true);
 
-      container = ProviderContainer(
+      container = ProviderContainer.test(
         overrides: [
-          plateCalculatorProvider.overrideWith(() => PlateCalculatorNotifier(prefs: mockPrefs)),
+          plateCalculatorProvider.overrideWith(
+            () => PlateCalculatorNotifier(prefs: mockPrefs),
+          ),
         ],
       );
       notifier = container.read(plateCalculatorProvider.notifier);

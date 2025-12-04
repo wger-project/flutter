@@ -7,7 +7,7 @@ jobs:
     name: 'iOS'
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
@@ -32,7 +32,7 @@ jobs:
           flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=iOSPhoneBig -d "$SIMULATOR"
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: screenshots-ios
           path: fastlane/metadata/ios/**/images/iPhone 6.9/*.png
@@ -56,7 +56,7 @@ jobs:
             device_type: androidTabletBig
             folder: tenInchScreenshots
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
@@ -113,7 +113,7 @@ jobs:
             flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=${{ matrix.device.device_type }}
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: screenshots-android-${{ matrix.device.folder }}
           path: fastlane/metadata/android/**/images/${{ matrix.device.folder }}/*.png
@@ -126,10 +126,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download all screenshot artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           path: screenshots
 

@@ -140,6 +140,15 @@ class _SessionFormState extends ConsumerState<SessionForm> {
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).timeStart,
                     errorMaxLines: 2,
+                    suffix: IconButton(
+                      onPressed: () => {
+                        setState(() {
+                          timeStartController.text = '';
+                          widget._session.timeStart = null;
+                        }),
+                      },
+                      icon: const Icon(Icons.clear),
+                    ),
                   ),
                   controller: timeStartController,
                   onFieldSubmitted: (_) {},
@@ -185,6 +194,15 @@ class _SessionFormState extends ConsumerState<SessionForm> {
                   key: const ValueKey('time-end'),
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).timeEnd,
+                    suffix: IconButton(
+                      onPressed: () => {
+                        setState(() {
+                          timeEndController.text = '';
+                          widget._session.timeEnd = null;
+                        }),
+                      },
+                      icon: const Icon(Icons.clear),
+                    ),
                   ),
                   controller: timeEndController,
                   onFieldSubmitted: (_) {},

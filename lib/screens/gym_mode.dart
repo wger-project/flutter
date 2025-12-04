@@ -39,21 +39,13 @@ class GymModeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final args = ModalRoute.of(context)!.settings.arguments as GymModeArguments;
 
-    final routineProvider = ref.read(routinesRiverpodProvider);
-    final routine = routineProvider.findById(args.routineId);
-    final dayDataDisplay = routine.dayData.firstWhere(
-      (e) => e.iteration == args.iteration && e.day?.id == args.dayId,
-    );
-    final dayDataGym = routine.dayDataGym
-        .where((e) => e.iteration == args.iteration && e.day?.id == args.dayId)
-        .first;
-
     return Scaffold(
       // backgroundColor: Theme.of(context).cardColor,
       // primary: false,
       body: SafeArea(
         child: WidescreenWrapper(
-          child: GymMode(dayDataGym, dayDataDisplay, args.iteration),
+          child: GymMode(args),
+          ),
         ),
       ),
     );

@@ -232,6 +232,9 @@
   "@comment": {
     "description": "Comment, additional information"
   },
+  "impressionGood": "Good",
+  "impressionNeutral": "Neutral",
+  "impressionBad": "Bad",
   "impression": "Impression",
   "@impression": {
     "description": "General impression (e.g. for a workout session) such as good, bad, etc."
@@ -263,6 +266,33 @@
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
+  "gymModeShowExercises": "Show exercise overview pages",
+  "gymModeShowTimer": "Show timer between sets",
+  "gymModeTimerType": "Timer type",
+  "gymModeTimerTypeHelText": "If a set has pause time, a countdown is always used.",
+  "countdown": "Countdown",
+  "stopwatch": "Stopwatch",
+  "gymModeDefaultCountdownTime": "Default countdown time, in seconds",
+  "gymModeNotifyOnCountdownFinish": "Notify on countdown end",
+  "duration": "Duration",
+  "durationHoursMinutes": "{hours}h {minutes}m",
+  "@durationHoursMinutes": {
+    "description": "A duration, in hours and minutes",
+    "type": "text",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "volume": "Volume",
+  "@volume": {
+    "description": "The volume of a workout or set, i.e. weight x reps"
+  },
+  "workoutCompleted": "Workout completed",
   "plateCalculator": "Plates",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
@@ -643,6 +673,19 @@
       }
     }
   },
+  "formMinMaxValues": "Please enter a value between {min} and {max}",
+  "@formMinMaxValues": {
+    "description": "Error message when the user needs to enter a value between min and max",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "enterMinCharacters": "Please enter at least {min} characters",
   "@enterMinCharacters": {
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
@@ -845,6 +888,7 @@
   "fitInWeek": "Fit in week",
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
+  "superset": "Superset",
   "setHasProgression": "Set has progression",
   "setHasProgressionWarning": "Please note that at the moment it is not possible to edit all settings for a set on the mobile application or configure automatic progression. For now, please use the web application.",
   "setHasNoExercises": "This set has no exercises yet!",
@@ -1063,7 +1107,10 @@
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
   },
-  "endWorkout": "End Workout",
+  "endWorkout": "End workout",
+  "@endWorkout": {
+    "description": "Use the imperative, label on button to finish the current workout in gym mode"
+  },
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",

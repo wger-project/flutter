@@ -79,7 +79,7 @@ class Step1Basics extends ConsumerWidget {
                   return AppLocalizations.of(context).selectEntry;
                 }
               },
-              displayName: (ExerciseCategory c) => getTranslation(c.name, context),
+              displayName: (ExerciseCategory c) => getServerStringTranslation(c.name, context),
             ),
             AddExerciseMultiselectButton<Equipment>(
               key: const Key('equipment-multiselect'),
@@ -92,7 +92,7 @@ class Step1Basics extends ConsumerWidget {
               onSaved: (dynamic entries) {
                 addExerciseProvider.equipment = entries.cast<Equipment>();
               },
-              displayName: (Equipment e) => getTranslation(e.name, context),
+              displayName: (Equipment e) => getServerStringTranslation(e.name, context),
             ),
             AddExerciseMultiselectButton<Muscle>(
               key: const Key('primary-muscles-multiselect'),
@@ -106,7 +106,10 @@ class Step1Basics extends ConsumerWidget {
                 addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
               },
               displayName: (Muscle e) =>
-                  e.name + (e.nameEn.isNotEmpty ? '\n(${getTranslation(e.nameEn, context)})' : ''),
+                  e.name +
+                  (e.nameEn.isNotEmpty
+                      ? '\n(${getServerStringTranslation(e.nameEn, context)})'
+                      : ''),
             ),
             AddExerciseMultiselectButton<Muscle>(
               key: const Key('secondary-muscles-multiselect'),
@@ -120,7 +123,10 @@ class Step1Basics extends ConsumerWidget {
                 addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
               },
               displayName: (Muscle e) =>
-                  e.name + (e.nameEn.isNotEmpty ? '\n(${getTranslation(e.nameEn, context)})' : ''),
+                  e.name +
+                  (e.nameEn.isNotEmpty
+                      ? '\n(${getServerStringTranslation(e.nameEn, context)})'
+                      : ''),
             ),
             MuscleRowWidget(
               muscles: provider.primaryMuscles,

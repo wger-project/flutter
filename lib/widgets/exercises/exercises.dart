@@ -230,7 +230,7 @@ class ExerciseDetail extends ConsumerWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Chip(
-          label: Text(getTranslation(_exercise.category!.name, context)),
+          label: Text(getServerStringTranslation(_exercise.category!.name, context)),
           padding: EdgeInsets.zero,
           backgroundColor: theme.splashColor,
         ),
@@ -242,7 +242,7 @@ class ExerciseDetail extends ConsumerWidget {
             (e) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Chip(
-                label: Text(getTranslation(e.name, context)),
+                label: Text(getServerStringTranslation(e.name, context)),
                 padding: EdgeInsets.zero,
                 backgroundColor: theme.splashColor,
               ),

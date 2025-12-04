@@ -16,44 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:flutter/material.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
-class ExerciseOverview extends StatelessWidget {
+class ExerciseOverview extends ConsumerWidget {
+  final _logger = Logger('ExerciseOverview');
   final PageController _controller;
-  final Exercise _exercise;
-  final double _ratioCompleted;
-  final Map<Exercise, int> _exercisePages;
-  final int _totalPages;
 
-  const ExerciseOverview(
-    this._controller,
-    this._exercise,
-    this._ratioCompleted,
-    this._exercisePages,
-    this._totalPages,
-  );
+  ExerciseOverview(this._controller);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final page = ref.watch(gymStateProvider).getSlotEntryPageByIndex();
+
+    if (page == null) {
+      _logger.info(
+        'getPageByIndex returned null, showing empty container.',
+      );
+      return Container();
+    }
+    final exercise = page.setConfigData!.exercise;
+
     return Column(
       children: [
         NavigationHeader(
-          _exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
+          exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
           _controller,
-          totalPages: _totalPages,
-          exercisePages: _exercisePages,
         ),
         Expanded(
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ExerciseDetail(_exercise),
+              child: ExerciseDetail(exercise),
             ),
           ),
         ),
-        NavigationFooter(_controller, _ratioCompleted),
+        NavigationFooter(_controller),
       ],
     );
   }

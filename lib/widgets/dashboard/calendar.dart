@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (C) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -155,11 +155,15 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
         time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
       }
 
-      // Add events to lists
+        // Add events to lists
       newEvents[date]?.add(
-        Event(EventType.session, '${i18n.impression}: ${session.impressionAsString} $time'),
-      );
-    }
+          Event(
+            EventType.session,
+            '${i18n.impression}: ${session.impressionAsString(context)} $time',
+          ),
+        );
+      }
+    });
     if (!mounted) {
       return;
     }

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) wger Team
+ * Copyright (c) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,37 +26,60 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 
-import '../../test_data/routines.dart';
-import 'gym_mode_session_screen_test.mocks.dart';
+import '../../../test_data/routines.dart';
+import 'session_page_test.mocks.dart';
 
 @GenerateMocks([WorkoutSessionRepository])
 void main() {
   late MockWorkoutSessionRepository mockRepository;
   late Routine testRoutine;
+  late GymStateNotifier notifier;
+  late ProviderContainer container;
 
   setUp(() {
     testRoutine = getTestRoutine();
     mockRepository = MockWorkoutSessionRepository();
+
+    container = ProviderContainer.test();
+    notifier = container.read(gymStateProvider.notifier);
+    notifier.state = notifier.state.copyWith(
+      showExercisePages: true,
+      showTimerPages: true,
+      dayId: 1,
+      iteration: 1,
+      routine: getTestRoutine(),
+    );
+    notifier.calculatePages();
+    when(mockRoutinesProvider.editSession(any)).thenAnswer(
+          (_) => Future.value(testRoutine.sessions[0].session),
+    );
   });
 
   Widget renderSessionPage({locale = 'en'}) {
-    return ProviderScope(
+    //final controller = PageController(initialPage: 0);
+
+    return UncontrolledProviderScope(
       overrides: [
         workoutSessionRepositoryProvider.overrideWithValue(mockRepository),
       ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: SessionPage(
-            testRoutine,
-            PageController(),
-            const TimeOfDay(hour: 13, minute: 35),
-            const {},
+      container: container,
+      child: ChangeNotifierProvider<RoutinesProvider>(
+        create: (context) => mockRoutinesProvider,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: PageView(
+              controller: controller,
+              children: [
+                SessionPage(controller),
+              ],
+            ),
           ),
         ),
       ),
@@ -78,6 +101,9 @@ void main() {
     testRoutine.sessions[0].timeStart = null;
     testRoutine.sessions[0].timeEnd = null;
 
+    notifier.state = notifier.state.copyWith(routine: testRoutine);
+    notifier.calculatePages();
+
     withClock(Clock.fixed(DateTime(2021, 5, 1)), () async {
       await tester.pumpWidget(renderSessionPage());
 
@@ -92,10 +118,17 @@ void main() {
   });
 
   testWidgets('Test correct default data (no existing session)', (WidgetTester tester) async {
+    // Arrange
     testRoutine.sessions = [];
     final timeNow = timeToString(TimeOfDay.now())!;
+    notifier.state = notifier.state.copyWith(
+      startTime: const TimeOfDay(hour: 13, minute: 35),
+    );
 
+    // Act
     await tester.pumpWidget(renderSessionPage());
+
+    // Assert
     expect(find.text('13:35'), findsOneWidget);
     expect(find.text(timeNow), findsOneWidget);
     final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
