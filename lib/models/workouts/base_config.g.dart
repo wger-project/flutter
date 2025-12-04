@@ -32,12 +32,13 @@ BaseConfig _$BaseConfigFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$BaseConfigToJson(BaseConfig instance) => <String, dynamic>{
-  'slot_entry': instance.slotEntryId,
-  'iteration': instance.iteration,
-  'value': instance.value,
-  'operation': instance.operation,
-  'step': instance.step,
-  'repeat': instance.repeat,
-  'requirements': instance.requirements,
-};
+Map<String, dynamic> _$BaseConfigToJson(BaseConfig instance) =>
+    <String, dynamic>{
+      'slot_entry': instance.slotEntryId,
+      'iteration': instance.iteration,
+      'value': instance.value,
+      'operation': instance.operation,
+      'step': instance.step,
+      'repeat': instance.repeat,
+      'requirements': instance.requirements,
+    };

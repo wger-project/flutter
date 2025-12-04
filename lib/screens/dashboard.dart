@@ -25,6 +25,11 @@ import 'package:wger/widgets/dashboard/widgets/measurements.dart';
 import 'package:wger/widgets/dashboard/widgets/nutrition.dart';
 import 'package:wger/widgets/dashboard/widgets/routines.dart';
 import 'package:wger/widgets/dashboard/widgets/weight.dart';
+import 'package:wger/widgets/dashboard/widgets/bmi.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/user.dart';
+
+
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -47,13 +52,27 @@ class DashboardScreen extends StatelessWidget {
       crossAxisCount = 4;
     }
 
+    final userProvider = context.watch<UserProvider>();
+
     final items = [
+
       const DashboardRoutineWidget(),
       const DashboardNutritionWidget(),
       const DashboardWeightWidget(),
+      if (userProvider.showBmiOnDashboard) const DashboardBmiWidget(),
       const DashboardMeasurementWidget(),
       const DashboardCalendarWidget(),
+      Card(
+        child: SwitchListTile(
+          title: const Text("BMI-Kachel anzeigen"),
+          value: userProvider.showBmiOnDashboard,
+          onChanged: (val) {
+            context.read<UserProvider>().setBmiDashboard(val);
+          },
+        ),
+      ),
     ];
+
 
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
@@ -62,19 +81,19 @@ class DashboardScreen extends StatelessWidget {
           constraints: BoxConstraints(maxWidth: MATERIAL_LG_BREAKPOINT.toDouble()),
           child: isMobile
               ? ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) => items[index],
-                  itemCount: items.length,
-                )
+            padding: const EdgeInsets.all(10),
+            itemBuilder: (context, index) => items[index],
+            itemCount: items.length,
+          )
               : GridView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) => SingleChildScrollView(child: items[index]),
-                  itemCount: items.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    childAspectRatio: 0.7,
-                  ),
-                ),
+            padding: const EdgeInsets.all(10),
+            itemBuilder: (context, index) => SingleChildScrollView(child: items[index]),
+            itemCount: items.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              childAspectRatio: 0.7,
+            ),
+          ),
         ),
       ),
     );

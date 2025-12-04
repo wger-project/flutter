@@ -27,7 +27,9 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
     id: (json['id'] as num?)?.toInt(),
     slotId: (json['slot'] as num).toInt(),
     order: (json['order'] as num?)?.toInt() ?? 1,
-    type: $enumDecodeNullable(_$SlotEntryTypeEnumMap, json['type']) ?? SlotEntryType.normal,
+    type:
+        $enumDecodeNullable(_$SlotEntryTypeEnumMap, json['type']) ??
+        SlotEntryType.normal,
     exerciseId: (json['exercise'] as num).toInt(),
     repetitionUnitId: (json['repetition_unit'] as num?)?.toInt(),
     repetitionRounding: stringToNumNull(json['repetition_rounding'] as String?),

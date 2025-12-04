@@ -39,13 +39,38 @@ class Profile {
   @JsonKey(required: true)
   String email;
 
+  double? height;
+  double? weight;
+
   Profile({
     required this.username,
     required this.emailVerified,
     required this.isTrustworthy,
     required this.email,
     required this.weightUnitStr,
+    this.height,
+    this.weight,
   });
+  double calculateBmi({double? weightOverride}) {
+    // 1. Wir definieren, welches Gewicht wir nutzen (Override ODER Profil)
+    final double? effectiveWeight = weightOverride ?? weight;
+
+    // 2. Prüfen: Ist dieses 'effectiveWeight' da? Und ist die Größe da?
+    // Wenn eins davon fehlt, brechen wir ab.
+    if (effectiveWeight == null || height == null || height == 0) {
+      return 0.0;
+    }
+
+    // 3. Größe vorbereiten (hier ist height! sicher, wegen dem if oben)
+    double heightInMeters = height!;
+    if (heightInMeters > 3.0) {
+      heightInMeters = heightInMeters / 100.0;
+    }
+
+    // 4. DIE ENTSCHEIDENDE ÄNDERUNG:
+    // Wir rechnen mit 'effectiveWeight', NICHT mit 'weight!'
+    return effectiveWeight / (heightInMeters * heightInMeters);
+  }
 
   // Boilerplate
   factory Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);

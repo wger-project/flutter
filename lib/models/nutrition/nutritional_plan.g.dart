@@ -38,16 +38,17 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) => <String, dynamic>{
-  'id': instance.id,
-  'description': instance.description,
-  'creation_date': dateToUtcIso8601(instance.creationDate),
-  'start': dateToYYYYMMDD(instance.startDate),
-  'end': dateToYYYYMMDD(instance.endDate),
-  'only_logging': instance.onlyLogging,
-  'goal_energy': instance.goalEnergy,
-  'goal_protein': instance.goalProtein,
-  'goal_carbohydrates': instance.goalCarbohydrates,
-  'goal_fat': instance.goalFat,
-  'goal_fiber': instance.goalFiber,
-};
+Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'description': instance.description,
+      'creation_date': dateToUtcIso8601(instance.creationDate),
+      'start': dateToYYYYMMDD(instance.startDate),
+      'end': dateToYYYYMMDD(instance.endDate),
+      'only_logging': instance.onlyLogging,
+      'goal_energy': instance.goalEnergy,
+      'goal_protein': instance.goalProtein,
+      'goal_carbohydrates': instance.goalCarbohydrates,
+      'goal_fat': instance.goalFat,
+      'goal_fiber': instance.goalFiber,
+    };
