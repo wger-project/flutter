@@ -19,6 +19,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -42,7 +43,7 @@ class Routine {
   @JsonKey(required: true, includeToJson: false)
   int? id;
 
-  @JsonKey(required: true, toJson: dateToUtcIso8601)
+  @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime created;
 
   @JsonKey(required: true, name: 'name')
@@ -175,5 +176,38 @@ class Routine {
     }
 
     return groupedLogs;
+  }
+
+  void replaceExercise(int oldExerciseId, Exercise newExercise) {
+    for (final session in sessions) {
+      for (final log in session.logs) {
+        if (log.exerciseId == oldExerciseId) {
+          log.exerciseId = newExercise.id!;
+          log.exercise = newExercise;
+        }
+      }
+    }
+
+    for (final day in dayData) {
+      for (final slot in day.slots) {
+        for (final config in slot.setConfigs) {
+          if (config.exerciseId == oldExerciseId) {
+            config.exerciseId = newExercise.id!;
+            config.exercise = newExercise;
+          }
+        }
+      }
+    }
+
+    for (final day in dayDataGym) {
+      for (final slot in day.slots) {
+        for (final config in slot.setConfigs) {
+          if (config.exerciseId == oldExerciseId) {
+            config.exerciseId = newExercise.id!;
+            config.exercise = newExercise;
+          }
+        }
+      }
+    }
   }
 }

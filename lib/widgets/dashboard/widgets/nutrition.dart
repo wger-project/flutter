@@ -85,46 +85,62 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
               PlanForm(),
             ),
           if (_hasContent)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      NutritionalPlanScreen.routeName,
-                      arguments: _plan,
-                    );
-                  },
-                ),
-                Expanded(child: Container()),
-                IconButton(
-                  icon: const SvgIcon(
-                    icon: SvgIconData('assets/icons/ingredient-diary.svg'),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          child: Text(AppLocalizations.of(context).goToDetailPage),
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(
+                              NutritionalPlanScreen.routeName,
+                              arguments: _plan,
+                            );
+                          },
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const SvgIcon(
+                                icon: SvgIconData('assets/icons/ingredient-diary.svg'),
+                              ),
+                              tooltip: AppLocalizations.of(context).logIngredient,
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  FormScreen.routeName,
+                                  arguments: FormScreenArguments(
+                                    AppLocalizations.of(context).logIngredient,
+                                    getIngredientLogForm(_plan!),
+                                    hasListView: true,
+                                  ),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: const SvgIcon(
+                                icon: SvgIconData('assets/icons/meal-diary.svg'),
+                              ),
+                              tooltip: AppLocalizations.of(context).logMeal,
+                              onPressed: () {
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(LogMealsScreen.routeName, arguments: _plan);
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  tooltip: AppLocalizations.of(context).logIngredient,
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        AppLocalizations.of(context).logIngredient,
-                        getIngredientLogForm(_plan!),
-                        hasListView: true,
-                      ),
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: const SvgIcon(
-                    icon: SvgIconData('assets/icons/meal-diary.svg'),
-                  ),
-                  tooltip: AppLocalizations.of(context).logMeal,
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(LogMealsScreen.routeName, arguments: _plan);
-                  },
-                ),
-              ],
+                );
+              },
             ),
         ],
       ),

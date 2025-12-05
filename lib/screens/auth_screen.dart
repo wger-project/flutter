@@ -242,7 +242,7 @@ class _AuthCardState extends State<AuthCard> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final deviceSize = MediaQuery.of(context).size;
+    final deviceSize = MediaQuery.sizeOf(context);
 
     return Card(
       shape: RoundedRectangleBorder(

@@ -1068,5 +1068,17 @@
     "lightMode": "Sempre modo claro",
     "@lightMode": {},
     "systemMode": "Configurações do sistema",
-    "@systemMode": {}
+    "@systemMode": {},
+    "endDate": "Data final",
+    "@endDate": {
+        "description": "The End date of a nutritional plan"
+    },
+    "startDate": "Data inicial",
+    "@startDate": {},
+    "dayTypeCustom": "Personalizado",
+    "@dayTypeCustom": {},
+    "dayTypeHiit": "Treino de alta intensidade",
+    "@dayTypeHiit": {},
+    "dayTypeTabata": "Tabata",
+    "@dayTypeTabata": {}
 }

@@ -49,33 +49,43 @@ class CategoriesCard extends StatelessWidget {
                 currentCategory.unit,
               ),
             const Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      MeasurementEntriesScreen.routeName,
-                      arguments: currentCategory.id,
-                    );
-                  },
-                ),
-                IconButton(
-                  onPressed: () async {
-                    await Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        AppLocalizations.of(context).newEntry,
-                        MeasurementEntryForm(currentCategory.id!),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.add),
-                ),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          child: Text(AppLocalizations.of(context).goToDetailPage),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              MeasurementEntriesScreen.routeName,
+                              arguments: currentCategory.id,
+                            );
+                          },
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            await Navigator.pushNamed(
+                              context,
+                              FormScreen.routeName,
+                              arguments: FormScreenArguments(
+                                AppLocalizations.of(context).newEntry,
+                                MeasurementEntryForm(currentCategory.id!),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.add),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),

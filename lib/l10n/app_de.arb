@@ -751,7 +751,7 @@
     },
     "aboutDonateTitle": "Mach eine Spende",
     "@aboutDonateTitle": {},
-    "aboutDonateText": "Das Projekt ist kostenlos und wird es auch bleiben, der Betrieb des Servers hingegen nicht! Die Entwicklung erfordert zudem viel Zeit und Mühe von Freiwilligen. Ihr Beitrag deckt diese Kosten direkt und trägt zur Zuverlässigkeit des Dienstes bei.",
+    "aboutDonateText": "Das Projekt ist kostenlos und wird es auch bleiben, der Betrieb des Servers hingegen ist es nicht! Die Entwicklung erfordert zudem viel Zeit und Mühe von Freiwilligen. Ihr Beitrag deckt diese Kosten direkt und trägt zur Zuverlässigkeit des Dienstes bei.",
     "@aboutDonateText": {},
     "settingsCacheTitle": "Zwischenspeicher",
     "@settingsCacheTitle": {},
@@ -950,7 +950,7 @@
     "@simpleModeHelp": {},
     "isRestDayHelp": "Bitte beachten Sie, dass alle Sätze und Übungen entfernt werden, wenn Sie einen Tag als Ruhetag markieren.",
     "@isRestDayHelp": {},
-    "needsLogsToAdvance": "Benötigt Eintrag, um fortzufahren",
+    "needsLogsToAdvance": "Benötigt Logeinträge, um fortzufahren",
     "@needsLogsToAdvance": {},
     "needsLogsToAdvanceHelp": "Wählen Sie aus, ob die Routine nur dann zum nächsten geplanten Tag fortgesetzt werden soll, wenn Sie für diesen Tag ein Training protokolliert haben",
     "@needsLogsToAdvanceHelp": {},
@@ -1041,5 +1041,91 @@
     "startDate": "Anfangsdatum",
     "@startDate": {},
     "applicationLogs": "Anwendungsprotokolle",
-    "@applicationLogs": {}
+    "@applicationLogs": {},
+    "dayTypeEnom": "Jede volle Minute",
+    "@dayTypeEnom": {},
+    "dayTypeAmrap": "So viele Runden wie möglich",
+    "@dayTypeAmrap": {},
+    "dayTypeHiit": "Hochintensives Intervalltraining",
+    "@dayTypeHiit": {},
+    "dayTypeEdt": "Training mit zunehmender Dichte",
+    "@dayTypeEdt": {},
+    "dayTypeRft": "Runden auf Zeit",
+    "@dayTypeRft": {},
+    "dayTypeAfap": "So schnell wie möglich",
+    "@dayTypeAfap": {},
+    "slotEntryTypeNormal": "Normal",
+    "@slotEntryTypeNormal": {},
+    "slotEntryTypeDropset": "Abnehmender Satz",
+    "@slotEntryTypeDropset": {},
+    "slotEntryTypeMyo": "Muskel",
+    "@slotEntryTypeMyo": {},
+    "slotEntryTypePartial": "teilweise",
+    "@slotEntryTypePartial": {},
+    "slotEntryTypeForced": "erzwungen",
+    "@slotEntryTypeForced": {},
+    "slotEntryTypeTut": "Zeit unter Spannung",
+    "@slotEntryTypeTut": {},
+    "slotEntryTypeIso": "isometrisches Halten",
+    "@slotEntryTypeIso": {},
+    "slotEntryTypeJump": "Sprung",
+    "@slotEntryTypeJump": {},
+    "openEnded": "Offenes Ende",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "overview": "Überblick",
+    "@overview": {},
+    "identicalExercisePleaseDiscard": "Wenn Sie eine Übung entdecken, die mit der von Ihnen hinzugefügten identisch ist, verwerfen Sie bitte Ihren Entwurf und bearbeiten Sie stattdessen diese Übung.",
+    "@identicalExercisePleaseDiscard": {},
+    "checkInformationBeforeSubmitting": "Bitte überprüfe, ob die eingegebenen Informationen korrekt sind, bevor du die Übung abschickst",
+    "@checkInformationBeforeSubmitting": {},
+    "imageDetailsTitle": "Bilddetails",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Bildtitel",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Bildtitel eingeben",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Link zur Website der Quelle",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Autoren",
+    "@author": {},
+    "authorHint": "Name des Autors eingeben",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Link zur Website oder zum Profil des Autors",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Link zur Originalquelle, wenn es sich um ein abgeleitetes Werk handelt",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Ein abgeleitetes Werk basiert auf einem früheren Werk, enthält jedoch genügend neues, schöpferisches Material, um eigenständig urheberrechtlich geschützt zu sein.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Bildtyp",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "Mit der Übermittlung dieses Bildes erklären Sie sich damit einverstanden, es unter der CC-BY-SA-4 zu veröffentlichen. Das Bild muss entweder Ihr eigenes Werk sein oder der Urheber muss es unter einer damit kompatiblen Lizenz veröffentlicht haben.",
+    "@imageDetailsLicenseNotice": {},
+    "imageDetailsLicenseNoticeLinkToLicense": "Siehe Lizenztext.",
+    "@imageDetailsLicenseNoticeLinkToLicense": {},
+    "enterTextInLanguage": "Bitte geben Sie den Text in der richtigen Sprache ein!",
+    "@enterTextInLanguage": {},
+    "endWorkout": "Training beenden",
+    "@endWorkout": {},
+    "dayTypeCustom": "personalisierte",
+    "@dayTypeCustom": {}
 }

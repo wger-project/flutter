@@ -22,6 +22,7 @@ class _PasswordFieldState extends State<PasswordField> {
   Widget build(BuildContext context) {
     return TextFormField(
       key: const Key('inputPassword'),
+      autofillHints: const [AutofillHints.password],
       decoration: InputDecoration(
         labelText: AppLocalizations.of(context).password,
         prefixIcon: const Icon(Icons.password),

@@ -1,0 +1,39 @@
+Van fitness liefhebbers, vóór fitness liefhebbers - krijg inzicht in je sport progressie en voeding met WGER, jouw workout manager!
+
+Heb je je favoriete fitnessapp al gevonden en vind je het leuk om je eigen sportroutines te creëren? Wat voor sportbeest je ook bent, we hebben allemaal iets gemeen: we houden graag onze gezondheidsgegevens bij.
+
+Dus we beoordelen je niet om het feit dat je je fitness reis nog met een workout logboekje bijhoudt, maar verwelkomen je graag naar 2025!
+
+We hebben een 100% gratis digitale gezondheids- en fitnesstracker-app voor je ontwikkeld, met de meest relevante functies om je leven makkelijker te maken. Ga aan de slag, blijf trainen en vier je voortgang!
+
+wger is een open-sourceproject en draait om:
+* Jouw lichaam
+* Jouw trainingen
+* Jouw voortgang
+* Jouw gegevens
+
+Jouw lichaam:
+Je hoeft niet te googelen naar de ingrediënten van je favoriete lekkernijen – kies je dagelijkse maaltijden uit meer dan 78.000 producten en bekijk de voedingswaarden. Voeg maaltijden toe aan het voedingsplan en houd een overzicht van je dieet in de kalender.
+
+Jouw trainingen:
+Jij weet wat het beste is voor je lichaam. Stel je eigen trainingen samen uit een groeiend aanbod van 200 verschillende oefeningen. Gebruik vervolgens de sportschoolmodus om je door de training te begeleiden terwijl je je gewichten met één tik registreert.
+
+Jouw voortgang:
+Verlies je doelen nooit uit het oog. Volg je gewicht en houd je statistieken bij.
+
+Jouw gegevens:
+wger is jouw persoonlijke fitnessdagboek – maar jij bent de eigenaar van je gegevens. Gebruik de REST API om er toegang toe te krijgen en er fantastische dingen mee te doen.
+
+Let op: Deze gratis app is niet gebaseerd op extra financiering en we vragen je niet om geld te doneren. Sterker nog, het is een communityproject dat constant groeit. Wees dus altijd voorbereid op nieuwe functies!
+
+#OpenSource – wat betekent dat?
+
+OpenSource betekent dat de volledige broncode voor deze app en de server waarmee deze communiceert gratis en voor iedereen beschikbaar is:
+* Wil je wger op je eigen server draaien voor jezelf of je lokale sportschool? Ga je gang!
+* Mis je een functie en wil je die implementeren? Begin nu!
+* Wil je controleren of er niets wordt verzonden? Dat kan!
+
+Word lid van onze community en sluit je aan bij sportliefhebbers en IT-nerds van over de hele wereld. We blijven werken aan het aanpassen en optimaliseren van de app, afgestemd op onze behoeften. Wij stellen uw inbreng op prijs, dus u kunt op elk gewenst moment meedoen en uw wensen en ideeën met ons delen!
+
+-> vind de source code op https://github.com/wger-project
+-> voor vragen, of om simpelweg hallo te zeggen kan je terecht op onze Discord server https://discord.gg/rPWFv6W

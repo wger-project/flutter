@@ -23,15 +23,15 @@ num stringToNum(String? e) {
   return e == null ? 0 : num.parse(e);
 }
 
+num? stringToNumNull(String? e) {
+  return e == null ? null : num.parse(e);
+}
+
 num stringOrIntToNum(dynamic e) {
   if (e is int) {
     return e.toDouble(); // Convert int to double (a type of num)
   }
   return num.tryParse(e) ?? 0;
-}
-
-num? stringToNumNull(String? e) {
-  return e == null ? null : num.parse(e);
 }
 
 String? numToString(num? e) {
@@ -60,6 +60,14 @@ String? dateToYYYYMMDD(DateTime? dateTime) {
 /// which will not be correct in most cases.
 String dateToUtcIso8601(DateTime dateTime) {
   return dateTime.toUtc().toIso8601String();
+}
+
+/// Converts an ISO8601 datetime string in UTC to a local DateTime object.
+///
+/// Needs to be used in conjunction with [dateToUtcIso8601] in the models to
+/// correctly handle timezones.
+DateTime utcIso8601ToLocalDate(String dateTime) {
+  return DateTime.parse(dateTime).toLocal();
 }
 
 /*

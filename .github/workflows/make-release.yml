@@ -61,12 +61,13 @@ jobs:
       - build_linux
     steps:
       - name: Checkout application
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
+          lfs: true
           ref: ${{ github.event.inputs.version }}
 
       - name: Download builds
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: /tmp/
 
@@ -105,7 +106,7 @@ jobs:
   #      - build_apple
   #    steps:
   #      - name: Checkout application
-  #        uses: actions/checkout@v5
+  #        uses: actions/checkout@v6
   #        with:
   #          ref: feature/build-process
   #        #          ref: ${{ github.event.inputs.version }}
@@ -114,7 +115,7 @@ jobs:
   #        uses: ./.github/actions/flutter-common
   #
   #      - name: Download builds
-  #        uses: actions/download-artifact@v5
+  #        uses: actions/download-artifact@v6
   #        with:
   #          path: /tmp/
   #
@@ -133,7 +134,7 @@ jobs:
 
     steps:
       - name: Download builds
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
 
       - name: Make Github release
         uses: softprops/action-gh-release@v2

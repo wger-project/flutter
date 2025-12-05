@@ -44,6 +44,16 @@ class WorkoutSessionApi {
     return exerciseSet.toList();
   }
 
+  /// Get total volume of the session for metric and imperial units
+  /// (i.e. sets that have "repetitions" as units and weight in kg or lbs).
+  /// Other combinations such as "seconds" are ignored.
+  Map<String, num> get volume {
+    final volumeMetric = logs.fold<double>(0, (sum, log) => sum + log.volume(metric: true));
+    final volumeImperial = logs.fold<double>(0, (sum, log) => sum + log.volume(metric: false));
+
+    return {'metric': volumeMetric, 'imperial': volumeImperial};
+  }
+
   // Boilerplate
   factory WorkoutSessionApi.fromJson(Map<String, dynamic> json) =>
       _$WorkoutSessionApiFromJson(json);
