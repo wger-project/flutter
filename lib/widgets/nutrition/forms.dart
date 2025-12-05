@@ -283,10 +283,17 @@ class IngredientFormState extends State<IngredientForm> {
                       _mealItem.amount = numberFormat.parse(value!);
                     },
                     validator: (value) {
-                      try {
-                        numberFormat.parse(value!);
-                      } catch (error) {
+                      final text = value?.trim() ?? '';
+                      if (text.isEmpty) {
+                        return 'Please enter a weight.';
+                      }
+                      final parsed = double.tryParse(text);
+                      if (parsed == null) {
                         return AppLocalizations.of(context).enterValidNumber;
+                      }
+                      // Must be at least 1
+                      if (parsed < 1) {
+                        return 'Weight must be at least 1.';
                       }
                       return null;
                     },
