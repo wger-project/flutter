@@ -64,7 +64,7 @@ class DashboardScreen extends StatelessWidget {
       const DashboardCalendarWidget(),
       Card(
         child: SwitchListTile(
-          title: const Text("BMI-Kachel anzeigen"),
+          title: const Text("Show BMI Tile"), // Translate to English
           value: userProvider.showBmiOnDashboard,
           onChanged: (val) {
             context.read<UserProvider>().setBmiDashboard(val);

@@ -21,7 +21,7 @@ import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
-// Hilfsfunktion für BMI-Farbe & Kategorie (optional, falls wir die kleine Anzeige behalten wollen)
+// Helper function for BMI color & category
 (Color, String) getBmiInfo(double bmi) {
   if (bmi < 18.5) {
     return (Colors.lightBlueAccent, "Untergewicht");
@@ -47,14 +47,14 @@ class DashboardWeightWidget extends StatelessWidget {
     final profile = userProvider.profile;
     final weightProvider = context.watch<BodyWeightProvider>();
 
-    // Aktuelle Daten für BMI-Berechnung (Info-Text)
+    // Current data for BMI calculation (Info text)
     final newestEntry = weightProvider.getNewestEntry();
     final currentWeight = newestEntry?.weight?.toDouble();
 
-    // Einheiten-Check
+    // Check unit system
     final bool isMetric = profile?.isMetric ?? true;
 
-    // Daten für den Graphen (Nur Gewicht!)
+    // Chart data (Weight only)
     final chartEntries = weightProvider.items
         .map((e) => MeasurementChartEntry(e.weight, e.date))
         .toList();
@@ -81,7 +81,7 @@ class DashboardWeightWidget extends StatelessWidget {
               if (weightProvider.items.isNotEmpty)
                 Column(
                   children: [
-                    // Der Graph (Nur Gewicht)
+                    // The Chart (only wight)
                     SizedBox(
                       height: 200,
                       child: MeasurementChartWidgetFl(
@@ -91,7 +91,7 @@ class DashboardWeightWidget extends StatelessWidget {
                       ),
                     ),
 
-                    // Veränderung (z.B. -2kg)
+                    // Change (e.g. -2kg)
                     if (entries7dAvg.isNotEmpty)
                       MeasurementOverallChangeWidget(
                         entries7dAvg.first,
@@ -99,8 +99,8 @@ class DashboardWeightWidget extends StatelessWidget {
                         weightUnit(isMetric, context),
                       ),
 
-                    // --- Kleine BMI Info (Optional) ---
-                    // Zeigt nur den aktuellen Wert mittig an, ohne Graphen-Umschalter
+                    // --- Small BMI Info (Optional) ---
+                    // Shows only the current value centered
                     if (profile != null)
                       Builder(builder: (context) {
                         final bmi = profile.calculateBmi(weightOverride: currentWeight);

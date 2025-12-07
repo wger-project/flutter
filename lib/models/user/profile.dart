@@ -52,23 +52,22 @@ class Profile {
     this.weight,
   });
   double calculateBmi({double? weightOverride}) {
-    // 1. Wir definieren, welches Gewicht wir nutzen (Override ODER Profil)
+    // 1. We define which weight we use (override OR profile)
     final double? effectiveWeight = weightOverride ?? weight;
 
-    // 2. Prüfen: Ist dieses 'effectiveWeight' da? Und ist die Größe da?
-    // Wenn eins davon fehlt, brechen wir ab.
+    // 2. Check: Is this ‘effectiveWeight’ there? And is the size there?
+    // If one of these is missing, we stop.
     if (effectiveWeight == null || height == null || height == 0) {
       return 0.0;
     }
 
-    // 3. Größe vorbereiten (hier ist height! sicher, wegen dem if oben)
+    // 3. Prepare size (here it is height! for sure, because of the if above)
     double heightInMeters = height!;
     if (heightInMeters > 3.0) {
       heightInMeters = heightInMeters / 100.0;
     }
 
-    // 4. DIE ENTSCHEIDENDE ÄNDERUNG:
-    // Wir rechnen mit 'effectiveWeight', NICHT mit 'weight!'
+
     return effectiveWeight / (heightInMeters * heightInMeters);
   }
 

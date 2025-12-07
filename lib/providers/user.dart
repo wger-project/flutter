@@ -30,7 +30,7 @@ class UserProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
   late SharedPreferencesAsync prefs;
 
-  // --- NEU: Variable für die BMI-Kachel ---
+  // --- NEW: Variable for the BMI tile ---
   bool _showBmiOnDashboard = true;
   bool get showBmiOnDashboard => _showBmiOnDashboard;
   // ----------------------------------------
@@ -38,7 +38,7 @@ class UserProvider with ChangeNotifier {
   UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _loadThemeMode();
-    _loadBmiSetting(); // NEU: BMI beim Start laden
+    _loadBmiSetting(); // NEW: Load BMI setting on startup
   }
 
   static const PROFILE_URL = 'userprofile';
@@ -64,18 +64,18 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // --- NEU: Lade BMI-Einstellung ---
+  // --- EW: Load BMI setting ---
   Future<void> _loadBmiSetting() async {
     final showBmi = await prefs.getBool('show_bmi_dashboard');
     if (showBmi != null) {
       _showBmiOnDashboard = showBmi;
     } else {
-      _showBmiOnDashboard = true; // Standard: Anzeigen
+      _showBmiOnDashboard = true; // Default: Show
     }
     notifyListeners();
   }
 
-  // --- NEU: Umschalten und Speichern ---
+  // --- NEW: Toggle and save ---
   void setBmiDashboard(bool value) async {
     _showBmiOnDashboard = value;
     notifyListeners();
