@@ -34,7 +34,7 @@ class RoutineScreen extends StatelessWidget {
 
   void _showExerciseOptions(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    
+
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(

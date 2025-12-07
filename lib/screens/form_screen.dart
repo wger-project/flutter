@@ -84,7 +84,7 @@ class FormScreen extends StatelessWidget {
                       extraTop: args.padding.top,
                     ),
                     child: args.widget,
-                  )
+                  ),
                 ],
               ),
       ),

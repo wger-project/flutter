@@ -45,54 +45,54 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
       body: Padding(
         padding: getAppBarBodyPadding(context),
         child: Column(
-        children: [
-          // Meals list or empty state
-          Expanded(
-            child: nutritionalPlan.meals.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        AppLocalizations.of(context).yourCurrentNutritionPlanHasNoMealsDefinedYet,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
+          children: [
+            // Meals list or empty state
+            Expanded(
+              child: nutritionalPlan.meals.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          AppLocalizations.of(context).yourCurrentNutritionPlanHasNoMealsDefinedYet,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: nutritionalPlan.meals.length,
+                      itemBuilder: (context, index) => MealWidget(
+                        nutritionalPlan.meals[index],
+                        nutritionalPlan.dedupMealItems,
+                        true,
+                        true,
                       ),
                     ),
-                  )
-                : ListView.builder(
-                    itemCount: nutritionalPlan.meals.length,
-                    itemBuilder: (context, index) => MealWidget(
-                      nutritionalPlan.meals[index],
-                      nutritionalPlan.dedupMealItems,
-                      true,
-                      true,
-                    ),
-                  ),
-          ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 32.0),
-            child: Column(
-              children: [
-                Text(
-                  AppLocalizations.of(context).toAddMealsToThePlanGoToNutritionalPlanDetails,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 8),
-                TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.of(context).pushReplacementNamed(
-                      NutritionalPlanScreen.routeName,
-                      arguments: nutritionalPlan,
-                    );
-                  },
-                ),
-              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 32.0),
+              child: Column(
+                children: [
+                  Text(
+                    AppLocalizations.of(context).toAddMealsToThePlanGoToNutritionalPlanDetails,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    child: Text(AppLocalizations.of(context).goToDetailPage),
+                    onPressed: () {
+                      Navigator.of(context).pushReplacementNamed(
+                        NutritionalPlanScreen.routeName,
+                        arguments: nutritionalPlan,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -95,7 +95,14 @@ class NutritionalPlansList extends StatelessWidget {
       child: _nutritionProvider.items.isEmpty
           ? const TextPrompt()
           : ListView.builder(
-              padding: getAppBarBodyPadding(context, left: 10, right: 10, bottom: 10, extraTop: 10, includeToolbarHeight: false),
+              padding: getAppBarBodyPadding(
+                context,
+                left: 10,
+                right: 10,
+                bottom: 10,
+                extraTop: 10,
+                includeToolbarHeight: false,
+              ),
               itemCount: _nutritionProvider.items.length,
               itemBuilder: (context, index) {
                 final currentPlan = _nutritionProvider.items[index];

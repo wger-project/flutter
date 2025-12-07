@@ -55,7 +55,8 @@ Widget buildAppBarBlurBackground(BuildContext context) {
 
 /// Returns the padding needed for body content when using extendBodyBehindAppBar
 /// Set [includeToolbarHeight] to false for widgets that handle toolbar offset separately
-EdgeInsets getAppBarBodyPadding(BuildContext context, {
+EdgeInsets getAppBarBodyPadding(
+  BuildContext context, {
   double left = 0,
   double right = 0,
   double bottom = 0,
@@ -63,7 +64,8 @@ EdgeInsets getAppBarBodyPadding(BuildContext context, {
   bool includeToolbarHeight = true,
 }) {
   return EdgeInsets.only(
-    top: MediaQuery.of(context).padding.top + (includeToolbarHeight ? kToolbarHeight : 0) + extraTop,
+    top:
+        MediaQuery.of(context).padding.top + (includeToolbarHeight ? kToolbarHeight : 0) + extraTop,
     left: left,
     right: right,
     bottom: bottom,
@@ -81,7 +83,7 @@ class WgerAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    
+
     return AppBar(
       systemOverlayStyle: brightness == Brightness.light
           ? SystemUiOverlayStyle.dark
@@ -128,7 +130,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Modern popup menu for desktop/wide screens
   void _showPopupMenu(BuildContext context) {
     final RenderBox button = context.findRenderObject() as RenderBox;
-    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
@@ -234,7 +237,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                       const SizedBox(width: 16),
                       Expanded(
                         child: Text(
-                          context.read<UserProvider>().profile?.username ?? AppLocalizations.of(context).optionsLabel,
+                          context.read<UserProvider>().profile?.username ??
+                              AppLocalizations.of(context).optionsLabel,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
@@ -323,7 +327,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    
+
     return AppBar(
       systemOverlayStyle: brightness == Brightness.light
           ? SystemUiOverlayStyle.dark

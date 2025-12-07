@@ -44,37 +44,44 @@ class Gallery extends StatelessWidget {
       child: provider.images.isEmpty
           ? const TextPrompt()
           : MasonryGridView.count(
-              padding: getAppBarBodyPadding(context, left: 5, right: 5, bottom: 5, extraTop: 10, includeToolbarHeight: false),
+              padding: getAppBarBodyPadding(
+                context,
+                left: 5,
+                right: 5,
+                bottom: 5,
+                extraTop: 10,
+                includeToolbarHeight: false,
+              ),
               crossAxisCount: 2,
               mainAxisSpacing: 5,
               crossAxisSpacing: 5,
               itemCount: provider.images.length,
-                itemBuilder: (context, index) {
-                  final currentImage = provider.images[index];
+              itemBuilder: (context, index) {
+                final currentImage = provider.images[index];
 
-                  return GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        builder: (context) => ImageDetail(image: currentImage),
-                        context: context,
-                      );
-                    },
-                    child: FadeInImage(
-                      key: Key('image-${currentImage.id!}'),
-                      placeholder: const AssetImage('assets/images/placeholder.png'),
-                      image: NetworkImage(currentImage.url!),
-                      fit: BoxFit.cover,
-                      imageSemanticLabel: currentImage.description,
-                      imageErrorBuilder: (context, error, stackTrace) => handleImageError(
-                        context,
-                        error,
-                        stackTrace,
-                        currentImage.url!,
-                      ),
+                return GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      builder: (context) => ImageDetail(image: currentImage),
+                      context: context,
+                    );
+                  },
+                  child: FadeInImage(
+                    key: Key('image-${currentImage.id!}'),
+                    placeholder: const AssetImage('assets/images/placeholder.png'),
+                    image: NetworkImage(currentImage.url!),
+                    fit: BoxFit.cover,
+                    imageSemanticLabel: currentImage.description,
+                    imageErrorBuilder: (context, error, stackTrace) => handleImageError(
+                      context,
+                      error,
+                      stackTrace,
+                      currentImage.url!,
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

@@ -47,7 +47,14 @@ class _RoutinesListState extends State<RoutinesList> {
       child: widget._routineProvider.items.isEmpty
           ? const TextPrompt()
           : ListView.builder(
-              padding: getAppBarBodyPadding(context, left: 10, right: 10, bottom: 10, extraTop: 10, includeToolbarHeight: false),
+              padding: getAppBarBodyPadding(
+                context,
+                left: 10,
+                right: 10,
+                bottom: 10,
+                extraTop: 10,
+                includeToolbarHeight: false,
+              ),
               itemCount: widget._routineProvider.items.length,
               itemBuilder: (context, index) {
                 final currentRoutine = widget._routineProvider.items[index];

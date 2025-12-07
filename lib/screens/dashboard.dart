@@ -63,12 +63,24 @@ class DashboardScreen extends StatelessWidget {
           constraints: BoxConstraints(maxWidth: MATERIAL_LG_BREAKPOINT.toDouble()),
           child: isMobile
               ? ListView.builder(
-                  padding: getAppBarBodyPadding(context, left: 10, right: 10, bottom: 10, extraTop: 10),
+                  padding: getAppBarBodyPadding(
+                    context,
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
+                    extraTop: 10,
+                  ),
                   itemBuilder: (context, index) => items[index],
                   itemCount: items.length,
                 )
               : GridView.builder(
-                  padding: getAppBarBodyPadding(context, left: 10, right: 10, bottom: 10, extraTop: 10),
+                  padding: getAppBarBodyPadding(
+                    context,
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
+                    extraTop: 10,
+                  ),
                   itemBuilder: (context, index) => SingleChildScrollView(child: items[index]),
                   itemCount: items.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
