@@ -59,7 +59,7 @@ class DashboardScreen extends StatelessWidget {
       const DashboardRoutineWidget(),
       const DashboardNutritionWidget(),
       const DashboardWeightWidget(),
-      if (userProvider.showBmiOnDashboard) const DashboardBmiWidget(),
+      if (userProvider.showBmiOnDashboard) DashboardBmiWidget(),
       const DashboardMeasurementWidget(),
       const DashboardCalendarWidget(),
       Card(
