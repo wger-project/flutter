@@ -37,6 +37,7 @@ class GalleryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).gallery),
+      extendBodyBehindAppBar: true,
       floatingActionButton: isDesktop
           ? null
           : FloatingActionButton(

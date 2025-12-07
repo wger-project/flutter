@@ -19,7 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/add_exercise_screen.dart';
+import 'package:wger/screens/exercises_screen.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/routines/app_bar.dart';
 import 'package:wger/widgets/routines/routine_detail.dart';
 
@@ -27,6 +31,48 @@ class RoutineScreen extends StatelessWidget {
   const RoutineScreen({super.key});
 
   static const routeName = '/routine-detail';
+
+  void _showExerciseOptions(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.add),
+                  title: Text(i18n.contributeExercise),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.list),
+                  title: Text(i18n.exerciseList),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed(ExercisesScreen.routeName);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +83,14 @@ class RoutineScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: RoutineDetailAppBar(routine),
+      extendBodyBehindAppBar: true,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showExerciseOptions(context),
+        child: const Icon(Icons.fitness_center, color: Colors.white),
+      ),
       body: WidescreenWrapper(
         child: SingleChildScrollView(
+          padding: getAppBarBodyPadding(context),
           child: Consumer<RoutinesProvider>(
             builder: (context, value, child) => RoutineDetail(routine),
           ),

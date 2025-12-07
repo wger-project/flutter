@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
 class RoutinesList extends StatefulWidget {
@@ -42,10 +43,11 @@ class _RoutinesListState extends State<RoutinesList> {
 
     return RefreshIndicator(
       onRefresh: () => widget._routineProvider.fetchAndSetAllRoutinesSparse(),
+      edgeOffset: MediaQuery.of(context).padding.top + kToolbarHeight,
       child: widget._routineProvider.items.isEmpty
           ? const TextPrompt()
           : ListView.builder(
-              padding: const EdgeInsets.all(10.0),
+              padding: getAppBarBodyPadding(context, left: 10, right: 10, bottom: 10, extraTop: 10, includeToolbarHeight: false),
               itemCount: widget._routineProvider.items.length,
               itemBuilder: (context, index) {
                 final currentRoutine = widget._routineProvider.items[index];

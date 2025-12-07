@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 
 class LogMealsScreen extends StatefulWidget {
@@ -39,10 +40,11 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
     final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).selectMealToLog),
-      ),
-      body: Column(
+      appBar: WgerAppBar(AppLocalizations.of(context).selectMealToLog),
+      extendBodyBehindAppBar: true,
+      body: Padding(
+        padding: getAppBarBodyPadding(context),
+        child: Column(
         children: [
           // Meals list or empty state
           Expanded(
@@ -91,6 +93,7 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
             ),
           ),
         ],
+        ),
       ),
     );
   }

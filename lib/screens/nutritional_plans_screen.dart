@@ -35,6 +35,7 @@ class NutritionalPlansScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).nutritionalPlans),
+      extendBodyBehindAppBar: true,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () {

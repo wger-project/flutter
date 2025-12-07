@@ -22,6 +22,7 @@ import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/measurements/entries.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
@@ -41,11 +42,11 @@ class MeasurementEntriesScreen extends StatelessWidget {
     final category = Provider.of<MeasurementProvider>(context).findCategoryById(categoryId);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(category.name),
+      appBar: WgerAppBar(
+        category.name,
         actions: [
           PopupMenuButton<MeasurementOptions>(
-            icon: const Icon(Icons.more_vert),
+            icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurface),
             onSelected: (value) {
               switch (value) {
                 case MeasurementOptions.edit:
@@ -122,6 +123,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
           ),
         ],
       ),
+      extendBodyBehindAppBar: true,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () {
@@ -137,6 +139,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
       ),
       body: WidescreenWrapper(
         child: SingleChildScrollView(
+          padding: getAppBarBodyPadding(context),
           child: Consumer<MeasurementProvider>(
             builder: (context, provider, child) => EntriesList(category),
           ),

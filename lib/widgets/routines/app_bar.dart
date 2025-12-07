@@ -25,6 +25,7 @@ import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/exercises_screen.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 
 enum _RoutineAppBarOptions {
   list,
@@ -44,8 +45,8 @@ class RoutineListAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
 
-    return AppBar(
-      title: Text(i18n.routines),
+    return WgerAppBar(
+      i18n.routines,
       actions: [
         PopupMenuButton(
           itemBuilder: (context) {
@@ -89,8 +90,8 @@ class RoutineDetailAppBar extends StatelessWidget implements PreferredSizeWidget
     final i18n = AppLocalizations.of(context);
     final provider = context.read<RoutinesProvider>();
 
-    return AppBar(
-      title: Text(routine.name),
+    return WgerAppBar(
+      routine.name,
       actions: [
         PopupMenuButton(
           itemBuilder: (context) {

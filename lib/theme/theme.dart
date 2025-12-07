@@ -41,8 +41,8 @@ const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
   navigationBarHeight: 56,
 );
 
-const String wgerDisplayFont = 'RobotoCondensed';
-const List<FontVariation> displayFontBoldWeight = [FontVariation('wght', 600)];
+const String wgerDisplayFont = 'Inter';
+const List<FontVariation> displayFontBoldWeight = [FontVariation('wght', 700)];
 const List<FontVariation> displayFontHeavyWeight = [FontVariation('wght', 800)];
 
 // Make a light ColorScheme from the seeds.
