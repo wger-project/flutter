@@ -73,7 +73,6 @@ class DashboardScreen extends StatelessWidget {
       ),
     ];
 
-
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
       body: Center(
