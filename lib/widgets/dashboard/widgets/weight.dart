@@ -24,17 +24,17 @@ import 'package:wger/widgets/weight/forms.dart';
 // Helper function for BMI color & category
 (Color, String) getBmiInfo(double bmi) {
   if (bmi < 18.5) {
-    return (Colors.lightBlueAccent, "Untergewicht");
+    return (Colors.lightBlueAccent, "Underweight");
   } else if (bmi < 25.0) {
-    return (Colors.greenAccent, "Normalgewicht");
+    return (Colors.greenAccent, "Normal weight");
   } else if (bmi < 30.0) {
-    return (Colors.orangeAccent, "Übergewicht");
+    return (Colors.orangeAccent, "Overweight");
   } else if (bmi < 35.0) {
-    return (Colors.deepOrangeAccent, "Adipositas Grad I");
+    return (Colors.deepOrangeAccent, "Obesity Class I");
   } else if (bmi < 40.0) {
-    return (Colors.redAccent, "Adipositas Grad II");
+    return (Colors.redAccent, "Obesity Class II");
   } else {
-    return (Colors.red, "Adipositas Grad III");
+    return (Colors.red, "Obesity Class III");
   }
 }
 
