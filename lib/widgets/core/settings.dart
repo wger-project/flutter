@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/configure_plates_screen.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/core/settings/exercise_cache.dart';
 import 'package:wger/widgets/core/settings/ingredient_cache.dart';
 import 'package:wger/widgets/core/settings/theme.dart';
@@ -35,9 +36,11 @@ class SettingsPage extends StatelessWidget {
     final i18n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(i18n.settingsTitle)),
+      appBar: WgerAppBar(i18n.settingsTitle),
+      extendBodyBehindAppBar: true,
       body: WidescreenWrapper(
         child: ListView(
+          padding: getAppBarBodyPadding(context),
           children: [
             ListTile(
               title: Text(

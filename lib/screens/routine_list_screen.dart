@@ -22,8 +22,10 @@ import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/screens/add_exercise_screen.dart';
+import 'package:wger/screens/exercises_screen.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/routines/app_bar.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 import 'package:wger/widgets/routines/routines_list.dart';
 
@@ -32,23 +34,78 @@ class RoutineListScreen extends StatelessWidget {
 
   static const routeName = '/workout-plans-list';
 
+  void _showExerciseOptions(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.add),
+                  title: Text(i18n.contributeExercise),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.list),
+                  title: Text(i18n.exerciseList),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed(ExercisesScreen.routeName);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const RoutineListAppBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FormScreen.routeName,
-            arguments: FormScreenArguments(
-              AppLocalizations.of(context).newRoutine,
-              RoutineForm(Routine.empty(), useListView: true),
-              hasListView: true,
-            ),
-          );
-        },
-        child: const Icon(Icons.add, color: Colors.white),
+      appBar: EmptyAppBar(AppLocalizations.of(context).routines),
+      extendBodyBehindAppBar: true,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: 'exerciseOptions',
+            onPressed: () => _showExerciseOptions(context),
+            child: const Icon(Icons.fitness_center, color: Colors.white),
+          ),
+          const SizedBox(width: 16),
+          FloatingActionButton(
+            heroTag: 'addRoutine',
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  AppLocalizations.of(context).newRoutine,
+                  RoutineForm(Routine.empty(), useListView: true),
+                  hasListView: true,
+                ),
+              );
+            },
+            child: const Icon(Icons.add, color: Colors.white),
+          ),
+        ],
       ),
       body: WidescreenWrapper(
         child: Consumer<RoutinesProvider>(
