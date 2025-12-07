@@ -705,7 +705,7 @@
     "@whatVariationsExist": {},
     "previous": "Vorherige",
     "@previous": {},
-    "next": "Nächste",
+    "next": "Weiter",
     "@next": {},
     "swiss_ball": "Gymnastikball",
     "@swiss_ball": {},
@@ -1127,5 +1127,65 @@
     "endWorkout": "Training beenden",
     "@endWorkout": {},
     "dayTypeCustom": "personalisierte",
-    "@dayTypeCustom": {}
+    "@dayTypeCustom": {},
+    "dayTypeTabata": "Tabata",
+    "@dayTypeTabata": {},
+    "impressionGood": "Gut",
+    "@impressionGood": {},
+    "impressionNeutral": "Neutral",
+    "@impressionNeutral": {},
+    "impressionBad": "Schlecht",
+    "@impressionBad": {},
+    "gymModeShowExercises": "Übersichtsseiten der Übungen anzeigen",
+    "@gymModeShowExercises": {},
+    "gymModeShowTimer": "Zeige Timer zwischen den Sätzen",
+    "@gymModeShowTimer": {},
+    "gymModeTimerType": "Timer-Typ",
+    "@gymModeTimerType": {},
+    "gymModeTimerTypeHelText": "Wenn ein Satz eine Pausenzeit hat, wird immer ein Countdown verwendet.",
+    "@gymModeTimerTypeHelText": {},
+    "countdown": "Countdown",
+    "@countdown": {},
+    "stopwatch": "Stoppuhr",
+    "@stopwatch": {},
+    "gymModeDefaultCountdownTime": "Standard-Countdown-Zeit in Sekunden",
+    "@gymModeDefaultCountdownTime": {},
+    "gymModeNotifyOnCountdownFinish": "Benachrichtigung bei Ende des Countdowns",
+    "@gymModeNotifyOnCountdownFinish": {},
+    "duration": "Dauer",
+    "@duration": {},
+    "durationHoursMinutes": "{hours}h {minutes}m",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Volumen",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Training abgeschlossen",
+    "@workoutCompleted": {},
+    "formMinMaxValues": "Bitte geben Sie einen Wert zwischen {min} und {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "superset": "Superset",
+    "@superset": {}
 }
