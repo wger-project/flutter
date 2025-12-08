@@ -17,6 +17,7 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,13 +30,23 @@ class UserProvider with ChangeNotifier {
   ThemeMode themeMode = ThemeMode.system;
   final WgerBaseProvider baseProvider;
   late SharedPreferencesAsync prefs;
-  bool hideNutrition = false; 
+  // bool hideNutrition = false; 
+
+  // New: visibility state for dashboard widgets
+  Map<String, bool> dashboardWidgetVisibility = {
+    'routines': true,
+    'weight': true,
+    'measurements': true,
+    'calendar': true,
+    'nutrition': true,
+  };
+
+  static const String PREFS_DASHBOARD_VISIBILITY = 'dashboardWidgetVisibility';
 
   UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _loadThemeMode();
-    _loadHideNutrition();
-
+    _loadDashboardVisibility();
   }
 
   static const PROFILE_URL = 'userprofile';
@@ -69,13 +80,34 @@ class UserProvider with ChangeNotifier {
 
     notifyListeners();
   }
+    Future<void> _loadDashboardVisibility() async {
+    final jsonString = await prefs.getString(PREFS_DASHBOARD_VISIBILITY);
 
-  Future<void> _loadHideNutrition() async {
-    final val = await prefs.getBool('hideNutrition');
-    hideNutrition = val ?? false;
+    if (jsonString != null) {
+      try {
+        final decoded = jsonDecode(jsonString) as Map<String, dynamic>;
+        dashboardWidgetVisibility =
+            decoded.map((k, v) => MapEntry(k, v as bool));
+      } catch (_) {
+        // If parsing fails, keep defaults
+      }
+    }
+
     notifyListeners();
   }
 
+  bool isDashboardWidgetVisible(String key) {
+    return dashboardWidgetVisibility[key] ?? true;
+  }
+
+  Future<void> setDashboardWidgetVisible(String key, bool visible) async {
+    dashboardWidgetVisibility[key] = visible;
+    await prefs.setString(
+      PREFS_DASHBOARD_VISIBILITY,
+      jsonEncode(dashboardWidgetVisibility),
+    );
+    notifyListeners();
+  }
 
   //  Change mode on switch button click
   void setThemeMode(ThemeMode mode) async {
@@ -89,12 +121,6 @@ class UserProvider with ChangeNotifier {
     }
 
     notifyListeners();
-  }
-
-    void setHideNutrition(bool value) async {
-      hideNutrition = value;
-      await prefs.setBool('hideNutrition', value);
-      notifyListeners();
   }
 
   /// Fetch the current user's profile

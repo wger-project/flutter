@@ -49,13 +49,39 @@ class SettingsPage extends StatelessWidget {
           const SettingsTheme(),
           Consumer<UserProvider>(
             builder: (context, user, _) {
-              return SwitchListTile(
-                title: const Text('Show nutrition section on dashboard'),
-                value: !user.hideNutrition,
-                onChanged: (v) {
-                  Provider.of<UserProvider>(context, listen: false)
-                      .setHideNutrition(!v);
-                },
+              return Column(
+                children: [
+                  SwitchListTile(
+                    title: const Text('Show routines on dashboard'),
+                    value: user.isDashboardWidgetVisible('routines'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('routines', v),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Show weight on dashboard'),
+                    value: user.isDashboardWidgetVisible('weight'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('weight', v),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Show measurements on dashboard'),
+                    value: user.isDashboardWidgetVisible('measurements'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('measurements', v),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Show calendar on dashboard'),
+                    value: user.isDashboardWidgetVisible('calendar'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('calendar', v),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Show nutrition on dashboard'),
+                    value: user.isDashboardWidgetVisible('nutrition'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('nutrition', v),
+                  ),
+                ],
               );
             },
           ),

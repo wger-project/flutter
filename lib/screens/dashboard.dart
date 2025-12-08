@@ -42,11 +42,16 @@ class DashboardScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            DashboardRoutineWidget(),
-            DashboardWeightWidget(),
-            DashboardMeasurementWidget(),
-            DashboardCalendarWidget(),
-            if (!user.hideNutrition) DashboardNutritionWidget(),
+            if (user.isDashboardWidgetVisible('routines'))
+              const DashboardRoutineWidget(),
+            if (user.isDashboardWidgetVisible('weight'))
+              const DashboardWeightWidget(),
+            if (user.isDashboardWidgetVisible('measurements'))
+              const DashboardMeasurementWidget(),
+            if (user.isDashboardWidgetVisible('calendar'))
+              const DashboardCalendarWidget(),
+            if (user.isDashboardWidgetVisible('nutrition'))
+              const DashboardNutritionWidget(),
           ],
         ),
       ),
