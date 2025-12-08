@@ -197,10 +197,10 @@ packages:
     dependency: "direct dev"
     description:
       name: cider
-      sha256: dfff70e9324f99e315857c596c31f54cb7380cfa20dfdfdca11a3631e05b7d3e
+      sha256: "455e3549bd1d21708326985702703345245acd3d7a2ac485de4183affb414a2c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.8"
+    version: "0.2.9"
   cli_config:
     dependency: transitive
     description:
