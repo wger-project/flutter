@@ -51,6 +51,11 @@ void main() {
     when(mockUserProvider.themeMode).thenReturn(ThemeMode.system);
     when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
     when(mockNutritionProvider.ingredients).thenReturn([ingredient1, ingredient2]);
+    when(mockUserProvider.isDashboardWidgetVisible('routines')).thenReturn(true);
+    when(mockUserProvider.isDashboardWidgetVisible('weight')).thenReturn(true);
+    when(mockUserProvider.isDashboardWidgetVisible('measurements')).thenReturn(true);
+    when(mockUserProvider.isDashboardWidgetVisible('calendar')).thenReturn(true);
+    when(mockUserProvider.isDashboardWidgetVisible('nutrition')).thenReturn(true);
   });
 
   Widget createSettingsScreen({locale = 'en'}) {
@@ -100,18 +105,24 @@ void main() {
   group('Theme settings', () {
     test('Default theme is system', () async {
       when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => null);
+      when(mockSharedPreferences.getString('dashboardWidgetVisibility'))
+      .thenAnswer((_) async => null);
       final userProvider = await UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
       expect(userProvider.themeMode, ThemeMode.system);
     });
 
     test('Loads light theme', () async {
       when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => false);
+      when(mockSharedPreferences.getString('dashboardWidgetVisibility'))
+      .thenAnswer((_) async => null);
       final userProvider = await UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
       expect(userProvider.themeMode, ThemeMode.light);
     });
 
     test('Saves theme to prefs', () {
       when(mockSharedPreferences.getBool(any)).thenAnswer((_) async => null);
+      when(mockSharedPreferences.getString('dashboardWidgetVisibility'))
+      .thenAnswer((_) async => null);
       final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
       userProvider.setThemeMode(ThemeMode.dark);
       verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, true)).called(1);
