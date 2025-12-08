@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
@@ -136,7 +135,7 @@ class MeasurementEntryForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
   final int _categoryId;
   final _valueController = TextEditingController();
-  final _dateController = TextEditingController();
+  final _dateController = TextEditingController(text: '');
   final _notesController = TextEditingController();
 
   late final Map<String, dynamic> _entryData;
@@ -158,17 +157,22 @@ class MeasurementEntryForm extends StatelessWidget {
       _entryData['notes'] = entry.notes;
     }
 
-    _dateController.text = dateToYYYYMMDD(_entryData['date'])!;
     _valueController.text = '';
     _notesController.text = _entryData['notes']!;
   }
 
   @override
   Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+
     final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
     final measurementCategory = measurementProvider.categories.firstWhere(
       (category) => category.id == _categoryId,
     );
+
+    if (_dateController.text.isEmpty) {
+      _dateController.text = dateFormat.format(_entryData['date']);
+    }
 
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
@@ -213,10 +217,10 @@ class MeasurementEntryForm extends StatelessWidget {
                 },
               );
 
-              _dateController.text = pickedDate == null ? '' : dateToYYYYMMDD(pickedDate)!;
+              _dateController.text = pickedDate == null ? '' : dateFormat.format(pickedDate);
             },
             onSaved: (newValue) {
-              _entryData['date'] = DateTime.parse(newValue!);
+              _entryData['date'] = dateFormat.parse(newValue!);
             },
             validator: (value) {
               if (value!.isEmpty) {

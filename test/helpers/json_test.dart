@@ -57,11 +57,18 @@ void main() {
       });
     });
 
-    group('dateToIsoWithTimezone', () {
+    group('Iso8601 and timezones', () {
       test('should format DateTime to a string with timezone', () {
         expect(
           dateToUtcIso8601(DateTime.parse('2025-05-16T18:15:00+02:00')),
           '2025-05-16T16:15:00.000Z',
+        );
+      });
+
+      test('should convert an iso8601 datetime to local', () {
+        expect(
+          utcIso8601ToLocalDate('2025-11-18T18:15:00+08:00'),
+          DateTime.parse('2025-11-18T11:15:00.000'),
         );
       });
     });

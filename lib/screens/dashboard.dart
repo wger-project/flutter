@@ -28,7 +28,7 @@ import 'package:wger/widgets/dashboard/widgets/weight.dart';
 import 'package:wger/providers/user.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen();
+  const DashboardScreen({super.key});
 
   static const routeName = '/dashboard';
 

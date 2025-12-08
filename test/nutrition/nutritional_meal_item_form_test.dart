@@ -331,5 +331,35 @@ void main() {
         verify(mockNutrition.addMealItem(any, meal1));
       },
     );
+
+    testWidgets('selecting ingredient from autocomplete calls cacheIngredient', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
+      await tester.pumpAndSettle();
+
+      clearInteractions(mockNutrition);
+
+      when(
+        mockNutrition.searchIngredient(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchEnglish: anyNamed('searchEnglish'),
+        ),
+      ).thenAnswer((_) => Future.value([ingredient1]));
+
+      when(
+        mockNutrition.cacheIngredient(any),
+      ).thenAnswer((_) => Future.value(null));
+
+      await tester.enterText(find.byType(TextFormField).first, 'Water');
+      await tester.pumpAndSettle(const Duration(milliseconds: 600));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ListTile).first);
+      await tester.pumpAndSettle();
+
+      verify(mockNutrition.cacheIngredient(ingredient1)).called(1);
+    });
   });
 }

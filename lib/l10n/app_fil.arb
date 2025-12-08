@@ -1,0 +1,48 @@
+{
+    "userProfile": "Profile mo",
+    "@userProfile": {},
+    "login": "Pumasok",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "logout": "Mag-sign out",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "register": "Mag-rehistro",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "useDefaultServer": "Gamitin ang default na server",
+    "@useDefaultServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "useCustomServer": "Gumamit ng custom na server",
+    "@useCustomServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "invalidUrl": "Mangyaring magpasok ng wastong URL",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "usernameValidChars": "Ang username ay maaari lamang maglaman ng mga titik, digit, at mga character na @, +, ., -, at _",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "passwordsDontMatch": "Ang password ay hindi tugma",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "passwordTooShort": "Masyadong maikli ang password",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "selectAvailablePlates": "Pumili ng magagamit na mga plato",
+    "@selectAvailablePlates": {},
+    "barWeight": "Timbang ng bar",
+    "@barWeight": {},
+    "useColors": "Gumamit ng mga kulay",
+    "@useColors": {},
+    "password": "Password",
+    "@password": {}
+}

@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -47,9 +48,11 @@ class WeightScreen extends StatelessWidget {
           );
         },
       ),
-      body: SingleChildScrollView(
-        child: Consumer<BodyWeightProvider>(
-          builder: (context, provider, child) => WeightOverview(provider),
+      body: WidescreenWrapper(
+        child: SingleChildScrollView(
+          child: Consumer<BodyWeightProvider>(
+            builder: (context, provider, child) => WeightOverview(provider),
+          ),
         ),
       ),
     );

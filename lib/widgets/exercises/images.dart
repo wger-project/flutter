@@ -37,14 +37,12 @@ class ExerciseImageWidget extends StatelessWidget {
         ? Image.network(
             image!.url,
             semanticLabel: 'Exercise image',
-            errorBuilder: (context, error, stackTrace) {
-              _logger.warning('Failed to load image ${image!.url}: $error, $stackTrace');
-              final imageFormat = image!.url.split('.').last.toUpperCase();
-
-              return ImageFormatNotSupported(
-                i18n.imageFormatNotSupported(imageFormat),
-              );
-            },
+            errorBuilder: (context, error, stackTrace) => handleImageError(
+              context,
+              error,
+              stackTrace,
+              image!.url,
+            ),
           )
         : const Image(
             image: AssetImage('assets/images/placeholder.png'),

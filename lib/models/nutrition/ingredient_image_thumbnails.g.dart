@@ -6,7 +6,9 @@ part of 'ingredient_image_thumbnails.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-IngredientImageThumbnails _$IngredientImageThumbnailsFromJson(Map<String, dynamic> json) {
+IngredientImageThumbnails _$IngredientImageThumbnailsFromJson(
+  Map<String, dynamic> json,
+) {
   $checkKeys(
     json,
     requiredKeys: const [
@@ -28,12 +30,13 @@ IngredientImageThumbnails _$IngredientImageThumbnailsFromJson(Map<String, dynami
   );
 }
 
-Map<String, dynamic> _$IngredientImageThumbnailsToJson(IngredientImageThumbnails instance) =>
-    <String, dynamic>{
-      'small': instance.small,
-      'small_cropped': instance.smallCropped,
-      'medium': instance.medium,
-      'medium_cropped': instance.mediumCropped,
-      'large': instance.large,
-      'large_cropped': instance.largeCropped,
-    };
+Map<String, dynamic> _$IngredientImageThumbnailsToJson(
+  IngredientImageThumbnails instance,
+) => <String, dynamic>{
+  'small': instance.small,
+  'small_cropped': instance.smallCropped,
+  'medium': instance.medium,
+  'medium_cropped': instance.mediumCropped,
+  'large': instance.large,
+  'large_cropped': instance.largeCropped,
+};

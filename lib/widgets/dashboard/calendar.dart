@@ -145,7 +145,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
         // Add events to lists
         _events[date]?.add(
-          Event(EventType.session, '${i18n.impression}: ${session.impressionAsString} $time'),
+          Event(
+            EventType.session,
+            '${i18n.impression}: ${session.impressionAsString(context)} $time',
+          ),
         );
       }
     });
