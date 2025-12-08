@@ -17,8 +17,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_icons/flutter_svg_icons.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -27,7 +25,7 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
-import 'package:wger/widgets/nutrition/charts.dart';
+import 'package:wger/widgets/nutrition/nutrition_card.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
 class DashboardNutritionWidget extends StatefulWidget {
@@ -50,100 +48,101 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              _hasContent ? _plan!.description : AppLocalizations.of(context).nutritionalPlan,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            subtitle: Text(
-              _hasContent
-                  ? DateFormat.yMd(
-                      Localizations.localeOf(context).languageCode,
-                    ).format(_plan!.creationDate)
-                  : '',
-            ),
-            leading: Icon(
-              Icons.restaurant,
-              color: Theme.of(context).textTheme.headlineSmall!.color,
-            ),
-          ),
-          if (_hasContent)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                child: FlNutritionalPlanGoalWidget(nutritionalPlan: _plan!),
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Material(
+        elevation: 0,
+        color: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+                spreadRadius: 0,
               ),
-            )
-          else
-            NothingFound(
-              AppLocalizations.of(context).noNutritionalPlans,
-              AppLocalizations.of(context).newNutritionalPlan,
-              PlanForm(),
-            ),
-          if (_hasContent)
-            LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          child: Text(AppLocalizations.of(context).goToDetailPage),
-                          onPressed: () {
-                            Navigator.of(context).pushNamed(
-                              NutritionalPlanScreen.routeName,
-                              arguments: _plan,
-                            );
-                          },
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // Modern header with title and chevron
+              InkWell(
+                onTap: _hasContent
+                    ? () {
+                        Navigator.of(context).pushNamed(
+                          NutritionalPlanScreen.routeName,
+                          arguments: _plan,
+                        );
+                      }
+                    : null,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.of(context).nutritionalPlan,
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: const SvgIcon(
-                                icon: SvgIconData('assets/icons/ingredient-diary.svg'),
-                              ),
-                              tooltip: AppLocalizations.of(context).logIngredient,
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  FormScreen.routeName,
-                                  arguments: FormScreenArguments(
-                                    AppLocalizations.of(context).logIngredient,
-                                    getIngredientLogForm(_plan!),
-                                    hasListView: true,
-                                  ),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: const SvgIcon(
-                                icon: SvgIconData('assets/icons/meal-diary.svg'),
-                              ),
-                              tooltip: AppLocalizations.of(context).logMeal,
-                              onPressed: () {
-                                Navigator.of(
-                                  context,
-                                ).pushNamed(LogMealsScreen.routeName, arguments: _plan);
-                              },
-                            ),
-                          ],
+                      ),
+                      if (_hasContent)
+                        Icon(
+                          Icons.chevron_right,
+                          color: Colors.grey.shade400,
+                          size: 28,
                         ),
-                      ],
-                    ),
+                    ],
                   ),
-                );
-              },
-            ),
-        ],
+                ),
+              ),
+
+              // Progress indicators or empty state
+              if (_hasContent)
+                NutritionGoalsWidget(
+                  nutritionalPlan: _plan!,
+                  onLogIngredient: () {
+                    Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context).logIngredient,
+                        getIngredientLogForm(_plan!),
+                        hasListView: true,
+                      ),
+                    );
+                  },
+                  onLogMeal: () {
+                    Navigator.of(context).pushNamed(
+                      LogMealsScreen.routeName,
+                      arguments: _plan,
+                    );
+                  },
+                )
+              else
+                NothingFound(
+                  AppLocalizations.of(context).noNutritionalPlans,
+                  AppLocalizations.of(context).newNutritionalPlan,
+                  PlanForm(),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
+
 }
