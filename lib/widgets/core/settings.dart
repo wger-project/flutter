@@ -24,6 +24,9 @@ import 'package:wger/screens/configure_plates_screen.dart';
 import 'package:wger/widgets/core/settings/exercise_cache.dart';
 import 'package:wger/widgets/core/settings/ingredient_cache.dart';
 import 'package:wger/widgets/core/settings/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:wger/providers/user.dart';
+
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
@@ -36,28 +39,61 @@ class SettingsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(i18n.settingsTitle)),
-      body: WidescreenWrapper(
-        child: ListView(
-          children: [
-            ListTile(
-              title: Text(
-                i18n.settingsCacheTitle,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-            ),
-            const SettingsExerciseCache(),
-            const SettingsIngredientCache(),
-            ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
-            const SettingsTheme(),
-            ListTile(
-              title: Text(i18n.selectAvailablePlates),
-              onTap: () {
-                Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
-              },
-              trailing: const Icon(Icons.chevron_right),
-            ),
-          ],
-        ),
+      body: ListView(
+        children: [
+          ListTile(
+            title: Text(i18n.settingsCacheTitle, style: Theme.of(context).textTheme.headlineSmall),
+          ),
+          const SettingsExerciseCache(),
+          const SettingsIngredientCache(),
+          ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
+          const SettingsTheme(),
+          Consumer<UserProvider>(
+            builder: (context, user, _) {
+              return Column(
+                children: [
+                  SwitchListTile(
+                    title: const Text('Show routines on dashboard'),
+                    value: user.isDashboardWidgetVisible('routines'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('routines', v),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Show weight on dashboard'),
+                    value: user.isDashboardWidgetVisible('weight'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('weight', v),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Show measurements on dashboard'),
+                    value: user.isDashboardWidgetVisible('measurements'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('measurements', v),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Show calendar on dashboard'),
+                    value: user.isDashboardWidgetVisible('calendar'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('calendar', v),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Show nutrition on dashboard'),
+                    value: user.isDashboardWidgetVisible('nutrition'),
+                    onChanged: (v) =>
+                        user.setDashboardWidgetVisible('nutrition', v),
+                  ),
+                ],
+              );
+            },
+          ),
+          ListTile(
+            title: Text(i18n.selectAvailablePlates),
+            onTap: () {
+              Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
+            },
+            trailing: const Icon(Icons.chevron_right),
+          ),
+        ],
       ),
     );
   }
