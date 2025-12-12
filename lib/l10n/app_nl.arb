@@ -194,5 +194,505 @@
     "slotEntryTypeNormal": "Normaal",
     "@slotEntryTypeNormal": {},
     "slotEntryTypeDropset": "Dropset",
-    "@slotEntryTypeDropset": {}
+    "@slotEntryTypeDropset": {},
+    "slotEntryTypePartial": "Deels",
+    "@slotEntryTypePartial": {},
+    "slotEntryTypeForced": "Verplicht",
+    "@slotEntryTypeForced": {},
+    "slotEntryTypeTut": "Tijd onder spanning",
+    "@slotEntryTypeTut": {},
+    "slotEntryTypeIso": "Isometrische houding",
+    "@slotEntryTypeIso": {},
+    "slotEntryTypeJump": "Springen",
+    "@slotEntryTypeJump": {},
+    "routines": "Routines",
+    "@routines": {},
+    "newRoutine": "Nieuwe routine",
+    "@newRoutine": {},
+    "noRoutines": "U heeft geen routines",
+    "@noRoutines": {},
+    "restTime": "Rust tijd",
+    "@restTime": {},
+    "sets": "Sets",
+    "@sets": {
+        "description": "The number of sets to be done for one exercise"
+    },
+    "rir": "RiR",
+    "@rir": {
+        "description": "Shorthand for Repetitions In Reserve"
+    },
+    "rirNotUsed": "Ongebruikt RiR",
+    "@rirNotUsed": {
+        "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+    },
+    "useMetric": "Gebruik metrische eenheden voor lichaamsgewicht",
+    "@useMetric": {},
+    "weightUnit": "Gewichtseenheid",
+    "@weightUnit": {},
+    "repetitionUnit": "Herhalingseenheid",
+    "@repetitionUnit": {},
+    "set": "Set",
+    "@set": {
+        "description": "A set in a workout plan"
+    },
+    "dayDescriptionHelp": "Een beschrijving van wat er deze dag is gedaan (b.v. 'pull dag') of welk lichaamsdeel getraind is (b.v. 'borst en schouders')",
+    "@dayDescriptionHelp": {},
+    "exerciseNr": "Oefening {nr}",
+    "@exerciseNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "supersetNr": "Superset {nr}",
+    "@supersetNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "sameRepetitions": "Als je dezelfde herhalingen en gewichten gebruikt voor alle sets kan je één rij invullen. Voor 4 sets kan je bijvoorbeeld 10 invullen voor de herhalingen, dit wordt dan automatisch \"4 x 10\".",
+    "@sameRepetitions": {},
+    "impressionGood": "Goed",
+    "@impressionGood": {},
+    "impressionNeutral": "Neutraal",
+    "@impressionNeutral": {},
+    "impressionBad": "Slecht",
+    "@impressionBad": {},
+    "impression": "Impressie",
+    "@impression": {
+        "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+    },
+    "notes": "Notities",
+    "@notes": {
+        "description": "Personal notes, e.g. for a workout session"
+    },
+    "workoutSession": "Workout sessie",
+    "@workoutSession": {
+        "description": "A (logged) workout session"
+    },
+    "restDay": "Rust dag",
+    "@restDay": {},
+    "isRestDay": "Is rust dag",
+    "@isRestDay": {},
+    "isRestDayHelp": "Houd er rekening mee dat alle sets en oefeningen verwijderd worden als u deze dag markeert als rust dag.",
+    "@isRestDayHelp": {},
+    "needsLogsToAdvance": "Vereist logs om door te gaan",
+    "@needsLogsToAdvance": {},
+    "needsLogsToAdvanceHelp": "Selecteer als je wilt dat de routine alleen doorgaat naar de volgende dag als je voor de dag een workout hebt vastgelegd",
+    "@needsLogsToAdvanceHelp": {},
+    "routineDays": "Dagen in routine",
+    "@routineDays": {},
+    "resultingRoutine": "Resulterende routine",
+    "@resultingRoutine": {},
+    "newDay": "Nieuwe dag",
+    "@newDay": {},
+    "newSet": "Nieuwe set",
+    "@newSet": {
+        "description": "Header when adding a new set to a workout day"
+    },
+    "selectExercises": "Als je een superset wilt doen kan je naar verschillende oefeningen zoeken, en kan je ze samen groeperen",
+    "@selectExercises": {},
+    "gymMode": "Gym modus",
+    "@gymMode": {
+        "description": "Label when starting the gym mode"
+    },
+    "gymModeShowExercises": "Toon oefeningsoverzicht paginas",
+    "@gymModeShowExercises": {},
+    "gymModeShowTimer": "Toon timer tussen sets",
+    "@gymModeShowTimer": {},
+    "gymModeTimerType": "Timer type",
+    "@gymModeTimerType": {},
+    "gymModeTimerTypeHelText": "Als een set pauze tijd heeft, wordt altijd een afteller gebruikt.",
+    "@gymModeTimerTypeHelText": {},
+    "countdown": "Afteller",
+    "@countdown": {},
+    "stopwatch": "Stopwatch",
+    "@stopwatch": {},
+    "gymModeDefaultCountdownTime": "Standaard afteltijd, in secondes",
+    "@gymModeDefaultCountdownTime": {},
+    "gymModeNotifyOnCountdownFinish": "Notificeer op einde aftelling",
+    "@gymModeNotifyOnCountdownFinish": {},
+    "duration": "Duur",
+    "@duration": {},
+    "durationHoursMinutes": "{hours}u {minutes}m",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Volume",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Workout voltooid",
+    "@workoutCompleted": {},
+    "plateCalculator": "Platen",
+    "@plateCalculator": {
+        "description": "Label used for the plate calculator in the gym mode"
+    },
+    "plateCalculatorNotDivisible": "Niet mogelijk om gewicht te bereiken met beschikbare platen",
+    "@plateCalculatorNotDivisible": {
+        "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+    },
+    "pause": "Pauzeer",
+    "@pause": {
+        "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+    },
+    "jumpTo": "Ga naar",
+    "@jumpTo": {
+        "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+    },
+    "todaysWorkout": "Uw workout vandaag",
+    "@todaysWorkout": {},
+    "logHelpEntries": "Als er op een enkele dag meerdere oefeningen met hetzelfde aantal herhalingen, maar verschillende gewichten zijn, wordt in het diagram alleen de oefening met het hoogste gewicht weergegeven.",
+    "@logHelpEntries": {},
+    "logHelpEntriesUnits": "Let op: alleen gegevens met een gewichtseenheid (kg of lb) en herhalingen worden weergegeven; andere combinaties, zoals tijd of tot uitputting, worden hier buiten beschouwing gelaten.",
+    "@logHelpEntriesUnits": {},
+    "description": "Beschrijving",
+    "@description": {},
+    "name": "Naam",
+    "@name": {
+        "description": "Name for a workout or nutritional plan"
+    },
+    "save": "Opslaan",
+    "@save": {},
+    "verify": "Bevestig",
+    "@verify": {},
+    "addSet": "Set toevoegen",
+    "@addSet": {
+        "description": "Label for the button that adds a set (to a workout day)"
+    },
+    "addMeal": "Maaltijd toevoegen",
+    "@addMeal": {},
+    "mealLogged": "Maaltijd geregistreerd in dagboek",
+    "@mealLogged": {},
+    "ingredientLogged": "Ingrediënten geregistreerd in dagboek",
+    "@ingredientLogged": {},
+    "logMeal": "Noteer de maaltijd in je voedingsdagboek",
+    "@logMeal": {},
+    "addIngredient": "Voeg ingrediënt toe",
+    "@addIngredient": {},
+    "logIngredient": "Noteer ingrediënt in je voedingsdagboek",
+    "@logIngredient": {},
+    "searchIngredient": "Zoek ingrediënt",
+    "@searchIngredient": {
+        "description": "Label on ingredient search form"
+    },
+    "nutritionalPlan": "Voedingsplan",
+    "@nutritionalPlan": {},
+    "nutritionalDiary": "Voedingsdagboek",
+    "@nutritionalDiary": {},
+    "nutritionalPlans": "Voedingsplannen",
+    "@nutritionalPlans": {},
+    "noNutritionalPlans": "U heeft geen voedingsplannen",
+    "@noNutritionalPlans": {
+        "description": "Message shown when the user has no nutritional plans"
+    },
+    "onlyLogging": "Alleen calorieën bijhouden",
+    "@onlyLogging": {},
+    "onlyLoggingHelpText": "Vink dit vakje aan als u alleen uw calorieën wilt registreren en geen gedetailleerd voedingsplan met specifieke maaltijden wilt opstellen",
+    "@onlyLoggingHelpText": {},
+    "goalMacro": "Macro doelen",
+    "@goalMacro": {
+        "description": "The goal for macronutrients"
+    },
+    "selectMealToLog": "Selecteer een maaltijd om in je dagboek te registreren",
+    "@selectMealToLog": {},
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "In je huidige voedingsplan zijn geen maaltijden vastgelegd",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Om maaltijden aan het plan toe te voegen, ga naar de details van het voedingsplan",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "goalEnergy": "Energie doel",
+    "@goalEnergy": {},
+    "goalProtein": "Proteïne doel",
+    "@goalProtein": {},
+    "goalCarbohydrates": "Koolhydratendoel",
+    "@goalCarbohydrates": {},
+    "goalFat": "Vet doel",
+    "@goalFat": {},
+    "goalFiber": "Vezel doel",
+    "@goalFiber": {},
+    "anErrorOccurred": "Er is een fout opgetreden!",
+    "@anErrorOccurred": {},
+    "errorInfoDescription": "Het spijt ons, maar er is iets misgegaan. Je kunt ons helpen dit op te lossen door het probleem te melden op GitHub.",
+    "@errorInfoDescription": {},
+    "errorInfoDescription2": "Je kunt de app blijven gebruiken, maar sommige functies werken mogelijk niet.",
+    "@errorInfoDescription2": {},
+    "errorViewDetails": "Technische details",
+    "@errorViewDetails": {},
+    "applicationLogs": "Applicatie logboek",
+    "@applicationLogs": {},
+    "errorCouldNotConnectToServer": "Kon niet verbinden met de server",
+    "@errorCouldNotConnectToServer": {},
+    "errorCouldNotConnectToServerDetails": "De applicatie kon geen verbinding maken met de server. Controleer uw internetverbinding of de server-URL en probeer het opnieuw. Als het probleem aanhoudt, neem dan contact op met de serverbeheerder.",
+    "@errorCouldNotConnectToServerDetails": {},
+    "copyToClipboard": "Kopieer naar klembord",
+    "@copyToClipboard": {},
+    "weight": "Gewicht",
+    "@weight": {
+        "description": "The weight of a workout log or body weight entry"
+    },
+    "min": "Min",
+    "@min": {},
+    "max": "Max",
+    "@max": {},
+    "chartAllTimeTitle": "{name} over gehele tijd",
+    "@chartAllTimeTitle": {
+        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chart30DaysTitle": "{name} afgelopen 30 dagen",
+    "@chart30DaysTitle": {
+        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chartDuringPlanTitle": "{chartName} tijdens voedingsplan {planName}",
+    "@chartDuringPlanTitle": {
+        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+        "type": "text",
+        "placeholders": {
+            "chartName": {
+                "type": "String"
+            },
+            "planName": {
+                "type": "String"
+            }
+        }
+    },
+    "measurement": "Meting",
+    "@measurement": {},
+    "measurements": "Metingen",
+    "@measurements": {
+        "description": "Categories for the measurements such as biceps size, body fat, etc."
+    },
+    "measurementCategoriesHelpText": "Meetcategorie, zoals 'biceps' of 'lichaamsvet'",
+    "@measurementCategoriesHelpText": {},
+    "measurementEntriesHelpText": "De eenheid die wordt gebruikt om de categorie te meten, zoals 'cm' of '%'",
+    "@measurementEntriesHelpText": {},
+    "date": "Datum",
+    "@date": {
+        "description": "The date of a workout log or body weight entry"
+    },
+    "endDate": "Einddatum",
+    "@endDate": {
+        "description": "The End date of a nutritional plan or routine"
+    },
+    "openEnded": "Open einde",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "value": "Waarde",
+    "@value": {
+        "description": "The value of a measurement entry"
+    },
+    "start": "Start",
+    "@start": {
+        "description": "Label on button to start the gym mode (i.e., an imperative)"
+    },
+    "time": "Tijd",
+    "@time": {
+        "description": "The time of a meal or workout"
+    },
+    "timeStart": "Start tijd",
+    "@timeStart": {
+        "description": "The starting time of a workout"
+    },
+    "timeEnd": "Eind tijd",
+    "@timeEnd": {
+        "description": "The end time of a workout"
+    },
+    "timeStartAhead": "De begintijd mag niet voor de eindtijd liggen",
+    "@timeStartAhead": {},
+    "ingredient": "Ingrediënt",
+    "@ingredient": {},
+    "energy": "Energie",
+    "@energy": {
+        "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+    },
+    "energyShort": "E",
+    "@energyShort": {
+        "description": "The first letter or short name of the word 'Energy', used in overviews"
+    },
+    "macronutrients": "Macronutriënten",
+    "@macronutrients": {},
+    "planned": "Gepland",
+    "@planned": {
+        "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+    },
+    "logged": "Gelogd",
+    "@logged": {
+        "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+    },
+    "today": "Vandaag",
+    "@today": {},
+    "loggedToday": "Vandaag gelogd",
+    "@loggedToday": {},
+    "weekAverage": "7 dagen gemiddelde",
+    "@weekAverage": {
+        "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+    },
+    "surplus": "overschot",
+    "@surplus": {
+        "description": "Caloric surplus (either planned or unplanned)"
+    },
+    "deficit": "tekort",
+    "@deficit": {
+        "description": "Caloric deficit (either planned or unplanned)"
+    },
+    "difference": "Verschil",
+    "@difference": {},
+    "percentEnergy": "Procent energie",
+    "@percentEnergy": {},
+    "gPerBodyKg": "g per lichaams kg",
+    "@gPerBodyKg": {
+        "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+    },
+    "total": "Totaal",
+    "@total": {
+        "description": "Label used for total sums of e.g. calories or similar"
+    },
+    "kcal": "kcal",
+    "@kcal": {
+        "description": "Energy in a meal in kilocalories, kcal"
+    },
+    "kcalValue": "{value} kcal",
+    "@kcalValue": {
+        "description": "A value in kcal, e.g. 500 kcal",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "kJ": "kJ",
+    "@kJ": {
+        "description": "Energy in a meal in kilo joules, kJ"
+    },
+    "g": "g",
+    "@g": {
+        "description": "Abbreviation for gram"
+    },
+    "gValue": "{value} g",
+    "@gValue": {
+        "description": "A value in grams, e.g. 5 g",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "percentValue": "{value} %",
+    "@percentValue": {
+        "description": "A value in percent, e.g. 10 %",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "protein": "Proteïne",
+    "@protein": {},
+    "proteinShort": "P",
+    "@proteinShort": {
+        "description": "The first letter or short name of the word 'Protein', used in overviews"
+    },
+    "carbohydrates": "Koolhydraten",
+    "@carbohydrates": {},
+    "carbohydratesShort": "K",
+    "@carbohydratesShort": {
+        "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+    },
+    "sugars": "Suikers",
+    "@sugars": {},
+    "fat": "Vet",
+    "@fat": {},
+    "fatShort": "V",
+    "@fatShort": {
+        "description": "The first letter or short name of the word 'Fat', used in overviews"
+    },
+    "saturatedFat": "Verzadigd vet",
+    "@saturatedFat": {},
+    "fiber": "Vezels",
+    "@fiber": {},
+    "sodium": "Natrium",
+    "@sodium": {},
+    "amount": "Hoeveelheid",
+    "@amount": {
+        "description": "The amount (e.g. in grams) of an ingredient in a meal"
+    },
+    "unit": "Eenheid",
+    "@unit": {
+        "description": "The unit used for a repetition (kg, time, etc.)"
+    },
+    "newEntry": "Nieuwe invoer",
+    "@newEntry": {
+        "description": "Title when adding a new entry such as a weight or log entry"
+    },
+    "noWeightEntries": "Je hebt geen gewichtsinvoer",
+    "@noWeightEntries": {
+        "description": "Message shown when the user has no logged weight entries"
+    },
+    "noMeasurementEntries": "U heeft geen meetgegevens ingevoerd",
+    "@noMeasurementEntries": {},
+    "moreMeasurementEntries": "Nieuwe meting toevoegen",
+    "@moreMeasurementEntries": {
+        "description": "Message shown when the user wants to add new measurement"
+    },
+    "edit": "Wijzig",
+    "@edit": {},
+    "loadingText": "Laden...",
+    "@loadingText": {
+        "description": "Text to show when entries are being loaded in the background: Loading..."
+    },
+    "delete": "Verwijder",
+    "@delete": {},
+    "confirmDelete": "Weet je zeker dat je '{toDelete}' wilt verwijderen?",
+    "@confirmDelete": {
+        "description": "Confirmation text before the user deletes an object",
+        "type": "text",
+        "placeholders": {
+            "toDelete": {
+                "type": "String"
+            }
+        }
+    },
+    "newNutritionalPlan": "Nieuw voedingsplan",
+    "@newNutritionalPlan": {},
+    "overview": "Overzicht",
+    "@overview": {},
+    "toggleDetails": "Schakel details in",
+    "@toggleDetails": {
+        "description": "Switch to toggle detail / overview"
+    }
 }
