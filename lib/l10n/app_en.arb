@@ -178,6 +178,11 @@
   "routines": "Routines",
   "newRoutine": "New routine",
   "noRoutines": "You have no routines",
+  "noRoutinesSubtitle": "Create your first routine to start tracking your workouts",
+  "noWorkoutScheduled": "No workout scheduled",
+  "workoutCompleted": "Completed",
+  "workoutUpcoming": "Upcoming",
+  "workoutMissed": "Missed",
   "reps": "Reps",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
@@ -1114,5 +1119,13 @@
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
-  "systemMode": "System settings"
+  "systemMode": "System settings",
+  "showAll": "Show all",
+  "@showAll": {
+    "description": "Text for expand button to show all items"
+  },
+  "showLess": "Show less",
+  "@showLess": {
+    "description": "Text for collapse button to hide items"
+  }
 }

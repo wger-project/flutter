@@ -30,6 +30,7 @@ const Color wgerPrimaryColorLight = Color(0xff94B2DB);
 const Color wgerSecondaryColor = Color(0xffe63946);
 const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
 const Color wgerTertiaryColor = Color(0xFF6CA450);
+const Color wgerAccentColor = Color(0xFF3B82F6);
 
 const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
   fabSchemeColor: SchemeColor.secondary,
