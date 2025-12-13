@@ -880,6 +880,11 @@
     "@newRoutine": {},
     "noRoutines": "Du hast keine Routinen",
     "@noRoutines": {},
+    "noRoutinesSubtitle": "Erstelle deine erste Routine, um deine Trainings mitzuverfolgen",
+    "noWorkoutScheduled": "Kein Training geplant",
+    "workoutCompleted": "Erledigt",
+    "workoutUpcoming": "Geplant",
+    "workoutMissed": "Verpasst",
     "sets": "Sätze",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
