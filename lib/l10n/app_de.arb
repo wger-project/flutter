@@ -1127,5 +1127,14 @@
     "endWorkout": "Training beenden",
     "@endWorkout": {},
     "dayTypeCustom": "personalisierte",
-    "@dayTypeCustom": {}
+    "@dayTypeCustom": {},
+      "gymModeShowExercises": "Übersichtsseiten anzeigen",
+      "gymModeShowTimer": "Timer zwischen Sätzen anzeigen",
+      "gymModeTimerType": "Timer-Typ",
+      "gymModeTimerTypeHelText": "Wenn eine Satzpause eingegeben ist, wird immer ein Countdown genutzt.",
+      "countdown": "Countdown",
+      "stopwatch": "Stoppuhr",
+      "gymModeDefaultCountdownTime": "Standard-Countdown (Sekunden)",
+      "gymModeNotifyOnCountdownFinish": "Benachrichtigung bei Ablauf",
+      "duration": "Dauer"
 }
