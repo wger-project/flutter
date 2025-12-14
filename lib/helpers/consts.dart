@@ -57,6 +57,7 @@ const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
 const PREFS_USER = 'userData';
 const PREFS_USER_DARK_THEME = 'userDarkMode';
+const PREFS_FIRST_DAY_OF_WEEK = 'firstDayOfWeek';
 const PREFS_LAST_SERVER = 'lastServer';
 
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);

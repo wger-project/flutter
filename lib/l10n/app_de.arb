@@ -166,6 +166,10 @@
     },
     "calendar": "Kalender",
     "@calendar": {},
+    "firstDayOfWeek": "Erster Wochentag",
+    "monday": "Montag",
+    "sunday": "Sonntag",
+    "saturday": "Samstag",
     "noWeightEntries": "Du hast keine Gewichtseinträge",
     "@noWeightEntries": {
         "description": "Message shown when the user has no logged weight entries"

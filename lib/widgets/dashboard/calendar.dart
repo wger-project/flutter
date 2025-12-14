@@ -16,22 +16,59 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/theme/theme.dart';
 
 /// Types of events
 enum EventType { weight, measurement, session, caloriesDiary }
+
+/// Color constants for event types - consistent across rings and modal
+/// Modern complementary palette with distinct hues for easy differentiation
+const Color eventColorSession = Color(0xFF22C55E); // Green - workouts
+const Color eventColorNutrition = Color(0xFFF97316); // Orange - nutrition
+const Color eventColorWeight = Color(0xFF3B82F6); // Blue - weight
+const Color eventColorMeasurement = Color(0xFFEC4899); // Pink - measurements
+
+/// Returns the color for an event type
+Color getEventColor(EventType type) {
+  switch (type) {
+    case EventType.weight:
+      return eventColorWeight;
+    case EventType.measurement:
+      return eventColorMeasurement;
+    case EventType.session:
+      return eventColorSession;
+    case EventType.caloriesDiary:
+      return eventColorNutrition;
+  }
+}
+
+/// Returns the icon for an event type
+IconData getEventIcon(EventType type) {
+  switch (type) {
+    case EventType.weight:
+      return Icons.monitor_weight_outlined;
+    case EventType.measurement:
+      return Icons.straighten_outlined;
+    case EventType.session:
+      return Icons.fitness_center_outlined;
+    case EventType.caloriesDiary:
+      return Icons.restaurant_outlined;
+  }
+}
 
 /// An event in the dashboard calendar
 class Event {
@@ -59,43 +96,18 @@ class DashboardCalendarWidget extends StatefulWidget {
 class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
     with TickerProviderStateMixin {
   late Map<String, List<Event>> _events;
-  late final ValueNotifier<List<Event>> _selectedEvents;
-  RangeSelectionMode _rangeSelectionMode =
-      RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
-  DateTime? _rangeStart;
-  DateTime? _rangeEnd;
 
   @override
   void initState() {
     super.initState();
-
     _events = <String, List<Event>>{};
-    _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
-    //Fix: Defer context-dependent loadEvents() until after build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadEvents();
     });
   }
 
   /// Loads and organizes all events from various providers into the calendar.
-  ///
-  /// This method asynchronously fetches and processes data from multiple sources:
-  /// - **Weight entries**: Retrieves weight measurements from [BodyWeightProvider]
-  /// - **Measurements**: Retrieves body measurements from [MeasurementProvider]
-  /// - **Workout sessions**: Fetches workout session data from [RoutinesProvider]
-  /// - **Nutritional plans**: Retrieves calorie diary entries from [NutritionPlansProvider]
-  ///
-  /// Each event is formatted according to the current locale and stored in the
-  /// [_events] map, keyed by date. The date format is determined by [DateFormatLists.format].
-  ///
-  /// After loading all events, the [_selectedEvents] value is updated with events
-  /// for the currently selected day, if any.
-  ///
-  /// **Note**: This method checks if the widget is still mounted before updating
-  /// the state after the async workout session fetch operation.
   void loadEvents() async {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final i18n = AppLocalizations.of(context);
@@ -109,7 +121,6 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
         _events[date] = [];
       }
 
-      // Add events to lists
       _events[date]?.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
     }
 
@@ -134,26 +145,23 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
     // Process workout sessions
     final routinesProvider = context.read<RoutinesProvider>();
-    await routinesProvider.fetchSessionData().then((sessions) {
-      for (final session in sessions) {
-        final date = DateFormatLists.format(session.date);
-        if (!_events.containsKey(date)) {
-          _events[date] = [];
-        }
-        var time = '';
-        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
-
-        // Add events to lists
-        _events[date]?.add(
-          Event(
-            EventType.session,
-            '${i18n.impression}: ${session.impressionAsString(context)} $time',
-          ),
-        );
-      }
-    });
+    final sessions = await routinesProvider.fetchSessionData();
     if (!mounted) {
       return;
+    }
+    for (final session in sessions) {
+      final date = DateFormatLists.format(session.date);
+      if (!_events.containsKey(date)) {
+        _events[date] = [];
+      }
+      final time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+
+      _events[date]?.add(
+        Event(
+          EventType.session,
+          '${i18n.impression}: ${session.impressionAsString(context)} $time',
+        ),
+      );
     }
 
     // Process nutritional plans
@@ -168,131 +176,412 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
           _events[date] = [];
         }
 
-        // Add events to lists
         _events[date]?.add(
           Event(EventType.caloriesDiary, i18n.kcalValue(entry.value.energy.toStringAsFixed(0))),
         );
       }
     }
 
-    // Add initial selected day to events list
-    _selectedEvents.value = _selectedDay != null ? _getEventsForDay(_selectedDay!) : [];
-  }
-
-  @override
-  void dispose() {
-    _selectedEvents.dispose();
-    super.dispose();
+    // Trigger rebuild to show loaded events
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   List<Event> _getEventsForDay(DateTime day) {
     return _events[DateFormatLists.format(day)] ?? [];
   }
 
-  List<Event> _getEventsForRange(DateTime start, DateTime end) {
-    final days = daysInRange(start, end);
-
-    return [for (final d in days) ..._getEventsForDay(d)];
+  /// Get unique event types for a day (for ring display)
+  Set<EventType> _getEventTypesForDay(DateTime day) {
+    final events = _getEventsForDay(day);
+    return events.map((e) => e.type).toSet();
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    if (!isSameDay(_selectedDay, selectedDay)) {
-      setState(() {
-        _selectedDay = selectedDay;
-        _focusedDay = focusedDay;
-        _rangeStart = null; // Important to clean those
-        _rangeEnd = null;
-        _rangeSelectionMode = RangeSelectionMode.toggledOff;
-      });
+    setState(() {
+      _focusedDay = focusedDay;
+    });
 
-      _selectedEvents.value = _getEventsForDay(selectedDay);
+    final events = _getEventsForDay(selectedDay);
+    if (events.isNotEmpty) {
+      _showEventsModal(context, selectedDay, events);
     }
   }
 
-  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
-    setState(() {
-      _selectedDay = null;
-      _focusedDay = focusedDay;
-      _rangeStart = start;
-      _rangeEnd = end;
-      _rangeSelectionMode = RangeSelectionMode.toggledOn;
-    });
+  void _showEventsModal(BuildContext context, DateTime day, List<Event> events) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final dateFormat = DateFormat.yMMMMd(Localizations.localeOf(context).toString());
 
-    // `start` or `end` could be null
-    if (start != null && end != null) {
-      _selectedEvents.value = _getEventsForRange(start, end);
-    } else if (start != null) {
-      _selectedEvents.value = _getEventsForDay(start);
-    } else if (end != null) {
-      _selectedEvents.value = _getEventsForDay(end);
-    }
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.6,
+        ),
+        decoration: BoxDecoration(
+          color: isDarkMode ? const Color(0xFF1C1C1E) : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              margin: const EdgeInsets.only(top: 12),
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            // Header with date
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  dateFormat.format(day),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Divider(
+              height: 1,
+              color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200,
+            ),
+            // Event list
+            Flexible(
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: events.length,
+                separatorBuilder: (context, index) => Divider(
+                  height: 1,
+                  indent: 68,
+                  color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200,
+                ),
+                itemBuilder: (context, index) {
+                  final event = events[index];
+                  return _EventModalItem(event: event);
+                },
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              AppLocalizations.of(context).calendar,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            leading: Icon(
-              Icons.calendar_today,
-              color: Theme.of(context).textTheme.headlineMedium!.color,
-            ),
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Material(
+        elevation: 0,
+        color: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            color: isDarkMode ? Theme.of(context).cardColor : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+                spreadRadius: 0,
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+                spreadRadius: 0,
+              ),
+            ],
           ),
-          TableCalendar<Event>(
-            locale: Localizations.localeOf(context).languageCode,
-            firstDay: DateTime.now().subtract(const Duration(days: 1000)),
-            lastDay: DateTime.now().add(const Duration(days: 365)),
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            calendarFormat: CalendarFormat.month,
-            availableGestures: AvailableGestures.horizontalSwipe,
-            availableCalendarFormats: const {CalendarFormat.month: ''},
-            rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: _getEventsForDay,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: getWgerCalendarStyle(Theme.of(context)),
-            onDaySelected: _onDaySelected,
-            onRangeSelected: _onRangeSelected,
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-          ),
-          const SizedBox(height: 8.0),
-          ValueListenableBuilder<List<Event>>(
-            valueListenable: _selectedEvents,
-            builder: (context, value, _) => Column(
-              children: [
-                ...value.map(
-                  (event) => ListTile(
-                    title: Text(
-                      (() {
-                        switch (event.type) {
-                          case EventType.caloriesDiary:
-                            return AppLocalizations.of(context).nutritionalDiary;
-
-                          case EventType.session:
-                            return AppLocalizations.of(context).workoutSession;
-
-                          case EventType.weight:
-                            return AppLocalizations.of(context).weight;
-
-                          case EventType.measurement:
-                            return AppLocalizations.of(context).measurement;
-                        }
-                      })(),
+          child: Column(
+            children: [
+              // Modern header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    AppLocalizations.of(context).calendar,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                    subtitle: Text(event.description),
-                    //onTap: () => print('$event tapped!'),
                   ),
                 ),
+              ),
+              // Calendar with custom day builder
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+                child: TableCalendar<Event>(
+                  locale: Localizations.localeOf(context).languageCode,
+                  firstDay: DateTime.now().subtract(const Duration(days: 1000)),
+                  lastDay: DateTime.now().add(const Duration(days: 365)),
+                  focusedDay: _focusedDay,
+                  calendarFormat: CalendarFormat.month,
+                  availableGestures: AvailableGestures.horizontalSwipe,
+                  availableCalendarFormats: const {CalendarFormat.month: ''},
+                  startingDayOfWeek: context.watch<UserProvider>().firstDayOfWeek,
+                  headerStyle: HeaderStyle(
+                    formatButtonVisible: false,
+                    titleCentered: true,
+                    titleTextStyle: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: isDarkMode ? Colors.white : Colors.black87,
+                    ),
+                    leftChevronIcon: Icon(
+                      Icons.chevron_left,
+                      color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                    ),
+                    rightChevronIcon: Icon(
+                      Icons.chevron_right,
+                      color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                    ),
+                  ),
+                  daysOfWeekStyle: DaysOfWeekStyle(
+                    weekdayStyle: TextStyle(
+                      color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
+                    weekendStyle: TextStyle(
+                      color: wgerSecondaryColor.withValues(alpha: 0.8),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
+                  ),
+                  calendarStyle: const CalendarStyle(
+                    outsideDaysVisible: false,
+                    cellMargin: EdgeInsets.all(4),
+                    // Hide default markers - we use custom rings
+                    markersMaxCount: 0,
+                  ),
+                  calendarBuilders: CalendarBuilders(
+                    defaultBuilder: (context, day, focusedDay) {
+                      return _buildDayCell(context, day, isToday: false);
+                    },
+                    todayBuilder: (context, day, focusedDay) {
+                      return _buildDayCell(context, day, isToday: true);
+                    },
+                    outsideBuilder: (context, day, focusedDay) {
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  onDaySelected: _onDaySelected,
+                  onPageChanged: (focusedDay) {
+                    _focusedDay = focusedDay;
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds a day cell with activity rings
+  Widget _buildDayCell(BuildContext context, DateTime day, {required bool isToday}) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final eventTypes = _getEventTypesForDay(day);
+
+    return GestureDetector(
+      onTap: () => _onDaySelected(day, day),
+      child: Container(
+        margin: const EdgeInsets.all(2),
+        child: CustomPaint(
+          painter: _ActivityRingsPainter(
+            eventTypes: eventTypes,
+            isToday: isToday,
+            isDarkMode: isDarkMode,
+          ),
+          child: Center(
+            child: Container(
+              width: 22,
+              height: 22,
+              decoration: isToday
+                  ? BoxDecoration(
+                      color: isDarkMode ? const Color(0xFF374151) : Colors.grey.shade300,
+                      shape: BoxShape.circle,
+                    )
+                  : null,
+              child: Center(
+                child: Text(
+                  '${day.day}',
+                  style: TextStyle(
+                    color: isToday
+                        ? (isDarkMode ? Colors.white : Colors.black87)
+                        : (isDarkMode ? Colors.grey.shade300 : Colors.grey.shade700),
+                    fontWeight: isToday ? FontWeight.w600 : FontWeight.normal,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Custom painter for activity rings around day cells
+class _ActivityRingsPainter extends CustomPainter {
+  final Set<EventType> eventTypes;
+  final bool isToday;
+  final bool isDarkMode;
+
+  // Ring order from outside to inside: session, nutrition, weight, measurement
+  static const List<EventType> ringOrder = [
+    EventType.session,
+    EventType.caloriesDiary,
+    EventType.weight,
+    EventType.measurement,
+  ];
+
+  _ActivityRingsPainter({
+    required this.eventTypes,
+    required this.isToday,
+    required this.isDarkMode,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (eventTypes.isEmpty) {
+      return;
+    }
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final baseRadius = min(size.width, size.height) / 2;
+
+    // Draw rings at fixed positions based on their index in ringOrder
+    // Each type always has the same radius regardless of which other types are present
+    for (int i = 0; i < ringOrder.length; i++) {
+      final type = ringOrder[i];
+
+      // Only draw if this event type is present
+      if (!eventTypes.contains(type)) {
+        continue;
+      }
+
+      final color = getEventColor(type);
+
+      // Fixed radius for each ring position (outermost to innermost)
+      final ringRadius = baseRadius - 1 - (i * 3.0);
+      const strokeWidth = 2.0;
+
+      final paint = Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth
+        ..strokeCap = StrokeCap.round;
+
+      // Draw full circle ring
+      canvas.drawCircle(center, ringRadius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_ActivityRingsPainter oldDelegate) {
+    return oldDelegate.eventTypes != eventTypes ||
+        oldDelegate.isToday != isToday ||
+        oldDelegate.isDarkMode != isDarkMode;
+  }
+}
+
+/// Event item displayed in the modal
+class _EventModalItem extends StatelessWidget {
+  final Event event;
+
+  const _EventModalItem({required this.event});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final eventColor = getEventColor(event.type);
+    final eventIcon = getEventIcon(event.type);
+
+    String eventTitle;
+    switch (event.type) {
+      case EventType.caloriesDiary:
+        eventTitle = AppLocalizations.of(context).nutritionalDiary;
+        break;
+      case EventType.session:
+        eventTitle = AppLocalizations.of(context).workoutSession;
+        break;
+      case EventType.weight:
+        eventTitle = AppLocalizations.of(context).weight;
+        break;
+      case EventType.measurement:
+        eventTitle = AppLocalizations.of(context).measurement;
+        break;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Row(
+        children: [
+          // Colored icon container
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: eventColor.withValues(alpha: isDarkMode ? 0.2 : 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              eventIcon,
+              color: eventColor,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 14),
+          // Event info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  eventTitle,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  event.description,
+                  style: TextStyle(
+                    color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                    fontSize: 13,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
+            ),
+          ),
+          // Color indicator dot
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: eventColor,
+              shape: BoxShape.circle,
             ),
           ),
         ],
