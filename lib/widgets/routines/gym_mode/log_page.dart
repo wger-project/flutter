@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -50,7 +51,7 @@ class LogPage extends ConsumerStatefulWidget {
 }
 
 class _LogPageState extends ConsumerState<LogPage> {
-  final GlobalKey<_LogFormWidgetState> _logFormKey = GlobalKey<_LogFormWidgetState>();
+  late void Function(Log) _copyFromPastLog = (_) {};
 
   late FocusNode focusNode;
 
@@ -70,6 +71,7 @@ class _LogPageState extends ConsumerState<LogPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = ref.watch(gymStateProvider);
+    final languageCode = Localizations.localeOf(context).languageCode;
 
     final page = state.getPageByIndex();
     if (page == null) {
@@ -101,7 +103,7 @@ class _LogPageState extends ConsumerState<LogPage> {
     return Column(
       children: [
         NavigationHeader(
-          log.exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
+          log.exercise.getTranslation(languageCode).name,
           widget._controller,
         ),
 
@@ -153,7 +155,8 @@ class _LogPageState extends ConsumerState<LogPage> {
                   log: log,
                   pastLogs: state.routine.filterLogsByExercise(log.exercise.id!),
                   onCopy: (pastLog) {
-                    _logFormKey.currentState?.copyFromPastLog(pastLog);
+                    // Call the function registered by the child
+                    _copyFromPastLog(pastLog);
                   },
                   setStateCallback: (fn) {
                     setState(fn);
@@ -170,11 +173,11 @@ class _LogPageState extends ConsumerState<LogPage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: LogFormWidget(
-                key: _logFormKey,
                 controller: widget._controller,
                 configData: setConfigData,
                 log: log,
                 focusNode: focusNode,
+                registerCopy: (fn) => _copyFromPastLog = fn,
               ),
             ),
           ),
@@ -502,6 +505,8 @@ class LogFormWidget extends ConsumerStatefulWidget {
   final SetConfigData configData;
   final Log log;
   final FocusNode focusNode;
+  // Callback used by the child to register its copy function with the parent.
+  final void Function(void Function(Log))? registerCopy;
 
   LogFormWidget({
     super.key,
@@ -509,6 +514,7 @@ class LogFormWidget extends ConsumerStatefulWidget {
     required this.configData,
     required this.log,
     required this.focusNode,
+    this.registerCopy,
   });
 
   @override
@@ -532,18 +538,51 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     _repetitionsController = TextEditingController();
     _weightController = TextEditingController();
 
+    // Register the copy function with the parent
+    widget.registerCopy?.call(copyFromPastLog);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final locale = Localizations.localeOf(context).toString();
-      final numberFormat = NumberFormat.decimalPattern(locale);
-
-      if (widget.configData.repetitions != null) {
-        _repetitionsController.text = numberFormat.format(widget.configData.repetitions);
-      }
-
-      if (widget.configData.weight != null) {
-        _weightController.text = numberFormat.format(widget.configData.weight);
-      }
+      _syncControllersWithWidget();
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant LogFormWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // If the log or config changed, update internal _log and controllers
+    if (oldWidget.log != widget.log || oldWidget.configData != widget.configData) {
+      _log = widget.log;
+      _syncControllersWithWidget();
+    }
+
+    // If the parent replaced the registerCopy callback, register again
+    if (oldWidget.registerCopy != widget.registerCopy) {
+      widget.registerCopy?.call(copyFromPastLog);
+    }
+  }
+
+  void _syncControllersWithWidget() {
+    final locale = Localizations.localeOf(context).toString();
+    final numberFormat = NumberFormat.decimalPattern(locale);
+
+    // Priority: current log -> config defaults -> empty
+    try {
+      _repetitionsController.text = widget.log.repetitions != null
+          ? numberFormat.format(widget.log.repetitions)
+          : (widget.configData.repetitions != null
+                ? numberFormat.format(widget.configData.repetitions)
+                : '');
+
+      _weightController.text = widget.log.weight != null
+          ? numberFormat.format(widget.log.weight)
+          : (widget.configData.weight != null ? numberFormat.format(widget.configData.weight) : '');
+    } on Exception catch (e) {
+      // Defensive fallback: set empty strings if formatting fails
+      widget._logger.fine('Error syncing controllers: $e');
+      _repetitionsController.text = '';
+      _weightController.text = '';
+    }
   }
 
   @override
