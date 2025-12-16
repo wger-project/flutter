@@ -28,6 +28,7 @@ import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/widgets/core/settings.dart';
 
 import '../../test_data/exercises.dart';
@@ -49,6 +50,7 @@ void main() {
 
   setUp(() {
     when(mockUserProvider.themeMode).thenReturn(ThemeMode.system);
+    when(mockUserProvider.firstDayOfWeek).thenReturn(StartingDayOfWeek.monday);
     when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
     when(mockNutritionProvider.ingredients).thenReturn([ingredient1, ingredient2]);
   });
@@ -100,18 +102,21 @@ void main() {
   group('Theme settings', () {
     test('Default theme is system', () async {
       when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => null);
+      when(mockSharedPreferences.getInt(PREFS_FIRST_DAY_OF_WEEK)).thenAnswer((_) async => null);
       final userProvider = await UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
       expect(userProvider.themeMode, ThemeMode.system);
     });
 
     test('Loads light theme', () async {
       when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => false);
+      when(mockSharedPreferences.getInt(PREFS_FIRST_DAY_OF_WEEK)).thenAnswer((_) async => null);
       final userProvider = await UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
       expect(userProvider.themeMode, ThemeMode.light);
     });
 
     test('Saves theme to prefs', () {
       when(mockSharedPreferences.getBool(any)).thenAnswer((_) async => null);
+      when(mockSharedPreferences.getInt(any)).thenAnswer((_) async => null);
       final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
       userProvider.setThemeMode(ThemeMode.dark);
       verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, true)).called(1);
