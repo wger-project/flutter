@@ -51,9 +51,12 @@ class LogPage extends ConsumerStatefulWidget {
 }
 
 class _LogPageState extends ConsumerState<LogPage> {
-  late void Function(Log) _copyFromPastLog = (_) {};
+  final GlobalKey<_LogFormWidgetState> _logFormKey = GlobalKey<_LogFormWidgetState>();
 
   late FocusNode focusNode;
+  // Persistent log and current slot-page id to avoid recreating the Log on rebuilds
+  Log? _currentLog;
+  String? _currentSlotPageUuid;
 
   @override
   void initState() {
@@ -91,9 +94,20 @@ class _LogPageState extends ConsumerState<LogPage> {
 
     final setConfigData = slotEntryPage.setConfigData!;
 
-    final log = Log.fromSetConfigData(setConfigData)
-      ..routineId = state.routine.id!
-      ..iteration = state.iteration;
+    // Create a Log only when the slot page changed or none exists yet
+    if (_currentLog == null || _currentSlotPageUuid != slotEntryPage.uuid) {
+      _currentLog = Log.fromSetConfigData(setConfigData)
+        ..routineId = state.routine.id!
+        ..iteration = state.iteration;
+      _currentSlotPageUuid = slotEntryPage.uuid;
+    } else {
+      // Update routine/iteration if needed without creating a new Log
+      _currentLog!
+        ..routineId = state.routine.id!
+        ..iteration = state.iteration;
+    }
+
+    final log = _currentLog!;
 
     // Mark done sets
     final decorationStyle = slotEntryPage.logDone
@@ -155,8 +169,7 @@ class _LogPageState extends ConsumerState<LogPage> {
                   log: log,
                   pastLogs: state.routine.filterLogsByExercise(log.exercise.id!),
                   onCopy: (pastLog) {
-                    // Call the function registered by the child
-                    _copyFromPastLog(pastLog);
+                    _logFormKey.currentState?.copyFromPastLog(pastLog);
                   },
                   setStateCallback: (fn) {
                     setState(fn);
@@ -177,7 +190,7 @@ class _LogPageState extends ConsumerState<LogPage> {
                 configData: setConfigData,
                 log: log,
                 focusNode: focusNode,
-                registerCopy: (fn) => _copyFromPastLog = fn,
+                key: _logFormKey,
               ),
             ),
           ),
@@ -505,8 +518,6 @@ class LogFormWidget extends ConsumerStatefulWidget {
   final SetConfigData configData;
   final Log log;
   final FocusNode focusNode;
-  // Callback used by the child to register its copy function with the parent.
-  final void Function(void Function(Log))? registerCopy;
 
   LogFormWidget({
     super.key,
@@ -514,7 +525,6 @@ class LogFormWidget extends ConsumerStatefulWidget {
     required this.configData,
     required this.log,
     required this.focusNode,
-    this.registerCopy,
   });
 
   @override
@@ -538,9 +548,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     _repetitionsController = TextEditingController();
     _weightController = TextEditingController();
 
-    // Register the copy function with the parent
-    widget.registerCopy?.call(copyFromPastLog);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _syncControllersWithWidget();
     });
@@ -554,11 +561,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     if (oldWidget.log != widget.log || oldWidget.configData != widget.configData) {
       _log = widget.log;
       _syncControllersWithWidget();
-    }
-
-    // If the parent replaced the registerCopy callback, register again
-    if (oldWidget.registerCopy != widget.registerCopy) {
-      widget.registerCopy?.call(copyFromPastLog);
     }
   }
 
@@ -579,7 +581,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
           : (widget.configData.weight != null ? numberFormat.format(widget.configData.weight) : '');
     } on Exception catch (e) {
       // Defensive fallback: set empty strings if formatting fails
-      widget._logger.fine('Error syncing controllers: $e');
+      widget._logger.warning('Error syncing controllers: $e');
       _repetitionsController.text = '';
       _weightController.text = '';
     }
@@ -605,8 +607,38 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       _weightController.text = pastLog.weight != null ? numberFormat.format(pastLog.weight) : '';
       widget._logger.finer('Setting log weight to ${_weightController.text}');
 
+      _log.repetitions = pastLog.repetitions;
+      _log.weight = pastLog.weight;
       _log.rir = pastLog.rir;
-      widget._logger.finer('Setting log rir to ${_log.rir}');
+      if (pastLog.repetitionsUnitObj != null) {
+        _log.repetitionUnit = pastLog.repetitionsUnitObj;
+      }
+      if (pastLog.weightUnitObj != null) {
+        _log.weightUnit = pastLog.weightUnitObj;
+      }
+
+      widget._logger.finer(
+        'Copied to _log: repetitions=${_log.repetitions}, weight=${_log.weight}, repetitionsUnitId=${_log.repetitionsUnitId}, weightUnitId=${_log.weightUnitId}, rir=${_log.rir}',
+      );
+
+      // Update plate calculator using the value currently visible in the controllers
+      try {
+        final weightValue = _weightController.text.isEmpty
+            ? 0
+            : numberFormat.parse(_weightController.text);
+        ref.read(plateCalculatorProvider.notifier).setWeight(weightValue);
+      } catch (e) {
+        widget._logger.fine('Error updating plate calculator: $e');
+      }
+    });
+
+    // Ensure subsequent syncs (e.g., didUpdateWidget) don't overwrite these values
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      _syncControllersWithWidget();
     });
   }
 
