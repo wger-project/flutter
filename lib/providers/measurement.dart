@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
