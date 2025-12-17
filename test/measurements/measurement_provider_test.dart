@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
@@ -271,7 +271,7 @@ void main() {
       'should re-add the "removed" MeasurementCategory and relay the exception on WgerHttpException',
       () {
         // arrange
-        when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
+        when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException.fromMap({}));
 
         // act & assert
         expect(
@@ -330,7 +330,7 @@ void main() {
 
     test('should keep categories list as is on WgerHttpException', () {
       // arrange
-      when(mockWgerBaseProvider.patch(any, any)).thenThrow(WgerHttpException('{}'));
+      when(mockWgerBaseProvider.patch(any, any)).thenThrow(WgerHttpException.fromMap({}));
 
       // act & assert
       expect(
@@ -550,7 +550,7 @@ void main() {
           ),
           const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
         ];
-        when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException('{}'));
+        when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException.fromMap({}));
 
         // act & assert
         expect(

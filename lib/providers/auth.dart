@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,7 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 
@@ -132,7 +132,7 @@ class AuthProvider with ChangeNotifier {
     );
 
     if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
 
     return login(username, password, serverUrl, null);
@@ -158,8 +158,8 @@ class AuthProvider with ChangeNotifier {
         },
       );
 
-      if (response.statusCode != 200) {
-        throw WgerHttpException(response.body);
+      if (response.statusCode >= 400) {
+        throw WgerHttpException(response);
       }
 
       token = apiToken;
@@ -169,16 +169,17 @@ class AuthProvider with ChangeNotifier {
       final response = await client.post(
         makeUri(serverUrl, LOGIN_URL),
         headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
           HttpHeaders.userAgentHeader: getAppNameHeader(),
         },
         body: json.encode({'username': username, 'password': password}),
       );
-      final responseData = json.decode(response.body);
 
       if (response.statusCode >= 400) {
-        throw WgerHttpException(response.body);
+        throw WgerHttpException(response);
       }
+
+      final responseData = json.decode(response.body);
 
       token = responseData['token'];
     }

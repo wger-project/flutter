@@ -21,7 +21,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/helpers.dart';
 
@@ -66,7 +66,7 @@ class WgerBaseProvider {
 
     // Something wrong with our request
     if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
 
     // Process the response
@@ -104,7 +104,7 @@ class WgerBaseProvider {
 
     // Something wrong with our request
     if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
 
     return json.decode(response.body);
@@ -120,7 +120,7 @@ class WgerBaseProvider {
 
     // Something wrong with our request
     if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
 
     return json.decode(response.body);
@@ -137,7 +137,7 @@ class WgerBaseProvider {
 
     // Something wrong with our request
     if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
     return response;
   }

@@ -20,7 +20,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -374,7 +374,7 @@ class RoutinesProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       _routines.insert(routineIndex, routine);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
   }
 
