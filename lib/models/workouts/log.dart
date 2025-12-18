@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -111,31 +111,23 @@ class Log {
 
   Log.empty();
 
-  Log.fromSetConfigData(SetConfigData data) {
+  Log.fromSetConfigData(SetConfigData setConfig) {
     date = DateTime.now();
     sessionId = null;
 
-    slotEntryId = data.slotEntryId;
-    exerciseBase = data.exercise;
+    slotEntryId = setConfig.slotEntryId;
+    exerciseBase = setConfig.exercise;
 
-    if (data.weight != null) {
-      weight = data.weight;
-      weightTarget = data.weight;
-    }
-    if (data.weightUnit != null) {
-      weightUnit = data.weightUnit;
-    }
+    weight = setConfig.weight;
+    weightTarget = setConfig.weight;
+    weightUnit = setConfig.weightUnit;
 
-    if (data.repetitions != null) {
-      repetitions = data.repetitions;
-      repetitionsTarget = data.repetitions;
-    }
-    if (data.repetitionsUnit != null) {
-      repetitionUnit = data.repetitionsUnit;
-    }
+    repetitions = setConfig.repetitions;
+    repetitionsTarget = setConfig.repetitions;
+    repetitionUnit = setConfig.repetitionsUnit;
 
-    rir = data.rir;
-    rirTarget = data.rir;
+    rir = setConfig.rir;
+    rirTarget = setConfig.rir;
   }
 
   // Boilerplate

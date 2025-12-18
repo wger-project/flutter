@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -661,6 +661,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               children: [
                 Flexible(
                   child: LogsRepsWidget(
+                    key: const ValueKey('logs-reps-widget'),
                     controller: _repetitionsController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
@@ -673,6 +674,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: LogsWeightWidget(
+                    key: const ValueKey('logs-weight-widget'),
                     controller: _weightController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
@@ -690,6 +692,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               children: [
                 Flexible(
                   child: LogsRepsWidget(
+                    key: const ValueKey('logs-reps-widget'),
                     controller: _repetitionsController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
@@ -702,6 +705,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: RepetitionUnitInputWidget(
+                    key: const ValueKey('repetition-unit-input-widget'),
                     _log.repetitionsUnitId,
                     onChanged: (v) => {},
                   ),
@@ -715,6 +719,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               children: [
                 Flexible(
                   child: LogsWeightWidget(
+                    key: const ValueKey('logs-weight-widget'),
                     controller: _weightController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
@@ -726,13 +731,18 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 ),
                 const SizedBox(width: 8),
                 Flexible(
-                  child: WeightUnitInputWidget(_log.weightUnitId, onChanged: (v) => {}),
+                  child: WeightUnitInputWidget(
+                    _log.weightUnitId,
+                    onChanged: (v) => {},
+                    key: const ValueKey('weight-unit-input-widget'),
+                  ),
                 ),
                 const SizedBox(width: 8),
               ],
             ),
           if (_detailed)
             RiRInputWidget(
+              key: const ValueKey('rir-input-widget'),
               _log.rir,
               onChanged: (value) {
                 if (value == '') {
@@ -743,6 +753,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               },
             ),
           SwitchListTile(
+            key: const ValueKey('units-switch'),
             dense: true,
             title: Text(i18n.setUnitsAndRir),
             value: _detailed,
@@ -753,6 +764,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
             },
           ),
           FilledButton(
+            key: const ValueKey('save-log-button'),
             onPressed: _isSaving
                 ? null
                 : () async {
