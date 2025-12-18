@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2025 wger Team
+ * Copyright (c)  2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -44,14 +45,14 @@ class WorkoutSession {
     this.id,
     this.dayId,
     required this.routineId,
-    this.impression = 2,
+    this.impression = DEFAULT_IMPRESSION,
     this.notes = '',
     this.timeStart,
     this.timeEnd,
     this.logs = const [],
     DateTime? date,
   }) {
-    this.date = date ?? DateTime.now();
+    this.date = date ?? clock.now();
   }
 
   WorkoutSessionTableCompanion toCompanion({bool includeId = false}) {

@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -51,6 +52,9 @@ class _LogPageState extends ConsumerState<LogPage> {
   final GlobalKey<_LogFormWidgetState> _logFormKey = GlobalKey<_LogFormWidgetState>();
 
   late FocusNode focusNode;
+  // Persistent log and current slot-page id to avoid recreating the Log on rebuilds
+  Log? _currentLog;
+  String? _currentSlotPageUuid;
 
   @override
   void initState() {
@@ -68,6 +72,7 @@ class _LogPageState extends ConsumerState<LogPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = ref.watch(gymStateProvider);
+    final languageCode = Localizations.localeOf(context).languageCode;
 
     final page = state.getPageByIndex();
     if (page == null) {
@@ -87,9 +92,20 @@ class _LogPageState extends ConsumerState<LogPage> {
 
     final setConfigData = slotEntryPage.setConfigData!;
 
-    final log = Log.fromSetConfigData(setConfigData)
-      ..routineId = state.routine.id!
-      ..iteration = state.iteration;
+    // Create a Log only when the slot page changed or none exists yet
+    if (_currentLog == null || _currentSlotPageUuid != slotEntryPage.uuid) {
+      _currentLog = Log.fromSetConfigData(setConfigData)
+        ..routineId = state.routine.id!
+        ..iteration = state.iteration;
+      _currentSlotPageUuid = slotEntryPage.uuid;
+    } else {
+      // Update routine/iteration if needed without creating a new Log
+      _currentLog!
+        ..routineId = state.routine.id!
+        ..iteration = state.iteration;
+    }
+
+    final log = _currentLog!;
 
     // Mark done sets
     final decorationStyle = slotEntryPage.logDone
@@ -99,7 +115,7 @@ class _LogPageState extends ConsumerState<LogPage> {
     return Column(
       children: [
         NavigationHeader(
-          log.exerciseObj.getTranslation(Localizations.localeOf(context).languageCode).name,
+          log.exerciseObj.getTranslation(languageCode).name,
           widget._controller,
         ),
 
@@ -168,11 +184,11 @@ class _LogPageState extends ConsumerState<LogPage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: LogFormWidget(
-                key: _logFormKey,
                 controller: widget._controller,
                 configData: setConfigData,
                 log: log,
                 focusNode: focusNode,
+                key: _logFormKey,
               ),
             ),
           ),
@@ -531,17 +547,42 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     _weightController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final locale = Localizations.localeOf(context).toString();
-      final numberFormat = NumberFormat.decimalPattern(locale);
-
-      if (widget.configData.repetitions != null) {
-        _repetitionsController.text = numberFormat.format(widget.configData.repetitions);
-      }
-
-      if (widget.configData.weight != null) {
-        _weightController.text = numberFormat.format(widget.configData.weight);
-      }
+      _syncControllersWithWidget();
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant LogFormWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // If the log or config changed, update internal _log and controllers
+    if (oldWidget.log != widget.log || oldWidget.configData != widget.configData) {
+      _log = widget.log;
+      _syncControllersWithWidget();
+    }
+  }
+
+  void _syncControllersWithWidget() {
+    final locale = Localizations.localeOf(context).toString();
+    final numberFormat = NumberFormat.decimalPattern(locale);
+
+    // Priority: current log -> config defaults -> empty
+    try {
+      _repetitionsController.text = widget.log.repetitions != null
+          ? numberFormat.format(widget.log.repetitions)
+          : (widget.configData.repetitions != null
+                ? numberFormat.format(widget.configData.repetitions)
+                : '');
+
+      _weightController.text = widget.log.weight != null
+          ? numberFormat.format(widget.log.weight)
+          : (widget.configData.weight != null ? numberFormat.format(widget.configData.weight) : '');
+    } on Exception catch (e) {
+      // Defensive fallback: set empty strings if formatting fails
+      widget._logger.warning('Error syncing controllers: $e');
+      _repetitionsController.text = '';
+      _weightController.text = '';
+    }
   }
 
   @override
@@ -564,8 +605,38 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       _weightController.text = pastLog.weight != null ? numberFormat.format(pastLog.weight) : '';
       widget._logger.finer('Setting log weight to ${_weightController.text}');
 
+      _log.repetitions = pastLog.repetitions;
+      _log.weight = pastLog.weight;
       _log.rir = pastLog.rir;
-      widget._logger.finer('Setting log rir to ${_log.rir}');
+      if (pastLog.repetitionsUnitObj != null) {
+        _log.repetitionUnit = pastLog.repetitionsUnitObj;
+      }
+      if (pastLog.weightUnitObj != null) {
+        _log.weightUnit = pastLog.weightUnitObj;
+      }
+
+      widget._logger.finer(
+        'Copied to _log: repetitions=${_log.repetitions}, weight=${_log.weight}, repetitionsUnitId=${_log.repetitionsUnitId}, weightUnitId=${_log.weightUnitId}, rir=${_log.rir}',
+      );
+
+      // Update plate calculator using the value currently visible in the controllers
+      try {
+        final weightValue = _weightController.text.isEmpty
+            ? 0
+            : numberFormat.parse(_weightController.text);
+        ref.read(plateCalculatorProvider.notifier).setWeight(weightValue);
+      } catch (e) {
+        widget._logger.fine('Error updating plate calculator: $e');
+      }
+    });
+
+    // Ensure subsequent syncs (e.g., didUpdateWidget) don't overwrite these values
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      _syncControllersWithWidget();
     });
   }
 
@@ -589,6 +660,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               children: [
                 Flexible(
                   child: LogsRepsWidget(
+                    key: const ValueKey('logs-reps-widget'),
                     controller: _repetitionsController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
@@ -601,6 +673,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: LogsWeightWidget(
+                    key: const ValueKey('logs-weight-widget'),
                     controller: _weightController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
@@ -618,6 +691,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               children: [
                 Flexible(
                   child: LogsRepsWidget(
+                    key: const ValueKey('logs-reps-widget'),
                     controller: _repetitionsController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
@@ -630,6 +704,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: RepetitionUnitInputWidget(
+                    key: const ValueKey('repetition-unit-input-widget'),
                     _log.repetitionsUnitId,
                     onChanged: (v) => {},
                   ),
@@ -643,6 +718,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               children: [
                 Flexible(
                   child: LogsWeightWidget(
+                    key: const ValueKey('logs-weight-widget'),
                     controller: _weightController,
                     configData: widget.configData,
                     focusNode: widget.focusNode,
@@ -654,13 +730,18 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 ),
                 const SizedBox(width: 8),
                 Flexible(
-                  child: WeightUnitInputWidget(_log.weightUnitId, onChanged: (v) => {}),
+                  child: WeightUnitInputWidget(
+                    _log.weightUnitId,
+                    onChanged: (v) => {},
+                    key: const ValueKey('weight-unit-input-widget'),
+                  ),
                 ),
                 const SizedBox(width: 8),
               ],
             ),
           if (_detailed)
             RiRInputWidget(
+              key: const ValueKey('rir-input-widget'),
               _log.rir,
               onChanged: (value) {
                 if (value == '') {
@@ -671,6 +752,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               },
             ),
           SwitchListTile(
+            key: const ValueKey('units-switch'),
             dense: true,
             title: Text(i18n.setUnitsAndRir),
             value: _detailed,
@@ -681,6 +763,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
             },
           ),
           FilledButton(
+            key: const ValueKey('save-log-button'),
             onPressed: _isSaving
                 ? null
                 : () async {

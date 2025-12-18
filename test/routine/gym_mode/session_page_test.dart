@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -61,6 +61,9 @@ void main() {
     when(mockRepository.editLocalDrift(any)).thenAnswer(
       (_) => Future.value(testRoutine.sessions[0]),
     );
+    when(mockRoutinesProvider.fetchAndSetRoutineFull(any)).thenAnswer(
+      (_) => Future.value(testRoutine),
+    );
   });
 
   Widget renderSessionPage({locale = 'en'}) {
@@ -88,6 +91,9 @@ void main() {
   testWidgets('Test that data from  session is loaded', (WidgetTester tester) async {
     withClock(Clock.fixed(DateTime(2021, 5, 1)), () async {
       await tester.pumpWidget(renderSessionPage());
+      await tester.pumpAndSettle();
+
+      debugDumpApp();
       expect(find.text('10:00'), findsOneWidget);
       expect(find.text('12:34'), findsOneWidget);
       expect(find.text('This is a note'), findsOneWidget);
@@ -105,6 +111,7 @@ void main() {
 
     withClock(Clock.fixed(DateTime(2021, 5, 1)), () async {
       await tester.pumpWidget(renderSessionPage());
+      await tester.pumpAndSettle();
 
       final startTimeField = find.byKey(const ValueKey('time-start'));
       expect(startTimeField, findsOneWidget);
@@ -126,6 +133,7 @@ void main() {
 
     // Act
     await tester.pumpWidget(renderSessionPage());
+    await tester.pumpAndSettle();
 
     // Assert
     expect(find.text('13:35'), findsOneWidget);
@@ -137,6 +145,7 @@ void main() {
   testWidgets('Test that correct data is send to server', (WidgetTester tester) async {
     withClock(Clock.fixed(DateTime(2021, 5, 1)), () async {
       await tester.pumpWidget(renderSessionPage());
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('save-button')));
       final captured =
           verify(mockRepository.editLocalDrift(captureAny as dynamic)).captured.single

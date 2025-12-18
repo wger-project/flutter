@@ -21,10 +21,10 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
-import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
@@ -220,7 +220,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       _plans.insert(existingPlanIndex, existingPlan);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
     //existingPlan = null;
   }
@@ -263,7 +263,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       plan.meals.insert(mealIndex, existingMeal);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
   }
 
@@ -293,7 +293,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
   }
 

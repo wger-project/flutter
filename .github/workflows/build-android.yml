@@ -36,7 +36,7 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: builds-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -67,7 +67,7 @@ jobs:
       - name: Build AAB
         run: flutter build appbundle --release
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: builds-aab
           path: build/app/outputs/bundle/release/app-release.aab

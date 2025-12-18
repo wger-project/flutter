@@ -63,10 +63,11 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v6
         with:
+          lfs: true
           ref: ${{ github.event.inputs.version }}
 
       - name: Download builds
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           path: /tmp/
 
@@ -114,7 +115,7 @@ jobs:
   #        uses: ./.github/actions/flutter-common
   #
   #      - name: Download builds
-  #        uses: actions/download-artifact@v6
+  #        uses: actions/download-artifact@v7
   #        with:
   #          path: /tmp/
   #
@@ -133,7 +134,7 @@ jobs:
 
     steps:
       - name: Download builds
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
 
       - name: Make Github release
         uses: softprops/action-gh-release@v2

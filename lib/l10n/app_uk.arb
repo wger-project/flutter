@@ -1162,5 +1162,63 @@
     "slotEntryTypeJump": "Стрибок",
     "@slotEntryTypeJump": {},
     "endWorkout": "Закінчити тренування",
-    "@endWorkout": {}
+    "@endWorkout": {},
+    "impressionGood": "Добре",
+    "@impressionGood": {},
+    "impressionNeutral": "Нейтральний",
+    "@impressionNeutral": {},
+    "impressionBad": "Погано",
+    "@impressionBad": {},
+    "gymModeShowExercises": "Показати сторінки огляду вправ",
+    "@gymModeShowExercises": {},
+    "gymModeShowTimer": "Показувати таймер між сетами",
+    "@gymModeShowTimer": {},
+    "gymModeTimerType": "Тип таймера",
+    "@gymModeTimerType": {},
+    "gymModeTimerTypeHelText": "Якщо сет має час паузи, завжди використовується зворотний відлік.",
+    "@gymModeTimerTypeHelText": {},
+    "countdown": "Зворотний відлік",
+    "@countdown": {},
+    "stopwatch": "Секундомір",
+    "@stopwatch": {},
+    "gymModeDefaultCountdownTime": "Час зворотного відліку за замовчуванням, у секундах",
+    "@gymModeDefaultCountdownTime": {},
+    "gymModeNotifyOnCountdownFinish": "Повідомити про закінчення зворотного відліку",
+    "@gymModeNotifyOnCountdownFinish": {},
+    "duration": "Тривалість",
+    "@duration": {},
+    "durationHoursMinutes": "{hours}г {minutes}хв",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Обсяг",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Тренування завершено",
+    "@workoutCompleted": {},
+    "formMinMaxValues": "Будь ласка, введіть значення від {min} до {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "superset": "Суперсет",
+    "@superset": {}
 }

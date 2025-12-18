@@ -21,7 +21,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 #   - the version number is taken from the git tag vX.Y.Z
 #   - the build number is computed by reading the last one from the play store
 #     and increasing by one
-version: 1.9.1+110
+version: 1.9.3+130
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
@@ -36,7 +36,7 @@ dependencies:
   clock: ^1.1.2
   collection: ^1.18.0
   cupertino_icons: ^1.0.8
-  drift: ^2.29.0
+  drift: ^2.30.0
   equatable: ^2.0.7
   fl_chart: ^1.1.1
   flex_color_scheme: ^8.3.1
@@ -80,7 +80,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   build_runner: ^2.10.4
-  cider: ^0.2.7
+  cider: ^0.2.9
   drift_dev: ^2.29.0
   flutter_lints: ^6.0.0
   freezed: ^3.2.0
