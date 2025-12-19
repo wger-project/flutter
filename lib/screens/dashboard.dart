@@ -17,8 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets/measurements.dart';
@@ -33,6 +35,9 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final nutritionProvider = context.watch<NutritionPlansProvider>();
+    final bool showDietPlan = nutritionProvider.currentPlan != null;
+
     final width = MediaQuery.sizeOf(context).width;
     final isMobile = width < MATERIAL_XS_BREAKPOINT;
 
@@ -49,7 +54,8 @@ class DashboardScreen extends StatelessWidget {
 
     final items = [
       const DashboardRoutineWidget(),
-      const DashboardNutritionWidget(),
+      if (showDietPlan)
+        const DashboardNutritionWidget(),
       const DashboardWeightWidget(),
       const DashboardMeasurementWidget(),
       const DashboardCalendarWidget(),
