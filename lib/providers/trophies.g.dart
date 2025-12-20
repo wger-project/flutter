@@ -27,77 +27,89 @@ part of 'trophies.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(trophies)
-const trophiesProvider = TrophiesProvider._();
+@ProviderFor(trophyRepository)
+const trophyRepositoryProvider = TrophyRepositoryProvider._();
 
-final class TrophiesProvider
-    extends $FunctionalProvider<AsyncValue<List<Trophy>>, List<Trophy>, FutureOr<List<Trophy>>>
-    with $FutureModifier<List<Trophy>>, $FutureProvider<List<Trophy>> {
-  const TrophiesProvider._()
+final class TrophyRepositoryProvider
+    extends $FunctionalProvider<TrophyRepository, TrophyRepository, TrophyRepository>
+    with $Provider<TrophyRepository> {
+  const TrophyRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'trophiesProvider',
+        name: r'trophyRepositoryProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$trophiesHash();
+  String debugGetCreateSourceHash() => _$trophyRepositoryHash();
 
   @$internal
   @override
-  $FutureProviderElement<List<Trophy>> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  $ProviderElement<TrophyRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<List<Trophy>> create(Ref ref) {
-    return trophies(ref);
+  TrophyRepository create(Ref ref) {
+    return trophyRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(TrophyRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<TrophyRepository>(value),
+    );
   }
 }
 
-String _$trophiesHash() => r'44dd5e9a820f4e37599daac2a49a9358386758a8';
+String _$trophyRepositoryHash() => r'0699f0c0f7f324f3ba9b21420d9845a3e3096b61';
 
-@ProviderFor(trophyProgression)
-const trophyProgressionProvider = TrophyProgressionProvider._();
+@ProviderFor(TrophyStateNotifier)
+const trophyStateProvider = TrophyStateNotifierProvider._();
 
-final class TrophyProgressionProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<List<UserTrophyProgression>>,
-          List<UserTrophyProgression>,
-          FutureOr<List<UserTrophyProgression>>
-        >
-    with
-        $FutureModifier<List<UserTrophyProgression>>,
-        $FutureProvider<List<UserTrophyProgression>> {
-  const TrophyProgressionProvider._()
+final class TrophyStateNotifierProvider extends $NotifierProvider<TrophyStateNotifier, void> {
+  const TrophyStateNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'trophyProgressionProvider',
-        isAutoDispose: true,
+        name: r'trophyStateProvider',
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$trophyProgressionHash();
+  String debugGetCreateSourceHash() => _$trophyStateNotifierHash();
 
   @$internal
   @override
-  $FutureProviderElement<List<UserTrophyProgression>> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  TrophyStateNotifier create() => TrophyStateNotifier();
 
-  @override
-  FutureOr<List<UserTrophyProgression>> create(Ref ref) {
-    return trophyProgression(ref);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
   }
 }
 
-String _$trophyProgressionHash() => r'444caf04f3d0a7845e840d452e4b4a822b59df9b';
+String _$trophyStateNotifierHash() => r'e5c8f2a9477b8f7e5efe4e9ba23765f951627a9f';
+
+abstract class _$TrophyStateNotifier extends $Notifier<void> {
+  void build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    build();
+    final ref = this.ref as $Ref<void, void>;
+    final element =
+        ref.element as $ClassProviderElement<AnyNotifier<void, void>, void, Object?, Object?>;
+    element.handleValue(ref, null);
+  }
+}

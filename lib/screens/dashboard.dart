@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +26,8 @@ import 'package:wger/widgets/dashboard/widgets/nutrition.dart';
 import 'package:wger/widgets/dashboard/widgets/routines.dart';
 import 'package:wger/widgets/dashboard/widgets/weight.dart';
 
+import '../widgets/dashboard/widgets/trophies.dart';
+
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
@@ -48,6 +50,7 @@ class DashboardScreen extends StatelessWidget {
     }
 
     final items = [
+      const DashboardTrophiesWidget(),
       const DashboardRoutineWidget(),
       const DashboardNutritionWidget(),
       const DashboardWeightWidget(),

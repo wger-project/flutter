@@ -16,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/trophies.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
 
 import 'trophies_provider_test.mocks.dart';
 
@@ -39,8 +37,8 @@ const trophyJson = {
 
 @GenerateMocks([WgerBaseProvider])
 void main() {
-  group('Trophies providers', () {
-    test('trophies provider returns list of Trophy models', () async {
+  group('Trophy repository', () {
+    test('fetches list of trophies', () async {
       // Arrange
       final mockBase = MockWgerBaseProvider();
       when(mockBase.fetchPaginated(any)).thenAnswer((_) async => [trophyJson]);
@@ -52,15 +50,10 @@ void main() {
           query: anyNamed('query'),
         ),
       ).thenReturn(Uri.parse('https://example.org/trophies'));
-
-      final container = ProviderContainer.test(
-        overrides: [
-          wgerBaseProvider.overrideWithValue(mockBase),
-        ],
-      );
+      final repository = TrophyRepository(mockBase);
 
       // Act
-      final result = await container.read(trophiesProvider.future);
+      final result = await repository.fetchTrophies();
 
       // Assert
       expect(result, isA<List>());
@@ -71,7 +64,7 @@ void main() {
       expect(trophy.type.toString(), contains('count'));
     });
 
-    test('trophyProgression provider returns list of UserTrophyProgression models', () async {
+    test('fetches list of user trophy progression', () async {
       // Arrange
       final progressionJson = {
         'trophy': trophyJson,
@@ -93,14 +86,10 @@ void main() {
           query: anyNamed('query'),
         ),
       ).thenReturn(Uri.parse('https://example.org/user_progressions'));
-      final container = ProviderContainer.test(
-        overrides: [
-          wgerBaseProvider.overrideWithValue(mockBase),
-        ],
-      );
+      final repository = TrophyRepository(mockBase);
 
       // Act
-      final result = await container.read(trophyProgressionProvider.future);
+      final result = await repository.fetchProgression();
 
       // Assert
       expect(result, isA<List>());

@@ -1,0 +1,57 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2025 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/helpers/json.dart';
+
+import 'trophy.dart';
+
+part 'user_trophy.g.dart';
+
+/// A trophy awarded to a user for achieving a specific milestone.
+
+@JsonSerializable()
+class UserTrophy {
+  @JsonKey(required: true)
+  final int id;
+
+  @JsonKey(required: true)
+  final Trophy trophy;
+
+  @JsonKey(required: true, name: 'earned_at', fromJson: utcIso8601ToLocalDate)
+  final DateTime earnedAt;
+
+  @JsonKey(required: true)
+  final num progress;
+
+  @JsonKey(required: true, name: 'is_notified')
+  final bool isNotified;
+
+  UserTrophy({
+    required this.id,
+    required this.trophy,
+    required this.earnedAt,
+    required this.progress,
+    required this.isNotified,
+  });
+
+  // Boilerplate
+  factory UserTrophy.fromJson(Map<String, dynamic> json) => _$UserTrophyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserTrophyToJson(this);
+}
