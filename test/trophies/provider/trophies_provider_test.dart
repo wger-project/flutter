@@ -77,15 +77,8 @@ void main() {
       };
 
       final mockBase = MockWgerBaseProvider();
-      when(mockBase.fetchPaginated(any)).thenAnswer((_) async => [progressionJson]);
-      when(
-        mockBase.makeUrl(
-          any,
-          id: anyNamed('id'),
-          objectMethod: anyNamed('objectMethod'),
-          query: anyNamed('query'),
-        ),
-      ).thenReturn(Uri.parse('https://example.org/user_progressions'));
+      when(mockBase.fetch(any)).thenAnswer((_) async => [progressionJson]);
+      when(mockBase.makeUrl(any)).thenReturn(Uri.parse('https://example.org/user_progressions'));
       final repository = TrophyRepository(mockBase);
 
       // Act
@@ -100,7 +93,7 @@ void main() {
       expect(p.currentValue, 12.5);
       expect(p.progressDisplay, '12.5/100');
 
-      verify(mockBase.fetchPaginated(any)).called(1);
+      verify(mockBase.fetch(any)).called(1);
     });
   });
 }

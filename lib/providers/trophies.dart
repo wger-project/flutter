@@ -48,15 +48,9 @@ class TrophyRepository {
   }
 
   Future<List<UserTrophyProgression>> fetchProgression() async {
-    try {
-      final url = base.makeUrl(userTrophyProgressionPath);
-      final List<dynamic> data = await base.fetch(url);
-      return data.map((e) => UserTrophyProgression.fromJson(e)).toList();
-    } catch (e, stck) {
-      print('Error fetching trophy progression: $e');
-      print(stck);
-      return [];
-    }
+    final url = base.makeUrl(userTrophyProgressionPath);
+    final List<dynamic> data = await base.fetch(url);
+    return data.map((e) => UserTrophyProgression.fromJson(e)).toList();
   }
 
   List<Trophy> filterByType(List<Trophy> list, TrophyType type) =>
