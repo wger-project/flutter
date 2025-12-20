@@ -58,6 +58,7 @@ import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
+import 'package:wger/screens/trophy_screen.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -263,6 +264,7 @@ class MainApp extends StatelessWidget {
                       SettingsPage.routeName: (ctx) => const SettingsPage(),
                       LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
                       ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
+                      TrophyScreen.routeName: (ctx) => const TrophyScreen(),
                     },
                     localizationsDelegates: AppLocalizations.localizationsDelegates,
                     supportedLocales: AppLocalizations.supportedLocales,

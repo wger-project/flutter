@@ -58,6 +58,15 @@ List<UserTrophyProgression> getUserTrophyProgression() {
       targetValue: null,
       progressDisplay: null,
     ),
+    UserTrophyProgression(
+      trophy: trophies[1],
+      progress: 40,
+      isEarned: false,
+      earnedAt: null,
+      currentValue: 12,
+      targetValue: 30,
+      progressDisplay: '12 / 30',
+    ),
   ];
 }
 
