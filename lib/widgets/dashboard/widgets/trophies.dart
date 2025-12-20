@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/models/trophies/trophy.dart';
 import 'package:wger/providers/trophies.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
@@ -32,34 +33,104 @@ class DashboardTrophiesWidget extends ConsumerWidget {
       future: provider.fetchUserTrophies(),
       builder: (context, asyncSnapshot) {
         if (asyncSnapshot.connectionState != ConnectionState.done) {
-          return const Card(
-            child: BoxedProgressIndicator(),
-          );
+          return const Card(child: BoxedProgressIndicator());
         }
 
-        return Card(
-          child: Column(
-            children: [
-              ListTile(
-                title: Text(
-                  'Trophies',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-              ),
+        final userTrophies = asyncSnapshot.data ?? [];
 
-              ...(asyncSnapshot.data ?? []).map(
-                (userTrophy) => ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(userTrophy.trophy.image),
+        return Card(
+          color: Colors.transparent,
+          shadowColor: Colors.transparent,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ListTile(
+              //   title: Text(
+              //     'Trophies',
+              //     style: Theme.of(context).textTheme.headlineSmall,
+              //   ),
+              // ),
+              if (userTrophies.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text('No trophies yet', style: Theme.of(context).textTheme.bodyMedium),
+                )
+              else
+                SizedBox(
+                  height: 140,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: userTrophies.length,
+                    separatorBuilder: (context, index) => const SizedBox(width: 12),
+                    itemBuilder: (context, index) {
+                      final userTrophy = userTrophies[index];
+
+                      return SizedBox(
+                        width: 220,
+                        child: TrophyCard(trophy: userTrophy.trophy),
+                      );
+                    },
                   ),
-                  title: Text(userTrophy.trophy.name),
-                  subtitle: Text(userTrophy.trophy.description, overflow: TextOverflow.ellipsis),
                 ),
-              ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class TrophyCard extends StatelessWidget {
+  const TrophyCard({
+    super.key,
+    required this.trophy,
+  });
+
+  final Trophy trophy;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card.filled(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(trophy.image),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        trophy.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        trophy.description,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
