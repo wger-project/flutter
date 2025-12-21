@@ -263,6 +263,7 @@
   },
   "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
   "@selectExercises": {},
+  "personalRecords": "Personal records",
   "gymMode": "Gym mode",
   "@gymMode": {
     "description": "Label when starting the gym mode"

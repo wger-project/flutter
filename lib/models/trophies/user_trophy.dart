@@ -20,6 +20,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 
 import 'trophy.dart';
+import 'user_trophy_context_data.dart';
 
 part 'user_trophy.g.dart';
 
@@ -42,12 +43,16 @@ class UserTrophy {
   @JsonKey(required: true, name: 'is_notified')
   final bool isNotified;
 
+  @JsonKey(required: true, name: 'context_data')
+  final ContextData? contextData;
+
   UserTrophy({
     required this.id,
     required this.trophy,
     required this.earnedAt,
     required this.progress,
     required this.isNotified,
+    this.contextData,
   });
 
   // Boilerplate

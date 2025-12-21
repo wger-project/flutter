@@ -33,7 +33,9 @@ void main() {
   testWidgets('TrophiesOverview shows trophies', (WidgetTester tester) async {
     // Arrange
     final mockRepository = MockTrophyRepository();
-    when(mockRepository.fetchProgression()).thenAnswer((_) async => getUserTrophyProgression());
+    when(
+      mockRepository.fetchProgression(filterQuery: anyNamed('filterQuery')),
+    ).thenAnswer((_) async => getUserTrophyProgression());
 
     // Act
     await mockNetworkImagesFor(() async {

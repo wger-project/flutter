@@ -33,7 +33,9 @@ void main() {
   testWidgets('DashboardTrophiesWidget shows trophies', (WidgetTester tester) async {
     // Arrange
     final mockRepository = MockTrophyRepository();
-    when(mockRepository.fetchUserTrophies()).thenAnswer((_) async => getUserTrophies());
+    when(
+      mockRepository.fetchUserTrophies(filterQuery: anyNamed('filterQuery')),
+    ).thenAnswer((_) async => getUserTrophies());
 
     // Act
     await mockNetworkImagesFor(() async {
@@ -52,7 +54,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      // expect(find.text('Trophies'), findsOneWidget);
       expect(find.text('New Year, New Me'), findsOneWidget);
     });
   });

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,10 +24,12 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/trophies/user_trophy.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session_api.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/trophies.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
@@ -48,6 +50,7 @@ class WorkoutSummary extends ConsumerStatefulWidget {
 class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
   late Future<void> _initData;
   late Routine _routine;
+  late List<UserTrophy> _userPrTrophies;
 
   @override
   void initState() {
@@ -62,6 +65,9 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
     _routine = await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
       gymState.routine.id!,
     );
+
+    final trophyNotifier = ref.read(trophyStateProvider.notifier);
+    _userPrTrophies = await trophyNotifier.fetchUserPRTrophies();
   }
 
   @override
@@ -82,10 +88,18 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}: ${snapshot.stackTrace}'));
               } else if (snapshot.connectionState == ConnectionState.done) {
+                final apiSession = _routine.sessions.firstWhereOrNull(
+                  (s) => s.session.date.isSameDayAs(clock.now()),
+                );
+                final userTrophies = _userPrTrophies
+                    .where(
+                      (t) => t.contextData!.sessionId == apiSession?.session.id,
+                    )
+                    .toList();
+
                 return WorkoutSessionStats(
-                  _routine.sessions.firstWhereOrNull(
-                    (s) => s.session.date.isSameDayAs(clock.now()),
-                  ),
+                  apiSession,
+                  userTrophies,
                 );
               }
 
@@ -102,12 +116,14 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
 class WorkoutSessionStats extends ConsumerWidget {
   final _logger = Logger('WorkoutSessionStats');
   final WorkoutSessionApi? _sessionApi;
+  final List<UserTrophy> _userPrTrophies;
 
-  WorkoutSessionStats(this._sessionApi, {super.key});
+  WorkoutSessionStats(this._sessionApi, this._userPrTrophies, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     if (_sessionApi == null) {
       return Center(
@@ -159,16 +175,19 @@ class WorkoutSessionStats extends ConsumerWidget {
             ),
           ],
         ),
-        // const SizedBox(height: 16),
-        // InfoCard(
-        //   title: 'Personal Records',
-        //   value: prCount.toString(),
-        //   color: theme.colorScheme.tertiaryContainer,
-        // ),
+        if (_userPrTrophies.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: InfoCard(
+              title: i18n.personalRecords,
+              value: _userPrTrophies.length.toString(),
+              color: theme.colorScheme.tertiaryContainer,
+            ),
+          ),
         const SizedBox(height: 10),
         MuscleGroupsCard(_sessionApi.logs),
         const SizedBox(height: 10),
-        ExercisesCard(_sessionApi),
+        ExercisesCard(_sessionApi, _userPrTrophies),
         FilledButton(
           onPressed: () {
             ref.read(gymStateProvider.notifier).clear();

@@ -1108,6 +1108,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get personalRecords =>
+      (super.noSuchMethod(
+            Invocation.getter(#personalRecords),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#personalRecords),
+            ),
+          )
+          as String);
+
+  @override
   String get gymMode =>
       (super.noSuchMethod(
             Invocation.getter(#gymMode),

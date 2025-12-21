@@ -81,7 +81,7 @@ final class TrophyStateNotifierProvider extends $NotifierProvider<TrophyStateNot
   }
 }
 
-String _$trophyStateNotifierHash() => r'e5c8f2a9477b8f7e5efe4e9ba23765f951627a9f';
+String _$trophyStateNotifierHash() => r'7f50ce352d980168dae169916a17d9b62b388d28';
 
 abstract class _$TrophyStateNotifier extends $Notifier<void> {
   void build();

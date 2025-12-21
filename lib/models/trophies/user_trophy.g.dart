@@ -15,6 +15,7 @@ UserTrophy _$UserTrophyFromJson(Map<String, dynamic> json) {
       'earned_at',
       'progress',
       'is_notified',
+      'context_data',
     ],
   );
   return UserTrophy(
@@ -23,6 +24,9 @@ UserTrophy _$UserTrophyFromJson(Map<String, dynamic> json) {
     earnedAt: utcIso8601ToLocalDate(json['earned_at'] as String),
     progress: json['progress'] as num,
     isNotified: json['is_notified'] as bool,
+    contextData: json['context_data'] == null
+        ? null
+        : ContextData.fromJson(json['context_data'] as Map<String, dynamic>),
   );
 }
 
@@ -32,4 +36,5 @@ Map<String, dynamic> _$UserTrophyToJson(UserTrophy instance) => <String, dynamic
   'earned_at': instance.earnedAt.toIso8601String(),
   'progress': instance.progress,
   'is_notified': instance.isNotified,
+  'context_data': instance.contextData,
 };
