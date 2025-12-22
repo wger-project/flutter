@@ -29,9 +29,10 @@ class DashboardTrophiesWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(trophyStateProvider.notifier);
+    final languageCode = Localizations.localeOf(context).languageCode;
 
     return FutureBuilder(
-      future: provider.fetchUserTrophies(),
+      future: provider.fetchUserTrophies(language: languageCode),
       builder: (context, asyncSnapshot) {
         if (asyncSnapshot.connectionState != ConnectionState.done) {
           return const Card(child: BoxedProgressIndicator());

@@ -86,9 +86,9 @@ class MockTrophyRepository extends _i1.Mock implements _i3.TrophyRepository {
           as String);
 
   @override
-  _i5.Future<List<_i6.Trophy>> fetchTrophies() =>
+  _i5.Future<List<_i6.Trophy>> fetchTrophies({String? language}) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchTrophies, []),
+            Invocation.method(#fetchTrophies, [], {#language: language}),
             returnValue: _i5.Future<List<_i6.Trophy>>.value(<_i6.Trophy>[]),
           )
           as _i5.Future<List<_i6.Trophy>>);
@@ -96,10 +96,12 @@ class MockTrophyRepository extends _i1.Mock implements _i3.TrophyRepository {
   @override
   _i5.Future<List<_i7.UserTrophy>> fetchUserTrophies({
     Map<String, String>? filterQuery,
+    String? language,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#fetchUserTrophies, [], {
               #filterQuery: filterQuery,
+              #language: language,
             }),
             returnValue: _i5.Future<List<_i7.UserTrophy>>.value(
               <_i7.UserTrophy>[],
@@ -110,10 +112,12 @@ class MockTrophyRepository extends _i1.Mock implements _i3.TrophyRepository {
   @override
   _i5.Future<List<_i8.UserTrophyProgression>> fetchProgression({
     Map<String, String>? filterQuery,
+    String? language,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#fetchProgression, [], {
               #filterQuery: filterQuery,
+              #language: language,
             }),
             returnValue: _i5.Future<List<_i8.UserTrophyProgression>>.value(
               <_i8.UserTrophyProgression>[],

@@ -38,10 +38,10 @@ class TrophyRepository {
 
   TrophyRepository(this.base);
 
-  Future<List<Trophy>> fetchTrophies() async {
+  Future<List<Trophy>> fetchTrophies({String? language}) async {
     try {
       final url = base.makeUrl(trophiesPath, query: {'limit': API_MAX_PAGE_SIZE});
-      final trophyData = await base.fetchPaginated(url);
+      final trophyData = await base.fetchPaginated(url, language: language);
       return trophyData.map((e) => Trophy.fromJson(e)).toList();
     } catch (e, stk) {
       _logger.warning('Error fetching trophies:', e, stk);
@@ -49,7 +49,10 @@ class TrophyRepository {
     }
   }
 
-  Future<List<UserTrophy>> fetchUserTrophies({Map<String, String>? filterQuery}) async {
+  Future<List<UserTrophy>> fetchUserTrophies({
+    Map<String, String>? filterQuery,
+    String? language,
+  }) async {
     final query = {'limit': API_MAX_PAGE_SIZE};
     if (filterQuery != null) {
       query.addAll(filterQuery);
@@ -57,7 +60,7 @@ class TrophyRepository {
 
     try {
       final url = base.makeUrl(userTrophiesPath, query: query);
-      final trophyData = await base.fetchPaginated(url);
+      final trophyData = await base.fetchPaginated(url, language: language);
       return trophyData.map((e) => UserTrophy.fromJson(e)).toList();
     } catch (e, stk) {
       _logger.warning('Error fetching user trophies:');
@@ -67,10 +70,13 @@ class TrophyRepository {
     }
   }
 
-  Future<List<UserTrophyProgression>> fetchProgression({Map<String, String>? filterQuery}) async {
+  Future<List<UserTrophyProgression>> fetchProgression({
+    Map<String, String>? filterQuery,
+    String? language,
+  }) async {
     try {
       final url = base.makeUrl(userTrophyProgressionPath, query: filterQuery);
-      final List<dynamic> data = await base.fetch(url);
+      final List<dynamic> data = await base.fetch(url, language: language);
       return data.map((e) => UserTrophyProgression.fromJson(e)).toList();
     } catch (e, stk) {
       _logger.warning('Error fetching user trophy progression:', e, stk);
@@ -102,24 +108,28 @@ final class TrophyStateNotifier extends _$TrophyStateNotifier {
   /// Fetch trophies awarded to the user.
   /// Excludes hidden trophies as well as repeatable (PR) trophies since they are
   /// handled separately
-  Future<List<UserTrophy>> fetchUserTrophies() async {
+  Future<List<UserTrophy>> fetchUserTrophies({String? language}) async {
     final repo = ref.read(trophyRepositoryProvider);
     return repo.fetchUserTrophies(
       filterQuery: {'trophy__is_hidden': 'false', 'trophy__is_repeatable': 'false'},
+      language: language,
     );
   }
 
   /// Fetch PR trophies awarded to the user
-  Future<List<UserTrophy>> fetchUserPRTrophies() async {
+  Future<List<UserTrophy>> fetchUserPRTrophies({String? language}) async {
     final repo = ref.read(trophyRepositoryProvider);
-    return repo.fetchUserTrophies(filterQuery: {'trophy__trophy_type': TrophyType.pr.name});
+    return repo.fetchUserTrophies(
+      filterQuery: {'trophy__trophy_type': TrophyType.pr.name},
+      language: language,
+    );
   }
 
   /// Fetch trophy progression for the user
-  Future<List<UserTrophyProgression>> fetchTrophyProgression() async {
+  Future<List<UserTrophyProgression>> fetchTrophyProgression({String? language}) async {
     final repo = ref.read(trophyRepositoryProvider);
-    return repo.fetchProgression(
-      filterQuery: {'trophy__is_hidden': 'false', 'trophy__is_repeatable': 'false'},
-    );
+
+    // Note that repeatable trophies are filtered out in the backend
+    return repo.fetchProgression(language: language);
   }
 }

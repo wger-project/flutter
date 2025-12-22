@@ -29,6 +29,7 @@ class TrophiesOverview extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(trophyStateProvider.notifier);
+    final languageCode = Localizations.localeOf(context).languageCode;
 
     // Responsive grid: determine columns based on screen width
     final width = MediaQuery.widthOf(context);
@@ -44,7 +45,7 @@ class TrophiesOverview extends ConsumerWidget {
     }
 
     return FutureBuilder<List<UserTrophyProgression>>(
-      future: notifier.fetchTrophyProgression(),
+      future: notifier.fetchTrophyProgression(language: languageCode),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Card(child: BoxedProgressIndicator());

@@ -34,7 +34,10 @@ void main() {
     // Arrange
     final mockRepository = MockTrophyRepository();
     when(
-      mockRepository.fetchProgression(filterQuery: anyNamed('filterQuery')),
+      mockRepository.fetchProgression(
+        filterQuery: anyNamed('filterQuery'),
+        language: anyNamed('language'),
+      ),
     ).thenAnswer((_) async => getUserTrophyProgression());
 
     // Act

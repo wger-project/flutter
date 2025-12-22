@@ -549,6 +549,9 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     _weightController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
       _syncControllersWithWidget();
     });
   }

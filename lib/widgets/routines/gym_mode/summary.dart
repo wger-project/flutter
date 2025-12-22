@@ -38,7 +38,6 @@ import '../logs/muscle_groups.dart';
 
 class WorkoutSummary extends ConsumerStatefulWidget {
   final _logger = Logger('WorkoutSummary');
-
   final PageController _controller;
 
   WorkoutSummary(this._controller);
@@ -51,14 +50,24 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
   late Future<void> _initData;
   late Routine _routine;
   late List<UserTrophy> _userPrTrophies;
+  bool _didInit = false;
 
   @override
   void initState() {
     super.initState();
-    _initData = _reloadRoutineData();
   }
 
-  Future<void> _reloadRoutineData() async {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_didInit) {
+      final languageCode = Localizations.localeOf(context).languageCode;
+      _initData = _reloadRoutineData(languageCode);
+      _didInit = true;
+    }
+  }
+
+  Future<void> _reloadRoutineData(String languageCode) async {
     widget._logger.fine('Loading routine data');
     final gymState = ref.read(gymStateProvider);
 
@@ -67,7 +76,7 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
     );
 
     final trophyNotifier = ref.read(trophyStateProvider.notifier);
-    _userPrTrophies = await trophyNotifier.fetchUserPRTrophies();
+    _userPrTrophies = await trophyNotifier.fetchUserPRTrophies(language: languageCode);
   }
 
   @override
@@ -86,7 +95,9 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const BoxedProgressIndicator();
               } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}: ${snapshot.stackTrace}'));
+                widget._logger.warning(snapshot.error);
+                widget._logger.warning(snapshot.stackTrace);
+                return Center(child: Text('Error: ${snapshot.error}'));
               } else if (snapshot.connectionState == ConnectionState.done) {
                 final apiSession = _routine.sessions.firstWhereOrNull(
                   (s) => s.session.date.isSameDayAs(clock.now()),
