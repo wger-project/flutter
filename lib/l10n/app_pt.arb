@@ -381,6 +381,10 @@
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
+    "noNutritionalPlansSubtitle": "Crie seu primeiro plano para começar a acompanhar sua nutrição",
+    "@noNutritionalPlansSubtitle": {
+        "description": "Subtitle shown when the user has no nutritional plans"
+    },
     "goToDetailPage": "Ir para a página de detalhes",
     "@goToDetailPage": {},
     "anErrorOccurred": "Um erro ocorreu!",

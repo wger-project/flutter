@@ -24,7 +24,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
-import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/nutrition/nutrition_card.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
@@ -133,10 +133,88 @@ class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
                   },
                 )
               else
-                NothingFound(
-                  AppLocalizations.of(context).noNutritionalPlans,
-                  AppLocalizations.of(context).newNutritionalPlan,
-                  PlanForm(),
+                // Empty state - inviting the user to create their first nutritional plan
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      // 3D nutrition plan icon
+                      Image.asset(
+                        'assets/icons/nutrition-plan.png',
+                        width: 120,
+                        height: 120,
+                      ),
+                      const SizedBox(height: 20),
+                      // Inviting title
+                      Text(
+                        AppLocalizations.of(context).noNutritionalPlans,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.grey.shade300
+                              : Colors.grey.shade800,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      // Subtitle
+                      Text(
+                        AppLocalizations.of(context).noNutritionalPlansSubtitle,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      // Modern button to create nutritional plan
+                      Material(
+                        color: wgerAccentColor,
+                        borderRadius: BorderRadius.circular(12),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              FormScreen.routeName,
+                              arguments: FormScreenArguments(
+                                AppLocalizations.of(context).newNutritionalPlan,
+                                hasListView: true,
+                                PlanForm(),
+                              ),
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.add_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  AppLocalizations.of(context).newNutritionalPlan,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
                 ),
             ],
           ),

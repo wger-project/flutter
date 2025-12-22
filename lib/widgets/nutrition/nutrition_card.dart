@@ -18,6 +18,7 @@
 
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/theme/theme.dart';
@@ -85,9 +86,8 @@ class NutritionGoalsWidget extends StatelessWidget {
                             width: 48,
                             height: 48,
                             padding: const EdgeInsets.all(12),
-                            child: Image.asset(
-                              'assets/icons/apple.png',
-                              fit: BoxFit.contain,
+                            child: const SvgIcon(
+                              icon: SvgIconData('assets/icons/ingredient-diary.svg'),
                             ),
                           ),
                         ),
@@ -141,9 +141,8 @@ class NutritionGoalsWidget extends StatelessWidget {
                             width: 48,
                             height: 48,
                             padding: const EdgeInsets.all(12),
-                            child: Image.asset(
-                              'assets/icons/meal.png',
-                              fit: BoxFit.contain,
+                            child: const SvgIcon(
+                              icon: SvgIconData('assets/icons/meal-diary.svg'),
                             ),
                           ),
                         ),
@@ -307,7 +306,7 @@ class NutritionGoalsWidget extends StatelessWidget {
                     ),
                     if (hasGoal)
                       Text(
-                        '/ ${goal.toStringAsFixed(0)}',
+                        '/ ${goal.toStringAsFixed(0)} $unit',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Colors.grey.shade600,
                           fontSize: 9,

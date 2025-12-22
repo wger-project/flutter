@@ -354,6 +354,10 @@
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
+  "noNutritionalPlansSubtitle": "Create your first plan to start tracking your nutrition",
+  "@noNutritionalPlansSubtitle": {
+    "description": "Subtitle shown when the user has no nutritional plans"
+  },
   "onlyLogging": "Only track calories",
   "onlyLoggingHelpText": "Check the box if you only want to log your calories and don't want to setup a detailed nutritional plan with specific meals",
   "goalMacro": "Macro goals",

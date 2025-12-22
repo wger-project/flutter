@@ -158,6 +158,10 @@
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
+    "noNutritionalPlansSubtitle": "Crea tu primer plan para comenzar a controlar tu nutrición",
+    "@noNutritionalPlansSubtitle": {
+        "description": "Subtitle shown when the user has no nutritional plans"
+    },
     "nutritionalPlans": "Planes nutricionales",
     "@nutritionalPlans": {},
     "nutritionalDiary": "Diario nutricional",
