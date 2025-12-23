@@ -7,7 +7,7 @@
     "@weight": {
         "description": "The weight of a workout log or body weight entry"
     },
-    "confirmDelete": "Êtes-vous sûre de vouloir supprimer « {toDelete} » ?",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer '{toDelete}' ?",
     "@confirmDelete": {
         "description": "Confirmation text before the user deletes an object",
         "type": "text",
@@ -364,7 +364,7 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "{imageFormat} non pris en charge",
+    "imageFormatNotSupportedDetail": "{imageFormat} pas encore pris en charge.",
     "@imageFormatNotSupportedDetail": {
         "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
@@ -1126,5 +1126,63 @@
     "enterTextInLanguage": "Veuillez saisir le texte dans la bonne langue !",
     "@enterTextInLanguage": {},
     "endWorkout": "Terminer l'entraînement",
-    "@endWorkout": {}
+    "@endWorkout": {},
+    "impressionGood": "Bonne",
+    "@impressionGood": {},
+    "impressionNeutral": "Neutre",
+    "@impressionNeutral": {},
+    "impressionBad": "Mauvaise",
+    "@impressionBad": {},
+    "gymModeShowExercises": "Afficher les pages d'aperçu des exercices",
+    "@gymModeShowExercises": {},
+    "gymModeShowTimer": "Afficher le chronomètre entre les séries",
+    "@gymModeShowTimer": {},
+    "gymModeTimerType": "Type de chronomètre",
+    "@gymModeTimerType": {},
+    "gymModeTimerTypeHelText": "Si une série a un temps de pause, un compte à rebours est toujours utilisé.",
+    "@gymModeTimerTypeHelText": {},
+    "countdown": "Compte à rebours",
+    "@countdown": {},
+    "stopwatch": "Chronomètre",
+    "@stopwatch": {},
+    "gymModeDefaultCountdownTime": "Temps de compte à rebours par défaut, en secondes",
+    "@gymModeDefaultCountdownTime": {},
+    "gymModeNotifyOnCountdownFinish": "Notifier à la fin du compte à rebours",
+    "@gymModeNotifyOnCountdownFinish": {},
+    "duration": "Durée",
+    "@duration": {},
+    "durationHoursMinutes": "{hours}h {minutes}m",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Volume",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Entraînement terminé",
+    "@workoutCompleted": {},
+    "formMinMaxValues": "Veuillez entrer une valeur entre {min} et {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "superset": "Superset",
+    "@superset": {}
 }
