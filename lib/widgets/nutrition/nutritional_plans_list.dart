@@ -25,6 +25,7 @@ import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
@@ -90,10 +91,18 @@ class NutritionalPlansList extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () => _nutritionProvider.fetchAndSetAllPlansSparse(),
+      edgeOffset: MediaQuery.of(context).padding.top + kToolbarHeight,
       child: _nutritionProvider.items.isEmpty
           ? const TextPrompt()
           : ListView.builder(
-              padding: const EdgeInsets.all(10.0),
+              padding: getAppBarBodyPadding(
+                context,
+                left: 10,
+                right: 10,
+                bottom: 10,
+                extraTop: 10,
+                includeToolbarHeight: false,
+              ),
               itemCount: _nutritionProvider.items.length,
               itemBuilder: (context, index) {
                 final currentPlan = _nutritionProvider.items[index];

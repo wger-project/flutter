@@ -134,26 +134,26 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
     // Process workout sessions
     final routinesProvider = context.read<RoutinesProvider>();
-    await routinesProvider.fetchSessionData().then((sessions) {
-      for (final session in sessions) {
-        final date = DateFormatLists.format(session.date);
-        if (!_events.containsKey(date)) {
-          _events[date] = [];
-        }
-        var time = '';
-        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
-
-        // Add events to lists
-        _events[date]?.add(
-          Event(
-            EventType.session,
-            '${i18n.impression}: ${session.impressionAsString(context)} $time',
-          ),
-        );
-      }
-    });
+    final sessions = await routinesProvider.fetchSessionData();
     if (!mounted) {
       return;
+    }
+
+    for (final session in sessions) {
+      final date = DateFormatLists.format(session.date);
+      if (!_events.containsKey(date)) {
+        _events[date] = [];
+      }
+      var time = '';
+      time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+
+      // Add events to lists
+      _events[date]?.add(
+        Event(
+          EventType.session,
+          '${i18n.impression}: ${session.impressionAsString(context)} $time',
+        ),
+      );
     }
 
     // Process nutritional plans
