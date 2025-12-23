@@ -647,6 +647,13 @@
   "others": "Others",
   "calendar": "Calendar",
   "@calendar": {},
+  "firstDayOfWeek": "First day of week",
+  "@firstDayOfWeek": {
+    "description": "Setting label for choosing the first day of the week in the calendar"
+  },
+  "monday": "Monday",
+  "sunday": "Sunday",
+  "saturday": "Saturday",
   "goToToday": "Go to today",
   "@goToToday": {
     "description": "Label on button to jump back to 'today' in the calendar widget"

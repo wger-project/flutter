@@ -20,6 +20,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/user/profile.dart';
@@ -27,12 +28,14 @@ import 'package:wger/providers/base_provider.dart';
 
 class UserProvider with ChangeNotifier {
   ThemeMode themeMode = ThemeMode.system;
+  StartingDayOfWeek firstDayOfWeek = StartingDayOfWeek.monday;
   final WgerBaseProvider baseProvider;
   late SharedPreferencesAsync prefs;
 
   UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _loadThemeMode();
+    _loadFirstDayOfWeek();
   }
 
   static const PROFILE_URL = 'userprofile';
@@ -78,6 +81,26 @@ class UserProvider with ChangeNotifier {
       await prefs.setBool(PREFS_USER_DARK_THEME, themeMode == ThemeMode.dark);
     }
 
+    notifyListeners();
+  }
+
+  // Load first day of week from SharedPreferences
+  Future<void> _loadFirstDayOfWeek() async {
+    final prefsFirstDay = await prefs.getInt(PREFS_FIRST_DAY_OF_WEEK);
+
+    if (prefsFirstDay == null) {
+      firstDayOfWeek = StartingDayOfWeek.monday;
+    } else {
+      firstDayOfWeek = StartingDayOfWeek.values[prefsFirstDay];
+    }
+
+    notifyListeners();
+  }
+
+  // Change first day of week
+  void setFirstDayOfWeek(StartingDayOfWeek day) async {
+    firstDayOfWeek = day;
+    await prefs.setInt(PREFS_FIRST_DAY_OF_WEEK, day.index);
     notifyListeners();
   }
 
