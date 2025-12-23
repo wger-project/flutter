@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -68,6 +68,14 @@ String dateToUtcIso8601(DateTime dateTime) {
 /// correctly handle timezones.
 DateTime utcIso8601ToLocalDate(String dateTime) {
   return DateTime.parse(dateTime).toLocal();
+}
+
+DateTime? utcIso8601ToLocalDateNull(String? dateTime) {
+  if (dateTime == null) {
+    return null;
+  }
+
+  return utcIso8601ToLocalDate(dateTime);
 }
 
 /*

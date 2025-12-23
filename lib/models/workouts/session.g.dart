@@ -23,7 +23,9 @@ WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) {
     id: (json['id'] as num?)?.toInt(),
     dayId: (json['day'] as num?)?.toInt(),
     routineId: (json['routine'] as num?)?.toInt(),
-    impression: json['impression'] == null ? 2 : int.parse(json['impression'] as String),
+    impression: json['impression'] == null
+        ? DEFAULT_IMPRESSION
+        : int.parse(json['impression'] as String),
     notes: json['notes'] as String? ?? '',
     timeStart: stringToTimeNull(json['time_start'] as String?),
     timeEnd: stringToTimeNull(json['time_end'] as String?),

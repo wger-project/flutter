@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,7 +37,7 @@ class WgerBaseProvider {
     this.client = client ?? http.Client();
   }
 
-  Map<String, String> getDefaultHeaders({bool includeAuth = false}) {
+  Map<String, String> getDefaultHeaders({bool includeAuth = false, String? language}) {
     final out = {
       HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
@@ -45,6 +45,10 @@ class WgerBaseProvider {
 
     if (includeAuth) {
       out[HttpHeaders.authorizationHeader] = 'Token ${auth.token}';
+    }
+
+    if (language != null) {
+      out[HttpHeaders.acceptLanguageHeader] = language;
     }
 
     return out;
@@ -56,8 +60,7 @@ class WgerBaseProvider {
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<dynamic> fetch(Uri uri) async {
-    // Future<Map<String, dynamic> | List<dynamic>> fetch(Uri uri) async {
+  Future<dynamic> fetch(Uri uri, {String? language}) async {
     // Send the request
     final response = await client.get(
       uri,
@@ -74,13 +77,13 @@ class WgerBaseProvider {
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<List<dynamic>> fetchPaginated(Uri uri) async {
+  Future<List<dynamic>> fetchPaginated(Uri uri, {String? language}) async {
     final out = [];
     var url = uri;
     var allPagesProcessed = false;
 
     while (!allPagesProcessed) {
-      final data = await fetch(url);
+      final data = await fetch(url, language: language);
 
       data['results'].forEach((e) => out.add(e));
 

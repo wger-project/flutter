@@ -175,6 +175,7 @@
   "slotEntryTypeTut": "Time under Tension",
   "slotEntryTypeIso": "Isometric hold",
   "slotEntryTypeJump": "Jump",
+  "trophies": "Trophies",
   "routines": "Routines",
   "newRoutine": "New routine",
   "noRoutines": "You have no routines",
@@ -262,6 +263,7 @@
   },
   "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
   "@selectExercises": {},
+  "personalRecords": "Personal records",
   "gymMode": "Gym mode",
   "@gymMode": {
     "description": "Label when starting the gym mode"
