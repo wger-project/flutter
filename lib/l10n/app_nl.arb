@@ -942,7 +942,7 @@
     "@variations": {
         "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
     },
-    "alsoKnownAs": "Ook bekend als: {aliassen}",
+    "alsoKnownAs": "Ook bekend als: {aliases}",
     "@alsoKnownAs": {
         "placeholders": {
             "aliases": {
