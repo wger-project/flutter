@@ -135,6 +135,7 @@ Widget getMealItemForm(
 
 Widget getIngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
+    allDiaryEntries: plan.diaryEntries,
     recent: plan.dedupDiaryEntries,
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
       Provider.of<NutritionPlansProvider>(
@@ -162,6 +163,7 @@ class IngredientForm extends StatefulWidget {
   final bool withDate;
   final String barcode;
   final bool test;
+  final List<Log>? allDiaryEntries;
 
   const IngredientForm({
     required this.recent,
@@ -169,6 +171,7 @@ class IngredientForm extends StatefulWidget {
     required this.withDate,
     this.barcode = '',
     this.test = false,
+    this.allDiaryEntries,
   });
 
   @override
@@ -333,7 +336,6 @@ class IngredientFormState extends State<IngredientForm> {
                       onTap: () async {
                         // Stop keyboard from appearing
                         FocusScope.of(context).requestFocus(FocusNode());
-
                         // Open time picker
                         final pickedTime = await showTimePicker(
                           context: context,
@@ -431,11 +433,13 @@ class IngredientFormState extends State<IngredientForm> {
                     );
                   }
 
+                  const Duration recentWindow = Duration(days: -90);
                   return Card(
                     child: ListTile(
                       onTap: select,
                       title: Text(
-                        '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
+                        '${widget.allDiaryEntries?.where((diaryEntries) => diaryEntries.ingredientId == suggestions[index].ingredientId && diaryEntries.amount == suggestions[index].amount && diaryEntries.datetime.isAfter(DateTime.now().add(recentWindow))).length} x '
+                        '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit) ',
                       ),
                       subtitle: Text(
                         getShortNutritionValues(
