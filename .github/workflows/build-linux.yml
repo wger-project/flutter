@@ -62,7 +62,7 @@ jobs:
 
       - name: Bump version and update manifest
         run: |
-          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.7.5 ../flatpak-flutter
+          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.10.0 ../flatpak-flutter
           pip install -r ../flatpak-flutter/requirements.txt
           python bump-wger-version.py ${{ inputs.ref }}
           ../flatpak-flutter/flatpak-flutter.py --app-module wger flatpak-flutter.json
