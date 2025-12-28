@@ -481,7 +481,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     pages.add(PageEntry(type: PageType.workoutSummary, pageIndex: pageIndex + 1));
 
     state = state.copyWith(pages: pages);
-    print(readPageStructure());
+    // _logger.fine(readPageStructure());
     _logger.finer('Initialized ${state.pages.length} pages');
   }
 
