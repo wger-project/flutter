@@ -201,6 +201,10 @@
     },
     "calendar": "Calendário",
     "@calendar": {},
+    "firstDayOfWeek": "Primeiro dia da semana",
+    "monday": "Segunda-feira",
+    "sunday": "Domingo",
+    "saturday": "Sábado",
     "goToToday": "Voltar para hoje",
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"

@@ -117,6 +117,10 @@
     },
     "calendar": "Kalendarz",
     "@calendar": {},
+    "firstDayOfWeek": "Pierwszy dzień tygodnia",
+    "monday": "Poniedziałek",
+    "sunday": "Niedziela",
+    "saturday": "Sobota",
     "selectExercise": "Wybierz ćwiczenie",
     "@selectExercise": {
         "description": "Error message when the user hasn't selected an exercise in the form"
