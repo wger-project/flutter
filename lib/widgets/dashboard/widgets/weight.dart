@@ -17,118 +17,275 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/user.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/weight_screen.dart';
-import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
+import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/time_range_tab_bar.dart';
 import 'package:wger/widgets/measurements/charts.dart';
-import 'package:wger/widgets/measurements/helpers.dart';
-import 'package:wger/widgets/weight/forms.dart';
+import 'package:wger/widgets/weight/edit_modal.dart';
+import 'package:wger/widgets/weight/entries_modal.dart';
 
-class DashboardWeightWidget extends StatelessWidget {
+class DashboardWeightWidget extends StatefulWidget {
   const DashboardWeightWidget();
+
+  @override
+  State<DashboardWeightWidget> createState() => _DashboardWeightWidgetState();
+}
+
+class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
+  ChartTimeRange _selectedRange = ChartTimeRange.month;
+
+  DateTime? _getStartDate() {
+    final now = DateTime.now();
+    switch (_selectedRange) {
+      case ChartTimeRange.week:
+        return now.subtract(const Duration(days: 7));
+      case ChartTimeRange.month:
+        return now.subtract(const Duration(days: 30));
+      case ChartTimeRange.sixMonths:
+        return now.subtract(const Duration(days: 182));
+      case ChartTimeRange.year:
+        return now.subtract(const Duration(days: 365));
+      case ChartTimeRange.all:
+        return null; // No start date filter for all-time
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
     final weightProvider = context.read<BodyWeightProvider>();
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    final (entriesAll, entries7dAvg) = sensibleRange(
-      weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
-    );
+    final allEntries = weightProvider.items
+        .map((e) => MeasurementChartEntry(e.weight, e.date))
+        .toList();
+    final startDate = _getStartDate();
+    // For "all" time range, use all entries; otherwise filter by date
+    final filteredEntries = startDate != null ? allEntries.whereDate(startDate, null) : allEntries;
+    final avgDays = getAverageDaysForTimeRange(_selectedRange);
+    final entriesAvg = movingAverage(filteredEntries, avgDays);
 
     return Consumer<BodyWeightProvider>(
-      builder: (context, _, __) => Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(
-                AppLocalizations.of(context).weight,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              leading: FaIcon(
-                FontAwesomeIcons.weightScale,
-                color: Theme.of(context).textTheme.headlineSmall!.color,
-              ),
-            ),
-            Column(
-              children: [
-                if (weightProvider.items.isNotEmpty)
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 200,
-                        child: MeasurementChartWidgetFl(
-                          entriesAll,
-                          weightUnit(profile!.isMetric, context),
-                          avgs: entries7dAvg,
-                        ),
-                      ),
-                      if (entries7dAvg.isNotEmpty)
-                        MeasurementOverallChangeWidget(
-                          entries7dAvg.first,
-                          entries7dAvg.last,
-                          weightUnit(profile.isMetric, context),
-                        ),
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  TextButton(
-                                    child: Text(
-                                      AppLocalizations.of(context).goToDetailPage,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pushNamed(WeightScreen.routeName);
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.add),
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        FormScreen.routeName,
-                                        arguments: FormScreenArguments(
-                                          AppLocalizations.of(context).newEntry,
-                                          WeightForm(
-                                            weightProvider.getNewestEntry()?.copyWith(
-                                              id: null,
-                                              date: DateTime.now(),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  )
-                else
-                  NothingFound(
-                    AppLocalizations.of(context).noWeightEntries,
-                    AppLocalizations.of(context).newEntry,
-                    WeightForm(),
-                  ),
+      builder: (context, _, __) => Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Material(
+          elevation: 0,
+          color: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 4),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                  spreadRadius: 0,
+                ),
               ],
             ),
-          ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header with entries button
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 8, top: 12, bottom: 12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.of(context).weight,
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      if (weightProvider.items.isNotEmpty)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () => showWeightEntriesModal(context),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Icon(
+                                Icons.more_vert,
+                                color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                // Time range tabs
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TimeRangeTabBar(
+                    selectedRange: _selectedRange,
+                    onRangeChanged: (range) => setState(() => _selectedRange = range),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Content
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: Column(
+                    children: [
+                      if (weightProvider.items.isNotEmpty)
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 200,
+                              child: MeasurementChartWidgetFl(
+                                filteredEntries,
+                                weightUnit(profile!.isMetric, context),
+                                avgs: entriesAvg,
+                                timeRange: _selectedRange,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            // Bottom row with trend indicator and add button
+                            Row(
+                              children: [
+                                // Trend indicator
+                                if (entriesAvg != null && entriesAvg.isNotEmpty)
+                                  _buildTrendIndicator(
+                                    context,
+                                    entriesAvg.first,
+                                    entriesAvg.last,
+                                    weightUnit(profile.isMetric, context),
+                                    isDarkMode,
+                                  ),
+                                const Spacer(),
+                                // Add button
+                                Material(
+                                  color: wgerAccentColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(10),
+                                    onTap: () => showEditWeightModal(
+                                      context,
+                                      weightProvider.getNewestEntry()?.copyWith(
+                                        id: null,
+                                        date: DateTime.now(),
+                                      ),
+                                    ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Icon(
+                                        Icons.add_rounded,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      else
+                        SizedBox(
+                          height: 150,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(AppLocalizations.of(context).noWeightEntries),
+                              const SizedBox(height: 12),
+                              Material(
+                                color: wgerAccentColor,
+                                borderRadius: BorderRadius.circular(10),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(10),
+                                  onTap: () => showEditWeightModal(context, null),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Icon(
+                                      Icons.add_rounded,
+                                      size: 24,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTrendIndicator(
+    BuildContext context,
+    MeasurementChartEntry first,
+    MeasurementChartEntry last,
+    String unit,
+    bool isDarkMode,
+  ) {
+    final delta = last.value - first.value;
+    final isPositive = delta > 0;
+    final isNegative = delta < 0;
+
+    // Vibrant accent color for trend indicator
+    const Color trendColor = wgerAccentColor;
+    final Color bgColor = wgerAccentColor.withValues(alpha: isDarkMode ? 0.2 : 0.1);
+
+    final IconData trendIcon;
+    if (isPositive) {
+      trendIcon = Icons.trending_up_rounded;
+    } else if (isNegative) {
+      trendIcon = Icons.trending_down_rounded;
+    } else {
+      trendIcon = Icons.trending_flat_rounded;
+    }
+
+    final prefix = isPositive ? '+' : '';
+    final valueText = '$prefix${delta.toStringAsFixed(1)} $unit';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            trendIcon,
+            size: 16,
+            color: trendColor,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            valueText,
+            style: TextStyle(
+              color: trendColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+          ),
+        ],
       ),
     );
   }

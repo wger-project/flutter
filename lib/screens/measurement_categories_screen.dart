@@ -21,14 +21,22 @@ import 'package:provider/provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/measurement.dart';
-import 'package:wger/screens/form_screen.dart';
+import 'package:wger/widgets/core/time_range_tab_bar.dart';
 import 'package:wger/widgets/measurements/categories.dart';
-import 'package:wger/widgets/measurements/forms.dart';
+import 'package:wger/widgets/measurements/charts.dart';
+import 'package:wger/widgets/measurements/edit_modals.dart';
 
-class MeasurementCategoriesScreen extends StatelessWidget {
+class MeasurementCategoriesScreen extends StatefulWidget {
   const MeasurementCategoriesScreen();
 
   static const routeName = '/measurement-categories';
+
+  @override
+  State<MeasurementCategoriesScreen> createState() => _MeasurementCategoriesScreenState();
+}
+
+class _MeasurementCategoriesScreenState extends State<MeasurementCategoriesScreen> {
+  ChartTimeRange _selectedRange = ChartTimeRange.month;
 
   @override
   Widget build(BuildContext context) {
@@ -36,20 +44,26 @@ class MeasurementCategoriesScreen extends StatelessWidget {
       appBar: AppBar(title: Text(AppLocalizations.of(context).measurements)),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FormScreen.routeName,
-            arguments: FormScreenArguments(
-              AppLocalizations.of(context).newEntry,
-              MeasurementCategoryForm(),
-            ),
-          );
-        },
+        onPressed: () => showEditCategoryModal(context, null),
       ),
       body: WidescreenWrapper(
         child: Consumer<MeasurementProvider>(
-          builder: (context, provider, child) => const CategoriesList(),
+          builder: (context, provider, child) => Column(
+            children: [
+              // Time range tabs
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: TimeRangeTabBar(
+                  selectedRange: _selectedRange,
+                  onRangeChanged: (range) => setState(() => _selectedRange = range),
+                ),
+              ),
+              // Categories list
+              Expanded(
+                child: CategoriesList(timeRange: _selectedRange),
+              ),
+            ],
+          ),
         ),
       ),
     );

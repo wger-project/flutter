@@ -431,6 +431,10 @@
   "@measurementCategoriesHelpText": {},
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
   "@measurementEntriesHelpText": {},
+  "entries": "entries",
+  "@entries": {
+    "description": "Plural form of entry, used to show count of measurement entries"
+  },
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"
@@ -1114,5 +1118,29 @@
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
-  "systemMode": "System settings"
+  "systemMode": "System settings",
+  "week": "Week",
+  "@week": {
+    "description": "Time range option for one week"
+  },
+  "month": "Month",
+  "@month": {
+    "description": "Time range option for one month"
+  },
+  "sixMonths": "6M",
+  "@sixMonths": {
+    "description": "Time range option for six months"
+  },
+  "year": "Year",
+  "@year": {
+    "description": "Time range option for one year"
+  },
+  "all": "All",
+  "@all": {
+    "description": "Time range option for all-time data"
+  },
+  "recentEntries": "Recent entries",
+  "@recentEntries": {},
+  "seeAll": "See all",
+  "@seeAll": {}
 }

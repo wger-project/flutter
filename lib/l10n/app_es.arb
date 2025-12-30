@@ -1114,5 +1114,19 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "entries": "entradas",
+    "@entries": {},
+    "week": "Semana",
+    "@week": {},
+    "month": "Mes",
+    "@month": {},
+    "sixMonths": "6 Meses",
+    "@sixMonths": {},
+    "year": "Año",
+    "@year": {},
+    "recentEntries": "Entradas recientes",
+    "@recentEntries": {},
+    "seeAll": "Ver todos",
+    "@seeAll": {}
 }
