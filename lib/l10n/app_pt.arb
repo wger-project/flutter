@@ -1032,5 +1032,19 @@
     "identicalExercisePleaseDiscard": "Se encontrares um exercício igual ao que estás a introduzir, por favor descarta o teu rascunho e edita antes esse exercício.",
     "@identicalExercisePleaseDiscard": {},
     "overview": "Panorama",
-    "@overview": {}
+    "@overview": {},
+    "entries": "entradas",
+    "@entries": {},
+    "week": "Semana",
+    "@week": {},
+    "month": "Mês",
+    "@month": {},
+    "sixMonths": "6 Meses",
+    "@sixMonths": {},
+    "year": "Ano",
+    "@year": {},
+    "recentEntries": "Entradas recentes",
+    "@recentEntries": {},
+    "seeAll": "Ver todos",
+    "@seeAll": {}
 }

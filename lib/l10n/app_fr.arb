@@ -1184,5 +1184,19 @@
         }
     },
     "superset": "Superset",
-    "@superset": {}
+    "@superset": {},
+    "entries": "entrées",
+    "@entries": {},
+    "week": "Semaine",
+    "@week": {},
+    "month": "Mois",
+    "@month": {},
+    "sixMonths": "6 Mois",
+    "@sixMonths": {},
+    "year": "Année",
+    "@year": {},
+    "recentEntries": "Entrées récentes",
+    "@recentEntries": {},
+    "seeAll": "Voir tout",
+    "@seeAll": {}
 }

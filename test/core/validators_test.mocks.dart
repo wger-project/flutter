@@ -1774,6 +1774,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get entries =>
+      (super.noSuchMethod(
+            Invocation.getter(#entries),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#entries),
+            ),
+          )
+          as String);
+
+  @override
   String get date =>
       (super.noSuchMethod(
             Invocation.getter(#date),
@@ -3802,6 +3813,66 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#systemMode),
+            ),
+          )
+          as String);
+
+  @override
+  String get week =>
+      (super.noSuchMethod(
+            Invocation.getter(#week),
+            returnValue: _i3.dummyValue<String>(this, Invocation.getter(#week)),
+          )
+          as String);
+
+  @override
+  String get month =>
+      (super.noSuchMethod(
+            Invocation.getter(#month),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#month),
+            ),
+          )
+          as String);
+
+  @override
+  String get sixMonths =>
+      (super.noSuchMethod(
+            Invocation.getter(#sixMonths),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#sixMonths),
+            ),
+          )
+          as String);
+
+  @override
+  String get year =>
+      (super.noSuchMethod(
+            Invocation.getter(#year),
+            returnValue: _i3.dummyValue<String>(this, Invocation.getter(#year)),
+          )
+          as String);
+
+  @override
+  String get recentEntries =>
+      (super.noSuchMethod(
+            Invocation.getter(#recentEntries),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#recentEntries),
+            ),
+          )
+          as String);
+
+  @override
+  String get seeAll =>
+      (super.noSuchMethod(
+            Invocation.getter(#seeAll),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#seeAll),
             ),
           )
           as String);
