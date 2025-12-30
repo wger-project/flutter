@@ -8,6 +8,7 @@ import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/dashboard/widgets/weight.dart';
 
 import '../test/utils.dart';
+import '../test/weight/weight_entries_modal_test.mocks.dart';
 import '../test/weight/weight_provider_test.mocks.dart';
 import '../test_data/body_weight.dart';
 import '../test_data/profile.dart';
