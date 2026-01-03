@@ -132,7 +132,7 @@ void main() {
     await tester.pumpWidget(renderWidget());
 
     expect(find.byType(PlanForm), findsNothing);
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byIcon(Icons.add));
     await tester.pumpAndSettle();
     expect(find.byType(RoutineForm), findsOneWidget);
   });

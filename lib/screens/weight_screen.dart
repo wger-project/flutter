@@ -35,6 +35,7 @@ class WeightScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
+      extendBodyBehindAppBar: true,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () {
@@ -50,6 +51,7 @@ class WeightScreen extends StatelessWidget {
       ),
       body: WidescreenWrapper(
         child: SingleChildScrollView(
+          padding: getAppBarBodyPadding(context, extraTop: 10),
           child: Consumer<BodyWeightProvider>(
             builder: (context, provider, child) => WeightOverview(provider),
           ),
