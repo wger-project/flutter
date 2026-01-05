@@ -199,7 +199,7 @@
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
     },
-    "useCustomServer": "Utiliser le serveur personnalisé",
+    "useCustomServer": "Utiliser un serveur personnalisé",
     "@useCustomServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
