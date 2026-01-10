@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2025 - 2025 wger Team
+ * Copyright (c) 2025 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -189,15 +189,15 @@ void main() {
 
     testWidgets('save button calls addLog on RoutinesProvider', (tester) async {
       // Arrange
-      final notifier = container.read(gymStateProvider.notifier);
+      final gymNotifier = container.read(gymStateProvider.notifier);
       final routine = testdata.getTestRoutine();
-      notifier.state = notifier.state.copyWith(
+      gymNotifier.state = gymNotifier.state.copyWith(
         dayId: routine.days.first.id,
         routine: routine,
         iteration: 1,
       );
-      notifier.calculatePages();
-      notifier.state = notifier.state.copyWith(currentPage: 2);
+      gymNotifier.calculatePages();
+      gymNotifier.state = gymNotifier.state.copyWith(currentPage: 2);
       final mockRoutines = MockRoutinesProvider();
 
       // Act
@@ -229,10 +229,10 @@ void main() {
       expect(capturedLog!.repetitions, equals(7));
       expect(capturedLog!.weight, equals(77));
 
-      final currentSlotPage = notifier.state.getSlotEntryPageByIndex()!;
+      final currentSlotPage = gymNotifier.state.getSlotEntryPageByIndex()!;
       expect(capturedLog!.slotEntryId, equals(currentSlotPage.setConfigData!.slotEntryId));
-      expect(capturedLog!.routineId, equals(notifier.state.routine.id));
-      expect(capturedLog!.iteration, equals(notifier.state.iteration));
+      expect(capturedLog!.routineId, equals(gymNotifier.state.routine.id));
+      expect(capturedLog!.iteration, equals(gymNotifier.state.iteration));
     });
   });
 }

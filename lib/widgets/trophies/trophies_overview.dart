@@ -21,15 +21,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/material.dart';
 import 'package:wger/models/trophies/user_trophy_progression.dart';
 import 'package:wger/providers/trophies.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 class TrophiesOverview extends ConsumerWidget {
   const TrophiesOverview({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.watch(trophyStateProvider.notifier);
-    final languageCode = Localizations.localeOf(context).languageCode;
+    final trophyState = ref.watch(trophyStateProvider);
 
     // Responsive grid: determine columns based on screen width
     final width = MediaQuery.widthOf(context);
@@ -44,52 +42,32 @@ class TrophiesOverview extends ConsumerWidget {
       crossAxisCount = 5;
     }
 
-    return FutureBuilder<List<UserTrophyProgression>>(
-      future: notifier.fetchTrophyProgression(language: languageCode),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Card(child: BoxedProgressIndicator());
-        }
-
-        if (snapshot.hasError) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text('Error loading trophies', style: Theme.of(context).textTheme.bodyLarge),
-            ),
-          );
-        }
-
-        final userTrophyProgression = snapshot.data ?? [];
-
-        // If empty, show placeholder
-        if (userTrophyProgression.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'No trophies yet',
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        }
-
-        return RepaintBoundary(
-          child: GridView.builder(
-            padding: const EdgeInsets.all(12),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-            ),
-            key: const ValueKey('trophy-grid'),
-            itemCount: userTrophyProgression.length,
-            itemBuilder: (context, index) {
-              return _TrophyCardImage(userProgression: userTrophyProgression[index]);
-            },
+    // If empty, show placeholder
+    if (trophyState.trophyProgression.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'No trophies yet',
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.center,
           ),
-        );
-      },
+        ),
+      );
+    }
+
+    return RepaintBoundary(
+      child: GridView.builder(
+        padding: const EdgeInsets.all(12),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+        ),
+        key: const ValueKey('trophy-grid'),
+        itemCount: trophyState.trophyProgression.length,
+        itemBuilder: (context, index) {
+          return _TrophyCardImage(userProgression: trophyState.trophyProgression[index]);
+        },
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,64 +21,45 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/models/trophies/trophy.dart';
 import 'package:wger/providers/trophies.dart';
 import 'package:wger/screens/trophy_screen.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 class DashboardTrophiesWidget extends ConsumerWidget {
   const DashboardTrophiesWidget();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = ref.watch(trophyStateProvider.notifier);
-    final languageCode = Localizations.localeOf(context).languageCode;
+    final trophiesState = ref.read(trophyStateProvider);
 
-    return FutureBuilder(
-      future: provider.fetchUserTrophies(language: languageCode),
-      builder: (context, asyncSnapshot) {
-        if (asyncSnapshot.connectionState != ConnectionState.done) {
-          return const Card(child: BoxedProgressIndicator());
-        }
+    return Card(
+      color: Colors.transparent,
+      shadowColor: Colors.transparent,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (trophiesState.nonPrTrophies.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text('No trophies yet', style: Theme.of(context).textTheme.bodyMedium),
+            )
+          else
+            SizedBox(
+              height: 140,
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                scrollDirection: Axis.horizontal,
+                itemCount: trophiesState.nonPrTrophies.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final userTrophy = trophiesState.nonPrTrophies[index];
 
-        final userTrophies = asyncSnapshot.data ?? [];
-
-        return Card(
-          color: Colors.transparent,
-          shadowColor: Colors.transparent,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ListTile(
-              //   title: Text(
-              //     'Trophies',
-              //     style: Theme.of(context).textTheme.headlineSmall,
-              //   ),
-              // ),
-              if (userTrophies.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text('No trophies yet', style: Theme.of(context).textTheme.bodyMedium),
-                )
-              else
-                SizedBox(
-                  height: 140,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: userTrophies.length,
-                    separatorBuilder: (context, index) => const SizedBox(width: 12),
-                    itemBuilder: (context, index) {
-                      final userTrophy = userTrophies[index];
-
-                      return SizedBox(
-                        width: 220,
-                        child: TrophyCard(trophy: userTrophy.trophy),
-                      );
-                    },
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
+                  return SizedBox(
+                    width: 220,
+                    child: TrophyCard(trophy: userTrophy.trophy),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

@@ -53,7 +53,8 @@ String _$trophyRepositoryHash() => r'0699f0c0f7f324f3ba9b21420d9845a3e3096b61';
 @ProviderFor(TrophyStateNotifier)
 const trophyStateProvider = TrophyStateNotifierProvider._();
 
-final class TrophyStateNotifierProvider extends $NotifierProvider<TrophyStateNotifier, void> {
+final class TrophyStateNotifierProvider
+    extends $NotifierProvider<TrophyStateNotifier, TrophyState> {
   const TrophyStateNotifierProvider._()
     : super(
         from: null,
@@ -73,25 +74,31 @@ final class TrophyStateNotifierProvider extends $NotifierProvider<TrophyStateNot
   TrophyStateNotifier create() => TrophyStateNotifier();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
+  Override overrideWithValue(TrophyState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<TrophyState>(value),
     );
   }
 }
 
-String _$trophyStateNotifierHash() => r'47b4babf337bbb8bf60142ebe59dc760fa08dce3';
+String _$trophyStateNotifierHash() => r'c80c732272cf843b698f28152f60b9a5f37ee449';
 
-abstract class _$TrophyStateNotifier extends $Notifier<void> {
-  void build();
+abstract class _$TrophyStateNotifier extends $Notifier<TrophyState> {
+  TrophyState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    build();
-    final ref = this.ref as $Ref<void, void>;
+    final created = build();
+    final ref = this.ref as $Ref<TrophyState, TrophyState>;
     final element =
-        ref.element as $ClassProviderElement<AnyNotifier<void, void>, void, Object?, Object?>;
-    element.handleValue(ref, null);
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<TrophyState, TrophyState>,
+              TrophyState,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
   }
 }

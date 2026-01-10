@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,33 +19,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:wger/providers/trophies.dart';
 import 'package:wger/widgets/trophies/trophies_overview.dart';
 
 import '../../test_data/trophies.dart';
-import 'dashboard_trophies_widget_test.mocks.dart';
 
-@GenerateMocks([TrophyRepository])
 void main() {
   testWidgets('TrophiesOverview shows trophies', (WidgetTester tester) async {
-    // Arrange
-    final mockRepository = MockTrophyRepository();
-    when(
-      mockRepository.fetchProgression(
-        filterQuery: anyNamed('filterQuery'),
-        language: anyNamed('language'),
-      ),
-    ).thenAnswer((_) async => getUserTrophyProgression());
-
     // Act
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            trophyRepositoryProvider.overrideWithValue(mockRepository),
+            trophyStateProvider.overrideWithValue(
+              TrophyState(
+                trophyProgression: getUserTrophyProgression(),
+                userTrophies: getUserTrophies(),
+                trophies: getTestTrophies(),
+              ),
+            ),
           ],
           child: const MaterialApp(
             home: Scaffold(body: TrophiesOverview()),

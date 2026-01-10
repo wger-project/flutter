@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -49,7 +49,6 @@ class WorkoutSummary extends ConsumerStatefulWidget {
 class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
   late Future<void> _initData;
   late Routine _routine;
-  late List<UserTrophy> _userPrTrophies;
   bool _didInit = false;
 
   @override
@@ -76,11 +75,13 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
     );
 
     final trophyNotifier = ref.read(trophyStateProvider.notifier);
-    _userPrTrophies = await trophyNotifier.fetchUserPRTrophies(language: languageCode);
+    await trophyNotifier.fetchUserTrophies(language: languageCode);
   }
 
   @override
   Widget build(BuildContext context) {
+    final trophyState = ref.watch(trophyStateProvider);
+
     return Column(
       children: [
         NavigationHeader(
@@ -102,10 +103,8 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
                 final apiSession = _routine.sessions.firstWhereOrNull(
                   (s) => s.session.date.isSameDayAs(clock.now()),
                 );
-                final userTrophies = _userPrTrophies
-                    .where(
-                      (t) => t.contextData!.sessionId == apiSession?.session.id,
-                    )
+                final userTrophies = trophyState.prTrophies
+                    .where((t) => t.contextData?.sessionId == apiSession?.session.id)
                     .toList();
 
                 return WorkoutSessionStats(
