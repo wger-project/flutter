@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2025 wger Team
+ * Copyright (c) 2025 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -158,7 +158,7 @@ class _TrophyCardImage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
 
-                  if (userProgression.trophy.isProgressive)
+                  if (userProgression.trophy.isProgressive && !userProgression.isEarned)
                     Tooltip(
                       message: 'Progress: ${userProgression.progressDisplay}',
                       child: SizedBox(
