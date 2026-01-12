@@ -47,14 +47,14 @@ class ExercisesProvider with ChangeNotifier {
   static const EXERCISE_CACHE_DAYS = 7;
   static const CACHE_VERSION = 4;
 
-  static const exerciseUrlPath = 'exercise';
-  static const exerciseInfoUrlPath = 'exerciseinfo';
-  static const exerciseSearchPath = 'exercise/search';
+  static const exerciseUrlPath = 'exercise/';
+  static const exerciseInfoUrlPath = 'exerciseinfo/';
+  static const exerciseSearchPath = 'exercise/search/';
+  static const categoriesUrlPath = 'exercisecategory/';
+  static const musclesUrlPath = 'muscle/';
+  static const equipmentUrlPath = 'equipment/';
+  static const languageUrlPath = 'language/';
 
-  static const categoriesUrlPath = 'exercisecategory';
-  static const musclesUrlPath = 'muscle';
-  static const equipmentUrlPath = 'equipment';
-  static const languageUrlPath = 'language';
 
   List<Exercise> exercises = [];
 
