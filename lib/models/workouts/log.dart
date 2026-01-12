@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -101,13 +101,13 @@ class Log {
     this.repetitions,
     this.repetitionsTarget,
     this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
-    required this.rir,
+    this.rir,
     this.rirTarget,
     this.weight,
     this.weightTarget,
     this.weightUnitId = WEIGHT_UNIT_KG,
-    required this.date,
-  });
+    DateTime? date,
+  }) : date = date ?? DateTime.now();
 
   Log.empty();
 
@@ -128,6 +128,51 @@ class Log {
 
     rir = setConfig.rir;
     rirTarget = setConfig.rir;
+  }
+
+  Log copyWith({
+    int? id,
+    int? exerciseId,
+    int? routineId,
+    int? sessionId,
+    int? iteration,
+    int? slotEntryId,
+    num? rir,
+    num? rirTarget,
+    num? repetitions,
+    num? repetitionsTarget,
+    int? repetitionsUnitId,
+    num? weight,
+    num? weightTarget,
+    int? weightUnitId,
+    DateTime? date,
+  }) {
+    final out = Log(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      iteration: iteration ?? this.iteration,
+      slotEntryId: slotEntryId ?? this.slotEntryId,
+      routineId: routineId ?? this.routineId,
+      repetitions: repetitions ?? this.repetitions,
+      repetitionsTarget: repetitionsTarget ?? this.repetitionsTarget,
+      repetitionsUnitId: repetitionsUnitId ?? this.repetitionsUnitId,
+      rir: rir ?? this.rir,
+      rirTarget: rirTarget ?? this.rirTarget,
+      weight: weight ?? this.weight,
+      weightTarget: weightTarget ?? this.weightTarget,
+      weightUnitId: weightUnitId ?? this.weightUnitId,
+      date: date ?? this.date,
+    );
+
+    if (sessionId != null) {
+      out.sessionId = sessionId;
+    }
+
+    out.exerciseBase = exercise;
+    out.repetitionUnit = repetitionsUnitObj;
+    out.weightUnitObj = weightUnitObj;
+
+    return out;
   }
 
   // Boilerplate

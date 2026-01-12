@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2025 - 2025 wger Team
+ * Copyright (c) 2025 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -128,6 +128,7 @@ void main() {
 
       // Act
       notifier.calculatePages();
+      notifier.setCurrentPage(2);
 
       // Assert
       expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.log);
@@ -159,6 +160,7 @@ void main() {
         iteration: 1,
       );
       notifier.calculatePages();
+      notifier.setCurrentPage(2);
 
       // Act
       // Log page is at index 2
@@ -197,6 +199,7 @@ void main() {
         iteration: 1,
       );
       notifier.calculatePages();
+      notifier.setCurrentPage(2);
       notifier.state = notifier.state.copyWith(currentPage: 2);
       final mockRoutines = MockRoutinesProvider();
 
@@ -206,8 +209,8 @@ void main() {
       final editableFields = find.byType(EditableText);
       expect(editableFields, findsWidgets);
 
-      await tester.enterText(editableFields.at(0), '7');
-      await tester.enterText(editableFields.at(1), '77');
+      await tester.enterText(editableFields.at(0), '12'); // Reps
+      await tester.enterText(editableFields.at(1), '34'); // Weight
       await tester.pumpAndSettle();
 
       Log? capturedLog;
@@ -226,8 +229,8 @@ void main() {
       // Assert
       verify(mockRoutines.addLog(any)).called(1);
       expect(capturedLog, isNotNull);
-      expect(capturedLog!.repetitions, equals(7));
-      expect(capturedLog!.weight, equals(77));
+      expect(capturedLog!.repetitions, equals(12));
+      expect(capturedLog!.weight, equals(34));
 
       final currentSlotPage = notifier.state.getSlotEntryPageByIndex()!;
       expect(capturedLog!.slotEntryId, equals(currentSlotPage.setConfigData!.slotEntryId));
