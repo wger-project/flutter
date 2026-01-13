@@ -10,10 +10,10 @@ part of 'gym_log_state.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(GymLogNotifier)
-const gymLogProvider = GymLogNotifierProvider._();
+final gymLogProvider = GymLogNotifierProvider._();
 
 final class GymLogNotifierProvider extends $NotifierProvider<GymLogNotifier, Log?> {
-  const GymLogNotifierProvider._()
+  GymLogNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,17 +40,16 @@ final class GymLogNotifierProvider extends $NotifierProvider<GymLogNotifier, Log
   }
 }
 
-String _$gymLogNotifierHash() => r'f7cdc8f72506e366ca028360b654da0bdd9bcae6';
+String _$gymLogNotifierHash() => r'4523975eeeaacceca4e86fb2e4ddd9a42c263d8e';
 
 abstract class _$GymLogNotifier extends $Notifier<Log?> {
   Log? build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<Log?, Log?>;
     final element =
         ref.element as $ClassProviderElement<AnyNotifier<Log?, Log?>, Log?, Object?, Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
