@@ -134,35 +134,29 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
     // Process workout sessions
     final routinesProvider = context.read<RoutinesProvider>();
-    await routinesProvider.fetchSessionData().then((sessions) {
-      for (final session in sessions) {
-        final date = DateFormatLists.format(session.date);
-        if (!_events.containsKey(date)) {
-          _events[date] = [];
-        }
-        var time = '';
-        if (session.timeStart != null && session.timeEnd != null) {
-          time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
-        }
-
-        // Add events to lists
-        _events[date]?.add(
-          Event(
-            EventType.session,
-            '${i18n.impression}: ${session.impressionAsString(context)} $time',
-          ),
-        );
-      }
-    });
+    final sessions = await routinesProvider.fetchSessionData();
     if (!mounted) {
       return;
     }
 
+    for (final session in sessions) {
+      final date = DateFormatLists.format(session.date);
+      _events.putIfAbsent(date, () => []);
+
+      final time = (session.timeStart != null && session.timeEnd != null)
+          ? '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})'
+          : '';
+
+      _events[date]?.add(
+        Event(
+          EventType.session,
+          '${i18n.impression}: ${session.impressionAsString(context)}${time.isNotEmpty ? ' $time' : ''}',
+        ),
+      );
+    }
+
     // Process nutritional plans
-    final NutritionPlansProvider nutritionProvider = Provider.of<NutritionPlansProvider>(
-      context,
-      listen: false,
-    );
+    final nutritionProvider = context.read<NutritionPlansProvider>();
     for (final plan in nutritionProvider.items) {
       for (final entry in plan.logEntriesValues.entries) {
         final date = DateFormatLists.format(entry.key);
