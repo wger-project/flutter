@@ -233,6 +233,16 @@
   "@comment": {
     "description": "Comment, additional information"
   },
+  "topSet": "Top set: {value}",
+  "@topSet": {
+    "description": "Value is a representation of the set, like '10 x 80kg'",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "impressionGood": "Good",
   "impressionNeutral": "Neutral",
   "impressionBad": "Bad",
@@ -592,6 +602,7 @@
   "@newEntry": {
     "description": "Title when adding a new entry such as a weight or log entry"
   },
+  "noTrophies": "You have no trophies yet",
   "noWeightEntries": "You have no weight entries",
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"

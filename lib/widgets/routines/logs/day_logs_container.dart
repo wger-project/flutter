@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:logging/logging.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -33,9 +32,8 @@ import 'session_info.dart';
 class DayLogWidget extends ConsumerWidget {
   final DateTime _date;
   final Routine _routine;
-  final _logger = Logger('DayLogWidget');
 
-  DayLogWidget(this._date, this._routine);
+  const DayLogWidget(this._date, this._routine);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,9 +50,6 @@ class DayLogWidget extends ConsumerWidget {
     final prTrophies = trophyState.prTrophies
         .where((t) => t.contextData?.sessionId == sessionApi.session.id)
         .toList();
-
-    _logger.info(trophyState.prTrophies);
-    _logger.info(prTrophies);
 
     return Column(
       spacing: 10,

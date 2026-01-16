@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/material.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/trophies/user_trophy_progression.dart';
 import 'package:wger/providers/trophies.dart';
 
@@ -28,6 +29,7 @@ class TrophiesOverview extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final trophyState = ref.watch(trophyStateProvider);
+    final i18n = AppLocalizations.of(context);
 
     // Responsive grid: determine columns based on screen width
     final width = MediaQuery.widthOf(context);
@@ -48,7 +50,7 @@ class TrophiesOverview extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'No trophies yet',
+            i18n.noTrophies,
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),

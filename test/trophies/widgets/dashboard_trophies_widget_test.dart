@@ -18,20 +18,39 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/trophies.dart';
 import 'package:wger/widgets/dashboard/widgets/trophies.dart';
 
 import '../../test_data/trophies.dart';
 
 void main() {
-  testWidgets('DashboardTrophiesWidget shows trophies', (WidgetTester tester) async {
-    // Act
-    await mockNetworkImagesFor(() async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
+  Future<void> pumpOverview(WidgetTester tester, [List<Override> overrides = const []]) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: overrides,
+        child: const MaterialApp(
+          locale: Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: DashboardTrophiesWidget(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  group('DashboardTrophiesWidget tests', () {
+    testWidgets('shows trophies', (WidgetTester tester) async {
+      // Act
+      await mockNetworkImagesFor(() async {
+        await pumpOverview(
+          tester,
+          [
             trophyStateProvider.overrideWithValue(
               TrophyState(
                 userTrophies: getUserTrophies(),
@@ -39,17 +58,22 @@ void main() {
               ),
             ),
           ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: DashboardTrophiesWidget(),
-            ),
-          ),
-        ),
-      );
+        );
+        await tester.pumpAndSettle();
+
+        // Assert
+        expect(find.text('New Year, New Me'), findsOneWidget);
+      });
+    });
+
+    testWidgets('handles empty results', (WidgetTester tester) async {
+      // Act
+      await pumpOverview(tester);
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.text('New Year, New Me'), findsOneWidget);
+      expect(find.text('Trophies'), findsOneWidget);
+      expect(find.text('You have no trophies yet'), findsOneWidget);
     });
   });
 }

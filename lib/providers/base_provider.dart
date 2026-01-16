@@ -73,7 +73,7 @@ class WgerBaseProvider {
     Uri uri, {
     int maxRetries = 3,
     Duration initialDelay = const Duration(milliseconds: 250),
-    String? language
+    String? language,
   }) async {
     int attempt = 0;
     final random = math.Random();
@@ -90,7 +90,7 @@ class WgerBaseProvider {
     while (true) {
       try {
         final response = await client
-            .get(uri, headers: getDefaultHeaders(includeAuth: true))
+            .get(uri, headers: getDefaultHeaders(includeAuth: true, language: language))
             .timeout(const Duration(seconds: 5));
 
         if (response.statusCode >= 400) {

@@ -10,10 +10,10 @@ part of 'gym_state.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(GymStateNotifier)
-const gymStateProvider = GymStateNotifierProvider._();
+final gymStateProvider = GymStateNotifierProvider._();
 
 final class GymStateNotifierProvider extends $NotifierProvider<GymStateNotifier, GymModeState> {
-  const GymStateNotifierProvider._()
+  GymStateNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,14 +40,13 @@ final class GymStateNotifierProvider extends $NotifierProvider<GymStateNotifier,
   }
 }
 
-String _$gymStateNotifierHash() => r'8474afce33638bf67570fd64b64e9b5d171804d3';
+String _$gymStateNotifierHash() => r'3a0bb78e9f7e682ba93a40a73b170126b5eb5ca9';
 
 abstract class _$GymStateNotifier extends $Notifier<GymModeState> {
   GymModeState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<GymModeState, GymModeState>;
     final element =
         ref.element
@@ -57,6 +56,6 @@ abstract class _$GymStateNotifier extends $Notifier<GymModeState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

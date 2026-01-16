@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/trophies.dart';
 import 'package:wger/widgets/trophies/trophies_overview.dart';
 
@@ -41,6 +42,9 @@ void main() {
             ),
           ],
           child: const MaterialApp(
+            locale: Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(body: TrophiesOverview()),
           ),
         ),

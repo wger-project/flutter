@@ -205,9 +205,22 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           as Uri);
 
   @override
-  _i20.Future<dynamic> fetch(Uri? uri, {String? language}) =>
+  _i20.Future<dynamic> fetch(
+    Uri? uri, {
+    int? maxRetries = 3,
+    Duration? initialDelay = const Duration(milliseconds: 250),
+    String? language,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#fetch, [uri], {#language: language}),
+            Invocation.method(
+              #fetch,
+              [uri],
+              {
+                #maxRetries: maxRetries,
+                #initialDelay: initialDelay,
+                #language: language,
+              },
+            ),
             returnValue: _i20.Future<dynamic>.value(),
           )
           as _i20.Future<dynamic>);

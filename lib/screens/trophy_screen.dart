@@ -31,9 +31,7 @@ class TrophyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).trophies),
-      body: WidescreenWrapper(
-        child: TrophiesOverview(),
-      ),
+      body: const WidescreenWrapper(child: TrophiesOverview()),
     );
   }
 }

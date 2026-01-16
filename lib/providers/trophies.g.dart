@@ -10,12 +10,12 @@ part of 'trophies.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(trophyRepository)
-const trophyRepositoryProvider = TrophyRepositoryProvider._();
+final trophyRepositoryProvider = TrophyRepositoryProvider._();
 
 final class TrophyRepositoryProvider
     extends $FunctionalProvider<TrophyRepository, TrophyRepository, TrophyRepository>
     with $Provider<TrophyRepository> {
-  const TrophyRepositoryProvider._()
+  TrophyRepositoryProvider._()
     : super(
         from: null,
         argument: null,
@@ -51,11 +51,11 @@ final class TrophyRepositoryProvider
 String _$trophyRepositoryHash() => r'0699f0c0f7f324f3ba9b21420d9845a3e3096b61';
 
 @ProviderFor(TrophyStateNotifier)
-const trophyStateProvider = TrophyStateNotifierProvider._();
+final trophyStateProvider = TrophyStateNotifierProvider._();
 
 final class TrophyStateNotifierProvider
     extends $NotifierProvider<TrophyStateNotifier, TrophyState> {
-  const TrophyStateNotifierProvider._()
+  TrophyStateNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -89,7 +89,6 @@ abstract class _$TrophyStateNotifier extends $Notifier<TrophyState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<TrophyState, TrophyState>;
     final element =
         ref.element
@@ -99,6 +98,6 @@ abstract class _$TrophyStateNotifier extends $Notifier<TrophyState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

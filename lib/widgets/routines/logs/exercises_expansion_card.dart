@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -74,6 +74,7 @@ class _ExerciseExpansionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final languageCode = Localizations.localeOf(context).languageCode;
     final theme = Theme.of(context);
+    final i18n = AppLocalizations.of(context);
 
     final topSet = logs.isEmpty
         ? null
@@ -85,7 +86,7 @@ class _ExerciseExpansionTile extends StatelessWidget {
     return ExpansionTile(
       // leading: const Icon(Icons.fitness_center),
       title: Text(exercise.getTranslation(languageCode).name, style: theme.textTheme.titleMedium),
-      subtitle: Text('Top set: $topSetWeight $topSetWeightUnit'),
+      subtitle: Text(i18n.topSet('$topSetWeight $topSetWeightUnit')),
       children: logs.map((log) => _SetDataRow(log: log, userPrTrophies: userPrTrophies)).toList(),
     );
   }
