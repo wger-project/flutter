@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -24,6 +25,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
@@ -43,11 +45,10 @@ class NutritionalPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const appBarForeground = Colors.white;
     final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
 
     return Scaffold(
-      //appBar: getAppBar(nutritionalPlan),
+      extendBodyBehindAppBar: true,
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -90,14 +91,22 @@ class NutritionalPlanScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            foregroundColor: appBarForeground,
+            systemOverlayStyle: Theme.of(context).brightness == Brightness.light
+                ? SystemUiOverlayStyle.dark
+                : SystemUiOverlayStyle.light,
+            foregroundColor: Theme.of(context).colorScheme.onSurface,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
             pinned: true,
-            iconTheme: const IconThemeData(color: appBarForeground),
+            iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
+            flexibleSpace: buildAppBarBlurBackground(context),
             actions: [
               if (!nutritionalPlan.onlyLogging)
                 IconButton(
-                  icon: const SvgIcon(
-                    icon: SvgIconData('assets/icons/meal-add.svg'),
+                  icon: SvgIcon(
+                    icon: const SvgIconData('assets/icons/meal-add.svg'),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   onPressed: () {
                     Navigator.pushNamed(
@@ -111,7 +120,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                   },
                 ),
               PopupMenuButton<NutritionalPlanOptions>(
-                icon: const Icon(Icons.more_vert, color: appBarForeground),
+                icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurface),
                 onSelected: (value) {
                   switch (value) {
                     case NutritionalPlanOptions.edit:
@@ -155,12 +164,9 @@ class NutritionalPlanScreen extends StatelessWidget {
                 },
               ),
             ],
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
-              title: Text(
-                nutritionalPlan.getLabel(context),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
-              ),
+            title: Text(
+              nutritionalPlan.getLabel(context),
+              style: kAppBarTitleStyle,
             ),
           ),
           FutureBuilder(

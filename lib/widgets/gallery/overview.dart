@@ -25,6 +25,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/core/image.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
@@ -37,44 +38,50 @@ class Gallery extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<GalleryProvider>(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: RefreshIndicator(
-        onRefresh: () => provider.fetchAndSetGallery(),
-        child: provider.images.isEmpty
-            ? const TextPrompt()
-            : MasonryGridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
-                itemCount: provider.images.length,
-                itemBuilder: (context, index) {
-                  final currentImage = provider.images[index];
-
-                  return GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        builder: (context) => ImageDetail(image: currentImage),
-                        context: context,
-                      );
-                    },
-                    child: FadeInImage(
-                      key: Key('image-${currentImage.id!}'),
-                      placeholder: const AssetImage('assets/images/placeholder.png'),
-                      image: NetworkImage(currentImage.url!),
-                      fit: BoxFit.cover,
-                      imageSemanticLabel: currentImage.description,
-                      imageErrorBuilder: (context, error, stackTrace) => handleImageError(
-                        context,
-                        error,
-                        stackTrace,
-                        currentImage.url!,
-                      ),
-                    ),
-                  );
-                },
+    return RefreshIndicator(
+      onRefresh: () => provider.fetchAndSetGallery(),
+      edgeOffset: MediaQuery.of(context).padding.top + kToolbarHeight,
+      child: provider.images.isEmpty
+          ? const TextPrompt()
+          : MasonryGridView.count(
+              padding: getAppBarBodyPadding(
+                context,
+                left: 5,
+                right: 5,
+                bottom: 5,
+                extraTop: 10,
+                includeToolbarHeight: false,
               ),
-      ),
+              crossAxisCount: 2,
+              mainAxisSpacing: 5,
+              crossAxisSpacing: 5,
+              itemCount: provider.images.length,
+              itemBuilder: (context, index) {
+                final currentImage = provider.images[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      builder: (context) => ImageDetail(image: currentImage),
+                      context: context,
+                    );
+                  },
+                  child: FadeInImage(
+                    key: Key('image-${currentImage.id!}'),
+                    placeholder: const AssetImage('assets/images/placeholder.png'),
+                    image: NetworkImage(currentImage.url!),
+                    fit: BoxFit.cover,
+                    imageSemanticLabel: currentImage.description,
+                    imageErrorBuilder: (context, error, stackTrace) => handleImageError(
+                      context,
+                      error,
+                      stackTrace,
+                      currentImage.url!,
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

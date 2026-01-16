@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 
 /// Arguments passed to the form screen
 class FormScreenArguments {
@@ -54,19 +55,37 @@ class FormScreen extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as FormScreenArguments;
 
     return Scaffold(
-      appBar: AppBar(title: Text(args.title)),
+      appBar: WgerAppBar(args.title),
+      extendBodyBehindAppBar: true,
       body: WidescreenWrapper(
         child: args.hasListView
             ? Scrollable(
                 viewportBuilder: (BuildContext context, ViewportOffset position) => Padding(
-                  padding: args.padding,
+                  padding: getAppBarBodyPadding(
+                    context,
+                    left: args.padding.left,
+                    right: args.padding.right,
+                    bottom: args.padding.bottom,
+                    extraTop: args.padding.top,
+                  ),
                   child: args.widget,
                 ),
               )
             : Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [Padding(padding: args.padding, child: args.widget)],
+                children: [
+                  Padding(
+                    padding: getAppBarBodyPadding(
+                      context,
+                      left: args.padding.left,
+                      right: args.padding.right,
+                      bottom: args.padding.bottom,
+                      extraTop: args.padding.top,
+                    ),
+                    child: args.widget,
+                  ),
+                ],
               ),
       ),
     );
