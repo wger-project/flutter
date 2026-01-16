@@ -204,7 +204,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
   _i20.Future<dynamic> fetch(
     Uri? uri, {
     int? maxRetries = 3,
-    Duration? initialDelay = const Duration(milliseconds: 500),
+    Duration? initialDelay = const Duration(milliseconds: 250),
   }) =>
       (super.noSuchMethod(
             Invocation.method(
