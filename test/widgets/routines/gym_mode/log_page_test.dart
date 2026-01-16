@@ -128,6 +128,7 @@ void main() {
 
       // Act
       notifier.calculatePages();
+      notifier.setCurrentPage(2);
 
       // Assert
       expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.log);
@@ -159,6 +160,7 @@ void main() {
         iteration: 1,
       );
       notifier.calculatePages();
+      notifier.setCurrentPage(2);
 
       // Act
       // Log page is at index 2
@@ -189,15 +191,16 @@ void main() {
 
     testWidgets('save button calls addLog on RoutinesProvider', (tester) async {
       // Arrange
-      final gymNotifier = container.read(gymStateProvider.notifier);
+      final notifier = container.read(gymStateProvider.notifier);
       final routine = testdata.getTestRoutine();
-      gymNotifier.state = gymNotifier.state.copyWith(
+      notifier.state = notifier.state.copyWith(
         dayId: routine.days.first.id,
         routine: routine,
         iteration: 1,
       );
-      gymNotifier.calculatePages();
-      gymNotifier.state = gymNotifier.state.copyWith(currentPage: 2);
+      notifier.calculatePages();
+      notifier.setCurrentPage(2);
+      notifier.state = notifier.state.copyWith(currentPage: 2);
       final mockRoutines = MockRoutinesProvider();
 
       // Act
@@ -206,8 +209,8 @@ void main() {
       final editableFields = find.byType(EditableText);
       expect(editableFields, findsWidgets);
 
-      await tester.enterText(editableFields.at(0), '7');
-      await tester.enterText(editableFields.at(1), '77');
+      await tester.enterText(editableFields.at(0), '12'); // Reps
+      await tester.enterText(editableFields.at(1), '34'); // Weight
       await tester.pumpAndSettle();
 
       Log? capturedLog;
@@ -226,13 +229,13 @@ void main() {
       // Assert
       verify(mockRoutines.addLog(any)).called(1);
       expect(capturedLog, isNotNull);
-      expect(capturedLog!.repetitions, equals(7));
-      expect(capturedLog!.weight, equals(77));
+      expect(capturedLog!.repetitions, equals(12));
+      expect(capturedLog!.weight, equals(34));
 
-      final currentSlotPage = gymNotifier.state.getSlotEntryPageByIndex()!;
+      final currentSlotPage = notifier.state.getSlotEntryPageByIndex()!;
       expect(capturedLog!.slotEntryId, equals(currentSlotPage.setConfigData!.slotEntryId));
-      expect(capturedLog!.routineId, equals(gymNotifier.state.routine.id));
-      expect(capturedLog!.iteration, equals(gymNotifier.state.iteration));
+      expect(capturedLog!.routineId, equals(notifier.state.routine.id));
+      expect(capturedLog!.iteration, equals(notifier.state.iteration));
     });
   });
 }

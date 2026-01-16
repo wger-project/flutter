@@ -694,5 +694,551 @@
     "toggleDetails": "Schakel details in",
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"
-    }
+    },
+    "goToDetailPage": "Ga naar detail pagina",
+    "@goToDetailPage": {},
+    "aboutWhySupportTitle": "Open Source & gratis te gebruiken ❤️",
+    "@aboutWhySupportTitle": {},
+    "aboutDescription": "Bedankt voor het gebruiken van wger! wger is een collaboratief open source project, gemaakt door fitness fans van over de hele wereld.",
+    "@aboutDescription": {
+        "description": "Text in the about dialog"
+    },
+    "aboutDonateTitle": "Maak een donatie",
+    "@aboutDonateTitle": {},
+    "aboutDonateText": "Hoewel het project gratis is en dat ook altijd zal blijven, zijn de kosten voor het draaien van de server dat niet! De ontwikkeling vergt bovendien veel tijd en inzet van vrijwilligers. Uw bijdrage dekt deze kosten direct en helpt de betrouwbaarheid van de dienst te waarborgen.",
+    "@aboutDonateText": {},
+    "aboutContributeTitle": "Bijdragen",
+    "@aboutContributeTitle": {},
+    "aboutContributeText": "Alle soorten bijdragen zijn welkom. Of je nu ontwikkelaar bent, vertaler of gewoon een fitnessliefhebber, elke vorm van steun wordt gewaardeerd!",
+    "@aboutContributeText": {},
+    "aboutBugsListTitle": "Meld een probleem of stel een functie voor",
+    "@aboutBugsListTitle": {},
+    "aboutTranslationListTitle": "Vertaal de applicatie",
+    "@aboutTranslationListTitle": {},
+    "aboutSourceListTitle": "Bekijk broncode",
+    "@aboutSourceListTitle": {},
+    "aboutJoinCommunityTitle": "Sluit je aan bij de community",
+    "@aboutJoinCommunityTitle": {},
+    "aboutMastodonTitle": "Mastodon",
+    "@aboutMastodonTitle": {},
+    "aboutDiscordTitle": "Discord",
+    "@aboutDiscordTitle": {},
+    "others": "Anderen",
+    "@others": {},
+    "calendar": "Kalender",
+    "@calendar": {},
+    "goToToday": "Ga naar vandaag",
+    "@goToToday": {
+        "description": "Label on button to jump back to 'today' in the calendar widget"
+    },
+    "enterValue": "Voer een waarde in",
+    "@enterValue": {
+        "description": "Error message when the user hasn't entered a value on a required field"
+    },
+    "selectEntry": "Selecteer een entry",
+    "@selectEntry": {},
+    "selectExercise": "Selecteer een oefening",
+    "@selectExercise": {
+        "description": "Error message when the user hasn't selected an exercise in the form"
+    },
+    "enterCharacters": "Voer tussen {min} en {max} tekens in",
+    "@enterCharacters": {
+        "description": "Error message when the user hasn't entered the correct number of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "String"
+            },
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "formMinMaxValues": "Voer een waarde tussen {min} en {max} in",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "enterMinCharacters": "Voer minstens {min} tekens in",
+    "@enterMinCharacters": {
+        "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "String"
+            }
+        }
+    },
+    "baseNameEnglish": "Alle oefeningen moeten een basisnaam in het Engels hebben",
+    "@baseNameEnglish": {},
+    "nrOfSets": "Sets per oefening: {nrOfSets}",
+    "@nrOfSets": {
+        "description": "Label shown on the slider where the user selects the nr of sets",
+        "type": "text",
+        "placeholders": {
+            "nrOfSets": {
+                "type": "String"
+            }
+        }
+    },
+    "setUnitsAndRir": "Stel eenheden en RiR in",
+    "@setUnitsAndRir": {
+        "description": "Label shown on the slider where the user can toggle showing units and RiR",
+        "type": "text"
+    },
+    "enterValidNumber": "Voer een geldig nummer in",
+    "@enterValidNumber": {
+        "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+    },
+    "selectIngredient": "Selecteer een ingrediënt",
+    "@selectIngredient": {
+        "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+    },
+    "recentlyUsedIngredients": "Recent toegevoegde ingrediënten",
+    "@recentlyUsedIngredients": {
+        "description": "A message when a user adds a new ingredient to a meal."
+    },
+    "selectImage": "Selecteer een afbeelding",
+    "@selectImage": {
+        "description": "Label and error message when the user hasn't selected an image to save"
+    },
+    "optionsLabel": "Opties",
+    "@optionsLabel": {
+        "description": "Label for the popup with general app options"
+    },
+    "takePicture": "Neem een foto",
+    "@takePicture": {},
+    "chooseFromLibrary": "Kies uit foto galerij",
+    "@chooseFromLibrary": {},
+    "gallery": "Galerij",
+    "@gallery": {},
+    "addImage": "Afbeelding toevoegen",
+    "@addImage": {},
+    "dataCopied": "Gegevens gekopieerd naar een nieuw item",
+    "@dataCopied": {
+        "description": "Snackbar message to show on copying data to a new log entry"
+    },
+    "appUpdateTitle": "Update vereist",
+    "@appUpdateTitle": {},
+    "appUpdateContent": "Deze versie van de app is niet compatibel met de server, update uw applicatie.",
+    "@appUpdateContent": {},
+    "productFound": "Product gevonden",
+    "@productFound": {
+        "description": "Header label for dialog when product is found with barcode"
+    },
+    "productFoundDescription": "De barcode hoort bij dit product: {productName}. Wilt u doorgaan?",
+    "@productFoundDescription": {
+        "description": "Dialog info when product is found with barcode",
+        "type": "text",
+        "placeholders": {
+            "productName": {
+                "type": "String"
+            }
+        }
+    },
+    "productNotFound": "Product niet gevonden",
+    "@productNotFound": {
+        "description": "Header label for dialog when product is not found with barcode"
+    },
+    "productNotFoundDescription": "Het product met de gescande barcode {barcode} is niet gevonden in de wger database",
+    "@productNotFoundDescription": {
+        "description": "Dialog info when product is not found with barcode",
+        "type": "text",
+        "placeholders": {
+            "barcode": {
+                "type": "String"
+            }
+        }
+    },
+    "scanBarcode": "Scan barcode",
+    "@scanBarcode": {
+        "description": "Label for scan barcode button"
+    },
+    "close": "Sluiten",
+    "@close": {
+        "description": "Translation for close"
+    },
+    "identicalExercisePleaseDiscard": "Als je een oefening ziet die identiek is aan degene die je toevoegt, gooi dan je concept weg en bewerk die oefening in plaats daarvan.",
+    "@identicalExercisePleaseDiscard": {},
+    "checkInformationBeforeSubmitting": "Controleer of de ingevoerde gegevens correct zijn voordat u de oefening indient",
+    "@checkInformationBeforeSubmitting": {},
+    "add_exercise_image_license": "Afbeeldingen moeten compatibel zijn met de CC BY SA-licentie. Upload bij twijfel alleen foto's die je zelf hebt gemaakt.",
+    "@add_exercise_image_license": {},
+    "imageDetailsTitle": "Afbeeldingsdetails",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Titel",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Voer afbeeldingsnaam in",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Link naar de bronwebsite",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Auteur(s)",
+    "@author": {},
+    "authorHint": "Voer auteursnaam in",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Link naar de website of het profiel van de auteur",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Link naar de originele bron, als dit een afgeleid werk is",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Hulptekst ter uitleg van afgeleide werken.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Afbeeldingstype",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "Door deze afbeelding in te dienen, stemt u ermee in deze vrij te geven onder de CC-BY-SA-4-licentie. De afbeelding moet uw eigen werk zijn of de auteur moet deze hebben vrijgegeven onder een licentie die hiermee compatibel is.",
+    "@imageDetailsLicenseNotice": {},
+    "imageDetailsLicenseNoticeLinkToLicense": "Zie licentie tekst.",
+    "@imageDetailsLicenseNoticeLinkToLicense": {},
+    "imageFormatNotSupported": "{imageFormat} wordt niet ondersteund",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "Afbeeldingen met het formaat {imageFormat} worden nog niet ondersteund.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "add": "toevoegen",
+    "@add": {
+        "description": "Add button text"
+    },
+    "variations": "Variaties",
+    "@variations": {
+        "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+    },
+    "alsoKnownAs": "Ook bekend als: {aliases}",
+    "@alsoKnownAs": {
+        "placeholders": {
+            "aliases": {
+                "type": "String"
+            }
+        },
+        "description": "List of alternative names for an exercise"
+    },
+    "verifiedEmail": "Geverifieerde email",
+    "@verifiedEmail": {},
+    "unVerifiedEmail": "Niet-geverifieerde e-mail",
+    "@unVerifiedEmail": {},
+    "verifiedEmailReason": "Je moet je e-mailadres verifiëren om oefeningen te kunnen doen",
+    "@verifiedEmailReason": {},
+    "verifiedEmailInfo": "Er is een verificatiemail verzonden naar {email}",
+    "@verifiedEmailInfo": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "alternativeNames": "Alternatieve namen",
+    "@alternativeNames": {},
+    "oneNamePerLine": "Een naam per lijn",
+    "@oneNamePerLine": {},
+    "whatVariationsExist": "Welke varianten van deze oefening bestaan er, indien van toepassing?",
+    "@whatVariationsExist": {},
+    "previous": "Vorige",
+    "@previous": {},
+    "next": "Volgende",
+    "@next": {},
+    "images": "Afbeeldingen",
+    "@images": {},
+    "language": "Taal",
+    "@language": {},
+    "addExercise": "Voeg oefening toe",
+    "@addExercise": {},
+    "fitInWeek": "In week passen",
+    "@fitInWeek": {},
+    "fitInWeekHelp": "Indien ingeschakeld, zullen de dagen zich herhalen in een wekelijkse cyclus; anders zullen de dagen elkaar opeenvolgend opvolgen, ongeacht het begin van een nieuwe week.",
+    "@fitInWeekHelp": {},
+    "addSuperset": "Superset toevoegen",
+    "@addSuperset": {},
+    "superset": "Superset",
+    "@superset": {},
+    "setHasProgression": "Set heeft progressie",
+    "@setHasProgression": {},
+    "setHasProgressionWarning": "Houd er rekening mee dat het momenteel niet mogelijk is om alle instellingen voor een set te bewerken in de mobiele app of om de automatische voortgang te configureren. Gebruik hiervoor voorlopig de webapp.",
+    "@setHasProgressionWarning": {},
+    "setHasNoExercises": "Deze set heeft nog geen oefeningen!",
+    "@setHasNoExercises": {},
+    "contributeExercise": "Draag een oefening bij",
+    "@contributeExercise": {},
+    "translation": "Vertaling",
+    "@translation": {},
+    "translateExercise": "Vertaal deze oefening",
+    "@translateExercise": {},
+    "baseData": "Basics in Engels",
+    "@baseData": {
+        "description": "The base data for an exercise such as category, trained muscles, etc."
+    },
+    "enterTextInLanguage": "Voer de tekst in de juiste taal in!",
+    "@enterTextInLanguage": {},
+    "settingsTitle": "Instellingen",
+    "@settingsTitle": {},
+    "settingsCacheTitle": "Cache",
+    "@settingsCacheTitle": {},
+    "settingsExerciseCacheDescription": "Oefeningscache",
+    "@settingsExerciseCacheDescription": {},
+    "settingsIngredientCacheDescription": "Ingrediënten cache",
+    "@settingsIngredientCacheDescription": {},
+    "settingsCacheDeletedSnackbar": "Cache succesvol geleegd",
+    "@settingsCacheDeletedSnackbar": {},
+    "aboutPageTitle": "Over ons & Support",
+    "@aboutPageTitle": {},
+    "contributeExerciseWarning": "Je kunt alleen oefeningen bijdragen als je account ouder is dan {days} dagen en je e-mailadres is geverifieerd",
+    "@contributeExerciseWarning": {
+        "description": "Number of days before which a person can add exercise",
+        "placeholders": {
+            "days": {
+                "type": "String",
+                "example": "14"
+            }
+        }
+    },
+    "simpleMode": "Eenvoudige modus",
+    "@simpleMode": {},
+    "simpleModeHelp": "Verberg enkele van de meer geavanceerde instellingen tijdens het bewerken van oefeningen",
+    "@simpleModeHelp": {},
+    "progressionRules": "Deze oefening heeft voortgangsregels en kan niet worden bewerkt in de mobiele app. Gebruik de webapplicatie om deze oefening te bewerken.",
+    "@progressionRules": {},
+    "cacheWarning": "Vanwege de caching kan het even duren voordat de wijzigingen in de hele applicatie zichtbaar zijn.",
+    "@cacheWarning": {},
+    "textPromptTitle": "Klaar om te starten?",
+    "@textPromptTitle": {},
+    "textPromptSubheading": "Druk op de actieknop om te beginnen",
+    "@textPromptSubheading": {},
+    "abs": "Buikspieren",
+    "@abs": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "arms": "Armen",
+    "@arms": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "back": "Rug",
+    "@back": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "barbell": "Barbell",
+    "@barbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "bench": "Bench",
+    "@bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "biceps": "Biceps",
+    "@biceps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "body_weight": "Gewicht",
+    "@body_weight": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "calves": "Kuiten",
+    "@calves": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "cardio": "Cardio",
+    "@cardio": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "chest": "Borst",
+    "@chest": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "dumbbell": "Dumbbell",
+    "@dumbbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "glutes": "Glutes",
+    "@glutes": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "gym_mat": "Gym matje",
+    "@gym_mat": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "hamstrings": "Hamstrings",
+    "@hamstrings": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "incline_bench": "Incline bench",
+    "@incline_bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kettlebell": "Kettlebell",
+    "@kettlebell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kilometers": "Kilometers",
+    "@kilometers": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kilometers_per_hour": "Kilometers Per Uur",
+    "@kilometers_per_hour": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lats": "Lats",
+    "@lats": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "legs": "Benen",
+    "@legs": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lower_back": "Onderrug",
+    "@lower_back": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "max_reps": "Max Herhalingen",
+    "@max_reps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "miles": "Miles",
+    "@miles": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "miles_per_hour": "Miles Per Uur",
+    "@miles_per_hour": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "minutes": "Minuten",
+    "@minutes": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "plates": "Platen",
+    "@plates": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "pull_up_bar": "Pull-up bar",
+    "@pull_up_bar": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "quads": "Quads",
+    "@quads": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "repetitions": "Herhalingen",
+    "@repetitions": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "resistance_band": "Weerstandsband",
+    "@resistance_band": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "sz_bar": "SZ-Bar",
+    "@sz_bar": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "seconds": "Seconden",
+    "@seconds": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "shoulders": "Schouders",
+    "@shoulders": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "swiss_ball": "Zwitserse Bal",
+    "@swiss_ball": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "triceps": "Triceps",
+    "@triceps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "until_failure": "Tot Falen",
+    "@until_failure": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kg": "kg",
+    "@kg": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lb": "lb",
+    "@lb": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "none__bodyweight_exercise_": "geen (lichaamsgewicht)",
+    "@none__bodyweight_exercise_": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "log": "Vastleggen",
+    "@log": {
+        "description": "Log a specific meal (imperative form)"
+    },
+    "done": "Klaar",
+    "@done": {},
+    "overallChangeWeight": "Algemene verandering",
+    "@overallChangeWeight": {
+        "description": "Overall change in weight, added for localization"
+    },
+    "goalTypeMeals": "Van maaltijden",
+    "@goalTypeMeals": {
+        "description": "added for localization of Class GoalType's filed meals"
+    },
+    "goalTypeBasic": "Basic",
+    "@goalTypeBasic": {
+        "description": "added for localization of Class GoalType's filed basic"
+    },
+    "goalTypeAdvanced": "Geavanceerd",
+    "@goalTypeAdvanced": {
+        "description": "added for localization of Class GoalType's filed advanced"
+    },
+    "indicatorRaw": "rauw",
+    "@indicatorRaw": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "indicatorAvg": "gemiddeld",
+    "@indicatorAvg": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "endWorkout": "Beëindig workout",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "themeMode": "Thema modus",
+    "@themeMode": {},
+    "darkMode": "Altijd donkere modus",
+    "@darkMode": {},
+    "lightMode": "Altijd lichte modus",
+    "@lightMode": {},
+    "systemMode": "Systeem instellingen",
+    "@systemMode": {},
+    "slotEntryTypeMyo": "Myo",
+    "@slotEntryTypeMyo": {}
 }

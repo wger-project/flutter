@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -109,12 +109,10 @@ void main() {
 
       await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
         await tester.pumpWidget(renderGymMode());
-
         await tester.pumpAndSettle();
         await tester.tap(find.byType(TextButton));
-
         await tester.pumpAndSettle();
-        //await tester.ensureVisible(find.byKey(Key(key as String)));
+
         //
         // Start page
         //
@@ -306,6 +304,7 @@ void main() {
         expect(find.byIcon(Icons.chevron_right), findsNothing);
       });
     },
+    tags: ['golden'],
     semanticsEnabled: false,
   );
 }
