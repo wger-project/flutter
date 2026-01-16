@@ -51,7 +51,7 @@ class Log {
   late int routineId;
 
   @JsonKey(required: true, name: 'session')
-  late int? sessionId;
+  int? sessionId;
 
   @JsonKey(required: true)
   int? iteration;
@@ -72,22 +72,22 @@ class Log {
   num? repetitionsTarget;
 
   @JsonKey(required: true, name: 'repetitions_unit')
-  late int? repetitionsUnitId;
+  int? repetitionsUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late RepetitionUnit? repetitionsUnitObj;
+  RepetitionUnit? repetitionsUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString)
-  late num? weight;
+  num? weight;
 
   @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString, name: 'weight_target')
   num? weightTarget;
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int? weightUnitId;
+  int? weightUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late WeightUnit? weightUnitObj;
+  WeightUnit? weightUnitObj;
 
   @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime date;
