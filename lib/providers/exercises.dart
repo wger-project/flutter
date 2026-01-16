@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,9 +22,9 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/category.dart';
@@ -234,7 +234,12 @@ class ExercisesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetCategoriesFromApi() async {
     _logger.info('Loading exercise categories from API');
-    final categories = await baseProvider.fetchPaginated(baseProvider.makeUrl(categoriesUrlPath));
+    final categories = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        categoriesUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
     for (final category in categories) {
       _categories.add(ExerciseCategory.fromJson(category));
     }
@@ -242,7 +247,12 @@ class ExercisesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetMusclesFromApi() async {
     _logger.info('Loading muscles from API');
-    final muscles = await baseProvider.fetchPaginated(baseProvider.makeUrl(musclesUrlPath));
+    final muscles = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        musclesUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
 
     for (final muscle in muscles) {
       _muscles.add(Muscle.fromJson(muscle));
@@ -251,7 +261,12 @@ class ExercisesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetEquipmentsFromApi() async {
     _logger.info('Loading equipment from API');
-    final equipments = await baseProvider.fetchPaginated(baseProvider.makeUrl(equipmentUrlPath));
+    final equipments = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        equipmentUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
 
     for (final equipment in equipments) {
       _equipment.add(Equipment.fromJson(equipment));
@@ -261,7 +276,12 @@ class ExercisesProvider with ChangeNotifier {
   Future<void> fetchAndSetLanguagesFromApi() async {
     _logger.info('Loading languages from API');
 
-    final languageData = await baseProvider.fetchPaginated(baseProvider.makeUrl(languageUrlPath));
+    final languageData = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        languageUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
 
     for (final language in languageData) {
       _languages.add(Language.fromJson(language));
