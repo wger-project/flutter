@@ -28,36 +28,49 @@ class SettingsDashboardVisibility extends StatelessWidget {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
 
+    String getTitle(DashboardWidget w) {
+      switch (w) {
+        case DashboardWidget.routines:
+          return i18n.routines;
+        case DashboardWidget.weight:
+          return i18n.weight;
+        case DashboardWidget.measurements:
+          return i18n.measurements;
+        case DashboardWidget.calendar:
+          return i18n.calendar;
+        case DashboardWidget.nutrition:
+          return i18n.nutritionalPlans;
+      }
+    }
+
     return Consumer<UserProvider>(
       builder: (context, user, _) {
-        return Column(
-          children: [
-            SwitchListTile(
-              title: Text(i18n.routines),
-              value: user.isDashboardWidgetVisible(DashboardWidget.routines),
-              onChanged: (v) => user.setDashboardWidgetVisible(DashboardWidget.routines, v),
-            ),
-            SwitchListTile(
-              title: Text(i18n.weight),
-              value: user.isDashboardWidgetVisible(DashboardWidget.weight),
-              onChanged: (v) => user.setDashboardWidgetVisible(DashboardWidget.weight, v),
-            ),
-            SwitchListTile(
-              title: Text(i18n.measurements),
-              value: user.isDashboardWidgetVisible(DashboardWidget.measurements),
-              onChanged: (v) => user.setDashboardWidgetVisible(DashboardWidget.measurements, v),
-            ),
-            SwitchListTile(
-              title: Text(i18n.calendar),
-              value: user.isDashboardWidgetVisible(DashboardWidget.calendar),
-              onChanged: (v) => user.setDashboardWidgetVisible(DashboardWidget.calendar, v),
-            ),
-            SwitchListTile(
-              title: Text(i18n.nutritionalPlans),
-              value: user.isDashboardWidgetVisible(DashboardWidget.nutrition),
-              onChanged: (v) => user.setDashboardWidgetVisible(DashboardWidget.nutrition, v),
-            ),
-          ],
+        return ReorderableListView(
+          physics: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles: false,
+          onReorder: user.setDashboardOrder,
+          children: user.dashboardOrder.asMap().entries.map((entry) {
+            final index = entry.key;
+            final w = entry.value;
+
+            return ListTile(
+              key: ValueKey(w),
+              title: Text(getTitle(w)),
+              leading: IconButton(
+                icon: user.isDashboardWidgetVisible(w)
+                    ? const Icon(Icons.visibility)
+                    : const Icon(Icons.visibility_off, color: Colors.grey),
+                onPressed: () => user.setDashboardWidgetVisible(
+                  w,
+                  !user.isDashboardWidgetVisible(w),
+                ),
+              ),
+              trailing: ReorderableDragStartListener(
+                index: index,
+                child: const Icon(Icons.drag_handle),
+              ),
+            );
+          }).toList(),
         );
       },
     );

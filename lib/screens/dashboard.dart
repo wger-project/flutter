@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,6 +32,21 @@ class DashboardScreen extends StatelessWidget {
 
   static const routeName = '/dashboard';
 
+  Widget _getDashboardWidget(DashboardWidget widget) {
+    switch (widget) {
+      case DashboardWidget.routines:
+        return const DashboardRoutineWidget();
+      case DashboardWidget.weight:
+        return const DashboardWeightWidget();
+      case DashboardWidget.measurements:
+        return const DashboardMeasurementWidget();
+      case DashboardWidget.calendar:
+        return const DashboardCalendarWidget();
+      case DashboardWidget.nutrition:
+        return const DashboardNutritionWidget();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context);
@@ -41,18 +56,10 @@ class DashboardScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
         child: Column(
-          children: [
-            if (user.isDashboardWidgetVisible(DashboardWidget.routines))
-              const DashboardRoutineWidget(),
-            if (user.isDashboardWidgetVisible(DashboardWidget.weight))
-              const DashboardWeightWidget(),
-            if (user.isDashboardWidgetVisible(DashboardWidget.measurements))
-              const DashboardMeasurementWidget(),
-            if (user.isDashboardWidgetVisible(DashboardWidget.calendar))
-              const DashboardCalendarWidget(),
-            if (user.isDashboardWidgetVisible(DashboardWidget.nutrition))
-              const DashboardNutritionWidget(),
-          ],
+          children: user.dashboardOrder
+              .where((w) => user.isDashboardWidgetVisible(w))
+              .map(_getDashboardWidget)
+              .toList(),
         ),
       ),
     );

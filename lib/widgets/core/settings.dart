@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/screens/settings_plates_screen.dart';
 
 import './settings/exercise_cache.dart';
@@ -49,13 +48,6 @@ class SettingsPage extends StatelessWidget {
             title: Text(i18n.selectAvailablePlates),
             onTap: () {
               Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
-            },
-            trailing: const Icon(Icons.chevron_right),
-          ),
-          ListTile(
-            title: Text(i18n.dashboardWidgets),
-            onTap: () {
-              Navigator.of(context).pushNamed(ConfigureDashboardWidgetsScreen.routeName);
             },
             trailing: const Icon(Icons.chevron_right),
           ),

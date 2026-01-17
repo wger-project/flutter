@@ -19,6 +19,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
@@ -28,20 +29,34 @@ import 'package:wger/providers/base_provider.dart';
 
 enum DashboardWidget {
   routines('routines'),
+  nutrition('nutrition'),
   weight('weight'),
   measurements('measurements'),
-  calendar('calendar'),
-  nutrition('nutrition');
+  calendar('calendar');
 
   final String value;
   const DashboardWidget(this.value);
 
   static DashboardWidget? fromString(String s) {
     for (final e in DashboardWidget.values) {
-      if (e.value == s) return e;
+      if (e.value == s) {
+        return e;
+      }
     }
     return null;
   }
+}
+
+class DashboardItem {
+  final DashboardWidget widget;
+  bool isVisible;
+
+  DashboardItem(this.widget, {this.isVisible = true});
+
+  Map<String, dynamic> toJson() => {
+    'widget': widget.value,
+    'visible': isVisible,
+  };
 }
 
 class UserProvider with ChangeNotifier {
@@ -49,23 +64,13 @@ class UserProvider with ChangeNotifier {
   final WgerBaseProvider baseProvider;
   late SharedPreferencesAsync prefs;
 
-  // New: visibility state for dashboard widgets
-  Map<DashboardWidget, bool> dashboardWidgetVisibility = {
-    DashboardWidget.routines: true,
-    DashboardWidget.weight: true,
-    DashboardWidget.measurements: true,
-    DashboardWidget.calendar: true,
-    DashboardWidget.nutrition: true,
-  };
-
-  static const String PREFS_DASHBOARD_VISIBILITY = 'dashboardWidgetVisibility';
-
   UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _loadThemeMode();
-    _loadDashboardVisibility();
+    _loadDashboardConfig();
   }
 
+  static const String PREFS_DASHBOARD_CONFIG = 'dashboardConfig';
   static const PROFILE_URL = 'userprofile';
   static const VERIFY_EMAIL = 'verify-email';
 
@@ -75,15 +80,6 @@ class UserProvider with ChangeNotifier {
   void clear() {
     profile = null;
   }
-
-  // // change the unit of plates
-  // void changeUnit({changeTo = 'kg'}) {
-  //   if (changeTo == 'kg') {
-  //     profile?.weightUnitStr = 'lb';
-  //   } else {
-  //     profile?.weightUnitStr = 'kg';
-  //   }
-  // }
 
   // Load theme mode from SharedPreferences
   Future<void> _loadThemeMode() async {
@@ -98,47 +94,76 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _loadDashboardVisibility() async {
-    final jsonString = await prefs.getString(PREFS_DASHBOARD_VISIBILITY);
+  // Dashboard configuration
+  List<DashboardItem> _dashboardItems = DashboardWidget.values
+      .map((w) => DashboardItem(w))
+      .toList();
+
+  List<DashboardWidget> get dashboardOrder => _dashboardItems.map((e) => e.widget).toList();
+
+  Future<void> _loadDashboardConfig() async {
+    final jsonString = await prefs.getString(PREFS_DASHBOARD_CONFIG);
     if (jsonString == null) {
+      notifyListeners();
       return;
     }
 
     try {
-      final decoded = jsonDecode(jsonString) as Map<String, dynamic>;
-      final Map<DashboardWidget, bool> loaded = {};
+      final List<dynamic> decoded = jsonDecode(jsonString);
+      final List<DashboardItem> loaded = [];
 
-      for (final entry in decoded.entries) {
-        final widget = DashboardWidget.fromString(entry.key);
+      for (final item in decoded) {
+        final widget = DashboardWidget.fromString(item['widget']);
         if (widget != null) {
-          loaded[widget] = entry.value as bool;
+          loaded.add(
+            DashboardItem(widget, isVisible: item['visible'] as bool),
+          );
         }
       }
 
-      if (loaded.isNotEmpty) {
-        dashboardWidgetVisibility = loaded;
+      // Add any missing widgets (e.g. newly added features)
+      for (final widget in DashboardWidget.values) {
+        if (!loaded.any((item) => item.widget == widget)) {
+          loaded.add(DashboardItem(widget));
+        }
       }
+
+      _dashboardItems = loaded;
     } catch (_) {
       // parsing failed -> keep defaults
     }
-
     notifyListeners();
   }
 
+  Future<void> _saveDashboardConfig() async {
+    final serializable = _dashboardItems.map((e) => e.toJson()).toList();
+    await prefs.setString(PREFS_DASHBOARD_CONFIG, jsonEncode(serializable));
+  }
+
   bool isDashboardWidgetVisible(DashboardWidget key) {
-    return dashboardWidgetVisibility[key] ?? true;
+    final widget = _dashboardItems.firstWhereOrNull((e) => e.widget == key);
+    return widget == null || widget.isVisible;
   }
 
   Future<void> setDashboardWidgetVisible(DashboardWidget key, bool visible) async {
-    dashboardWidgetVisibility[key] = visible;
-    final Map<String, bool> serializable = {
-      for (final e in dashboardWidgetVisibility.entries) e.key.value: e.value,
-    };
+    final item = _dashboardItems.firstWhereOrNull((e) => e.widget == key);
+    if (item == null) {
+      return;
+    }
 
-    await prefs.setString(
-      PREFS_DASHBOARD_VISIBILITY,
-      jsonEncode(serializable),
-    );
+    item.isVisible = visible;
+    await _saveDashboardConfig();
+    notifyListeners();
+  }
+
+  Future<void> setDashboardOrder(int oldIndex, int newIndex) async {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final item = _dashboardItems.removeAt(oldIndex);
+    _dashboardItems.insert(newIndex, item);
+
+    await _saveDashboardConfig();
     notifyListeners();
   }
 

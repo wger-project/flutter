@@ -49,7 +49,9 @@ void main() {
 
   setUp(() {
     when(mockUserProvider.themeMode).thenReturn(ThemeMode.system);
-    when(mockUserProvider.isDashboardWidgetVisible(any)).thenReturn(true);
+    when(
+      mockSharedPreferences.getString(UserProvider.PREFS_DASHBOARD_CONFIG),
+    ).thenAnswer((_) async => null);
     when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
     when(mockNutritionProvider.ingredients).thenReturn([ingredient1, ingredient2]);
   });
@@ -101,19 +103,15 @@ void main() {
   group('Theme settings', () {
     test('Default theme is system', () async {
       when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => null);
-      when(
-        mockSharedPreferences.getString('dashboardWidgetVisibility'),
-      ).thenAnswer((_) async => null);
-      final userProvider = await UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
+      final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
+      await Future.delayed(const Duration(milliseconds: 50)); // wait for async prefs load
       expect(userProvider.themeMode, ThemeMode.system);
     });
 
     test('Loads light theme', () async {
       when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => false);
-      when(
-        mockSharedPreferences.getString('dashboardWidgetVisibility'),
-      ).thenAnswer((_) async => null);
-      final userProvider = await UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
+      final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
+      await Future.delayed(const Duration(milliseconds: 50)); // wait for async prefs load
       expect(userProvider.themeMode, ThemeMode.light);
     });
 
