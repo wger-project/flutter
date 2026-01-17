@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -16,17 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/configure_plates_screen.dart';
-import 'package:wger/widgets/core/settings/exercise_cache.dart';
-import 'package:wger/widgets/core/settings/ingredient_cache.dart';
-import 'package:wger/widgets/core/settings/theme.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
+import 'package:wger/screens/settings_plates_screen.dart';
 
+import './settings/exercise_cache.dart';
+import './settings/ingredient_cache.dart';
+import './settings/theme.dart';
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
@@ -48,48 +45,17 @@ class SettingsPage extends StatelessWidget {
           const SettingsIngredientCache(),
           ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
           const SettingsTheme(),
-          Consumer<UserProvider>(
-            builder: (context, user, _) {
-              return Column(
-                children: [
-                  SwitchListTile(
-                    title: const Text('Show routines on dashboard'),
-                    value: user.isDashboardWidgetVisible('routines'),
-                    onChanged: (v) =>
-                        user.setDashboardWidgetVisible('routines', v),
-                  ),
-                  SwitchListTile(
-                    title: const Text('Show weight on dashboard'),
-                    value: user.isDashboardWidgetVisible('weight'),
-                    onChanged: (v) =>
-                        user.setDashboardWidgetVisible('weight', v),
-                  ),
-                  SwitchListTile(
-                    title: const Text('Show measurements on dashboard'),
-                    value: user.isDashboardWidgetVisible('measurements'),
-                    onChanged: (v) =>
-                        user.setDashboardWidgetVisible('measurements', v),
-                  ),
-                  SwitchListTile(
-                    title: const Text('Show calendar on dashboard'),
-                    value: user.isDashboardWidgetVisible('calendar'),
-                    onChanged: (v) =>
-                        user.setDashboardWidgetVisible('calendar', v),
-                  ),
-                  SwitchListTile(
-                    title: const Text('Show nutrition on dashboard'),
-                    value: user.isDashboardWidgetVisible('nutrition'),
-                    onChanged: (v) =>
-                        user.setDashboardWidgetVisible('nutrition', v),
-                  ),
-                ],
-              );
-            },
-          ),
           ListTile(
             title: Text(i18n.selectAvailablePlates),
             onTap: () {
               Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
+            },
+            trailing: const Icon(Icons.chevron_right),
+          ),
+          ListTile(
+            title: Text(i18n.dashboardWidgets),
+            onTap: () {
+              Navigator.of(context).pushNamed(ConfigureDashboardWidgetsScreen.routeName);
             },
             trailing: const Icon(Icons.chevron_right),
           ),

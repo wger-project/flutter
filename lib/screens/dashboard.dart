@@ -19,13 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets/measurements.dart';
 import 'package:wger/widgets/dashboard/widgets/nutrition.dart';
 import 'package:wger/widgets/dashboard/widgets/routines.dart';
 import 'package:wger/widgets/dashboard/widgets/weight.dart';
-import 'package:wger/providers/user.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -42,15 +42,15 @@ class DashboardScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            if (user.isDashboardWidgetVisible('routines'))
+            if (user.isDashboardWidgetVisible(DashboardWidget.routines))
               const DashboardRoutineWidget(),
-            if (user.isDashboardWidgetVisible('weight'))
+            if (user.isDashboardWidgetVisible(DashboardWidget.weight))
               const DashboardWeightWidget(),
-            if (user.isDashboardWidgetVisible('measurements'))
+            if (user.isDashboardWidgetVisible(DashboardWidget.measurements))
               const DashboardMeasurementWidget(),
-            if (user.isDashboardWidgetVisible('calendar'))
+            if (user.isDashboardWidgetVisible(DashboardWidget.calendar))
               const DashboardCalendarWidget(),
-            if (user.isDashboardWidgetVisible('nutrition'))
+            if (user.isDashboardWidgetVisible(DashboardWidget.nutrition))
               const DashboardNutritionWidget(),
           ],
         ),

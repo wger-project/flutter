@@ -232,6 +232,14 @@ class MockUserProvider extends _i1.Mock implements _i13.UserProvider {
           as _i4.SharedPreferencesAsync);
 
   @override
+  Map<_i13.DashboardWidget, bool> get dashboardWidgetVisibility =>
+      (super.noSuchMethod(
+            Invocation.getter(#dashboardWidgetVisibility),
+            returnValue: <_i13.DashboardWidget, bool>{},
+          )
+          as Map<_i13.DashboardWidget, bool>);
+
+  @override
   set themeMode(_i14.ThemeMode? value) => super.noSuchMethod(
     Invocation.setter(#themeMode, value),
     returnValueForMissingStub: null,
@@ -240,6 +248,12 @@ class MockUserProvider extends _i1.Mock implements _i13.UserProvider {
   @override
   set prefs(_i4.SharedPreferencesAsync? value) => super.noSuchMethod(
     Invocation.setter(#prefs, value),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set dashboardWidgetVisibility(Map<_i13.DashboardWidget, bool>? value) => super.noSuchMethod(
+    Invocation.setter(#dashboardWidgetVisibility, value),
     returnValueForMissingStub: null,
   );
 
@@ -258,6 +272,26 @@ class MockUserProvider extends _i1.Mock implements _i13.UserProvider {
     Invocation.method(#clear, []),
     returnValueForMissingStub: null,
   );
+
+  @override
+  bool isDashboardWidgetVisible(_i13.DashboardWidget? key) =>
+      (super.noSuchMethod(
+            Invocation.method(#isDashboardWidgetVisible, [key]),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i11.Future<void> setDashboardWidgetVisible(
+    _i13.DashboardWidget? key,
+    bool? visible,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardWidgetVisible, [key, visible]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
   void setThemeMode(_i14.ThemeMode? mode) => super.noSuchMethod(

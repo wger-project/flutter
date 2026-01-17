@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,19 +26,36 @@ import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 
+enum DashboardWidget {
+  routines('routines'),
+  weight('weight'),
+  measurements('measurements'),
+  calendar('calendar'),
+  nutrition('nutrition');
+
+  final String value;
+  const DashboardWidget(this.value);
+
+  static DashboardWidget? fromString(String s) {
+    for (final e in DashboardWidget.values) {
+      if (e.value == s) return e;
+    }
+    return null;
+  }
+}
+
 class UserProvider with ChangeNotifier {
   ThemeMode themeMode = ThemeMode.system;
   final WgerBaseProvider baseProvider;
   late SharedPreferencesAsync prefs;
-  // bool hideNutrition = false; 
 
   // New: visibility state for dashboard widgets
-  Map<String, bool> dashboardWidgetVisibility = {
-    'routines': true,
-    'weight': true,
-    'measurements': true,
-    'calendar': true,
-    'nutrition': true,
+  Map<DashboardWidget, bool> dashboardWidgetVisibility = {
+    DashboardWidget.routines: true,
+    DashboardWidget.weight: true,
+    DashboardWidget.measurements: true,
+    DashboardWidget.calendar: true,
+    DashboardWidget.nutrition: true,
   };
 
   static const String PREFS_DASHBOARD_VISIBILITY = 'dashboardWidgetVisibility';
@@ -80,31 +97,47 @@ class UserProvider with ChangeNotifier {
 
     notifyListeners();
   }
-    Future<void> _loadDashboardVisibility() async {
-    final jsonString = await prefs.getString(PREFS_DASHBOARD_VISIBILITY);
 
-    if (jsonString != null) {
-      try {
-        final decoded = jsonDecode(jsonString) as Map<String, dynamic>;
-        dashboardWidgetVisibility =
-            decoded.map((k, v) => MapEntry(k, v as bool));
-      } catch (_) {
-        // If parsing fails, keep defaults
+  Future<void> _loadDashboardVisibility() async {
+    final jsonString = await prefs.getString(PREFS_DASHBOARD_VISIBILITY);
+    if (jsonString == null) {
+      return;
+    }
+
+    try {
+      final decoded = jsonDecode(jsonString) as Map<String, dynamic>;
+      final Map<DashboardWidget, bool> loaded = {};
+
+      for (final entry in decoded.entries) {
+        final widget = DashboardWidget.fromString(entry.key);
+        if (widget != null) {
+          loaded[widget] = entry.value as bool;
+        }
       }
+
+      if (loaded.isNotEmpty) {
+        dashboardWidgetVisibility = loaded;
+      }
+    } catch (_) {
+      // parsing failed -> keep defaults
     }
 
     notifyListeners();
   }
 
-  bool isDashboardWidgetVisible(String key) {
+  bool isDashboardWidgetVisible(DashboardWidget key) {
     return dashboardWidgetVisibility[key] ?? true;
   }
 
-  Future<void> setDashboardWidgetVisible(String key, bool visible) async {
+  Future<void> setDashboardWidgetVisible(DashboardWidget key, bool visible) async {
     dashboardWidgetVisibility[key] = visible;
+    final Map<String, bool> serializable = {
+      for (final e in dashboardWidgetVisibility.entries) e.key.value: e.value,
+    };
+
     await prefs.setString(
       PREFS_DASHBOARD_VISIBILITY,
-      jsonEncode(dashboardWidgetVisibility),
+      jsonEncode(serializable),
     );
     notifyListeners();
   }
@@ -132,7 +165,6 @@ class UserProvider with ChangeNotifier {
       rethrow;
     }
   }
-
 
   /// Save the user's profile to the server
   Future<void> saveProfile() async {
