@@ -2208,6 +2208,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get noTrophies =>
+      (super.noSuchMethod(
+            Invocation.getter(#noTrophies),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noTrophies),
+            ),
+          )
+          as String);
+
+  @override
   String get noWeightEntries =>
       (super.noSuchMethod(
             Invocation.getter(#noWeightEntries),
@@ -3839,6 +3850,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#supersetNr, [nr]),
+            ),
+          )
+          as String);
+
+  @override
+  String topSet(String? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#topSet, [value]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#topSet, [value]),
             ),
           )
           as String);

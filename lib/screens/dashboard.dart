@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/core/app_bar.dart';
@@ -25,9 +26,8 @@ import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets/measurements.dart';
 import 'package:wger/widgets/dashboard/widgets/nutrition.dart';
 import 'package:wger/widgets/dashboard/widgets/routines.dart';
+import 'package:wger/widgets/dashboard/widgets/trophies.dart';
 import 'package:wger/widgets/dashboard/widgets/weight.dart';
-
-import '../widgets/dashboard/widgets/trophies.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -46,6 +46,8 @@ class DashboardScreen extends StatelessWidget {
         return const DashboardCalendarWidget();
       case DashboardWidget.nutrition:
         return const DashboardNutritionWidget();
+      case DashboardWidget.trophies:
+        return const DashboardTrophiesWidget();
     }
     /*
     child: Column(
@@ -60,7 +62,7 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final isMobile = width < MATERIAL_XS_BREAKPOINT;
-    inal user = Provider.of<UserProvider>(context);
+    final user = Provider.of<UserProvider>(context);
 
     late final int crossAxisCount;
     if (width < MATERIAL_XS_BREAKPOINT) {
@@ -73,22 +75,21 @@ class DashboardScreen extends StatelessWidget {
       crossAxisCount = 4;
     }
 
-
-
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
       body: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: MATERIAL_LG_BREAKPOINT.toDouble()),
+          constraints: const BoxConstraints(maxWidth: MATERIAL_LG_BREAKPOINT),
           child: isMobile
               ? ListView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) => _getDashboardWidget(index),
+                  itemBuilder: (context, index) => _getDashboardWidget(user.dashboardOrder[index]),
                   itemCount: user.dashboardOrder.length,
                 )
               : GridView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) => SingleChildScrollView(child: _getDashboardWidget(index)),
+                  itemBuilder: (context, index) =>
+                      SingleChildScrollView(child: _getDashboardWidget(user.dashboardOrder[index])),
                   itemCount: user.dashboardOrder.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,

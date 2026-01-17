@@ -266,7 +266,7 @@ class MainApp extends StatelessWidget {
                       LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
                       ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
                       ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
-                      const ConfigureDashboardWidgetsScreen(),
+                          const ConfigureDashboardWidgetsScreen(),
                       TrophyScreen.routeName: (ctx) => const TrophyScreen(),
                     },
                     localizationsDelegates: AppLocalizations.localizationsDelegates,
