@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/helpers/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets/measurements.dart';
@@ -33,10 +34,33 @@ class DashboardScreen extends StatelessWidget {
 
   static const routeName = '/dashboard';
 
+  Widget _getDashboardWidget(DashboardWidget widget) {
+    switch (widget) {
+      case DashboardWidget.routines:
+        return const DashboardRoutineWidget();
+      case DashboardWidget.weight:
+        return const DashboardWeightWidget();
+      case DashboardWidget.measurements:
+        return const DashboardMeasurementWidget();
+      case DashboardWidget.calendar:
+        return const DashboardCalendarWidget();
+      case DashboardWidget.nutrition:
+        return const DashboardNutritionWidget();
+    }
+    /*
+    child: Column(
+          children: user.dashboardOrder
+              .where((w) => user.isDashboardWidgetVisible(w))
+              .map(_getDashboardWidget)
+              .toList(),
+     */
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final isMobile = width < MATERIAL_XS_BREAKPOINT;
+    inal user = Provider.of<UserProvider>(context);
 
     late final int crossAxisCount;
     if (width < MATERIAL_XS_BREAKPOINT) {
@@ -49,14 +73,7 @@ class DashboardScreen extends StatelessWidget {
       crossAxisCount = 4;
     }
 
-    final items = [
-      const DashboardTrophiesWidget(),
-      const DashboardRoutineWidget(),
-      const DashboardNutritionWidget(),
-      const DashboardWeightWidget(),
-      const DashboardMeasurementWidget(),
-      const DashboardCalendarWidget(),
-    ];
+
 
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
@@ -66,13 +83,13 @@ class DashboardScreen extends StatelessWidget {
           child: isMobile
               ? ListView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) => items[index],
-                  itemCount: items.length,
+                  itemBuilder: (context, index) => _getDashboardWidget(index),
+                  itemCount: user.dashboardOrder.length,
                 )
               : GridView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) => SingleChildScrollView(child: items[index]),
-                  itemCount: items.length,
+                  itemBuilder: (context, index) => SingleChildScrollView(child: _getDashboardWidget(index)),
+                  itemCount: user.dashboardOrder.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
                     childAspectRatio: 0.7,

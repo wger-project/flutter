@@ -405,6 +405,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get dashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#dashboardWidgets),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#dashboardWidgets),
+            ),
+          )
+          as String);
+
+  @override
   String get labelDashboard =>
       (super.noSuchMethod(
             Invocation.getter(#labelDashboard),

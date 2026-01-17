@@ -100,6 +100,7 @@
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
   },
+  "dashboardWidgets": "Dashboard widgets",
   "labelDashboard": "Dashboard",
   "@labelDashboard": {
     "description": "Title for screen dashboard"

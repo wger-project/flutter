@@ -944,6 +944,14 @@ class MockUserProvider extends _i1.Mock implements _i21.UserProvider {
           as _i14.SharedPreferencesAsync);
 
   @override
+  List<_i21.DashboardWidget> get dashboardOrder =>
+      (super.noSuchMethod(
+            Invocation.getter(#dashboardOrder),
+            returnValue: <_i21.DashboardWidget>[],
+          )
+          as List<_i21.DashboardWidget>);
+
+  @override
   set themeMode(_i22.ThemeMode? value) => super.noSuchMethod(
     Invocation.setter(#themeMode, value),
     returnValueForMissingStub: null,
@@ -970,6 +978,35 @@ class MockUserProvider extends _i1.Mock implements _i21.UserProvider {
     Invocation.method(#clear, []),
     returnValueForMissingStub: null,
   );
+
+  @override
+  bool isDashboardWidgetVisible(_i21.DashboardWidget? key) =>
+      (super.noSuchMethod(
+            Invocation.method(#isDashboardWidgetVisible, [key]),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i18.Future<void> setDashboardWidgetVisible(
+    _i21.DashboardWidget? key,
+    bool? visible,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardWidgetVisible, [key, visible]),
+            returnValue: _i18.Future<void>.value(),
+            returnValueForMissingStub: _i18.Future<void>.value(),
+          )
+          as _i18.Future<void>);
+
+  @override
+  _i18.Future<void> setDashboardOrder(int? oldIndex, int? newIndex) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardOrder, [oldIndex, newIndex]),
+            returnValue: _i18.Future<void>.value(),
+            returnValueForMissingStub: _i18.Future<void>.value(),
+          )
+          as _i18.Future<void>);
 
   @override
   void setThemeMode(_i22.ThemeMode? mode) => super.noSuchMethod(

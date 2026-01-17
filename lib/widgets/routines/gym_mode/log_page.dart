@@ -31,7 +31,7 @@ import 'package:wger/providers/gym_log_state.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/screens/configure_plates_screen.dart';
+import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';

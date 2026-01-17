@@ -17,42 +17,22 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/settings_plates_screen.dart';
+import 'package:wger/widgets/core/settings/dashboard_visibility.dart';
 
-import './settings/exercise_cache.dart';
-import './settings/ingredient_cache.dart';
-import './settings/theme.dart';
+class ConfigureDashboardWidgetsScreen extends StatelessWidget {
+  static const routeName = '/ConfigureDashboardWidgetScreen';
 
-class SettingsPage extends StatelessWidget {
-  static String routeName = '/SettingsPage';
-
-  const SettingsPage({super.key});
+  const ConfigureDashboardWidgetsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(i18n.settingsTitle)),
-      body: ListView(
-        children: [
-          ListTile(
-            title: Text(i18n.settingsCacheTitle, style: Theme.of(context).textTheme.headlineSmall),
-          ),
-          const SettingsExerciseCache(),
-          const SettingsIngredientCache(),
-          ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
-          const SettingsTheme(),
-          ListTile(
-            title: Text(i18n.selectAvailablePlates),
-            onTap: () {
-              Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
-            },
-            trailing: const Icon(Icons.chevron_right),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(i18n.dashboardWidgets)),
+      body: const WidescreenWrapper(child: SettingsDashboardVisibility()),
     );
   }
 }

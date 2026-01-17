@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -21,6 +21,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -51,7 +52,6 @@ void main() {
   );
 
   setUp(() {
-    /// Replacement for SharedPreferences.setMockInitialValues()
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     mockWgerBaseProvider = MockWgerBaseProvider();
     userProvider = UserProvider(mockWgerBaseProvider);
@@ -101,6 +101,82 @@ void main() {
 
       // assert
       verify(userProvider.baseProvider.fetch(tEmailVerifyUri));
+    });
+  });
+
+  group('dashboard config', () {
+    test('initial config should be default (all visible, default order)', () {
+      expect(userProvider.dashboardOrder.length, 5);
+
+      expect(
+        userProvider.dashboardOrder,
+        orderedEquals([
+          DashboardWidget.routines,
+          DashboardWidget.nutrition,
+          DashboardWidget.weight,
+          DashboardWidget.measurements,
+          DashboardWidget.calendar,
+        ]),
+      );
+      expect(userProvider.isDashboardWidgetVisible(DashboardWidget.routines), true);
+    });
+
+    test('toggling visibility should update state', () async {
+      // act
+      await userProvider.setDashboardWidgetVisible(DashboardWidget.routines, false);
+
+      // assert
+      expect(userProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
+
+      // re-enable
+      await userProvider.setDashboardWidgetVisible(DashboardWidget.routines, true);
+      expect(userProvider.isDashboardWidgetVisible(DashboardWidget.routines), true);
+    });
+
+    test('reordering should update order', () async {
+      // arrange
+      final initialFirst = userProvider.dashboardOrder[0];
+      final initialSecond = userProvider.dashboardOrder[1];
+
+      // act: move first to second position
+      // oldIndex: 0, newIndex: 2 (because insert is before index)
+      await userProvider.setDashboardOrder(0, 2);
+
+      // assert
+      expect(userProvider.dashboardOrder[0], initialSecond);
+      expect(userProvider.dashboardOrder[1], initialFirst);
+    });
+
+    test('should load config from prefs', () async {
+      // arrange
+      final prefs = SharedPreferencesAsync();
+      final customConfig = [
+        {'widget': 'nutrition', 'visible': true},
+        {'widget': 'routines', 'visible': false},
+      ];
+      await prefs.setString(
+        UserProvider.PREFS_DASHBOARD_CONFIG,
+        jsonEncode(customConfig),
+      );
+
+      // act
+      final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
+      await Future.delayed(const Duration(milliseconds: 50)); // wait for async prefs load
+
+      // assert
+      // The loaded ones come first
+      expect(newProvider.dashboardOrder[0], DashboardWidget.nutrition);
+      expect(newProvider.dashboardOrder[1], DashboardWidget.routines);
+
+      // Check visibility
+      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.nutrition), true);
+      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
+
+      // Remaining items are added after
+      expect(newProvider.dashboardOrder.length, 5);
+
+      // Items not in the prefs are visible by default
+      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.weight), true);
     });
   });
 }
