@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2026 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,7 +45,7 @@ class WgerBaseProvider {
     this.client = client ?? http.Client();
   }
 
-  Map<String, String> getDefaultHeaders({bool includeAuth = false}) {
+  Map<String, String> getDefaultHeaders({bool includeAuth = false, String? language}) {
     final out = {
       HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
@@ -53,6 +53,10 @@ class WgerBaseProvider {
 
     if (includeAuth) {
       out[HttpHeaders.authorizationHeader] = 'Token ${auth.token}';
+    }
+
+    if (language != null) {
+      out[HttpHeaders.acceptLanguageHeader] = language;
     }
 
     return out;
@@ -69,6 +73,7 @@ class WgerBaseProvider {
     Uri uri, {
     int maxRetries = 3,
     Duration initialDelay = const Duration(milliseconds: 250),
+    String? language,
   }) async {
     int attempt = 0;
     final random = math.Random();
@@ -85,7 +90,7 @@ class WgerBaseProvider {
     while (true) {
       try {
         final response = await client
-            .get(uri, headers: getDefaultHeaders(includeAuth: true))
+            .get(uri, headers: getDefaultHeaders(includeAuth: true, language: language))
             .timeout(const Duration(seconds: 5));
 
         if (response.statusCode >= 400) {
@@ -114,13 +119,13 @@ class WgerBaseProvider {
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<List<dynamic>> fetchPaginated(Uri uri) async {
+  Future<List<dynamic>> fetchPaginated(Uri uri, {String? language}) async {
     final out = [];
     var url = uri;
     var allPagesProcessed = false;
 
     while (!allPagesProcessed) {
-      final data = await fetch(url);
+      final data = await fetch(url, language: language);
 
       data['results'].forEach((e) => out.add(e));
 

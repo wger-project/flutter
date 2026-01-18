@@ -779,6 +779,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get trophies =>
+      (super.noSuchMethod(
+            Invocation.getter(#trophies),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trophies),
+            ),
+          )
+          as String);
+
+  @override
   String get routines =>
       (super.noSuchMethod(
             Invocation.getter(#routines),
@@ -1103,6 +1114,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#selectExercises),
+            ),
+          )
+          as String);
+
+  @override
+  String get personalRecords =>
+      (super.noSuchMethod(
+            Invocation.getter(#personalRecords),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#personalRecords),
             ),
           )
           as String);
@@ -2181,6 +2203,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#newEntry),
+            ),
+          )
+          as String);
+
+  @override
+  String get noTrophies =>
+      (super.noSuchMethod(
+            Invocation.getter(#noTrophies),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noTrophies),
             ),
           )
           as String);
@@ -3817,6 +3850,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#supersetNr, [nr]),
+            ),
+          )
+          as String);
+
+  @override
+  String topSet(String? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#topSet, [value]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#topSet, [value]),
             ),
           )
           as String);

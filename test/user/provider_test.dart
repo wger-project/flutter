@@ -106,11 +106,12 @@ void main() {
 
   group('dashboard config', () {
     test('initial config should be default (all visible, default order)', () {
-      expect(userProvider.dashboardOrder.length, 5);
+      expect(userProvider.dashboardOrder.length, 6);
 
       expect(
         userProvider.dashboardOrder,
         orderedEquals([
+          DashboardWidget.trophies,
           DashboardWidget.routines,
           DashboardWidget.nutrition,
           DashboardWidget.weight,
@@ -161,22 +162,28 @@ void main() {
 
       // act
       final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
-      await Future.delayed(const Duration(milliseconds: 50)); // wait for async prefs load
+      await Future.delayed(const Duration(milliseconds: 100)); // wait for async prefs load
 
       // assert
-      // The loaded ones come first
-      expect(newProvider.dashboardOrder[0], DashboardWidget.nutrition);
-      expect(newProvider.dashboardOrder[1], DashboardWidget.routines);
+      // Loaded: [nutrition, routines]
+      // Missing: trophies (0), weight (3), measurements (4), calendar (5)
+      // 1. trophies (index 0) inserted at 0 -> [trophies, nutrition, routines]
+      // 2. weight (index 3) inserted at 3 -> [trophies, nutrition, routines, weight]
+
+      expect(newProvider.dashboardOrder[0], DashboardWidget.trophies);
+      expect(newProvider.dashboardOrder[1], DashboardWidget.nutrition);
+      expect(newProvider.dashboardOrder[2], DashboardWidget.routines);
+      expect(newProvider.dashboardOrder[3], DashboardWidget.weight);
 
       // Check visibility
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.nutrition), true);
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
 
-      // Remaining items are added after
-      expect(newProvider.dashboardOrder.length, 5);
-
-      // Items not in the prefs are visible by default
-      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.weight), true);
+      // Missing items should be visible by default
+      expect(
+        newProvider.isDashboardWidgetVisible(DashboardWidget.weight),
+        true,
+      );
     });
   });
 }

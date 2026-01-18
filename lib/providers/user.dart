@@ -28,6 +28,7 @@ import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 
 enum DashboardWidget {
+  trophies('trophies'),
   routines('routines'),
   nutrition('nutrition'),
   weight('weight'),
@@ -124,7 +125,13 @@ class UserProvider with ChangeNotifier {
       // Add any missing widgets (e.g. newly added features)
       for (final widget in DashboardWidget.values) {
         if (!loaded.any((item) => item.widget == widget)) {
-          loaded.add(DashboardItem(widget));
+          // Try to insert at the original position defined in the enum
+          // taking into account the current size of the list
+          var index = DashboardWidget.values.indexOf(widget);
+          if (index > loaded.length) {
+            index = loaded.length;
+          }
+          loaded.insert(index, DashboardItem(widget));
         }
       }
 

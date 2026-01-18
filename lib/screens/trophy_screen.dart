@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2026 wger Team
+ * Copyright (c)  2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,25 +17,21 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/widgets/core/app_bar.dart';
-import 'package:wger/widgets/routines/logs/log_overview_routine.dart';
+import 'package:wger/widgets/trophies/trophies_overview.dart';
 
-class WorkoutLogsScreen extends StatelessWidget {
-  const WorkoutLogsScreen();
+class TrophyScreen extends StatelessWidget {
+  const TrophyScreen();
 
-  static const routeName = '/workout-logs';
+  static const routeName = '/trophies';
 
   @override
   Widget build(BuildContext context) {
-    final routineId = ModalRoute.of(context)!.settings.arguments as int;
-    final routine = Provider.of<RoutinesProvider>(context).findById(routineId);
-
     return Scaffold(
-      appBar: EmptyAppBar(routine.name),
-      body: WidescreenWrapper(child: WorkoutLogs(routine)),
+      appBar: EmptyAppBar(AppLocalizations.of(context).trophies),
+      body: const WidescreenWrapper(child: TrophiesOverview()),
     );
   }
 }

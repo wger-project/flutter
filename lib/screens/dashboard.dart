@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/core/app_bar.dart';
@@ -25,6 +26,7 @@ import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets/measurements.dart';
 import 'package:wger/widgets/dashboard/widgets/nutrition.dart';
 import 'package:wger/widgets/dashboard/widgets/routines.dart';
+import 'package:wger/widgets/dashboard/widgets/trophies.dart';
 import 'package:wger/widgets/dashboard/widgets/weight.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -44,22 +46,56 @@ class DashboardScreen extends StatelessWidget {
         return const DashboardCalendarWidget();
       case DashboardWidget.nutrition:
         return const DashboardNutritionWidget();
+      case DashboardWidget.trophies:
+        return const DashboardTrophiesWidget();
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context);
-
-    return Scaffold(
-      appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
-        child: Column(
+    /*
+    child: Column(
           children: user.dashboardOrder
               .where((w) => user.isDashboardWidgetVisible(w))
               .map(_getDashboardWidget)
               .toList(),
+     */
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final isMobile = width < MATERIAL_XS_BREAKPOINT;
+    final user = Provider.of<UserProvider>(context);
+
+    late final int crossAxisCount;
+    if (width < MATERIAL_XS_BREAKPOINT) {
+      crossAxisCount = 1;
+    } else if (width < MATERIAL_MD_BREAKPOINT) {
+      crossAxisCount = 2;
+    } else if (width < MATERIAL_LG_BREAKPOINT) {
+      crossAxisCount = 3;
+    } else {
+      crossAxisCount = 4;
+    }
+
+    return Scaffold(
+      appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: MATERIAL_LG_BREAKPOINT),
+          child: isMobile
+              ? ListView.builder(
+                  padding: const EdgeInsets.all(10),
+                  itemBuilder: (context, index) => _getDashboardWidget(user.dashboardOrder[index]),
+                  itemCount: user.dashboardOrder.length,
+                )
+              : GridView.builder(
+                  padding: const EdgeInsets.all(10),
+                  itemBuilder: (context, index) =>
+                      SingleChildScrollView(child: _getDashboardWidget(user.dashboardOrder[index])),
+                  itemCount: user.dashboardOrder.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    childAspectRatio: 0.7,
+                  ),
+                ),
         ),
       ),
     );

@@ -29,10 +29,7 @@ import 'package:wger/widgets/core/settings/dashboard_visibility.dart';
 
 import 'settings_dashboard_visibility_test.mocks.dart';
 
-@GenerateMocks([
-  UserProvider,
-  WgerBaseProvider,
-])
+@GenerateMocks([WgerBaseProvider])
 void main() {
   late UserProvider userProvider;
   late MockWgerBaseProvider mockBaseProvider;
@@ -98,24 +95,23 @@ void main() {
     await tester.pumpWidget(createWidget());
     await tester.pumpAndSettle();
 
-    // Initial order: routines, nutrition, weight...
-    expect(userProvider.dashboardOrder[0], DashboardWidget.routines);
-    expect(userProvider.dashboardOrder[1], DashboardWidget.nutrition);
+    // Initial order: trophies, routines, nutrition, weight...
+    expect(userProvider.dashboardOrder[0], DashboardWidget.trophies);
+    expect(userProvider.dashboardOrder[1], DashboardWidget.routines);
 
-    // Find drag handle for Routines (index 0)
+    // Find drag handle for Trophies (index 0)
     final handleFinder = find.byIcon(Icons.drag_handle);
     final firstHandle = handleFinder.at(0);
-    // final secondHandle = handleFinder.at(1);
 
     // Drag first item down
     await tester.drag(firstHandle, const Offset(0, 100)); // Drag down enough to swap
     await tester.pumpAndSettle();
 
     // Verify order changed
-    // If swapped with second item (nutrition) and maybe third (weight) depending on height
-    // Based on running test: index 0 is nutrition, index 1 is weight.
-    expect(userProvider.dashboardOrder[0], DashboardWidget.nutrition);
-    expect(userProvider.dashboardOrder[1], DashboardWidget.weight);
-    expect(userProvider.dashboardOrder[2], DashboardWidget.routines);
+    // 100px drag seems to skip 2 items (trophies moves to index 2)
+    // [routines, nutrition, trophies, ...]
+    expect(userProvider.dashboardOrder[0], DashboardWidget.routines);
+    expect(userProvider.dashboardOrder[1], DashboardWidget.nutrition);
+    expect(userProvider.dashboardOrder[2], DashboardWidget.trophies);
   });
 }
