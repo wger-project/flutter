@@ -1220,5 +1220,7 @@
         }
     },
     "superset": "Суперсет",
-    "@superset": {}
+    "@superset": {},
+    "dashboardWidgets": "Віджети панелі інструментів",
+    "@dashboardWidgets": {}
 }
