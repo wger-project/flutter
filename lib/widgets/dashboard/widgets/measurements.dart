@@ -18,13 +18,16 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/measurement.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
+import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/time_range_tab_bar.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/widgets/measurements/categories_card.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
 class DashboardMeasurementWidget extends StatefulWidget {
@@ -37,107 +40,225 @@ class DashboardMeasurementWidget extends StatefulWidget {
 class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget> {
   int _current = 0;
   final _controller = CarouselSliderController();
+  ChartTimeRange _selectedRange = ChartTimeRange.month;
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     final items = provider.categories
-        .map<Widget>((item) => CategoriesCard(item, elevation: 0))
+        .map<Widget>((item) => CategoriesCard(item, timeRange: _selectedRange, showCard: false))
         .toList();
     if (items.isNotEmpty) {
-      items.add(
-        NothingFound(
-          AppLocalizations.of(context).moreMeasurementEntries,
-          AppLocalizations.of(context).newEntry,
-          MeasurementCategoryForm(),
-        ),
-      );
+      items.add(_buildAddMoreCard(context, isDarkMode));
     }
     return Consumer<MeasurementProvider>(
-      builder: (context, _, __) => Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(
-                AppLocalizations.of(context).measurements,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              leading: FaIcon(
-                FontAwesomeIcons.chartLine,
-                color: Theme.of(context).textTheme.headlineSmall!.color,
-              ),
-              // TODO: this icon feels out of place and inconsistent with all
-              // other dashboard widgets.
-              // maybe we should just add a "Go to all" at the bottom of the widget
-              trailing: IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  MeasurementCategoriesScreen.routeName,
+      builder: (context, _, __) => Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Material(
+          elevation: 0,
+          color: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDarkMode ? Theme.of(context).cardColor : Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 4),
+                  spreadRadius: 0,
                 ),
-              ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                  spreadRadius: 0,
+                ),
+              ],
             ),
-            Column(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                if (items.isNotEmpty)
-                  Column(
+                // Header with chevron
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 8, top: 12, bottom: 12),
+                  child: Row(
                     children: [
-                      CarouselSlider(
-                        items: items,
-                        carouselController: _controller,
-                        options: CarouselOptions(
-                          autoPlay: false,
-                          enlargeCenterPage: false,
-                          viewportFraction: 1,
-                          enableInfiniteScroll: false,
-                          aspectRatio: 1.1,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _current = index;
-                            });
-                          },
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.of(context).measurements,
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: items.asMap().entries.map((entry) {
-                            return GestureDetector(
-                              onTap: () => _controller.animateToPage(entry.key),
-                              child: Container(
-                                width: 12.0,
-                                height: 12.0,
-                                margin: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 4.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Theme.of(context).textTheme.headlineSmall!.color!
-                                      .withOpacity(
-                                        _current == entry.key ? 0.9 : 0.4,
-                                      ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            MeasurementCategoriesScreen.routeName,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Icon(
+                              Icons.chevron_right_rounded,
+                              color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                            ),
+                          ),
                         ),
                       ),
                     ],
-                  )
-                else
-                  NothingFound(
-                    AppLocalizations.of(context).noMeasurementEntries,
-                    AppLocalizations.of(context).newEntry,
-                    MeasurementCategoryForm(),
                   ),
+                ),
+                // Time range tabs
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TimeRangeTabBar(
+                    selectedRange: _selectedRange,
+                    onRangeChanged: (range) => setState(() => _selectedRange = range),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Content
+                Column(
+                  children: [
+                    if (items.isNotEmpty)
+                      Column(
+                        children: [
+                          CarouselSlider(
+                            items: items,
+                            carouselController: _controller,
+                            options: CarouselOptions(
+                              autoPlay: false,
+                              enlargeCenterPage: false,
+                              viewportFraction: 1,
+                              enableInfiniteScroll: false,
+                              aspectRatio: 1.35,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _current = index;
+                                });
+                              },
+                            ),
+                          ),
+                          // Line segment indicators
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                            child: Row(
+                              children: items.asMap().entries.map((entry) {
+                                return Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => _controller.animateToPage(entry.key),
+                                    child: Container(
+                                      height: 3,
+                                      margin: EdgeInsets.only(
+                                        right: entry.key < items.length - 1 ? 4 : 0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(2),
+                                        color: _current == entry.key
+                                            ? wgerAccentColor
+                                            : (isDarkMode
+                                                  ? Colors.grey.shade700
+                                                  : Colors.grey.shade300),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        child: NothingFound(
+                          AppLocalizations.of(context).noMeasurementEntries,
+                          AppLocalizations.of(context).newEntry,
+                          MeasurementCategoryForm(),
+                        ),
+                      ),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAddMoreCard(BuildContext context, bool isDarkMode) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Measuring tape icon
+          Image.asset(
+            'assets/icons/measuring-tape.png',
+            width: 100,
+            height: 100,
+          ),
+          const SizedBox(height: 16),
+          // Title
+          Text(
+            AppLocalizations.of(context).moreMeasurementEntries,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: isDarkMode ? Colors.grey.shade300 : Colors.grey.shade800,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          // Add button
+          Material(
+            color: wgerAccentColor,
+            borderRadius: BorderRadius.circular(12),
+            child: InkWell(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).newEntry,
+                    MeasurementCategoryForm(),
+                    hasListView: true,
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.add_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      AppLocalizations.of(context).newEntry,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -47,7 +47,6 @@ import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
-import 'package:wger/screens/measurement_entries_screen.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
@@ -59,7 +58,6 @@ import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
 import 'package:wger/screens/update_app_screen.dart';
-import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/log_overview.dart';
@@ -235,13 +233,11 @@ class MainApp extends StatelessWidget {
               GymModeScreen.routeName: (ctx) => const GymModeScreen(),
               HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
               MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
-              MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
               NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
               NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
               NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
               LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
               LogMealScreen.routeName: (ctx) => const LogMealScreen(),
-              WeightScreen.routeName: (ctx) => const WeightScreen(),
               RoutineScreen.routeName: (ctx) => const RoutineScreen(),
               RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
               WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),

@@ -1012,5 +1012,19 @@
     "systemMode": "Ustawienia systemu",
     "@systemMode": {},
     "fitInWeek": "Dopasuj w tygodniu",
-    "@fitInWeek": {}
+    "@fitInWeek": {},
+    "entries": "wpisy",
+    "@entries": {},
+    "week": "Tydzień",
+    "@week": {},
+    "month": "Miesiąc",
+    "@month": {},
+    "sixMonths": "6 miesięcy",
+    "@sixMonths": {},
+    "year": "Rok",
+    "@year": {},
+    "recentEntries": "Ostatnie wpisy",
+    "@recentEntries": {},
+    "seeAll": "Zobacz wszystkie",
+    "@seeAll": {}
 }
