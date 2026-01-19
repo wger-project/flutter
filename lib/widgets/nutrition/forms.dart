@@ -227,7 +227,7 @@ class IngredientFormState extends State<IngredientForm> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode).add_Hm();
     final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
 
     if (_dateController.text.isEmpty) {

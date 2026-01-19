@@ -63,7 +63,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode).add_Hm();
     final i18n = AppLocalizations.of(context);
 
     final args = ModalRoute.of(context)!.settings.arguments as LogMealArguments;
