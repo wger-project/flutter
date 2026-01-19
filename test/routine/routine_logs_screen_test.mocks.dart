@@ -3,11 +3,17 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i5;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/workouts/log.dart' as _i4;
-import 'package:wger/providers/workout_log_repository.dart' as _i2;
+import 'package:mockito/src/dummies.dart' as _i4;
+import 'package:wger/models/trophies/trophy.dart' as _i6;
+import 'package:wger/models/trophies/user_trophy.dart' as _i7;
+import 'package:wger/models/trophies/user_trophy_progression.dart' as _i8;
+import 'package:wger/models/workouts/log.dart' as _i10;
+import 'package:wger/providers/base_provider.dart' as _i2;
+import 'package:wger/providers/trophies.dart' as _i3;
+import 'package:wger/providers/workout_log_repository.dart' as _i9;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -24,46 +30,152 @@ import 'package:wger/providers/workout_log_repository.dart' as _i2;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+  _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+/// A class which mocks [TrophyRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockTrophyRepository extends _i1.Mock implements _i3.TrophyRepository {
+  MockTrophyRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.WgerBaseProvider get base =>
+      (super.noSuchMethod(
+            Invocation.getter(#base),
+            returnValue: _FakeWgerBaseProvider_0(
+              this,
+              Invocation.getter(#base),
+            ),
+          )
+          as _i2.WgerBaseProvider);
+
+  @override
+  String get trophiesPath =>
+      (super.noSuchMethod(
+            Invocation.getter(#trophiesPath),
+            returnValue: _i4.dummyValue<String>(
+              this,
+              Invocation.getter(#trophiesPath),
+            ),
+          )
+          as String);
+
+  @override
+  String get userTrophiesPath =>
+      (super.noSuchMethod(
+            Invocation.getter(#userTrophiesPath),
+            returnValue: _i4.dummyValue<String>(
+              this,
+              Invocation.getter(#userTrophiesPath),
+            ),
+          )
+          as String);
+
+  @override
+  String get userTrophyProgressionPath =>
+      (super.noSuchMethod(
+            Invocation.getter(#userTrophyProgressionPath),
+            returnValue: _i4.dummyValue<String>(
+              this,
+              Invocation.getter(#userTrophyProgressionPath),
+            ),
+          )
+          as String);
+
+  @override
+  _i5.Future<List<_i6.Trophy>> fetchTrophies({String? language}) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchTrophies, [], {#language: language}),
+            returnValue: _i5.Future<List<_i6.Trophy>>.value(<_i6.Trophy>[]),
+          )
+          as _i5.Future<List<_i6.Trophy>>);
+
+  @override
+  _i5.Future<List<_i7.UserTrophy>> fetchUserTrophies({
+    Map<String, String>? filterQuery,
+    String? language,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchUserTrophies, [], {
+              #filterQuery: filterQuery,
+              #language: language,
+            }),
+            returnValue: _i5.Future<List<_i7.UserTrophy>>.value(
+              <_i7.UserTrophy>[],
+            ),
+          )
+          as _i5.Future<List<_i7.UserTrophy>>);
+
+  @override
+  _i5.Future<List<_i8.UserTrophyProgression>> fetchProgression({
+    Map<String, String>? filterQuery,
+    String? language,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchProgression, [], {
+              #filterQuery: filterQuery,
+              #language: language,
+            }),
+            returnValue: _i5.Future<List<_i8.UserTrophyProgression>>.value(
+              <_i8.UserTrophyProgression>[],
+            ),
+          )
+          as _i5.Future<List<_i8.UserTrophyProgression>>);
+
+  @override
+  List<_i6.Trophy> filterByType(List<_i6.Trophy>? list, _i6.TrophyType? type) =>
+      (super.noSuchMethod(
+            Invocation.method(#filterByType, [list, type]),
+            returnValue: <_i6.Trophy>[],
+          )
+          as List<_i6.Trophy>);
+}
+
 /// A class which mocks [WorkoutLogRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkoutLogRepository extends _i1.Mock implements _i2.WorkoutLogRepository {
+class MockWorkoutLogRepository extends _i1.Mock implements _i9.WorkoutLogRepository {
   MockWorkoutLogRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<List<_i4.Log>> watchAllDrift() =>
+  _i5.Stream<List<_i10.Log>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i3.Stream<List<_i4.Log>>.empty(),
+            returnValue: _i5.Stream<List<_i10.Log>>.empty(),
           )
-          as _i3.Stream<List<_i4.Log>>);
+          as _i5.Stream<List<_i10.Log>>);
 
   @override
-  _i3.Future<void> deleteLocalDrift(String? id) =>
+  _i5.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i3.Future<void> updateLocalDrift(_i4.Log? log) =>
+  _i5.Future<void> updateLocalDrift(_i10.Log? log) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDrift, [log]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i3.Future<void> addLocalDrift(_i4.Log? log) =>
+  _i5.Future<void> addLocalDrift(_i10.Log? log) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [log]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i5.Future<void>);
 }

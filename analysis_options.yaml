@@ -14,17 +14,15 @@ analyzer:
     # Allow self-reference to deprecated members (we do this because otherwise we have
     # to annotate every member in every test, assert, etc, when we deprecate something)
     deprecated_member_use_from_same_package: ignore
-    # Ignore analyzer hints for updating pubspecs when using Future or
-    # Stream and not importing dart:async
-    # Please see https://github.com/flutter/flutter/pull/24528 for details.
-    sdk_version_async_exported_from_core: ignore
-
   plugins:
-    - custom_lint
+    - riverpod_lint
 
 formatter:
   page_width: 100
   trailing_commas: preserve
+
+plugins:
+  riverpod_lint: 3.1.0
 
 linter:
   rules:

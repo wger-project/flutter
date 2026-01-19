@@ -10,7 +10,7 @@ part of 'powersync.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(powerSyncInstance)
-const powerSyncInstanceProvider = PowerSyncInstanceProvider._();
+final powerSyncInstanceProvider = PowerSyncInstanceProvider._();
 
 final class PowerSyncInstanceProvider
     extends
@@ -20,7 +20,7 @@ final class PowerSyncInstanceProvider
           FutureOr<PowerSyncDatabase>
         >
     with $FutureModifier<PowerSyncDatabase>, $FutureProvider<PowerSyncDatabase> {
-  const PowerSyncInstanceProvider._()
+  PowerSyncInstanceProvider._()
     : super(
         from: null,
         argument: null,
@@ -49,11 +49,11 @@ final class PowerSyncInstanceProvider
 String _$powerSyncInstanceHash() => r'd4048d9589d6b975dfda0225c0e49af08f34edd0';
 
 @ProviderFor(didCompleteSync)
-const didCompleteSyncProvider = DidCompleteSyncFamily._();
+final didCompleteSyncProvider = DidCompleteSyncFamily._();
 
 final class DidCompleteSyncProvider extends $FunctionalProvider<bool, bool, bool>
     with $Provider<bool> {
-  const DidCompleteSyncProvider._({
+  DidCompleteSyncProvider._({
     required DidCompleteSyncFamily super.from,
     required StreamPriority? super.argument,
   }) : super(
@@ -107,7 +107,7 @@ String _$didCompleteSyncHash() => r'1b954d75f05194156411ecc9860788ba9b13c2c8';
 
 final class DidCompleteSyncFamily extends $Family
     with $FunctionalFamilyOverride<bool, StreamPriority?> {
-  const DidCompleteSyncFamily._()
+  DidCompleteSyncFamily._()
     : super(
         retry: null,
         name: r'didCompleteSyncProvider',

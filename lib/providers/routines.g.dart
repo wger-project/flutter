@@ -10,7 +10,7 @@ part of 'routines.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(routineWeightUnit)
-const routineWeightUnitProvider = RoutineWeightUnitProvider._();
+final routineWeightUnitProvider = RoutineWeightUnitProvider._();
 
 final class RoutineWeightUnitProvider
     extends
@@ -20,7 +20,7 @@ final class RoutineWeightUnitProvider
           Stream<List<WeightUnit>>
         >
     with $FutureModifier<List<WeightUnit>>, $StreamProvider<List<WeightUnit>> {
-  const RoutineWeightUnitProvider._()
+  RoutineWeightUnitProvider._()
     : super(
         from: null,
         argument: null,
@@ -49,7 +49,7 @@ final class RoutineWeightUnitProvider
 String _$routineWeightUnitHash() => r'4e2e7b9903338756f5196eaa1081696a59869e86';
 
 @ProviderFor(routineRepetitionUnit)
-const routineRepetitionUnitProvider = RoutineRepetitionUnitProvider._();
+final routineRepetitionUnitProvider = RoutineRepetitionUnitProvider._();
 
 final class RoutineRepetitionUnitProvider
     extends
@@ -59,7 +59,7 @@ final class RoutineRepetitionUnitProvider
           Stream<List<RepetitionUnit>>
         >
     with $FutureModifier<List<RepetitionUnit>>, $StreamProvider<List<RepetitionUnit>> {
-  const RoutineRepetitionUnitProvider._()
+  RoutineRepetitionUnitProvider._()
     : super(
         from: null,
         argument: null,
@@ -88,10 +88,10 @@ final class RoutineRepetitionUnitProvider
 String _$routineRepetitionUnitHash() => r'7754a0197c3fed27feea2c6d33d5e5a5e1deab45';
 
 @ProviderFor(RoutinesRiverpod)
-const routinesRiverpodProvider = RoutinesRiverpodProvider._();
+final routinesRiverpodProvider = RoutinesRiverpodProvider._();
 
 final class RoutinesRiverpodProvider extends $NotifierProvider<RoutinesRiverpod, RoutinesState> {
-  const RoutinesRiverpodProvider._()
+  RoutinesRiverpodProvider._()
     : super(
         from: null,
         argument: null,
@@ -125,7 +125,6 @@ abstract class _$RoutinesRiverpod extends $Notifier<RoutinesState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<RoutinesState, RoutinesState>;
     final element =
         ref.element
@@ -135,17 +134,17 @@ abstract class _$RoutinesRiverpod extends $Notifier<RoutinesState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(routinesRepository)
-const routinesRepositoryProvider = RoutinesRepositoryProvider._();
+final routinesRepositoryProvider = RoutinesRepositoryProvider._();
 
 final class RoutinesRepositoryProvider
     extends $FunctionalProvider<RoutinesRepository, RoutinesRepository, RoutinesRepository>
     with $Provider<RoutinesRepository> {
-  const RoutinesRepositoryProvider._()
+  RoutinesRepositoryProvider._()
     : super(
         from: null,
         argument: null,

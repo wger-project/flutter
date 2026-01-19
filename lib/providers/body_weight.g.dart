@@ -10,11 +10,11 @@ part of 'body_weight.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(WeightEntryNotifier)
-const weightEntryProvider = WeightEntryNotifierProvider._();
+final weightEntryProvider = WeightEntryNotifierProvider._();
 
 final class WeightEntryNotifierProvider
     extends $StreamNotifierProvider<WeightEntryNotifier, List<WeightEntry>> {
-  const WeightEntryNotifierProvider._()
+  WeightEntryNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,7 +40,6 @@ abstract class _$WeightEntryNotifier extends $StreamNotifier<List<WeightEntry>> 
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<WeightEntry>>, List<WeightEntry>>;
     final element =
         ref.element
@@ -50,6 +49,6 @@ abstract class _$WeightEntryNotifier extends $StreamNotifier<List<WeightEntry>> 
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,7 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';

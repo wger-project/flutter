@@ -10,11 +10,11 @@ part of 'workout_logs.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(WorkoutLogNotifier)
-const workoutLogProvider = WorkoutLogNotifierProvider._();
+final workoutLogProvider = WorkoutLogNotifierProvider._();
 
 final class WorkoutLogNotifierProvider
     extends $StreamNotifierProvider<WorkoutLogNotifier, List<Log>> {
-  const WorkoutLogNotifierProvider._()
+  WorkoutLogNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,7 +40,6 @@ abstract class _$WorkoutLogNotifier extends $StreamNotifier<List<Log>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Log>>, List<Log>>;
     final element =
         ref.element
@@ -50,6 +49,6 @@ abstract class _$WorkoutLogNotifier extends $StreamNotifier<List<Log>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

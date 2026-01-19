@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -35,7 +35,6 @@ import 'package:wger/providers/user.dart';
 import 'package:wger/providers/wger_base_riverpod.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/auth_screen.dart';
-import 'package:wger/screens/configure_plates_screen.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/screens/exercises_screen.dart';
@@ -54,7 +53,10 @@ import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
+import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
+import 'package:wger/screens/trophy_screen.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -238,6 +240,9 @@ class MainApp extends StatelessWidget {
                       SettingsPage.routeName: (ctx) => const SettingsPage(),
                       LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
                       ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
+                      ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
+                          const ConfigureDashboardWidgetsScreen(),
+                      TrophyScreen.routeName: (ctx) => const TrophyScreen(),
                     },
                     localizationsDelegates: AppLocalizations.localizationsDelegates,
                     supportedLocales: AppLocalizations.supportedLocales,

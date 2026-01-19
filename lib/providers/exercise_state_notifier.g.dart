@@ -10,12 +10,12 @@ part of 'exercise_state_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(exerciseStateReady)
-const exerciseStateReadyProvider = ExerciseStateReadyProvider._();
+final exerciseStateReadyProvider = ExerciseStateReadyProvider._();
 
 final class ExerciseStateReadyProvider
     extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
     with $FutureModifier<void>, $FutureProvider<void> {
-  const ExerciseStateReadyProvider._()
+  ExerciseStateReadyProvider._()
     : super(
         from: null,
         argument: null,
@@ -43,11 +43,11 @@ final class ExerciseStateReadyProvider
 String _$exerciseStateReadyHash() => r'4ba35bfced32dc984ea363e2a103eb8660bb4487';
 
 @ProviderFor(ExerciseStateNotifier)
-const exerciseStateProvider = ExerciseStateNotifierProvider._();
+final exerciseStateProvider = ExerciseStateNotifierProvider._();
 
 final class ExerciseStateNotifierProvider
     extends $NotifierProvider<ExerciseStateNotifier, ExerciseState> {
-  const ExerciseStateNotifierProvider._()
+  ExerciseStateNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -81,7 +81,6 @@ abstract class _$ExerciseStateNotifier extends $Notifier<ExerciseState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<ExerciseState, ExerciseState>;
     final element =
         ref.element
@@ -91,6 +90,6 @@ abstract class _$ExerciseStateNotifier extends $Notifier<ExerciseState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

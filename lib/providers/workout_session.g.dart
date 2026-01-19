@@ -10,12 +10,12 @@ part of 'workout_session.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(sessionStateReady)
-const sessionStateReadyProvider = SessionStateReadyProvider._();
+final sessionStateReadyProvider = SessionStateReadyProvider._();
 
 final class SessionStateReadyProvider
     extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
     with $FutureModifier<void>, $FutureProvider<void> {
-  const SessionStateReadyProvider._()
+  SessionStateReadyProvider._()
     : super(
         from: null,
         argument: null,
@@ -43,11 +43,11 @@ final class SessionStateReadyProvider
 String _$sessionStateReadyHash() => r'18a6a7239149a753760d90c35cfcb739aec8a631';
 
 @ProviderFor(WorkoutSessionNotifier)
-const workoutSessionProvider = WorkoutSessionNotifierProvider._();
+final workoutSessionProvider = WorkoutSessionNotifierProvider._();
 
 final class WorkoutSessionNotifierProvider
     extends $StreamNotifierProvider<WorkoutSessionNotifier, List<WorkoutSession>> {
-  const WorkoutSessionNotifierProvider._()
+  WorkoutSessionNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -73,7 +73,6 @@ abstract class _$WorkoutSessionNotifier extends $StreamNotifier<List<WorkoutSess
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<WorkoutSession>>, List<WorkoutSession>>;
     final element =
         ref.element
@@ -83,6 +82,6 @@ abstract class _$WorkoutSessionNotifier extends $StreamNotifier<List<WorkoutSess
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

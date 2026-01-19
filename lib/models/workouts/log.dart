@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,7 +41,7 @@ class Log {
   late Exercise exerciseObj;
 
   late int routineId;
-  late int? sessionId;
+  int? sessionId;
   int? iteration;
   int? slotEntryId;
   num? rir;
@@ -49,13 +49,13 @@ class Log {
 
   num? repetitions;
   num? repetitionsTarget;
-  late int? repetitionsUnitId;
-  late RepetitionUnit? repetitionsUnitObj;
+  int? repetitionsUnitId;
+  RepetitionUnit? repetitionsUnitObj;
 
-  late num? weight;
+  num? weight;
   num? weightTarget;
-  late int? weightUnitId;
-  late WeightUnit? weightUnitObj;
+  int? weightUnitId;
+  WeightUnit? weightUnitObj;
 
   late DateTime date;
 
@@ -68,20 +68,20 @@ class Log {
     this.repetitions,
     this.repetitionsTarget,
     this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
-    required this.rir,
+    this.rir,
     this.rirTarget,
     this.weight,
     this.weightTarget,
     this.weightUnitId = WEIGHT_UNIT_KG,
-    required this.date,
-  });
+    DateTime? date,
+  }) : date = date ?? DateTime.now();
 
-  Log.fromSetConfigData(SetConfigData setConfig, , {int? routineId, this.iteration}) {
+  Log.fromSetConfigData(SetConfigData setConfig, {int? routineId, this.iteration}) {
     date = DateTime.now();
     sessionId = null;
 
     slotEntryId = setConfig.slotEntryId;
-    exerciseBase = setConfig.exercise;
+    exercise = setConfig.exercise;
 
     weight = setConfig.weight;
     weightTarget = setConfig.weight;
@@ -93,11 +93,55 @@ class Log {
 
     rir = setConfig.rir;
     rirTarget = setConfig.rir;
-  }
 
     if (routineId != null) {
       this.routineId = routineId;
     }
+  }
+
+  Log copyWith({
+    String? id,
+    int? exerciseId,
+    int? routineId,
+    int? sessionId,
+    int? iteration,
+    int? slotEntryId,
+    num? rir,
+    num? rirTarget,
+    num? repetitions,
+    num? repetitionsTarget,
+    int? repetitionsUnitId,
+    num? weight,
+    num? weightTarget,
+    int? weightUnitId,
+    DateTime? date,
+  }) {
+    final out = Log(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      iteration: iteration ?? this.iteration,
+      slotEntryId: slotEntryId ?? this.slotEntryId,
+      routineId: routineId ?? this.routineId,
+      repetitions: repetitions ?? this.repetitions,
+      repetitionsTarget: repetitionsTarget ?? this.repetitionsTarget,
+      repetitionsUnitId: repetitionsUnitId ?? this.repetitionsUnitId,
+      rir: rir ?? this.rir,
+      rirTarget: rirTarget ?? this.rirTarget,
+      weight: weight ?? this.weight,
+      weightTarget: weightTarget ?? this.weightTarget,
+      weightUnitId: weightUnitId ?? this.weightUnitId,
+      date: date ?? this.date,
+    );
+
+    if (sessionId != null) {
+      out.sessionId = sessionId;
+    }
+
+    out.exercise = exerciseObj;
+    out.repetitionUnit = repetitionsUnitObj;
+    out.weightUnitObj = weightUnitObj;
+
+    return out;
   }
 
   WorkoutLogTableCompanion toCompanion({bool includeId = false}) {

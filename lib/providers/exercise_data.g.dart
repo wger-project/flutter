@@ -10,12 +10,12 @@ part of 'exercise_data.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(exercises)
-const exercisesProvider = ExercisesProvider._();
+final exercisesProvider = ExercisesProvider._();
 
 final class ExercisesProvider
     extends $FunctionalProvider<AsyncValue<List<Exercise>>, List<Exercise>, Stream<List<Exercise>>>
     with $FutureModifier<List<Exercise>>, $StreamProvider<List<Exercise>> {
-  const ExercisesProvider._()
+  ExercisesProvider._()
     : super(
         from: null,
         argument: null,
@@ -44,7 +44,7 @@ final class ExercisesProvider
 String _$exercisesHash() => r'3c3bf6b9c2d5d5e9ff2c7fa3776165724f006151';
 
 @ProviderFor(exerciseCategories)
-const exerciseCategoriesProvider = ExerciseCategoriesProvider._();
+final exerciseCategoriesProvider = ExerciseCategoriesProvider._();
 
 final class ExerciseCategoriesProvider
     extends
@@ -54,7 +54,7 @@ final class ExerciseCategoriesProvider
           Stream<List<ExerciseCategory>>
         >
     with $FutureModifier<List<ExerciseCategory>>, $StreamProvider<List<ExerciseCategory>> {
-  const ExerciseCategoriesProvider._()
+  ExerciseCategoriesProvider._()
     : super(
         from: null,
         argument: null,
@@ -83,13 +83,13 @@ final class ExerciseCategoriesProvider
 String _$exerciseCategoriesHash() => r'0b43e83e3b68d18ae1319bcc9f553d2fed83e3f2';
 
 @ProviderFor(exerciseEquipment)
-const exerciseEquipmentProvider = ExerciseEquipmentProvider._();
+final exerciseEquipmentProvider = ExerciseEquipmentProvider._();
 
 final class ExerciseEquipmentProvider
     extends
         $FunctionalProvider<AsyncValue<List<Equipment>>, List<Equipment>, Stream<List<Equipment>>>
     with $FutureModifier<List<Equipment>>, $StreamProvider<List<Equipment>> {
-  const ExerciseEquipmentProvider._()
+  ExerciseEquipmentProvider._()
     : super(
         from: null,
         argument: null,
@@ -118,12 +118,12 @@ final class ExerciseEquipmentProvider
 String _$exerciseEquipmentHash() => r'49e42160c8640d68fde7e9d9849f46a8cf6a10f9';
 
 @ProviderFor(exerciseMuscles)
-const exerciseMusclesProvider = ExerciseMusclesProvider._();
+final exerciseMusclesProvider = ExerciseMusclesProvider._();
 
 final class ExerciseMusclesProvider
     extends $FunctionalProvider<AsyncValue<List<Muscle>>, List<Muscle>, Stream<List<Muscle>>>
     with $FutureModifier<List<Muscle>>, $StreamProvider<List<Muscle>> {
-  const ExerciseMusclesProvider._()
+  ExerciseMusclesProvider._()
     : super(
         from: null,
         argument: null,

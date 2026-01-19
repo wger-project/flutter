@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,10 +25,11 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/providers/gym_log_state.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/workout_logs.dart';
-import 'package:wger/screens/configure_plates_screen.dart';
+import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/reps_unit.dart';
@@ -37,75 +38,37 @@ import 'package:wger/widgets/routines/forms/weight_unit.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
 
-class LogPage extends ConsumerStatefulWidget {
+class LogPage extends ConsumerWidget {
   final _logger = Logger('LogPage');
 
   final PageController _controller;
-
   LogPage(this._controller);
-
-  @override
-  _LogPageState createState() => _LogPageState();
-}
-
-class _LogPageState extends ConsumerState<LogPage> {
   final GlobalKey<_LogFormWidgetState> _logFormKey = GlobalKey<_LogFormWidgetState>();
 
-  late FocusNode focusNode;
-  // Persistent log and current slot-page id to avoid recreating the Log on rebuilds
-  Log? _currentLog;
-  String? _currentSlotPageUuid;
-
   @override
-  void initState() {
-    super.initState();
-    focusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final state = ref.watch(gymStateProvider);
+    final gymState = ref.watch(gymStateProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
-    final page = state.getPageByIndex();
+    final page = gymState.getPageByIndex();
     if (page == null) {
-      widget._logger.info(
-        'getPageByIndex for ${state.currentPage} returned null, showing empty container.',
+      _logger.info(
+        'getPageByIndex for ${gymState.currentPage} returned null, showing empty container.',
       );
       return Container();
     }
 
-    final slotEntryPage = state.getSlotEntryPageByIndex();
+    final slotEntryPage = gymState.getSlotEntryPageByIndex();
     if (slotEntryPage == null) {
-      widget._logger.info(
-        'getSlotPageByIndex for ${state.currentPage} returned null, showing empty container',
+      _logger.info(
+        'getSlotPageByIndex for ${gymState.currentPage} returned null, showing empty container',
       );
       return Container();
     }
-
     final setConfigData = slotEntryPage.setConfigData!;
 
-    // Create a Log only when the slot page changed or none exists yet
-    if (_currentLog == null || _currentSlotPageUuid != slotEntryPage.uuid) {
-      _currentLog = Log.fromSetConfigData(setConfigData)
-        ..routineId = state.routine.id!
-        ..iteration = state.iteration;
-      _currentSlotPageUuid = slotEntryPage.uuid;
-    } else {
-      // Update routine/iteration if needed without creating a new Log
-      _currentLog!
-        ..routineId = state.routine.id!
-        ..iteration = state.iteration;
-    }
-
-    final log = _currentLog!;
+    final log = ref.watch(gymLogProvider);
 
     // Mark done sets
     final decorationStyle = slotEntryPage.logDone
@@ -115,8 +78,8 @@ class _LogPageState extends ConsumerState<LogPage> {
     return Column(
       children: [
         NavigationHeader(
-          log.exerciseObj.getTranslation(languageCode).name,
-          widget._controller,
+          log!.exerciseObj.getTranslation(languageCode).name,
+          _controller,
         ),
 
         Container(
@@ -162,16 +125,9 @@ class _LogPageState extends ConsumerState<LogPage> {
           Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (state.routine.filterLogsByExercise(log.exerciseId).isNotEmpty)
+          child: (gymState.routine.filterLogsByExercise(log.exerciseId).isNotEmpty)
               ? LogsPastLogsWidget(
-                  log: log,
-                  pastLogs: state.routine.filterLogsByExercise(log.exerciseId),
-                  onCopy: (pastLog) {
-                    _logFormKey.currentState?.copyFromPastLog(pastLog);
-                  },
-                  setStateCallback: (fn) {
-                    setState(fn);
-                  },
+                  pastLogs: gymState.routine.filterLogsByExercise(log.exerciseId),
                 )
               : Container(),
         ),
@@ -184,16 +140,15 @@ class _LogPageState extends ConsumerState<LogPage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: LogFormWidget(
-                controller: widget._controller,
+                controller: _controller,
                 configData: setConfigData,
-                log: log,
-                focusNode: focusNode,
+                // log: log!,
                 key: _logFormKey,
               ),
             ),
           ),
         ),
-        NavigationFooter(widget._controller),
+        NavigationFooter(_controller),
       ],
     );
   }
@@ -253,68 +208,62 @@ class LogsPlatesWidget extends ConsumerWidget {
   }
 }
 
-class LogsRepsWidget extends StatelessWidget {
-  final TextEditingController controller;
-  final SetConfigData configData;
-  final FocusNode focusNode;
-  final Log log;
-  final void Function(VoidCallback fn) setStateCallback;
-
+class LogsRepsWidget extends ConsumerWidget {
   final _logger = Logger('LogsRepsWidget');
+
+  final num valueChange;
 
   LogsRepsWidget({
     super.key,
-    required this.controller,
-    required this.configData,
-    required this.focusNode,
-    required this.log,
-    required this.setStateCallback,
-  });
+    num? valueChange,
+  }) : valueChange = valueChange ?? 1;
 
   @override
-  Widget build(BuildContext context) {
-    final repsValueChange = configData.repetitionsRounding ?? 1;
+  Widget build(BuildContext context, WidgetRef ref) {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-
     final i18n = AppLocalizations.of(context);
+
+    final logNotifier = ref.read(gymLogProvider.notifier);
+    final log = ref.watch(gymLogProvider);
+
+    final currentReps = log?.repetitions;
+    final repText = currentReps != null ? numberFormat.format(currentReps) : '';
 
     return Row(
       children: [
+        // "Quick-remove" button
         IconButton(
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
-            final currentValue = numberFormat.tryParse(controller.text) ?? 0;
-            final newValue = currentValue - repsValueChange;
-            if (newValue >= 0) {
-              setStateCallback(() {
-                log.repetitions = newValue;
-                controller.text = numberFormat.format(newValue);
-              });
+            final base = currentReps ?? 0;
+            final newValue = base - valueChange;
+            if (newValue >= 0 && log != null) {
+              logNotifier.setRepetitions(newValue);
             }
           },
         ),
+
+        // Text field
         Expanded(
           child: TextFormField(
             decoration: InputDecoration(labelText: i18n.repetitions),
             enabled: true,
-            controller: controller,
+            key: ValueKey('reps-field-$repText'),
+            initialValue: repText,
             keyboardType: textInputTypeDecimal,
-            focusNode: focusNode,
             onChanged: (value) {
               try {
                 final newValue = numberFormat.parse(value);
-                setStateCallback(() {
-                  log.repetitions = newValue;
-                });
+                logNotifier.setRepetitions(newValue);
               } on FormatException catch (error) {
-                _logger.fine('Error parsing repetitions: $error');
+                _logger.finer('Error parsing repetitions: $error');
               }
             },
             onSaved: (newValue) {
-              _logger.info('Saving new reps value: $newValue');
-              setStateCallback(() {
-                log.repetitions = numberFormat.parse(newValue!);
-              });
+              if (newValue == null || log == null) {
+                return;
+              }
+              logNotifier.setRepetitions(numberFormat.parse(newValue));
             },
             validator: (value) {
               if (numberFormat.tryParse(value ?? '') == null) {
@@ -324,19 +273,15 @@ class LogsRepsWidget extends StatelessWidget {
             },
           ),
         ),
+
+        // "Quick-add" button
         IconButton(
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
-            final value = controller.text.isNotEmpty ? controller.text : '0';
-
-            try {
-              final newValue = numberFormat.parse(value) + repsValueChange;
-              setStateCallback(() {
-                log.repetitions = newValue;
-                controller.text = numberFormat.format(newValue);
-              });
-            } on FormatException catch (error) {
-              _logger.fine('Error parsing reps during quick-add: $error');
+            final base = currentReps ?? 0;
+            final newValue = base + valueChange;
+            if (newValue >= 0 && log != null) {
+              logNotifier.setRepetitions(newValue);
             }
           },
         ),
@@ -346,76 +291,62 @@ class LogsRepsWidget extends StatelessWidget {
 }
 
 class LogsWeightWidget extends ConsumerWidget {
-  final TextEditingController controller;
-  final SetConfigData configData;
-  final FocusNode focusNode;
-  final Log log;
-  final void Function(VoidCallback fn) setStateCallback;
-
   final _logger = Logger('LogsWeightWidget');
+
+  final num valueChange;
 
   LogsWeightWidget({
     super.key,
-    required this.controller,
-    required this.configData,
-    required this.focusNode,
-    required this.log,
-    required this.setStateCallback,
-  });
+    num? valueChange,
+  }) : valueChange = valueChange ?? 1.25;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weightValueChange = configData.weightRounding ?? 1.25;
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final i18n = AppLocalizations.of(context);
+
+    final plateProvider = ref.read(plateCalculatorProvider.notifier);
+    final logProvider = ref.read(gymLogProvider.notifier);
+    final log = ref.watch(gymLogProvider);
+
+    final currentWeight = log?.weight;
+    final weightText = currentWeight != null ? numberFormat.format(currentWeight) : '';
 
     return Row(
       children: [
         IconButton(
+          // "Quick-remove" button
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
-            try {
-              final newValue = numberFormat.parse(controller.text) - weightValueChange;
-              if (newValue > 0) {
-                setStateCallback(() {
-                  log.weight = newValue;
-                  controller.text = numberFormat.format(newValue);
-                  ref
-                      .read(plateCalculatorProvider.notifier)
-                      .setWeight(
-                        controller.text == '' ? 0 : newValue,
-                      );
-                });
-              }
-            } on FormatException catch (error) {
-              _logger.fine('Error parsing weight during quick-remove: $error');
+            final base = currentWeight ?? 0;
+            final newValue = base - valueChange;
+            if (newValue >= 0 && log != null) {
+              logProvider.setWeight(newValue);
             }
           },
         ),
+
+        // Text field
         Expanded(
           child: TextFormField(
+            key: ValueKey('weight-field-$weightText'),
             decoration: InputDecoration(labelText: i18n.weight),
-            controller: controller,
+            initialValue: weightText,
             keyboardType: textInputTypeDecimal,
             onChanged: (value) {
               try {
                 final newValue = numberFormat.parse(value);
-                setStateCallback(() {
-                  log.weight = newValue;
-                  ref
-                      .read(plateCalculatorProvider.notifier)
-                      .setWeight(
-                        controller.text == '' ? 0 : numberFormat.parse(controller.text),
-                      );
-                });
+                plateProvider.setWeight(newValue);
+                logProvider.setWeight(newValue);
               } on FormatException catch (error) {
-                _logger.fine('Error parsing weight: $error');
+                _logger.finer('Error parsing weight: $error');
               }
             },
             onSaved: (newValue) {
-              setStateCallback(() {
-                log.weight = numberFormat.parse(newValue!);
-              });
+              if (newValue == null || log == null) {
+                return;
+              }
+              logProvider.setWeight(numberFormat.parse(newValue));
             },
             validator: (value) {
               if (numberFormat.tryParse(value ?? '') == null) {
@@ -425,24 +356,15 @@ class LogsWeightWidget extends ConsumerWidget {
             },
           ),
         ),
+
+        // "Quick-add" button
         IconButton(
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
-            final value = controller.text.isNotEmpty ? controller.text : '0';
-
-            try {
-              final newValue = numberFormat.parse(value) + weightValueChange;
-              setStateCallback(() {
-                log.weight = newValue;
-                controller.text = numberFormat.format(newValue);
-                ref
-                    .read(plateCalculatorProvider.notifier)
-                    .setWeight(
-                      controller.text == '' ? 0 : newValue,
-                    );
-              });
-            } on FormatException catch (error) {
-              _logger.fine('Error parsing weight during quick-add: $error');
+            final base = currentWeight ?? 0;
+            final newValue = base + valueChange;
+            if (log != null) {
+              logProvider.setWeight(newValue);
             }
           },
         ),
@@ -451,22 +373,19 @@ class LogsWeightWidget extends ConsumerWidget {
   }
 }
 
-class LogsPastLogsWidget extends StatelessWidget {
-  final Log log;
+class LogsPastLogsWidget extends ConsumerWidget {
   final List<Log> pastLogs;
-  final void Function(Log pastLog) onCopy;
-  final void Function(VoidCallback fn) setStateCallback;
 
   const LogsPastLogsWidget({
     super.key,
-    required this.log,
     required this.pastLogs,
-    required this.onCopy,
-    required this.setStateCallback,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logProvider = ref.read(gymLogProvider.notifier);
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: ListView(
@@ -480,25 +399,16 @@ class LogsPastLogsWidget extends StatelessWidget {
             return ListTile(
               key: ValueKey('past-log-${pastLog.id}'),
               title: Text(pastLog.repTextNoNl(context)),
-              subtitle: Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(pastLog.date),
-              ),
+              subtitle: Text(dateFormat.format(pastLog.date)),
               trailing: const Icon(Icons.copy),
               onTap: () {
-                setStateCallback(() {
-                  log.rir = pastLog.rir;
-                  log.repetitionUnit = pastLog.repetitionsUnitObj;
-                  log.weightUnit = pastLog.weightUnitObj;
-
-                  onCopy(pastLog);
-
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context).dataCopied),
-                    ),
-                  );
-                });
+                logProvider.setLog(pastLog);
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context).dataCopied),
+                  ),
+                );
               },
               contentPadding: const EdgeInsets.symmetric(horizontal: 40),
             );
@@ -514,15 +424,11 @@ class LogFormWidget extends ConsumerStatefulWidget {
 
   final PageController controller;
   final SetConfigData configData;
-  final Log log;
-  final FocusNode focusNode;
 
   LogFormWidget({
     super.key,
     required this.controller,
     required this.configData,
-    required this.log,
-    required this.focusNode,
   });
 
   @override
@@ -533,117 +439,12 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   final _form = GlobalKey<FormState>();
   var _detailed = false;
   bool _isSaving = false;
-  late Log _log;
-
-  late final TextEditingController _repetitionsController;
-  late final TextEditingController _weightController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _log = widget.log;
-    _repetitionsController = TextEditingController();
-    _weightController = TextEditingController();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _syncControllersWithWidget();
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant LogFormWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // If the log or config changed, update internal _log and controllers
-    if (oldWidget.log != widget.log || oldWidget.configData != widget.configData) {
-      _log = widget.log;
-      _syncControllersWithWidget();
-    }
-  }
-
-  void _syncControllersWithWidget() {
-    final locale = Localizations.localeOf(context).toString();
-    final numberFormat = NumberFormat.decimalPattern(locale);
-
-    // Priority: current log -> config defaults -> empty
-    try {
-      _repetitionsController.text = widget.log.repetitions != null
-          ? numberFormat.format(widget.log.repetitions)
-          : (widget.configData.repetitions != null
-                ? numberFormat.format(widget.configData.repetitions)
-                : '');
-
-      _weightController.text = widget.log.weight != null
-          ? numberFormat.format(widget.log.weight)
-          : (widget.configData.weight != null ? numberFormat.format(widget.configData.weight) : '');
-    } on Exception catch (e) {
-      // Defensive fallback: set empty strings if formatting fails
-      widget._logger.warning('Error syncing controllers: $e');
-      _repetitionsController.text = '';
-      _weightController.text = '';
-    }
-  }
-
-  @override
-  void dispose() {
-    _repetitionsController.dispose();
-    _weightController.dispose();
-    super.dispose();
-  }
-
-  void copyFromPastLog(Log pastLog) {
-    final locale = Localizations.localeOf(context).toString();
-    final numberFormat = NumberFormat.decimalPattern(locale);
-
-    setState(() {
-      _repetitionsController.text = pastLog.repetitions != null
-          ? numberFormat.format(pastLog.repetitions)
-          : '';
-      widget._logger.finer('Setting log repetitions to ${_repetitionsController.text}');
-
-      _weightController.text = pastLog.weight != null ? numberFormat.format(pastLog.weight) : '';
-      widget._logger.finer('Setting log weight to ${_weightController.text}');
-
-      _log.repetitions = pastLog.repetitions;
-      _log.weight = pastLog.weight;
-      _log.rir = pastLog.rir;
-      if (pastLog.repetitionsUnitObj != null) {
-        _log.repetitionUnit = pastLog.repetitionsUnitObj;
-      }
-      if (pastLog.weightUnitObj != null) {
-        _log.weightUnit = pastLog.weightUnitObj;
-      }
-
-      widget._logger.finer(
-        'Copied to _log: repetitions=${_log.repetitions}, weight=${_log.weight}, repetitionsUnitId=${_log.repetitionsUnitId}, weightUnitId=${_log.weightUnitId}, rir=${_log.rir}',
-      );
-
-      // Update plate calculator using the value currently visible in the controllers
-      try {
-        final weightValue = _weightController.text.isEmpty
-            ? 0
-            : numberFormat.parse(_weightController.text);
-        ref.read(plateCalculatorProvider.notifier).setWeight(weightValue);
-      } catch (e) {
-        widget._logger.fine('Error updating plate calculator: $e');
-      }
-    });
-
-    // Ensure subsequent syncs (e.g., didUpdateWidget) don't overwrite these values
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-
-      _syncControllersWithWidget();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final logProvider = ref.watch(workoutLogProvider.notifier);
+    final log = ref.watch(gymLogProvider);
 
     return Form(
       key: _form,
@@ -661,26 +462,14 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 Flexible(
                   child: LogsRepsWidget(
                     key: const ValueKey('logs-reps-widget'),
-                    controller: _repetitionsController,
-                    configData: widget.configData,
-                    focusNode: widget.focusNode,
-                    log: _log,
-                    setStateCallback: (fn) {
-                      setState(fn);
-                    },
+                    valueChange: widget.configData.repetitionsRounding,
                   ),
                 ),
                 const SizedBox(width: 8),
                 Flexible(
                   child: LogsWeightWidget(
                     key: const ValueKey('logs-weight-widget'),
-                    controller: _weightController,
-                    configData: widget.configData,
-                    focusNode: widget.focusNode,
-                    log: _log,
-                    setStateCallback: (fn) {
-                      setState(fn);
-                    },
+                    valueChange: widget.configData.weightRounding,
                   ),
                 ),
               ],
@@ -692,20 +481,14 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 Flexible(
                   child: LogsRepsWidget(
                     key: const ValueKey('logs-reps-widget'),
-                    controller: _repetitionsController,
-                    configData: widget.configData,
-                    focusNode: widget.focusNode,
-                    log: _log,
-                    setStateCallback: (fn) {
-                      setState(fn);
-                    },
+                    valueChange: widget.configData.repetitionsRounding,
                   ),
                 ),
                 const SizedBox(width: 8),
                 Flexible(
                   child: RepetitionUnitInputWidget(
                     key: const ValueKey('repetition-unit-input-widget'),
-                    _log.repetitionsUnitId,
+                    log!.repetitionsUnitId,
                     onChanged: (v) => {},
                   ),
                 ),
@@ -719,19 +502,13 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 Flexible(
                   child: LogsWeightWidget(
                     key: const ValueKey('logs-weight-widget'),
-                    controller: _weightController,
-                    configData: widget.configData,
-                    focusNode: widget.focusNode,
-                    log: _log,
-                    setStateCallback: (fn) {
-                      setState(fn);
-                    },
+                    valueChange: widget.configData.weightRounding,
                   ),
                 ),
                 const SizedBox(width: 8),
                 Flexible(
                   child: WeightUnitInputWidget(
-                    _log.weightUnitId,
+                    log!.weightUnitId,
                     onChanged: (v) => {},
                     key: const ValueKey('weight-unit-input-widget'),
                   ),
@@ -742,13 +519,9 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
           if (_detailed)
             RiRInputWidget(
               key: const ValueKey('rir-input-widget'),
-              _log.rir,
+              log!.rir,
               onChanged: (value) {
-                if (value == '') {
-                  _log.rir = null;
-                } else {
-                  _log.rir = num.parse(value);
-                }
+                log.rir = value == '' ? null : num.parse(value);
               },
             ),
           SwitchListTile(
@@ -779,7 +552,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     final gymState = ref.read(gymStateProvider);
                     final gymProvider = ref.read(gymStateProvider.notifier);
 
-                    logProvider.addEntry(_log);
+                    logProvider.addEntry(log!);
                     final page = gymState.getSlotEntryPageByIndex()!;
                     gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
 

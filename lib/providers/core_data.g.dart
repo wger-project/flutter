@@ -10,12 +10,12 @@ part of 'core_data.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(languages)
-const languagesProvider = LanguagesProvider._();
+final languagesProvider = LanguagesProvider._();
 
 final class LanguagesProvider
     extends $FunctionalProvider<AsyncValue<List<Language>>, List<Language>, Stream<List<Language>>>
     with $FutureModifier<List<Language>>, $StreamProvider<List<Language>> {
-  const LanguagesProvider._()
+  LanguagesProvider._()
     : super(
         from: null,
         argument: null,

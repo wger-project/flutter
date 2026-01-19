@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,7 +58,7 @@ class AuthProvider with ChangeNotifier {
   static const SERVER_VERSION_URL = 'version';
   static const REGISTRATION_URL = 'register';
   static const LOGIN_URL = 'login';
-  static const TEST_URL = 'userprofile';
+  static const USERPROFILE_URL = 'userprofile';
 
   late http.Client client;
 
@@ -150,7 +150,7 @@ class AuthProvider with ChangeNotifier {
     // Login using the API token
     if (apiToken != null && apiToken.isNotEmpty) {
       final response = await client.get(
-        makeUri(serverUrl, TEST_URL),
+        makeUri(serverUrl, USERPROFILE_URL),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
           HttpHeaders.userAgentHeader: getAppNameHeader(),

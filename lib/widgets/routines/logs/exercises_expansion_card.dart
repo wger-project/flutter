@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,13 +20,15 @@ import 'package:flutter/material.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/trophies/user_trophy.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 
 class ExercisesCard extends StatelessWidget {
   final WorkoutSession session;
+  final List<UserTrophy> userPrTrophies;
 
-  const ExercisesCard(this.session, {super.key});
+  const ExercisesCard(this.session, this.userPrTrophies, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,11 @@ class ExercisesCard extends StatelessWidget {
             const SizedBox(height: 16),
             ...exercises.map((exercise) {
               final logs = session.logs.where((log) => log.exerciseId == exercise.id).toList();
-              return _ExerciseExpansionTile(exercise: exercise, logs: logs);
+              return _ExerciseExpansionTile(
+                exercise: exercise,
+                logs: logs,
+                userPrTrophies: userPrTrophies,
+              );
             }),
           ],
         ),
@@ -57,8 +63,10 @@ class _ExerciseExpansionTile extends StatelessWidget {
   const _ExerciseExpansionTile({
     required this.exercise,
     required this.logs,
+    required this.userPrTrophies,
   });
 
+  final List<UserTrophy> userPrTrophies;
   final Exercise exercise;
   final List<Log> logs;
 
@@ -66,6 +74,7 @@ class _ExerciseExpansionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final languageCode = Localizations.localeOf(context).languageCode;
     final theme = Theme.of(context);
+    final i18n = AppLocalizations.of(context);
 
     final topSet = logs.isEmpty
         ? null
@@ -77,21 +86,21 @@ class _ExerciseExpansionTile extends StatelessWidget {
     return ExpansionTile(
       // leading: const Icon(Icons.fitness_center),
       title: Text(exercise.getTranslation(languageCode).name, style: theme.textTheme.titleMedium),
-      subtitle: Text('Top set: $topSetWeight $topSetWeightUnit'),
-      children: logs.map((log) => _SetDataRow(log: log)).toList(),
+      subtitle: Text(i18n.topSet('$topSetWeight $topSetWeightUnit')),
+      children: logs.map((log) => _SetDataRow(log: log, userPrTrophies: userPrTrophies)).toList(),
     );
   }
 }
 
 class _SetDataRow extends StatelessWidget {
-  const _SetDataRow({required this.log});
+  const _SetDataRow({required this.log, required this.userPrTrophies});
 
   final Log log;
+  final List<UserTrophy> userPrTrophies;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final i18n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -103,6 +112,8 @@ class _SetDataRow extends StatelessWidget {
             log.repTextNoNl(context),
             style: theme.textTheme.bodyMedium,
           ),
+          if (userPrTrophies.any((trophy) => trophy.contextData?.logId == log.id))
+            Icon(Icons.emoji_events, color: theme.colorScheme.primary, size: 20),
           // if (log.volume() > 0)
           //   Text(
           //     '${log.volume().toStringAsFixed(0)} ${getServerStringTranslation(log.weightUnitObj!.name, context)}',

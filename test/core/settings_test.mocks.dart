@@ -488,6 +488,14 @@ class MockUserProvider extends _i1.Mock implements _i14.UserProvider {
           as _i8.SharedPreferencesAsync);
 
   @override
+  List<_i14.DashboardWidget> get dashboardOrder =>
+      (super.noSuchMethod(
+            Invocation.getter(#dashboardOrder),
+            returnValue: <_i14.DashboardWidget>[],
+          )
+          as List<_i14.DashboardWidget>);
+
+  @override
   set themeMode(_i15.ThemeMode? value) => super.noSuchMethod(
     Invocation.setter(#themeMode, value),
     returnValueForMissingStub: null,
@@ -514,6 +522,35 @@ class MockUserProvider extends _i1.Mock implements _i14.UserProvider {
     Invocation.method(#clear, []),
     returnValueForMissingStub: null,
   );
+
+  @override
+  bool isDashboardWidgetVisible(_i14.DashboardWidget? key) =>
+      (super.noSuchMethod(
+            Invocation.method(#isDashboardWidgetVisible, [key]),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i12.Future<void> setDashboardWidgetVisible(
+    _i14.DashboardWidget? key,
+    bool? visible,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardWidgetVisible, [key, visible]),
+            returnValue: _i12.Future<void>.value(),
+            returnValueForMissingStub: _i12.Future<void>.value(),
+          )
+          as _i12.Future<void>);
+
+  @override
+  _i12.Future<void> setDashboardOrder(int? oldIndex, int? newIndex) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardOrder, [oldIndex, newIndex]),
+            returnValue: _i12.Future<void>.value(),
+            returnValueForMissingStub: _i12.Future<void>.value(),
+          )
+          as _i12.Future<void>);
 
   @override
   void setThemeMode(_i15.ThemeMode? mode) => super.noSuchMethod(
@@ -610,10 +647,14 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
   );
 
   @override
-  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
+  Map<String, String> getDefaultHeaders({
+    bool? includeAuth = false,
+    String? language,
+  }) =>
       (super.noSuchMethod(
             Invocation.method(#getDefaultHeaders, [], {
               #includeAuth: includeAuth,
+              #language: language,
             }),
             returnValue: <String, String>{},
           )
@@ -644,17 +685,30 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
           as Uri);
 
   @override
-  _i12.Future<dynamic> fetch(Uri? uri) =>
+  _i12.Future<dynamic> fetch(
+    Uri? uri, {
+    int? maxRetries = 3,
+    Duration? initialDelay = const Duration(milliseconds: 250),
+    String? language,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#fetch, [uri]),
+            Invocation.method(
+              #fetch,
+              [uri],
+              {
+                #maxRetries: maxRetries,
+                #initialDelay: initialDelay,
+                #language: language,
+              },
+            ),
             returnValue: _i12.Future<dynamic>.value(),
           )
           as _i12.Future<dynamic>);
 
   @override
-  _i12.Future<List<dynamic>> fetchPaginated(Uri? uri) =>
+  _i12.Future<List<dynamic>> fetchPaginated(Uri? uri, {String? language}) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchPaginated, [uri]),
+            Invocation.method(#fetchPaginated, [uri], {#language: language}),
             returnValue: _i12.Future<List<dynamic>>.value(<dynamic>[]),
           )
           as _i12.Future<List<dynamic>>);

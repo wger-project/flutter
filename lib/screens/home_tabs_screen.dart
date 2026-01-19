@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +30,7 @@ import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/trophies.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/providers/workout_logs.dart';
 import 'package:wger/providers/workout_session.dart';
@@ -39,11 +40,11 @@ import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 
-class EagerInitialization extends riverpod.ConsumerWidget {
+class EagerInitialization extends ConsumerWidget {
   const EagerInitialization();
 
   @override
-  Widget build(BuildContext context, riverpod.WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // TODO: do we need all of these here?
     ref.watch(exerciseStateProvider);
     ref.watch(workoutSessionProvider);
@@ -56,7 +57,7 @@ class EagerInitialization extends riverpod.ConsumerWidget {
   }
 }
 
-class HomeTabsScreen extends riverpod.ConsumerStatefulWidget {
+class HomeTabsScreen extends ConsumerStatefulWidget {
   final _logger = Logger('HomeTabsScreen');
 
   HomeTabsScreen();
@@ -67,9 +68,9 @@ class HomeTabsScreen extends riverpod.ConsumerStatefulWidget {
   _HomeTabsScreenState createState() => _HomeTabsScreenState();
 }
 
-class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
+class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     with SingleTickerProviderStateMixin {
-  late Future<void> _initialData;
+  Future<void>? _initialData;
   bool _errorHandled = false;
   int _selectedIndex = 0;
   bool _isWideScreen = false;
@@ -77,7 +78,6 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
   @override
   void initState() {
     super.initState();
-
     // Loading data here, since the build method can be called more than once
     _initialData = _loadEntries();
   }
@@ -88,6 +88,7 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
 
     final size = MediaQuery.sizeOf(context);
     _isWideScreen = size.width > MATERIAL_XS_BREAKPOINT;
+    _initialData ??= _loadEntries();
   }
 
   void _onItemTapped(int index) {
@@ -106,7 +107,9 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
 
   /// Load initial data from the server
   Future<void> _loadEntries() async {
+    final languageCode = Localizations.localeOf(context).languageCode;
     final authProvider = context.read<AuthProvider>();
+    final trophyNotifier = ref.read(trophyStateProvider.notifier);
 
     if (!authProvider.dataInit) {
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
@@ -150,6 +153,7 @@ class _HomeTabsScreenState extends riverpod.ConsumerState<HomeTabsScreen>
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         routinesProvider.fetchAllRoutinesSparse(),
         measurementProvider.fetchAndSetAllCategoriesAndEntries(),
+        trophyNotifier.fetchAll(language: languageCode),
       ]);
 
       //

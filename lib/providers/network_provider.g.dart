@@ -10,10 +10,10 @@ part of 'network_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(NetworkStatus)
-const networkStatusProvider = NetworkStatusProvider._();
+final networkStatusProvider = NetworkStatusProvider._();
 
 final class NetworkStatusProvider extends $NotifierProvider<NetworkStatus, bool> {
-  const NetworkStatusProvider._()
+  NetworkStatusProvider._()
     : super(
         from: null,
         argument: null,
@@ -47,10 +47,9 @@ abstract class _$NetworkStatus extends $Notifier<bool> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
