@@ -100,7 +100,11 @@ class UserProvider with ChangeNotifier {
       .map((w) => DashboardItem(w))
       .toList();
 
-  List<DashboardWidget> get dashboardOrder => _dashboardItems.map((e) => e.widget).toList();
+  /// List of visible dashboard widgets in the configured order
+  List<DashboardWidget> get dashboardWidgets =>
+      _dashboardItems.where((w) => w.isVisible).map((w) => w.widget).toList();
+
+  List<DashboardWidget> get allDashboardWidgets => _dashboardItems.map((w) => w.widget).toList();
 
   Future<void> _loadDashboardConfig() async {
     final jsonString = await prefs.getString(PREFS_DASHBOARD_CONFIG);

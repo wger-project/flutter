@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -37,7 +38,7 @@ void main() {
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     mockBaseProvider = MockWgerBaseProvider();
-    userProvider = UserProvider(mockBaseProvider);
+    userProvider = UserProvider(mockBaseProvider, prefs: SharedPreferencesAsync());
   });
 
   Widget createWidget() {
@@ -78,7 +79,7 @@ void main() {
 
     // Tap to toggle
     await tester.tap(iconBtn);
-    await tester.pump(); // re-render
+    await tester.pump();
 
     // Check provider state
     expect(userProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
@@ -96,8 +97,9 @@ void main() {
     await tester.pumpAndSettle();
 
     // Initial order: trophies, routines, nutrition, weight...
-    expect(userProvider.dashboardOrder[0], DashboardWidget.trophies);
-    expect(userProvider.dashboardOrder[1], DashboardWidget.routines);
+    expect(userProvider.dashboardWidgets[0], DashboardWidget.trophies);
+    expect(userProvider.dashboardWidgets[1], DashboardWidget.routines);
+    expect(userProvider.dashboardWidgets[2], DashboardWidget.nutrition);
 
     // Find drag handle for Trophies (index 0)
     final handleFinder = find.byIcon(Icons.drag_handle);
@@ -110,8 +112,8 @@ void main() {
     // Verify order changed
     // 100px drag seems to skip 2 items (trophies moves to index 2)
     // [routines, nutrition, trophies, ...]
-    expect(userProvider.dashboardOrder[0], DashboardWidget.routines);
-    expect(userProvider.dashboardOrder[1], DashboardWidget.nutrition);
-    expect(userProvider.dashboardOrder[2], DashboardWidget.trophies);
+    expect(userProvider.dashboardWidgets[0], DashboardWidget.routines);
+    expect(userProvider.dashboardWidgets[1], DashboardWidget.nutrition);
+    expect(userProvider.dashboardWidgets[2], DashboardWidget.trophies);
   });
 }

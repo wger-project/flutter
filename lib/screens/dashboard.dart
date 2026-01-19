@@ -49,13 +49,6 @@ class DashboardScreen extends StatelessWidget {
       case DashboardWidget.trophies:
         return const DashboardTrophiesWidget();
     }
-    /*
-    child: Column(
-          children: user.dashboardOrder
-              .where((w) => user.isDashboardWidgetVisible(w))
-              .map(_getDashboardWidget)
-              .toList(),
-     */
   }
 
   @override
@@ -83,14 +76,16 @@ class DashboardScreen extends StatelessWidget {
           child: isMobile
               ? ListView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) => _getDashboardWidget(user.dashboardOrder[index]),
-                  itemCount: user.dashboardOrder.length,
+                  itemBuilder: (context, index) =>
+                      _getDashboardWidget(user.dashboardWidgets[index]),
+                  itemCount: user.dashboardWidgets.length,
                 )
               : GridView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) =>
-                      SingleChildScrollView(child: _getDashboardWidget(user.dashboardOrder[index])),
-                  itemCount: user.dashboardOrder.length,
+                  itemBuilder: (context, index) => SingleChildScrollView(
+                    child: _getDashboardWidget(user.dashboardWidgets[index]),
+                  ),
+                  itemCount: user.dashboardWidgets.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
                     childAspectRatio: 0.7,
