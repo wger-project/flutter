@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -32,7 +33,8 @@ class GymLogNotifier extends _$GymLogNotifier {
     return null;
   }
 
-  void setLog(Log newLog) {
+  void setLog(Log log) {
+    final newLog = log.copyWith(id: null, date: clock.now());
     state = newLog;
   }
 
