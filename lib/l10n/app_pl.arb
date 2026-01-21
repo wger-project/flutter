@@ -308,6 +308,10 @@
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
+    "noNutritionalPlansSubtitle": "Utwórz swój pierwszy plan, aby zacząć śledzić odżywianie",
+    "@noNutritionalPlansSubtitle": {
+        "description": "Subtitle shown when the user has no nutritional plans"
+    },
     "plateCalculator": "Obciążnik",
     "@plateCalculator": {
         "description": "Label used for the plate calculator in the gym mode"
