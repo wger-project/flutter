@@ -251,7 +251,7 @@ class LogsRepsWidget extends ConsumerWidget {
           child: TextFormField(
             decoration: InputDecoration(labelText: i18n.repetitions),
             enabled: true,
-            key: ValueKey('reps-field-$repText'),
+            key: const ValueKey('reps-field'),
             initialValue: repText,
             keyboardType: textInputTypeDecimal,
             onChanged: (value) {
@@ -332,7 +332,7 @@ class LogsWeightWidget extends ConsumerWidget {
         // Text field
         Expanded(
           child: TextFormField(
-            key: ValueKey('weight-field-$weightText'),
+            key: const ValueKey('weight-field'),
             decoration: InputDecoration(labelText: i18n.weight),
             initialValue: weightText,
             keyboardType: textInputTypeDecimal,
