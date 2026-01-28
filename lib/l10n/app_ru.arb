@@ -4,11 +4,8 @@
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "email": "Адрес электронной почты",
-    "@email": {},
     "registerInstead": "У вас нет аккаунта? Зарегистрируйтесь сейчас",
-    "@registerInstead": {},
     "loginInstead": "Уже есть аккаунт? Войти",
-    "@loginInstead": {},
     "labelDashboard": "Панель управления",
     "@labelDashboard": {
         "description": "Title for screen dashboard"
@@ -21,7 +18,7 @@
     "@reps": {
         "description": "Shorthand for repetitions, used when space constraints are tighter"
     },
-    "rir": "ПвЗ",
+    "rir": "ПвЗ (повторы в запасе)",
     "@rir": {
         "description": "Shorthand for Repetitions In Reserve"
     },
@@ -38,25 +35,19 @@
         "description": "A (logged) workout session"
     },
     "newDay": "Новый день",
-    "@newDay": {},
     "selectExercises": "Если вы хотите сделать супер подход (сет), вы можете найти несколько упражнений, они будут сгруппированы вместе",
-    "@selectExercises": {},
-    "plateCalculator": "Пластины (блины)",
+    "plateCalculator": "Блины",
     "@plateCalculator": {
         "description": "Label used for the plate calculator in the gym mode"
     },
     "save": "Сохранить",
-    "@save": {},
     "logMeal": "Запишите прием пищи в дневник питания",
-    "@logMeal": {},
     "nutritionalPlan": "План питания",
-    "@nutritionalPlan": {},
     "noNutritionalPlans": "У вас нет планов питания",
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
     "measurementEntriesHelpText": "Единица, используемая для измерения в категории, например 'см' или '%'",
-    "@measurementEntriesHelpText": {},
     "value": "Значение",
     "@value": {
         "description": "The value of a measurement entry"
@@ -70,7 +61,6 @@
         "description": "The starting time of a workout"
     },
     "ingredient": "Ингредиент",
-    "@ingredient": {},
     "energy": "Энергия",
     "@energy": {
         "description": "Energy in a meal, ingredient etc. e.g. in kJ"
@@ -80,13 +70,11 @@
         "description": "The first letter or short name of the word 'Energy', used in overviews"
     },
     "macronutrients": "Макроэлементы",
-    "@macronutrients": {},
     "logged": "Записано",
     "@logged": {
         "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
     },
     "difference": "Разница",
-    "@difference": {},
     "kJ": "кДж",
     "@kJ": {
         "description": "Energy in a meal in kilo joules, kJ"
@@ -96,9 +84,7 @@
         "description": "Abbreviation for gram"
     },
     "goToDetailPage": "Перейти на страницу сведений",
-    "@goToDetailPage": {},
     "calendar": "Календарь",
-    "@calendar": {},
     "enterValue": "Пожалуйста, введите значение",
     "@enterValue": {
         "description": "Error message when the user hasn't entered a value on a required field"
@@ -143,15 +129,10 @@
         "description": "Label and error message when the user hasn't selected an image to save"
     },
     "takePicture": "Сфотографировать",
-    "@takePicture": {},
     "chooseFromLibrary": "Выбрать из библиотеки фотографий",
-    "@chooseFromLibrary": {},
     "gallery": "Галерея",
-    "@gallery": {},
     "addImage": "Добавить изображение",
-    "@addImage": {},
     "appUpdateTitle": "Требуется обновление",
-    "@appUpdateTitle": {},
     "passwordTooShort": "Пароль слишком короткий",
     "@passwordTooShort": {
         "description": "Error message when the user a password that is too short"
@@ -169,7 +150,6 @@
         "description": "Text for registration button"
     },
     "password": "Пароль",
-    "@password": {},
     "logout": "Выйти",
     "@logout": {
         "description": "Text for logout button"
@@ -191,13 +171,11 @@
         "description": "Error message when the user enters two different passwords during registration"
     },
     "confirmPassword": "Подтверждение пароля",
-    "@confirmPassword": {},
     "invalidEmail": "Пожалуйста, введите действительный адрес электронной почты",
     "@invalidEmail": {
         "description": "Error message when the user enters an invalid email"
     },
     "username": "Имя пользователя",
-    "@username": {},
     "invalidUsername": "Пожалуйста, введите действительное имя пользователя",
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
@@ -255,11 +233,8 @@
         "description": "secondary muscles trained by an exercise"
     },
     "dayDescriptionHelp": "Описание того, что делается в этот день (например, 'день подтягиваний') или какие части тела тренируются (например, 'грудь и плечи')",
-    "@dayDescriptionHelp": {},
     "weightUnit": "Единица веса",
-    "@weightUnit": {},
     "repetitionUnit": "Единица повторения",
-    "@repetitionUnit": {},
     "repetitions": "Повторений",
     "@repetitions": {
         "description": "Repetitions for an exercise set"
@@ -276,7 +251,7 @@
     "@set": {
         "description": "A set in a workout plan"
     },
-    "gymMode": "Режим тренажерного зала",
+    "gymMode": "Режим зала",
     "@gymMode": {
         "description": "Label when starting the gym mode"
     },
@@ -285,21 +260,17 @@
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
     "logHelpEntriesUnits": "Обратите внимание, что на графиках отображаются только записи с указанием веса (кг или фунты) и повторений. Другие комбинации, такие как время или \"до отказа\", здесь игнорируются.",
-    "@logHelpEntriesUnits": {},
     "pause": "Пауза",
     "@pause": {
         "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
     },
-    "plateCalculatorNotDivisible": "Невозможно достичь веса с имеющимися пластинами (весами)",
+    "plateCalculatorNotDivisible": "Невозможно достичь веса с имеющимися весами",
     "@plateCalculatorNotDivisible": {
         "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
     },
     "todaysWorkout": "Ваша сегодняшняя тренировка",
-    "@todaysWorkout": {},
     "logHelpEntries": "Если в один день есть несколько записей с одинаковым количеством повторений, но разными весами, то на диаграмме отображается только запись с большим весом.",
-    "@logHelpEntries": {},
     "description": "Описание",
-    "@description": {},
     "weight": "Вес",
     "@weight": {
         "description": "The weight of a workout log or body weight entry"
@@ -309,29 +280,21 @@
         "description": "Name for a workout or nutritional plan"
     },
     "addIngredient": "Добавить ингредиент",
-    "@addIngredient": {},
     "nutritionalPlans": "Планы питания",
-    "@nutritionalPlans": {},
     "timeStartAhead": "Время начала не может быть раньше времени окончания",
-    "@timeStartAhead": {},
     "logIngredient": "Записать в дневнике питания",
-    "@logIngredient": {},
     "searchIngredient": "Поиск ингредиента",
     "@searchIngredient": {
         "description": "Label on ingredient search form"
     },
     "nutritionalDiary": "Дневник питания",
-    "@nutritionalDiary": {},
     "measurements": "Измерения",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
     },
     "anErrorOccurred": "Произошла ошибка!",
-    "@anErrorOccurred": {},
     "measurement": "Измерение",
-    "@measurement": {},
     "measurementCategoriesHelpText": "Категория измерения, например 'бицепс' или 'жир'",
-    "@measurementCategoriesHelpText": {},
     "date": "Дата",
     "@date": {
         "description": "The date of a workout log or body weight entry"
@@ -349,9 +312,7 @@
         "description": "Energy in a meal in kilocalories, kcal"
     },
     "edit": "Редактировать",
-    "@edit": {},
     "delete": "Удалить",
-    "@delete": {},
     "confirmDelete": "Вы уверены, что хотите удалить '{toDelete}'?",
     "@confirmDelete": {
         "description": "Confirmation text before the user deletes an object",
@@ -384,9 +345,7 @@
         "description": "Label used for total sums of e.g. calories or similar"
     },
     "fiber": "Клетчатка",
-    "@fiber": {},
     "percentEnergy": "Процент энергии",
-    "@percentEnergy": {},
     "proteinShort": "Б",
     "@proteinShort": {
         "description": "The first letter or short name of the word 'Protein', used in overviews"
@@ -396,11 +355,8 @@
         "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
     },
     "sugars": "Сахар",
-    "@sugars": {},
     "saturatedFat": "Насыщенные жиры",
-    "@saturatedFat": {},
     "sodium": "Натрий",
-    "@sodium": {},
     "amount": "Количество",
     "@amount": {
         "description": "The amount (e.g. in grams) of an ingredient in a meal"
@@ -422,7 +378,6 @@
         "description": "Text to show when entries are being loaded in the background: Loading..."
     },
     "newNutritionalPlan": "Новый план питания",
-    "@newNutritionalPlan": {},
     "toggleDetails": "Переключить сведения",
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"
@@ -444,7 +399,6 @@
         "description": "Label for the popup with general app options"
     },
     "sameRepetitions": "Если количество повторений и вес не меняются от подхода к подходу, достаточно указать данные один раз. Например, для 4 подходов введите 10 повторений, и это автоматически преобразуется в '4 x 10'.",
-    "@sameRepetitions": {},
     "newSet": "Новый подход (сет)",
     "@newSet": {
         "description": "Header when adding a new set to a workout day"
@@ -454,7 +408,6 @@
         "description": "Snackbar message to show on copying data to a new log entry"
     },
     "appUpdateContent": "Эта версия приложения не совместима с сервером, пожалуйста, обновите ваше приложение.",
-    "@appUpdateContent": {},
     "setNr": "Сет {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -470,15 +423,10 @@
         "description": "Label for the button that adds a set (to a workout day)"
     },
     "addMeal": "Добавить блюдо",
-    "@addMeal": {},
     "mealLogged": "Блюдо записано в дневник",
-    "@mealLogged": {},
     "protein": "Белки",
-    "@protein": {},
     "carbohydrates": "Углеводы",
-    "@carbohydrates": {},
     "fat": "Жиры",
-    "@fat": {},
     "productNotFound": "Продукт не найден",
     "@productNotFound": {
         "description": "Header label for dialog when product is not found with barcode"
@@ -530,19 +478,14 @@
         }
     },
     "noMeasurementEntries": "У вас нет записей измерений",
-    "@noMeasurementEntries": {},
     "moreMeasurementEntries": "Добавить новое измерение",
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
     },
     "userProfile": "Ваш профиль",
-    "@userProfile": {},
     "exerciseList": "Список упражнений",
-    "@exerciseList": {},
     "baseNameEnglish": "Для всех упражнений необходимо базовое название на английском языке",
-    "@baseNameEnglish": {},
     "verifiedEmail": "Подтвержденный адрес электронной почты",
-    "@verifiedEmail": {},
     "swiss_ball": "Гимнастический мяч",
     "@swiss_ball": {
         "description": "Generated entry for translation for server strings"
@@ -568,7 +511,6 @@
         "description": "Label for the name of a workout exercise"
     },
     "textPromptTitle": "Готовы начать?",
-    "@textPromptTitle": {},
     "body_weight": "Вес тела",
     "@body_weight": {
         "description": "Generated entry for translation for server strings"
@@ -626,9 +568,7 @@
         "description": "Generated entry for translation for server strings"
     },
     "images": "Изображения",
-    "@images": {},
     "language": "Язык",
-    "@language": {},
     "abs": "Пресс",
     "@abs": {
         "description": "Generated entry for translation for server strings"
@@ -646,7 +586,6 @@
         "description": "Generated entry for translation for server strings"
     },
     "translation": "Перевод",
-    "@translation": {},
     "baseData": "Основы на английском",
     "@baseData": {
         "description": "The base data for an exercise such as category, trained muscles, etc."
@@ -684,7 +623,6 @@
         "description": "Generated entry for translation for server strings"
     },
     "next": "Следующее",
-    "@next": {},
     "pull_up_bar": "Турник",
     "@pull_up_bar": {
         "description": "Generated entry for translation for server strings"
@@ -694,15 +632,10 @@
         "description": "Multiple exercises for a workout"
     },
     "add_exercise_image_license": "Изображения должны быть совместимы с CC BY SA лицензией. Если вы сомневаетесь, загружайте только те фотографии, которые вы сделали сами",
-    "@add_exercise_image_license": {},
     "unVerifiedEmail": "Неподтвержденный адрес электронной почты",
-    "@unVerifiedEmail": {},
     "contributeExercise": "Добавить упражнение",
-    "@contributeExercise": {},
     "addExercise": "Добавить упражнение",
-    "@addExercise": {},
     "translateExercise": "Перевести это упражнение",
-    "@translateExercise": {},
     "contributeExerciseWarning": "Вы можете добавлять упражнения только в том случае, если ваша учетная запись старше {days} дней и вы подтвердили свою электронную почту",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
@@ -714,7 +647,6 @@
         }
     },
     "textPromptSubheading": "Нажмите кнопку действия, чтобы начать",
-    "@textPromptSubheading": {},
     "minutes": "Минут",
     "@minutes": {
         "description": "Generated entry for translation for server strings"
@@ -724,9 +656,7 @@
         "description": "Generated entry for translation for server strings"
     },
     "searchNamesInEnglish": "Также ищите названия на английском",
-    "@searchNamesInEnglish": {},
     "selectEntry": "Пожалуйста, выберите запись",
-    "@selectEntry": {},
     "variations": "Варианты",
     "@variations": {
         "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
@@ -741,7 +671,6 @@
         "description": "List of alternative names for an exercise"
     },
     "verifiedEmailReason": "Вам необходимо подтвердить свой адрес электронной почты, чтобы добавлять упражнения",
-    "@verifiedEmailReason": {},
     "verifiedEmailInfo": "Письмо с подтверждением отправлено на {email}",
     "@verifiedEmailInfo": {
         "placeholders": {
@@ -751,17 +680,11 @@
         }
     },
     "alternativeNames": "Альтернативные названия",
-    "@alternativeNames": {},
     "oneNamePerLine": "Одно название на строку",
-    "@oneNamePerLine": {},
     "whatVariationsExist": "Какие варианты этого упражнения существуют, если таковые имеются?",
-    "@whatVariationsExist": {},
     "previous": "Предыдущее",
-    "@previous": {},
     "aboutPageTitle": "О Wger",
-    "@aboutPageTitle": {},
     "cacheWarning": "Из-за кэширования может пройти некоторое время, прежде чем изменения станут видны во всем приложении.",
-    "@cacheWarning": {},
     "legs": "Ноги",
     "@legs": {
         "description": "Generated entry for translation for server strings"
@@ -771,7 +694,6 @@
         "description": "The goal for macronutrients"
     },
     "goalFiber": "Цель по волокну",
-    "@goalFiber": {},
     "kcalValue": "{value} калорий",
     "@kcalValue": {
         "description": "A value in kcal, e.g. 500 kcal",
@@ -782,14 +704,10 @@
             }
         }
     },
-    "useMetric": "Использовать метрические единицы измерения для веса тела.",
-    "@useMetric": {},
+    "useMetric": "Использовать метрические единицы измерения для веса тела",
     "verify": "Подтвердить",
-    "@verify": {},
     "settingsCacheTitle": "Кэш",
-    "@settingsCacheTitle": {},
     "settingsExerciseCacheDescription": "Кэш упражнений",
-    "@settingsExerciseCacheDescription": {},
     "noMatchingExerciseFound": "Не выбрано упражнение для замены",
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
@@ -803,21 +721,13 @@
         "description": "Generated entry for translation for server strings"
     },
     "onlyLogging": "Только отслеживать калории",
-    "@onlyLogging": {},
     "onlyLoggingHelpText": "Поставьте флажок, если вы хотите отслеживать только потребление калорий и не хотите создавать подробный план питания с конкретными блюдами",
-    "@onlyLoggingHelpText": {},
     "goalEnergy": "Цель по энергии",
-    "@goalEnergy": {},
     "goalProtein": "Цель по белкам",
-    "@goalProtein": {},
     "goalCarbohydrates": "Цель по углеводам",
-    "@goalCarbohydrates": {},
     "goalFat": "Цель по жирам",
-    "@goalFat": {},
     "today": "Сегодня",
-    "@today": {},
     "loggedToday": "Записано на сегодня",
-    "@loggedToday": {},
     "gValue": "{value} гр",
     "@gValue": {
         "description": "A value in grams, e.g. 5 g",
@@ -839,17 +749,13 @@
         }
     },
     "aboutDonateTitle": "Пожертвовать",
-    "@aboutDonateTitle": {},
     "aboutDonateText": "Купите нам кофе, чтобы помочь проекту, оплатить затраты на сервер и поддерживать нас в тонусе",
-    "@aboutDonateText": {},
     "settingsTitle": "Настройки",
-    "@settingsTitle": {},
     "lower_back": "Нижняя часть спины",
     "@lower_back": {
         "description": "Generated entry for translation for server strings"
     },
     "aboutMastodonTitle": "Мастодонт",
-    "@aboutMastodonTitle": {},
     "surplus": "превышение",
     "@surplus": {
         "description": "Caloric surplus (either planned or unplanned)"
@@ -859,13 +765,11 @@
         "description": "Caloric deficit (either planned or unplanned)"
     },
     "settingsCacheDeletedSnackbar": "Кэш успешно очищен",
-    "@settingsCacheDeletedSnackbar": {},
     "log": "Журнал",
     "@log": {
         "description": "Log a specific meal (imperative form)"
     },
     "done": "Завершить",
-    "@done": {},
     "overallChangeWeight": "Общее изменение",
     "@overallChangeWeight": {
         "description": "Overall change in weight, added for localization"
@@ -887,19 +791,12 @@
         "description": "added for localization of Class Indicator's field text"
     },
     "themeMode": "Режим темы",
-    "@themeMode": {},
     "darkMode": "Всегда темный режим",
-    "@darkMode": {},
     "lightMode": "Всегда светлый режим",
-    "@lightMode": {},
     "systemMode": "Системные настройки",
-    "@systemMode": {},
     "noIngredientsDefined": "Ингредиенты пока не определены",
-    "@noIngredientsDefined": {},
     "ingredientLogged": "Ингредиент занесен в дневник",
-    "@ingredientLogged": {},
     "selectMealToLog": "Выберите прием пищи для записи в дневник",
-    "@selectMealToLog": {},
     "chartAllTimeTitle": "{name} за все время",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
@@ -934,23 +831,14 @@
         }
     },
     "settingsIngredientCacheDescription": "Кэш ингредиентов",
-    "@settingsIngredientCacheDescription": {},
     "isRestDayHelp": "Пожалуйста, имейте в виду, что если вы отметите этот день как день отдыха, все подходы и упражнения будут удалены.",
-    "@isRestDayHelp": {},
     "routines": "Тренировки",
-    "@routines": {},
     "needsLogsToAdvanceHelp": "Выберите, если вы хотите, чтобы программа переходила к следующему запланированному дню только после того, как вы записали тренировку за текущий день.",
-    "@needsLogsToAdvanceHelp": {},
     "routineDays": "Дней в тренировке",
-    "@routineDays": {},
     "resultingRoutine": "Итоговая тренировка",
-    "@resultingRoutine": {},
     "useApiToken": "Использовать токен API",
-    "@useApiToken": {},
     "useUsernameAndPassword": "Использовать имя пользователя и пароль",
-    "@useUsernameAndPassword": {},
     "apiToken": "API токен",
-    "@apiToken": {},
     "invalidApiToken": "Пожалуйста, введите действительный ключ API",
     "@invalidApiToken": {
         "description": "Error message when the user enters an invalid API key"
@@ -960,11 +848,8 @@
         "description": "Error message when the user tries to input a API key with forbidden characters"
     },
     "newRoutine": "Новая тренировка",
-    "@newRoutine": {},
     "noRoutines": "У вас нет тренировок",
-    "@noRoutines": {},
     "restTime": "Время отдыха",
-    "@restTime": {},
     "sets": "Подходы",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
@@ -990,19 +875,70 @@
         }
     },
     "restDay": "День отдыха",
-    "@restDay": {},
     "isRestDay": "Выходной день",
-    "@isRestDay": {},
     "needsLogsToAdvance": "Требуются записи для прогресса",
-    "@needsLogsToAdvance": {},
     "barWeight": "Вес штанги",
-    "@barWeight": {},
     "useColors": "Использовать цвета",
-    "@useColors": {},
     "endDate": "Дата окончания",
-    "@endDate": {},
     "startDate": "Дата начала",
-    "@startDate": {},
     "selectAvailablePlates": "Выберите подходящие блины",
-    "@selectAvailablePlates": {}
+    "dashboardWidgets": "Виджеты панели",
+    "dayTypeCustom": "Произвольная",
+    "dayTypeEnom": "Каждую минуту по минуте (EMOM)",
+    "dayTypeAmrap": "Максимальное количество раундов",
+    "dayTypeHiit": "Высокоинтенсивная интервальная тренировка (HIIT)",
+    "dayTypeTabata": "Табата",
+    "dayTypeEdt": "Тренировка с нарастающей плотностью",
+    "dayTypeRft": "Раунды на время",
+    "dayTypeAfap": "Как можно быстрее",
+    "slotEntryTypeNormal": "Обычный",
+    "slotEntryTypeDropset": "Дроп-сет",
+    "slotEntryTypeMyo": "Мио-повторы",
+    "slotEntryTypePartial": "Частичные повторения",
+    "slotEntryTypeForced": "Форсированные повторения",
+    "slotEntryTypeTut": "Время под нагрузкой",
+    "slotEntryTypeIso": "Изометрическая пауза",
+    "slotEntryTypeJump": "Прыжок",
+    "trophies": "Награды",
+    "topSet": "Основной подход: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "impressionGood": "Хорошо",
+    "impressionNeutral": "Нормально",
+    "impressionBad": "Плохо",
+    "personalRecords": "Личные рекорды",
+    "gymModeShowExercises": "Показывать обзор упражнений",
+    "gymModeShowTimer": "Показывать таймер между подходами",
+    "gymModeTimerType": "Тип таймера",
+    "gymModeTimerTypeHelText": "Если для подхода задано время отдыха, всегда используется обратный отсчёт.",
+    "countdown": "Обратный отсчёт",
+    "stopwatch": "Секундомер",
+    "gymModeDefaultCountdownTime": "Время обратного отсчёта по умолчанию (в секундах)",
+    "gymModeNotifyOnCountdownFinish": "Уведомлять об окончании отсчёта",
+    "duration": "Длительность",
+    "durationHoursMinutes": "{hours} ч {minutes} мин",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Объём",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Тренировка завершена"
 }
