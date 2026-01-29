@@ -211,26 +211,61 @@ class LogsPlatesWidget extends ConsumerWidget {
   }
 }
 
-class LogsRepsWidget extends ConsumerWidget {
-  final _logger = Logger('LogsRepsWidget');
-
+class LogsRepsWidget extends ConsumerStatefulWidget {
   final num valueChange;
 
-  LogsRepsWidget({
+  const LogsRepsWidget({
     super.key,
     num? valueChange,
   }) : valueChange = valueChange ?? 1;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LogsRepsWidget> createState() => _LogsRepsWidgetState();
+}
+
+class _LogsRepsWidgetState extends ConsumerState<LogsRepsWidget> {
+  final _logger = Logger('LogsRepsWidget');
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final i18n = AppLocalizations.of(context);
 
     final logNotifier = ref.read(gymLogProvider.notifier);
     final log = ref.watch(gymLogProvider);
-
     final currentReps = log?.repetitions;
-    final repText = currentReps != null ? numberFormat.format(currentReps) : '';
+    final currentInput = numberFormat.tryParse(_controller.text);
+
+    // Sync from provider to controller if needed
+    if (currentReps != null) {
+      // Update if values differ, but allow invalid input while typing (unless empty/initial)
+      if (currentInput != currentReps && (currentInput != null || _controller.text.isEmpty)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _controller.text = numberFormat.format(currentReps);
+          }
+        });
+      }
+    } else if (_controller.text.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _controller.clear();
+        }
+      });
+    }
 
     return Row(
       children: [
@@ -239,7 +274,7 @@ class LogsRepsWidget extends ConsumerWidget {
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             final base = currentReps ?? 0;
-            final newValue = base - valueChange;
+            final newValue = base - widget.valueChange;
             if (newValue >= 0 && log != null) {
               logNotifier.setRepetitions(newValue);
             }
@@ -251,8 +286,7 @@ class LogsRepsWidget extends ConsumerWidget {
           child: TextFormField(
             decoration: InputDecoration(labelText: i18n.repetitions),
             enabled: true,
-            key: const ValueKey('reps-field'),
-            initialValue: repText,
+            controller: _controller,
             keyboardType: textInputTypeDecimal,
             onChanged: (value) {
               try {
@@ -282,7 +316,7 @@ class LogsRepsWidget extends ConsumerWidget {
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             final base = currentReps ?? 0;
-            final newValue = base + valueChange;
+            final newValue = base + widget.valueChange;
             if (newValue >= 0 && log != null) {
               logNotifier.setRepetitions(newValue);
             }
@@ -293,27 +327,62 @@ class LogsRepsWidget extends ConsumerWidget {
   }
 }
 
-class LogsWeightWidget extends ConsumerWidget {
-  final _logger = Logger('LogsWeightWidget');
-
+class LogsWeightWidget extends ConsumerStatefulWidget {
   final num valueChange;
 
-  LogsWeightWidget({
+  const LogsWeightWidget({
     super.key,
     num? valueChange,
   }) : valueChange = valueChange ?? 1.25;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LogsWeightWidget> createState() => _LogsWeightWidgetState();
+}
+
+class _LogsWeightWidgetState extends ConsumerState<LogsWeightWidget> {
+  final _logger = Logger('LogsWeightWidget');
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final i18n = AppLocalizations.of(context);
 
     final plateProvider = ref.read(plateCalculatorProvider.notifier);
     final logProvider = ref.read(gymLogProvider.notifier);
     final log = ref.watch(gymLogProvider);
-
     final currentWeight = log?.weight;
-    final weightText = currentWeight != null ? numberFormat.format(currentWeight) : '';
+    final currentInput = numberFormat.tryParse(_controller.text);
+
+    // Sync from provider to controller if needed
+    if (currentWeight != null) {
+      // Update if values differ, but allow invalid input while typing (unless empty/initial)
+      if (currentInput != currentWeight && (currentInput != null || _controller.text.isEmpty)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _controller.text = numberFormat.format(currentWeight);
+          }
+        });
+      }
+    } else if (_controller.text.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _controller.clear();
+        }
+      });
+    }
 
     return Row(
       children: [
@@ -322,7 +391,7 @@ class LogsWeightWidget extends ConsumerWidget {
           icon: const Icon(Icons.remove, color: Colors.black),
           onPressed: () {
             final base = currentWeight ?? 0;
-            final newValue = base - valueChange;
+            final newValue = base - widget.valueChange;
             if (newValue >= 0 && log != null) {
               logProvider.setWeight(newValue);
             }
@@ -332,9 +401,8 @@ class LogsWeightWidget extends ConsumerWidget {
         // Text field
         Expanded(
           child: TextFormField(
-            key: const ValueKey('weight-field'),
+            controller: _controller,
             decoration: InputDecoration(labelText: i18n.weight),
-            initialValue: weightText,
             keyboardType: textInputTypeDecimal,
             onChanged: (value) {
               try {
@@ -365,7 +433,7 @@ class LogsWeightWidget extends ConsumerWidget {
           icon: const Icon(Icons.add, color: Colors.black),
           onPressed: () {
             final base = currentWeight ?? 0;
-            final newValue = base + valueChange;
+            final newValue = base + widget.valueChange;
             if (log != null) {
               logProvider.setWeight(newValue);
             }
@@ -408,9 +476,7 @@ class LogsPastLogsWidget extends ConsumerWidget {
                 logProvider.setLog(pastLog);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(AppLocalizations.of(context).dataCopied),
-                  ),
+                  SnackBar(content: Text(AppLocalizations.of(context).dataCopied)),
                 );
               },
               contentPadding: const EdgeInsets.symmetric(horizontal: 40),
