@@ -183,6 +183,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
     Uri? uri, {
     int? maxRetries = 3,
     Duration? initialDelay = const Duration(milliseconds: 250),
+    Duration? timeout = const Duration(seconds: 5),
     String? language,
   }) =>
       (super.noSuchMethod(
@@ -192,6 +193,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
               {
                 #maxRetries: maxRetries,
                 #initialDelay: initialDelay,
+                #timeout: timeout,
                 #language: language,
               },
             ),
@@ -200,9 +202,17 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
           as _i6.Future<dynamic>);
 
   @override
-  _i6.Future<List<dynamic>> fetchPaginated(Uri? uri, {String? language}) =>
+  _i6.Future<List<dynamic>> fetchPaginated(
+    Uri? uri, {
+    String? language,
+    Duration? timeout = const Duration(seconds: 5),
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchPaginated, [uri], {#language: language}),
+            Invocation.method(
+              #fetchPaginated,
+              [uri],
+              {#language: language, #timeout: timeout},
+            ),
             returnValue: _i6.Future<List<dynamic>>.value(<dynamic>[]),
           )
           as _i6.Future<List<dynamic>>);

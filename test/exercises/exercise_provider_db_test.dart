@@ -151,12 +151,12 @@ void main() {
 
     // Mock base info response
     when(mockBaseProvider.makeUrl(exerciseInfoUrl)).thenReturn(tExerciseInfoUri);
-    when(mockBaseProvider.fetch(tExerciseInfoUri)).thenAnswer(
+    when(mockBaseProvider.fetch(tExerciseInfoUri, timeout: anyNamed('timeout'))).thenAnswer(
       (_) => Future.value(tExerciseInfoMap),
     );
 
     when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
-    when(mockBaseProvider.fetch(tExerciseInfoDetailUri)).thenAnswer(
+    when(mockBaseProvider.fetch(tExerciseInfoDetailUri, timeout: anyNamed('timeout'))).thenAnswer(
       (_) => Future.value(tExerciseInfoMap),
     );
   });
@@ -504,7 +504,7 @@ void main() {
       )..where((e) => e.id.equals(9))).getSingleOrNull();
 
       // Assert
-      verify(mockBaseProvider.fetch(any));
+      verify(mockBaseProvider.fetch(any, timeout: anyNamed('timeout')));
       expect(provider.exercises.length, 1);
       expect(provider.exercises.first.id, 9);
       expect(provider.exercises.first.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
@@ -539,7 +539,7 @@ void main() {
       final exerciseData = ExerciseApiData.fromString(exerciseDb!.data);
 
       // Assert
-      verify(mockBaseProvider.fetch(any));
+      verify(mockBaseProvider.fetch(any, timeout: anyNamed('timeout')));
       expect(provider.exercises.length, 1);
       expect(provider.exercises.first.id, 9);
       expect(provider.exercises.first.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');

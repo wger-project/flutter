@@ -28,8 +28,8 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/helpers.dart';
 
-/// initial delay for fetch retries, in milliseconds
-const FETCH_INITIAL_DELAY = 250;
+/// default timeout for GET requests
+const DEFAULT_TIMEOUT = Duration(seconds: 5);
 
 /// Base provider class.
 ///
@@ -73,6 +73,7 @@ class WgerBaseProvider {
     Uri uri, {
     int maxRetries = 3,
     Duration initialDelay = const Duration(milliseconds: 250),
+    Duration timeout = DEFAULT_TIMEOUT,
     String? language,
   }) async {
     int attempt = 0;
@@ -91,7 +92,7 @@ class WgerBaseProvider {
       try {
         final response = await client
             .get(uri, headers: getDefaultHeaders(includeAuth: true, language: language))
-            .timeout(const Duration(seconds: 5));
+            .timeout(timeout);
 
         if (response.statusCode >= 400) {
           // Retry on server errors (5xx); e.g. 502 might be transient
@@ -119,13 +120,17 @@ class WgerBaseProvider {
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
-  Future<List<dynamic>> fetchPaginated(Uri uri, {String? language}) async {
+  Future<List<dynamic>> fetchPaginated(
+    Uri uri, {
+    String? language,
+    Duration timeout = DEFAULT_TIMEOUT,
+  }) async {
     final out = [];
     var url = uri;
     var allPagesProcessed = false;
 
     while (!allPagesProcessed) {
-      final data = await fetch(url, language: language);
+      final data = await fetch(url, language: language, timeout: timeout);
 
       data['results'].forEach((e) => out.add(e));
 

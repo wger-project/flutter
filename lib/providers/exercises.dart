@@ -292,6 +292,7 @@ class ExercisesProvider with ChangeNotifier {
     _logger.info('Loading all exercises from API');
     final exerciseData = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(exerciseUrlPath, query: {'limit': API_MAX_PAGE_SIZE}),
+      timeout: const Duration(seconds: 15), // just in case
     );
     final exerciseIds = exerciseData.map<int>((e) => e['id'] as int).toSet();
 
@@ -362,8 +363,13 @@ class ExercisesProvider with ChangeNotifier {
           'Re-fetching exercise $exerciseId from API since last fetch was ${exerciseDb.lastFetched}',
         );
 
+        // Note: we set a very long timeout here since the exercise api endpoint might
+        // take a long time to load if the exercise data has not been cached yet. A test
+        // on a raspberry pi showed that this can take up to 45 seconds, so one minute
+        // should be safe.
         final apiData = await baseProvider.fetch(
           baseProvider.makeUrl(exerciseInfoUrlPath, id: exerciseId),
+          timeout: const Duration(seconds: 60),
         );
         final exerciseApiData = ExerciseApiData.fromJson(apiData);
 
@@ -419,7 +425,7 @@ class ExercisesProvider with ChangeNotifier {
     return exercise;
   }
 
-  Future<void> initCacheTimesLocalPrefs({forceInit = false}) async {
+  Future<void> initCacheTimesLocalPrefs({bool forceInit = false}) async {
     final prefs = PreferenceHelper.asyncPref;
 
     final initDate = DateTime(2023, 1, 1).toIso8601String();

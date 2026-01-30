@@ -130,6 +130,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
     Uri? uri, {
     int? maxRetries = 3,
     Duration? initialDelay = const Duration(milliseconds: 250),
+    Duration? timeout = const Duration(seconds: 5),
     String? language,
   }) =>
       (super.noSuchMethod(
@@ -139,6 +140,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
               {
                 #maxRetries: maxRetries,
                 #initialDelay: initialDelay,
+                #timeout: timeout,
                 #language: language,
               },
             ),
@@ -147,9 +149,17 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           as _i5.Future<dynamic>);
 
   @override
-  _i5.Future<List<dynamic>> fetchPaginated(Uri? uri, {String? language}) =>
+  _i5.Future<List<dynamic>> fetchPaginated(
+    Uri? uri, {
+    String? language,
+    Duration? timeout = const Duration(seconds: 5),
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchPaginated, [uri], {#language: language}),
+            Invocation.method(
+              #fetchPaginated,
+              [uri],
+              {#language: language, #timeout: timeout},
+            ),
             returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
           )
           as _i5.Future<List<dynamic>>);

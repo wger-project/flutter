@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -399,7 +399,7 @@ class NutritionPlansProvider with ChangeNotifier {
     }
 
     // Send the request
-    _logger.info("Fetching ingredients from server");
+    _logger.info('Fetching ingredients from server');
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
         _ingredientInfoPath,
@@ -409,6 +409,7 @@ class NutritionPlansProvider with ChangeNotifier {
           'limit': API_RESULTS_PAGE_SIZE,
         },
       ),
+      timeout: const Duration(seconds: 10),
     );
 
     return (response['results'] as List)
