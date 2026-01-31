@@ -228,8 +228,9 @@ class IngredientFormState extends State<IngredientForm> {
   @override
   Widget build(BuildContext context) {
     final languageCode = Localizations.localeOf(context).languageCode;
-    final dateFormat = DateFormat.yMd(languageCode).add_Hm();
+    final dateFormat = DateFormat.yMd(languageCode);
     final timeFormat = DateFormat.Hm(languageCode);
+    final dateTimeFormat = DateFormat.yMd(languageCode).add_Hm();
 
     if (_dateController.text.isEmpty) {
       _dateController.text = dateFormat.format(DateTime.now());
@@ -405,7 +406,7 @@ class IngredientFormState extends State<IngredientForm> {
                 _form.currentState!.save();
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
-                final loggedDate = dateFormat.parse(
+                final loggedDate = dateTimeFormat.parse(
                   '${_dateController.text} ${_timeController.text}',
                 );
                 widget.onSave(context, _mealItem, loggedDate);
