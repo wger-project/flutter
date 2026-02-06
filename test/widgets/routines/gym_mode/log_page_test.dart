@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2025 - 2025 wger Team
+ * Copyright (c) 2025 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -128,6 +128,7 @@ void main() {
 
       // Act
       notifier.calculatePages();
+      notifier.setCurrentPage(2);
 
       // Assert
       expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.log);
@@ -159,6 +160,7 @@ void main() {
         iteration: 1,
       );
       notifier.calculatePages();
+      notifier.setCurrentPage(2);
 
       // Act
       // Log page is at index 2
@@ -197,6 +199,7 @@ void main() {
         iteration: 1,
       );
       notifier.calculatePages();
+      notifier.setCurrentPage(2);
       notifier.state = notifier.state.copyWith(currentPage: 2);
       final mockRoutines = MockRoutinesProvider();
 
@@ -206,8 +209,8 @@ void main() {
       final editableFields = find.byType(EditableText);
       expect(editableFields, findsWidgets);
 
-      await tester.enterText(editableFields.at(0), '7');
-      await tester.enterText(editableFields.at(1), '77');
+      await tester.enterText(editableFields.at(0), '12'); // Reps
+      await tester.enterText(editableFields.at(1), '34'); // Weight
       await tester.pumpAndSettle();
 
       Log? capturedLog;
@@ -226,13 +229,133 @@ void main() {
       // Assert
       verify(mockRoutines.addLog(any)).called(1);
       expect(capturedLog, isNotNull);
-      expect(capturedLog!.repetitions, equals(7));
-      expect(capturedLog!.weight, equals(77));
+      expect(capturedLog!.repetitions, equals(12));
+      expect(capturedLog!.weight, equals(34));
 
       final currentSlotPage = notifier.state.getSlotEntryPageByIndex()!;
       expect(capturedLog!.slotEntryId, equals(currentSlotPage.setConfigData!.slotEntryId));
       expect(capturedLog!.routineId, equals(notifier.state.routine.id));
       expect(capturedLog!.iteration, equals(notifier.state.iteration));
+    });
+
+    testWidgets('LogsRepsWidget quick buttons update values', (tester) async {
+      // Arrange
+      final notifier = container.read(gymStateProvider.notifier);
+      final routine = testdata.getTestRoutine();
+      routine.dayDataGym[0].slots[0].setConfigs[0].repetitions = 0;
+      notifier.state = notifier.state.copyWith(
+        dayId: routine.days.first.id,
+        routine: routine,
+        iteration: 1,
+      );
+      notifier.calculatePages();
+      notifier.setCurrentPage(2);
+      notifier.state = notifier.state.copyWith(currentPage: 2);
+      final mockRoutines = MockRoutinesProvider();
+      await pumpLogPage(tester, routinesProvider: mockRoutines);
+
+      // Act
+      final repsWidgetFinder = find.byKey(const ValueKey('logs-reps-widget'));
+      expect(repsWidgetFinder, findsOneWidget);
+      final addBtn = find.descendant(
+        of: repsWidgetFinder,
+        matching: find.byIcon(Icons.add),
+      );
+      final removeBtn = find.descendant(
+        of: repsWidgetFinder,
+        matching: find.byIcon(Icons.remove),
+      );
+
+      // Assert
+      // Increment 0 -> 1
+      await tester.tap(addBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: repsWidgetFinder, matching: find.text('1')),
+        findsOneWidget,
+      );
+
+      // Increment 1 -> 2
+      await tester.tap(addBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: repsWidgetFinder, matching: find.text('2')),
+        findsOneWidget,
+      );
+
+      // Decrement 2 -> 1
+      await tester.tap(removeBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: repsWidgetFinder, matching: find.text('1')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('LogsWeightWidget quick buttons update values', (tester) async {
+      // Arrange
+      final notifier = container.read(gymStateProvider.notifier);
+      final routine = testdata.getTestRoutine();
+      routine.dayDataGym[0].slots[0].setConfigs[0].weight = 0;
+      notifier.state = notifier.state.copyWith(
+        dayId: routine.days.first.id,
+        routine: routine,
+        iteration: 1,
+      );
+      notifier.calculatePages();
+      notifier.setCurrentPage(2);
+      notifier.state = notifier.state.copyWith(currentPage: 2);
+      final mockRoutines = MockRoutinesProvider();
+      await pumpLogPage(tester, routinesProvider: mockRoutines);
+
+      // Act
+      final weightWidgetFinder = find.byKey(const ValueKey('logs-weight-widget'));
+      expect(weightWidgetFinder, findsOneWidget);
+      final addBtn = find.descendant(
+        of: weightWidgetFinder,
+        matching: find.byIcon(Icons.add),
+      );
+      final removeBtn = find.descendant(
+        of: weightWidgetFinder,
+        matching: find.byIcon(Icons.remove),
+      );
+
+      // Assert
+      // Increment 0 -> 1.25
+      await tester.tap(addBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: weightWidgetFinder, matching: find.text('1.25')),
+        findsOneWidget,
+      );
+
+      // Increment 1.25 -> 2.5
+      await tester.tap(addBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: weightWidgetFinder, matching: find.text('2.5')),
+        findsOneWidget,
+      );
+
+      // Decrement 2.5 -> 1.25
+      await tester.tap(removeBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: weightWidgetFinder, matching: find.text('1.25')),
+        findsOneWidget,
+      );
     });
   });
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
@@ -29,13 +30,14 @@ import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/trophies.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 
-class HomeTabsScreen extends StatefulWidget {
+class HomeTabsScreen extends ConsumerStatefulWidget {
   final _logger = Logger('HomeTabsScreen');
 
   HomeTabsScreen();
@@ -46,18 +48,12 @@ class HomeTabsScreen extends StatefulWidget {
   _HomeTabsScreenState createState() => _HomeTabsScreenState();
 }
 
-class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
-  late Future<void> _initialData;
+class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
+    with SingleTickerProviderStateMixin {
+  Future<void>? _initialData;
   bool _errorHandled = false;
   int _selectedIndex = 0;
   bool _isWideScreen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Loading data here, since the build method can be called more than once
-    _initialData = _loadEntries();
-  }
 
   @override
   void didChangeDependencies() {
@@ -65,6 +61,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
     final size = MediaQuery.sizeOf(context);
     _isWideScreen = size.width > MATERIAL_XS_BREAKPOINT;
+    _initialData ??= _loadEntries();
   }
 
   void _onItemTapped(int index) {
@@ -82,7 +79,9 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   /// Load initial data from the server
   Future<void> _loadEntries() async {
+    final languageCode = Localizations.localeOf(context).languageCode;
     final authProvider = context.read<AuthProvider>();
+    final trophyNotifier = ref.read(trophyStateProvider.notifier);
 
     if (!authProvider.dataInit) {
       final routinesProvider = context.read<RoutinesProvider>();
@@ -124,6 +123,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         // routinesProvider.fetchAndSetAllRoutinesFull(),
         weightProvider.fetchAndSetEntries(),
         measurementProvider.fetchAndSetAllCategoriesAndEntries(),
+        trophyNotifier.fetchAll(language: languageCode),
       ]);
 
       //

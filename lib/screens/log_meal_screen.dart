@@ -64,6 +64,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final dateTimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode).add_Hm();
     final i18n = AppLocalizations.of(context);
 
     final args = ModalRoute.of(context)!.settings.arguments as LogMealArguments;
@@ -174,7 +175,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
                       TextButton(
                         child: Text(i18n.save),
                         onPressed: () async {
-                          final loggedDate = dateFormat.parse(
+                          final loggedDate = dateTimeFormat.parse(
                             '${_dateController.text} ${_timeController.text}',
                           );
                           await Provider.of<NutritionPlansProvider>(

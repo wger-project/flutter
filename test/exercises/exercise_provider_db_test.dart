@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:convert';
 
 import 'package:drift/native.dart';
@@ -100,19 +118,25 @@ void main() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
     // Mock categories
-    when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(categoryUrl, query: anyNamed('query')),
+    ).thenReturn(tCategoryEntriesUri);
     when(
       mockBaseProvider.fetchPaginated(tCategoryEntriesUri),
     ).thenAnswer((_) => Future.value(tCategoryMap['results']));
 
     // Mock muscles
-    when(mockBaseProvider.makeUrl(muscleUrl)).thenReturn(tMuscleEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(muscleUrl, query: anyNamed('query')),
+    ).thenReturn(tMuscleEntriesUri);
     when(
       mockBaseProvider.fetchPaginated(tMuscleEntriesUri),
     ).thenAnswer((_) => Future.value(tMuscleMap['results']));
 
     // Mock equipment
-    when(mockBaseProvider.makeUrl(equipmentUrl)).thenReturn(tEquipmentEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(equipmentUrl, query: anyNamed('query')),
+    ).thenReturn(tEquipmentEntriesUri);
     when(
       mockBaseProvider.fetchPaginated(tEquipmentEntriesUri),
     ).thenAnswer((_) => Future.value(tEquipmentMap['results']));
@@ -127,12 +151,12 @@ void main() {
 
     // Mock base info response
     when(mockBaseProvider.makeUrl(exerciseInfoUrl)).thenReturn(tExerciseInfoUri);
-    when(mockBaseProvider.fetch(tExerciseInfoUri)).thenAnswer(
+    when(mockBaseProvider.fetch(tExerciseInfoUri, timeout: anyNamed('timeout'))).thenAnswer(
       (_) => Future.value(tExerciseInfoMap),
     );
 
     when(mockBaseProvider.makeUrl(exerciseInfoUrl, id: 9)).thenReturn(tExerciseInfoDetailUri);
-    when(mockBaseProvider.fetch(tExerciseInfoDetailUri)).thenAnswer(
+    when(mockBaseProvider.fetch(tExerciseInfoDetailUri, timeout: anyNamed('timeout'))).thenAnswer(
       (_) => Future.value(tExerciseInfoMap),
     );
   });
@@ -480,7 +504,7 @@ void main() {
       )..where((e) => e.id.equals(9))).getSingleOrNull();
 
       // Assert
-      verify(mockBaseProvider.fetch(any));
+      verify(mockBaseProvider.fetch(any, timeout: anyNamed('timeout')));
       expect(provider.exercises.length, 1);
       expect(provider.exercises.first.id, 9);
       expect(provider.exercises.first.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
@@ -515,7 +539,7 @@ void main() {
       final exerciseData = ExerciseApiData.fromString(exerciseDb!.data);
 
       // Assert
-      verify(mockBaseProvider.fetch(any));
+      verify(mockBaseProvider.fetch(any, timeout: anyNamed('timeout')));
       expect(provider.exercises.length, 1);
       expect(provider.exercises.first.id, 9);
       expect(provider.exercises.first.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');

@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -227,8 +227,10 @@ class IngredientFormState extends State<IngredientForm> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
+    final languageCode = Localizations.localeOf(context).languageCode;
+    final dateFormat = DateFormat.yMd(languageCode);
+    final timeFormat = DateFormat.Hm(languageCode);
+    final dateTimeFormat = DateFormat.yMd(languageCode).add_Hm();
 
     if (_dateController.text.isEmpty) {
       _dateController.text = dateFormat.format(DateTime.now());
@@ -404,7 +406,7 @@ class IngredientFormState extends State<IngredientForm> {
                 _form.currentState!.save();
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
-                final loggedDate = dateFormat.parse(
+                final loggedDate = dateTimeFormat.parse(
                   '${_dateController.text} ${_timeController.text}',
                 );
                 widget.onSave(context, _mealItem, loggedDate);
