@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -99,14 +99,14 @@ Widget _buildEmptyState(BuildContext context, bool isDarkMode) {
         Icon(
           Icons.monitor_weight_outlined,
           size: 64,
-          color: isDarkMode ? Colors.grey.shade600 : Colors.grey.shade400,
+          color: context.wgerLightGrey,
         ),
         const SizedBox(height: 16),
         Text(
           AppLocalizations.of(context).noWeightEntries,
           style: TextStyle(
             fontSize: 16,
-            color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+            color: context.wgerLightGrey,
           ),
         ),
         const SizedBox(height: 24),
@@ -154,7 +154,7 @@ class _WeightEntriesHeader extends StatelessWidget {
                 '$entryCount ${AppLocalizations.of(context).entries}',
                 style: TextStyle(
                   fontSize: 14,
-                  color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                  color: context.wgerLightGrey,
                 ),
               ),
             ],
@@ -221,7 +221,7 @@ class _WeightEntryTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                          color: context.wgerLightGrey,
                         ),
                       ),
                     ],
@@ -231,7 +231,7 @@ class _WeightEntryTile extends StatelessWidget {
                     '${dateFormat.format(entry.date)} ${timeFormat.format(entry.date)}',
                     style: TextStyle(
                       fontSize: 13,
-                      color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                      color: context.wgerLightGrey,
                     ),
                   ),
                 ],
@@ -312,7 +312,7 @@ class _WeightEntryTile extends StatelessWidget {
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(
               MaterialLocalizations.of(context).cancelButtonLabel,
-              style: TextStyle(color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600),
+              style: TextStyle(color: context.wgerLightGrey),
             ),
           ),
           TextButton(

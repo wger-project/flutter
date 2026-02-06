@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
 /// A reusable time range tab bar for selecting chart time ranges.
@@ -121,7 +122,7 @@ class _TimeRangeTab extends StatelessWidget {
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               color: isSelected
                   ? (isDarkMode ? Colors.white : Colors.black87)
-                  : (isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600),
+                  : context.wgerLightGrey,
             ),
           ),
         ),

@@ -122,7 +122,7 @@ class _DashboardWeightWidgetState extends State<DashboardWeightWidget> {
                               padding: const EdgeInsets.all(8),
                               child: Icon(
                                 Icons.more_vert,
-                                color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                                color: context.wgerLightGrey,
                               ),
                             ),
                           ),

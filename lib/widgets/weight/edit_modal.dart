@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -266,7 +266,7 @@ class _EditWeightModalContentState extends State<_EditWeightModalContent> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: wgerAccentColor, width: 2),
+          borderSide: const BorderSide(color: wgerAccentColor, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -315,7 +315,7 @@ class _EditWeightModalContentState extends State<_EditWeightModalContent> {
               decoration: InputDecoration(
                 hintText: '0.0',
                 hintStyle: TextStyle(
-                  color: widget.isDarkMode ? Colors.grey.shade600 : Colors.grey.shade400,
+                  color: context.wgerLightGrey,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
@@ -373,7 +373,7 @@ class _EditWeightModalContentState extends State<_EditWeightModalContent> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: wgerAccentColor,
@@ -400,7 +400,9 @@ class _EditWeightModalContentState extends State<_EditWeightModalContent> {
   }
 
   Future<void> _saveWeight() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
     setState(() => _isLoading = true);
 

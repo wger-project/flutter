@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -45,8 +45,7 @@ class MeasurementOverallChangeWidget extends StatelessWidget {
 
     // ignore: prefer_interpolation_to_compose_strings
     return Text(
-      AppLocalizations.of(context).overallChangeWeight +
-          ' $prefix${delta.abs().toStringAsFixed(1)} $_unit',
+      '${AppLocalizations.of(context).overallChangeWeight} $prefix${delta.abs().toStringAsFixed(1)} $_unit',
     );
   }
 }
@@ -124,7 +123,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 TextSpan(
                   text: dateStr,
                   style: TextStyle(
-                    color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                    color: context.wgerLightGrey,
                     fontWeight: FontWeight.normal,
                     fontSize: 12,
                   ),
@@ -513,7 +512,9 @@ int? getAverageDaysForTimeRange(ChartTimeRange? timeRange) {
 /// For each point, return the average of all points in the preceding [days] window.
 /// Returns null if [days] is null (no averaging).
 List<MeasurementChartEntry>? movingAverage(List<MeasurementChartEntry> vals, int? days) {
-  if (days == null) return null;
+  if (days == null) {
+    return null;
+  }
 
   var start = 0;
   var end = 0;

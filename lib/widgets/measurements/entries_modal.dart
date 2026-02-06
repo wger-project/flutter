@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -78,7 +78,7 @@ void showEntriesModal(BuildContext context, MeasurementCategory category) {
                             return Text(
                               '${currentCategory.entries.length} ${AppLocalizations.of(context).entries}',
                               style: TextStyle(
-                                color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                                color: context.wgerLightGrey,
                                 fontSize: 14,
                               ),
                             );
@@ -101,8 +101,8 @@ void showEntriesModal(BuildContext context, MeasurementCategory category) {
                             Navigator.pop(context);
                             showEditCategoryModal(context, category);
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
+                          child: const Padding(
+                            padding: EdgeInsets.all(10),
                             child: Icon(
                               Icons.edit_outlined,
                               size: 20,
@@ -172,7 +172,7 @@ void showEntriesModal(BuildContext context, MeasurementCategory category) {
                           Text(
                             AppLocalizations.of(context).noMeasurementEntries,
                             style: TextStyle(
-                              color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                              color: context.wgerLightGrey,
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
@@ -206,8 +206,6 @@ void showEntriesModal(BuildContext context, MeasurementCategory category) {
 }
 
 void _showDeleteCategoryDialog(BuildContext context, MeasurementCategory category) {
-  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
   showDialog(
     context: context,
     builder: (dialogContext) => AlertDialog(
@@ -219,7 +217,7 @@ void _showDeleteCategoryDialog(BuildContext context, MeasurementCategory categor
           onPressed: () => Navigator.pop(dialogContext),
           child: Text(
             MaterialLocalizations.of(context).cancelButtonLabel,
-            style: TextStyle(color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600),
+            style: TextStyle(color: context.wgerLightGrey),
           ),
         ),
         TextButton(
@@ -341,7 +339,7 @@ class _EntryTile extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
-                          color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600,
+                          color: context.wgerLightGrey,
                         ),
                       ),
                     ],
@@ -368,8 +366,8 @@ class _EntryTile extends StatelessWidget {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(10),
                     onTap: () => showEditEntryModal(context, category, entry),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8),
                       child: Icon(
                         Icons.edit_outlined,
                         size: 18,
@@ -429,7 +427,7 @@ class _EntryTile extends StatelessWidget {
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(
               MaterialLocalizations.of(context).cancelButtonLabel,
-              style: TextStyle(color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600),
+              style: TextStyle(color: context.wgerLightGrey),
             ),
           ),
           TextButton(
