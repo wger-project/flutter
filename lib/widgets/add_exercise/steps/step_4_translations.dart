@@ -107,6 +107,7 @@ class _Step4TranslationState extends State<Step4Translation> {
                 ),
                 Consumer<AddExerciseProvider>(
                   builder: (ctx, provider, __) => AddExerciseTextArea(
+                    useMarkdownEditor: true,
                     initialValue: provider.descriptionTrans ?? '',
                     onChange: (value) => provider.descriptionTrans = value,
                     title: '${i18n.description}*',

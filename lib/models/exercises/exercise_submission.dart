@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,10 +51,15 @@ sealed class ExerciseCommentSubmissionApi with _$ExerciseCommentSubmissionApi {
 sealed class ExerciseTranslationSubmissionApi with _$ExerciseTranslationSubmissionApi {
   const factory ExerciseTranslationSubmissionApi({
     required String name,
-    required String description,
+
+    @JsonKey(name: 'description_source') required String description,
+
     required int language,
+
     @JsonKey(name: 'license_author') required String author,
+
     @Default([]) List<ExerciseAliasSubmissionApi> aliases,
+
     @Default([]) List<ExerciseCommentSubmissionApi> comments,
   }) = _ExerciseTranslationSubmissionApi;
 
@@ -67,12 +72,19 @@ sealed class ExerciseTranslationSubmissionApi with _$ExerciseTranslationSubmissi
 sealed class ExerciseSubmissionApi with _$ExerciseSubmissionApi {
   const factory ExerciseSubmissionApi({
     required int category,
+
     required List<int> muscles,
+
     @JsonKey(name: 'muscles_secondary') required List<int> musclesSecondary,
+
     required List<int> equipment,
+
     @JsonKey(name: 'license_author') required String author,
+
     @JsonKey(includeToJson: true) int? variation,
+
     @JsonKey(includeToJson: true, name: 'variations_connect_to') int? variationConnectTo,
+
     required List<ExerciseTranslationSubmissionApi> translations,
   }) = _ExerciseSubmissionApi;
 

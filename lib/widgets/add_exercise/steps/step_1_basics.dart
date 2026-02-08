@@ -27,7 +27,6 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
@@ -40,7 +39,6 @@ class Step1Basics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.read<UserProvider>();
     final addExerciseProvider = context.read<AddExerciseProvider>();
     final exerciseProvider = context.read<ExercisesProvider>();
     final categories = exerciseProvider.categories;
@@ -78,7 +76,7 @@ class Step1Basics extends StatelessWidget {
               title: '${AppLocalizations.of(context).author}*',
               isMultiline: false,
               validator: (name) => validateAuthorName(name, context),
-              initialValue: addExerciseProvider.author ?? userProvider.profile!.username,
+              initialValue: addExerciseProvider.author,
               onChange: (v) => addExerciseProvider.author = v,
               onSaved: (String? author) => addExerciseProvider.author = author!,
             ),

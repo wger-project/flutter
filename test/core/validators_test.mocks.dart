@@ -2260,6 +2260,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get preview =>
+      (super.noSuchMethod(
+            Invocation.getter(#preview),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#preview),
+            ),
+          )
+          as String);
+
+  @override
   String get loadingText =>
       (super.noSuchMethod(
             Invocation.getter(#loadingText),
@@ -3140,6 +3151,50 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#baseData),
+            ),
+          )
+          as String);
+
+  @override
+  String get useBasicMarkdown =>
+      (super.noSuchMethod(
+            Invocation.getter(#useBasicMarkdown),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#useBasicMarkdown),
+            ),
+          )
+          as String);
+
+  @override
+  String get editorBold =>
+      (super.noSuchMethod(
+            Invocation.getter(#editorBold),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#editorBold),
+            ),
+          )
+          as String);
+
+  @override
+  String get editorItalic =>
+      (super.noSuchMethod(
+            Invocation.getter(#editorItalic),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#editorItalic),
+            ),
+          )
+          as String);
+
+  @override
+  String get editorList =>
+      (super.noSuchMethod(
+            Invocation.getter(#editorList),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#editorList),
             ),
           )
           as String);

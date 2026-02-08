@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 class AddExerciseTextArea extends StatelessWidget {
   final ValueChanged<String> onChange;
@@ -148,23 +149,43 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
     final newText = '$before$left$selected$right$after';
     _controller.text = newText;
 
-    final cursorPos = start + left.length + selected.length + right.length;
-    _controller.selection = TextSelection.collapsed(offset: cursorPos);
+    // No selection: place cursor between the inserted markers
+    if (selected.isEmpty) {
+      final cursorPos = start + left.length;
+      _controller.selection = TextSelection.collapsed(offset: cursorPos);
+    } else {
+      // otherwise: keep the text selected
+      final base = start + left.length;
+      final extent = base + selected.length;
+      _controller.selection = TextSelection(baseOffset: base, extentOffset: extent);
+    }
   }
 
   Widget _buildToolbar() {
+    final i18n = AppLocalizations.of(context);
+
     if (!widget.showToolbar || widget.readOnly) return const SizedBox.shrink();
     return Row(
       children: [
         IconButton(
           icon: const Icon(Icons.format_bold),
-          tooltip: 'Bold',
+          tooltip: i18n.editorBold,
           onPressed: () => _surroundSelection('**', '**'),
         ),
         IconButton(
           icon: const Icon(Icons.format_italic),
-          tooltip: 'Cursive',
+          tooltip: i18n.editorItalic,
           onPressed: () => _surroundSelection('*', '*'),
+        ),
+        IconButton(
+          icon: const Icon(Icons.format_list_bulleted),
+          tooltip: i18n.editorList,
+          onPressed: () => _surroundSelection('\n- ', '\n- \n- '),
+        ),
+        IconButton(
+          icon: const Icon(Icons.format_list_numbered),
+          tooltip: i18n.editorList,
+          onPressed: () => _surroundSelection('\n1. ', '\n1. \n1. '),
         ),
       ],
     );
@@ -172,6 +193,8 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: DefaultTabController(
@@ -183,9 +206,9 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
             TabBar(
               labelColor: Theme.of(context).colorScheme.primary,
               unselectedLabelColor: Theme.of(context).textTheme.bodySmall?.color,
-              tabs: const [
-                Tab(text: 'Edit'),
-                Tab(text: 'Preview'),
+              tabs: [
+                Tab(text: i18n.edit),
+                Tab(text: i18n.preview),
               ],
             ),
             const SizedBox(height: 8),
@@ -207,7 +230,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                           validator: widget.validator,
                           onSaved: widget.onSaved,
                           decoration: InputDecoration(
-                            hintText: 'You can use basic Markdown formatting here',
+                            hintText: i18n.useBasicMarkdown,
                             border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                             ),
@@ -234,11 +257,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                       child: Builder(
                         builder: (ctx) {
                           final raw = _controller.text;
-                          final html = md.markdownToHtml(raw);
-                          if (html.trim().isEmpty) {
-                            return SelectableText(raw.isEmpty ? '(empty)' : raw);
-                          }
-                          return Html(data: html);
+                          return Html(data: md.markdownToHtml(raw));
                         },
                       ),
                     ),
