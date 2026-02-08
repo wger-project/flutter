@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
@@ -40,15 +58,19 @@ class Step1Basics extends StatelessWidget {
         builder: (context, provider, child) => Column(
           children: [
             AddExerciseTextArea(
+              initialValue: addExerciseProvider.exerciseNameEn ?? '',
               title: '${AppLocalizations.of(context).name}*',
               helperText: AppLocalizations.of(context).baseNameEnglish,
               validator: (name) => validateName(name, context),
+              onChange: (value) => addExerciseProvider.exerciseNameEn = value,
               onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name,
             ),
             AddExerciseTextArea(
               title: AppLocalizations.of(context).alternativeNames,
               isMultiline: true,
+              initialValue: addExerciseProvider.alternateNamesEn.join('\n'),
               helperText: AppLocalizations.of(context).oneNamePerLine,
+              onChange: (value) => addExerciseProvider.alternateNamesEn = value.split('\n'),
               onSaved: (String? alternateName) =>
                   addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
             ),
@@ -56,7 +78,8 @@ class Step1Basics extends StatelessWidget {
               title: '${AppLocalizations.of(context).author}*',
               isMultiline: false,
               validator: (name) => validateAuthorName(name, context),
-              initialValue: userProvider.profile!.username,
+              initialValue: addExerciseProvider.author ?? userProvider.profile!.username,
+              onChange: (v) => addExerciseProvider.author = v,
               onSaved: (String? author) => addExerciseProvider.author = author!,
             ),
             ExerciseCategoryInputWidget<ExerciseCategory>(
