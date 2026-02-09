@@ -899,7 +899,7 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
-  "fitInWeek": "Fit in week",
+  "fitInWeek": "Fixed weekly schedule",
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
   "superset": "Superset",
