@@ -1,19 +1,19 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import 'package:json_annotation/json_annotation.dart';
@@ -128,6 +128,30 @@ class Routine {
   List<DayData> get dayDataCurrentIteration {
     final iteration = getIteration(date: DateTime.now()) ?? 1;
     return dayData.where((data) => data.iteration == iteration).toList();
+  }
+
+  /// Filter out dayData entries with null days as well as duplicated days from
+  /// the "fixed weekly schedule" toggle.
+  List<DayData> get dayDataCurrentIterationFiltered {
+    final sorted = List<DayData>.from(
+      dayDataCurrentIteration.where((dd) => dd.day != null),
+    )..sort((a, b) => a.day!.order.compareTo(b.day!.order));
+
+    // Filter out entries where the day is the same as the previous one. This
+    // is necessary because if the user has the "Fixed weekly schedule" option
+    // enabled, there would be multiple entries for the same day.
+    final unique = <DayData>[];
+    for (final dd in sorted) {
+      if (unique.isEmpty || unique.last.day!.id != dd.day!.id) {
+        unique.add(dd);
+      } else {
+        // If the day id is the same as the previous, replace the previous
+        // entry with the current one so the last occurrence is kept.
+        unique[unique.length - 1] = dd;
+      }
+    }
+
+    return unique;
   }
 
   List<DayData> get dayDataCurrentIterationGym {

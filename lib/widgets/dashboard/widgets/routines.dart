@@ -80,7 +80,7 @@ class _DashboardRoutineWidgetState extends State<DashboardRoutineWidget> {
           if (_hasContent) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: DetailContentWidget(routine!.dayDataCurrentIteration, _showDetail),
+              child: DetailContentWidget(routine!.dayDataCurrentIterationFiltered, _showDetail),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
