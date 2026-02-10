@@ -668,7 +668,7 @@ class RoutinesProvider with ChangeNotifier {
     final newLog = Log.fromJson(data);
 
     newLog.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-    newLog.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
+    newLog.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.repetitionsUnitId);
     newLog.exerciseBase = (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
 
     final plan = findById(newLog.routineId);
