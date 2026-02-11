@@ -29,7 +29,7 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/helpers.dart';
 
 /// default timeout for GET requests
-const DEFAULT_TIMEOUT = Duration(seconds: 5);
+const DEFAULT_TIMEOUT = Duration(seconds: 15);
 
 /// Base provider class.
 ///

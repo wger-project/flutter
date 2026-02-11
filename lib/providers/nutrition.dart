@@ -409,7 +409,7 @@ class NutritionPlansProvider with ChangeNotifier {
           'limit': API_RESULTS_PAGE_SIZE,
         },
       ),
-      timeout: const Duration(seconds: 10),
+      timeout: const Duration(seconds: 20),
     );
 
     return (response['results'] as List)
