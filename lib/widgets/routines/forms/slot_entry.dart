@@ -218,12 +218,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             WeightUnitInputWidget(
               widget.entry.weightUnitObj,
               onChanged: (value) {
-                if (value != null) {
-                  widget.entry.weightUnit = value;
-                } else {
-                  widget.entry.weightUnitObj = null;
-                  widget.entry.weightUnitId = null;
-                }
+                widget.entry.weightUnitObj = null;
+                widget.entry.weightUnitId = null;
               },
             ),
           Row(
@@ -264,12 +260,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             RepetitionUnitInputWidget(
               widget.entry.repetitionUnitObj,
               onChanged: (value) {
-                if (value != null) {
-                  widget.entry.repetitionUnit = value;
-                } else {
-                  widget.entry.repetitionUnitObj = null;
-                  widget.entry.repetitionUnitId = null;
-                }
+                widget.entry.repetitionUnitObj = null;
+                widget.entry.repetitionUnitId = null;
               },
             ),
           Row(
