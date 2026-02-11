@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -216,9 +216,14 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             ),
           if (!widget.simpleMode)
             WeightUnitInputWidget(
-              widget.entry.weightUnitId,
+              widget.entry.weightUnitObj,
               onChanged: (value) {
-                widget.entry.weightUnitId = value;
+                if (value != null) {
+                  widget.entry.weightUnit = value;
+                } else {
+                  widget.entry.weightUnitObj = null;
+                  widget.entry.weightUnitId = null;
+                }
               },
             ),
           Row(
@@ -257,9 +262,14 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
           ),
           if (!widget.simpleMode)
             RepetitionUnitInputWidget(
-              widget.entry.repetitionUnitId,
+              widget.entry.repetitionUnitObj,
               onChanged: (value) {
-                widget.entry.repetitionUnitId = value;
+                if (value != null) {
+                  widget.entry.repetitionUnit = value;
+                } else {
+                  widget.entry.repetitionUnitObj = null;
+                  widget.entry.repetitionUnitId = null;
+                }
               },
             ),
           Row(

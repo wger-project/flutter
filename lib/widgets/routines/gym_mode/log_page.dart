@@ -45,7 +45,6 @@ class LogPage extends ConsumerWidget {
 
   final PageController _controller;
   LogPage(this._controller);
-  final GlobalKey<_LogFormWidgetState> _logFormKey = GlobalKey<_LogFormWidgetState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,7 +69,7 @@ class LogPage extends ConsumerWidget {
     }
     final setConfigData = slotEntryPage.setConfigData!;
 
-    final log = ref.watch(gymLogProvider);
+    final log = ref.read(gymLogProvider);
 
     // Mark done sets
     final decorationStyle = slotEntryPage.logDone
@@ -145,8 +144,7 @@ class LogPage extends ConsumerWidget {
               child: LogFormWidget(
                 controller: _controller,
                 configData: setConfigData,
-                // log: log!,
-                key: _logFormKey,
+                key: ValueKey('log-form-${slotEntryPage.uuid}'),
               ),
             ),
           ),
@@ -213,9 +211,11 @@ class LogsPlatesWidget extends ConsumerWidget {
 
 class LogsRepsWidget extends ConsumerStatefulWidget {
   final num valueChange;
+  final TextEditingController? controller;
 
   const LogsRepsWidget({
     super.key,
+    this.controller,
     num? valueChange,
   }) : valueChange = valueChange ?? 1;
 
@@ -226,16 +226,19 @@ class LogsRepsWidget extends ConsumerStatefulWidget {
 class _LogsRepsWidgetState extends ConsumerState<LogsRepsWidget> {
   final _logger = Logger('LogsRepsWidget');
   late TextEditingController _controller;
+  num? _lastReps;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = widget.controller ?? TextEditingController();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
@@ -247,23 +250,19 @@ class _LogsRepsWidgetState extends ConsumerState<LogsRepsWidget> {
     final logNotifier = ref.read(gymLogProvider.notifier);
     final log = ref.watch(gymLogProvider);
     final currentReps = log?.repetitions;
-    final currentInput = numberFormat.tryParse(_controller.text);
 
-    // Sync from provider to controller if needed
-    if (currentReps != null) {
-      // Update if values differ, but allow invalid input while typing (unless empty/initial)
-      if (currentInput != currentReps && (currentInput != null || _controller.text.isEmpty)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            _controller.text = numberFormat.format(currentReps);
-          }
-        });
-      }
-    } else if (_controller.text.isNotEmpty) {
+    // Only update the controller when the provider value actually changed
+    if (currentReps != _lastReps) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
+        if (!mounted) {
+          return;
+        }
+        if (currentReps != null) {
+          _controller.text = numberFormat.format(currentReps);
+        } else {
           _controller.clear();
         }
+        _lastReps = currentReps;
       });
     }
 
@@ -329,9 +328,11 @@ class _LogsRepsWidgetState extends ConsumerState<LogsRepsWidget> {
 
 class LogsWeightWidget extends ConsumerStatefulWidget {
   final num valueChange;
+  final TextEditingController? controller;
 
   const LogsWeightWidget({
     super.key,
+    this.controller,
     num? valueChange,
   }) : valueChange = valueChange ?? 1.25;
 
@@ -342,16 +343,19 @@ class LogsWeightWidget extends ConsumerStatefulWidget {
 class _LogsWeightWidgetState extends ConsumerState<LogsWeightWidget> {
   final _logger = Logger('LogsWeightWidget');
   late TextEditingController _controller;
+  num? _lastWeight;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = widget.controller ?? TextEditingController();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
@@ -364,23 +368,19 @@ class _LogsWeightWidgetState extends ConsumerState<LogsWeightWidget> {
     final logProvider = ref.read(gymLogProvider.notifier);
     final log = ref.watch(gymLogProvider);
     final currentWeight = log?.weight;
-    final currentInput = numberFormat.tryParse(_controller.text);
 
-    // Sync from provider to controller if needed
-    if (currentWeight != null) {
-      // Update if values differ, but allow invalid input while typing (unless empty/initial)
-      if (currentInput != currentWeight && (currentInput != null || _controller.text.isEmpty)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            _controller.text = numberFormat.format(currentWeight);
-          }
-        });
-      }
-    } else if (_controller.text.isNotEmpty) {
+    // Only update when provider value changed
+    if (currentWeight != _lastWeight) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
+        if (!mounted) {
+          return;
+        }
+        if (currentWeight != null) {
+          _controller.text = numberFormat.format(currentWeight);
+        } else {
           _controller.clear();
         }
+        _lastWeight = currentWeight;
       });
     }
 
@@ -489,12 +489,10 @@ class LogsPastLogsWidget extends ConsumerWidget {
 }
 
 class LogFormWidget extends ConsumerStatefulWidget {
-  final _logger = Logger('LogFormWidget');
-
   final PageController controller;
   final SetConfigData configData;
 
-  LogFormWidget({
+  const LogFormWidget({
     super.key,
     required this.controller,
     required this.configData,
@@ -556,8 +554,8 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 Flexible(
                   child: RepetitionUnitInputWidget(
                     key: const ValueKey('repetition-unit-input-widget'),
-                    log!.repetitionsUnitId,
-                    onChanged: (v) => {},
+                    log!.repetitionsUnitObj,
+                    onChanged: (v) => ref.read(gymLogProvider.notifier).setRepetitionUnit(v),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -576,8 +574,8 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: WeightUnitInputWidget(
-                    log!.weightUnitId,
-                    onChanged: (v) => {},
+                    log!.weightUnitObj,
+                    onChanged: (v) => ref.read(gymLogProvider.notifier).setWeightUnit(v),
                     key: const ValueKey('weight-unit-input-widget'),
                   ),
                 ),
@@ -619,10 +617,11 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                       final gymState = ref.read(gymStateProvider);
                       final gymProvider = ref.read(gymStateProvider.notifier);
 
+                      final logToSave = ref.read(gymLogProvider);
                       await provider.Provider.of<RoutinesProvider>(
                         context,
                         listen: false,
-                      ).addLog(log!);
+                      ).addLog(logToSave!);
                       final page = gymState.getSlotEntryPageByIndex()!;
                       gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
 

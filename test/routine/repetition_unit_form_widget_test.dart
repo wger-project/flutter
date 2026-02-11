@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -37,7 +37,7 @@ void main() {
   const unit2 = RepetitionUnit(id: 2, name: 'another name');
   const unit3 = RepetitionUnit(id: 3, name: 'this is repetition number 3');
 
-  int? result;
+  RepetitionUnit? result;
 
   final slotEntry = SlotEntry(
     slotId: 1,
@@ -54,8 +54,6 @@ void main() {
     mockWorkoutPlans = MockRoutinesProvider();
     result = null;
     when(mockWorkoutPlans.repetitionUnits).thenAnswer((_) => [unit1, unit2, unit3]);
-    when(mockWorkoutPlans.findRepetitionUnitById(1)).thenReturn(unit1);
-    when(mockWorkoutPlans.findRepetitionUnitById(2)).thenReturn(unit2);
   });
 
   Widget renderWidget() {
@@ -67,7 +65,12 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: RepetitionUnitInputWidget(1, onChanged: (value) => result = value)),
+        home: Scaffold(
+          body: RepetitionUnitInputWidget(
+            unit1,
+            onChanged: (value) => result = value,
+          ),
+        ),
         routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
@@ -96,6 +99,6 @@ void main() {
     await tester.tap(find.text('another name').last);
 
     // assert
-    expect(result, equals(2));
+    expect(result, equals(unit2));
   });
 }

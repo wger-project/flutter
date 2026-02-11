@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,12 +26,10 @@ import 'package:wger/providers/routines.dart';
 ///
 /// Can be used with a Setting or a Log object
 class RepetitionUnitInputWidget extends StatefulWidget {
-  late int? selectedRepetitionUnit;
-  final ValueChanged<int?> onChanged;
+  final RepetitionUnit? initialRepetitionUnit;
+  final ValueChanged<RepetitionUnit> onChanged;
 
-  RepetitionUnitInputWidget(int? initialValue, {super.key, required this.onChanged}) {
-    selectedRepetitionUnit = initialValue;
-  }
+  const RepetitionUnitInputWidget(this.initialRepetitionUnit, {super.key, required this.onChanged});
 
   @override
   _RepetitionUnitInputWidgetState createState() => _RepetitionUnitInputWidgetState();
@@ -42,32 +40,31 @@ class _RepetitionUnitInputWidgetState extends State<RepetitionUnitInputWidget> {
   Widget build(BuildContext context) {
     final unitProvider = context.read<RoutinesProvider>();
 
-    RepetitionUnit? selectedWeightUnit = widget.selectedRepetitionUnit != null
-        ? unitProvider.findRepetitionUnitById(widget.selectedRepetitionUnit!)
-        : null;
+    RepetitionUnit? selectedWeightUnit = widget.initialRepetitionUnit;
 
     return DropdownButtonFormField(
       initialValue: selectedWeightUnit,
-      decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).repetitionUnit,
-      ),
+      decoration: InputDecoration(labelText: AppLocalizations.of(context).repetitionUnit),
       isDense: true,
       onChanged: (RepetitionUnit? newValue) {
+        if (newValue == null) {
+          return;
+        }
+
         setState(() {
-          selectedWeightUnit = newValue!;
-          widget.selectedRepetitionUnit = newValue.id;
-          widget.onChanged(newValue.id);
+          selectedWeightUnit = newValue;
+          widget.onChanged(newValue);
         });
       },
-      items: Provider.of<RoutinesProvider>(context, listen: false).repetitionUnits
-          .map<DropdownMenuItem<RepetitionUnit>>((RepetitionUnit value) {
-            return DropdownMenuItem<RepetitionUnit>(
-              key: Key(value.id.toString()),
-              value: value,
-              child: Text(value.name),
-            );
-          })
-          .toList(),
+      items: unitProvider.repetitionUnits.map<DropdownMenuItem<RepetitionUnit>>((
+        RepetitionUnit value,
+      ) {
+        return DropdownMenuItem<RepetitionUnit>(
+          key: Key(value.id.toString()),
+          value: value,
+          child: Text(value.name),
+        );
+      }).toList(),
     );
   }
 }
