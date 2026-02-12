@@ -1128,5 +1128,13 @@
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
-  "systemMode": "System settings"
+  "systemMode": "System settings",
+  "productNotFoundOpenFoodFacts": "You can add this product to Open Food Facts to help the community!",
+  "@productNotFoundOpenFoodFacts": {
+  "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+  },
+  "addToOpenFoodFacts": "Add to Open Food Facts",
+  "@addToOpenFoodFacts": {
+    "description": "Label shown as the clickable link to go on Open Food Facts"
+   }
 }
