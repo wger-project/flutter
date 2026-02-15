@@ -552,7 +552,7 @@
     "@pause": {
         "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
     },
-    "isRestDay": "Ден за одмор",
+    "isRestDay": "Дали е ден за одмор",
     "isRestDayHelp": "Запомнете дека сите сетови и вежби ќе бидат избришани ако го означите денот како ден за одмор.",
     "routineDays": "Денови во рутина",
     "newDay": "Нов ден",
@@ -654,5 +654,33 @@
     "comment": "Коментар",
     "@comment": {
         "description": "Comment, additional information"
-    }
+    },
+    "success": "Успешно",
+    "@success": {
+        "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "takePicture": "Направи слика",
+    "bench": "Клупа",
+    "@bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "barbell": "Шипка",
+    "@barbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "baseNameEnglish": "Првичното име на вежбата мора да биде на Англики",
+    "topSet": "Топ сет {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "impressionGood": "Добро",
+    "impressionNeutral": "Негативно",
+    "impressionBad": "Лошо",
+    "restDay": "Ден за одмор"
 }
