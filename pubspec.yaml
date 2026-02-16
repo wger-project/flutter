@@ -78,7 +78,7 @@ dev_dependencies:
   cider: ^0.2.9
   drift_dev: ^2.29.0
   flutter_lints: ^6.0.0
-  freezed: ^3.2.0
+  freezed: ^3.2.5
   json_serializable: ^6.11.2
   mockito: ^5.4.4
   network_image_mock: ^2.1.1
