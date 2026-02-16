@@ -729,7 +729,7 @@
     "copyToClipboard": "Copiar al portapapeles",
     "max": "Máximo",
     "aboutContributeTitle": "Contribuir",
-    "aboutContributeText": "Todos los tipos de contribuciones son bien recibidas. Ya seas desarrollador, traductor o un apasionado por el deporte, toda ayuda es bien recibida.",
+    "aboutContributeText": "Todos los tipos de contribuciones son bien recibidas. Ya seas desarrollador, traductor o un apasionado por el deporte, ¡toda ayuda es bien recibida!",
     "endDate": "Fecha de finalización",
     "startDate": "Fecha de inicio",
     "min": "Mínimo",
@@ -803,7 +803,7 @@
     "aboutJoinCommunityTitle": "Unirse a la comunidad",
     "aboutDiscordTitle": "Discord",
     "others": "Otros",
-    "fitInWeek": "En forma en una semana",
+    "fitInWeek": "Horario semanal fijo",
     "fitInWeekHelp": "Si está activado, los días se repetirán en un ciclo semanal, de la otra manera, los días serán secuenciales sin importar el inicio de una nueva semana.",
     "addSuperset": "Añadir superserie",
     "setHasNoExercises": "¡Esta rutina no tiene ejercicios!",
@@ -990,5 +990,9 @@
     },
     "dayTypeEnom": "Cada minuto, en el minuto",
     "dayTypeTabata": "Entrenamiento Tabata",
-    "slotEntryTypeMyo": "Entrenamiento Myo"
+    "slotEntryTypeMyo": "Entrenamiento Myo",
+    "dashboardWidgets": "Widgets del panel",
+    "trophies": "Trofeos",
+    "personalRecords": "Registros personales",
+    "noTrophies": "No tienes trofeos todavía"
 }
