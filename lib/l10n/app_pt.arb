@@ -785,7 +785,7 @@
     "max": "Máximo",
     "resultingRoutine": "Rotina resultante",
     "fitInWeekHelp": "Se selecionado, os dias repetir-se-ão num ciclo semanal, caso contrário, os dias seguir-se-ão sequencialmente independentemente do início de nova semana.",
-    "fitInWeek": "Encaixa na semana",
+    "fitInWeek": "Plano semanal fixo",
     "simpleModeHelp": "Esconde alguns dos parâmetros mais avançados quando editando exercícios",
     "addSuperset": "Adiciona um superset",
     "setHasNoExercises": "Esta série ainda não tem exercícios!",
