@@ -198,13 +198,13 @@ class IngredientScanResultDialog extends StatelessWidget {
                     AppLocalizations.of(context).productNotFoundDescription(barcode),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    AppLocalizations.of(context).productNotFoundOpenFoodFacts,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  AppLocalizations.of(context).productNotFoundOpenFoodFacts,
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
+              ),
 
               if (ingredient != null)
                 Padding(

@@ -23,10 +23,10 @@ import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
 Future<void> pumpIngredientScanDialog(
-    WidgetTester tester, {
-      required AsyncSnapshot<Ingredient?> snapshot,
-      required String barcode,
-    }) async {
+  WidgetTester tester, {
+  required AsyncSnapshot<Ingredient?> snapshot,
+  required String barcode,
+}) async {
   await tester.pumpWidget(
     MaterialApp(
       locale: const Locale('en'),
@@ -41,7 +41,7 @@ Future<void> pumpIngredientScanDialog(
                 builder: (_) => IngredientScanResultDialog(
                   snapshot,
                   barcode,
-                      (int id, String name, num? amount) {}, // Mock callback
+                  (int id, String name, num? amount) {}, // Mock callback
                 ),
               );
             },
@@ -59,7 +59,7 @@ void main() {
 
     testWidgets(
       'shows Open Food Facts button when product not found',
-          (WidgetTester tester) async {
+      (WidgetTester tester) async {
         // Arrange
         const snapshot = AsyncSnapshot<Ingredient?>.withData(
           ConnectionState.done,
@@ -102,7 +102,7 @@ void main() {
 
     testWidgets(
       'tapping Open Food Facts button closes the dialog',
-          (WidgetTester tester) async {
+      (WidgetTester tester) async {
         // Arrange
         const snapshot = AsyncSnapshot<Ingredient?>.withData(
           ConnectionState.done,
