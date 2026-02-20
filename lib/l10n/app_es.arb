@@ -853,7 +853,7 @@
             }
         }
     },
-    "setHasProgression": "Set con progresión",
+    "setHasProgression": "La serie tiene progresión",
     "setHasProgressionWarning": "Tenga en cuenta que, por el momento, no es posible editar todos los ajustes de un set en la aplicación móvil ni configurar la progresión automática. Por ahora, utilice la aplicación web.",
     "applicationLogs": "Registro de la aplicación",
     "creationDate": "Fecha de comienzo",
