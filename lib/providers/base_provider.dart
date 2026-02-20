@@ -22,7 +22,6 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/providers/auth.dart';
@@ -177,7 +176,7 @@ class WgerBaseProvider {
   }
 
   /// DELETEs an existing object
-  Future<Response> deleteRequest(String url, int id) async {
+  Future<http.Response> deleteRequest(String url, int id) async {
     final deleteUrl = makeUrl(url, id: id);
 
     final response = await client.delete(
