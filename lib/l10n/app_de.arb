@@ -254,6 +254,10 @@
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
+    "noNutritionalPlansSubtitle": "Erstelle deinen ersten Plan, um deine Ernährung zu verfolgen",
+    "@noNutritionalPlansSubtitle": {
+        "description": "Subtitle shown when the user has no nutritional plans"
+    },
     "todaysWorkout": "Dein Training heute",
     "@todaysWorkout": {},
     "nrOfSets": "Sätze pro Übung: {nrOfSets}",
