@@ -588,7 +588,7 @@
     "searchNamesInEnglish": "También busque nombres en Ingles",
     "cacheWarning": "Debido al cache, puede tomar un tiempo hasta que los cambios sean visibles en toda la aplicación.",
     "cardio": "Aerobico",
-    "contributeExerciseWarning": "Sólo puedes contribuir ejercicios únicamente si tu cuenta tiene más de {days} días y tu email esta verificado",
+    "contributeExerciseWarning": "Sólo puedes contribuir ejercicios únicamente si tu cuenta tiene más de {days} días y tu email está verificado",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
