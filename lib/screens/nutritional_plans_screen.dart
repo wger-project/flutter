@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -48,8 +49,10 @@ class NutritionalPlansScreen extends StatelessWidget {
           );
         },
       ),
-      body: Consumer<NutritionPlansProvider>(
-        builder: (context, nutritionProvider, child) => NutritionalPlansList(),
+      body: WidescreenWrapper(
+        child: Consumer<NutritionPlansProvider>(
+          builder: (context, nutritionProvider, child) => NutritionalPlansList(),
+        ),
       ),
     );
   }

@@ -20,9 +20,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
@@ -43,7 +43,7 @@ class _ImageFormState extends State<ImageForm> {
 
   XFile? _file;
 
-  final dateController = TextEditingController();
+  final dateController = TextEditingController(text: '');
   final TextEditingController descriptionController = TextEditingController();
 
   @override
@@ -57,7 +57,6 @@ class _ImageFormState extends State<ImageForm> {
   void initState() {
     super.initState();
 
-    dateController.text = dateToYYYYMMDD(widget._image.date)!;
     descriptionController.text = widget._image.description;
   }
 
@@ -97,6 +96,12 @@ class _ImageFormState extends State<ImageForm> {
 
   @override
   Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+
+    if (dateController.text.isEmpty) {
+      dateController.text = dateFormat.format(widget._image.date);
+    }
+
     return Form(
       key: _form,
       child: Column(
@@ -154,14 +159,15 @@ class _ImageFormState extends State<ImageForm> {
               final pickedDate = await showDatePicker(
                 context: context,
                 initialDate: widget._image.date,
-                firstDate: DateTime(DateTime.now().year - 10),
+                firstDate: DateTime.now().subtract(const Duration(days: 3000)),
                 lastDate: DateTime.now(),
               );
-
-              dateController.text = dateToYYYYMMDD(pickedDate)!;
+              if (pickedDate != null) {
+                dateController.text = dateFormat.format(pickedDate);
+              }
             },
             onSaved: (newValue) {
-              widget._image.date = DateTime.parse(newValue!);
+              widget._image.date = dateFormat.parse(newValue!);
             },
             validator: (value) {
               if (widget._image.id == null && _file == null) {

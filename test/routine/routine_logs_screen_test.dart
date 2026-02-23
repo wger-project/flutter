@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -20,6 +20,7 @@ import 'dart:io';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -27,14 +28,16 @@ import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/trophies.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
-import 'package:wger/widgets/routines/workout_logs.dart';
+import 'package:wger/widgets/routines/logs/log_overview_routine.dart';
 
 import '../../test_data/routines.dart';
+import '../test_data/trophies.dart';
 import 'routine_logs_screen_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesProvider, TrophyRepository])
 void main() {
   late Routine routine;
   final mockRoutinesProvider = MockRoutinesProvider();
@@ -49,25 +52,39 @@ void main() {
   Widget renderWidget({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        home: TextButton(
-          onPressed: () => key.currentState!.push(
-            MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: routine.id),
-              builder: (_) => const WorkoutLogsScreen(),
+    // Arrange
+    final mockRepository = MockTrophyRepository();
+    when(
+      mockRepository.fetchUserTrophies(
+        filterQuery: anyNamed('filterQuery'),
+        language: anyNamed('language'),
+      ),
+    ).thenAnswer((_) async => getUserTrophies());
+
+    return ProviderScope(
+      overrides: [
+        trophyRepositoryProvider.overrideWithValue(mockRepository),
+      ],
+      child: ChangeNotifierProvider<RoutinesProvider>(
+        create: (context) => mockRoutinesProvider,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          home: TextButton(
+            onPressed: () => key.currentState!.push(
+              MaterialPageRoute<void>(
+                settings: RouteSettings(arguments: routine.id),
+                builder: (_) => const WorkoutLogsScreen(),
+              ),
             ),
+            child: const SizedBox(),
           ),
-          child: const SizedBox(),
+          routes: {
+            RoutineScreen.routeName: (ctx) => const WorkoutLogsScreen(),
+          },
         ),
-        routes: {
-          RoutineScreen.routeName: (ctx) => const WorkoutLogsScreen(),
-        },
       ),
     );
   }

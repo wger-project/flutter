@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -18,9 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/app_bar.dart';
-import 'package:wger/widgets/routines/workout_logs.dart';
+import 'package:wger/widgets/routines/logs/log_overview_routine.dart';
 
 class WorkoutLogsScreen extends StatelessWidget {
   const WorkoutLogsScreen();
@@ -34,7 +35,7 @@ class WorkoutLogsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: EmptyAppBar(routine.name),
-      body: WorkoutLogs(routine),
+      body: WidescreenWrapper(child: WorkoutLogs(routine)),
     );
   }
 }

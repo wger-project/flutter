@@ -12,8 +12,8 @@ SlotData _$SlotDataFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['comment', 'is_superset', 'exercises', 'sets'],
   );
   return SlotData(
-    comment: json['comment'] as String,
-    isSuperset: json['is_superset'] as bool,
+    comment: json['comment'] as String? ?? '',
+    isSuperset: json['is_superset'] as bool? ?? false,
     exerciseIds:
         (json['exercises'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
     setConfigs:

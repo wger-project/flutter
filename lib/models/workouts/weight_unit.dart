@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +29,11 @@ class WeightUnit {
   final String name;
 
   const WeightUnit({required this.id, required this.name});
+
+  @override
+  String toString() {
+    return 'WeightUnit(id: $id, name: $name)';
+  }
 
   // Boilerplate
   factory WeightUnit.fromJson(Map<String, dynamic> json) => _$WeightUnitFromJson(json);

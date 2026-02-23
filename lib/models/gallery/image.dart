@@ -26,7 +26,7 @@ class Image {
   @JsonKey(required: true)
   int? id;
 
-  @JsonKey(required: true, toJson: dateToYYYYMMDD)
+  @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime date;
 
   @JsonKey(required: true, name: 'image')

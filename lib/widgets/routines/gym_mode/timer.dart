@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020, 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,19 +18,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
 class TimerWidget extends StatefulWidget {
   final PageController _controller;
-  final double _ratioCompleted;
-  final Map<Exercise, int> _exercisePages;
-  final _totalPages;
 
-  const TimerWidget(this._controller, this._ratioCompleted, this._exercisePages, this._totalPages);
+  const TimerWidget(this._controller);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -69,8 +68,6 @@ class _TimerWidgetState extends State<TimerWidget> {
         NavigationHeader(
           AppLocalizations.of(context).pause,
           widget._controller,
-          totalPages: widget._totalPages,
-          exercisePages: widget._exercisePages,
         ),
         Expanded(
           child: Center(
@@ -80,34 +77,30 @@ class _TimerWidgetState extends State<TimerWidget> {
             ),
           ),
         ),
-        NavigationFooter(widget._controller, widget._ratioCompleted),
+        NavigationFooter(widget._controller),
       ],
     );
   }
 }
 
-class TimerCountdownWidget extends StatefulWidget {
+class TimerCountdownWidget extends ConsumerStatefulWidget {
   final PageController _controller;
-  final double _ratioCompleted;
   final int _seconds;
-  final Map<Exercise, int> _exercisePages;
-  final int _totalPages;
 
   const TimerCountdownWidget(
     this._controller,
     this._seconds,
-    this._ratioCompleted,
-    this._exercisePages,
-    this._totalPages,
   );
 
   @override
   _TimerCountdownWidgetState createState() => _TimerCountdownWidgetState();
 }
 
-class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
+class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
   late DateTime _endTime;
   late Timer _uiTimer;
+
+  bool _hasNotified = false;
 
   @override
   void initState() {
@@ -131,24 +124,40 @@ class _TimerCountdownWidgetState extends State<TimerCountdownWidget> {
     final remaining = _endTime.difference(DateTime.now());
     final remainingSeconds = remaining.inSeconds <= 0 ? 0 : remaining.inSeconds;
     final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
+    final gymState = ref.watch(gymStateProvider);
+
+    //  When countdown finishes, notify ONCE, and respect settings
+    if (remainingSeconds == 0 && !_hasNotified) {
+      if (gymState.alertOnCountdownEnd) {
+        HapticFeedback.mediumImpact();
+
+        // Not that this only works on desktop platforms
+        SystemSound.play(SystemSoundType.alert);
+      }
+      setState(() {
+        _hasNotified = true;
+      });
+    }
 
     return Column(
       children: [
         NavigationHeader(
           AppLocalizations.of(context).pause,
           widget._controller,
-          totalPages: widget._totalPages,
-          exercisePages: widget._exercisePages,
         ),
         Expanded(
-          child: Center(
-            child: Text(
-              DateFormat('m:ss').format(displayTime),
-              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                DateFormat('m:ss').format(displayTime),
+                style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
         ),
-        NavigationFooter(widget._controller, widget._ratioCompleted),
+        NavigationFooter(widget._controller),
       ],
     );
   }

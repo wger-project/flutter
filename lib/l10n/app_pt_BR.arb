@@ -115,7 +115,7 @@
     "@close": {
         "description": "Translation for close"
     },
-    "successfullyDeleted": "Excluído",
+    "successfullyDeleted": "Removido com êxito",
     "@successfullyDeleted": {
         "description": "Message when an item was successfully deleted"
     },
@@ -125,13 +125,13 @@
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"
     },
-    "set": "Definir",
+    "set": "Série",
     "@set": {
         "description": "A set in a workout plan"
     },
     "noMeasurementEntries": "Você não tem entradas de medição",
     "@noMeasurementEntries": {},
-    "newSet": "Novo conjunto",
+    "newSet": "Nova séries",
     "@newSet": {
         "description": "Header when adding a new set to a workout day"
     },
@@ -189,7 +189,7 @@
     "@pause": {
         "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
     },
-    "success": "Sucesso",
+    "success": "Bem-sucedido",
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
     },
@@ -213,7 +213,7 @@
     "@newEntry": {
         "description": "Title when adding a new entry such as a weight or log entry"
     },
-    "addSet": "Adicionar set",
+    "addSet": "Adicionar séries",
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
     },
@@ -271,7 +271,7 @@
     "@loadingText": {
         "description": "Text to show when entries are being loaded in the background: Loading..."
     },
-    "selectExercises": "Se quiser fazer um superset você pode procurar vários exercícios, eles estarão agrupados",
+    "selectExercises": "Se quiser fazer um superséries você pode procurar vários exercícios, eles estarão agrupados",
     "@selectExercises": {},
     "nutritionalDiary": "Diário nutricional",
     "@nutritionalDiary": {},
@@ -953,7 +953,7 @@
     "@noRoutines": {},
     "restTime": "Tempo de descanso",
     "@restTime": {},
-    "sets": "Conjuntos",
+    "sets": "Séries",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
     },
@@ -967,7 +967,7 @@
             }
         }
     },
-    "supersetNr": "Superset {nr}",
+    "supersetNr": "Supersérie {nr}",
     "@supersetNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
         "type": "text",
@@ -981,7 +981,7 @@
     "@restDay": {},
     "isRestDay": "É dia de descanso",
     "@isRestDay": {},
-    "isRestDayHelp": "Por favor, note que todos os conjuntos e exercícios serão removidos quando marcar um dia como um dia de descanso.",
+    "isRestDayHelp": "Por favor, note que todos as séries e exercícios serão removidos quando marcar um dia como um dia de descanso.",
     "@isRestDayHelp": {},
     "needsLogsToAdvance": "Precisa de logs para avançar",
     "@needsLogsToAdvance": {},
@@ -1005,7 +1005,7 @@
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
-    "errorInfoDescription": "Algo de errado aconteceu. Você pode nos ajudar a concertar esse problema reportando o problema no Github",
+    "errorInfoDescription": "Algo de errado aconteceu. Você pode nos ajudar a concertar esse problema reportando o problema no Github.",
     "@errorInfoDescription": {},
     "errorInfoDescription2": "Você pode continuar usando o applicativo, mas algumas funcionalidades não estarão disponíveis.",
     "@errorInfoDescription2": {},
@@ -1021,7 +1021,7 @@
     "@min": {},
     "max": "Max",
     "@max": {},
-    "aboutWhySupportTitle": "Open Source & free to use ❤️",
+    "aboutWhySupportTitle": "Código aberto e de uso gratuito ❤️",
     "@aboutWhySupportTitle": {},
     "aboutContributeTitle": "Contribua",
     "@aboutContributeTitle": {},
@@ -1043,13 +1043,13 @@
     "@fitInWeek": {},
     "fitInWeekHelp": "Se ligado, os dias vão se repetir semanalmente, caso contrário os dias seguirão sequencialmente se considerar o começo de uma nova semana.",
     "@fitInWeekHelp": {},
-    "addSuperset": "Adicionar superset",
+    "addSuperset": "Adicionar superséries",
     "@addSuperset": {},
     "setHasProgression": "Treino tem prograssão",
     "@setHasProgression": {},
-    "setHasProgressionWarning": "Observe que, no momento, não é possível editar todas as configurações de um conjunto no aplicativo móvel nem configurar a progressão automática. Por enquanto, use o aplicativo web.",
+    "setHasProgressionWarning": "Observe que, no momento, não é possível editar todas as configurações de um séries no aplicativo móvel nem configurar a progressão automática. Por enquanto, use o aplicativo web.",
     "@setHasProgressionWarning": {},
-    "setHasNoExercises": "Este treino ainda não tem exercícios!",
+    "setHasNoExercises": "Este séries ainda não tem exercícios!",
     "@setHasNoExercises": {},
     "simpleMode": "Modo simples",
     "@simpleMode": {},
@@ -1057,7 +1057,7 @@
     "@simpleModeHelp": {},
     "progressionRules": "Este exercício tem regras de progressão e não pode ser editado no aplicativo móvel. Use o aplicativo web para editá-lo.",
     "@progressionRules": {},
-    "resistance_band": "Resistance band",
+    "resistance_band": "Banda de resistência",
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
     },
@@ -1068,5 +1068,185 @@
     "lightMode": "Sempre modo claro",
     "@lightMode": {},
     "systemMode": "Configurações do sistema",
-    "@systemMode": {}
+    "@systemMode": {},
+    "endDate": "Data final",
+    "@endDate": {
+        "description": "The End date of a nutritional plan"
+    },
+    "startDate": "Data inicial",
+    "@startDate": {},
+    "dayTypeCustom": "Personalizado",
+    "@dayTypeCustom": {},
+    "dayTypeHiit": "Treinamento intervalado de alta intensidade",
+    "@dayTypeHiit": {},
+    "dayTypeTabata": "Método Tabata",
+    "@dayTypeTabata": {},
+    "impressionGood": "Boa",
+    "@impressionGood": {},
+    "impressionNeutral": "Neutra",
+    "@impressionNeutral": {},
+    "impressionBad": "Ruim",
+    "@impressionBad": {},
+    "gymModeShowExercises": "Mostrar páginas de visão geral dos exercícios",
+    "@gymModeShowExercises": {},
+    "gymModeShowTimer": "Mostrar cronômetro entre séries",
+    "@gymModeShowTimer": {},
+    "gymModeTimerType": "Tipo de temporizador",
+    "@gymModeTimerType": {},
+    "gymModeTimerTypeHelText": "Se uma série tiver tempo de pausa, sempre será usada uma contagem regressiva.",
+    "@gymModeTimerTypeHelText": {},
+    "countdown": "Contagem regressiva",
+    "@countdown": {},
+    "stopwatch": "cronômetro",
+    "@stopwatch": {},
+    "gymModeDefaultCountdownTime": "Tempo de contagem regressiva padrão, em segundos",
+    "@gymModeDefaultCountdownTime": {},
+    "gymModeNotifyOnCountdownFinish": "Notificar no final da contagem regressiva",
+    "@gymModeNotifyOnCountdownFinish": {},
+    "duration": "Duração",
+    "@duration": {},
+    "durationHoursMinutes": "{hours}h {minutes}m",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Volume",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Treino concluído",
+    "@workoutCompleted": {},
+    "dayTypeEnom": "Cada minuto a minuto",
+    "@dayTypeEnom": {},
+    "dayTypeAmrap": "Tantas rodadas quanto possível",
+    "@dayTypeAmrap": {},
+    "dayTypeEdt": "Treinamento de densidade crescente",
+    "@dayTypeEdt": {},
+    "dayTypeRft": "Rodadas para ganhar tempo",
+    "@dayTypeRft": {},
+    "dayTypeAfap": "O mais rápido possível",
+    "@dayTypeAfap": {},
+    "slotEntryTypeNormal": "Normal",
+    "@slotEntryTypeNormal": {},
+    "slotEntryTypePartial": "Parcial",
+    "@slotEntryTypePartial": {},
+    "slotEntryTypeForced": "Forçado",
+    "@slotEntryTypeForced": {},
+    "slotEntryTypeTut": "Tempo Sob Tensão",
+    "@slotEntryTypeTut": {},
+    "slotEntryTypeIso": "Fixação isométrica",
+    "@slotEntryTypeIso": {},
+    "slotEntryTypeJump": "Pular",
+    "@slotEntryTypeJump": {},
+    "applicationLogs": "Registros de aplicativos",
+    "@applicationLogs": {},
+    "openEnded": "Aberto",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "overview": "visão global",
+    "@overview": {},
+    "formMinMaxValues": "Insira um valor entre {min} e {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "identicalExercisePleaseDiscard": "Se você notar um exercício idêntico ao que você está adicionando, descarte o rascunho e edite o exercício.",
+    "@identicalExercisePleaseDiscard": {},
+    "checkInformationBeforeSubmitting": "Verifique se as informações inseridas estão corretas antes de enviar o exercício",
+    "@checkInformationBeforeSubmitting": {},
+    "imageDetailsTitle": "Detalhes da imagem",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Titulo",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Insira o título da imagem",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Link para o site de origem",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Autor(s)",
+    "@author": {},
+    "authorHint": "Digite o nome do autor",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Link para o site ou perfil do autor",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Link para a fonte original, se este for um trabalho derivado",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Um trabalho derivado é baseado em um trabalho anterior, mas contém conteúdo novo e criativo suficiente para ter direito aos seus próprios direitos autorais.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Tipo de imagem",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "Ao enviar esta imagem, você concorda em liberá-la sob CC-BY-SA-4. A imagem deve ser de sua autoria ou o autor deve tê-la divulgado sob uma licença compatível com ela.",
+    "@imageDetailsLicenseNotice": {},
+    "imageDetailsLicenseNoticeLinkToLicense": "Consulte o texto da licença.",
+    "@imageDetailsLicenseNoticeLinkToLicense": {},
+    "imageFormatNotSupported": "{imageFormat} não compatível",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "Imagens {imageFormat} ainda não são suportadas.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "add": "adicionar",
+    "@add": {
+        "description": "Add button text"
+    },
+    "superset": "Supersérie",
+    "@superset": {},
+    "enterTextInLanguage": "Por favor, insira o texto no idioma correto!",
+    "@enterTextInLanguage": {},
+    "endWorkout": "Terminar treino",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "slotEntryTypeMyo": "Myo",
+    "@slotEntryTypeMyo": {},
+    "slotEntryTypeDropset": "Drop set",
+    "@slotEntryTypeDropset": {}
 }

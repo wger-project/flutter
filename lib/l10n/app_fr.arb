@@ -7,7 +7,7 @@
     "@weight": {
         "description": "The weight of a workout log or body weight entry"
     },
-    "confirmDelete": "Êtes-vous sûre de vouloir supprimer « {toDelete} » ?",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer '{toDelete}' ?",
     "@confirmDelete": {
         "description": "Confirmation text before the user deletes an object",
         "type": "text",
@@ -199,7 +199,7 @@
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
     },
-    "useCustomServer": "Utiliser le serveur personnalisé",
+    "useCustomServer": "Utiliser un serveur personnalisé",
     "@useCustomServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
@@ -364,7 +364,7 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "{imageFormat} non pris en charge",
+    "imageFormatNotSupportedDetail": "{imageFormat} pas encore pris en charge.",
     "@imageFormatNotSupportedDetail": {
         "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
@@ -1036,5 +1036,153 @@
     "endDate": "Date de fin",
     "@endDate": {},
     "startDate": "Date de début",
-    "@startDate": {}
+    "@startDate": {},
+    "dayTypeCustom": "Personnalisé",
+    "@dayTypeCustom": {},
+    "dayTypeEnom": "Un mouvement par minute",
+    "@dayTypeEnom": {},
+    "dayTypeAmrap": "Autant de rounds que possible",
+    "@dayTypeAmrap": {},
+    "dayTypeHiit": "Entraînement fractionné de haute intensité",
+    "@dayTypeHiit": {},
+    "dayTypeTabata": "Tabata",
+    "@dayTypeTabata": {},
+    "dayTypeEdt": "Entraînement à densité croissante",
+    "@dayTypeEdt": {},
+    "dayTypeAfap": "Aussi vite que possible",
+    "@dayTypeAfap": {},
+    "slotEntryTypeNormal": "Normal",
+    "@slotEntryTypeNormal": {},
+    "slotEntryTypeDropset": "Dropset",
+    "@slotEntryTypeDropset": {},
+    "slotEntryTypeMyo": "Myo",
+    "@slotEntryTypeMyo": {},
+    "slotEntryTypePartial": "Partiel",
+    "@slotEntryTypePartial": {},
+    "slotEntryTypeForced": "Forcé",
+    "@slotEntryTypeForced": {},
+    "slotEntryTypeTut": "Temps sous tension",
+    "@slotEntryTypeTut": {},
+    "slotEntryTypeIso": "Maintien isométrique",
+    "@slotEntryTypeIso": {},
+    "slotEntryTypeJump": "Saut",
+    "@slotEntryTypeJump": {},
+    "applicationLogs": "Journaux d'application",
+    "@applicationLogs": {},
+    "openEnded": "Sans date de fin",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "overview": "Aperçu",
+    "@overview": {},
+    "identicalExercisePleaseDiscard": "Si vous remarquez un exercice identique à celui que vous ajoutez, veuillez supprimer votre brouillon et modifier cet exercice à la place.",
+    "@identicalExercisePleaseDiscard": {},
+    "checkInformationBeforeSubmitting": "Veuillez vérifier que les informations que vous avez saisies sont correctes avant de soumettre l'exercice",
+    "@checkInformationBeforeSubmitting": {},
+    "imageDetailsTitle": "Détails de l'image",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "dayTypeRft": "Rounds for time",
+    "@dayTypeRft": {},
+    "imageDetailsLicenseTitle": "Valeur de l'attribut \"title\" de l'image",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Saisir la valeur de l'attribut \"title\" de l'image",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Lien vers le site internet source",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Auteur(s)",
+    "@author": {},
+    "authorHint": "Saisir le nom de l'auteur",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Lien vers le site internet de l'auteur ou de son profil",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Lien vers la source originale, s'il s'agit d'une œuvre dérivée",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Une œuvre dérivée est basée sur une œuvre antérieure mais contient suffisamment de contenu nouveau et créatif pour lui donner droit à son propre droit d’auteur.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Type de l'image",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "En soumettant cette image, vous acceptez sa publication sous licence CC-BY-SA-4. L'image doit être votre propre création ou son auteur doit l'avoir publiée sous une licence compatible.",
+    "@imageDetailsLicenseNotice": {},
+    "imageDetailsLicenseNoticeLinkToLicense": "Voir le texte de la licence.",
+    "@imageDetailsLicenseNoticeLinkToLicense": {},
+    "enterTextInLanguage": "Veuillez saisir le texte dans la bonne langue !",
+    "@enterTextInLanguage": {},
+    "endWorkout": "Terminer l'entraînement",
+    "@endWorkout": {},
+    "impressionGood": "Bonne",
+    "@impressionGood": {},
+    "impressionNeutral": "Neutre",
+    "@impressionNeutral": {},
+    "impressionBad": "Mauvaise",
+    "@impressionBad": {},
+    "gymModeShowExercises": "Afficher les pages d'aperçu des exercices",
+    "@gymModeShowExercises": {},
+    "gymModeShowTimer": "Afficher le chronomètre entre les séries",
+    "@gymModeShowTimer": {},
+    "gymModeTimerType": "Type de chronomètre",
+    "@gymModeTimerType": {},
+    "gymModeTimerTypeHelText": "Si une série a un temps de pause, un compte à rebours est toujours utilisé.",
+    "@gymModeTimerTypeHelText": {},
+    "countdown": "Compte à rebours",
+    "@countdown": {},
+    "stopwatch": "Chronomètre",
+    "@stopwatch": {},
+    "gymModeDefaultCountdownTime": "Temps de compte à rebours par défaut, en secondes",
+    "@gymModeDefaultCountdownTime": {},
+    "gymModeNotifyOnCountdownFinish": "Notifier à la fin du compte à rebours",
+    "@gymModeNotifyOnCountdownFinish": {},
+    "duration": "Durée",
+    "@duration": {},
+    "durationHoursMinutes": "{hours}h {minutes}m",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Volume",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Entraînement terminé",
+    "@workoutCompleted": {},
+    "formMinMaxValues": "Veuillez entrer une valeur entre {min} et {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "superset": "Superset",
+    "@superset": {}
 }

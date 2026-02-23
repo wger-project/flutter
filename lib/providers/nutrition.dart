@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +22,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/helpers/consts.dart';
@@ -185,11 +186,27 @@ TODO implement:
   }
 
   Future<void> editPlan(NutritionalPlan plan) async {
-    // TODO
+    await baseProvider.patch(
+      plan.toJson(),
+      baseProvider.makeUrl(_nutritionalPlansPath, id: plan.id),
+    );
+    notifyListeners();
   }
 
-  Future<void> deletePlan(String id) async {
-    // TODO
+  Future<void> deletePlan(int id) async {
+    final existingPlanIndex = _plans.indexWhere((element) => element.id == id);
+    final existingPlan = _plans[existingPlanIndex];
+    _plans.removeAt(existingPlanIndex);
+    notifyListeners();
+
+    final response = await baseProvider.deleteRequest(_nutritionalPlansPath, id);
+
+    if (response.statusCode >= 400) {
+      _plans.insert(existingPlanIndex, existingPlan);
+      notifyListeners();
+      throw WgerHttpException(response);
+    }
+    //existingPlan = null;
   }
 
   /// Adds a meal to a plan
@@ -223,7 +240,6 @@ TODO implement:
 
   /// Deletes a meal
   Future<void> deleteMeal(Meal meal) async {
-    /*
     // Get the meal
     final plan = findById(meal.planId);
     final mealIndex = plan.meals.indexWhere((e) => e.id == meal.id);
@@ -236,10 +252,8 @@ TODO implement:
     if (response.statusCode >= 400) {
       plan.meals.insert(mealIndex, existingMeal);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
-    */
-    return;
   }
 
   /// Adds a meal item to a meal
@@ -256,7 +270,6 @@ TODO implement:
 
   /// Deletes a meal
   Future<void> deleteMealItem(MealItem mealItem) async {
-    /*
     // Get the meal
     final meal = findMealById(mealItem.mealId)!;
     final mealItemIndex = meal.mealItems.indexWhere((e) => e.id == mealItem.id);
@@ -269,14 +282,44 @@ TODO implement:
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
-    */
   }
 
   Future<void> clearIngredientCache() async {
     ingredients = [];
     await database.deleteEverything();
+  }
+
+  /// Saves an ingredient to the cache
+  Future<void> cacheIngredient(Ingredient ingredient, {IngredientDatabase? database}) async {
+    database ??= this.database;
+
+    if (!ingredients.any((e) => e.id == ingredient.id)) {
+      ingredients.add(ingredient);
+    }
+
+    final ingredientDb = await (database.select(
+      database.ingredients,
+    )..where((e) => e.id.equals(ingredient.id))).getSingleOrNull();
+
+    if (ingredientDb == null) {
+      final data = ingredient.toJson();
+      try {
+        await database
+            .into(database.ingredients)
+            .insert(
+              IngredientsCompanion.insert(
+                id: ingredient.id,
+                data: jsonEncode(data),
+                lastFetched: DateTime.now(),
+              ),
+            );
+        _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
+      } catch (e) {
+        _logger.finer("Error caching ingredient '${ingredient.name}': $e");
+      }
+    }
   }
 
   /// Fetch and return an ingredient
@@ -306,22 +349,14 @@ TODO implement:
           (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
         }
       } else {
+        _logger.info("Fetching ingredient ID $ingredientId from server");
         final data = await baseProvider.fetch(
           baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
         );
         ingredient = Ingredient.fromJson(data);
-        ingredients.add(ingredient);
 
-        database
-            .into(database.ingredients)
-            .insert(
-              IngredientsCompanion.insert(
-                id: ingredientId,
-                data: jsonEncode(data),
-                lastFetched: DateTime.now(),
-              ),
-            );
-        _logger.finer("Saved ingredient '${ingredient.name}' to db cache");
+        // Cache the ingredient
+        await cacheIngredient(ingredient, database: database);
       }
     }
 
@@ -353,6 +388,7 @@ TODO implement:
     }
 
     // Send the request
+    _logger.info('Fetching ingredients from server');
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
         _ingredientInfoPath,
@@ -362,6 +398,7 @@ TODO implement:
           'limit': API_RESULTS_PAGE_SIZE,
         },
       ),
+      timeout: const Duration(seconds: 20),
     );
 
     return (response['results'] as List)
@@ -383,6 +420,7 @@ TODO implement:
     if (data['count'] == 0) {
       return null;
     }
+
     // TODO we should probably add it to ingredient cache.
     return Ingredient.fromJson(data['results'][0]);
   }

@@ -100,6 +100,7 @@
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
   },
+  "dashboardWidgets": "Dashboard widgets",
   "labelDashboard": "Dashboard",
   "@labelDashboard": {
     "description": "Title for screen dashboard"
@@ -175,6 +176,7 @@
   "slotEntryTypeTut": "Time under Tension",
   "slotEntryTypeIso": "Isometric hold",
   "slotEntryTypeJump": "Jump",
+  "trophies": "Trophies",
   "routines": "Routines",
   "newRoutine": "New routine",
   "noRoutines": "You have no routines",
@@ -232,6 +234,19 @@
   "@comment": {
     "description": "Comment, additional information"
   },
+  "topSet": "Top set: {value}",
+  "@topSet": {
+    "description": "Value is a representation of the set, like '10 x 80kg'",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "impressionGood": "Good",
+  "impressionNeutral": "Neutral",
+  "impressionBad": "Bad",
   "impression": "Impression",
   "@impression": {
     "description": "General impression (e.g. for a workout session) such as good, bad, etc."
@@ -259,10 +274,38 @@
   },
   "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
   "@selectExercises": {},
+  "personalRecords": "Personal records",
   "gymMode": "Gym mode",
   "@gymMode": {
     "description": "Label when starting the gym mode"
   },
+  "gymModeShowExercises": "Show exercise overview pages",
+  "gymModeShowTimer": "Show timer between sets",
+  "gymModeTimerType": "Timer type",
+  "gymModeTimerTypeHelText": "If a set has pause time, a countdown is always used.",
+  "countdown": "Countdown",
+  "stopwatch": "Stopwatch",
+  "gymModeDefaultCountdownTime": "Default countdown time, in seconds",
+  "gymModeNotifyOnCountdownFinish": "Notify on countdown end",
+  "duration": "Duration",
+  "durationHoursMinutes": "{hours}h {minutes}m",
+  "@durationHoursMinutes": {
+    "description": "A duration, in hours and minutes",
+    "type": "text",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "volume": "Volume",
+  "@volume": {
+    "description": "The volume of a workout or set, i.e. weight x reps"
+  },
+  "workoutCompleted": "Workout completed",
   "plateCalculator": "Plates",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
@@ -560,6 +603,7 @@
   "@newEntry": {
     "description": "Title when adding a new entry such as a weight or log entry"
   },
+  "noTrophies": "You have no trophies yet",
   "noWeightEntries": "You have no weight entries",
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
@@ -640,6 +684,19 @@
       },
       "max": {
         "type": "String"
+      }
+    }
+  },
+  "formMinMaxValues": "Please enter a value between {min} and {max}",
+  "@formMinMaxValues": {
+    "description": "Error message when the user needs to enter a value between min and max",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
       }
     }
   },
@@ -842,9 +899,10 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
-  "fitInWeek": "Fit in week",
+  "fitInWeek": "Fixed weekly schedule",
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
+  "superset": "Superset",
   "setHasProgression": "Set has progression",
   "setHasProgressionWarning": "Please note that at the moment it is not possible to edit all settings for a set on the mobile application or configure automatic progression. For now, please use the web application.",
   "setHasNoExercises": "This set has no exercises yet!",
@@ -1063,7 +1121,10 @@
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
   },
-  "endWorkout": "End Workout",
+  "endWorkout": "End workout",
+  "@endWorkout": {
+    "description": "Use the imperative, label on button to finish the current workout in gym mode"
+  },
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",

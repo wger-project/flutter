@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -26,14 +26,14 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
-import 'package:wger/widgets/routines/forms/weight_unit.dart';
+import 'package:wger/widgets/routines/forms/weight.dart';
 
 import 'weight_unit_form_widget_test.mocks.dart';
 
 @GenerateMocks([RoutinesProvider])
 void main() {
   var mockWorkoutPlans = MockRoutinesProvider();
-  int? result;
+  WeightUnit? result;
 
   const unit1 = WeightUnit(id: 1, name: 'kg');
   const unit2 = WeightUnit(id: 2, name: 'donkeys');
@@ -54,8 +54,6 @@ void main() {
     result = null;
     mockWorkoutPlans = MockRoutinesProvider();
     when(mockWorkoutPlans.weightUnits).thenAnswer((_) => [unit1, unit2, unit3]);
-    when(mockWorkoutPlans.findWeightUnitById(1)).thenReturn(unit1);
-    when(mockWorkoutPlans.findWeightUnitById(2)).thenReturn(unit2);
   });
 
   Widget renderWidget() {
@@ -67,7 +65,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: WeightUnitInputWidget(1, onChanged: (value) => result = value)),
+        home: Scaffold(body: WeightUnitInputWidget(unit1, onChanged: (value) => result = value)),
         routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
@@ -97,6 +95,6 @@ void main() {
     await tester.tap(find.text('donkeys').last);
 
     // assert
-    expect(result, equals(2));
+    expect(result, equals(unit2));
   });
 }

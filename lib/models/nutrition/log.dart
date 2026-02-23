@@ -40,7 +40,7 @@ class Log {
   @JsonKey(required: true, name: 'plan')
   String planId;
 
-  @JsonKey(required: true, toJson: dateToUtcIso8601)
+  @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime datetime;
 
   String? comment;

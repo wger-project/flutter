@@ -1,8 +1,6 @@
 {
     "todaysWorkout": "Tvoj današnji trening",
-    "@todaysWorkout": {},
     "mealLogged": "Obrok prijavljen u dnevnik",
-    "@mealLogged": {},
     "time": "Vrijeme",
     "@time": {
         "description": "The time of a meal or workout"
@@ -12,7 +10,6 @@
         "description": "The end time of a workout"
     },
     "username": "Korisničko ime",
-    "@username": {},
     "passwordsDontMatch": "Lozinke se ne podudaraju",
     "@passwordsDontMatch": {
         "description": "Error message when the user enters two different passwords during registration"
@@ -22,24 +19,21 @@
         "description": "Error message when the user a password that is too short"
     },
     "password": "Lozinka",
-    "@password": {},
     "confirmPassword": "Potvrdi lozinku",
-    "@confirmPassword": {},
     "invalidEmail": "Upiši valjanu e-mail adresu",
     "@invalidEmail": {
         "description": "Error message when the user enters an invalid email"
     },
     "email": "E-mail adresa",
-    "@email": {},
-    "invalidUrl": "Upiši važeći URL",
+    "invalidUrl": "Upiši valjanu URL adresu",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
     },
-    "useCustomServer": "Koristi prilagođeni poslužitelj",
+    "useCustomServer": "Koristi prilagođeni server",
     "@useCustomServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
-    "invalidUsername": "Upiši važeće korisničko ime",
+    "invalidUsername": "Upiši valjano korisničko ime",
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
     },
@@ -47,14 +41,12 @@
     "@customServerUrl": {
         "description": "Label in the form where the users can enter their own wger instance"
     },
-    "customServerHint": "Upiši adresu tvog poslužitelja, inače će se koristiti zadani",
+    "customServerHint": "Upiši adresu tvog servera, inače će se koristiti standardni",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
     },
     "registerInstead": "Nemaš račun? Registriraj se",
-    "@registerInstead": {},
     "loginInstead": "Već imaš račun? Prijavi se",
-    "@loginInstead": {},
     "labelBottomNavWorkout": "Trening",
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
@@ -71,7 +63,7 @@
     "@labelWorkoutPlan": {
         "description": "Title for screen workout plan"
     },
-    "labelDashboard": "Kontrolna ploča",
+    "labelDashboard": "Nadzorna ploča",
     "@labelDashboard": {
         "description": "Title for screen dashboard"
     },
@@ -88,37 +80,29 @@
         "description": "An exercise for a workout"
     },
     "logHelpEntriesUnits": "Napomena: prikazuju se samo unosi s jedinicom težine (kg ili lb) i ponavljanja, druge kombinacije kao što su vrijeme ili do neuspjeha se ovdje zanemaruju.",
-    "@logHelpEntriesUnits": {},
     "description": "Opis",
-    "@description": {},
     "name": "Ime",
     "@name": {
         "description": "Name for a workout or nutritional plan"
     },
     "nutritionalDiary": "Dnevnik prehrane",
-    "@nutritionalDiary": {},
     "nutritionalPlans": "Planovi prehrane",
-    "@nutritionalPlans": {},
     "noNutritionalPlans": "Nemaš planove prehrane",
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
     "anErrorOccurred": "Dogodila se greška!",
-    "@anErrorOccurred": {},
     "weight": "Težina",
     "@weight": {
         "description": "The weight of a workout log or body weight entry"
     },
     "measurement": "Mjerenje",
-    "@measurement": {},
     "measurements": "Mjerenja",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
     },
     "measurementCategoriesHelpText": "Kategorija mjerenja, kao što su „bicepsi” ili „tjelesna mast”",
-    "@measurementCategoriesHelpText": {},
     "measurementEntriesHelpText": "Jedinica koja se koristi za mjerenje kategorije kao što su „cm” ili „%”",
-    "@measurementEntriesHelpText": {},
     "date": "Datum",
     "@date": {
         "description": "The date of a workout log or body weight entry"
@@ -140,7 +124,6 @@
         "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
     },
     "macronutrients": "Makronutrijenti",
-    "@macronutrients": {},
     "planned": "Planirano",
     "@planned": {
         "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
@@ -150,9 +133,7 @@
         "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
     },
     "difference": "Razlika",
-    "@difference": {},
     "percentEnergy": "Postotak energije",
-    "@percentEnergy": {},
     "gPerBodyKg": "g po tjelesnom kg",
     "@gPerBodyKg": {
         "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
@@ -174,25 +155,19 @@
         "description": "The first letter or short name of the word 'Protein', used in overviews"
     },
     "carbohydrates": "Ugljikohidrati",
-    "@carbohydrates": {},
     "carbohydratesShort": "U",
     "@carbohydratesShort": {
         "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
     },
     "sugars": "Šećeri",
-    "@sugars": {},
     "fat": "Masti",
-    "@fat": {},
     "fatShort": "M",
     "@fatShort": {
         "description": "The first letter or short name of the word 'Fat', used in overviews"
     },
     "saturatedFat": "Zasićene masti",
-    "@saturatedFat": {},
     "fiber": "Vlakna",
-    "@fiber": {},
     "sodium": "Natrij",
-    "@sodium": {},
     "toggleDetails": "Prikaži detalje",
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"
@@ -205,7 +180,7 @@
     "@selectExercise": {
         "description": "Error message when the user hasn't selected an exercise in the form"
     },
-    "enterCharacters": "Upiši {min} do {max} znakova",
+    "enterCharacters": "Upiši između {min} do {max} znaka",
     "@enterCharacters": {
         "description": "Error message when the user hasn't entered the correct number of characters in a form",
         "type": "text",
@@ -233,7 +208,7 @@
         "description": "Label shown on the slider where the user can toggle showing units and RiR",
         "type": "text"
     },
-    "enterValidNumber": "Upiši važeći broj",
+    "enterValidNumber": "Upiši valjani broj",
     "@enterValidNumber": {
         "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
     },
@@ -250,32 +225,25 @@
         "description": "Label for the popup with general app options"
     },
     "takePicture": "Snimi sliku",
-    "@takePicture": {},
     "chooseFromLibrary": "Odaberi iz biblioteke slika",
-    "@chooseFromLibrary": {},
     "gallery": "Galerija",
-    "@gallery": {},
     "addImage": "Dodaj sliku",
-    "@addImage": {},
     "dataCopied": "Podaci kopirani u novi unos",
     "@dataCopied": {
         "description": "Snackbar message to show on copying data to a new log entry"
     },
-    "usernameValidChars": "Korisničko ime može sadržavati samo slova, brojeve i sljedeće znakove: @, +, ., -, _",
+    "usernameValidChars": "Korisničko ime smije sadržavati samo slova, brojeve i sljedeće znakove: @, +, ., -, _",
     "@usernameValidChars": {
         "description": "Error message when the user tries to register a username with forbidden characters"
     },
     "logHelpEntries": "Ako u jednom danu postoji više od jednog unosa s istim brojem ponavljanja, ali različitim težinama, na dijagramu je prikazan samo unos s većom težinom.",
-    "@logHelpEntries": {},
     "addSet": "Dodaj seriju",
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
     },
     "addMeal": "Dodaj obrok",
-    "@addMeal": {},
     "nutritionalPlan": "Plan prehrane",
-    "@nutritionalPlan": {},
-    "useDefaultServer": "Koristi zadani poslužitelj",
+    "useDefaultServer": "Koristi standardni server",
     "@useDefaultServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
@@ -300,15 +268,12 @@
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
     "save": "Spremi",
-    "@save": {},
     "energyShort": "E",
     "@energyShort": {
         "description": "The first letter or short name of the word 'Energy', used in overviews"
     },
     "addIngredient": "Dodaj sastojak",
-    "@addIngredient": {},
     "logMeal": "Zapiši obrok u dnevnik prehrane",
-    "@logMeal": {},
     "value": "Vrijednost",
     "@value": {
         "description": "The value of a measurement entry"
@@ -322,15 +287,12 @@
         "description": "The starting time of a workout"
     },
     "timeStartAhead": "Vrijeme početka ne može biti prije vremena završetka",
-    "@timeStartAhead": {},
     "ingredient": "Sastojak",
-    "@ingredient": {},
     "energy": "Energija",
     "@energy": {
         "description": "Energy in a meal, ingredient etc. e.g. in kJ"
     },
     "protein": "Proteini",
-    "@protein": {},
     "goToToday": "Idi na danas",
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"
@@ -344,7 +306,6 @@
         "description": "The unit used for a repetition (kg, time, etc.)"
     },
     "edit": "Uredi",
-    "@edit": {},
     "confirmDelete": "Stvarno želiš izbrisati „{toDelete}”?",
     "@confirmDelete": {
         "description": "Confirmation text before the user deletes an object",
@@ -356,7 +317,6 @@
         }
     },
     "newNutritionalPlan": "Novi plan prehrane",
-    "@newNutritionalPlan": {},
     "amount": "Količina",
     "@amount": {
         "description": "The amount (e.g. in grams) of an ingredient in a meal"
@@ -374,15 +334,12 @@
         "description": "Text to show when entries are being loaded in the background: Loading..."
     },
     "delete": "Izbriši",
-    "@delete": {},
     "goToDetailPage": "Idi na stranicu s detaljima",
-    "@goToDetailPage": {},
     "aboutDescription": "Hvala što koristiš wger! wger je suradnički projekt otvorenog koda koji su izradili ljubitelji fitnesa iz cijelog svijeta.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
     },
     "calendar": "Kalendar",
-    "@calendar": {},
     "musclesSecondary": "Sekundarni mišići",
     "@musclesSecondary": {
         "description": "secondary muscles trained by an exercise"
@@ -404,7 +361,6 @@
         "description": "(main) muscles trained by an exercise"
     },
     "dayDescriptionHelp": "Opis onoga što se radi na današnji dan (npr. „dan povlačenja”) ili koji su dijelovi tijela trenirani (npr. „prsa i ramena”)",
-    "@dayDescriptionHelp": {},
     "setNr": "Serija br. {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -415,8 +371,7 @@
             }
         }
     },
-    "sameRepetitions": "Ako radiš ista ponavljanja i težinu za sve serije, ispuni jedan redak. Na primjer, za 4 serije jednostavno upiši 10 za ponavljanja, to automatski postaje „4 × 10”.",
-    "@sameRepetitions": {},
+    "sameRepetitions": "Ako radiš ista ponavljanja i težinu za sve serije, ispuni jedan redak. Na primjer, za 4 serije jednostavno upiši 10 za ponavljanja, to automatski postaje „4 × 10”.",
     "comment": "Komentar",
     "@comment": {
         "description": "Comment, additional information"
@@ -434,13 +389,11 @@
         "description": "A (logged) workout session"
     },
     "newDay": "Novi dan",
-    "@newDay": {},
     "newSet": "Nova serija",
     "@newSet": {
         "description": "Header when adding a new set to a workout day"
     },
     "selectExercises": "Ako želiš izraditi nasdkup, traži i odaberi vježbe koje će se grupirati u jednu grupu",
-    "@selectExercises": {},
     "gymMode": "Modus teretane",
     "@gymMode": {
         "description": "Label when starting the gym mode"
@@ -458,23 +411,18 @@
         "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
     },
     "weightUnit": "Jedinica težine",
-    "@weightUnit": {},
     "appUpdateTitle": "Potrebna je nova verzija",
-    "@appUpdateTitle": {},
-    "appUpdateContent": "Ova verzija aplikacije nije kompatibilna s poslužiteljem. Aktualiziraj svoju aplikaciju.",
-    "@appUpdateContent": {},
+    "appUpdateContent": "Ova verzija aplikacije nije kompatibilna sa serverom. Aktualiziraj svoju aplikaciju.",
     "set": "Serija",
     "@set": {
         "description": "A set in a workout plan"
     },
     "repetitionUnit": "Jedinica ponavljanja",
-    "@repetitionUnit": {},
     "recentlyUsedIngredients": "Nedavno dodani sastojci",
     "@recentlyUsedIngredients": {
         "description": "A message when a user adds a new ingredient to a meal."
     },
     "logIngredient": "Zapiši sastojak u dnevnik prehrane",
-    "@logIngredient": {},
     "searchIngredient": "Traži sastojak",
     "@searchIngredient": {
         "description": "Label on ingredient search form"
@@ -519,7 +467,7 @@
     "@close": {
         "description": "Translation for close"
     },
-    "enterMinCharacters": "Upiši barem {min} znakova",
+    "enterMinCharacters": "Upiši barem {min} znaka",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
@@ -530,23 +478,14 @@
         }
     },
     "add_exercise_image_license": "Slike moraju biti kompatibilne s licencom CC BY SA. Ako si u nedoumici, prenesi samo svoje vlastite fotografije.",
-    "@add_exercise_image_license": {},
     "whatVariationsExist": "Koje varijante ove vježbe postoje?",
-    "@whatVariationsExist": {},
     "images": "Slike",
-    "@images": {},
     "alternativeNames": "Alternativna imena",
-    "@alternativeNames": {},
     "previous": "Prethodna",
-    "@previous": {},
     "oneNamePerLine": "Jedno ime po retku",
-    "@oneNamePerLine": {},
     "translation": "Prijevod",
-    "@translation": {},
     "addExercise": "Dodaj vježbu",
-    "@addExercise": {},
     "translateExercise": "Prevedi ovu vježbu",
-    "@translateExercise": {},
     "baseData": "Osnovni podaci na engleskom jeziku",
     "@baseData": {
         "description": "The base data for an exercise such as category, trained muscles, etc."
@@ -568,9 +507,7 @@
         "description": "Generated entry for translation for server strings"
     },
     "userProfile": "Tvoj profil",
-    "@userProfile": {},
     "exerciseList": "Popis vježbi",
-    "@exerciseList": {},
     "exercises": "Vježbe",
     "@exercises": {
         "description": "Multiple exercises for a workout"
@@ -580,13 +517,11 @@
         "description": "Label for the name of a workout exercise"
     },
     "selectEntry": "Odaberi unos",
-    "@selectEntry": {},
     "success": "Uspjeh",
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
     },
     "noMeasurementEntries": "Nemaš unose mjerenja",
-    "@noMeasurementEntries": {},
     "moreMeasurementEntries": "Dodaj novo mjerenje",
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
@@ -605,10 +540,8 @@
         "description": "List of alternative names for an exercise"
     },
     "verifiedEmail": "Potvrđena e-mail adresa",
-    "@verifiedEmail": {},
     "unVerifiedEmail": "Nepotvrđena e-mail adresa",
-    "@unVerifiedEmail": {},
-    "verifiedEmailInfo": "E-mail poruka za potvrdu je poslana na {email}",
+    "verifiedEmailInfo": "E-mail za ovjeru je poslan na {email}",
     "@verifiedEmailInfo": {
         "placeholders": {
             "email": {
@@ -627,14 +560,12 @@
         }
     },
     "cacheWarning": "Zbog predmemoriranja, vidljivost promjena u aplikaciji može nešto potrajati.",
-    "@cacheWarning": {},
     "verifiedEmailReason": "Za dodavanje vježbi moraš potvrditi tvoju e-mail adresu",
-    "@verifiedEmailReason": {},
     "cardio": "Kardio",
     "@cardio": {
         "description": "Generated entry for translation for server strings"
     },
-    "quads": "Ekstenzije nogu",
+    "quads": "Kvadriceps",
     "@quads": {
         "description": "Generated entry for translation for server strings"
     },
@@ -658,7 +589,7 @@
     "@until_failure": {
         "description": "Generated entry for translation for server strings"
     },
-    "none__bodyweight_exercise_": "ništa (vježba za tjelesnu težinu)",
+    "none__bodyweight_exercise_": "bez (vježba za tjelesnu težinu)",
     "@none__bodyweight_exercise_": {
         "description": "Generated entry for translation for server strings"
     },
@@ -667,7 +598,6 @@
         "description": "Generated entry for translation for server strings"
     },
     "textPromptTitle": "Spreman?",
-    "@textPromptTitle": {},
     "barbell": "Šipka",
     "@barbell": {
         "description": "Generated entry for translation for server strings"
@@ -677,7 +607,6 @@
         "description": "Generated entry for translation for server strings"
     },
     "textPromptSubheading": "Počni pritiskom gumba radnje",
-    "@textPromptSubheading": {},
     "body_weight": "Tjelesna težina",
     "@body_weight": {
         "description": "Generated entry for translation for server strings"
@@ -710,16 +639,13 @@
     "@kg": {
         "description": "Generated entry for translation for server strings"
     },
-    "lb": "funta",
+    "lb": "lb",
     "@lb": {
         "description": "Generated entry for translation for server strings"
     },
     "searchNamesInEnglish": "Također traži imena na engleskom jeziku",
-    "@searchNamesInEnglish": {},
     "language": "Jezik",
-    "@language": {},
-    "aboutPageTitle": "Wger informacije",
-    "@aboutPageTitle": {},
+    "aboutPageTitle": "O nama i podrška",
     "abs": "Trbuh",
     "@abs": {
         "description": "Generated entry for translation for server strings"
@@ -733,11 +659,8 @@
         "description": "Generated entry for translation for server strings"
     },
     "baseNameEnglish": "Sve vježbe trebaju osnovno ime na engleskom jeziku",
-    "@baseNameEnglish": {},
     "next": "Sljedeća",
-    "@next": {},
     "contributeExercise": "Doprinesi vježbu",
-    "@contributeExercise": {},
     "bench": "Klupa",
     "@bench": {
         "description": "Generated entry for translation for server strings"
@@ -775,41 +698,29 @@
         "description": "Generated entry for translation for server strings"
     },
     "verify": "Potvrdi",
-    "@verify": {},
     "lower_back": "Donji dio leđa",
     "@lower_back": {
         "description": "Generated entry for translation for server strings"
     },
     "aboutMastodonTitle": "Mastodon",
-    "@aboutMastodonTitle": {},
     "noMatchingExerciseFound": "Nisu pronađene odgovarajuće vježbe",
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
     "aboutDonateTitle": "Doniraj",
-    "@aboutDonateTitle": {},
-    "aboutDonateText": "Pomogni projektu: kupi nam kavu, plati troškove poslužitelja i potiči nas u našem radu",
-    "@aboutDonateText": {},
+    "aboutDonateText": "Iako je projekt besplatan i uvijek će to ostati, održavanje servera nije! Razvoj također zahtijeva značajno vrijeme i trud volontera. Tvoj doprinos izravno podupire te troškove i pomaže u održavanju pouzdanosti usluge.",
     "settingsTitle": "Postavke",
-    "@settingsTitle": {},
     "settingsCacheTitle": "Predmemorija",
-    "@settingsCacheTitle": {},
     "settingsExerciseCacheDescription": "Izvrši predmemoriju",
-    "@settingsExerciseCacheDescription": {},
     "settingsCacheDeletedSnackbar": "Predmemorija je uspješno izbrisana",
-    "@settingsCacheDeletedSnackbar": {},
     "useMetric": "Koristi metričke jedinice za tjelesnu težinu",
-    "@useMetric": {},
     "log": "Zapiši",
     "@log": {
         "description": "Log a specific meal (imperative form)"
     },
     "done": "Obavljeno",
-    "@done": {},
     "onlyLogging": "Prati samo kalorije",
-    "@onlyLogging": {},
     "onlyLoggingHelpText": "Označi okvir ako želiš bilježiti samo svoje kalorije i ne želiš postaviti detaljan plan prehrane s određenim obrocima",
-    "@onlyLoggingHelpText": {},
     "percentValue": "{value} %",
     "@percentValue": {
         "description": "A value in percent, e.g. 10 %",
@@ -821,17 +732,11 @@
         }
     },
     "goalEnergy": "Cilj za energiju",
-    "@goalEnergy": {},
     "goalProtein": "Cilj za proteine",
-    "@goalProtein": {},
     "goalCarbohydrates": "Cilj za ugljikohidrate",
-    "@goalCarbohydrates": {},
     "goalFat": "Cilj za mast",
-    "@goalFat": {},
     "today": "Danas",
-    "@today": {},
     "loggedToday": "Zapisano danas",
-    "@loggedToday": {},
     "kcalValue": "{value} kcal",
     "@kcalValue": {
         "description": "A value in kcal, e.g. 500 kcal",
@@ -861,17 +766,13 @@
         "description": "Caloric deficit (either planned or unplanned)"
     },
     "goalFiber": "Cilj za vlakna",
-    "@goalFiber": {},
     "goalMacro": "Ciljevi za makronutrijente",
     "@goalMacro": {
         "description": "The goal for macronutrients"
     },
-    "selectMealToLog": "Odaberi obrok za zapis u dnevnik",
-    "@selectMealToLog": {},
+    "selectMealToLog": "Odaberi obrok za zapisivanje u dnevnik",
     "ingredientLogged": "Sastojak je upisan u dnevnik",
-    "@ingredientLogged": {},
     "noIngredientsDefined": "Još nije određen nijedan sastojak",
-    "@noIngredientsDefined": {},
     "overallChangeWeight": "Sveukupna promjena",
     "@overallChangeWeight": {
         "description": "Overall change in weight, added for localization"
@@ -880,15 +781,15 @@
     "@goalTypeMeals": {
         "description": "added for localization of Class GoalType's filed meals"
     },
-    "goalTypeBasic": "Osnovni",
+    "goalTypeBasic": "Osnovno",
     "@goalTypeBasic": {
         "description": "added for localization of Class GoalType's filed basic"
     },
-    "goalTypeAdvanced": "Napredni",
+    "goalTypeAdvanced": "Napredno",
     "@goalTypeAdvanced": {
         "description": "added for localization of Class GoalType's filed advanced"
     },
-    "indicatorRaw": "sirovo",
+    "indicatorRaw": "neobrađeno",
     "@indicatorRaw": {
         "description": "added for localization of Class Indicator's field text"
     },
@@ -897,13 +798,9 @@
         "description": "added for localization of Class Indicator's field text"
     },
     "themeMode": "Modus teme",
-    "@themeMode": {},
     "darkMode": "Uvijek tamni modus",
-    "@darkMode": {},
     "lightMode": "Uvijek svijetli modus",
-    "@lightMode": {},
     "systemMode": "Postavke sustava",
-    "@systemMode": {},
     "chartAllTimeTitle": "{name} – svo vrijeme",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
@@ -914,7 +811,7 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} tijekom prehrambenog plana {planName}",
+    "chartDuringPlanTitle": "{chartName} tijekom plana prehrane {planName}",
     "@chartDuringPlanTitle": {
         "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
         "type": "text",
@@ -928,7 +825,6 @@
         }
     },
     "settingsIngredientCacheDescription": "Predmemorija sastojaka",
-    "@settingsIngredientCacheDescription": {},
     "chart30DaysTitle": "{name} – zadnjih 30 dana",
     "@chart30DaysTitle": {
         "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
@@ -940,35 +836,245 @@
         }
     },
     "barWeight": "Težina šipke",
-    "@barWeight": {},
     "useColors": "Koristi boje",
-    "@useColors": {},
     "selectAvailablePlates": "Odaberi prosjećne ploće",
-    "@selectAvailablePlates": {},
     "useApiToken": "Koristi API Token",
-    "@useApiToken": {},
     "useUsernameAndPassword": "Koristi vjerodajenice (Korisničko ime i lozinku)",
-    "@useUsernameAndPassword": {},
     "apiToken": "API Token",
-    "@apiToken": {},
-    "invalidApiToken": "Molimo provjerite API Token",
+    "invalidApiToken": "Upiši valjani API ključ",
     "@invalidApiToken": {
         "description": "Error message when the user enters an invalid API key"
     },
-    "apiTokenValidChars": "API Token može sadržavati a-f, brojeve od 0-9 i mora biti točno 40 znakova dugačak.",
+    "apiTokenValidChars": "API ključ može sadržati slova a-f, brojke od 0-9 i mora imati točno 40 znakova",
     "@apiTokenValidChars": {
         "description": "Error message when the user tries to input a API key with forbidden characters"
     },
-    "routines": "Rutina",
-    "@routines": {},
+    "routines": "Rutine",
     "newRoutine": "Nova rutina",
-    "@newRoutine": {},
-    "noRoutines": "Vi nemate rutine",
-    "@noRoutines": {},
-    "restTime": "Period odmora",
-    "@restTime": {},
-    "sets": "Vježba ima setova",
+    "noRoutines": "Nemaš rutine",
+    "restTime": "Vrijeme odmora",
+    "sets": "Serije",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
-    }
+    },
+    "min": "Min.",
+    "max": "Maks.",
+    "dayTypeAfap": "Što brže moguće",
+    "slotEntryTypeNormal": "Normalno",
+    "slotEntryTypePartial": "Djelomično",
+    "slotEntryTypeForced": "Prisiljeno",
+    "aboutTranslationListTitle": "Prevedi aplikaciju",
+    "aboutSourceListTitle": "Prikaži izvorni kod",
+    "aboutJoinCommunityTitle": "Pridruži se zajednici",
+    "aboutDiscordTitle": "Discord",
+    "others": "Drugi",
+    "resultingRoutine": "Rezultirajuća rutina",
+    "restDay": "Dan odmora",
+    "isRestDay": "Je dan odmora",
+    "progressionRules": "Ova vježba ima pravila napredovanja i ne može se uređivati u mobilnoj aplikaciji. Za uređivanje ove vježbe koristi web aplikaciju.",
+    "needsLogsToAdvance": "Treba dnevnike za nastavljanje",
+    "slotEntryTypeTut": "Vrijeme pod napetošću",
+    "slotEntryTypeIso": "Izometrijsko držanje",
+    "slotEntryTypeJump": "Skok",
+    "dayTypeCustom": "Prilagođeno",
+    "dayTypeEnom": "Svake minute u minuti",
+    "startDate": "Datum početka",
+    "@startDate": {
+        "description": "The start date of a nutritional plan or routine"
+    },
+    "dayTypeRft": "Runde za vrijeme",
+    "dayTypeAmrap": "Što više rundi",
+    "dayTypeHiit": "Trening visokog intenziteta u intervalima",
+    "dayTypeTabata": "Tabata",
+    "simpleMode": "Jednostavni modus",
+    "dayTypeEdt": "Trening s postupnim povećanjem ponavljanja/serija",
+    "slotEntryTypeDropset": "Drop set (serije sa smanjivanjem težine)",
+    "slotEntryTypeMyo": "Myo (intenzivnije aktiviranje mišićnih vlakana)",
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Tvoj trenutačni plan prehrane nema definirane obroke",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Za dodavanje obroka u plan, idi na detalje plana prehrane",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "resistance_band": "Elastična vrpca",
+    "@resistance_band": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "aboutWhySupportTitle": "Otvoreni kod i besplatno ❤️",
+    "addSuperset": "Dodaj super-seriju",
+    "setHasProgression": "Serija ima napredovanje",
+    "setHasProgressionWarning": "Imaj na umu da trenutačno nije moguće urediti sve postavke za serije na mobilnoj aplikaciji ili konfigurirati automatsko napredovanje. Za sada koristi web aplikaciju.",
+    "fitInWeek": "Prilagodi u tjedan",
+    "fitInWeekHelp": "Ako je aktivirano, dani će se ponavljati u tjednom ciklusu, inače će dani slijediti uzastopno bez obzira na početak novog tjedna.",
+    "setHasNoExercises": "Ova serija još nema vježbe!",
+    "exerciseNr": "Vježba {nr}",
+    "@exerciseNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "supersetNr": "Super-serija {nr}",
+    "@supersetNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "isRestDayHelp": "Imaj na umu da će se sve serije i vježbe ukloniti kada označiš dan kao dan odmora.",
+    "needsLogsToAdvanceHelp": "Odaberi želiš li da se rutina nastavi na sljedeći zakazani dan, samo ako si za taj dan zapisao/la trening",
+    "routineDays": "Dani u rutini",
+    "errorInfoDescription": "Žao nam je, dogodila se greška. Možeš nam pomoći to popraviti prijavom problema na GitHub-u.",
+    "errorInfoDescription2": "Možeš nastaviti koristiti aplikaciju, ali neke funkcije možda neće raditi.",
+    "errorViewDetails": "Tehnički detalji",
+    "applicationLogs": "Dnevnici aplikacije",
+    "errorCouldNotConnectToServer": "Neuspjelo povezivanje sa serverom",
+    "errorCouldNotConnectToServerDetails": "Aplikacija se nije mogla povezati sa serverom. Provjeri internetsku vezu ili URL servera i pokušaj ponovo. Ako problem ne nestane, obrati se administratoru servera.",
+    "copyToClipboard": "Kopiraj u međuspremnik",
+    "endDate": "Datum kraja",
+    "@endDate": {
+        "description": "The End date of a nutritional plan or routine"
+    },
+    "openEnded": "Bez datuma kraja",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "overview": "Pregled",
+    "aboutContributeTitle": "Doprinesi",
+    "aboutContributeText": "Sve vrste doprinosa su dobrodošle. Bilo da si programer, prevoditelj ili jednostavno strastveni ljubitelj fitnessa, svaka podrška je dobrodošla!",
+    "aboutBugsListTitle": "Prijavi problem ili predloži funkciju",
+    "identicalExercisePleaseDiscard": "Ako primijetiš vježbu koja je identična onoj koju dodaješ, odbaci svoju vježbu i umjesto toga uredi tu vježbu.",
+    "checkInformationBeforeSubmitting": "Provjeri točnost tvojih unesenih podataka prije slanja vježbe",
+    "imageDetailsTitle": "Detalji slike",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Naslov",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Upiši naslov slike",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Poveznica na izvornu web-stranicu",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Autori",
+    "authorHint": "Upiši ime autora",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Poveznica na web-stranicu ili profil autora",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Poveznica na izvorni izvor, ako je ovo izvedeno djelo",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Izvedeno djelo se temelji na prethodnom djelu, ali sadrži dovoljno novog, kreativnog sadržaja da bi mu se dalo pravo na vlastita autorska prava.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Vrsta slike",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "Slanjem ove slike pristaješ na njezino objavljivanje pod licencom CC-BY-SA-4. Slika mora biti tvoje vlastito djelo ili ju je autor morao objaviti pod s njom kompatibilnom licencom.",
+    "imageDetailsLicenseNoticeLinkToLicense": "Pogledaj tekst licence.",
+    "imageFormatNotSupported": "{imageFormat} nije podržani format",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "{imageFormat} slike još nisu podržane.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "add": "dodaj",
+    "@add": {
+        "description": "Add button text"
+    },
+    "enterTextInLanguage": "Upiši tekst u ispravnom jeziku!",
+    "simpleModeHelp": "Sakrij neke naprednije postavke prilikom uređivanja vježbi",
+    "endWorkout": "Završi trening",
+    "dashboardWidgets": "Widgeti na nadzornoj ploči",
+    "topSet": "Najbolja serija: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "impressionGood": "Dobro",
+    "impressionNeutral": "Neutralno",
+    "impressionBad": "Loše",
+    "personalRecords": "Osobni rekordi",
+    "gymModeShowExercises": "Prikaži stranice s pregledom vježbi",
+    "gymModeShowTimer": "Prikaži tajmer između serija",
+    "gymModeTimerType": "Vrsta tajmera",
+    "gymModeTimerTypeHelText": "Ako serija sadrži pauze, uvijek se koristi odbrojavanje.",
+    "countdown": "Odbrojavanje",
+    "stopwatch": "Štoperica",
+    "gymModeDefaultCountdownTime": "Zadano vrijeme odbrojavanja, u sekundama",
+    "gymModeNotifyOnCountdownFinish": "Obavijesti pri kraju odbrojavanja",
+    "duration": "Trajanje",
+    "durationHoursMinutes": "{hours} h {minutes} min",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Ukupna težina",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Završeni trening",
+    "noTrophies": "Još nemaš trofeja",
+    "formMinMaxValues": "Upiši vrijednost između {min} i {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "superset": "Super-serija",
+    "trophies": "Trofeje"
 }

@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -44,14 +44,13 @@ class LogMealScreen extends StatefulWidget {
 
 class _LogMealScreenState extends State<LogMealScreen> {
   double portionPct = 100;
-  final _dateController = TextEditingController();
+  final _dateController = TextEditingController(text: '');
   final _timeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    _dateController.text = dateToYYYYMMDD(DateTime.now())!;
     _timeController.text = timeToString(TimeOfDay.now())!;
   }
 
@@ -64,6 +63,10 @@ class _LogMealScreenState extends State<LogMealScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final dateTimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode).add_Hm();
+    final i18n = AppLocalizations.of(context);
+
     final args = ModalRoute.of(context)!.settings.arguments as LogMealArguments;
     final meal = args.meal.copyWith(
       mealItems: args.meal.mealItems
@@ -71,7 +74,9 @@ class _LogMealScreenState extends State<LogMealScreen> {
           .toList(),
     );
 
-    final i18n = AppLocalizations.of(context);
+    if (_dateController.text.isEmpty) {
+      _dateController.text = dateFormat.format(DateTime.now());
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text(i18n.logMeal)),
@@ -123,12 +128,12 @@ class _LogMealScreenState extends State<LogMealScreen> {
                           final pickedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
-                            firstDate: DateTime(DateTime.now().year - 10),
+                            firstDate: DateTime.now().subtract(const Duration(days: 3000)),
                             lastDate: DateTime.now(),
                           );
 
                           if (pickedDate != null) {
-                            _dateController.text = dateToYYYYMMDD(pickedDate)!;
+                            _dateController.text = dateFormat.format(pickedDate);
                           }
                         },
                         onSaved: (newValue) {
@@ -170,15 +175,13 @@ class _LogMealScreenState extends State<LogMealScreen> {
                       TextButton(
                         child: Text(i18n.save),
                         onPressed: () async {
-                          final loggedTime = getDateTimeFromDateAndTime(
-                            _dateController.text,
-                            _timeController.text,
+                          final loggedDate = dateTimeFormat.parse(
+                            '${_dateController.text} ${_timeController.text}',
                           );
-
                           await Provider.of<NutritionPlansProvider>(
                             context,
                             listen: false,
-                          ).logMealToDiary(meal, loggedTime);
+                          ).logMealToDiary(meal, loggedDate);
 
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(

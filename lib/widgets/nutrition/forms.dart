@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -176,17 +175,9 @@ class IngredientFormState extends State<IngredientForm> {
   final _ingredientIdController = TextEditingController();
   final _amountController = TextEditingController();
   final _dateController = TextEditingController(); // optional
-  final _timeController = TextEditingController(); // optional
+  final _timeController = TextEditingController(text: ''); // optional
   final _mealItem = MealItem.empty();
   var _searchQuery = ''; // copy from typeahead. for filtering suggestions
-
-  @override
-  void initState() {
-    super.initState();
-    final now = DateTime.now();
-    _dateController.text = dateToYYYYMMDD(now)!;
-    _timeController.text = timeToString(TimeOfDay.fromDateTime(now))!;
-  }
 
   @override
   void dispose() {
@@ -230,6 +221,19 @@ class IngredientFormState extends State<IngredientForm> {
 
   @override
   Widget build(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    final dateFormat = DateFormat.yMd(languageCode);
+    final timeFormat = DateFormat.Hm(languageCode);
+    final dateTimeFormat = DateFormat.yMd(languageCode).add_Hm();
+
+    if (_dateController.text.isEmpty) {
+      _dateController.text = dateFormat.format(DateTime.now());
+    }
+
+    if (_timeController.text.isEmpty) {
+      _timeController.text = timeFormat.format(DateTime.now());
+    }
+
     final String unit = AppLocalizations.of(context).g;
     final queryLower = _searchQuery.toLowerCase();
     final suggestions = widget.recent
@@ -305,7 +309,7 @@ class IngredientFormState extends State<IngredientForm> {
                         );
 
                         if (pickedDate != null) {
-                          _dateController.text = dateToYYYYMMDD(pickedDate)!;
+                          _dateController.text = dateFormat.format(pickedDate);
                         }
                       },
                       onSaved: (newValue) {
@@ -396,9 +400,8 @@ class IngredientFormState extends State<IngredientForm> {
                 _form.currentState!.save();
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
-                final loggedDate = getDateTimeFromDateAndTime(
-                  _dateController.text,
-                  _timeController.text,
+                final loggedDate = dateTimeFormat.parse(
+                  '${_dateController.text} ${_timeController.text}',
                 );
                 widget.onSave(context, _mealItem, loggedDate);
 

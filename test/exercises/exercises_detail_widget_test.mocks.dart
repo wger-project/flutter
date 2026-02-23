@@ -352,7 +352,7 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
           as _i10.Future<_i4.Exercise>);
 
   @override
-  _i10.Future<void> initCacheTimesLocalPrefs({dynamic forceInit = false}) =>
+  _i10.Future<void> initCacheTimesLocalPrefs({bool? forceInit = false}) =>
       (super.noSuchMethod(
             Invocation.method(#initCacheTimesLocalPrefs, [], {
               #forceInit: forceInit,

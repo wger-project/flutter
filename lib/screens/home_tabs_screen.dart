@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,10 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/powersync.dart';
 import 'package:wger/providers/auth.dart';
@@ -30,6 +32,7 @@ import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/trophies.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
@@ -37,7 +40,7 @@ import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 
-class HomeTabsScreen extends StatefulWidget {
+class HomeTabsScreen extends ConsumerStatefulWidget {
   final _logger = Logger('HomeTabsScreen');
 
   HomeTabsScreen();
@@ -48,10 +51,12 @@ class HomeTabsScreen extends StatefulWidget {
   _HomeTabsScreenState createState() => _HomeTabsScreenState();
 }
 
-class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProviderStateMixin {
-  late Future<void> _initialData;
+class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
+    with SingleTickerProviderStateMixin {
+  Future<void>? _initialData;
   bool _errorHandled = false;
   int _selectedIndex = 0;
+  bool _isWideScreen = false;
 
   @override
   void initState() {
@@ -59,9 +64,15 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
     // do we need to await this? or if it's async, how do we handle failures?
     _setupPowersync();
+  }
 
-    // Loading data here, since the build method can be called more than once
-    _initialData = _loadEntries();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final size = MediaQuery.sizeOf(context);
+    _isWideScreen = size.width > MATERIAL_XS_BREAKPOINT;
+    _initialData ??= _loadEntries();
   }
 
   void _onItemTapped(int index) {
@@ -99,7 +110,9 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   /// Load initial data from the server
   Future<void> _loadEntries() async {
+    final languageCode = Localizations.localeOf(context).languageCode;
     final authProvider = context.read<AuthProvider>();
+    final trophyNotifier = ref.read(trophyStateProvider.notifier);
 
     if (!authProvider.dataInit) {
       final routinesProvider = context.read<RoutinesProvider>();
@@ -141,6 +154,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         // routinesProvider.fetchAndSetAllRoutinesFull(),
         weightProvider.fetchAndSetEntries(),
         measurementProvider.fetchAndSetAllCategoriesAndEntries(),
+        trophyNotifier.fetchAll(language: languageCode),
       ]);
 
       //
@@ -165,6 +179,57 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final destinations = [
+      NavigationDestination(
+        icon: const Icon(Icons.home),
+        label: AppLocalizations.of(context).labelDashboard,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.fitness_center),
+        label: AppLocalizations.of(context).labelBottomNavWorkout,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.restaurant),
+        label: AppLocalizations.of(context).labelBottomNavNutrition,
+      ),
+      NavigationDestination(
+        icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
+        label: AppLocalizations.of(context).weight,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.photo_library),
+        label: AppLocalizations.of(context).gallery,
+      ),
+    ];
+
+    /// Navigation bar for narrow screens
+    Widget getNavigationBar() {
+      return NavigationBar(
+        destinations: destinations,
+        onDestinationSelected: _onItemTapped,
+        selectedIndex: _selectedIndex,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+      );
+    }
+
+    /// Navigation rail for wide screens
+    Widget getNavigationRail() {
+      return NavigationRail(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        labelType: NavigationRailLabelType.all,
+        scrollable: true,
+        destinations: destinations
+            .map(
+              (d) => NavigationRailDestination(
+                icon: d.icon,
+                label: Text(d.label),
+              ),
+            )
+            .toList(),
+      );
+    }
+
     return FutureBuilder<void>(
       future: _initialData,
       builder: (context, snapshot) {
@@ -197,34 +262,13 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> with SingleTickerProvid
         }
 
         return Scaffold(
-          body: _screenList.elementAt(_selectedIndex),
-          bottomNavigationBar: NavigationBar(
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.home),
-                label: AppLocalizations.of(context).labelDashboard,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.fitness_center),
-                label: AppLocalizations.of(context).labelBottomNavWorkout,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.restaurant),
-                label: AppLocalizations.of(context).labelBottomNavNutrition,
-              ),
-              NavigationDestination(
-                icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
-                label: AppLocalizations.of(context).weight,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.photo_library),
-                label: AppLocalizations.of(context).gallery,
-              ),
+          body: Row(
+            children: [
+              if (_isWideScreen) getNavigationRail(),
+              Expanded(child: _screenList.elementAt(_selectedIndex)),
             ],
-            onDestinationSelected: _onItemTapped,
-            selectedIndex: _selectedIndex,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           ),
+          bottomNavigationBar: _isWideScreen ? null : getNavigationBar(),
         );
       },
     );

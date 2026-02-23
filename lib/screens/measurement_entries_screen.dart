@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -18,7 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/entries.dart';
@@ -34,7 +37,19 @@ class MeasurementEntriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categoryId = ModalRoute.of(context)!.settings.arguments as int;
-    final category = Provider.of<MeasurementProvider>(context).findCategoryById(categoryId);
+    final provider = Provider.of<MeasurementProvider>(context);
+    MeasurementCategory? category;
+
+    try {
+      category = provider.findCategoryById(categoryId);
+    } on NoSuchEntryException {
+      Future.microtask(() {
+        if (context.mounted && Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+      });
+      return const SizedBox(); // Return empty widget until pop happens
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -60,7 +75,9 @@ class MeasurementEntriesScreen extends StatelessWidget {
                     context: context,
                     builder: (BuildContext contextDialog) {
                       return AlertDialog(
-                        content: Text(AppLocalizations.of(context).confirmDelete(category.name)),
+                        content: Text(
+                          AppLocalizations.of(context).confirmDelete(category!.name),
+                        ),
                         actions: [
                           TextButton(
                             child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
@@ -76,10 +93,11 @@ class MeasurementEntriesScreen extends StatelessWidget {
                               Provider.of<MeasurementProvider>(
                                 context,
                                 listen: false,
-                              ).deleteCategory(category.id!);
-
+                              ).deleteCategory(category!.id!);
                               // Close the popup
                               Navigator.of(contextDialog).pop();
+
+                              Navigator.of(context).pop(); // Exit detail screen
 
                               // and inform the user
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -127,9 +145,11 @@ class MeasurementEntriesScreen extends StatelessWidget {
           );
         },
       ),
-      body: SingleChildScrollView(
-        child: Consumer<MeasurementProvider>(
-          builder: (context, provider, child) => EntriesList(category),
+      body: WidescreenWrapper(
+        child: SingleChildScrollView(
+          child: Consumer<MeasurementProvider>(
+            builder: (context, provider, child) => EntriesList(category!),
+          ),
         ),
       ),
     );

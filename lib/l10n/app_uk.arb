@@ -28,13 +28,9 @@
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
     },
     "nutritionalPlan": "План харчування",
-    "@nutritionalPlan": {},
     "difference": "Різниця",
-    "@difference": {},
     "edit": "Змінити",
-    "@edit": {},
     "delete": "Видалити",
-    "@delete": {},
     "date": "Дата",
     "@date": {
         "description": "The date of a workout log or body weight entry"
@@ -48,15 +44,12 @@
         "description": "Error message when the user enters two different passwords during registration"
     },
     "confirmPassword": "Підтвердьте пароль",
-    "@confirmPassword": {},
     "email": "Адреса електронної пошти",
-    "@email": {},
     "invalidUsername": "Будь ласка, введіть припустиме ім'я користувача",
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
     },
     "username": "Ім'я користувача",
-    "@username": {},
     "customServerHint": "Введіть адресу власного сервера, інакше буде використовуватися за замовчуванням",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
@@ -66,7 +59,6 @@
         "description": "Button text allowing the user to reset the entered values to the default"
     },
     "loginInstead": "Вже маєте обліковий запис? Увійти",
-    "@loginInstead": {},
     "labelBottomNavWorkout": "Тренування",
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
@@ -124,7 +116,6 @@
         "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
     },
     "repetitionUnit": "Одиниця повторень",
-    "@repetitionUnit": {},
     "set": "Набір",
     "@set": {
         "description": "A set in a workout plan"
@@ -140,7 +131,6 @@
         }
     },
     "sameRepetitions": "Якщо ви робите однакові повторення та вагу для всіх наборів, то ви можете просто заповнити один рядок. Наприклад, для 4 наборів просто введіть 10 для повторень, це автоматично стане «4 x 10».",
-    "@sameRepetitions": {},
     "comment": "Коментар",
     "@comment": {
         "description": "Comment, additional information"
@@ -150,9 +140,7 @@
         "description": "General impression (e.g. for a workout session) such as good, bad, etc."
     },
     "newDay": "Новий день",
-    "@newDay": {},
     "selectExercises": "Якщо ви хочете зробити супер-набір, ви можете пошукати декілька вправ, вони будуть згруповані разом",
-    "@selectExercises": {},
     "gymMode": "Режим тренажерного залу",
     "@gymMode": {
         "description": "Label when starting the gym mode"
@@ -174,9 +162,7 @@
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
     "todaysWorkout": "Ваше сьогоднішнє тренування",
-    "@todaysWorkout": {},
     "password": "Пароль",
-    "@password": {},
     "passwordTooShort": "Пароль занадто короткий",
     "@passwordTooShort": {
         "description": "Error message when the user a password that is too short"
@@ -194,15 +180,12 @@
         "description": "Message when an item was successfully saved"
     },
     "registerInstead": "У вас немає облікового запису? Зареєструйтесь зараз",
-    "@registerInstead": {},
     "labelBottomNavNutrition": "Харчування",
     "@labelBottomNavNutrition": {
         "description": "Label used in bottom navigation, use a short word"
     },
     "weightUnit": "Одиниця ваги",
-    "@weightUnit": {},
     "dayDescriptionHelp": "Опис того, що робиться в цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, «груди та плечі»)",
-    "@dayDescriptionHelp": {},
     "workoutSession": "Сеанс тренування",
     "@workoutSession": {
         "description": "A (logged) workout session"
@@ -216,7 +199,6 @@
         "description": "Header when adding a new set to a workout day"
     },
     "measurementCategoriesHelpText": "Категорія вимірювання, така як \"біцепс\" або \"жир тіла\"",
-    "@measurementCategoriesHelpText": {},
     "time": "Час",
     "@time": {
         "description": "The time of a meal or workout"
@@ -238,11 +220,8 @@
         "description": "Energy in a meal in kilocalories, kcal"
     },
     "fat": "Жири",
-    "@fat": {},
     "newNutritionalPlan": "Новий план харчування",
-    "@newNutritionalPlan": {},
     "sugars": "Цукри",
-    "@sugars": {},
     "aboutDescription": "Дякуємо за використання wger! wger - це спільний проєкт з відкритим кодом, створений ентузіастами фітнесу з усього світу.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
@@ -252,7 +231,6 @@
         "description": "Error message when the user hasn't selected an exercise in the form"
     },
     "calendar": "Календар",
-    "@calendar": {},
     "enterValue": "Будь ласка, введіть значення",
     "@enterValue": {
         "description": "Error message when the user hasn't entered a value on a required field"
@@ -272,61 +250,45 @@
         }
     },
     "description": "Опис",
-    "@description": {},
     "name": "Ім'я",
     "@name": {
         "description": "Name for a workout or nutritional plan"
     },
     "save": "Зберегти",
-    "@save": {},
     "addSet": "Додати набір",
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
     },
     "addMeal": "Додати страву",
-    "@addMeal": {},
     "mealLogged": "Страву записано в щоденник",
-    "@mealLogged": {},
     "logMeal": "Запис прийому їжі в щоденник харчування",
-    "@logMeal": {},
     "addIngredient": "Додати інгредієнт",
-    "@addIngredient": {},
     "logIngredient": "Занесіть інгредієнт до щоденника харчування",
-    "@logIngredient": {},
     "searchIngredient": "Пошук інгредієнта",
     "@searchIngredient": {
         "description": "Label on ingredient search form"
     },
     "nutritionalDiary": "Щоденник харчування",
-    "@nutritionalDiary": {},
     "nutritionalPlans": "Плани харчування",
-    "@nutritionalPlans": {},
     "noNutritionalPlans": "Ви не маєте планів харчування",
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
     "anErrorOccurred": "Сталася помилка!",
-    "@anErrorOccurred": {},
     "measurement": "Вимірювання",
-    "@measurement": {},
     "logHelpEntries": "Якщо на один день припадає більше одного запису з однаковою кількістю повторень, але різними вагами, то на графіку буде показано тільки запис з більшою вагою.",
-    "@logHelpEntries": {},
     "logHelpEntriesUnits": "Зверніть увагу, що на графіку відображаються тільки записи з одиницями ваги (кг або lb) і повтореннями. Інші комбінації, такі як час або \"до відмови\", тут ігноруються.",
-    "@logHelpEntriesUnits": {},
     "measurements": "Вимірювання",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
     },
     "measurementEntriesHelpText": "Одиниця вимірювання, яка використовується для вимірювання категорії, як от \"см\" або \"%\"",
-    "@measurementEntriesHelpText": {},
     "start": "Старт",
     "@start": {
         "description": "Label on button to start the gym mode (i.e., an imperative)"
     },
     "timeStartAhead": "Час початку не може передувати часу завершення",
-    "@timeStartAhead": {},
     "ingredient": "Інгредієнт",
-    "@ingredient": {},
     "energy": "Енергія",
     "@energy": {
         "description": "Energy in a meal, ingredient etc. e.g. in kJ"
@@ -336,7 +298,6 @@
         "description": "The first letter or short name of the word 'Energy', used in overviews"
     },
     "macronutrients": "Макроелементи",
-    "@macronutrients": {},
     "planned": "Заплановано",
     "@planned": {
         "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
@@ -350,7 +311,6 @@
         "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
     },
     "percentEnergy": "Відсоток енергії",
-    "@percentEnergy": {},
     "gPerBodyKg": "г на кг тіла",
     "@gPerBodyKg": {
         "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
@@ -368,13 +328,11 @@
         "description": "Abbreviation for gram"
     },
     "protein": "Білок",
-    "@protein": {},
     "proteinShort": "Б",
     "@proteinShort": {
         "description": "The first letter or short name of the word 'Protein', used in overviews"
     },
     "carbohydrates": "Вуглеводи",
-    "@carbohydrates": {},
     "carbohydratesShort": "В",
     "@carbohydratesShort": {
         "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
@@ -384,11 +342,8 @@
         "description": "The first letter or short name of the word 'Fat', used in overviews"
     },
     "saturatedFat": "Насичені жири",
-    "@saturatedFat": {},
     "fiber": "Волокон",
-    "@fiber": {},
     "sodium": "Натрій",
-    "@sodium": {},
     "amount": "Сума",
     "@amount": {
         "description": "The amount (e.g. in grams) of an ingredient in a meal"
@@ -424,7 +379,6 @@
         "description": "Switch to toggle detail / overview"
     },
     "goToDetailPage": "Перейти до сторінки відомостей",
-    "@goToDetailPage": {},
     "goToToday": "Перейти до сьогодні",
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"
@@ -474,11 +428,8 @@
         "description": "Label for the popup with general app options"
     },
     "takePicture": "Зробити знімок",
-    "@takePicture": {},
     "chooseFromLibrary": "Вибрати з бібліотеки світлин",
-    "@chooseFromLibrary": {},
     "gallery": "Галерея",
-    "@gallery": {},
     "imageFormatNotSupported": "{imageFormat} не підтримується",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
@@ -500,15 +451,12 @@
         }
     },
     "addImage": "Додати зображення",
-    "@addImage": {},
     "dataCopied": "Дані скопійовано до нового запису",
     "@dataCopied": {
         "description": "Snackbar message to show on copying data to a new log entry"
     },
     "appUpdateTitle": "Потрібне оновлення",
-    "@appUpdateTitle": {},
     "appUpdateContent": "Ця версія застосунку несумісна з сервером, будь ласка, оновіть застосунок.",
-    "@appUpdateContent": {},
     "productFound": "Виріб знайдено",
     "@productFound": {
         "description": "Header label for dialog when product is found with barcode"
@@ -540,11 +488,8 @@
         "description": "Shorthand for Repetitions In Reserve"
     },
     "miles": "Милі",
-    "@miles": {},
     "aboutPageTitle": "Про нас та підтримка",
-    "@aboutPageTitle": {},
     "noMeasurementEntries": "У вас немає записів вимірювання",
-    "@noMeasurementEntries": {},
     "moreMeasurementEntries": "Додати нове вимірювання",
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
@@ -558,71 +503,40 @@
         }
     },
     "addExercise": "Додати вправу",
-    "@addExercise": {},
     "none__bodyweight_exercise_": "немає (вправи з власною вагою)",
-    "@none__bodyweight_exercise_": {},
     "abs": "Живіт",
-    "@abs": {},
     "baseData": "Основи англійської",
     "@baseData": {
         "description": "The base data for an exercise such as category, trained muscles, etc."
     },
     "minutes": "Хвилини",
-    "@minutes": {},
     "glutes": "Сідниці",
-    "@glutes": {},
     "kilometers": "Кілометри",
-    "@kilometers": {},
     "seconds": "Секунди",
-    "@seconds": {},
     "bench": "Лавка",
-    "@bench": {},
     "barbell": "Штанга",
-    "@barbell": {},
     "triceps": "Трицепс",
-    "@triceps": {},
     "swiss_ball": "Швейцарський м'яч",
-    "@swiss_ball": {},
     "lower_back": "Нижня частина спини",
-    "@lower_back": {},
     "shoulders": "Плечі",
-    "@shoulders": {},
     "hamstrings": "Підколінні сухожилля",
-    "@hamstrings": {},
     "chest": "Груди",
-    "@chest": {},
     "biceps": "Біцепс",
-    "@biceps": {},
     "dumbbell": "Гантеля",
-    "@dumbbell": {},
     "gym_mat": "Гімнастичний мат",
-    "@gym_mat": {},
     "incline_bench": "Похила лавка",
-    "@incline_bench": {},
     "lats": "Найширші м'язи спини",
-    "@lats": {},
     "legs": "Ноги",
-    "@legs": {},
     "back": "Спина",
-    "@back": {},
     "quads": "Квадрицепс",
-    "@quads": {},
     "arms": "Руки",
-    "@arms": {},
     "sz_bar": "SZ-Штанга",
-    "@sz_bar": {},
     "kettlebell": "Гиря",
-    "@kettlebell": {},
     "calves": "Ікри",
-    "@calves": {},
     "pull_up_bar": "Перекладина",
-    "@pull_up_bar": {},
     "until_failure": "До відмови",
-    "@until_failure": {},
     "userProfile": "Твій профіль",
-    "@userProfile": {},
     "exerciseList": "Список вправ",
-    "@exerciseList": {},
     "exercises": "Вправи",
     "@exercises": {
         "description": "Multiple exercises for a workout"
@@ -632,11 +546,8 @@
         "description": "Label for the name of a workout exercise"
     },
     "add_exercise_image_license": "Зображення повинні бути сумісні з ліцензією CC BY SA. Якщо ви сумніваєтеся, завантажуйте лише фотографії, які ви зробили самі.",
-    "@add_exercise_image_license": {},
     "translateExercise": "Перекладіть цю вправу зараз",
-    "@translateExercise": {},
     "selectEntry": "Будь ласка, виберіть запис",
-    "@selectEntry": {},
     "enterMinCharacters": "Будь ласка, введіть принаймні {min} символи",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
@@ -648,7 +559,6 @@
         }
     },
     "baseNameEnglish": "Всі вправи потребують базової назви англійською",
-    "@baseNameEnglish": {},
     "variations": "Варіації",
     "@variations": {
         "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
@@ -663,31 +573,18 @@
         "description": "List of alternative names for an exercise"
     },
     "verifiedEmail": "Підтверджена електронна пошта",
-    "@verifiedEmail": {},
     "unVerifiedEmail": "Непідтверджена електронна пошта",
-    "@unVerifiedEmail": {},
     "verifiedEmailReason": "Вам потрібно підтвердити свою електронну пошту, щоб виконувати вправи",
-    "@verifiedEmailReason": {},
     "alternativeNames": "Альтернативні назви",
-    "@alternativeNames": {},
     "oneNamePerLine": "Одне ім'я на рядок",
-    "@oneNamePerLine": {},
     "whatVariationsExist": "Які варіації цієї вправи існують, якщо такі є?",
-    "@whatVariationsExist": {},
     "previous": "Попередній",
-    "@previous": {},
     "next": "Наступний",
-    "@next": {},
     "images": "Зображення",
-    "@images": {},
     "language": "Мова",
-    "@language": {},
     "contributeExercise": "Внести вправу",
-    "@contributeExercise": {},
     "translation": "Переклад",
-    "@translation": {},
     "cardio": "Кардіо",
-    "@cardio": {},
     "contributeExerciseWarning": "Ви можете брати участь у вправах, лише якщо ваш обліковий запис старший за {days} днів і підтвердив вашу електронну пошту",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
@@ -703,13 +600,9 @@
         "description": "Message when an action completed successfully, usually used as a heading"
     },
     "cacheWarning": "Через кешування може знадобитися деякий час, перш ніж зміни стануть видимими у всьому застосунку.",
-    "@cacheWarning": {},
     "searchNamesInEnglish": "Також шукайте імена англійською мовою",
-    "@searchNamesInEnglish": {},
     "textPromptTitle": "Готові почати?",
-    "@textPromptTitle": {},
     "textPromptSubheading": "Натисніть кнопку дії, щоб почати",
-    "@textPromptSubheading": {},
     "body_weight": "Вага тіла",
     "@body_weight": {
         "description": "Generated entry for translation for server strings"
@@ -735,7 +628,6 @@
         "description": "Generated entry for translation for server strings"
     },
     "verify": "Підтвердити",
-    "@verify": {},
     "max_reps": "Максимальна кількість повторень",
     "@max_reps": {
         "description": "Generated entry for translation for server strings"
@@ -745,7 +637,6 @@
         "description": "The goal for macronutrients"
     },
     "goalFiber": "Волокно гол",
-    "@goalFiber": {},
     "goalTypeBasic": "Базовий",
     "@goalTypeBasic": {
         "description": "added for localization of Class GoalType's filed basic"
@@ -755,9 +646,7 @@
         "description": "added for localization of Class GoalType's filed advanced"
     },
     "useMetric": "Використовуйте метричні одиниці вимірювання маси тіла",
-    "@useMetric": {},
     "settingsTitle": "налаштування",
-    "@settingsTitle": {},
     "deficit": "дефіцит",
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
@@ -783,7 +672,6 @@
         }
     },
     "settingsExerciseCacheDescription": "Кеш вправ",
-    "@settingsExerciseCacheDescription": {},
     "chartAllTimeTitle": "{name} за весь час",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
@@ -832,7 +720,6 @@
         "description": "Log a specific meal (imperative form)"
     },
     "settingsIngredientCacheDescription": "Кеш інгредієнтів",
-    "@settingsIngredientCacheDescription": {},
     "overallChangeWeight": "Загальна зміна",
     "@overallChangeWeight": {
         "description": "Overall change in weight, added for localization"
@@ -850,61 +737,37 @@
         "description": "added for localization of Class Indicator's field text"
     },
     "onlyLogging": "Слідкуйте лише за калоріями",
-    "@onlyLogging": {},
     "onlyLoggingHelpText": "Поставте прапорець, якщо ви хочете лише реєструвати свої калорії та не хочете встановлювати детальний план харчування з певними стравами",
-    "@onlyLoggingHelpText": {},
     "goalEnergy": "Енергетична мета",
-    "@goalEnergy": {},
     "goalProtein": "Білкова мета",
-    "@goalProtein": {},
     "goalCarbohydrates": "Мета вуглеводів",
-    "@goalCarbohydrates": {},
     "goalFat": "Товстий гол",
-    "@goalFat": {},
     "today": "Сьогодні",
-    "@today": {},
     "loggedToday": "Зареєстровано сьогодні",
-    "@loggedToday": {},
     "aboutDonateTitle": "Зробіть пожертву",
-    "@aboutDonateTitle": {},
     "aboutDonateText": "Хоча проект є безкоштовним і завжди ним залишатиметься, запуск сервера - ні! Розвиток також вимагає значного часу і зусиль від волонтерів. Ваш внесок безпосередньо підтримує ці витрати, допомагаючи підтримувати надійність сервісу.",
-    "@aboutDonateText": {},
     "surplus": "надлишок",
     "@surplus": {
         "description": "Caloric surplus (either planned or unplanned)"
     },
     "done": "Готово",
-    "@done": {},
     "noIngredientsDefined": "Інгредієнти ще не визначені",
-    "@noIngredientsDefined": {},
     "noMatchingExerciseFound": "Відповідних вправ не знайдено",
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
     "ingredientLogged": "Інгредієнт зареєстровано в щоденнику",
-    "@ingredientLogged": {},
     "selectMealToLog": "Виберіть страву, щоб записати в щоденник",
-    "@selectMealToLog": {},
     "aboutMastodonTitle": "Мастодонт",
-    "@aboutMastodonTitle": {},
     "settingsCacheTitle": "Кеш",
-    "@settingsCacheTitle": {},
     "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
-    "@settingsCacheDeletedSnackbar": {},
     "themeMode": "Тематичний режим",
-    "@themeMode": {},
     "darkMode": "Завжди темний режим",
-    "@darkMode": {},
     "lightMode": "Завжди легкий режим",
-    "@lightMode": {},
     "systemMode": "Налаштування системи",
-    "@systemMode": {},
     "restDay": "День відпочинку",
-    "@restDay": {},
     "noRoutines": "У вас немає рутин",
-    "@noRoutines": {},
     "restTime": "Час відпочинку",
-    "@restTime": {},
     "sets": "Набори",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
@@ -920,37 +783,21 @@
         }
     },
     "isRestDay": "Є День відпочинку",
-    "@isRestDay": {},
     "isRestDayHelp": "Будь ласка, зверніть увагу, що всі комплекси та вправи будуть видалені, коли ви позначите день як вихідний.",
-    "@isRestDayHelp": {},
     "routineDays": "Дні в рутині",
-    "@routineDays": {},
     "fitInWeek": "Вписується в тиждень",
-    "@fitInWeek": {},
     "fitInWeekHelp": "Якщо ввімкнено, дні повторюватимуться в тижневому циклі, інакше дні будуть йти послідовно незалежно від початку нового тижня.",
-    "@fitInWeekHelp": {},
     "addSuperset": "Додайте надмножину",
-    "@addSuperset": {},
     "setHasProgression": "Набір має прогресію",
-    "@setHasProgression": {},
     "simpleMode": "Простий режим",
-    "@simpleMode": {},
     "resultingRoutine": "Результативна рутина",
-    "@resultingRoutine": {},
     "simpleModeHelp": "Приховайте деякі розширені налаштування під час редагування вправ",
-    "@simpleModeHelp": {},
     "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному додатку. Щоб відредагувати цю вправу, використовуйте веб-додаток.",
-    "@progressionRules": {},
     "min": "Мін",
-    "@min": {},
     "max": "Макс",
-    "@max": {},
     "newRoutine": "Нова рутина",
-    "@newRoutine": {},
     "needsLogsToAdvance": "Для просування потрібні журнали",
-    "@needsLogsToAdvance": {},
     "routines": "Рутини",
-    "@routines": {},
     "exerciseNr": "Вправа {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -962,47 +809,26 @@
         }
     },
     "needsLogsToAdvanceHelp": "Виберіть, якщо ви бажаєте, щоб програма перейшла до наступного запланованого дня, лише якщо ви зареєстрували тренування на цей день",
-    "@needsLogsToAdvanceHelp": {},
     "setHasProgressionWarning": "Зверніть увагу, що на даний момент неможливо змінити всі параметри набору в мобільному додатку або налаштувати автоматичний прогрес. Наразі використовуйте веб-додаток.",
-    "@setHasProgressionWarning": {},
     "setHasNoExercises": "У цьому комплексі ще немає вправ!",
-    "@setHasNoExercises": {},
     "errorCouldNotConnectToServerDetails": "Програмі не вдалося підключитися до сервера. Перевірте підключення до Інтернету або URL-адресу сервера та спробуйте ще раз. Якщо проблема не зникає, зверніться до адміністратора сервера.",
-    "@errorCouldNotConnectToServerDetails": {},
     "errorViewDetails": "Технічні деталі",
-    "@errorViewDetails": {},
     "errorCouldNotConnectToServer": "Не вдалося підключитися до сервера",
-    "@errorCouldNotConnectToServer": {},
     "errorInfoDescription2": "Ви можете продовжувати користуватися додатком, але деякі функції можуть не працювати.",
-    "@errorInfoDescription2": {},
     "errorInfoDescription": "Вибачте, але щось пішло не так. Ви можете допомогти нам виправити це, повідомивши про проблему на GitHub.",
-    "@errorInfoDescription": {},
     "copyToClipboard": "Копіювати в буфер обміну",
-    "@copyToClipboard": {},
     "aboutWhySupportTitle": "Відкритий код та безкоштовний у використанні ❤️",
-    "@aboutWhySupportTitle": {},
     "aboutJoinCommunityTitle": "Приєднуйтесь до спільноти",
-    "@aboutJoinCommunityTitle": {},
     "aboutDiscordTitle": "Дискорд",
-    "@aboutDiscordTitle": {},
     "aboutBugsListTitle": "Повідомити про проблему або запропонувати функцію",
-    "@aboutBugsListTitle": {},
     "aboutSourceListTitle": "Переглянути вихідний код",
-    "@aboutSourceListTitle": {},
     "aboutContributeTitle": "Зробити внесок",
-    "@aboutContributeTitle": {},
     "aboutContributeText": "Ми вітаємо будь-які види внесків. Незалежно від того, чи ви розробник, перекладач, чи просто захоплений фітнесом, ми цінуємо будь-яку підтримку!",
-    "@aboutContributeText": {},
     "aboutTranslationListTitle": "Перекласти програму",
-    "@aboutTranslationListTitle": {},
     "others": "Інші",
-    "@others": {},
     "apiToken": "Токен API",
-    "@apiToken": {},
     "useApiToken": "Використовувати токен API",
-    "@useApiToken": {},
     "useUsernameAndPassword": "Використовуйте ім'я користувача та пароль",
-    "@useUsernameAndPassword": {},
     "invalidApiToken": "Будь ласка, введіть дійсний ключ API",
     "@invalidApiToken": {
         "description": "Error message when the user enters an invalid API key"
@@ -1016,11 +842,8 @@
         "description": "Generated entry for translation for server strings"
     },
     "selectAvailablePlates": "Виберіть доступні тарілки",
-    "@selectAvailablePlates": {},
     "barWeight": "Вага штанги",
-    "@barWeight": {},
     "useColors": "Використовуйте кольори",
-    "@useColors": {},
     "yourCurrentNutritionPlanHasNoMealsDefinedYet": "У вашому поточному плані харчування не визначено жодного прийому їжі",
     "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
         "description": "Message shown when a nutrition plan doesn't have any meals"
@@ -1030,9 +853,168 @@
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
     "endDate": "Дата завершення",
-    "@endDate": {},
     "startDate": "Дата початку",
-    "@startDate": {},
     "applicationLogs": "Журнали програм",
-    "@applicationLogs": {}
+    "creationDate": "Дата початку",
+    "@creationDate": {
+        "description": "The Start date of a nutritional plan"
+    },
+    "openEnded": "Відкритий",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "overview": "Огляд",
+    "identicalExercisePleaseDiscard": "Якщо ви помітили вправу, ідентичну тій, яку ви додаєте, будь ласка, відкиньте свій чернетку та відредагуйте цю вправу.",
+    "checkInformationBeforeSubmitting": "Будь ласка, перевірте правильність введеної вами інформації, перш ніж надсилати вправу",
+    "enterTextInLanguage": "Будь ласка, введіть текст правильною мовою!",
+    "imageDetailsTitle": "Деталі зображення",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Назва",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Введіть назву зображення",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Посилання на веб-сайт джерела",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "imageDetailsAuthor": "Автор(и)",
+    "@imageDetailsAuthor": {
+        "description": "Label for author field"
+    },
+    "imageDetailsAuthorHint": "Введіть ім'я автора",
+    "@imageDetailsAuthorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Посилання на веб-сайт або профіль автора",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Посилання на оригінальне джерело, якщо це похідний твір",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Похідний твір базується на попередньому творі, але містить достатньо нового, творчого контенту, щоб мати право на власне авторське право.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Тип зображення",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNoticePrefix": "Надсилаючи це зображення, ви погоджуєтеся на його публікацію відповідно до ",
+    "@imageDetailsLicenseNoticePrefix": {
+        "description": "First part of license notice text"
+    },
+    "imageDetailsLicenseNoticeSuffix": " Зображення має бути або вашою власною роботою, або автор має опублікувати його за ліцензією, сумісною з CC BY-SA 4.0.",
+    "@imageDetailsLicenseNoticeSuffix": {
+        "description": "Second part of license notice text"
+    },
+    "add": "додати",
+    "@add": {
+        "description": "Add button text"
+    },
+    "imageDetailsLicenseNotice": "Надсилаючи це зображення, ви погоджуєтеся на його розповсюдження за ліцензією CC-BY-SA-4. Зображення має бути або вашою власною роботою, або автор має опублікувати його за ліцензією, сумісною з нею.",
+    "imageDetailsLicenseNoticeLinkToLicense": "Див. текст ліцензії.",
+    "author": "Автор(и)",
+    "authorHint": "Введіть ім'я автора",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "galleryImageTypeNotSupported": "Зображення типу {imageType} наразі не підтримуються на цій платформі.",
+    "@galleryImageTypeNotSupported": {
+        "placeholders": {
+            "imageType": {
+                "type": "String"
+            }
+        }
+    },
+    "galleryImageTypeNotSupportedDetail": "Це зображення у форматі {imageType}, який наразі не підтримується на цій платформі.",
+    "@galleryImageTypeNotSupportedDetail": {
+        "placeholders": {
+            "imageType": {
+                "type": "String"
+            }
+        }
+    },
+    "dayTypeCustom": "Користувацька",
+    "dayTypeEnom": "Кожну хвилину за хвилиною",
+    "dayTypeAmrap": "Якомога більше раундів",
+    "dayTypeHiit": "Високоінтенсивне інтервальне тренування",
+    "dayTypeTabata": "Табата",
+    "dayTypeEdt": "Збільшення щільності навчання",
+    "dayTypeRft": "Раунди на час",
+    "dayTypeAfap": "Якомога швидше",
+    "slotEntryTypeNormal": "Звичайний",
+    "slotEntryTypeDropset": "Дропсет",
+    "slotEntryTypeMyo": "Міо",
+    "slotEntryTypePartial": "Часткове",
+    "slotEntryTypeForced": "Примусово",
+    "slotEntryTypeTut": "Час під Напруги",
+    "slotEntryTypeIso": "Ізометричне утримання",
+    "slotEntryTypeJump": "Стрибок",
+    "endWorkout": "Закінчити тренування",
+    "impressionGood": "Добре",
+    "impressionNeutral": "Нейтральний",
+    "impressionBad": "Погано",
+    "gymModeShowExercises": "Показати сторінки огляду вправ",
+    "gymModeShowTimer": "Показувати таймер між сетами",
+    "gymModeTimerType": "Тип таймера",
+    "gymModeTimerTypeHelText": "Якщо сет має час паузи, завжди використовується зворотний відлік.",
+    "countdown": "Зворотний відлік",
+    "stopwatch": "Секундомір",
+    "gymModeDefaultCountdownTime": "Час зворотного відліку за замовчуванням, у секундах",
+    "gymModeNotifyOnCountdownFinish": "Повідомити про закінчення зворотного відліку",
+    "duration": "Тривалість",
+    "durationHoursMinutes": "{hours}г {minutes}хв",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Обсяг",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Тренування завершено",
+    "formMinMaxValues": "Будь ласка, введіть значення від {min} до {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "superset": "Суперсет",
+    "dashboardWidgets": "Віджети панелі інструментів",
+    "trophies": "Трофеї",
+    "topSet": "Верхній набір: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "personalRecords": "Особисті рекорди",
+    "noTrophies": "У вас ще немає трофеїв"
 }

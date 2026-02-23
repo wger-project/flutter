@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 
 /// Arguments passed to the form screen
 class FormScreenArguments {
@@ -54,18 +55,20 @@ class FormScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(args.title)),
-      body: args.hasListView
-          ? Scrollable(
-              viewportBuilder: (BuildContext context, ViewportOffset position) => Padding(
-                padding: args.padding,
-                child: args.widget,
+      body: WidescreenWrapper(
+        child: args.hasListView
+            ? Scrollable(
+                viewportBuilder: (BuildContext context, ViewportOffset position) => Padding(
+                  padding: args.padding,
+                  child: args.widget,
+                ),
+              )
+            : Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [Padding(padding: args.padding, child: args.widget)],
               ),
-            )
-          : Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [Padding(padding: args.padding, child: args.widget)],
-            ),
+      ),
     );
   }
 }

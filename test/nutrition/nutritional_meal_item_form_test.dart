@@ -292,41 +292,74 @@ void main() {
       expect(find.text('Please enter a valid number'), findsOneWidget);
     });
 
-    testWidgets('save complete ingredient with correct weight input type', (
+    testWidgets(
+      'save complete ingredient with correct weight input type',
+      (
+        WidgetTester tester,
+      ) async {
+        await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
+
+        final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+
+        await tester.tap(find.byKey(const Key('scan-button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+
+        await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
+        await tester.pumpAndSettle();
+
+        expect(formState.ingredientIdController.text, '1');
+
+        await tester.enterText(find.byKey(const Key('field-weight')), '2');
+
+        // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
+        when(mockNutrition.fetchIngredient(1)).thenAnswer(
+          (_) => Future.value(
+            Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
+          ),
+        );
+        await mockNetworkImagesFor(() => tester.pumpAndSettle());
+
+        expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
+
+        await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+        await tester.pumpAndSettle();
+
+        expect(formState.mealItem.amount, 2);
+
+        verify(mockNutrition.addMealItem(any, meal1));
+      },
+    );
+
+    testWidgets('selecting ingredient from autocomplete calls cacheIngredient', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
-
-      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
-
-      await tester.tap(find.byKey(const Key('scan-button')));
+      await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
+      clearInteractions(mockNutrition);
 
-      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
-      await tester.pumpAndSettle();
-
-      expect(formState.ingredientIdController.text, '1');
-
-      await tester.enterText(find.byKey(const Key('field-weight')), '2');
-
-      // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
-      when(mockNutrition.fetchIngredient(1)).thenAnswer(
-        (_) => Future.value(
-          Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
+      when(
+        mockNutrition.searchIngredient(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchEnglish: anyNamed('searchEnglish'),
         ),
-      );
-      await mockNetworkImagesFor(() => tester.pumpAndSettle());
+      ).thenAnswer((_) => Future.value([ingredient1]));
 
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
+      when(
+        mockNutrition.cacheIngredient(any),
+      ).thenAnswer((_) => Future.value(null));
 
-      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.enterText(find.byType(TextFormField).first, 'Water');
+      await tester.pumpAndSettle(const Duration(milliseconds: 600));
       await tester.pumpAndSettle();
 
-      expect(formState.mealItem.amount, 2);
+      await tester.tap(find.byType(ListTile).first);
+      await tester.pumpAndSettle();
 
-      verify(mockNutrition.addMealItem(any, meal1));
+      verify(mockNutrition.cacheIngredient(ingredient1)).called(1);
     });
   });
 }

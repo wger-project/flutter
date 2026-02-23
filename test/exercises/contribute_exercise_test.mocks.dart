@@ -390,6 +390,22 @@ class MockUserProvider extends _i1.Mock implements _i17.UserProvider {
           as _i4.SharedPreferencesAsync);
 
   @override
+  List<_i17.DashboardWidget> get dashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#dashboardWidgets),
+            returnValue: <_i17.DashboardWidget>[],
+          )
+          as List<_i17.DashboardWidget>);
+
+  @override
+  List<_i17.DashboardWidget> get allDashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#allDashboardWidgets),
+            returnValue: <_i17.DashboardWidget>[],
+          )
+          as List<_i17.DashboardWidget>);
+
+  @override
   set themeMode(_i18.ThemeMode? value) => super.noSuchMethod(
     Invocation.setter(#themeMode, value),
     returnValueForMissingStub: null,
@@ -416,6 +432,35 @@ class MockUserProvider extends _i1.Mock implements _i17.UserProvider {
     Invocation.method(#clear, []),
     returnValueForMissingStub: null,
   );
+
+  @override
+  bool isDashboardWidgetVisible(_i17.DashboardWidget? key) =>
+      (super.noSuchMethod(
+            Invocation.method(#isDashboardWidgetVisible, [key]),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i15.Future<void> setDashboardWidgetVisible(
+    _i17.DashboardWidget? key,
+    bool? visible,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardWidgetVisible, [key, visible]),
+            returnValue: _i15.Future<void>.value(),
+            returnValueForMissingStub: _i15.Future<void>.value(),
+          )
+          as _i15.Future<void>);
+
+  @override
+  _i15.Future<void> setDashboardOrder(int? oldIndex, int? newIndex) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardOrder, [oldIndex, newIndex]),
+            returnValue: _i15.Future<void>.value(),
+            returnValueForMissingStub: _i15.Future<void>.value(),
+          )
+          as _i15.Future<void>);
 
   @override
   void setThemeMode(_i18.ThemeMode? mode) => super.noSuchMethod(
@@ -765,7 +810,7 @@ class MockExercisesProvider extends _i1.Mock implements _i20.ExercisesProvider {
           as _i15.Future<_i6.Exercise>);
 
   @override
-  _i15.Future<void> initCacheTimesLocalPrefs({dynamic forceInit = false}) =>
+  _i15.Future<void> initCacheTimesLocalPrefs({bool? forceInit = false}) =>
       (super.noSuchMethod(
             Invocation.method(#initCacheTimesLocalPrefs, [], {
               #forceInit: forceInit,

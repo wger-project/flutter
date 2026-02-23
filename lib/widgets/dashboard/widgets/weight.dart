@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -42,7 +42,7 @@ class DashboardWeightWidget extends StatelessWidget {
     );
 
     return Consumer<BodyWeightProvider>(
-      builder: (context, _, __) => Card(
+      builder: (context, _, _) => Card(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -75,36 +75,47 @@ class DashboardWeightWidget extends StatelessWidget {
                           entries7dAvg.last,
                           weightUnit(profile.isMetric, context),
                         ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            child: Text(
-                              AppLocalizations.of(context).goToDetailPage,
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(WeightScreen.routeName);
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                FormScreen.routeName,
-                                arguments: FormScreenArguments(
-                                  AppLocalizations.of(context).newEntry,
-                                  WeightForm(
-                                    weightProvider.getNewestEntry()?.copyWith(
-                                      id: null,
-                                      date: DateTime.now(),
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextButton(
+                                    child: Text(
+                                      AppLocalizations.of(context).goToDetailPage,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
+                                    onPressed: () {
+                                      Navigator.of(context).pushNamed(WeightScreen.routeName);
+                                    },
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                                  IconButton(
+                                    icon: const Icon(Icons.add),
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        FormScreen.routeName,
+                                        arguments: FormScreenArguments(
+                                          AppLocalizations.of(context).newEntry,
+                                          WeightForm(
+                                            weightProvider.getNewestEntry()?.copyWith(
+                                              id: null,
+                                              date: DateTime.now(),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   )
