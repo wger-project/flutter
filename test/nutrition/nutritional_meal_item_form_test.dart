@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2026 - 2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -186,7 +204,7 @@ void main() {
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();
 
-      expect(find.text('Please enter a valid number'), findsOneWidget);
+      expect(find.text('Please enter a value'), findsOneWidget);
     });
 
     testWidgets('add correct weight type', (WidgetTester tester) async {
@@ -253,8 +271,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Please select an ingredient'), findsOneWidget);
-
-      expect(find.text('Please enter a valid number'), findsOneWidget);
+      expect(find.text('Please enter a value'), findsOneWidget);
     });
 
     testWidgets('save ingredient without weight', (WidgetTester tester) async {
@@ -273,25 +290,7 @@ void main() {
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();
 
-      expect(find.text('Please enter a valid number'), findsOneWidget);
-    });
-
-    //TODO: isn't this test just a duplicate of the above one? can be removed?
-    testWidgets('save ingredient with incorrect weight input type', (WidgetTester tester) async {
-      await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
-
-      await tester.tap(find.byKey(const Key('scan-button')));
-      await tester.pumpAndSettle();
-
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
-
-      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Please enter a valid number'), findsOneWidget);
+      expect(find.text('Please enter a value'), findsOneWidget);
     });
 
     testWidgets(

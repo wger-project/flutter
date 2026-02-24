@@ -231,6 +231,7 @@ class IngredientFormState extends State<IngredientForm> {
     final dateFormat = DateFormat.yMd(languageCode);
     final timeFormat = DateFormat.Hm(languageCode);
     final dateTimeFormat = DateFormat.yMd(languageCode).add_Hm();
+    final i18n = AppLocalizations.of(context);
 
     if (_dateController.text.isEmpty) {
       _dateController.text = dateFormat.format(DateTime.now());
@@ -240,7 +241,7 @@ class IngredientFormState extends State<IngredientForm> {
       _timeController.text = timeFormat.format(DateTime.now());
     }
 
-    final String unit = AppLocalizations.of(context).g;
+    final String unit = i18n.g;
     final queryLower = _searchQuery.toLowerCase();
     final suggestions = widget.recent
         .where((e) => e.ingredient.name.toLowerCase().contains(queryLower))
@@ -268,9 +269,7 @@ class IngredientFormState extends State<IngredientForm> {
                   child: TextFormField(
                     key: const Key('field-weight'),
                     // needed ?
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).weight,
-                    ),
+                    decoration: InputDecoration(labelText: i18n.weight),
                     controller: _amountController,
                     keyboardType: textInputTypeDecimal,
                     onChanged: (value) {
@@ -287,15 +286,15 @@ class IngredientFormState extends State<IngredientForm> {
                     validator: (value) {
                       final text = value?.trim() ?? '';
                       if (text.isEmpty) {
-                        return 'Please enter a weight.';
+                        return i18n.enterValue;
                       }
                       final parsed = double.tryParse(text);
                       if (parsed == null) {
-                        return AppLocalizations.of(context).enterValidNumber;
+                        return i18n.enterValidNumber;
                       }
-                      // Must be at least 1
-                      if (parsed < 1) {
-                        return 'Weight must be at least 1.';
+
+                      if (parsed < 1 || parsed > 1000) {
+                        return i18n.formMinMaxValues(1, 1000);
                       }
                       return null;
                     },
@@ -307,7 +306,7 @@ class IngredientFormState extends State<IngredientForm> {
                       readOnly: true,
                       // Stop keyboard from appearing
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).date,
+                        labelText: i18n.date,
                         // suffixIcon: const Icon(Icons.calendar_today),
                       ),
                       enableInteractiveSelection: false,
@@ -335,7 +334,7 @@ class IngredientFormState extends State<IngredientForm> {
                     child: TextFormField(
                       key: const Key('field-time'),
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).time,
+                        labelText: i18n.time,
                         //suffixIcon: const Icon(Icons.punch_clock)
                       ),
                       controller: _timeController,
