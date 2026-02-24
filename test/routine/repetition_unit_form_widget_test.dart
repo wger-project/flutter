@@ -26,7 +26,7 @@ import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
-import 'package:wger/widgets/routines/forms/reps_unit.dart';
+import 'package:wger/widgets/routines/forms/repetitions.dart';
 
 import 'repetition_unit_form_widget_test.mocks.dart';
 
