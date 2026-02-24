@@ -194,10 +194,20 @@ class IngredientScanResultDialog extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done && ingredient == null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(barcode),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context).productNotFoundDescription(barcode),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        AppLocalizations.of(context).productNotFoundOpenFoodFacts,
+                      ),
+                    ],
                   ),
                 ),
+
               if (ingredient != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -238,6 +248,17 @@ class IngredientScanResultDialog extends StatelessWidget {
             child: Text(MaterialLocalizations.of(context).continueButtonLabel),
             onPressed: () {
               onSelectIngredient(ingredient!.id, ingredient.name, null);
+              Navigator.of(context).pop();
+            },
+          ),
+        // if didn't find a result after scanning
+        if (snapshot.connectionState == ConnectionState.done && ingredient == null)
+          TextButton.icon(
+            key: const Key('ingredient-scan-result-dialog-open-food-facts-button'),
+            icon: const Icon(Icons.add_circle_outline),
+            label: Text(AppLocalizations.of(context).addToOpenFoodFacts),
+            onPressed: () {
+              launchURL('https://world.openfoodfacts.org/cgi/product.pl', context);
               Navigator.of(context).pop();
             },
           ),
