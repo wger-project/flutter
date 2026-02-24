@@ -314,7 +314,14 @@ class ExercisesProvider with ChangeNotifier {
       // Note: no await since we don't care for the updated data right now. It
       // will be written to the db whenever the request finishes and we will get
       // the updated exercise the next time
-      handleUpdateExerciseFromApi(database, exerciseId);
+      handleUpdateExerciseFromApi(database, exerciseId).then(
+        (_) {},
+        onError: (error, stackTrace) => _logger.info(
+          'Error while calling unawaited handleUpdateExerciseFromApi',
+          error,
+          stackTrace,
+        ),
+      );
 
       return exercise;
     } on NoSuchEntryException {
