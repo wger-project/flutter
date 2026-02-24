@@ -1,0 +1,361 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2025 - 2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart' as provider;
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/day_data.dart';
+import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/set_config_data.dart';
+import 'package:wger/models/workouts/slot_data.dart';
+import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/widgets/routines/gym_mode/log_page.dart';
+
+import '../../../../test_data/exercises.dart';
+import '../../../../test_data/routines.dart' as testdata;
+import 'log_page_test.mocks.dart';
+
+@GenerateMocks([ExercisesProvider, RoutinesProvider])
+void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  group('LogPage tests', () {
+    late List<Exercise> testExercises;
+    late ProviderContainer container;
+
+    setUp(() {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      testExercises = getTestExercises();
+      container = ProviderContainer.test();
+    });
+
+    Future<void> pumpLogPage(WidgetTester tester, {RoutinesProvider? routinesProvider}) async {
+      final providerValue = routinesProvider ?? MockRoutinesProvider();
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: provider.ChangeNotifierProvider<RoutinesProvider>.value(
+            value: providerValue,
+            child: MaterialApp(
+              locale: const Locale('en'),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: Scaffold(
+                // Provide a PageView so the PageController used by LogPage is attached
+                body: Builder(
+                  builder: (context) {
+                    final controller = PageController();
+                    return PageView(
+                      controller: controller,
+                      children: [LogPage(controller)],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('handles null values', (tester) async {
+      // Arrange
+      final notifier = container.read(gymStateProvider.notifier);
+      final routine = testdata.getTestRoutine();
+      routine.dayDataGym = [
+        DayData(
+          iteration: 1,
+          date: DateTime(2024, 11, 01),
+          label: '',
+          day: routine.dayDataGym.first.day,
+          slots: [
+            SlotData(
+              isSuperset: false,
+              exerciseIds: [testExercises[0].id!],
+              setConfigs: [
+                SetConfigData(
+                  exerciseId: testExercises[0].id!,
+                  exercise: testExercises[0],
+                  slotEntryId: 1,
+                  nrOfSets: 1,
+                  repetitions: null,
+                  repetitionsUnit: null,
+                  weight: null,
+                  weightUnit: null,
+                  restTime: 120,
+                  rir: 1.5,
+                  rpe: 8,
+                  textRepr: '3x100kg',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ];
+      notifier.state = notifier.state.copyWith(
+        dayId: routine.days.first.id,
+        routine: routine,
+        iteration: 1,
+        currentPage: 2,
+      );
+
+      // Act
+      notifier.calculatePages();
+      notifier.setCurrentPage(2);
+
+      // Assert
+      expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.log);
+      await pumpLogPage(tester);
+      expect(find.byType(LogPage), findsOneWidget);
+    });
+
+    testWidgets('renders without crashing for default slotEntryPage', (tester) async {
+      final notifier = container.read(gymStateProvider.notifier);
+      final routine = testdata.getTestRoutine();
+      notifier.state = notifier.state.copyWith(
+        dayId: routine.days.first.id,
+        routine: routine,
+        iteration: 1,
+      );
+      notifier.calculatePages();
+      await pumpLogPage(tester);
+
+      expect(find.byType(LogPage), findsOneWidget);
+    });
+
+    testWidgets('copy from past log updates form fields and shows SnackBar', (tester) async {
+      // Arrange
+      final notifier = container.read(gymStateProvider.notifier);
+      final routine = testdata.getTestRoutine();
+      notifier.state = notifier.state.copyWith(
+        dayId: routine.days.first.id,
+        routine: routine,
+        iteration: 1,
+      );
+      notifier.calculatePages();
+      notifier.setCurrentPage(2);
+
+      // Act
+      // Log page is at index 2
+      notifier.state = notifier.state.copyWith(currentPage: 2);
+      expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.log);
+      await pumpLogPage(tester);
+
+      // Assert
+      final pastLogTile = find.byKey(const ValueKey('past-log-1'));
+      expect(pastLogTile, findsOneWidget);
+      await tester.tap(pastLogTile);
+      await tester.pumpAndSettle();
+
+      final editableFields = find.byType(EditableText);
+      expect(editableFields, findsWidgets);
+
+      // Get controller texts
+      final repControllerText = tester.widget<EditableText>(editableFields.at(0)).controller.text;
+      final weightControllerText = tester
+          .widget<EditableText>(editableFields.at(1))
+          .controller
+          .text;
+
+      expect(repControllerText, contains('10'));
+      expect(weightControllerText, contains('10'));
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('save button calls addLog on RoutinesProvider', (tester) async {
+      // Arrange
+      final notifier = container.read(gymStateProvider.notifier);
+      final routine = testdata.getTestRoutine();
+      notifier.state = notifier.state.copyWith(
+        dayId: routine.days.first.id,
+        routine: routine,
+        iteration: 1,
+      );
+      notifier.calculatePages();
+      notifier.setCurrentPage(2);
+      notifier.state = notifier.state.copyWith(currentPage: 2);
+      final mockRoutines = MockRoutinesProvider();
+
+      // Act
+      await pumpLogPage(tester, routinesProvider: mockRoutines);
+
+      final editableFields = find.byType(EditableText);
+      expect(editableFields, findsWidgets);
+
+      await tester.enterText(editableFields.at(0), '12'); // Reps
+      await tester.enterText(editableFields.at(1), '34'); // Weight
+      await tester.pumpAndSettle();
+
+      Log? capturedLog;
+      when(mockRoutines.addLog(any)).thenAnswer((invocation) async {
+        capturedLog = invocation.positionalArguments[0] as Log;
+        capturedLog!.id = 42;
+        return capturedLog!;
+      });
+
+      final saveButton = find.byKey(const ValueKey('save-log-button'));
+      expect(saveButton, findsOneWidget);
+
+      await tester.tap(saveButton);
+      await tester.pumpAndSettle();
+
+      // Assert
+      verify(mockRoutines.addLog(any)).called(1);
+      expect(capturedLog, isNotNull);
+      expect(capturedLog!.repetitions, equals(12));
+      expect(capturedLog!.weight, equals(34));
+
+      final currentSlotPage = notifier.state.getSlotEntryPageByIndex()!;
+      expect(capturedLog!.slotEntryId, equals(currentSlotPage.setConfigData!.slotEntryId));
+      expect(capturedLog!.routineId, equals(notifier.state.routine.id));
+      expect(capturedLog!.iteration, equals(notifier.state.iteration));
+    });
+
+    testWidgets('LogsRepsWidget quick buttons update values', (tester) async {
+      // Arrange
+      final notifier = container.read(gymStateProvider.notifier);
+      final routine = testdata.getTestRoutine();
+      routine.dayDataGym[0].slots[0].setConfigs[0].repetitions = 0;
+      notifier.state = notifier.state.copyWith(
+        dayId: routine.days.first.id,
+        routine: routine,
+        iteration: 1,
+      );
+      notifier.calculatePages();
+      notifier.setCurrentPage(2);
+      notifier.state = notifier.state.copyWith(currentPage: 2);
+      final mockRoutines = MockRoutinesProvider();
+      await pumpLogPage(tester, routinesProvider: mockRoutines);
+
+      // Act
+      final repsWidgetFinder = find.byKey(const ValueKey('logs-reps-widget'));
+      expect(repsWidgetFinder, findsOneWidget);
+      final addBtn = find.descendant(
+        of: repsWidgetFinder,
+        matching: find.byIcon(Icons.add),
+      );
+      final removeBtn = find.descendant(
+        of: repsWidgetFinder,
+        matching: find.byIcon(Icons.remove),
+      );
+
+      // Assert
+      // Increment 0 -> 1
+      await tester.tap(addBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: repsWidgetFinder, matching: find.text('1')),
+        findsOneWidget,
+      );
+
+      // Increment 1 -> 2
+      await tester.tap(addBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: repsWidgetFinder, matching: find.text('2')),
+        findsOneWidget,
+      );
+
+      // Decrement 2 -> 1
+      await tester.tap(removeBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: repsWidgetFinder, matching: find.text('1')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('LogsWeightWidget quick buttons update values', (tester) async {
+      // Arrange
+      final notifier = container.read(gymStateProvider.notifier);
+      final routine = testdata.getTestRoutine();
+      routine.dayDataGym[0].slots[0].setConfigs[0].weight = 0;
+      notifier.state = notifier.state.copyWith(
+        dayId: routine.days.first.id,
+        routine: routine,
+        iteration: 1,
+      );
+      notifier.calculatePages();
+      notifier.setCurrentPage(2);
+      notifier.state = notifier.state.copyWith(currentPage: 2);
+      final mockRoutines = MockRoutinesProvider();
+      await pumpLogPage(tester, routinesProvider: mockRoutines);
+
+      // Act
+      final weightWidgetFinder = find.byKey(const ValueKey('logs-weight-widget'));
+      expect(weightWidgetFinder, findsOneWidget);
+      final addBtn = find.descendant(
+        of: weightWidgetFinder,
+        matching: find.byIcon(Icons.add),
+      );
+      final removeBtn = find.descendant(
+        of: weightWidgetFinder,
+        matching: find.byIcon(Icons.remove),
+      );
+
+      // Assert
+      // Increment 0 -> 1.25
+      await tester.tap(addBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: weightWidgetFinder, matching: find.text('1.25')),
+        findsOneWidget,
+      );
+
+      // Increment 1.25 -> 2.5
+      await tester.tap(addBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: weightWidgetFinder, matching: find.text('2.5')),
+        findsOneWidget,
+      );
+
+      // Decrement 2.5 -> 1.25
+      await tester.tap(removeBtn);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: weightWidgetFinder, matching: find.text('1.25')),
+        findsOneWidget,
+      );
+    });
+  });
+}

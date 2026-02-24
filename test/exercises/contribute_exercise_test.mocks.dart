@@ -40,60 +40,50 @@ import 'package:wger/providers/user.dart' as _i17;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake
-    implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeVariation_1 extends _i1.SmartFake implements _i3.Variation {
-  _FakeVariation_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeVariation_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeSharedPreferencesAsync_2 extends _i1.SmartFake
-    implements _i4.SharedPreferencesAsync {
+class _FakeSharedPreferencesAsync_2 extends _i1.SmartFake implements _i4.SharedPreferencesAsync {
   _FakeSharedPreferencesAsync_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeExerciseDatabase_3 extends _i1.SmartFake
-    implements _i5.ExerciseDatabase {
+class _FakeExerciseDatabase_3 extends _i1.SmartFake implements _i5.ExerciseDatabase {
   _FakeExerciseDatabase_3(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeExercise_4 extends _i1.SmartFake implements _i6.Exercise {
-  _FakeExercise_4(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeExercise_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeExerciseCategory_5 extends _i1.SmartFake
-    implements _i7.ExerciseCategory {
+class _FakeExerciseCategory_5 extends _i1.SmartFake implements _i7.ExerciseCategory {
   _FakeExerciseCategory_5(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeEquipment_6 extends _i1.SmartFake implements _i8.Equipment {
-  _FakeEquipment_6(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeEquipment_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeMuscle_7 extends _i1.SmartFake implements _i9.Muscle {
-  _FakeMuscle_7(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeMuscle_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeLanguage_8 extends _i1.SmartFake implements _i10.Language {
-  _FakeLanguage_8(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeLanguage_8(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AddExerciseProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAddExerciseProvider extends _i1.Mock
-    implements _i11.AddExerciseProvider {
+class MockAddExerciseProvider extends _i1.Mock implements _i11.AddExerciseProvider {
   MockAddExerciseProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -154,8 +144,7 @@ class MockAddExerciseProvider extends _i1.Mock
 
   @override
   bool get newVariation =>
-      (super.noSuchMethod(Invocation.getter(#newVariation), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#newVariation), returnValue: false) as bool);
 
   @override
   _i3.Variation get variation =>
@@ -284,8 +273,7 @@ class MockAddExerciseProvider extends _i1.Mock
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   void clear() => super.noSuchMethod(
@@ -294,11 +282,10 @@ class MockAddExerciseProvider extends _i1.Mock
   );
 
   @override
-  void addExerciseImages(List<_i12.ExerciseSubmissionImage>? images) =>
-      super.noSuchMethod(
-        Invocation.method(#addExerciseImages, [images]),
-        returnValueForMissingStub: null,
-      );
+  void addExerciseImages(List<_i12.ExerciseSubmissionImage>? images) => super.noSuchMethod(
+    Invocation.method(#addExerciseImages, [images]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void removeImage(String? path) => super.noSuchMethod(
@@ -403,6 +390,22 @@ class MockUserProvider extends _i1.Mock implements _i17.UserProvider {
           as _i4.SharedPreferencesAsync);
 
   @override
+  List<_i17.DashboardWidget> get dashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#dashboardWidgets),
+            returnValue: <_i17.DashboardWidget>[],
+          )
+          as List<_i17.DashboardWidget>);
+
+  @override
+  List<_i17.DashboardWidget> get allDashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#allDashboardWidgets),
+            returnValue: <_i17.DashboardWidget>[],
+          )
+          as List<_i17.DashboardWidget>);
+
+  @override
   set themeMode(_i18.ThemeMode? value) => super.noSuchMethod(
     Invocation.setter(#themeMode, value),
     returnValueForMissingStub: null,
@@ -422,14 +425,42 @@ class MockUserProvider extends _i1.Mock implements _i17.UserProvider {
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   void clear() => super.noSuchMethod(
     Invocation.method(#clear, []),
     returnValueForMissingStub: null,
   );
+
+  @override
+  bool isDashboardWidgetVisible(_i17.DashboardWidget? key) =>
+      (super.noSuchMethod(
+            Invocation.method(#isDashboardWidgetVisible, [key]),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i15.Future<void> setDashboardWidgetVisible(
+    _i17.DashboardWidget? key,
+    bool? visible,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardWidgetVisible, [key, visible]),
+            returnValue: _i15.Future<void>.value(),
+            returnValueForMissingStub: _i15.Future<void>.value(),
+          )
+          as _i15.Future<void>);
+
+  @override
+  _i15.Future<void> setDashboardOrder(int? oldIndex, int? newIndex) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardOrder, [oldIndex, newIndex]),
+            returnValue: _i15.Future<void>.value(),
+            returnValueForMissingStub: _i15.Future<void>.value(),
+          )
+          as _i15.Future<void>);
 
   @override
   void setThemeMode(_i18.ThemeMode? mode) => super.noSuchMethod(
@@ -588,11 +619,10 @@ class MockExercisesProvider extends _i1.Mock implements _i20.ExercisesProvider {
   );
 
   @override
-  set filteredExercises(List<_i6.Exercise>? newFilteredExercises) =>
-      super.noSuchMethod(
-        Invocation.setter(#filteredExercises, newFilteredExercises),
-        returnValueForMissingStub: null,
-      );
+  set filteredExercises(List<_i6.Exercise>? newFilteredExercises) => super.noSuchMethod(
+    Invocation.setter(#filteredExercises, newFilteredExercises),
+    returnValueForMissingStub: null,
+  );
 
   @override
   set languages(List<_i10.Language>? languages) => super.noSuchMethod(
@@ -602,8 +632,7 @@ class MockExercisesProvider extends _i1.Mock implements _i20.ExercisesProvider {
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   _i15.Future<void> setFilters(_i20.Filters? newFilters) =>
@@ -781,7 +810,7 @@ class MockExercisesProvider extends _i1.Mock implements _i20.ExercisesProvider {
           as _i15.Future<_i6.Exercise>);
 
   @override
-  _i15.Future<void> initCacheTimesLocalPrefs({dynamic forceInit = false}) =>
+  _i15.Future<void> initCacheTimesLocalPrefs({bool? forceInit = false}) =>
       (super.noSuchMethod(
             Invocation.method(#initCacheTimesLocalPrefs, [], {
               #forceInit: forceInit,

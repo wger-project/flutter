@@ -25,7 +25,7 @@ jobs:
         #   runner: ubuntu-24.04-arm
     steps:
       - name: Checkout application
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref }}
 
@@ -39,7 +39,7 @@ jobs:
           sudo apt install -y pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev --no-install-recommends
           flutter build linux --release
           tar -zcvf linux-${{ matrix.platform }}.tar.gz build/linux/${{ matrix.platform }}/release/bundle
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: builds-linux
           path: |
@@ -56,14 +56,14 @@ jobs:
     steps:
 
       - name: Checkout flatpak-flathub repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: wger-project/de.wger.flutter
 
       - name: Bump version and update manifest
         run: |
-          pip install pyyaml toml packaging
-          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.7.3 ../flatpak-flutter
+          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.11.0 ../flatpak-flutter
+          pip install -r ../flatpak-flutter/requirements.txt
           python bump-wger-version.py ${{ inputs.ref }}
           ../flatpak-flutter/flatpak-flutter.py --app-module wger flatpak-flutter.json
 

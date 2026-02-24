@@ -66,23 +66,38 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           as _i3.Client);
 
   @override
-  set auth(_i2.AuthProvider? value) =>
-      super.noSuchMethod(Invocation.setter(#auth, value), returnValueForMissingStub: null);
+  set auth(_i2.AuthProvider? value) => super.noSuchMethod(
+    Invocation.setter(#auth, value),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  set client(_i3.Client? value) =>
-      super.noSuchMethod(Invocation.setter(#client, value), returnValueForMissingStub: null);
+  set client(_i3.Client? value) => super.noSuchMethod(
+    Invocation.setter(#client, value),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
+  Map<String, String> getDefaultHeaders({
+    bool? includeAuth = false,
+    String? language,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {#includeAuth: includeAuth}),
+            Invocation.method(#getDefaultHeaders, [], {
+              #includeAuth: includeAuth,
+              #language: language,
+            }),
             returnValue: <String, String>{},
           )
           as Map<String, String>);
 
   @override
-  Uri makeUrl(String? path, {int? id, String? objectMethod, Map<String, dynamic>? query}) =>
+  Uri makeUrl(
+    String? path, {
+    int? id,
+    String? objectMethod,
+    Map<String, dynamic>? query,
+  }) =>
       (super.noSuchMethod(
             Invocation.method(
               #makeUrl,
@@ -101,17 +116,40 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           as Uri);
 
   @override
-  _i5.Future<dynamic> fetch(Uri? uri) =>
+  _i5.Future<dynamic> fetch(
+    Uri? uri, {
+    int? maxRetries = 3,
+    Duration? initialDelay = const Duration(milliseconds: 250),
+    Duration? timeout = const Duration(seconds: 5),
+    String? language,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#fetch, [uri]),
+            Invocation.method(
+              #fetch,
+              [uri],
+              {
+                #maxRetries: maxRetries,
+                #initialDelay: initialDelay,
+                #timeout: timeout,
+                #language: language,
+              },
+            ),
             returnValue: _i5.Future<dynamic>.value(),
           )
           as _i5.Future<dynamic>);
 
   @override
-  _i5.Future<List<dynamic>> fetchPaginated(Uri? uri) =>
+  _i5.Future<List<dynamic>> fetchPaginated(
+    Uri? uri, {
+    String? language,
+    Duration? timeout = const Duration(seconds: 5),
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchPaginated, [uri]),
+            Invocation.method(
+              #fetchPaginated,
+              [uri],
+              {#language: language, #timeout: timeout},
+            ),
             returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
           )
           as _i5.Future<List<dynamic>>);
@@ -120,15 +158,22 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
   _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(
             Invocation.method(#post, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
           )
           as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<Map<String, dynamic>> patch(Map<String, dynamic>? data, Uri? uri) =>
+  _i5.Future<Map<String, dynamic>> patch(
+    Map<String, dynamic>? data,
+    Uri? uri,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#patch, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
           )
           as _i5.Future<Map<String, dynamic>>);
 
@@ -137,7 +182,10 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
       (super.noSuchMethod(
             Invocation.method(#deleteRequest, [url, id]),
             returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(this, Invocation.method(#deleteRequest, [url, id])),
+              _FakeResponse_3(
+                this,
+                Invocation.method(#deleteRequest, [url, id]),
+              ),
             ),
           )
           as _i5.Future<_i3.Response>);

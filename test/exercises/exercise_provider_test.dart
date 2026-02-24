@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
@@ -7,8 +25,8 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/category.dart';
@@ -105,19 +123,25 @@ void main() {
     driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
     // Mock categories
-    when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(categoryUrl, query: anyNamed('query')),
+    ).thenReturn(tCategoryEntriesUri);
     when(
       mockBaseProvider.fetchPaginated(tCategoryEntriesUri),
     ).thenAnswer((_) => Future.value(tCategoryMap['results']));
 
     // Mock muscles
-    when(mockBaseProvider.makeUrl(muscleUrl)).thenReturn(tMuscleEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(muscleUrl, query: anyNamed('query')),
+    ).thenReturn(tMuscleEntriesUri);
     when(
       mockBaseProvider.fetchPaginated(tMuscleEntriesUri),
     ).thenAnswer((_) => Future.value(tMuscleMap['results']));
 
     // Mock equipment
-    when(mockBaseProvider.makeUrl(equipmentUrl)).thenReturn(tEquipmentEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(equipmentUrl, query: anyNamed('query')),
+    ).thenReturn(tEquipmentEntriesUri);
     when(
       mockBaseProvider.fetchPaginated(tEquipmentEntriesUri),
     ).thenAnswer((_) => Future.value(tEquipmentMap['results']));

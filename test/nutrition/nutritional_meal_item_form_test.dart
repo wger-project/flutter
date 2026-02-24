@@ -348,6 +348,10 @@ void main() {
         ),
       ).thenAnswer((_) => Future.value([ingredient1]));
 
+      when(
+        mockNutrition.cacheIngredient(any),
+      ).thenAnswer((_) => Future.value(null));
+
       await tester.enterText(find.byType(TextFormField).first, 'Water');
       await tester.pumpAndSettle(const Duration(milliseconds: 600));
       await tester.pumpAndSettle();

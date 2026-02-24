@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/configure_plates_screen.dart';
-import 'package:wger/widgets/core/settings/exercise_cache.dart';
-import 'package:wger/widgets/core/settings/ingredient_cache.dart';
-import 'package:wger/widgets/core/settings/theme.dart';
+import 'package:wger/screens/settings_plates_screen.dart';
+
+import './settings/exercise_cache.dart';
+import './settings/ingredient_cache.dart';
+import './settings/theme.dart';
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';

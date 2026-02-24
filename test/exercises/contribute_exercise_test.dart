@@ -21,9 +21,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -136,8 +135,8 @@ void main() {
 
   group('Form Field Validation Tests', () {
     testWidgets('Exercise name field is required and displays validation error', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       // Setup: Create verified user with required data
       setupFullVerifiedUserContext();
 
@@ -187,8 +186,8 @@ void main() {
     });
 
     testWidgets('Alternative names field accepts multiple lines of text', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       // Setup: Create verified user
       setupFullVerifiedUserContext();
 
@@ -423,7 +422,7 @@ void main() {
     testWidgets('Failed submission displays error message', (WidgetTester tester) async {
       // Setup: Create verified user and mock failed submission
       setupFullVerifiedUserContext();
-      final httpException = WgerHttpException({
+      final httpException = WgerHttpException.fromMap({
         'name': ['This field is required'],
       });
       when(mockAddExerciseProvider.postExerciseToServer()).thenThrow(httpException);
@@ -438,8 +437,8 @@ void main() {
     });
 
     testWidgets('Provider clear method is called after successful submission', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       // Setup: Mock successful submission flow
       setupFullVerifiedUserContext();
       when(mockAddExerciseProvider.postExerciseToServer()).thenAnswer((_) async => 1);

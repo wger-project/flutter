@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,11 +22,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/main.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -50,16 +51,21 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? co
     return;
   }
 
-  final errorList = formatApiErrors(extractErrors(exception.errors));
-
   showDialog(
     context: dialogContext,
     builder: (ctx) => AlertDialog(
       title: Text(AppLocalizations.of(ctx).anErrorOccurred),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [...errorList],
+      content: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (exception.type == ErrorType.html)
+              ServerHtmlError(data: exception.htmlError)
+            else
+              ...formatApiErrors(extractErrors(exception.errors)),
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -145,7 +151,10 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                 tilePadding: EdgeInsets.zero,
                 title: Text(i18n.errorViewDetails),
                 children: [
-                  Text(issueErrorMessage, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    issueErrorMessage,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   Container(
                     alignment: Alignment.topLeft,
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -235,6 +244,31 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
       );
     },
   );
+}
+
+/// A widget to render HTML errors returned by the server
+///
+/// This is a simple wrapper around the `Html` Widget, with some light changes
+/// to the style.
+class ServerHtmlError extends StatelessWidget {
+  final logger = Logger('ServerHtml');
+  final String data;
+
+  ServerHtmlError({required this.data, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Html(
+      data: data,
+      style: {
+        'h1': Style(fontSize: FontSize(theme.textTheme.bodyLarge?.fontSize ?? 15)),
+        'h2': Style(fontSize: FontSize(theme.textTheme.bodyMedium?.fontSize ?? 15)),
+      },
+      doNotRenderTheseTags: const {'a'},
+    );
+  }
 }
 
 class CopyToClipboardButton extends StatelessWidget {
@@ -423,38 +457,26 @@ class FormHttpErrorsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       constraints: const BoxConstraints(maxHeight: 250),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
-            ...formatApiErrors(
-              extractErrors(exception.errors),
-              color: Theme.of(context).colorScheme.error,
-            ),
-          ],
-        ),
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.error, width: 1),
+        borderRadius: BorderRadius.circular(6),
       ),
-    );
-  }
-}
-
-class GeneralErrorsWidget extends StatelessWidget {
-  final String? title;
-  final List<String> widgets;
-
-  const GeneralErrorsWidget(this.widgets, {this.title, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 250),
+      padding: const EdgeInsets.all(10),
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
-            ...formatTextErrors(widgets, title: title, color: Theme.of(context).colorScheme.error),
+            Icon(Icons.error_outline, color: theme.colorScheme.error),
+            if (exception.type == ErrorType.html)
+              ServerHtmlError(data: exception.htmlError)
+            else
+              ...formatApiErrors(
+                extractErrors(exception.errors),
+                color: theme.colorScheme.error,
+              ),
           ],
         ),
       ),

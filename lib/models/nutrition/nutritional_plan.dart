@@ -261,6 +261,7 @@ class NutritionalPlan {
         out.add(log);
       }
     }
+    out.sort((a, b) => b.datetime.compareTo(a.datetime));
     return out;
   }
 

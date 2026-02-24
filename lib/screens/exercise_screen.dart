@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
@@ -33,9 +34,11 @@ class ExerciseDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(exercise.getTranslation(Localizations.localeOf(context).languageCode).name),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: ExerciseDetail(exercise),
+      body: WidescreenWrapper(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: ExerciseDetail(exercise),
+        ),
       ),
     );
   }

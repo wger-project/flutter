@@ -49,13 +49,19 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
   _i2.WgerBaseProvider get baseProvider =>
       (super.noSuchMethod(
             Invocation.getter(#baseProvider),
-            returnValue: _FakeWgerBaseProvider_0(this, Invocation.getter(#baseProvider)),
+            returnValue: _FakeWgerBaseProvider_0(
+              this,
+              Invocation.getter(#baseProvider),
+            ),
           )
           as _i2.WgerBaseProvider);
 
   @override
   List<_i3.MeasurementCategory> get categories =>
-      (super.noSuchMethod(Invocation.getter(#categories), returnValue: <_i3.MeasurementCategory>[])
+      (super.noSuchMethod(
+            Invocation.getter(#categories),
+            returnValue: <_i3.MeasurementCategory>[],
+          )
           as List<_i3.MeasurementCategory>);
 
   @override
@@ -63,8 +69,10 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
-  void clear() =>
-      super.noSuchMethod(Invocation.method(#clear, []), returnValueForMissingStub: null);
+  void clear() => super.noSuchMethod(
+    Invocation.method(#clear, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   _i3.MeasurementCategory findCategoryById(int? id) =>
@@ -158,7 +166,13 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
     DateTime? newDate,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#editEntry, [id, categoryId, newValue, newNotes, newDate]),
+            Invocation.method(#editEntry, [
+              id,
+              categoryId,
+              newValue,
+              newNotes,
+              newDate,
+            ]),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )
@@ -177,10 +191,14 @@ class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvide
   );
 
   @override
-  void dispose() =>
-      super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void notifyListeners() =>
-      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
+  void notifyListeners() => super.noSuchMethod(
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
 }

@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/nutritional_diary_detail.dart';
@@ -46,11 +47,13 @@ class NutritionalDiaryScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(args.date)),
       ),
-      body: Consumer<NutritionPlansProvider>(
-        builder: (context, nutritionProvider, child) => SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: NutritionalDiaryDetailWidget(args.plan, args.date),
+      body: WidescreenWrapper(
+        child: Consumer<NutritionPlansProvider>(
+          builder: (context, nutritionProvider, child) => SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: NutritionalDiaryDetailWidget(args.plan, args.date),
+            ),
           ),
         ),
       ),

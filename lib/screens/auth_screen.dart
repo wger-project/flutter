@@ -19,7 +19,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -242,7 +242,7 @@ class _AuthCardState extends State<AuthCard> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final deviceSize = MediaQuery.of(context).size;
+    final deviceSize = MediaQuery.sizeOf(context);
 
     return Card(
       shape: RoundedRectangleBorder(

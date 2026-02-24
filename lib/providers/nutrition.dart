@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,10 +21,10 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
-import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
@@ -220,7 +220,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       _plans.insert(existingPlanIndex, existingPlan);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
     //existingPlan = null;
   }
@@ -263,7 +263,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       plan.meals.insert(mealIndex, existingMeal);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
   }
 
@@ -293,7 +293,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
   }
 
@@ -399,7 +399,7 @@ class NutritionPlansProvider with ChangeNotifier {
     }
 
     // Send the request
-    _logger.info("Fetching ingredients from server");
+    _logger.info('Fetching ingredients from server');
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
         _ingredientInfoPath,
@@ -409,6 +409,7 @@ class NutritionPlansProvider with ChangeNotifier {
           'limit': API_RESULTS_PAGE_SIZE,
         },
       ),
+      timeout: const Duration(seconds: 20),
     );
 
     return (response['results'] as List)

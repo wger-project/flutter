@@ -462,7 +462,7 @@
     },
     "logIngredient": "Registrar en el diario nutricional",
     "@logIngredient": {},
-    "plateCalculatorNotDivisible": "No se puede obtener el peso con las placas disponbles",
+    "plateCalculatorNotDivisible": "No se puede obtener el peso con las placas disponibles",
     "@plateCalculatorNotDivisible": {
         "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
     },
@@ -1005,7 +1005,7 @@
     "@goalTypeAdvanced": {
         "description": "added for localization of Class GoalType's filed advanced"
     },
-    "indicatorRaw": "raw",
+    "indicatorRaw": "Bruto",
     "@indicatorRaw": {
         "description": "added for localization of Class Indicator's field text"
     },
@@ -1114,5 +1114,99 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "dayTypeCustom": "Personalizado",
+    "@dayTypeCustom": {},
+    "dayTypeAmrap": "Tantas rondas como sea posible",
+    "@dayTypeAmrap": {},
+    "dayTypeHiit": "Entrenamiento en intervalos de alta intensidad",
+    "@dayTypeHiit": {},
+    "dayTypeEdt": "Entrenamiento de intensidad creciente",
+    "@dayTypeEdt": {},
+    "dayTypeRft": "Rondas por tiempo",
+    "@dayTypeRft": {},
+    "dayTypeAfap": "Tan rápido como sea posible",
+    "@dayTypeAfap": {},
+    "slotEntryTypeNormal": "Normal",
+    "@slotEntryTypeNormal": {},
+    "slotEntryTypeDropset": "Serie descendiente",
+    "@slotEntryTypeDropset": {},
+    "slotEntryTypePartial": "Parcial",
+    "@slotEntryTypePartial": {},
+    "slotEntryTypeForced": "Forzadas",
+    "@slotEntryTypeForced": {},
+    "slotEntryTypeTut": "Tiempo bajo tensión",
+    "@slotEntryTypeTut": {},
+    "slotEntryTypeIso": "Aguante isométrico",
+    "@slotEntryTypeIso": {},
+    "slotEntryTypeJump": "Salto",
+    "@slotEntryTypeJump": {},
+    "impressionGood": "Bien",
+    "@impressionGood": {},
+    "impressionNeutral": "Neutral",
+    "@impressionNeutral": {},
+    "impressionBad": "Mal",
+    "@impressionBad": {},
+    "gymModeShowExercises": "Ver páginas de resumen de ejercicios",
+    "@gymModeShowExercises": {},
+    "gymModeShowTimer": "Mostrar temporizador entre series",
+    "@gymModeShowTimer": {},
+    "gymModeTimerType": "Tipo de temporizador",
+    "@gymModeTimerType": {},
+    "gymModeTimerTypeHelText": "Si una serie tiene tiempo de pausa, siempre se usa una cuenta regresiva.",
+    "@gymModeTimerTypeHelText": {},
+    "countdown": "Cuenta regresiva",
+    "@countdown": {},
+    "stopwatch": "Cronómetro",
+    "@stopwatch": {},
+    "gymModeDefaultCountdownTime": "Tiempo predeterminado de cuenta regresiva, en segundos",
+    "@gymModeDefaultCountdownTime": {},
+    "gymModeNotifyOnCountdownFinish": "Notificar al terminar cuenta regresiva",
+    "@gymModeNotifyOnCountdownFinish": {},
+    "duration": "Duración",
+    "@duration": {},
+    "volume": "Volumen",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Entrenamiento completado",
+    "@workoutCompleted": {},
+    "formMinMaxValues": "Por favor introduce un número entre {min} y {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "superset": "Superserie",
+    "@superset": {},
+    "endWorkout": "Finalizar entrenamiento",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "durationHoursMinutes": "{hours}h {minutes}m",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "dayTypeEnom": "Cada minuto, en el minuto",
+    "@dayTypeEnom": {},
+    "dayTypeTabata": "Entrenamiento Tabata",
+    "@dayTypeTabata": {},
+    "slotEntryTypeMyo": "Entrenamiento Myo",
+    "@slotEntryTypeMyo": {}
 }

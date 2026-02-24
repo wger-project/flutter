@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +26,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
 import 'package:wger/widgets/user/forms.dart';
@@ -41,70 +42,18 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(_title),
       actions: [
         IconButton(
+          icon: const Icon(Icons.widgets_outlined),
+          onPressed: () {
+            Navigator.of(context).pushNamed(ConfigureDashboardWidgetsScreen.routeName);
+          },
+        ),
+        IconButton(
           icon: const Icon(Icons.settings),
           onPressed: () async {
             return showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(AppLocalizations.of(context).optionsLabel),
-                  actions: [
-                    TextButton(
-                      child: Text(
-                        MaterialLocalizations.of(context).closeButtonLabel,
-                      ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                  contentPadding: EdgeInsets.zero,
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        //dense: true,
-                        leading: const Icon(Icons.person),
-                        title: Text(AppLocalizations.of(context).userProfile),
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).userProfile,
-                            UserProfileForm(
-                              context.read<UserProvider>().profile!,
-                            ),
-                          ),
-                        ),
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.settings),
-                        onTap: () => Navigator.of(context).pushNamed(SettingsPage.routeName),
-                        title: Text(AppLocalizations.of(context).settingsTitle),
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.info),
-                        onTap: () => Navigator.of(context).pushNamed(AboutPage.routeName),
-                        title: Text(AppLocalizations.of(context).aboutPageTitle),
-                      ),
-                      const Divider(),
-                      ListTile(
-                        //dense: true,
-                        leading: const Icon(Icons.exit_to_app),
-                        title: Text(AppLocalizations.of(context).logout),
-                        onTap: () {
-                          context.read<AuthProvider>().logout();
-                          context.read<RoutinesProvider>().clear();
-                          context.read<NutritionPlansProvider>().clear();
-                          context.read<BodyWeightProvider>().clear();
-                          context.read<GalleryProvider>().clear();
-                          context.read<UserProvider>().clear();
-
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushReplacementNamed('/');
-                        },
-                      ),
-                    ],
-                  ),
-                );
+                return const MainSettingsDialog();
               },
             );
           },
@@ -115,6 +64,73 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class MainSettingsDialog extends StatelessWidget {
+  const MainSettingsDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(AppLocalizations.of(context).optionsLabel),
+      actions: [
+        TextButton(
+          child: Text(
+            MaterialLocalizations.of(context).closeButtonLabel,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
+      contentPadding: EdgeInsets.zero,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            //dense: true,
+            leading: const Icon(Icons.person),
+            title: Text(AppLocalizations.of(context).userProfile),
+            onTap: () => Navigator.pushNamed(
+              context,
+              FormScreen.routeName,
+              arguments: FormScreenArguments(
+                AppLocalizations.of(context).userProfile,
+                UserProfileForm(
+                  context.read<UserProvider>().profile!,
+                ),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            onTap: () => Navigator.of(context).pushNamed(SettingsPage.routeName),
+            title: Text(AppLocalizations.of(context).settingsTitle),
+          ),
+          ListTile(
+            leading: const Icon(Icons.info),
+            onTap: () => Navigator.of(context).pushNamed(AboutPage.routeName),
+            title: Text(AppLocalizations.of(context).aboutPageTitle),
+          ),
+          const Divider(),
+          ListTile(
+            //dense: true,
+            leading: const Icon(Icons.exit_to_app),
+            title: Text(AppLocalizations.of(context).logout),
+            onTap: () {
+              context.read<AuthProvider>().logout();
+              context.read<RoutinesProvider>().clear();
+              context.read<NutritionPlansProvider>().clear();
+              context.read<BodyWeightProvider>().clear();
+              context.read<GalleryProvider>().clear();
+              context.read<UserProvider>().clear();
+
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// App bar that only displays a title
