@@ -10,7 +10,7 @@ MealItem _$MealItemFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'amount']);
   return MealItem(
     id: (json['id'] as num?)?.toInt(),
-    mealId: (json['meal'] as num?)?.toInt(),
+    mealId: json['meal'] as String?,
     ingredientId: (json['ingredient'] as num).toInt(),
     weightUnitId: (json['weight_unit'] as num?)?.toInt(),
     amount: stringToNum(json['amount'] as String?),

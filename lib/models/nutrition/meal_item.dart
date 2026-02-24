@@ -17,10 +17,14 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
+
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/models/schema.dart';
+import 'package:wger/powersync.dart';
 
 part 'meal_item.g.dart';
 
@@ -30,7 +34,7 @@ class MealItem {
   int? id;
 
   @JsonKey(required: false, name: 'meal')
-  late int mealId;
+  late String mealId;
 
   @JsonKey(required: false, name: 'ingredient')
   late int ingredientId;
@@ -49,7 +53,7 @@ class MealItem {
 
   MealItem({
     this.id,
-    int? mealId,
+    String? mealId,
     required this.ingredientId,
     this.weightUnitId,
     required this.amount,
@@ -70,6 +74,15 @@ class MealItem {
   factory MealItem.fromJson(Map<String, dynamic> json) => _$MealItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$MealItemToJson(this);
+
+  factory MealItem.fromRow(sqlite.Row row) {
+    return MealItem(
+      amount: row['amount'],
+      weightUnitId: row['weight_unit_id'],
+      mealId: row['meal_id'],
+      ingredientId: row['ingredient_id'],
+    );
+  }
 
   /// Calculations
   /// TODO why does this not consider weightUnitObj ? should we do the same as Log.nutritionalValues here?
@@ -94,7 +107,7 @@ class MealItem {
 
   MealItem copyWith({
     int? id,
-    int? mealId,
+    String? mealId,
     int? ingredientId,
     int? weightUnitId,
     num? amount,
@@ -111,5 +124,10 @@ class MealItem {
     );
     m.weightUnitObj = weightUnitObj ?? this.weightUnitObj;
     return m;
+  }
+
+  static Future<List<MealItem>> readByMealId(String mealId) async {
+    final results = await db.getAll('SELECT * FROM $tableMealItems WHERE meal_id = ?', [mealId]);
+    return results.map((r) => MealItem.fromRow(r)).toList();
   }
 }

@@ -368,14 +368,10 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
   );
 
   @override
-  Map<String, String> getDefaultHeaders({
-    bool? includeAuth = false,
-    String? language,
-  }) =>
+  Map<String, String> getDefaultHeaders({bool? includeAuth = false}) =>
       (super.noSuchMethod(
             Invocation.method(#getDefaultHeaders, [], {
               #includeAuth: includeAuth,
-              #language: language,
             }),
             returnValue: <String, String>{},
           )
@@ -406,40 +402,17 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
           as Uri);
 
   @override
-  _i14.Future<dynamic> fetch(
-    Uri? uri, {
-    int? maxRetries = 3,
-    Duration? initialDelay = const Duration(milliseconds: 250),
-    Duration? timeout = const Duration(seconds: 5),
-    String? language,
-  }) =>
+  _i14.Future<dynamic> fetch(Uri? uri) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #fetch,
-              [uri],
-              {
-                #maxRetries: maxRetries,
-                #initialDelay: initialDelay,
-                #timeout: timeout,
-                #language: language,
-              },
-            ),
+            Invocation.method(#fetch, [uri]),
             returnValue: _i14.Future<dynamic>.value(),
           )
           as _i14.Future<dynamic>);
 
   @override
-  _i14.Future<List<dynamic>> fetchPaginated(
-    Uri? uri, {
-    String? language,
-    Duration? timeout = const Duration(seconds: 5),
-  }) =>
+  _i14.Future<List<dynamic>> fetchPaginated(Uri? uri) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #fetchPaginated,
-              [uri],
-              {#language: language, #timeout: timeout},
-            ),
+            Invocation.method(#fetchPaginated, [uri]),
             returnValue: _i14.Future<List<dynamic>>.value(<dynamic>[]),
           )
           as _i14.Future<List<dynamic>>);

@@ -126,63 +126,28 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
   );
 
   @override
-  _i4.NutritionalPlan findById(int? id) =>
+  _i9.Stream<_i4.NutritionalPlan?> watchNutritionPlan(String? id) =>
       (super.noSuchMethod(
-            Invocation.method(#findById, [id]),
-            returnValue: _FakeNutritionalPlan_2(
-              this,
-              Invocation.method(#findById, [id]),
-            ),
+            Invocation.method(#watchNutritionPlan, [id]),
+            returnValue: _i9.Stream<_i4.NutritionalPlan?>.empty(),
           )
-          as _i4.NutritionalPlan);
+          as _i9.Stream<_i4.NutritionalPlan?>);
 
   @override
-  _i5.Meal? findMealById(int? id) =>
-      (super.noSuchMethod(Invocation.method(#findMealById, [id])) as _i5.Meal?);
+  _i9.Stream<_i4.NutritionalPlan> watchNutritionPlanLast() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchNutritionPlanLast, []),
+            returnValue: _i9.Stream<_i4.NutritionalPlan>.empty(),
+          )
+          as _i9.Stream<_i4.NutritionalPlan>);
 
   @override
-  _i9.Future<void> fetchAndSetAllPlansSparse() =>
+  _i9.Stream<List<_i4.NutritionalPlan>> watchNutritionPlans() =>
       (super.noSuchMethod(
-            Invocation.method(#fetchAndSetAllPlansSparse, []),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            Invocation.method(#watchNutritionPlans, []),
+            returnValue: _i9.Stream<List<_i4.NutritionalPlan>>.empty(),
           )
-          as _i9.Future<void>);
-
-  @override
-  _i9.Future<void> fetchAndSetAllPlansFull() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetAllPlansFull, []),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
-          )
-          as _i9.Future<void>);
-
-  @override
-  _i9.Future<_i4.NutritionalPlan> fetchAndSetPlanSparse(int? planId) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetPlanSparse, [planId]),
-            returnValue: _i9.Future<_i4.NutritionalPlan>.value(
-              _FakeNutritionalPlan_2(
-                this,
-                Invocation.method(#fetchAndSetPlanSparse, [planId]),
-              ),
-            ),
-          )
-          as _i9.Future<_i4.NutritionalPlan>);
-
-  @override
-  _i9.Future<_i4.NutritionalPlan> fetchAndSetPlanFull(int? planId) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetPlanFull, [planId]),
-            returnValue: _i9.Future<_i4.NutritionalPlan>.value(
-              _FakeNutritionalPlan_2(
-                this,
-                Invocation.method(#fetchAndSetPlanFull, [planId]),
-              ),
-            ),
-          )
-          as _i9.Future<_i4.NutritionalPlan>);
+          as _i9.Stream<List<_i4.NutritionalPlan>>);
 
   @override
   _i9.Future<_i4.NutritionalPlan> addPlan(_i4.NutritionalPlan? planData) =>
@@ -207,7 +172,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
           as _i9.Future<void>);
 
   @override
-  _i9.Future<void> deletePlan(int? id) =>
+  _i9.Future<void> deletePlan(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deletePlan, [id]),
             returnValue: _i9.Future<void>.value(),
@@ -216,7 +181,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
           as _i9.Future<void>);
 
   @override
-  _i9.Future<_i5.Meal> addMeal(_i5.Meal? meal, int? planId) =>
+  _i9.Future<_i5.Meal> addMeal(_i5.Meal? meal, String? planId) =>
       (super.noSuchMethod(
             Invocation.method(#addMeal, [meal, planId]),
             returnValue: _i9.Future<_i5.Meal>.value(
@@ -273,22 +238,6 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
   _i9.Future<void> clearIngredientCache() =>
       (super.noSuchMethod(
             Invocation.method(#clearIngredientCache, []),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
-          )
-          as _i9.Future<void>);
-
-  @override
-  _i9.Future<void> cacheIngredient(
-    _i7.Ingredient? ingredient, {
-    _i3.IngredientDatabase? database,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #cacheIngredient,
-              [ingredient],
-              {#database: database},
-            ),
             returnValue: _i9.Future<void>.value(),
             returnValueForMissingStub: _i9.Future<void>.value(),
           )
@@ -365,7 +314,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
   @override
   _i9.Future<void> logIngredientToDiary(
     _i6.MealItem? mealItem,
-    int? planId, [
+    String? planId, [
     DateTime? dateTime,
   ]) =>
       (super.noSuchMethod(
@@ -380,7 +329,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
           as _i9.Future<void>);
 
   @override
-  _i9.Future<void> deleteLog(int? logId, int? planId) =>
+  _i9.Future<void> deleteLog(String? logId, String? planId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLog, [logId, planId]),
             returnValue: _i9.Future<void>.value(),

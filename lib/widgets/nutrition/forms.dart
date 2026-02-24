@@ -35,7 +35,7 @@ import 'package:wger/widgets/nutrition/widgets.dart';
 
 class MealForm extends StatelessWidget {
   late final Meal _meal;
-  final int _planId;
+  final String _planId;
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
@@ -64,10 +64,7 @@ class MealForm extends StatelessWidget {
                 FocusScope.of(context).requestFocus(FocusNode());
 
                 // Open time picker
-                final pickedTime = await showTimePicker(
-                  context: context,
-                  initialTime: _meal.time!,
-                );
+                final pickedTime = await showTimePicker(context: context, initialTime: _meal.time!);
                 if (pickedTime != null) {
                   _timeController.text = timeToString(pickedTime)!;
                 }
@@ -122,7 +119,7 @@ Widget getMealItemForm(
 ]) {
   return IngredientForm(
     // TODO we use planId 0 here cause we don't have one and we don't need it I think?
-    recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
+    recent: recent.map((e) => Log.fromMealItem(e, '0', e.mealId)).toList(),
     onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
       mealItem.mealId = meal.id!;
       Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
@@ -143,10 +140,7 @@ Widget getIngredientLogForm(NutritionalPlan plan) {
       ).logIngredientToDiary(mealItem, plan.id!, dt);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            AppLocalizations.of(context).ingredientLogged,
-            textAlign: TextAlign.center,
-          ),
+          content: Text(AppLocalizations.of(context).ingredientLogged, textAlign: TextAlign.center),
         ),
       );
     },
@@ -426,11 +420,7 @@ class IngredientFormState extends State<IngredientForm> {
                 itemBuilder: (context, index) {
                   void select() {
                     final ingredient = suggestions[index].ingredient;
-                    selectIngredient(
-                      ingredient.id,
-                      ingredient.name,
-                      suggestions[index].amount,
-                    );
+                    selectIngredient(ingredient.id, ingredient.name, suggestions[index].amount);
                   }
 
                   return Card(

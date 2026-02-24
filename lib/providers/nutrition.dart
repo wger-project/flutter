@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2026 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,18 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -37,6 +36,7 @@ import 'package:wger/providers/base_provider.dart';
 class NutritionPlansProvider with ChangeNotifier {
   final _logger = Logger('NutritionPlansProvider');
 
+  // TODO: should be able to delete many of these paths and their corresponding code
   static const _nutritionalPlansPath = 'nutritionplan';
   static const _nutritionalPlansInfoPath = 'nutritionplaninfo';
   static const _mealPath = 'meal';
@@ -83,13 +83,14 @@ class NutritionPlansProvider with ChangeNotifier {
         .sorted((a, b) => b.creationDate.compareTo(a.creationDate))
         .firstOrNull;
   }
-
+  /*
   NutritionalPlan findById(int id) {
     return _plans.firstWhere(
       (plan) => plan.id == id,
       orElse: () => throw const NoSuchEntryException(),
     );
   }
+
 
   Meal? findMealById(int id) {
     for (final plan in _plans) {
@@ -100,94 +101,77 @@ class NutritionPlansProvider with ChangeNotifier {
     }
     return null;
   }
+  */
 
-  /// Fetches and sets all plans sparsely, i.e. only with the data on the plan
-  /// object itself and no child attributes
-  Future<void> fetchAndSetAllPlansSparse() async {
-    final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': API_MAX_PAGE_SIZE}),
-    );
-    _plans = [];
-    for (final planData in data) {
-      final plan = NutritionalPlan.fromJson(planData);
-      _plans.add(plan);
-      _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
-    }
-    notifyListeners();
-  }
+  Future<NutritionalPlan> _enrichPlan(NutritionalPlan plan) async {
+    // TODO: set up ingredient images
 
-  /// Fetches and sets all plans fully, i.e. with all corresponding child objects
-  Future<void> fetchAndSetAllPlansFull() async {
-    final data = await baseProvider.fetchPaginated(
-      baseProvider.makeUrl(_nutritionalPlansPath, query: {'limit': API_MAX_PAGE_SIZE}),
-    );
-    await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
-  }
-
-  /// Fetches and sets the given nutritional plan
-  ///
-  /// This method only loads the data on the nutritional plan object itself,
-  /// no meals, etc.
-  Future<NutritionalPlan> fetchAndSetPlanSparse(int planId) async {
-    final url = baseProvider.makeUrl(_nutritionalPlansPath, id: planId);
-    final planData = await baseProvider.fetch(url);
-    final plan = NutritionalPlan.fromJson(planData);
-    _plans.add(plan);
-    _plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
-
-    notifyListeners();
-    return plan;
-  }
-
-  /// Fetches a plan fully, i.e. with all corresponding child objects
-  Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
-    _logger.fine('Fetching full nutritional plan $planId');
-
-    NutritionalPlan plan;
-    try {
-      plan = findById(planId);
-    } on NoSuchEntryException {
-      // TODO: remove this useless call, because we will fetch all details below
-      plan = await fetchAndSetPlanSparse(planId);
+    final List<Log> diaryEntries = [];
+    for (final diaryEntry in plan.diaryEntries) {
+      diaryEntry.ingredient = await fetchIngredient(diaryEntry.ingredientId);
+      diaryEntries.add(diaryEntry);
     }
 
-    // Plan
-    final url = baseProvider.makeUrl(_nutritionalPlansInfoPath, id: planId);
-    final fullPlanData = await baseProvider.fetch(url);
-
-    // Meals
     final List<Meal> meals = [];
-    for (final mealData in fullPlanData['meals']) {
+    for (final meal in plan.meals) {
       final List<MealItem> mealItems = [];
-      final meal = Meal.fromJson(mealData);
-
-      // TODO: we should add these ingredients to the ingredient cache
-      for (final mealItemData in mealData['meal_items']) {
-        final mealItem = MealItem.fromJson(mealItemData);
-
-        final ingredient = Ingredient.fromJson(mealItemData['ingredient_obj']);
-        if (mealItemData['image'] != null) {
-          final image = IngredientImage.fromJson(mealItemData['image']);
-          ingredient.image = image;
-        }
-        mealItem.ingredient = ingredient;
+      for (final mealItem in meal.mealItems) {
+        mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
         mealItems.add(mealItem);
       }
       meal.mealItems = mealItems;
+      meal.diaryEntries = diaryEntries.where((d) => d.mealId == meal.id).toList();
       meals.add(meal);
     }
+
     plan.meals = meals;
+    plan.diaryEntries = diaryEntries;
 
-    // Logs
-    await fetchAndSetLogs(plan);
-    for (final meal in meals) {
-      meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
-    }
-
-    // ... and done
-    notifyListeners();
     return plan;
   }
+
+  Stream<NutritionalPlan?> watchNutritionPlan(String id) {
+    return NutritionalPlan.watchNutritionPlan(id).transform(
+      StreamTransformer.fromHandlers(
+        handleData: (plan, sink) async {
+          if (plan == null) {
+            sink.add(plan);
+            return;
+          }
+          sink.add(await _enrichPlan(plan));
+        },
+      ),
+    );
+  }
+
+  Stream<NutritionalPlan> watchNutritionPlanLast() {
+    return NutritionalPlan.watchNutritionPlanLast().transform(
+      StreamTransformer.fromHandlers(
+        handleData: (plan, sink) async {
+          if (plan == null) {
+            return;
+          }
+          sink.add(await _enrichPlan(plan));
+        },
+      ),
+    );
+  }
+
+  Stream<List<NutritionalPlan>> watchNutritionPlans() {
+    return NutritionalPlan.watchNutritionPlans().transform(
+      StreamTransformer.fromHandlers(
+        handleData: (plans, sink) async {
+          sink.add(await Future.wait(plans.map((plan) => _enrichPlan(plan))));
+        },
+      ),
+    );
+  }
+  /*
+TODO implement:
+          ingredient.image = image;
+        mealItem.ingredient = ingredient;
+
+  */
 
   Future<NutritionalPlan> addPlan(NutritionalPlan planData) async {
     final data = await baseProvider.post(
@@ -226,7 +210,8 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Adds a meal to a plan
-  Future<Meal> addMeal(Meal meal, int planId) async {
+  Future<Meal> addMeal(Meal meal, String planId) async {
+    /*
     final plan = findById(planId);
     final data = await baseProvider.post(meal.toJson(), baseProvider.makeUrl(_mealPath));
 
@@ -235,10 +220,13 @@ class NutritionPlansProvider with ChangeNotifier {
     notifyListeners();
 
     return meal;
+    */
+    return meal;
   }
 
   /// Edits an existing meal
   Future<Meal> editMeal(Meal meal) async {
+    /*
     final data = await baseProvider.patch(
       meal.toJson(),
       baseProvider.makeUrl(_mealPath, id: meal.id),
@@ -246,6 +234,7 @@ class NutritionPlansProvider with ChangeNotifier {
     meal = Meal.fromJson(data);
 
     notifyListeners();
+    */
     return meal;
   }
 
@@ -438,6 +427,7 @@ class NutritionPlansProvider with ChangeNotifier {
 
   /// Log meal to nutrition diary
   Future<void> logMealToDiary(Meal meal, DateTime mealDateTime) async {
+    /*
     for (final item in meal.mealItems) {
       final plan = findById(meal.planId);
       final Log log = Log.fromMealItem(item, plan.id!, meal.id, mealDateTime);
@@ -447,10 +437,15 @@ class NutritionPlansProvider with ChangeNotifier {
       plan.diaryEntries.add(log);
     }
     notifyListeners();
+    */
   }
 
   /// Log custom ingredient to nutrition diary
-  Future<void> logIngredientToDiary(MealItem mealItem, int planId, [DateTime? dateTime]) async {
+  Future<void> logIngredientToDiary(MealItem mealItem, String planId, [DateTime? dateTime]) async {
+    print(
+      'DIETER logIngredientToDiary called ingredient=${mealItem.ingredientId}, planId=$planId, dateTime=$dateTime',
+    );
+    /*
     final plan = findById(planId);
     mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
     final log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
@@ -458,16 +453,20 @@ class NutritionPlansProvider with ChangeNotifier {
     final data = await baseProvider.post(log.toJson(), baseProvider.makeUrl(_nutritionDiaryPath));
     log.id = data['id'];
     plan.diaryEntries.add(log);
+
+     */
     notifyListeners();
   }
 
   /// Deletes a log entry
-  Future<void> deleteLog(int logId, int planId) async {
+  Future<void> deleteLog(String logId, String planId) async {
+    /*
     await baseProvider.deleteRequest(_nutritionDiaryPath, logId);
 
     final plan = findById(planId);
     plan.diaryEntries.removeWhere((element) => element.id == logId);
     notifyListeners();
+    */
   }
 
   /// Load nutrition diary entries for plan

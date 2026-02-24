@@ -104,9 +104,7 @@ void main() {
                 getMealItemForm(meal, const [], code, test),
           ),
         ),
-        routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-        },
+        routes: {NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen()},
       ),
     );
   }
@@ -296,7 +294,9 @@ void main() {
 
     testWidgets(
       'save complete ingredient with correct weight input type',
-      (WidgetTester tester) async {
+      (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
         final IngredientFormState formState = tester.state(find.byType(IngredientForm));

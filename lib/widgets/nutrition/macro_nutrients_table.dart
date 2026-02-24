@@ -53,10 +53,7 @@ class MacronutrientsTable extends StatelessWidget {
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       border: TableBorder(
-        horizontalInside: BorderSide(
-          width: 1,
-          color: Theme.of(context).colorScheme.outline,
-        ),
+        horizontalInside: BorderSide(width: 1, color: Theme.of(context).colorScheme.outline),
       ),
       columnWidths: const {0: FractionColumnWidth(0.4)},
       children: [

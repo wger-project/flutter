@@ -20,6 +20,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -28,6 +29,8 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/models/schema.dart';
+import 'package:wger/powersync.dart';
 
 part 'nutritional_plan.g.dart';
 
@@ -36,7 +39,7 @@ class NutritionalPlan {
   final _logger = Logger('NutritionalPlan Model');
 
   @JsonKey(required: true)
-  int? id;
+  String? id;
 
   @JsonKey(required: true)
   late String description;
@@ -106,6 +109,56 @@ class NutritionalPlan {
     }
   }
 
+  factory NutritionalPlan.fromRow(sqlite.Row row) {
+    return NutritionalPlan(
+      id: row['id'],
+      description: row['description'],
+      creationDate: DateTime.parse(row['creation_date']),
+      startDate: row['start'] != null ? DateTime.parse(row['start']) : DateTime.now(),
+      endDate: row['end'] != null ? DateTime.parse(row['end']) : null,
+      onlyLogging: row['only_logging'] == 1,
+      goalEnergy: row['goal_energy'],
+      goalProtein: row['goal_protein'],
+      goalCarbohydrates: row['goal_carbohydrates'],
+      goalFat: row['goal_fat'],
+      goalFiber: row['goal_fiber'],
+    );
+  }
+
+  NutritionalPlan copyWith({
+    String? id,
+    String? description,
+    DateTime? creationDate,
+    bool? onlyLogging,
+    num? goalEnergy,
+    num? goalProtein,
+    num? goalCarbohydrates,
+    num? goalFat,
+    num? goalFiber,
+    List<Meal>? meals,
+    List<Log>? diaryEntries,
+  }) {
+    return NutritionalPlan(
+      id: id ?? this.id,
+      description: description ?? this.description,
+      creationDate: creationDate ?? this.creationDate,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      onlyLogging: onlyLogging ?? this.onlyLogging,
+      goalEnergy: goalEnergy ?? this.goalEnergy,
+      goalProtein: goalProtein ?? this.goalProtein,
+      goalCarbohydrates: goalCarbohydrates ?? this.goalCarbohydrates,
+      goalFat: goalFat ?? this.goalFat,
+      goalFiber: goalFiber ?? this.goalFiber,
+      meals: meals ?? this.meals,
+      diaryEntries: diaryEntries ?? this.diaryEntries,
+    );
+  }
+
+  Future<NutritionalPlan> loadChildren() async {
+    return copyWith(diaryEntries: await Log.readByPlanId(id!), meals: await Meal.readByPlanId(id!));
+  }
+
   NutritionalPlan.empty() {
     creationDate = DateTime.now();
     startDate = DateTime.now();
@@ -160,10 +213,7 @@ class NutritionalPlan {
       return NutritionalGoals();
     }
     // otherwise, add up all the nutritional values of the meals and use that as goals
-    final sumValues = meals.fold(
-      NutritionalValues(),
-      (a, b) => a + b.plannedNutritionalValues,
-    );
+    final sumValues = meals.fold(NutritionalValues(), (a, b) => a + b.plannedNutritionalValues);
     return NutritionalGoals(
       energy: sumValues.energy,
       fat: sumValues.fat,
@@ -272,5 +322,70 @@ class NutritionalPlan {
       name: name,
       diaryEntries: diaryEntries.where((e) => e.mealId == null).toList(),
     );
+  }
+
+  static Future<NutritionalPlan> read(String id) async {
+    final row = await db.get('SELECT * FROM $tableNutritionPlans WHERE id = ?', [id]);
+    return NutritionalPlan.fromRow(row).loadChildren();
+  }
+
+  // this is a bit complicated.
+  // what we need at the end of the day, is a stream of List<NutritionPlan>, where
+  // a new value is emitted any time a plan is changed. But the plan is not just the plan record
+  // we need to load data for Logs and Meals corresponding to the plan also.
+  // so our options are:
+  // 1) db.watch with a select query on plans; and extra dart code to load the logs/meals stuff,
+  //    but this only triggers for updates on the plans table, and misses logs/meals updates
+  // 2) db.watch with a huge join query across all tables from which we need info,
+  //    so we have all the data in our resultset to create the datastructures with, but:
+  //    - this creates long rows with lots of duplicated data (e.g. all the plan data) for every row
+  //       which would only differ for e.g. the meal or the log item
+  //    - it would probably get a bit messy to parse the resultset into the datastructures
+  // 3) the best of both worlds: load the data we need in dart at runtime, but explicitly
+  //    trigger our code execution when *any* of the relevant tables changes
+  //
+  static Stream<List<NutritionalPlan>> watchNutritionPlans() {
+    return db.onChange([tableNutritionPlans, tableLogItems, tableMeals]).asyncMap((event) async {
+      final data = await db.getAll('SELECT * FROM $tableNutritionPlans ORDER BY creation_date');
+      final futures = Future.wait(data.map((row) => NutritionalPlan.fromRow(row).loadChildren()));
+      return (await futures).toList(growable: false);
+    });
+  }
+
+  static Stream<NutritionalPlan?> watchNutritionPlan(String id) {
+    return db.onChange([tableNutritionPlans, tableLogItems, tableMeals]).asyncMap((event) async {
+      final row = await db.getOptional('SELECT * FROM $tableNutritionPlans WHERE id = ?', [id]);
+      return row == null ? null : NutritionalPlan.fromRow(row).loadChildren();
+    });
+  }
+
+  static Stream<NutritionalPlan?> watchNutritionPlanLast() {
+    return db.onChange([tableNutritionPlans, tableLogItems, tableMeals]).asyncMap((event) async {
+      final res = await db.getAll(
+        'SELECT * FROM $tableNutritionPlans ORDER BY creation_date DESC LIMIT 1',
+      );
+      if (res.isEmpty) {
+        return null;
+      }
+      return NutritionalPlan.fromRow(res.first).loadChildren();
+    });
+  }
+  /*
+  static Stream<List<NutritionalPlan>> watchNutritionPlan(int id) {
+    return db
+        .watch('SELECT * FROM $tableNutritionPlans WHERE id = ?', parameters: [id]).map((results) {
+      return results.map(NutritionalPlan.fromRow).toList(growable: false);
+    });
+  }
+
+  static Stream<List<NutritionalPlan>> watchNutritionPlans() {
+    return db.watch('SELECT * FROM $tableNutritionPlans ORDER BY creation_date').map((results) {
+      return results.map(NutritionalPlan.fromRow).toList(growable: false);
+    });
+  }
+  */
+
+  Future<void> delete() async {
+    await db.execute('DELETE FROM $tableNutritionPlans WHERE id = ?', [id]);
   }
 }

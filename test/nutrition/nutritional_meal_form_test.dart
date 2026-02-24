@@ -60,10 +60,8 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: MealForm(1, meal)),
-        routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-        },
+        home: Scaffold(body: MealForm("1", meal)),
+        routes: {NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen()},
       ),
     );
   }
@@ -81,11 +79,7 @@ void main() {
     await tester.pumpWidget(createFormScreen(meal1));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('17:00'),
-      findsOneWidget,
-      reason: 'Time of existing meal is filled in',
-    );
+    expect(find.text('17:00'), findsOneWidget, reason: 'Time of existing meal is filled in');
 
     expect(
       find.text('Initial Name 1'),

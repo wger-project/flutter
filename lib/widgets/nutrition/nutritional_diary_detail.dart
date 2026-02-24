@@ -61,20 +61,14 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
         ),
         const SizedBox(height: 15),
         const DiaryheaderTile(),
-        ...logs.map(
-          (e) => DiaryEntryTile(diaryEntry: e, nutritionalPlan: _nutritionalPlan),
-        ),
+        ...logs.map((e) => DiaryEntryTile(diaryEntry: e, nutritionalPlan: _nutritionalPlan)),
       ],
     );
   }
 }
 
 class NutritionDiaryTable extends StatelessWidget {
-  const NutritionDiaryTable({
-    super.key,
-    required this.planned,
-    required this.logged,
-  });
+  const NutritionDiaryTable({super.key, required this.planned, required this.logged});
 
   static const double tablePadding = 7;
   final NutritionalValues planned;

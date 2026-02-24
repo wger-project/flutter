@@ -18,11 +18,7 @@ class MealItemValuesTile extends StatelessWidget {
   final Ingredient ingredient;
   final NutritionalValues nutritionalValues;
 
-  const MealItemValuesTile({
-    super.key,
-    required this.ingredient,
-    required this.nutritionalValues,
-  });
+  const MealItemValuesTile({super.key, required this.ingredient, required this.nutritionalValues});
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +49,7 @@ class DiaryheaderTile extends StatelessWidget {
 
 /// a NutritionTitle showing diary entries
 class DiaryEntryTile extends StatelessWidget {
-  const DiaryEntryTile({
-    super.key,
-    required this.diaryEntry,
-    this.nutritionalPlan,
-  });
+  const DiaryEntryTile({super.key, required this.diaryEntry, this.nutritionalPlan});
 
   final Log diaryEntry;
   final NutritionalPlan? nutritionalPlan;

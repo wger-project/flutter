@@ -54,10 +54,7 @@ class AuthScreen extends StatelessWidget {
             top: 0,
             right: 0,
             left: 0,
-            child: Container(
-              height: 0.55 * deviceSize.height,
-              color: wgerPrimaryColor,
-            ),
+            child: Container(height: 0.55 * deviceSize.height, color: wgerPrimaryColor),
           ),
           SingleChildScrollView(
             child: SizedBox(
@@ -68,16 +65,10 @@ class AuthScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 0.15 * deviceSize.height),
-                  const Image(
-                    image: AssetImage('assets/images/logo-white.png'),
-                    width: 85,
-                  ),
+                  const Image(image: AssetImage('assets/images/logo-white.png'), width: 85),
                   Container(
                     margin: const EdgeInsets.only(bottom: 20.0),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 94.0,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
                     child: const Text(
                       'wger',
                       style: TextStyle(
@@ -245,16 +236,11 @@ class _AuthCardState extends State<AuthCard> {
     final deviceSize = MediaQuery.sizeOf(context);
 
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       elevation: 8.0,
       child: Container(
         width: deviceSize.width * 0.9,
-        padding: EdgeInsets.symmetric(
-          horizontal: 15.0,
-          vertical: 0.025 * deviceSize.height,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.025 * deviceSize.height),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -387,13 +373,7 @@ class _AuthCardState extends State<AuthCard> {
                             children: [
                               // TODO: i18n!
                               Text(
-                                text.substring(0, text.lastIndexOf('?') + 1),
-                              ),
-                              Text(
-                                text.substring(
-                                  text.lastIndexOf('?') + 1,
-                                  text.length,
-                                ),
+                                text.substring(text.lastIndexOf('?') + 1, text.length),
                                 style: const TextStyle(
                                   //color: wgerPrimaryColor,
                                   fontWeight: FontWeight.w700,

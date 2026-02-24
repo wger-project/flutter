@@ -51,7 +51,7 @@ class NutritionalPlansScreen extends StatelessWidget {
       ),
       body: WidescreenWrapper(
         child: Consumer<NutritionPlansProvider>(
-          builder: (context, nutritionProvider, child) => NutritionalPlansList(nutritionProvider),
+          builder: (context, nutritionProvider, child) => NutritionalPlansList(),
         ),
       ),
     );

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2025 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,10 +27,7 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/entries.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
-enum MeasurementOptions {
-  edit,
-  delete,
-}
+enum MeasurementOptions { edit, delete }
 
 class MeasurementEntriesScreen extends StatelessWidget {
   const MeasurementEntriesScreen();
@@ -89,9 +86,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
                           TextButton(
                             child: Text(
                               AppLocalizations.of(context).delete,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
+                              style: TextStyle(color: Theme.of(context).colorScheme.error),
                             ),
                             onPressed: () {
                               // Confirmed, delete the workout

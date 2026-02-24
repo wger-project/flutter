@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2026 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/powersync.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
@@ -58,6 +59,14 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
   bool _isWideScreen = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    // do we need to await this? or if it's async, how do we handle failures?
+    _setupPowersync();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
@@ -79,6 +88,25 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     const WeightScreen(),
     const GalleryScreen(),
   ];
+
+  Future<void> _setupPowersync() async {
+    final authProvider = context.read<AuthProvider>();
+    final baseUrl = authProvider.serverUrl!;
+    final powerSyncUrl = baseUrl.replaceAll(':8000', ':8080');
+
+    await openDatabase(false, baseUrl, powerSyncUrl);
+
+    final connector = DjangoConnector(db, baseUrl, powerSyncUrl);
+    try {
+      // TODO: should we cache these credentials? that's what their demo does?
+      // we could maybe get the initial token from the /api/v2/login call
+      final credentials = await connector.fetchCredentials();
+      print('fetched credentials' + credentials.toString());
+      await openDatabase(true, baseUrl, powerSyncUrl);
+    } catch (e) {
+      print('failed to fetchCredentials()' + e.toString());
+    }
+  }
 
   /// Load initial data from the server
   Future<void> _loadEntries() async {
@@ -121,7 +149,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       widget._logger.info('Loading routines, weight, measurements and gallery');
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
-        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+        // nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         routinesProvider.fetchAndSetAllRoutinesSparse(),
         // routinesProvider.fetchAndSetAllRoutinesFull(),
         weightProvider.fetchAndSetEntries(),
@@ -131,11 +159,11 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
 
       //
       // Current nutritional plan
-      widget._logger.info('Loading current nutritional plan');
-      if (nutritionPlansProvider.currentPlan != null) {
-        final plan = nutritionPlansProvider.currentPlan!;
-        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
-      }
+      // widget._logger.info('Loading current nutritional plan');
+      // if (nutritionPlansProvider.currentPlan != null) {
+      //   final plan = nutritionPlansProvider.currentPlan!;
+      //   await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
+      // }
 
       //
       // Current routine

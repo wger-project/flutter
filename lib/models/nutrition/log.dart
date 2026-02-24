@@ -17,24 +17,28 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:powersync/powersync.dart';
+import 'package:powersync/sqlite3.dart' as sqlite;
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
+import 'package:wger/models/schema.dart';
+import 'package:wger/powersync.dart';
 
 part 'log.g.dart';
 
 @JsonSerializable()
 class Log {
   @JsonKey(required: true)
-  int? id;
+  String? id;
 
   @JsonKey(required: false, name: 'meal')
-  int? mealId;
+  String? mealId;
 
   @JsonKey(required: true, name: 'plan')
-  int planId;
+  String planId;
 
   @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime datetime;
@@ -75,6 +79,19 @@ class Log {
     amount = mealItem.amount;
   }
 
+  factory Log.fromRow(sqlite.Row row) {
+    return Log(
+      id: row['id'],
+      mealId: row['meal_id'],
+      ingredientId: row['ingredient_id'],
+      weightUnitId: row['weight_unit_id'],
+      amount: row['amount'],
+      planId: row['plan_id'],
+      datetime: DateTime.parse(row['datetime']),
+      comment: row['comment'],
+    );
+  }
+
   // Boilerplate
   factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
 
@@ -89,5 +106,39 @@ class Log {
         : amount * weightUnitObj!.amount * weightUnitObj!.grams;
 
     return ingredient.nutritionalValues / (100 / weight);
+  }
+
+  static Future<List<Log>> readByMealId(String mealId) async {
+    final results = await db.getAll('SELECT * FROM $tableLogItems WHERE meal_id = ?', [mealId]);
+    return results.map((r) => Log.fromRow(r)).toList();
+  }
+
+  static Future<List<Log>> readByPlanId(String planId) async {
+    final results = await db.getAll('SELECT * FROM $tableLogItems WHERE plan_id = ?', [planId]);
+    return results.map((r) => Log.fromRow(r)).toList();
+  }
+
+  /*
+  Future<void> delete() async {
+    await db.execute('DELETE FROM $logItemsTable WHERE id = ?', [id]);
+  }
+  */
+
+  Future<void> log() async {
+    print('DIETER Log.log called id=$id, planId=$planId');
+    await db.execute(
+      'INSERT INTO $tableLogItems (id, meal_id, ingredient_id, weight_unit_id, amount, plan_id, datetime, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        // generate an id using uuid
+        uuid.v4(),
+        mealId,
+        ingredientId,
+        weightUnitId,
+        amount,
+        planId,
+        datetime.toIso8601String(),
+        comment,
+      ],
+    );
   }
 }
