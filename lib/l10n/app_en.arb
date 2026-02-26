@@ -1136,5 +1136,17 @@
   "addToOpenFoodFacts": "Add to Open Food Facts",
   "@addToOpenFoodFacts": {
     "description": "Label shown as the clickable link to go on Open Food Facts"
-   }
+   },
+  "isVegan": "Vegan",
+  "@isVegan": {
+    "description": "Label for vegan toggle"
+  },
+  "isVegetarian": "Vegetarian",
+  "@isVegetarian": {
+    "description": "Label for vegetarian toggle"
+  },
+  "filter": "Filter",
+  "@filter": {
+    "description": "Label for filter button"
+  }
 }

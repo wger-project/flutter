@@ -410,7 +410,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
     Uri? uri, {
     int? maxRetries = 3,
     Duration? initialDelay = const Duration(milliseconds: 250),
-    Duration? timeout = const Duration(seconds: 5),
+    Duration? timeout = const Duration(seconds: 15),
     String? language,
   }) =>
       (super.noSuchMethod(
@@ -432,7 +432,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
   _i14.Future<List<dynamic>> fetchPaginated(
     Uri? uri, {
     String? language,
-    Duration? timeout = const Duration(seconds: 5),
+    Duration? timeout = const Duration(seconds: 15),
   }) =>
       (super.noSuchMethod(
             Invocation.method(

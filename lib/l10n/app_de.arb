@@ -1187,5 +1187,11 @@
         }
     },
     "superset": "Superset",
-    "@superset": {}
+    "@superset": {},
+    "isVegan": "Vegan",
+    "@isVegan": {},
+    "isVegetarian": "Vegetarisch",
+    "@isVegetarian": {},
+    "filter": "Filtern",
+    "@filter": {}
 }

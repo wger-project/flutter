@@ -388,6 +388,8 @@ class NutritionPlansProvider with ChangeNotifier {
     String name, {
     String languageCode = 'en',
     bool searchEnglish = false,
+    bool isVegan = false,
+    bool isVegetarian = false,
   }) async {
     if (name.length <= 1) {
       return [];
@@ -398,16 +400,26 @@ class NutritionPlansProvider with ChangeNotifier {
       languages.add(LANGUAGE_SHORT_ENGLISH);
     }
 
+    final query = {
+      'name__search': name,
+      'language__code': languages.join(','),
+      'limit': API_RESULTS_PAGE_SIZE,
+    };
+
+    if (isVegan) {
+      query['is_vegan'] = 'True';
+    }
+
+    if (isVegetarian) {
+      query['is_vegetarian'] = 'True';
+    }
+
     // Send the request
     _logger.info('Fetching ingredients from server');
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
         _ingredientInfoPath,
-        query: {
-          'name__search': name,
-          'language__code': languages.join(','),
-          'limit': API_RESULTS_PAGE_SIZE,
-        },
+        query: query,
       ),
       timeout: const Duration(seconds: 20),
     );

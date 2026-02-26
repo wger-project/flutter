@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -85,6 +85,8 @@ class IngredientTypeahead extends StatefulWidget {
 class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   var _searchEnglish = true;
   late String barcode;
+  var _isVegan = false;
+  var _isVegetarian = false;
 
   @override
   void initState() {
@@ -133,7 +135,13 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 labelText: AppLocalizations.of(context).searchIngredient,
-                suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    filterButton(),
+                    if (widget.showScanner && !isDesktop) scanButton(),
+                  ],
+                ),
               ),
             );
           },
@@ -150,6 +158,8 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
               searchEnglish: _searchEnglish,
+              isVegan: _isVegan,
+              isVegetarian: _isVegetarian,
             );
           },
           itemBuilder: (context, ingredient) {
@@ -191,17 +201,6 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             widget.selectIngredient(suggestion.id, suggestion.name, null);
           },
         ),
-        if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
-          SwitchListTile(
-            title: Text(AppLocalizations.of(context).searchNamesInEnglish),
-            value: _searchEnglish,
-            onChanged: (_) {
-              setState(() {
-                _searchEnglish = !_searchEnglish;
-              });
-            },
-            dense: true,
-          ),
       ],
     );
   }
@@ -229,6 +228,73 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
             },
           ),
+        );
+      },
+    );
+  }
+
+  Widget filterButton() {
+    final i18n = AppLocalizations.of(context);
+
+    return IconButton(
+      icon: const Icon(Icons.tune),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return AlertDialog(
+                  title: Text(i18n.filter),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
+                        SwitchListTile(
+                          title: Text(i18n.searchNamesInEnglish),
+                          value: _searchEnglish,
+                          onChanged: (val) {
+                            setState(() {
+                              _searchEnglish = val;
+                            });
+                            this.setState(() {});
+                          },
+                          dense: true,
+                        ),
+                      SwitchListTile(
+                        title: Text(i18n.isVegan),
+                        value: _isVegan,
+                        onChanged: (val) {
+                          setState(() {
+                            _isVegan = val;
+                          });
+                          this.setState(() {});
+                        },
+                        dense: true,
+                      ),
+                      SwitchListTile(
+                        title: Text(i18n.isVegetarian),
+                        value: _isVegetarian,
+                        onChanged: (val) {
+                          setState(() {
+                            _isVegetarian = val;
+                          });
+                          this.setState(() {});
+                        },
+                        dense: true,
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
         );
       },
     );
