@@ -32,7 +32,7 @@ jobs:
           flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=iOSPhoneBig -d "$SIMULATOR"
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: screenshots-ios
           path: fastlane/metadata/ios/**/images/iPhone 6.9/*.png
@@ -113,7 +113,7 @@ jobs:
             flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=${{ matrix.device.device_type }}
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: screenshots-android-${{ matrix.device.folder }}
           path: fastlane/metadata/android/**/images/${{ matrix.device.folder }}/*.png
