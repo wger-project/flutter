@@ -67,7 +67,7 @@ jobs:
           ref: ${{ github.event.inputs.version }}
 
       - name: Download builds
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: /tmp/
 
@@ -115,7 +115,7 @@ jobs:
   #        uses: ./.github/actions/flutter-common
   #
   #      - name: Download builds
-  #        uses: actions/download-artifact@v7
+  #        uses: actions/download-artifact@v8
   #        with:
   #          path: /tmp/
   #
@@ -134,7 +134,7 @@ jobs:
 
     steps:
       - name: Download builds
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
 
       - name: Make Github release
         uses: softprops/action-gh-release@v2
