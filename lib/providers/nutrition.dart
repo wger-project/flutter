@@ -407,11 +407,11 @@ class NutritionPlansProvider with ChangeNotifier {
     };
 
     if (isVegan) {
-      query['is_vegan'] = 'True';
+      query['is_vegan'] = 'true';
     }
 
     if (isVegetarian) {
-      query['is_vegetarian'] = 'True';
+      query['is_vegetarian'] = 'true';
     }
 
     // Send the request

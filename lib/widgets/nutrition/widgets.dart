@@ -83,8 +83,8 @@ class IngredientTypeahead extends StatefulWidget {
 }
 
 class _IngredientTypeaheadState extends State<IngredientTypeahead> {
-  var _searchEnglish = true;
   late String barcode;
+  var _searchEnglish = true;
   var _isVegan = false;
   var _isVegetarian = false;
 
@@ -243,7 +243,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           context: context,
           builder: (context) {
             return StatefulBuilder(
-              builder: (context, setState) {
+              builder: (context, setDialogState) {
                 return AlertDialog(
                   title: Text(i18n.filter),
                   content: Column(
@@ -254,34 +254,28 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                           title: Text(i18n.searchNamesInEnglish),
                           value: _searchEnglish,
                           onChanged: (val) {
-                            setState(() {
+                            setDialogState(() {
                               _searchEnglish = val;
                             });
-                            this.setState(() {});
                           },
-                          dense: true,
                         ),
                       SwitchListTile(
                         title: Text(i18n.isVegan),
                         value: _isVegan,
                         onChanged: (val) {
-                          setState(() {
+                          setDialogState(() {
                             _isVegan = val;
                           });
-                          this.setState(() {});
                         },
-                        dense: true,
                       ),
                       SwitchListTile(
                         title: Text(i18n.isVegetarian),
                         value: _isVegetarian,
                         onChanged: (val) {
-                          setState(() {
+                          setDialogState(() {
                             _isVegetarian = val;
                           });
-                          this.setState(() {});
                         },
-                        dense: true,
                       ),
                     ],
                   ),
