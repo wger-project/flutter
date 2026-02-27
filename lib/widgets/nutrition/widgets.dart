@@ -84,7 +84,7 @@ class IngredientTypeahead extends StatefulWidget {
 
 class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   late String barcode;
-  var _searchEnglish = true;
+  var _searchLanguage = IngredientSearchLanguage.currentAndEnglish;
   var _isVegan = false;
   var _isVegetarian = false;
 
@@ -157,7 +157,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
-              searchEnglish: _searchEnglish,
+              searchLanguage: _searchLanguage,
               isVegan: _isVegan,
               isVegetarian: _isVegetarian,
             );
@@ -235,6 +235,29 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
 
   Widget filterButton() {
     final i18n = AppLocalizations.of(context);
+    final languageCode = Localizations.localeOf(context).languageCode;
+
+    // If we are in English, we don't need the "Current & English" option
+    final isEnglish = languageCode == LANGUAGE_SHORT_ENGLISH;
+    final dropdownItems = [
+      DropdownMenuItem(
+        value: IngredientSearchLanguage.current,
+        child: Text(i18n.searchLanguageCurrent(languageCode)),
+      ),
+      if (!isEnglish)
+        DropdownMenuItem(
+          value: IngredientSearchLanguage.currentAndEnglish,
+          child: Text(i18n.searchLanguageEnglish(languageCode)),
+        ),
+      DropdownMenuItem(
+        value: IngredientSearchLanguage.all,
+        child: Text(i18n.searchLanguageAll),
+      ),
+    ];
+
+    if (isEnglish && _searchLanguage == IngredientSearchLanguage.currentAndEnglish) {
+      _searchLanguage = IngredientSearchLanguage.current;
+    }
 
     return IconButton(
       icon: const Icon(Icons.tune),
@@ -249,19 +272,24 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
-                        SwitchListTile(
-                          title: Text(i18n.searchNamesInEnglish),
-                          value: _searchEnglish,
-                          onChanged: (val) {
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(i18n.language),
+                        subtitle: DropdownButton<IngredientSearchLanguage>(
+                          value: _searchLanguage,
+                          isExpanded: true,
+                          onChanged: (IngredientSearchLanguage? newValue) {
                             setDialogState(() {
-                              _searchEnglish = val;
+                              _searchLanguage = newValue!;
                             });
                           },
+                          items: dropdownItems,
                         ),
+                      ),
                       SwitchListTile(
                         title: Text(i18n.isVegan),
                         value: _isVegan,
+                        contentPadding: EdgeInsets.zero,
                         onChanged: (val) {
                           setDialogState(() {
                             _isVegan = val;
@@ -271,6 +299,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                       SwitchListTile(
                         title: Text(i18n.isVegetarian),
                         value: _isVegetarian,
+                        contentPadding: EdgeInsets.zero,
                         onChanged: (val) {
                           setDialogState(() {
                             _isVegetarian = val;

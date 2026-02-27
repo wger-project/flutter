@@ -34,6 +34,12 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 
+enum IngredientSearchLanguage {
+  current,
+  currentAndEnglish,
+  all,
+}
+
 class NutritionPlansProvider with ChangeNotifier {
   final _logger = Logger('NutritionPlansProvider');
 
@@ -387,7 +393,7 @@ class NutritionPlansProvider with ChangeNotifier {
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',
-    bool searchEnglish = false,
+    IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
     bool isVegan = false,
     bool isVegetarian = false,
   }) async {
@@ -395,16 +401,31 @@ class NutritionPlansProvider with ChangeNotifier {
       return [];
     }
 
-    final languages = [languageCode];
-    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
-      languages.add(LANGUAGE_SHORT_ENGLISH);
+    final List<String> languages = [];
+
+    switch (searchLanguage) {
+      case IngredientSearchLanguage.current:
+        languages.add(languageCode);
+        break;
+      case IngredientSearchLanguage.currentAndEnglish:
+        languages.add(languageCode);
+        if (languageCode != LANGUAGE_SHORT_ENGLISH) {
+          languages.add(LANGUAGE_SHORT_ENGLISH);
+        }
+        break;
+      case IngredientSearchLanguage.all:
+        // Don't add any language code to search in all languages
+        break;
     }
 
     final query = {
       'name__search': name,
-      'language__code': languages.join(','),
       'limit': API_RESULTS_PAGE_SIZE,
     };
+
+    if (languages.isNotEmpty) {
+      query['language__code'] = languages.join(',');
+    }
 
     if (isVegan) {
       query['is_vegan'] = 'true';

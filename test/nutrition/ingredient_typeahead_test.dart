@@ -37,7 +37,7 @@ void main() {
       mockNutrition.searchIngredient(
         any,
         languageCode: anyNamed('languageCode'),
-        searchEnglish: anyNamed('searchEnglish'),
+        searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
       ),
@@ -116,12 +116,15 @@ void main() {
   });
 
   testWidgets('Search calls provider with correct filter values', (WidgetTester tester) async {
-    // Arrange
     await tester.pumpWidget(createWidgetUnderTest());
 
     await tester.tap(find.byIcon(Icons.tune));
     await tester.pumpAndSettle();
 
+    // The dropdown should be visible
+    expect(find.byType(DropdownButton<IngredientSearchLanguage>), findsOneWidget);
+
+    // Toggle Vegan switch to ON
     await tester.tap(find.widgetWithText(SwitchListTile, 'Vegan'));
     await tester.pump();
 
@@ -140,7 +143,7 @@ void main() {
       mockNutrition.searchIngredient(
         'Apple',
         languageCode: 'en',
-        searchEnglish: true,
+        searchLanguage: IngredientSearchLanguage.current,
         isVegan: true,
         isVegetarian: false,
       ),

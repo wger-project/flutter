@@ -636,7 +636,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
   _i11.Future<List<_i9.Ingredient>> searchIngredient(
     String? name, {
     String? languageCode = 'en',
-    bool? searchEnglish = false,
+    _i16.IngredientSearchLanguage? searchLanguage = _i16.IngredientSearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
   }) =>
@@ -646,7 +646,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
               [name],
               {
                 #languageCode: languageCode,
-                #searchEnglish: searchEnglish,
+                #searchLanguage: searchLanguage,
                 #isVegan: isVegan,
                 #isVegetarian: isVegetarian,
               },
