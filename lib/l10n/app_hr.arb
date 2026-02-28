@@ -115,11 +115,11 @@
     "@reps": {
         "description": "Shorthand for repetitions, used when space constraints are tighter"
     },
-    "rir": "PUR",
+    "rir": "Broj ponavljanja u rezervi",
     "@rir": {
         "description": "Shorthand for Repetitions In Reserve"
     },
-    "rirNotUsed": "PUR se ne koristi",
+    "rirNotUsed": "Broj ponavljanja u rezervi se ne koristi",
     "@rirNotUsed": {
         "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
     },
@@ -203,7 +203,7 @@
             }
         }
     },
-    "setUnitsAndRir": "Postavi jedinice i PUR",
+    "setUnitsAndRir": "Jedinice serije i broj ponavljanja u rezervi",
     "@setUnitsAndRir": {
         "description": "Label shown on the slider where the user can toggle showing units and RiR",
         "type": "text"
