@@ -97,7 +97,7 @@ void main() {
       mockNutrition.searchIngredient(
         any,
         languageCode: anyNamed('languageCode'),
-        searchEnglish: anyNamed('searchEnglish'),
+        searchLanguage: anyNamed('searchLanguage'),
       ),
     ).thenAnswer(
       (_) => Future.value([ingredient1, ingredient2]),
@@ -343,7 +343,7 @@ void main() {
         mockNutrition.searchIngredient(
           any,
           languageCode: anyNamed('languageCode'),
-          searchEnglish: anyNamed('searchEnglish'),
+          searchLanguage: anyNamed('searchLanguage'),
         ),
       ).thenAnswer((_) => Future.value([ingredient1]));
 

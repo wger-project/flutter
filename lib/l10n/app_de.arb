@@ -967,5 +967,31 @@
             }
         }
     },
-    "superset": "Superset"
+    "superset": "Superset",
+    "isVegan": "Vegan",
+    "@isVegan": {},
+    "isVegetarian": "Vegetarisch",
+    "@isVegetarian": {},
+    "filter": "Filtern",
+    "@filter": {},
+    "searchLanguageCurrent": "Nur aktuelle Sprache ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Aktuelle Sprache ({lang}) & Englisch",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Alle Sprachen",
+    "@searchLanguageAll": {}
 }

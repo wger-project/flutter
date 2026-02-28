@@ -814,13 +814,20 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i20.NutritionPlans
   _i18.Future<List<_i13.Ingredient>> searchIngredient(
     String? name, {
     String? languageCode = 'en',
-    bool? searchEnglish = false,
+    _i20.IngredientSearchLanguage? searchLanguage = _i20.IngredientSearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
               #searchIngredient,
               [name],
-              {#languageCode: languageCode, #searchEnglish: searchEnglish},
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+              },
             ),
             returnValue: _i18.Future<List<_i13.Ingredient>>.value(
               <_i13.Ingredient>[],
@@ -1153,7 +1160,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
     Uri? uri, {
     int? maxRetries = 3,
     Duration? initialDelay = const Duration(milliseconds: 250),
-    Duration? timeout = const Duration(seconds: 5),
+    Duration? timeout = const Duration(seconds: 15),
     String? language,
   }) =>
       (super.noSuchMethod(
@@ -1175,7 +1182,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
   _i18.Future<List<dynamic>> fetchPaginated(
     Uri? uri, {
     String? language,
-    Duration? timeout = const Duration(seconds: 5),
+    Duration? timeout = const Duration(seconds: 15),
   }) =>
       (super.noSuchMethod(
             Invocation.method(

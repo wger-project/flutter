@@ -3833,6 +3833,83 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get productNotFoundOpenFoodFacts =>
+      (super.noSuchMethod(
+            Invocation.getter(#productNotFoundOpenFoodFacts),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#productNotFoundOpenFoodFacts),
+            ),
+          )
+          as String);
+
+  @override
+  String get addToOpenFoodFacts =>
+      (super.noSuchMethod(
+            Invocation.getter(#addToOpenFoodFacts),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#addToOpenFoodFacts),
+            ),
+          )
+          as String);
+
+  @override
+  String get isVegan =>
+      (super.noSuchMethod(
+            Invocation.getter(#isVegan),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#isVegan),
+            ),
+          )
+          as String);
+
+  @override
+  String get isVegetarian =>
+      (super.noSuchMethod(
+            Invocation.getter(#isVegetarian),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#isVegetarian),
+            ),
+          )
+          as String);
+
+  @override
+  String get filter =>
+      (super.noSuchMethod(
+            Invocation.getter(#filter),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#filter),
+            ),
+          )
+          as String);
+
+  @override
+  String get searchLanguage =>
+      (super.noSuchMethod(
+            Invocation.getter(#searchLanguage),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#searchLanguage),
+            ),
+          )
+          as String);
+
+  @override
+  String get searchLanguageAll =>
+      (super.noSuchMethod(
+            Invocation.getter(#searchLanguageAll),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#searchLanguageAll),
+            ),
+          )
+          as String);
+
+  @override
   String exerciseNr(String? nr) =>
       (super.noSuchMethod(
             Invocation.method(#exerciseNr, [nr]),
@@ -4070,6 +4147,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#contributeExerciseWarning, [days]),
+            ),
+          )
+          as String);
+
+  @override
+  String searchLanguageCurrent(String? lang) =>
+      (super.noSuchMethod(
+            Invocation.method(#searchLanguageCurrent, [lang]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#searchLanguageCurrent, [lang]),
+            ),
+          )
+          as String);
+
+  @override
+  String searchLanguageEnglish(String? lang) =>
+      (super.noSuchMethod(
+            Invocation.method(#searchLanguageEnglish, [lang]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#searchLanguageEnglish, [lang]),
             ),
           )
           as String);

@@ -331,13 +331,20 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
   _i9.Future<List<_i7.Ingredient>> searchIngredient(
     String? name, {
     String? languageCode = 'en',
-    bool? searchEnglish = false,
+    _i8.IngredientSearchLanguage? searchLanguage = _i8.IngredientSearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
               #searchIngredient,
               [name],
-              {#languageCode: languageCode, #searchEnglish: searchEnglish},
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+              },
             ),
             returnValue: _i9.Future<List<_i7.Ingredient>>.value(
               <_i7.Ingredient>[],

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -89,6 +89,12 @@ class Ingredient {
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num sodium;
 
+  @JsonKey(name: 'is_vegan', defaultValue: false)
+  final bool isVegan;
+
+  @JsonKey(name: 'is_vegetarian', defaultValue: false)
+  final bool isVegetarian;
+
   IngredientImage? image;
 
   IngredientImageThumbnails? thumbnails;
@@ -110,6 +116,8 @@ class Ingredient {
     required this.fatSaturated,
     required this.fiber,
     required this.sodium,
+    this.isVegan = false,
+    this.isVegetarian = false,
     this.image,
     this.thumbnails,
   });
