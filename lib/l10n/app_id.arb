@@ -1,1067 +1,921 @@
 {
-  "@@last_modified": "2020-11-11T15:04:05.523531",
-  "login": "Masuk",
-  "@login": {
-    "description": "Text for login button"
-  },
-  "logout": "Keluar",
-  "@logout": {
-    "description": "Text for logout button"
-  },
-  "register": "Daftar",
-  "@register": {
-    "description": "Text for registration button"
-  },
-  "useDefaultServer": "Gunakan server bawaan",
-  "@useDefaultServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "useCustomServer": "Gunakan server lain",
-  "@useCustomServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "invalidUrl": "Mohon masukkan URL yang valid",
-  "@invalidUrl": {
-    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-  },
-  "usernameValidChars": "Username hanya dapat diisi dengan hiruf, angka, dan karakter @, +, ., -, dan _",
-  "@usernameValidChars": {
-    "description": "Error message when the user tries to register a username with forbidden characters"
-  },
-  "passwordsDontMatch": "Password tidak sesuai",
-  "@passwordsDontMatch": {
-    "description": "Error message when the user enters two different passwords during registration"
-  },
-  "passwordTooShort": "Password terlalu pendek",
-  "@passwordTooShort": {
-    "description": "Error message when the user a password that is too short"
-  },
-  "password": "Kata sandi",
-  "@password": {},
-  "confirmPassword": "Konfirmasi Kata Sandi",
-  "@confirmPassword": {},
-  "invalidEmail": "Mohon masukkan E-mail yang valid",
-  "@invalidEmail": {
-    "description": "Error message when the user enters an invalid email"
-  },
-  "email": "Alamat E-mail",
-  "@email": {},
-  "username": "Nama pengguna",
-  "@username": {},
-  "invalidUsername": "Mohon masukkan username yang valid",
-  "@invalidUsername": {
-    "description": "Error message when the user enters an invalid username"
-  },
-  "customServerUrl": "URL dari wger",
-  "@customServerUrl": {
-    "description": "Label in the form where the users can enter their own wger instance"
-  },
-  "customServerHint": "Masukkan alamat servermu sendiri, jika tidak akan menggunakan server bawaan",
-  "@customServerHint": {
-    "description": "Hint text for the form where the users can enter their own wger instance"
-  },
-  "reset": "Reset",
-  "@reset": {
-    "description": "Button text allowing the user to reset the entered values to the default"
-  },
-  "registerInstead": "Tidak punya akun? Buat akun",
-  "@registerInstead": {},
-  "loginInstead": "Punya akun? Masuk",
-  "@loginInstead": {},
-  "labelBottomNavWorkout": "Workout",
-  "@labelBottomNavWorkout": {
-    "description": "Label used in bottom navigation, use a short word"
-  },
-  "labelBottomNavNutrition": "Nutrisi",
-  "@labelBottomNavNutrition": {
-    "description": "Label used in bottom navigation, use a short word"
-  },
-  "labelWorkoutLogs": "Log latihan",
-  "@labelWorkoutLogs": {
-    "description": "(Workout) logs"
-  },
-  "labelWorkoutPlan": "Rencana workout",
-  "@labelWorkoutPlan": {
-    "description": "Title for screen workout plan"
-  },
-  "labelDashboard": "Dashboard",
-  "@labelDashboard": {
-    "description": "Title for screen dashboard"
-  },
-  "successfullyDeleted": "Terhapus",
-  "@successfullyDeleted": {
-    "description": "Message when an item was successfully deleted"
-  },
-  "successfullySaved": "Tersimpan",
-  "@successfullySaved": {
-    "description": "Message when an item was successfully saved"
-  },
-  "exercise": "Latihan",
-  "@exercise": {
-    "description": "An exercise for a workout"
-  },
-  "searchExercise": "Cari latihan untuk ditambahkan",
-  "@searchExercise": {
-    "description": "Label on set form. Selected exercises are added to the set"
-  },
-  "equipment": "Perlengkapan",
-  "@equipment": {
-    "description": "Equipment needed to perform an exercise"
-  },
-  "muscles": "Otot",
-  "@muscles": {
-    "description": "(main) muscles trained by an exercise"
-  },
-  "musclesSecondary": "Otot sekunder",
-  "@musclesSecondary": {
-    "description": "secondary muscles trained by an exercise"
-  },
-  "category": "Kategori",
-  "@category": {
-    "description": "Category for an exercise, ingredient, etc."
-  },
-  "repetitions": "Pengulangan",
-  "@repetitions": {
-    "description": "Repetitions for an exercise set"
-  },
-  "reps": "Repetisi",
-  "@reps": {
-    "description": "Shorthand for repetitions, used when space constraints are tighter"
-  },
-  "rir": "Repetisi tersisa",
-  "@rir": {
-    "description": "Shorthand for Repetitions In Reserve"
-  },
-  "rirNotUsed": "RiR tidak digunakan",
-  "@rirNotUsed": {
-    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
-  },
-  "weightUnit": "Satuan bobot",
-  "@weightUnit": {},
-  "repetitionUnit": "Satuan pengulangan",
-  "@repetitionUnit": {},
-  "set": "Set",
-  "@set": {
-    "description": "A set in a workout plan"
-  },
-  "dayDescriptionHelp": "Deskripsi untuk yang sudah diselesaikan hari ini (contoh: 'pull day') atau bagian tubuh mana yang sudah dilatih (contoh: 'dada dan pundak')",
-  "@dayDescriptionHelp": {},
-  "setNr": "Set {nr}",
-  "@setNr": {
-    "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
-    "type": "text",
-    "placeholders": {
-      "nr": {
-        "type": "String"
-      }
-    }
-  },
-  "sameRepetitions": "Jika Anda melakukan pengulangan dan bobot yang sama untuk semua set, Anda cukup mengisi satu baris. Misalnya untuk 4 set cukup masukkan 10 untuk pengulangan, ini secara otomatis menjadi \"4 x 10\".",
-  "@sameRepetitions": {},
-  "comment": "Komentar",
-  "@comment": {
-    "description": "Comment, additional information"
-  },
-  "impression": "Kesan",
-  "@impression": {
-    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
-  },
-  "notes": "Catatan",
-  "@notes": {
-    "description": "Personal notes, e.g. for a workout session"
-  },
-  "workoutSession": "Sesi workout",
-  "@workoutSession": {
-    "description": "A (logged) workout session"
-  },
-  "newDay": "Hari baru",
-  "@newDay": {},
-  "newSet": "Set baru",
-  "@newSet": {
-    "description": "Header when adding a new set to a workout day"
-  },
-  "selectExercises": "Jika Anda ingin melakukan superset, Anda dapat mencari beberapa latihan, mereka akan dikelompokkan bersama",
-  "@selectExercises": {},
-  "gymMode": "Mode gym",
-  "@gymMode": {
-    "description": "Label when starting the gym mode"
-  },
-  "plateCalculator": "Lempeng Beban",
-  "@plateCalculator": {
-    "description": "Label used for the plate calculator in the gym mode"
-  },
-  "plateCalculatorNotDivisible": "Tidak memungkinkan untuk mencapai bobot dengan plate yang tersedia",
-  "@plateCalculatorNotDivisible": {
-    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
-  },
-  "pause": "Jeda",
-  "@pause": {
-    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
-  },
-  "jumpTo": "Lompat ke",
-  "@jumpTo": {
-    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
-  },
-  "todaysWorkout": "Latihanmu hari ini",
-  "@todaysWorkout": {},
-  "logHelpEntries": "Jika dalam satu hari terdapat lebih dari satu entri dengan jumlah repetisi yang sama namun beban berbeda, hanya entri dengan beban tertinggi yang akan ditampilkan di diagram.",
-  "@logHelpEntries": {},
-  "logHelpEntriesUnits": "Perlu dicatat bahwa hanya entri dengan satuan beban (kg atau lb) dan repetisi yang akan ditampilkan di grafik. Kombinasi lain seperti waktu atau hingga gagal tidak diperhitungkan di sini.",
-  "@logHelpEntriesUnits": {},
-  "description": "Description",
-  "@description": {},
-  "name": "Nama",
-  "@name": {
-    "description": "Name for a workout or nutritional plan"
-  },
-  "save": "Simpan",
-  "@save": {},
-  "addSet": "Tambah set",
-  "@addSet": {
-    "description": "Label for the button that adds a set (to a workout day)"
-  },
-  "addMeal": "Tambah makanan",
-  "@addMeal": {},
-  "mealLogged": "Makanan ditambahkan ke buku harian",
-  "@mealLogged": {},
-  "logMeal": "Catat makanan ke buku harian nutrisi",
-  "@logMeal": {},
-  "addIngredient": "Tambah komposisi",
-  "@addIngredient": {},
-  "logIngredient": "Catat bahan ke buku harian nutrisi",
-  "@logIngredient": {},
-  "searchIngredient": "Cari komposisi",
-  "@searchIngredient": {
-    "description": "Label on ingredient search form"
-  },
-  "nutritionalPlan": "Rencana Nutrisi",
-  "@nutritionalPlan": {},
-  "nutritionalDiary": "Buku Harian Nutrisi",
-  "@nutritionalDiary": {},
-  "nutritionalPlans": "Rencana Nutrisi",
-  "@nutritionalPlans": {},
-  "noNutritionalPlans": "Anda belum memiliki rencana nutrisi",
-  "@noNutritionalPlans": {
-    "description": "Message shown when the user has no nutritional plans"
-  },
-  "anErrorOccurred": "Terjadi kesalahan!",
-  "@anErrorOccurred": {},
-  "weight": "Berat",
-  "@weight": {
-    "description": "The weight of a workout log or body weight entry"
-  },
-  "measurement": "Ukuran",
-  "@measurement": {},
-  "measurements": "Pengukuran",
-  "@measurements": {
-    "description": "Categories for the measurements such as biceps size, body fat, etc."
-  },
-  "measurementCategoriesHelpText": "Kategori pengukuran, seperti 'bisep' atau 'lemak tubuh'",
-  "@measurementCategoriesHelpText": {},
-  "measurementEntriesHelpText": "Satuan yang digunakan untuk mengukur kategori, seperti 'cm' atau '%'",
-  "@measurementEntriesHelpText": {},
-  "date": "Date",
-  "@date": {
-    "description": "The date of a workout log or body weight entry"
-  },
-  "value": "Nilai",
-  "@value": {
-    "description": "The value of a measurement entry"
-  },
-  "start": "Start",
-  "@start": {
-    "description": "Label on button to start the gym mode (i.e., an imperative)"
-  },
-  "time": "Waktu",
-  "@time": {
-    "description": "The time of a meal or workout"
-  },
-  "timeStart": "Waktu mulai",
-  "@timeStart": {
-    "description": "The starting time of a workout"
-  },
-  "timeEnd": "Waktu selesai",
-  "@timeEnd": {
-    "description": "The end time of a workout"
-  },
-  "timeStartAhead": "Waktu mulai tidak boleh melebihi waktu selesai",
-  "@timeStartAhead": {},
-  "ingredient": "Komposisi",
-  "@ingredient": {},
-  "energy": "Energi",
-  "@energy": {
-    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
-  },
-  "energyShort": "E",
-  "@energyShort": {
-    "description": "The first letter or short name of the word 'Energy', used in overviews"
-  },
-  "kcal": "kkal",
-  "@kcal": {
-    "description": "Energy in a meal in kilocalories, kcal"
-  },
-  "macronutrients": "Makronutrien",
-  "@macronutrients": {},
-  "planned": "Direncanakan",
-  "@planned": {
-    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
-  },
-  "logged": "Dicatat",
-  "@logged": {
-    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
-  },
-  "weekAverage": "Rata-rata 7 hari",
-  "@weekAverage": {
-    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
-  },
-  "difference": "Perbedaan",
-  "@difference": {},
-  "percentEnergy": "Persenan Energi",
-  "@percentEnergy": {},
-  "gPerBodyKg": "g per kg tubuh",
-  "@gPerBodyKg": {
-    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
-  },
-  "total": "Total",
-  "@total": {
-    "description": "Label used for total sums of e.g. calories or similar"
-  },
-  "kJ": "kJ",
-  "@kJ": {
-    "description": "Energy in a meal in kilo joules, kJ"
-  },
-  "g": "g",
-  "@g": {
-    "description": "Abbreviation for gram"
-  },
-  "protein": "Protein",
-  "@protein": {},
-  "proteinShort": "P",
-  "@proteinShort": {
-    "description": "The first letter or short name of the word 'Protein', used in overviews"
-  },
-  "carbohydrates": "Karbohidrat",
-  "@carbohydrates": {},
-  "carbohydratesShort": "C",
-  "@carbohydratesShort": {
-    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
-  },
-  "sugars": "Gula",
-  "@sugars": {},
-  "fat": "Lemak",
-  "@fat": {},
-  "fatShort": "F",
-  "@fatShort": {
-    "description": "The first letter or short name of the word 'Fat', used in overviews"
-  },
-  "saturatedFat": "Lemak jenuh",
-  "@saturatedFat": {},
-  "fiber": "Fibre",
-  "@fiber": {},
-  "sodium": "Sodium",
-  "@sodium": {},
-  "amount": "Jumlah",
-  "@amount": {
-    "description": "The amount (e.g. in grams) of an ingredient in a meal"
-  },
-  "unit": "Unit",
-  "@unit": {
-    "description": "The unit used for a repetition (kg, time, etc.)"
-  },
-  "newEntry": "Entri baru",
-  "@newEntry": {
-    "description": "Title when adding a new entry such as a weight or log entry"
-  },
-  "noWeightEntries": "Anda belum memiliki entri berat badan",
-  "@noWeightEntries": {
-    "description": "Message shown when the user has no logged weight entries"
-  },
-  "edit": "Edit",
-  "@edit": {},
-  "loadingText": "Loading...",
-  "@loadingText": {
-    "description": "Text to show when entries are being loaded in the background: Loading..."
-  },
-  "delete": "Delete",
-  "@delete": {},
-  "confirmDelete": "Apakah anda yakin ingin menghapus '{toDelete}'?",
-  "@confirmDelete": {
-    "description": "Confirmation text before the user deletes an object",
-    "type": "text",
-    "placeholders": {
-      "toDelete": {
-        "type": "String"
-      }
-    }
-  },
-  "newNutritionalPlan": "Rencana nutrisi baru",
-  "@newNutritionalPlan": {},
-  "toggleDetails": "Toggle rincian",
-  "@toggleDetails": {
-    "description": "Switch to toggle detail / overview"
-  },
-  "goToDetailPage": "Go to detail page",
-  "@goToDetailPage": {},
-  "aboutDescription": "Terima kasih telah menggunakan wger! wger proyek open source kolaboratif, dibuat oleh para penggemar kebugaran dari seluruh dunia.",
-  "@aboutDescription": {
-    "description": "Text in the about dialog"
-  },
-  "calendar": "Kalender",
-  "@calendar": {},
-  "goToToday": "Pergi ke hari ini",
-  "@goToToday": {
-    "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
-  "enterValue": "Silakan masukan nilai",
-  "@enterValue": {
-    "description": "Error message when the user hasn't entered a value on a required field"
-  },
-  "selectExercise": "Silakan pilih latihan",
-  "@selectExercise": {
-    "description": "Error message when the user hasn't selected an exercise in the form"
-  },
-  "enterCharacters": "Silakan masukan antara {min} dan {max} karakter",
-  "@enterCharacters": {
-    "description": "Error message when the user hasn't entered the correct number of characters in a form",
-    "type": "text",
-    "placeholders": {
-      "min": {
-        "type": "String"
-      },
-      "max": {
-        "type": "String"
-      }
-    }
-  },
-  "nrOfSets": "Sets per latihan: {nrOfSets}",
-  "@nrOfSets": {
-    "description": "Label shown on the slider where the user selects the nr of sets",
-    "type": "text",
-    "placeholders": {
-      "nrOfSets": {
-        "type": "String"
-      }
-    }
-  },
-  "setUnitsAndRir": "Unit Set and RiR",
-  "@setUnitsAndRir": {
-    "description": "Label shown on the slider where the user can toggle showing units and RiR",
-    "type": "text"
-  },
-  "enterValidNumber": "Silakan masukan angka yang valid",
-  "@enterValidNumber": {
-    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
-  },
-  "selectIngredient": "Silakan pilih komposisi",
-  "@selectIngredient": {
-    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
-  },
-  "recentlyUsedIngredients": "Komposisi yang baru ditambahkan",
-  "@recentlyUsedIngredients": {
-    "description": "A message when a user adds a new ingredient to a meal."
-  },
-  "selectImage": "Silakan pilih gambar",
-  "@selectImage": {
-    "description": "Label and error message when the user hasn't selected an image to save"
-  },
-  "optionsLabel": "Options",
-  "@optionsLabel": {
-    "description": "Label for the popup with general app options"
-  },
-  "takePicture": "Ambil gambar",
-  "@takePicture": {},
-  "chooseFromLibrary": "Pilih foto dari library",
-  "@chooseFromLibrary": {},
-  "gallery": "Galeri",
-  "@gallery": {},
-  "addImage": "Add image",
-  "@addImage": {},
-  "dataCopied": "Data disalin ke entri baru",
-  "@dataCopied": {
-    "description": "Snackbar message to show on copying data to a new log entry"
-  },
-  "appUpdateTitle": "Pembaruan diperlukan",
-  "@appUpdateTitle": {},
-  "appUpdateContent": "Versi aplikasi ini tidak kompatibel dengan server, silakan perbarui aplikasi Anda.",
-  "@appUpdateContent": {},
-  "productFound": "Produk ditemukan",
-  "@productFound": {
-    "description": "Header label for dialog when product is found with barcode"
-  },
-  "productFoundDescription": "Kode batang ini sesuai dengan produk: {productName}. Apakah Anda ingin melanjutkan?",
-  "@productFoundDescription": {
-    "description": "Dialog info when product is found with barcode",
-    "type": "text",
-    "placeholders": {
-      "productName": {
-        "type": "String"
-      }
-    }
-  },
-  "productNotFound": "Produk tidak ditemukan",
-  "@productNotFound": {
-    "description": "Header label for dialog when product is not found with barcode"
-  },
-  "productNotFoundDescription": "Produk dengan kode batang {barcode} tidak ditemukan dalam database wger",
-  "@productNotFoundDescription": {
-    "description": "Dialog info when product is not found with barcode",
-    "type": "text",
-    "placeholders": {
-      "barcode": {
-        "type": "String"
-      }
-    }
-  },
-  "scanBarcode": "Pindai kode batang",
-  "@scanBarcode": {
-    "description": "Label for scan barcode button"
-  },
-  "close": "Tutup",
-  "@close": {
-    "description": "Translation for close"
-  },
-  "userProfile": "Profil Kamu",
-  "@userProfile": {},
-  "verify": "Verifikasi",
-  "@verify": {},
-  "useMetric": "Gunakan unit metrik untuk berat badan",
-  "@useMetric": {},
-  "exerciseList": "Daftar latihan",
-  "@exerciseList": {},
-  "success": "Berhasil",
-  "@success": {
-    "description": "Message when an action completed successfully, usually used as a heading"
-  },
-  "exercises": "Latihan",
-  "@exercises": {
-    "description": "Multiple exercises for a workout"
-  },
-  "exerciseName": "Nama Latihan",
-  "@exerciseName": {
-    "description": "Label for the name of a workout exercise"
-  },
-  "noMatchingExerciseFound": "Tidak ditemukan latihan yang sesuai",
-  "@noMatchingExerciseFound": {
-    "description": "Message returned if no exercises match the searched string"
-  },
-  "shoulders": "Bahu",
-  "@shoulders": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "onlyLogging": "Hanya melacak kalori",
-  "@onlyLogging": {},
-  "seconds": "Detik",
-  "@seconds": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "searchNamesInEnglish": "Cari juga nama-nama dalam bahasa Inggris",
-  "@searchNamesInEnglish": {},
-  "noIngredientsDefined": "Belum ada bahan yang ditetapkan",
-  "@noIngredientsDefined": {},
-  "ingredientLogged": "Komposisi telah dicatat",
-  "@ingredientLogged": {},
-  "triceps": "Trisep",
-  "@triceps": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "goalFiber": "Target serat",
-  "@goalFiber": {},
-  "abs": "Otot perut",
-  "@abs": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "selectAvailablePlates": "Pilih lempeng beban yang tersedia",
-  "@selectAvailablePlates": {},
-  "useColors": "Gunakan warna",
-  "@useColors": {},
-  "barWeight": "Berat batang",
-  "@barWeight": {},
-  "routineDays": "Hari dalam rutinitas",
-  "@routineDays": {},
-  "resultingRoutine": "Rutinitas yang dihasilkan",
-  "@resultingRoutine": {},
-  "goalCarbohydrates": "Target karbohidrat",
-  "@goalCarbohydrates": {},
-  "alternativeNames": "Nama lain",
-  "@alternativeNames": {},
-  "back": "Punggung",
-  "@back": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "routines": "Rutinitas",
-  "@routines": {},
-  "newRoutine": "Rutinitas baru",
-  "@newRoutine": {},
-  "sets": "Set",
-  "@sets": {
-    "description": "The number of sets to be done for one exercise"
-  },
-  "isRestDayHelp": "Harap diperhatikan bahwa semua set dan latihan akan dihapus ketika Anda menandai suatu hari sebagai hari istirahat.",
-  "@isRestDayHelp": {},
-  "max": "Maksimal",
-  "@max": {},
-  "today": "Hari ini",
-  "@today": {},
-  "noMeasurementEntries": "Anda belum memiliki entri pengukuran apa pun",
-  "@noMeasurementEntries": {},
-  "log": "Catat",
-  "@log": {
-    "description": "Log a specific meal (imperative form)"
-  },
-  "settingsTitle": "Pengaturan",
-  "@settingsTitle": {},
-  "biceps": "Bisep",
-  "@biceps": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "miles_per_hour": "Mil Per Jam",
-  "@miles_per_hour": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "selectEntry": "Silakan pilih entri",
-  "@selectEntry": {},
-  "next": "Selanjutnya",
-  "@next": {},
-  "simpleMode": "Mode sederhana",
-  "@simpleMode": {},
-  "body_weight": "Berat Badan",
-  "@body_weight": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "incline_bench": "Bangku Incline",
-  "@incline_bench": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "legs": "Kaki",
-  "@legs": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "aboutDonateTitle": "Beri donasi",
-  "@aboutDonateTitle": {},
-  "bench": "Bangku",
-  "@bench": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "useUsernameAndPassword": "Gunakan nama pengguna dan kata sandi",
-  "@useUsernameAndPassword": {},
-  "useApiToken": "Gunakan Token API",
-  "@useApiToken": {},
-  "restTime": "Waktu istirahat",
-  "@restTime": {},
-  "restDay": "Hari istirahat",
-  "@restDay": {},
-  "exerciseNr": "Latihan ke-{nr}",
-  "@exerciseNr": {
-    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
-    "type": "text",
-    "placeholders": {
-      "nr": {
-        "type": "String"
-      }
-    }
-  },
-  "errorCouldNotConnectToServer": "Tidak dapat terhubung ke server",
-  "@errorCouldNotConnectToServer": {},
-  "errorInfoDescription": "Maaf, terjadi kesalahan. Anda dapat membantu kami memperbaikinya dengan melaporkan masalah ini di GitHub.",
-  "@errorInfoDescription": {},
-  "min": "Minimal",
-  "@min": {},
-  "chartAllTimeTitle": "{name}Sepanjang waktu",
-  "@chartAllTimeTitle": {
-    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chart30DaysTitle": "{name} 30 hari terakhir",
-  "@chart30DaysTitle": {
-    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chartDuringPlanTitle": "{chartName} selama rencana nutrisi {planName}",
-  "@chartDuringPlanTitle": {
-    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-    "type": "text",
-    "placeholders": {
-      "chartName": {
-        "type": "String"
-      },
-      "planName": {
-        "type": "String"
-      }
-    }
-  },
-  "aboutWhySupportTitle": "Bersifat open source & gratis ❤️",
-  "@aboutWhySupportTitle": {},
-  "aboutSourceListTitle": "Lihat kode sumber",
-  "@aboutSourceListTitle": {},
-  "aboutJoinCommunityTitle": "Gabung komunitas",
-  "@aboutJoinCommunityTitle": {},
-  "previous": "Sebelumnya",
-  "@previous": {},
-  "setHasProgressionWarning": "Perlu diketahui, saat ini pengaturan lengkap untuk set dan konfigurasi progresi otomatis belum bisa dilakukan di aplikasi mobile. Silakan gunakan aplikasi web untuk fitur tersebut.",
-  "@setHasProgressionWarning": {},
-  "settingsExerciseCacheDescription": "Cache latihan",
-  "@settingsExerciseCacheDescription": {},
-  "settingsIngredientCacheDescription": "Cache komposisi",
-  "@settingsIngredientCacheDescription": {},
-  "settingsCacheDeletedSnackbar": "Cache berhasil dibersihkan",
-  "@settingsCacheDeletedSnackbar": {},
-  "aboutPageTitle": "Tentang kami dan dukungan",
-  "@aboutPageTitle": {},
-  "simpleModeHelp": "Sembunyikan beberapa pengaturan lanjutan saat mengedit latihan",
-  "@simpleModeHelp": {},
-  "kilometers": "Kilometer",
-  "@kilometers": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "lats": "Otot Punggung Samping",
-  "@lats": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "lower_back": "Punggung Bawah",
-  "@lower_back": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "minutes": "Menit",
-  "@minutes": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "until_failure": "Sampai tidak mampu lagi",
-  "@until_failure": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "kg": "kg",
-  "@kg": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "done": "Selesai",
-  "@done": {},
-  "overallChangeWeight": "Perubahan keseluruhan",
-  "@overallChangeWeight": {
-    "description": "Overall change in weight, added for localization"
-  },
-  "goalTypeMeals": "Dari makanan",
-  "@goalTypeMeals": {
-    "description": "added for localization of Class GoalType's filed meals"
-  },
-  "goalTypeBasic": "Dasar",
-  "@goalTypeBasic": {
-    "description": "added for localization of Class GoalType's filed basic"
-  },
-  "goalTypeAdvanced": "Lanjutan",
-  "@goalTypeAdvanced": {
-    "description": "added for localization of Class GoalType's filed advanced"
-  },
-  "indicatorRaw": "Mentah",
-  "@indicatorRaw": {
-    "description": "added for localization of Class Indicator's field text"
-  },
-  "indicatorAvg": "rata-rata",
-  "@indicatorAvg": {
-    "description": "added for localization of Class Indicator's field text"
-  },
-  "themeMode": "mode Tema",
-  "@themeMode": {},
-  "systemMode": "Pengaturan sitem",
-  "@systemMode": {},
-  "pull_up_bar": "Palang Pull-up",
-  "@pull_up_bar": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "onlyLoggingHelpText": "Centang kotak ini jika Anda hanya ingin mencatat kalori dan tidak ingin menyusun rencana nutrisi secara rinci dengan menu khusus",
-  "@onlyLoggingHelpText": {},
-  "goalEnergy": "Target energi",
-  "@goalEnergy": {},
-  "moreMeasurementEntries": "Tambah pengukuran baru",
-  "@moreMeasurementEntries": {
-    "description": "Message shown when the user wants to add new measurement"
-  },
-  "baseNameEnglish": "Semua latihan memerlukan nama dasar dalam Bahasa Inggris",
-  "@baseNameEnglish": {},
-  "add_exercise_image_license": "Gambar harus kompatibel dengan lisensi CC BY SA. Jika ragu, unggah hanya foto yang anda ambil sendiri.",
-  "@add_exercise_image_license": {},
-  "verifiedEmail": "Email terverifikasi",
-  "@verifiedEmail": {},
-  "max_reps": "Repetisi Maksimal",
-  "@max_reps": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "miles": "Mil",
-  "@miles": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "lb": "lb",
-  "@lb": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "verifiedEmailReason": "Anda perlu memverifikasi email untuk dapat menambahkan latihan",
-  "@verifiedEmailReason": {},
-  "baseData": "Dasar dalam Bahasa Inggris",
-  "@baseData": {
-    "description": "The base data for an exercise such as category, trained muscles, etc."
-  },
-  "textPromptSubheading": "Tekan tombol untuk mulai",
-  "@textPromptSubheading": {},
-  "cacheWarning": "Karena sistem cache, perubahan mungkin membutuhkan waktu sebelum terlihat di seluruh aplikasi.",
-  "@cacheWarning": {},
-  "textPromptTitle": "Siap memulai?",
-  "@textPromptTitle": {},
-  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Rencana nutrisi Anda saat ini belum memiliki menu yang ditentukan",
-  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
-    "description": "Message shown when a nutrition plan doesn't have any meals"
-  },
-  "toAddMealsToThePlanGoToNutritionalPlanDetails": "Untuk menambahkan menu ke dalam rencana, buka detail rencana nutrisi",
-  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
-    "description": "Message shown to guide users to the nutritional plan details page to add meals"
-  },
-  "goalFat": "Target lemak",
-  "@goalFat": {},
-  "errorInfoDescription2": "Anda masih dapat menggunakan aplikasi, namun beberapa fitur mungkin tidak berfungsi.",
-  "@errorInfoDescription2": {},
-  "errorViewDetails": "Rincian teknis",
-  "@errorViewDetails": {},
-  "copyToClipboard": "Salin ke papan klip",
-  "@copyToClipboard": {},
-  "loggedToday": "Dicatat hari ini",
-  "@loggedToday": {},
-  "aboutDonateText": "Meskipun proyek ini gratis dan akan selalu begitu, menjalankan server tetap memerlukan biaya! Pengembangan juga membutuhkan waktu dan tenaga yang tidak sedikit dari para relawan. Kontribusi Anda secara langsung membantu menutup biaya-biaya ini dan menjaga layanan tetap andal.",
-  "@aboutDonateText": {},
-  "aboutContributeText": "Semua jenis kontribusi sangat kami hargai. Baik Anda seorang pengembang, penerjemah, atau sekadar memiliki semangat di bidang kebugaran, setiap bentuk dukungan sangat berarti!",
-  "@aboutContributeText": {},
-  "aboutTranslationListTitle": "Terjemahkan aplikasi",
-  "@aboutTranslationListTitle": {},
-  "others": "Lainnya",
-  "@others": {},
-  "verifiedEmailInfo": "Email verifikasi telah dikirim ke {email}",
-  "@verifiedEmailInfo": {
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
-  },
-  "oneNamePerLine": "Satu nama per baris",
-  "@oneNamePerLine": {},
-  "whatVariationsExist": "Apakah ada variasi dari latihan ini? Jika ada, apa saja?",
-  "@whatVariationsExist": {},
-  "images": "Gambar",
-  "@images": {},
-  "fitInWeek": "Bugar dalam seminggu",
-  "@fitInWeek": {},
-  "fitInWeekHelp": "Jika diaktifkan, hari-hari akan berulang dalam siklus mingguan. Jika tidak, hari-hari akan berjalan secara berurutan tanpa memperhatikan awal minggu baru.",
-  "@fitInWeekHelp": {},
-  "calves": "Betis",
-  "@calves": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "cardio": "Kardio",
-  "@cardio": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "dumbbell": "Dumbel",
-  "@dumbbell": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "gym_mat": "Matras Gym",
-  "@gym_mat": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "hamstrings": "Paha Belakang",
-  "@hamstrings": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "kettlebell": "Kettlebell",
-  "@kettlebell": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "kilometers_per_hour": "Kilometer Per Jam",
-  "@kilometers_per_hour": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "darkMode": "Selalu mode gelap",
-  "@darkMode": {},
-  "goalMacro": "Target makronutrien",
-  "@goalMacro": {
-    "description": "The goal for macronutrients"
-  },
-  "selectMealToLog": "Pilih makanan untuk dicatat ke dalam buku harian",
-  "@selectMealToLog": {},
-  "surplus": "Surplus",
-  "@surplus": {
-    "description": "Caloric surplus (either planned or unplanned)"
-  },
-  "kcalValue": "{value} kkal",
-  "@kcalValue": {
-    "description": "A value in kcal, e.g. 500 kcal",
-    "type": "text",
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "gValue": "{value} g",
-  "@gValue": {
-    "description": "A value in grams, e.g. 5 g",
-    "type": "text",
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "percentValue": "{value} %",
-  "@percentValue": {
-    "description": "A value in percent, e.g. 10 %",
-    "type": "text",
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "aboutMastodonTitle": "Mastodon",
-  "@aboutMastodonTitle": {},
-  "variations": "Variasi",
-  "@variations": {
-    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
-  },
-  "alsoKnownAs": "Juga dikenal sebagai: {aliases}",
-  "@alsoKnownAs": {
-    "placeholders": {
-      "aliases": {
-        "type": "String"
-      }
+    "@@last_modified": "2020-11-11T15:04:05.523531",
+    "login": "Masuk",
+    "@login": {
+        "description": "Text for login button"
     },
-    "description": "List of alternative names for an exercise"
-  },
-  "language": "Bahasa",
-  "@language": {},
-  "contributeExercise": "Tambahkan latihan",
-  "@contributeExercise": {},
-  "addExercise": "Tambah latihan",
-  "@addExercise": {},
-  "translation": "Terjemahan",
-  "@translation": {},
-  "settingsCacheTitle": "Cache",
-  "@settingsCacheTitle": {},
-  "contributeExerciseWarning": "Anda hanya dapat menambahkan latihan jika akun Anda berusia lebih dari {days} hari dan email Anda telah terverifikasi",
-  "@contributeExerciseWarning": {
-    "description": "Number of days before which a person can add exercise",
-    "placeholders": {
-      "days": {
-        "type": "String",
-        "example": "14"
-      }
-    }
-  },
-  "arms": "Lengan",
-  "@arms": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "chest": "Dada",
-  "@chest": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "plates": "Lempeng Beban",
-  "@plates": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "quads": "Paha Depan",
-  "@quads": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "none__bodyweight_exercise_": "Tanpa alat (Latihan Berat Badan Sendiri)",
-  "@none__bodyweight_exercise_": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "deficit": "defisit",
-  "@deficit": {
-    "description": "Caloric deficit (either planned or unplanned)"
-  },
-  "addSuperset": "Tambah superset",
-  "@addSuperset": {},
-  "isRestDay": "Hari ini adalah hari istirahat",
-  "@isRestDay": {},
-  "apiTokenValidChars": "Kunci API hanya boleh berisi huruf a-f, angka 0-9 dan harus berjumlah 40 karakter",
-  "@apiTokenValidChars": {
-    "description": "Error message when the user tries to input a API key with forbidden characters"
-  },
-  "needsLogsToAdvance": "Perlu log untuk melanjutkan",
-  "@needsLogsToAdvance": {},
-  "invalidApiToken": "Mohon masukan kunci API yang valid",
-  "@invalidApiToken": {
-    "description": "Error message when the user enters an invalid API key"
-  },
-  "goalProtein": "Target protein",
-  "@goalProtein": {},
-  "noRoutines": "Kamu tidak memiliki rutinitas",
-  "@noRoutines": {},
-  "apiToken": "Token API",
-  "@apiToken": {},
-  "supersetNr": "Superset ke-{nr}",
-  "@supersetNr": {
-    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
-    "type": "text",
-    "placeholders": {
-      "nr": {
-        "type": "String"
-      }
-    }
-  },
-  "aboutContributeTitle": "Kontribusi",
-  "@aboutContributeTitle": {},
-  "translateExercise": "Terjemahkan latihan ini sekarang",
-  "@translateExercise": {},
-  "enterMinCharacters": "Silakan masukan minimal {min} karakter",
-  "@enterMinCharacters": {
-    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
-    "type": "text",
-    "placeholders": {
-      "min": {
-        "type": "String"
-      }
-    }
-  },
-  "swiss_ball": "Bola Gym",
-  "@swiss_ball": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "needsLogsToAdvanceHelp": "Pilih opsi ini jika Anda ingin rutinitas berlanjut ke hari berikutnya hanya setelah Anda mencatat latihan pada hari tersebut",
-  "@needsLogsToAdvanceHelp": {},
-  "setHasNoExercises": "Set ini belum memiliki latihan apa pun!",
-  "@setHasNoExercises": {},
-  "aboutBugsListTitle": "Laporkan masalah atau usulkan fitur",
-  "@aboutBugsListTitle": {},
-  "errorCouldNotConnectToServerDetails": "Aplikasi tidak dapat terhubung ke server. Silakan periksa koneksi internet atau URL server anda, lalu coba lagi. Jika masalah terus berlanjut, hubungi administrator server.",
-  "@errorCouldNotConnectToServerDetails": {},
-  "unVerifiedEmail": "Email belum diverifikasi",
-  "@unVerifiedEmail": {},
-  "progressionRules": "Latihan ini memiliki aturan peningkatan dan tidak dapat diedit melalui aplikasi mobile. Silakan gunakan aplikasi web untuk mengedit latihan ini.",
-  "@progressionRules": {},
-  "setHasProgression": "Set memiliki peningkatan",
-  "@setHasProgression": {},
-  "barbell": "Barbel",
-  "@barbell": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "glutes": "Bokong",
-  "@glutes": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "resistance_band": "Karet Latihan",
-  "@resistance_band": {
-    "description": "Generated entry for translation for server strings"
-  },
-  "lightMode": "Selalu mode terang",
-  "@lightMode": {}
+    "logout": "Keluar",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "register": "Daftar",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "useDefaultServer": "Gunakan server bawaan",
+    "@useDefaultServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "useCustomServer": "Gunakan server lain",
+    "@useCustomServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "invalidUrl": "Mohon masukkan URL yang valid",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "usernameValidChars": "Username hanya dapat diisi dengan hiruf, angka, dan karakter @, +, ., -, dan _",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "passwordsDontMatch": "Password tidak sesuai",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "passwordTooShort": "Password terlalu pendek",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "password": "Kata sandi",
+    "confirmPassword": "Konfirmasi Kata Sandi",
+    "invalidEmail": "Mohon masukkan E-mail yang valid",
+    "@invalidEmail": {
+        "description": "Error message when the user enters an invalid email"
+    },
+    "email": "Alamat E-mail",
+    "username": "Nama pengguna",
+    "invalidUsername": "Mohon masukkan username yang valid",
+    "@invalidUsername": {
+        "description": "Error message when the user enters an invalid username"
+    },
+    "customServerUrl": "URL dari wger",
+    "@customServerUrl": {
+        "description": "Label in the form where the users can enter their own wger instance"
+    },
+    "customServerHint": "Masukkan alamat servermu sendiri, jika tidak akan menggunakan server bawaan",
+    "@customServerHint": {
+        "description": "Hint text for the form where the users can enter their own wger instance"
+    },
+    "reset": "Reset",
+    "@reset": {
+        "description": "Button text allowing the user to reset the entered values to the default"
+    },
+    "registerInstead": "Tidak punya akun? Buat akun",
+    "loginInstead": "Punya akun? Masuk",
+    "labelBottomNavWorkout": "Workout",
+    "@labelBottomNavWorkout": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelBottomNavNutrition": "Nutrisi",
+    "@labelBottomNavNutrition": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelWorkoutLogs": "Log latihan",
+    "@labelWorkoutLogs": {
+        "description": "(Workout) logs"
+    },
+    "labelWorkoutPlan": "Rencana workout",
+    "@labelWorkoutPlan": {
+        "description": "Title for screen workout plan"
+    },
+    "labelDashboard": "Dashboard",
+    "@labelDashboard": {
+        "description": "Title for screen dashboard"
+    },
+    "successfullyDeleted": "Terhapus",
+    "@successfullyDeleted": {
+        "description": "Message when an item was successfully deleted"
+    },
+    "successfullySaved": "Tersimpan",
+    "@successfullySaved": {
+        "description": "Message when an item was successfully saved"
+    },
+    "exercise": "Latihan",
+    "@exercise": {
+        "description": "An exercise for a workout"
+    },
+    "searchExercise": "Cari latihan untuk ditambahkan",
+    "@searchExercise": {
+        "description": "Label on set form. Selected exercises are added to the set"
+    },
+    "equipment": "Perlengkapan",
+    "@equipment": {
+        "description": "Equipment needed to perform an exercise"
+    },
+    "muscles": "Otot",
+    "@muscles": {
+        "description": "(main) muscles trained by an exercise"
+    },
+    "musclesSecondary": "Otot sekunder",
+    "@musclesSecondary": {
+        "description": "secondary muscles trained by an exercise"
+    },
+    "category": "Kategori",
+    "@category": {
+        "description": "Category for an exercise, ingredient, etc."
+    },
+    "repetitions": "Pengulangan",
+    "@repetitions": {
+        "description": "Repetitions for an exercise set"
+    },
+    "reps": "Repetisi",
+    "@reps": {
+        "description": "Shorthand for repetitions, used when space constraints are tighter"
+    },
+    "rir": "Repetisi tersisa",
+    "@rir": {
+        "description": "Shorthand for Repetitions In Reserve"
+    },
+    "rirNotUsed": "RiR tidak digunakan",
+    "@rirNotUsed": {
+        "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+    },
+    "weightUnit": "Satuan bobot",
+    "repetitionUnit": "Satuan pengulangan",
+    "set": "Set",
+    "@set": {
+        "description": "A set in a workout plan"
+    },
+    "dayDescriptionHelp": "Deskripsi untuk yang sudah diselesaikan hari ini (contoh: 'pull day') atau bagian tubuh mana yang sudah dilatih (contoh: 'dada dan pundak')",
+    "setNr": "Set {nr}",
+    "@setNr": {
+        "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "sameRepetitions": "Jika Anda melakukan pengulangan dan bobot yang sama untuk semua set, Anda cukup mengisi satu baris. Misalnya untuk 4 set cukup masukkan 10 untuk pengulangan, ini secara otomatis menjadi \"4 x 10\".",
+    "comment": "Komentar",
+    "@comment": {
+        "description": "Comment, additional information"
+    },
+    "impression": "Kesan",
+    "@impression": {
+        "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+    },
+    "notes": "Catatan",
+    "@notes": {
+        "description": "Personal notes, e.g. for a workout session"
+    },
+    "workoutSession": "Sesi workout",
+    "@workoutSession": {
+        "description": "A (logged) workout session"
+    },
+    "newDay": "Hari baru",
+    "newSet": "Set baru",
+    "@newSet": {
+        "description": "Header when adding a new set to a workout day"
+    },
+    "selectExercises": "Jika Anda ingin melakukan superset, Anda dapat mencari beberapa latihan, mereka akan dikelompokkan bersama",
+    "gymMode": "Mode gym",
+    "@gymMode": {
+        "description": "Label when starting the gym mode"
+    },
+    "plateCalculator": "Lempeng Beban",
+    "@plateCalculator": {
+        "description": "Label used for the plate calculator in the gym mode"
+    },
+    "plateCalculatorNotDivisible": "Tidak memungkinkan untuk mencapai bobot dengan plate yang tersedia",
+    "@plateCalculatorNotDivisible": {
+        "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+    },
+    "pause": "Jeda",
+    "@pause": {
+        "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+    },
+    "jumpTo": "Lompat ke",
+    "@jumpTo": {
+        "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+    },
+    "todaysWorkout": "Latihanmu hari ini",
+    "logHelpEntries": "Jika dalam satu hari terdapat lebih dari satu entri dengan jumlah repetisi yang sama namun beban berbeda, hanya entri dengan beban tertinggi yang akan ditampilkan di diagram.",
+    "logHelpEntriesUnits": "Perlu dicatat bahwa hanya entri dengan satuan beban (kg atau lb) dan repetisi yang akan ditampilkan di grafik. Kombinasi lain seperti waktu atau hingga gagal tidak diperhitungkan di sini.",
+    "description": "Description",
+    "name": "Nama",
+    "@name": {
+        "description": "Name for a workout or nutritional plan"
+    },
+    "save": "Simpan",
+    "addSet": "Tambah set",
+    "@addSet": {
+        "description": "Label for the button that adds a set (to a workout day)"
+    },
+    "addMeal": "Tambah makanan",
+    "mealLogged": "Makanan ditambahkan ke buku harian",
+    "logMeal": "Catat makanan ke buku harian nutrisi",
+    "addIngredient": "Tambah komposisi",
+    "logIngredient": "Catat bahan ke buku harian nutrisi",
+    "searchIngredient": "Cari komposisi",
+    "@searchIngredient": {
+        "description": "Label on ingredient search form"
+    },
+    "nutritionalPlan": "Rencana Nutrisi",
+    "nutritionalDiary": "Buku Harian Nutrisi",
+    "nutritionalPlans": "Rencana Nutrisi",
+    "noNutritionalPlans": "Anda belum memiliki rencana nutrisi",
+    "@noNutritionalPlans": {
+        "description": "Message shown when the user has no nutritional plans"
+    },
+    "anErrorOccurred": "Terjadi kesalahan!",
+    "weight": "Berat",
+    "@weight": {
+        "description": "The weight of a workout log or body weight entry"
+    },
+    "measurement": "Ukuran",
+    "measurements": "Pengukuran",
+    "@measurements": {
+        "description": "Categories for the measurements such as biceps size, body fat, etc."
+    },
+    "measurementCategoriesHelpText": "Kategori pengukuran, seperti 'bisep' atau 'lemak tubuh'",
+    "measurementEntriesHelpText": "Satuan yang digunakan untuk mengukur kategori, seperti 'cm' atau '%'",
+    "date": "Date",
+    "@date": {
+        "description": "The date of a workout log or body weight entry"
+    },
+    "value": "Nilai",
+    "@value": {
+        "description": "The value of a measurement entry"
+    },
+    "start": "Start",
+    "@start": {
+        "description": "Label on button to start the gym mode (i.e., an imperative)"
+    },
+    "time": "Waktu",
+    "@time": {
+        "description": "The time of a meal or workout"
+    },
+    "timeStart": "Waktu mulai",
+    "@timeStart": {
+        "description": "The starting time of a workout"
+    },
+    "timeEnd": "Waktu selesai",
+    "@timeEnd": {
+        "description": "The end time of a workout"
+    },
+    "timeStartAhead": "Waktu mulai tidak boleh melebihi waktu selesai",
+    "ingredient": "Komposisi",
+    "energy": "Energi",
+    "@energy": {
+        "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+    },
+    "energyShort": "E",
+    "@energyShort": {
+        "description": "The first letter or short name of the word 'Energy', used in overviews"
+    },
+    "kcal": "kkal",
+    "@kcal": {
+        "description": "Energy in a meal in kilocalories, kcal"
+    },
+    "macronutrients": "Makronutrien",
+    "planned": "Direncanakan",
+    "@planned": {
+        "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+    },
+    "logged": "Dicatat",
+    "@logged": {
+        "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+    },
+    "weekAverage": "Rata-rata 7 hari",
+    "@weekAverage": {
+        "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+    },
+    "difference": "Perbedaan",
+    "percentEnergy": "Persenan Energi",
+    "gPerBodyKg": "g per kg tubuh",
+    "@gPerBodyKg": {
+        "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+    },
+    "total": "Total",
+    "@total": {
+        "description": "Label used for total sums of e.g. calories or similar"
+    },
+    "kJ": "kJ",
+    "@kJ": {
+        "description": "Energy in a meal in kilo joules, kJ"
+    },
+    "g": "g",
+    "@g": {
+        "description": "Abbreviation for gram"
+    },
+    "protein": "Protein",
+    "proteinShort": "P",
+    "@proteinShort": {
+        "description": "The first letter or short name of the word 'Protein', used in overviews"
+    },
+    "carbohydrates": "Karbohidrat",
+    "carbohydratesShort": "C",
+    "@carbohydratesShort": {
+        "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+    },
+    "sugars": "Gula",
+    "fat": "Lemak",
+    "fatShort": "F",
+    "@fatShort": {
+        "description": "The first letter or short name of the word 'Fat', used in overviews"
+    },
+    "saturatedFat": "Lemak jenuh",
+    "fiber": "Fibre",
+    "sodium": "Sodium",
+    "amount": "Jumlah",
+    "@amount": {
+        "description": "The amount (e.g. in grams) of an ingredient in a meal"
+    },
+    "unit": "Unit",
+    "@unit": {
+        "description": "The unit used for a repetition (kg, time, etc.)"
+    },
+    "newEntry": "Entri baru",
+    "@newEntry": {
+        "description": "Title when adding a new entry such as a weight or log entry"
+    },
+    "noWeightEntries": "Anda belum memiliki entri berat badan",
+    "@noWeightEntries": {
+        "description": "Message shown when the user has no logged weight entries"
+    },
+    "edit": "Edit",
+    "loadingText": "Loading...",
+    "@loadingText": {
+        "description": "Text to show when entries are being loaded in the background: Loading..."
+    },
+    "delete": "Delete",
+    "confirmDelete": "Apakah anda yakin ingin menghapus '{toDelete}'?",
+    "@confirmDelete": {
+        "description": "Confirmation text before the user deletes an object",
+        "type": "text",
+        "placeholders": {
+            "toDelete": {
+                "type": "String"
+            }
+        }
+    },
+    "newNutritionalPlan": "Rencana nutrisi baru",
+    "toggleDetails": "Toggle rincian",
+    "@toggleDetails": {
+        "description": "Switch to toggle detail / overview"
+    },
+    "goToDetailPage": "Go to detail page",
+    "aboutDescription": "Terima kasih telah menggunakan wger! wger proyek open source kolaboratif, dibuat oleh para penggemar kebugaran dari seluruh dunia.",
+    "@aboutDescription": {
+        "description": "Text in the about dialog"
+    },
+    "calendar": "Kalender",
+    "goToToday": "Pergi ke hari ini",
+    "@goToToday": {
+        "description": "Label on button to jump back to 'today' in the calendar widget"
+    },
+    "enterValue": "Silakan masukan nilai",
+    "@enterValue": {
+        "description": "Error message when the user hasn't entered a value on a required field"
+    },
+    "selectExercise": "Silakan pilih latihan",
+    "@selectExercise": {
+        "description": "Error message when the user hasn't selected an exercise in the form"
+    },
+    "enterCharacters": "Silakan masukan antara {min} dan {max} karakter",
+    "@enterCharacters": {
+        "description": "Error message when the user hasn't entered the correct number of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "String"
+            },
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "nrOfSets": "Sets per latihan: {nrOfSets}",
+    "@nrOfSets": {
+        "description": "Label shown on the slider where the user selects the nr of sets",
+        "type": "text",
+        "placeholders": {
+            "nrOfSets": {
+                "type": "String"
+            }
+        }
+    },
+    "setUnitsAndRir": "Unit Set and RiR",
+    "@setUnitsAndRir": {
+        "description": "Label shown on the slider where the user can toggle showing units and RiR",
+        "type": "text"
+    },
+    "enterValidNumber": "Silakan masukan angka yang valid",
+    "@enterValidNumber": {
+        "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+    },
+    "selectIngredient": "Silakan pilih komposisi",
+    "@selectIngredient": {
+        "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+    },
+    "recentlyUsedIngredients": "Komposisi yang baru ditambahkan",
+    "@recentlyUsedIngredients": {
+        "description": "A message when a user adds a new ingredient to a meal."
+    },
+    "selectImage": "Silakan pilih gambar",
+    "@selectImage": {
+        "description": "Label and error message when the user hasn't selected an image to save"
+    },
+    "optionsLabel": "Options",
+    "@optionsLabel": {
+        "description": "Label for the popup with general app options"
+    },
+    "takePicture": "Ambil gambar",
+    "chooseFromLibrary": "Pilih foto dari library",
+    "gallery": "Galeri",
+    "addImage": "Add image",
+    "dataCopied": "Data disalin ke entri baru",
+    "@dataCopied": {
+        "description": "Snackbar message to show on copying data to a new log entry"
+    },
+    "appUpdateTitle": "Pembaruan diperlukan",
+    "appUpdateContent": "Versi aplikasi ini tidak kompatibel dengan server, silakan perbarui aplikasi Anda.",
+    "productFound": "Produk ditemukan",
+    "@productFound": {
+        "description": "Header label for dialog when product is found with barcode"
+    },
+    "productFoundDescription": "Kode batang ini sesuai dengan produk: {productName}. Apakah Anda ingin melanjutkan?",
+    "@productFoundDescription": {
+        "description": "Dialog info when product is found with barcode",
+        "type": "text",
+        "placeholders": {
+            "productName": {
+                "type": "String"
+            }
+        }
+    },
+    "productNotFound": "Produk tidak ditemukan",
+    "@productNotFound": {
+        "description": "Header label for dialog when product is not found with barcode"
+    },
+    "productNotFoundDescription": "Produk dengan kode batang {barcode} tidak ditemukan dalam database wger",
+    "@productNotFoundDescription": {
+        "description": "Dialog info when product is not found with barcode",
+        "type": "text",
+        "placeholders": {
+            "barcode": {
+                "type": "String"
+            }
+        }
+    },
+    "scanBarcode": "Pindai kode batang",
+    "@scanBarcode": {
+        "description": "Label for scan barcode button"
+    },
+    "close": "Tutup",
+    "@close": {
+        "description": "Translation for close"
+    },
+    "userProfile": "Profil Kamu",
+    "verify": "Verifikasi",
+    "useMetric": "Gunakan unit metrik untuk berat badan",
+    "exerciseList": "Daftar latihan",
+    "success": "Berhasil",
+    "@success": {
+        "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "exercises": "Latihan",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    },
+    "exerciseName": "Nama Latihan",
+    "@exerciseName": {
+        "description": "Label for the name of a workout exercise"
+    },
+    "noMatchingExerciseFound": "Tidak ditemukan latihan yang sesuai",
+    "@noMatchingExerciseFound": {
+        "description": "Message returned if no exercises match the searched string"
+    },
+    "shoulders": "Bahu",
+    "@shoulders": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "onlyLogging": "Hanya melacak kalori",
+    "seconds": "Detik",
+    "@seconds": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "searchNamesInEnglish": "Cari juga nama-nama dalam bahasa Inggris",
+    "noIngredientsDefined": "Belum ada bahan yang ditetapkan",
+    "ingredientLogged": "Komposisi telah dicatat",
+    "triceps": "Trisep",
+    "@triceps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "goalFiber": "Target serat",
+    "abs": "Otot perut",
+    "@abs": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "selectAvailablePlates": "Pilih lempeng beban yang tersedia",
+    "useColors": "Gunakan warna",
+    "barWeight": "Berat batang",
+    "routineDays": "Hari dalam rutinitas",
+    "resultingRoutine": "Rutinitas yang dihasilkan",
+    "goalCarbohydrates": "Target karbohidrat",
+    "alternativeNames": "Nama lain",
+    "back": "Punggung",
+    "@back": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "routines": "Rutinitas",
+    "newRoutine": "Rutinitas baru",
+    "sets": "Set",
+    "@sets": {
+        "description": "The number of sets to be done for one exercise"
+    },
+    "isRestDayHelp": "Harap diperhatikan bahwa semua set dan latihan akan dihapus ketika Anda menandai suatu hari sebagai hari istirahat.",
+    "max": "Maksimal",
+    "today": "Hari ini",
+    "noMeasurementEntries": "Anda belum memiliki entri pengukuran apa pun",
+    "log": "Catat",
+    "@log": {
+        "description": "Log a specific meal (imperative form)"
+    },
+    "settingsTitle": "Pengaturan",
+    "biceps": "Bisep",
+    "@biceps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "miles_per_hour": "Mil Per Jam",
+    "@miles_per_hour": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "selectEntry": "Silakan pilih entri",
+    "next": "Selanjutnya",
+    "simpleMode": "Mode sederhana",
+    "body_weight": "Berat Badan",
+    "@body_weight": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "incline_bench": "Bangku Incline",
+    "@incline_bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "legs": "Kaki",
+    "@legs": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "aboutDonateTitle": "Beri donasi",
+    "bench": "Bangku",
+    "@bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "useUsernameAndPassword": "Gunakan nama pengguna dan kata sandi",
+    "useApiToken": "Gunakan Token API",
+    "restTime": "Waktu istirahat",
+    "restDay": "Hari istirahat",
+    "exerciseNr": "Latihan ke-{nr}",
+    "@exerciseNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "errorCouldNotConnectToServer": "Tidak dapat terhubung ke server",
+    "errorInfoDescription": "Maaf, terjadi kesalahan. Anda dapat membantu kami memperbaikinya dengan melaporkan masalah ini di GitHub.",
+    "min": "Minimal",
+    "chartAllTimeTitle": "{name}Sepanjang waktu",
+    "@chartAllTimeTitle": {
+        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chart30DaysTitle": "{name} 30 hari terakhir",
+    "@chart30DaysTitle": {
+        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chartDuringPlanTitle": "{chartName} selama rencana nutrisi {planName}",
+    "@chartDuringPlanTitle": {
+        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+        "type": "text",
+        "placeholders": {
+            "chartName": {
+                "type": "String"
+            },
+            "planName": {
+                "type": "String"
+            }
+        }
+    },
+    "aboutWhySupportTitle": "Bersifat open source & gratis ❤️",
+    "aboutSourceListTitle": "Lihat kode sumber",
+    "aboutJoinCommunityTitle": "Gabung komunitas",
+    "previous": "Sebelumnya",
+    "setHasProgressionWarning": "Perlu diketahui, saat ini pengaturan lengkap untuk set dan konfigurasi progresi otomatis belum bisa dilakukan di aplikasi mobile. Silakan gunakan aplikasi web untuk fitur tersebut.",
+    "settingsExerciseCacheDescription": "Cache latihan",
+    "settingsIngredientCacheDescription": "Cache komposisi",
+    "settingsCacheDeletedSnackbar": "Cache berhasil dibersihkan",
+    "aboutPageTitle": "Tentang kami dan dukungan",
+    "simpleModeHelp": "Sembunyikan beberapa pengaturan lanjutan saat mengedit latihan",
+    "kilometers": "Kilometer",
+    "@kilometers": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lats": "Otot Punggung Samping",
+    "@lats": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lower_back": "Punggung Bawah",
+    "@lower_back": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "minutes": "Menit",
+    "@minutes": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "until_failure": "Sampai tidak mampu lagi",
+    "@until_failure": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kg": "kg",
+    "@kg": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "done": "Selesai",
+    "overallChangeWeight": "Perubahan keseluruhan",
+    "@overallChangeWeight": {
+        "description": "Overall change in weight, added for localization"
+    },
+    "goalTypeMeals": "Dari makanan",
+    "@goalTypeMeals": {
+        "description": "added for localization of Class GoalType's filed meals"
+    },
+    "goalTypeBasic": "Dasar",
+    "@goalTypeBasic": {
+        "description": "added for localization of Class GoalType's filed basic"
+    },
+    "goalTypeAdvanced": "Lanjutan",
+    "@goalTypeAdvanced": {
+        "description": "added for localization of Class GoalType's filed advanced"
+    },
+    "indicatorRaw": "Mentah",
+    "@indicatorRaw": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "indicatorAvg": "rata-rata",
+    "@indicatorAvg": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "themeMode": "mode Tema",
+    "systemMode": "Pengaturan sitem",
+    "pull_up_bar": "Palang Pull-up",
+    "@pull_up_bar": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "onlyLoggingHelpText": "Centang kotak ini jika Anda hanya ingin mencatat kalori dan tidak ingin menyusun rencana nutrisi secara rinci dengan menu khusus",
+    "goalEnergy": "Target energi",
+    "moreMeasurementEntries": "Tambah pengukuran baru",
+    "@moreMeasurementEntries": {
+        "description": "Message shown when the user wants to add new measurement"
+    },
+    "baseNameEnglish": "Semua latihan memerlukan nama dasar dalam Bahasa Inggris",
+    "add_exercise_image_license": "Gambar harus kompatibel dengan lisensi CC BY SA. Jika ragu, unggah hanya foto yang anda ambil sendiri.",
+    "verifiedEmail": "Email terverifikasi",
+    "max_reps": "Repetisi Maksimal",
+    "@max_reps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "miles": "Mil",
+    "@miles": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lb": "lb",
+    "@lb": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "verifiedEmailReason": "Anda perlu memverifikasi email untuk dapat menambahkan latihan",
+    "baseData": "Dasar dalam Bahasa Inggris",
+    "@baseData": {
+        "description": "The base data for an exercise such as category, trained muscles, etc."
+    },
+    "textPromptSubheading": "Tekan tombol untuk mulai",
+    "cacheWarning": "Karena sistem cache, perubahan mungkin membutuhkan waktu sebelum terlihat di seluruh aplikasi.",
+    "textPromptTitle": "Siap memulai?",
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Rencana nutrisi Anda saat ini belum memiliki menu yang ditentukan",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Untuk menambahkan menu ke dalam rencana, buka detail rencana nutrisi",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "goalFat": "Target lemak",
+    "errorInfoDescription2": "Anda masih dapat menggunakan aplikasi, namun beberapa fitur mungkin tidak berfungsi.",
+    "errorViewDetails": "Rincian teknis",
+    "copyToClipboard": "Salin ke papan klip",
+    "loggedToday": "Dicatat hari ini",
+    "aboutDonateText": "Meskipun proyek ini gratis dan akan selalu begitu, menjalankan server tetap memerlukan biaya! Pengembangan juga membutuhkan waktu dan tenaga yang tidak sedikit dari para relawan. Kontribusi Anda secara langsung membantu menutup biaya-biaya ini dan menjaga layanan tetap andal.",
+    "aboutContributeText": "Semua jenis kontribusi sangat kami hargai. Baik Anda seorang pengembang, penerjemah, atau sekadar memiliki semangat di bidang kebugaran, setiap bentuk dukungan sangat berarti!",
+    "aboutTranslationListTitle": "Terjemahkan aplikasi",
+    "others": "Lainnya",
+    "verifiedEmailInfo": "Email verifikasi telah dikirim ke {email}",
+    "@verifiedEmailInfo": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "oneNamePerLine": "Satu nama per baris",
+    "whatVariationsExist": "Apakah ada variasi dari latihan ini? Jika ada, apa saja?",
+    "images": "Gambar",
+    "fitInWeek": "Bugar dalam seminggu",
+    "fitInWeekHelp": "Jika diaktifkan, hari-hari akan berulang dalam siklus mingguan. Jika tidak, hari-hari akan berjalan secara berurutan tanpa memperhatikan awal minggu baru.",
+    "calves": "Betis",
+    "@calves": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "cardio": "Kardio",
+    "@cardio": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "dumbbell": "Dumbel",
+    "@dumbbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "gym_mat": "Matras Gym",
+    "@gym_mat": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "hamstrings": "Paha Belakang",
+    "@hamstrings": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kettlebell": "Kettlebell",
+    "@kettlebell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kilometers_per_hour": "Kilometer Per Jam",
+    "@kilometers_per_hour": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "darkMode": "Selalu mode gelap",
+    "goalMacro": "Target makronutrien",
+    "@goalMacro": {
+        "description": "The goal for macronutrients"
+    },
+    "selectMealToLog": "Pilih makanan untuk dicatat ke dalam buku harian",
+    "surplus": "Surplus",
+    "@surplus": {
+        "description": "Caloric surplus (either planned or unplanned)"
+    },
+    "kcalValue": "{value} kkal",
+    "@kcalValue": {
+        "description": "A value in kcal, e.g. 500 kcal",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "gValue": "{value} g",
+    "@gValue": {
+        "description": "A value in grams, e.g. 5 g",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "percentValue": "{value} %",
+    "@percentValue": {
+        "description": "A value in percent, e.g. 10 %",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "aboutMastodonTitle": "Mastodon",
+    "variations": "Variasi",
+    "@variations": {
+        "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+    },
+    "alsoKnownAs": "Juga dikenal sebagai: {aliases}",
+    "@alsoKnownAs": {
+        "placeholders": {
+            "aliases": {
+                "type": "String"
+            }
+        },
+        "description": "List of alternative names for an exercise"
+    },
+    "language": "Bahasa",
+    "contributeExercise": "Tambahkan latihan",
+    "addExercise": "Tambah latihan",
+    "translation": "Terjemahan",
+    "settingsCacheTitle": "Cache",
+    "contributeExerciseWarning": "Anda hanya dapat menambahkan latihan jika akun Anda berusia lebih dari {days} hari dan email Anda telah terverifikasi",
+    "@contributeExerciseWarning": {
+        "description": "Number of days before which a person can add exercise",
+        "placeholders": {
+            "days": {
+                "type": "String",
+                "example": "14"
+            }
+        }
+    },
+    "arms": "Lengan",
+    "@arms": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "chest": "Dada",
+    "@chest": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "plates": "Lempeng Beban",
+    "@plates": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "quads": "Paha Depan",
+    "@quads": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "none__bodyweight_exercise_": "Tanpa alat (Latihan Berat Badan Sendiri)",
+    "@none__bodyweight_exercise_": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "deficit": "defisit",
+    "@deficit": {
+        "description": "Caloric deficit (either planned or unplanned)"
+    },
+    "addSuperset": "Tambah superset",
+    "isRestDay": "Hari ini adalah hari istirahat",
+    "apiTokenValidChars": "Kunci API hanya boleh berisi huruf a-f, angka 0-9 dan harus berjumlah 40 karakter",
+    "@apiTokenValidChars": {
+        "description": "Error message when the user tries to input a API key with forbidden characters"
+    },
+    "needsLogsToAdvance": "Perlu log untuk melanjutkan",
+    "invalidApiToken": "Mohon masukan kunci API yang valid",
+    "@invalidApiToken": {
+        "description": "Error message when the user enters an invalid API key"
+    },
+    "goalProtein": "Target protein",
+    "noRoutines": "Kamu tidak memiliki rutinitas",
+    "apiToken": "Token API",
+    "supersetNr": "Superset ke-{nr}",
+    "@supersetNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "aboutContributeTitle": "Kontribusi",
+    "translateExercise": "Terjemahkan latihan ini sekarang",
+    "enterMinCharacters": "Silakan masukan minimal {min} karakter",
+    "@enterMinCharacters": {
+        "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "String"
+            }
+        }
+    },
+    "swiss_ball": "Bola Gym",
+    "@swiss_ball": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "needsLogsToAdvanceHelp": "Pilih opsi ini jika Anda ingin rutinitas berlanjut ke hari berikutnya hanya setelah Anda mencatat latihan pada hari tersebut",
+    "setHasNoExercises": "Set ini belum memiliki latihan apa pun!",
+    "aboutBugsListTitle": "Laporkan masalah atau usulkan fitur",
+    "errorCouldNotConnectToServerDetails": "Aplikasi tidak dapat terhubung ke server. Silakan periksa koneksi internet atau URL server anda, lalu coba lagi. Jika masalah terus berlanjut, hubungi administrator server.",
+    "unVerifiedEmail": "Email belum diverifikasi",
+    "progressionRules": "Latihan ini memiliki aturan peningkatan dan tidak dapat diedit melalui aplikasi mobile. Silakan gunakan aplikasi web untuk mengedit latihan ini.",
+    "setHasProgression": "Set memiliki peningkatan",
+    "barbell": "Barbel",
+    "@barbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "glutes": "Bokong",
+    "@glutes": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "resistance_band": "Karet Latihan",
+    "@resistance_band": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lightMode": "Selalu mode terang"
 }
