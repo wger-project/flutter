@@ -171,6 +171,7 @@
   "slotEntryTypeNormal": "Normal",
   "slotEntryTypeDropset": "Dropset",
   "slotEntryTypeMyo": "Myo",
+  "slotEntryTypeWarmup": "Warmup",
   "slotEntryTypePartial": "Partial",
   "slotEntryTypeForced": "Forced",
   "slotEntryTypeTut": "Time under Tension",
