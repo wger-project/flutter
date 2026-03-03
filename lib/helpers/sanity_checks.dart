@@ -16,14 +16,18 @@ import 'package:http/http.dart' as http;
 Future<SanityCheckResult> checkServerPaginationUrls({
   required String baseUrl,
   required String token,
+
+  /// Custom client is only used for tests
+  http.Client? client,
 }) async {
+  final httpClient = client ?? http.Client();
   try {
     final baseUri = Uri.parse(baseUrl);
     final expectedHost = baseUri.host;
     final expectedPort = baseUri.port;
     final expectedScheme = baseUri.scheme;
 
-    final response = await http.get(
+    final response = await httpClient.get(
       Uri.parse('$baseUrl/api/v2/exercise/?limit=1'),
       headers: {
         'Authorization': 'Token $token',
