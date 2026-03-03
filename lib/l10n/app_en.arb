@@ -1136,5 +1136,17 @@
   "addToOpenFoodFacts": "Add to Open Food Facts",
   "@addToOpenFoodFacts": {
     "description": "Label shown as the clickable link to go on Open Food Facts"
-   }
+  },
+  "serverConfigIssueTitle": "Server Configuration Issue",
+  "@serverConfigIssueTitle": {
+    "description": "Title of the dialog shown when server misconfiguration is detected"
+  },
+  "serverConfigIssueWarning": "The app may still work in some cases, but pagination and some features might be broken.",
+  "@serverConfigIssueWarning": {
+    "description": "Warning message explaining that the app might not work properly due to server misconfiguration"
+  },
+  "understand": "I understand",
+  "@understand": {
+    "description": "Button label to acknowledge and dismiss the server configuration warning"
+  }
 }

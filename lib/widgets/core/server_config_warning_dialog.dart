@@ -9,17 +9,21 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/helpers/misc.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Shows a warning dialog when server misconfiguration is detected
 void showServerConfigWarning(BuildContext context, String message) {
+  final i18n = AppLocalizations.of(context);
+
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Row(
+      title: Row(
         children: [
-          Icon(Icons.warning, color: Colors.orange, size: 28),
-          SizedBox(width: 12),
-          Expanded(child: Text('Server Configuration Issue')),
+          const Icon(Icons.warning, color: Colors.orange, size: 28),
+          const SizedBox(width: 12),
+          Expanded(child: Text(i18n.serverConfigIssueTitle)),
         ],
       ),
       content: SingleChildScrollView(
@@ -29,9 +33,9 @@ void showServerConfigWarning(BuildContext context, String message) {
           children: [
             Text(message),
             const SizedBox(height: 16),
-            const Text(
-              'The app may still work in some cases, but pagination and some features might be broken.',
-              style: TextStyle(
+            Text(
+              i18n.serverConfigIssueWarning,
+              style: const TextStyle(
                 fontStyle: FontStyle.italic,
                 fontSize: 14,
               ),
@@ -42,7 +46,7 @@ void showServerConfigWarning(BuildContext context, String message) {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('I understand'),
+          child: Text(i18n.understand),
         ),
       ],
     ),
