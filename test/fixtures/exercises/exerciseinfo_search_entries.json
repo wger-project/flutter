@@ -1,0 +1,121 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "uuid": "364f196c-881b-4839-8bfc-9e8f651521b6",
+      "created": "2023-08-06T11:20:14.368566+02:00",
+      "last_update": "2023-04-22T12:18:33.904542+02:00",
+      "last_update_global": "2023-04-22T12:18:33.907201+02:00",
+      "category": {
+        "id": 1,
+        "name": "Arms"
+      },
+      "muscles": [
+        {
+          "id": 1,
+          "name": "Flutterus maximus",
+          "name_en": "Glutes",
+          "is_front": false,
+          "image_url_main": "/static/images/muscles/main/muscle-1.svg",
+          "image_url_secondary": "/static/images/muscles/secondary/muscle-1.svg"
+        },
+        {
+          "id": 2,
+          "name": "Biceps brachii",
+          "name_en": "Biceps",
+          "is_front": true,
+          "image_url_main": "/static/images/muscles/main/muscle-2.svg",
+          "image_url_secondary": "/static/images/muscles/secondary/muscle-2.svg"
+        }
+      ],
+      "muscles_secondary": [
+        {
+          "id": 3,
+          "name": "Gluteus maximus",
+          "name_en": "Glutes",
+          "is_front": true,
+          "image_url_main": "/static/images/muscles/main/muscle-3.svg",
+          "image_url_secondary": "/static/images/muscles/secondary/muscle-3.svg"
+        }
+      ],
+      "equipment": [
+        {
+          "id": 1,
+          "name": "Bench"
+        },
+        {
+          "id": 2,
+          "name": "Dumbbell"
+        }
+      ],
+      "license": {
+        "id": 2,
+        "full_name": "Creative Commons Attribution Share Alike 4",
+        "short_name": "CC-BY-SA 4",
+        "url": "https://creativecommons.org/licenses/by-sa/4.0/deed.en"
+      },
+      "license_author": "deusinvictus",
+      "images": [],
+      "videos": [],
+      "translations": [
+        {
+          "id": 7,
+          "uuid": "f4cc326b-e497-4bd7-a71d-0eb1db522743",
+          "aliases": [
+          ],
+          "name": "Bench press",
+          "exercise": 1,
+          "description": "add clever text",
+          "notes": [
+          ],
+          "created": "2015-08-03T18:22:54.909478+02:00",
+          "language": 2,
+          "license": 2,
+          "license_author": "deusinvictus",
+          "license_title": "",
+          "license_object_url": "",
+          "license_author_url": "",
+          "license_derivative_source_url": "",
+          "author_history": [
+            "deusinvictus",
+            "Foo Bar"
+          ]
+        },
+        {
+          "id": 1,
+          "uuid": "f4cc326b-e497-4bd7-a71d-0eb1db522743",
+          "aliases": [
+          ],
+          "name": "Bankdrücken",
+          "exercise": 1,
+          "description": "add clever text",
+          "notes": [
+          ],
+          "created": "2022-03-14T18:22:54.909478+02:00",
+          "language": 3,
+          "license": 2,
+          "license_author": "tester McTestface",
+          "license_title": "",
+          "license_object_url": "",
+          "license_author_url": "",
+          "license_derivative_source_url": "",
+          "author_history": [
+            "tester McTestface"
+          ]
+        }
+      ],
+      "variations": 25,
+      "author_history": [
+        "Foo Bar"
+      ],
+      "total_authors_history": [
+        "Foo Bar",
+        "tester McTestface",
+        "Mr. X"
+      ]
+    }
+  ]
+}

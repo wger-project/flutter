@@ -686,26 +686,29 @@ class ExercisesProvider with ChangeNotifier {
     // Send the request
     final result = await baseProvider.fetch(
       baseProvider.makeUrl(
-        exerciseSearchPath,
+        exerciseInfoUrlPath,
         query: {'term': name, 'language': languages.join(',')},
       ),
     );
 
     // Load the exercises
-    final results = ExerciseApiSearch.fromJson(result);
+    // final tmp = result['results'].map((r) => ExerciseApiData.fromJson(r)).toList();
+    // print(tmp);
+    // return tmp.map((r) => Exercise.fromApiData(r, _languages)).toList();
 
-    final List<Exercise> out = [];
-    for (final result in results.suggestions) {
-      final exercise = await fetchAndSetExercise(result.data.exerciseId);
-      if (exercise != null) {
-        out.add(exercise);
-      }
-    }
-    // return Future.wait(
-    //   results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
-    // );
+    final resultsList = (result['results'] as List<dynamic>?) ?? <dynamic>[];
+    // print(resultsList);
 
-    return out;
+    final exercises = resultsList
+        .map<Exercise>(
+          (r) => Exercise.fromApiData(
+            ExerciseApiData.fromJson(r as Map<String, dynamic>),
+            _languages,
+          ),
+        )
+        .toList();
+
+    return exercises;
   }
 }
 

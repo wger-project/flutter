@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'exercise_api.dart';
@@ -56,48 +74,4 @@ Map<String, dynamic> _$ExerciseBaseDataToJson(_ExerciseBaseData instance) => <St
   'videos': instance.videos,
   'author_history': instance.authors,
   'total_authors_history': instance.authorsGlobal,
-};
-
-_ExerciseSearchDetails _$ExerciseSearchDetailsFromJson(
-  Map<String, dynamic> json,
-) => _ExerciseSearchDetails(
-  translationId: (json['id'] as num).toInt(),
-  exerciseId: (json['base_id'] as num).toInt(),
-  name: json['name'] as String,
-  category: json['category'] as String,
-  image: json['image'] as String?,
-  imageThumbnail: json['image_thumbnail'] as String?,
-);
-
-Map<String, dynamic> _$ExerciseSearchDetailsToJson(
-  _ExerciseSearchDetails instance,
-) => <String, dynamic>{
-  'id': instance.translationId,
-  'base_id': instance.exerciseId,
-  'name': instance.name,
-  'category': instance.category,
-  'image': instance.image,
-  'image_thumbnail': instance.imageThumbnail,
-};
-
-_ExerciseSearchEntry _$ExerciseSearchEntryFromJson(Map<String, dynamic> json) =>
-    _ExerciseSearchEntry(
-      value: json['value'] as String,
-      data: ExerciseSearchDetails.fromJson(
-        json['data'] as Map<String, dynamic>,
-      ),
-    );
-
-Map<String, dynamic> _$ExerciseSearchEntryToJson(
-  _ExerciseSearchEntry instance,
-) => <String, dynamic>{'value': instance.value, 'data': instance.data};
-
-_ExerciseApiSearch _$ExerciseApiSearchFromJson(Map<String, dynamic> json) => _ExerciseApiSearch(
-  suggestions: (json['suggestions'] as List<dynamic>)
-      .map((e) => ExerciseSearchEntry.fromJson(e as Map<String, dynamic>))
-      .toList(),
-);
-
-Map<String, dynamic> _$ExerciseApiSearchToJson(_ExerciseApiSearch instance) => <String, dynamic>{
-  'suggestions': instance.suggestions,
 };

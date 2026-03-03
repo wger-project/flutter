@@ -3833,6 +3833,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get productNotFoundOpenFoodFacts =>
+      (super.noSuchMethod(
+            Invocation.getter(#productNotFoundOpenFoodFacts),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#productNotFoundOpenFoodFacts),
+            ),
+          )
+          as String);
+
+  @override
+  String get addToOpenFoodFacts =>
+      (super.noSuchMethod(
+            Invocation.getter(#addToOpenFoodFacts),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#addToOpenFoodFacts),
+            ),
+          )
+          as String);
+
+  @override
   String exerciseNr(String? nr) =>
       (super.noSuchMethod(
             Invocation.method(#exerciseNr, [nr]),

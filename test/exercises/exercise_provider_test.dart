@@ -48,7 +48,6 @@ void main() {
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
-  const String searchExerciseUrl = 'exercise/search';
 
   final Uri tCategoryEntriesUri = Uri(
     scheme: 'http',
@@ -83,7 +82,7 @@ void main() {
   final Uri tSearchByNameUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$searchExerciseUrl/',
+    path: 'api/v2/$exerciseInfoUrl/',
   );
 
   const category1 = ExerciseCategory(id: 1, name: 'Arms');
@@ -368,17 +367,17 @@ void main() {
           tSearchByNameUri = Uri(
             scheme: 'http',
             host: 'localhost',
-            path: 'api/v2/$searchExerciseUrl/',
+            path: 'api/v2/$exerciseInfoUrl/',
             queryParameters: query,
           );
           final Map<String, dynamic> tSearchResponse = jsonDecode(
-            fixture('exercises/exercise_search_entries.json'),
+            fixture('exercises/exerciseinfo_search_entries.json'),
           );
 
           // Mock exercise search
           when(
             mockBaseProvider.makeUrl(
-              searchExerciseUrl,
+              exerciseInfoUrl,
               query: {'term': tSearchTerm, 'language': tSearchLanguage},
             ),
           ).thenReturn(tSearchByNameUri);
@@ -394,9 +393,12 @@ void main() {
 
           // assert
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
+          final result1 = provider.filteredExercises[0];
+          final testExercise1 = data.getTestExercises()[0];
+          expect(result1.uuid, testExercise1.uuid);
           expect(
-            provider.filteredExercises,
-            [data.getTestExercises()[0], data.getTestExercises()[1]],
+            result1.translations.map((e) => e.uuid).toList(),
+            testExercise1.translations.map((e) => e.uuid).toList(),
           );
         });
         test('Should find items from selection but should filter them by search term', () async {
