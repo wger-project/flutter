@@ -42,7 +42,6 @@ class NutritionalPlanScreen extends StatefulWidget {
 }
 
 class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
-
   Future<NutritionalPlan>? _planFuture;
   late NutritionalPlan _nutritionalPlan;
 
@@ -51,8 +50,10 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
     super.didChangeDependencies();
     if (_planFuture == null) {
       _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
-      _planFuture = Provider.of<NutritionPlansProvider>(context, listen: false)
-          .fetchAndSetPlanFull(_nutritionalPlan.id!);
+      _planFuture = Provider.of<NutritionPlansProvider>(
+        context,
+        listen: false,
+      ).fetchAndSetPlanFull(_nutritionalPlan.id!);
     }
   }
 
