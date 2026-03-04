@@ -108,24 +108,26 @@ class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
         ),
         Padding(
           padding: const EdgeInsets.all(10),
-          child: DropdownMenu<num>(
-            key: const ValueKey('barWeightDropdown'),
-            width: double.infinity,
-            initialSelection: plateWeightsState.barWeight,
-            requestFocusOnTap: true,
-            label: Text(i18n.barWeight),
-            onSelected: (num? value) {
-              if (value == null) {
-                return;
+          child: TextField(
+            key: const ValueKey('barWeightTextField'),
+            controller: TextEditingController(text: plateWeightsState.barWeight.toString()),
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: i18n.barWeight,
+              suffix: Text(plateWeightsState.isMetric ? i18n.kg : i18n.lb),
+            ),
+            onChanged: (text) {
+              final parsed = num.tryParse(text);
+              if (parsed != null) {
+                plateWeightsNotifier.setBarWeight(parsed);
               }
-              plateWeightsNotifier.setBarWeight(value);
             },
-            dropdownMenuEntries: plateWeightsState.availableBarsWeights.map((value) {
-              return DropdownMenuEntry<num>(
-                value: value,
-                label: value.toString(),
-              );
-            }).toList(),
+            onSubmitted: (text) {
+              final parsed = num.tryParse(text);
+              if (parsed != null) {
+                plateWeightsNotifier.setBarWeight(parsed);
+              }
+            },
           ),
         ),
         SwitchListTile(

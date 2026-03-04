@@ -139,6 +139,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
             final base = currentWeight ?? 0;
             final newValue = base - widget.valueChange;
             if (newValue >= 0 && log != null) {
+              plateProvider.setWeight(newValue);
               logProvider.setWeight(newValue);
             }
           },
@@ -181,6 +182,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
             final base = currentWeight ?? 0;
             final newValue = base + widget.valueChange;
             if (log != null) {
+              plateProvider.setWeight(newValue);
               logProvider.setWeight(newValue);
             }
           },
