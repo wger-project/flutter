@@ -61,7 +61,7 @@ class _Step4TranslationState extends State<Step4Translation> {
                 AddExerciseTextArea(
                   title: '${i18n.name}*',
                   validator: (name) => validateName(name, context),
-                  onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
+                  onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name,
                 ),
                 AddExerciseTextArea(
                   title: i18n.alternativeNames,
@@ -86,14 +86,14 @@ class _Step4TranslationState extends State<Step4Translation> {
                       addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
                 ),
                 Consumer<AddExerciseProvider>(
-                  builder: (ctx, provider, __) => AddExerciseTextArea(
+                  builder: (ctx, provider, _) => AddExerciseTextArea(
                     onChange: (value) => {},
                     title: '${i18n.description}*',
                     helperText: i18n.enterTextInLanguage,
                     isMultiline: true,
                     validator: (name) => validateExerciseDescription(name, context),
                     onSaved: (String? description) =>
-                        addExerciseProvider.descriptionTrans = description!,
+                        addExerciseProvider.descriptionTrans = description,
                   ),
                 ),
               ],

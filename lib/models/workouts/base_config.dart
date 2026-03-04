@@ -55,7 +55,7 @@ class BaseConfig {
     required this.value,
     this.operation = 'r',
     this.step = 'abs',
-    this.requirements = null,
+    this.requirements,
   });
 
   BaseConfig.firstIteration(this.value, this.slotEntryId) {

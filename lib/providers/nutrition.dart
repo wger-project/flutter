@@ -360,7 +360,7 @@ class NutritionPlansProvider with ChangeNotifier {
           (database.delete(database.ingredients)..where((i) => i.id.equals(ingredientId))).go();
         }
       } else {
-        _logger.info("Fetching ingredient ID $ingredientId from server");
+        _logger.info('Fetching ingredient ID $ingredientId from server');
         final data = await baseProvider.fetch(
           baseProvider.makeUrl(_ingredientInfoPath, id: ingredientId),
         );

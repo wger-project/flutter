@@ -179,7 +179,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
           // Image picker or preview - shown when not entering metadata
           if (_currentImageToAdd == null)
             Consumer<AddExerciseProvider>(
-              builder: (ctx, provider, __) {
+              builder: (ctx, provider, _) {
                 if (provider.exerciseImages.isNotEmpty) {
                   // Show preview of images that have been added with metadata
                   return Column(
