@@ -11,7 +11,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 /// Being a separate widget allows Flutter to optimize rendering since
 /// this content never changes.
 class LicenseInfoWidget extends StatelessWidget {
-  const LicenseInfoWidget({Key? key}) : super(key: key);
+  const LicenseInfoWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

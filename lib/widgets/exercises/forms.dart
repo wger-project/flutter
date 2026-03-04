@@ -58,7 +58,7 @@ class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWi
       padding: const EdgeInsets.all(8.0),
       child: DropdownButtonFormField(
         key: widget.key,
-        value: selectedEntry,
+        initialValue: selectedEntry,
         decoration: InputDecoration(
           labelText: widget._title,
           contentPadding: const EdgeInsets.all(8.0),

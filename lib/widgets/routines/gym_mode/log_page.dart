@@ -61,6 +61,17 @@ class LogPage extends ConsumerWidget {
     }
     final setConfigData = slotEntryPage.setConfigData!;
 
+    // Calculate weightRounding as 2 times the smallest available plate weight
+    final plateProvider = ref.read(plateCalculatorProvider.notifier);
+    final selectedPlates = plateProvider.state.selectedPlates;
+    final minPlate = selectedPlates.isNotEmpty ? selectedPlates.reduce((a, b) => a < b ? a : b) : 1.25;
+    final calculatedWeightRounding = 2 * minPlate;
+
+    // Create a new SetConfigData with the calculated weightRounding
+    final updatedConfigData = setConfigData.copyWith(
+      weightRounding: calculatedWeightRounding,
+    );
+
     final log = ref.read(gymLogProvider);
 
     // Mark done sets
@@ -84,17 +95,17 @@ class LogPage extends ConsumerWidget {
               children: [
                 Column(
                   children: [
-                    Text(
-                      setConfigData.textRepr,
-                      textAlign: TextAlign.center,
+          Text(
+                      updatedConfigData.textRepr,
+            textAlign: TextAlign.center,
                       style: theme.textTheme.headlineMedium?.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                         decoration: decorationStyle,
-                      ),
-                    ),
-                    if (setConfigData.type != SlotEntryType.normal)
+          ),
+      ),
+                    if (updatedConfigData.type != SlotEntryType.normal)
                       Text(
-                        setConfigData.type.name.toUpperCase(),
+                        updatedConfigData.type.name.toUpperCase(),
                         textAlign: TextAlign.center,
                         style: theme.textTheme.headlineSmall?.copyWith(
                           color: Theme.of(context).colorScheme.primary,
@@ -115,8 +126,8 @@ class LogPage extends ConsumerWidget {
           ),
         ),
         if (log.exercise.showPlateCalculator) const LogsPlatesWidget(),
-        if (slotEntryPage.setConfigData!.comment.isNotEmpty)
-          Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
+        if (updatedConfigData.comment.isNotEmpty)
+          Text(updatedConfigData.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
           child: (gymState.routine.filterLogsByExercise(log.exerciseId).isNotEmpty)
@@ -135,7 +146,7 @@ class LogPage extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: LogFormWidget(
                 controller: _controller,
-                configData: setConfigData,
+                configData: updatedConfigData,
                 key: ValueKey('log-form-${slotEntryPage.uuid}'),
               ),
             ),
