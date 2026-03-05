@@ -26,7 +26,7 @@ _ExerciseTranslationSubmissionApi _$ExerciseTranslationSubmissionApiFromJson(
   Map<String, dynamic> json,
 ) => _ExerciseTranslationSubmissionApi(
   name: json['name'] as String,
-  description: json['description'] as String,
+  description: json['description_source'] as String,
   language: (json['language'] as num).toInt(),
   author: json['license_author'] as String,
   aliases:
@@ -51,7 +51,7 @@ Map<String, dynamic> _$ExerciseTranslationSubmissionApiToJson(
   _ExerciseTranslationSubmissionApi instance,
 ) => <String, dynamic>{
   'name': instance.name,
-  'description': instance.description,
+  'description_source': instance.description,
   'language': instance.language,
   'license_author': instance.author,
   'aliases': instance.aliases,
