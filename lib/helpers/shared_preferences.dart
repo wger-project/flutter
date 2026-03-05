@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/util/legacy_to_async_migration_util.dart';
+import 'package:wger/providers/nutrition.dart';
 
 /// A helper class that manages preferences using SharedPreferencesAsync
 /// and handles migration from the legacy SharedPreferences to
@@ -30,5 +31,41 @@ class PreferenceHelper {
       migrationCompletedKey: 'migrationCompleted',
     );
     _asyncPref = SharedPreferencesAsync();
+  }
+
+  //ingredients filters
+  //1.vegan
+  Future<void> saveIngredientVeganFilter(bool value) async {
+    await PreferenceHelper.asyncPref.setBool('ingredientVeganFilter', value);
+  }
+
+  Future<bool> getIngredientVeganFilter() async {
+    return await PreferenceHelper.asyncPref.getBool('ingredientVeganFilter') ?? false;
+  }
+
+  //2.vegetarian
+  Future<void> saveIngredientVegetarianFilter(bool value) async {
+    await PreferenceHelper.asyncPref.setBool('ingredientVegetarianFilter', value);
+  }
+
+  Future<bool> getIngredientVegetarianFilter() async {
+    return await PreferenceHelper.asyncPref.getBool('ingredientVegetarianFilter') ?? false;
+  }
+
+  //3.language
+  Future<void> saveIngredientSearchLanguage(IngredientSearchLanguage language) async {
+    await PreferenceHelper.asyncPref.setString('search_language', language.name);
+  }
+
+  Future<IngredientSearchLanguage> getIngredientSearchLanguage() async {
+    final value = await PreferenceHelper.asyncPref.getString('search_language');
+    if (value == null) {
+      return IngredientSearchLanguage.currentAndEnglish;
+    } else {
+      return IngredientSearchLanguage.values.firstWhere(
+        (e) => e.name == value,
+        orElse: () => IngredientSearchLanguage.currentAndEnglish,
+      );
+    }
   }
 }

@@ -400,7 +400,8 @@ class NutritionPlansProvider with ChangeNotifier {
     if (name.length <= 1) {
       return [];
     }
-
+    print("isVegan in search result is $isVegan");
+    print("isVegetarian in search result is $isVegetarian");
     final List<String> languages = [];
 
     switch (searchLanguage) {
@@ -434,7 +435,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (isVegetarian) {
       query['is_vegetarian'] = 'true';
     }
-
+    print("query is $query");
     // Send the request
     _logger.info('Fetching ingredients from server');
     final response = await baseProvider.fetch(

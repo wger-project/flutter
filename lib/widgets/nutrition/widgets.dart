@@ -18,17 +18,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as legacy_provider;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
@@ -53,7 +55,7 @@ class ScanReader extends StatelessWidget {
   );
 }
 
-class IngredientTypeahead extends StatefulWidget {
+class IngredientTypeahead extends ConsumerStatefulWidget {
   final _logger = Logger('IngredientTypeahead');
 
   final TextEditingController _ingredientController;
@@ -79,15 +81,11 @@ class IngredientTypeahead extends StatefulWidget {
   });
 
   @override
-  _IngredientTypeaheadState createState() => _IngredientTypeaheadState();
+  ConsumerState<IngredientTypeahead> createState() => _IngredientTypeaheadState();
 }
 
-class _IngredientTypeaheadState extends State<IngredientTypeahead> {
+class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   late String barcode;
-  var _searchLanguage = IngredientSearchLanguage.currentAndEnglish;
-  var _isVegan = false;
-  var _isVegetarian = false;
-
   @override
   void initState() {
     super.initState();
@@ -116,6 +114,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
 
   @override
   Widget build(BuildContext context) {
+    final filters = ref.watch(ingredientFiltersNotifierProvider);
     return Column(
       children: [
         TypeAheadField<Ingredient>(
@@ -154,12 +153,15 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             widget.onUpdateSearchQuery(pattern);
             widget.onDeselectIngredient();
 
-            return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
+            return legacy_provider.Provider.of<NutritionPlansProvider>(
+              context,
+              listen: false,
+            ).searchIngredient(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
-              searchLanguage: _searchLanguage,
-              isVegan: _isVegan,
-              isVegetarian: _isVegetarian,
+              searchLanguage: filters.searchLanguage,
+              isVegan: filters.isVegan,
+              isVegetarian: filters.isVegetarian,
             );
           },
           itemBuilder: (context, ingredient) {
@@ -196,7 +198,10 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           ),
           onSelected: (suggestion) async {
             // Cache selected ingredient
-            final provider = Provider.of<NutritionPlansProvider>(context, listen: false);
+            final provider = legacy_provider.Provider.of<NutritionPlansProvider>(
+              context,
+              listen: false,
+            );
             await provider.cacheIngredient(suggestion);
             widget.selectIngredient(suggestion.id, suggestion.name, null);
           },
@@ -220,7 +225,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
         showDialog(
           context: context,
           builder: (context) => FutureBuilder<Ingredient?>(
-            future: Provider.of<NutritionPlansProvider>(
+            future: legacy_provider.Provider.of<NutritionPlansProvider>(
               context,
               listen: false,
             ).searchIngredientWithBarcode(barcode),
@@ -234,9 +239,9 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
   }
 
   Widget filterButton() {
+    final filters = ref.watch(ingredientFiltersNotifierProvider);
     final i18n = AppLocalizations.of(context);
     final languageCode = Localizations.localeOf(context).languageCode;
-
     // If we are in English, we don't need the "Current & English" option
     final isEnglish = languageCode == LANGUAGE_SHORT_ENGLISH;
     final dropdownItems = [
@@ -255,8 +260,12 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
       ),
     ];
 
-    if (isEnglish && _searchLanguage == IngredientSearchLanguage.currentAndEnglish) {
-      _searchLanguage = IngredientSearchLanguage.current;
+    if (isEnglish && filters.searchLanguage == IngredientSearchLanguage.currentAndEnglish) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(ingredientFiltersNotifierProvider.notifier)
+            .chooseLanguage(IngredientSearchLanguage.current);
+      });
     }
 
     return IconButton(
@@ -267,53 +276,64 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           builder: (context) {
             return StatefulBuilder(
               builder: (context, setDialogState) {
-                return AlertDialog(
-                  title: Text(i18n.filter),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(i18n.language),
-                        subtitle: DropdownButton<IngredientSearchLanguage>(
-                          value: _searchLanguage,
-                          isExpanded: true,
-                          onChanged: (IngredientSearchLanguage? newValue) {
-                            setDialogState(() {
-                              _searchLanguage = newValue!;
-                            });
-                          },
-                          items: dropdownItems,
+                return Consumer(
+                  builder: (context, ref, _) {
+                    final filters = ref.watch(ingredientFiltersNotifierProvider);
+                    return AlertDialog(
+                      title: Text(i18n.filter),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(i18n.language),
+                            subtitle: DropdownButton<IngredientSearchLanguage>(
+                              value: filters.searchLanguage,
+                              isExpanded: true,
+                              onChanged: (IngredientSearchLanguage? newValue) {
+                                setDialogState(() {
+                                  ref
+                                      .read(ingredientFiltersNotifierProvider.notifier)
+                                      .chooseLanguage(newValue!);
+                                });
+                              },
+                              items: dropdownItems,
+                            ),
+                          ),
+                          SwitchListTile(
+                            title: Text(i18n.isVegan),
+                            value: filters.isVegan,
+                            contentPadding: EdgeInsets.zero,
+                            onChanged: (val) {
+                              setDialogState(() {
+                                ref
+                                    .read(ingredientFiltersNotifierProvider.notifier)
+                                    .toggleVegan(val);
+                              });
+                            },
+                          ),
+                          SwitchListTile(
+                            title: Text(i18n.isVegetarian),
+                            value: filters.isVegetarian,
+                            contentPadding: EdgeInsets.zero,
+                            onChanged: (val) {
+                              setDialogState(() {
+                                ref
+                                    .read(ingredientFiltersNotifierProvider.notifier)
+                                    .toggleVegetarian(val);
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
                         ),
-                      ),
-                      SwitchListTile(
-                        title: Text(i18n.isVegan),
-                        value: _isVegan,
-                        contentPadding: EdgeInsets.zero,
-                        onChanged: (val) {
-                          setDialogState(() {
-                            _isVegan = val;
-                          });
-                        },
-                      ),
-                      SwitchListTile(
-                        title: Text(i18n.isVegetarian),
-                        value: _isVegetarian,
-                        contentPadding: EdgeInsets.zero,
-                        onChanged: (val) {
-                          setDialogState(() {
-                            _isVegetarian = val;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-                    ),
-                  ],
+                      ],
+                    );
+                  },
                 );
               },
             );
