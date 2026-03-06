@@ -906,7 +906,7 @@
     "addSuperset": "Dodaj super-seriju",
     "setHasProgression": "Serija ima napredovanje",
     "setHasProgressionWarning": "Imaj na umu da trenutačno nije moguće urediti sve postavke za serije na mobilnoj aplikaciji ili konfigurirati automatsko napredovanje. Za sada koristi web aplikaciju.",
-    "fitInWeek": "Prilagodi u tjedan",
+    "fitInWeek": "Fiksiran tjedni raspored",
     "fitInWeekHelp": "Ako je aktivirano, dani će se ponavljati u tjednom ciklusu, inače će dani slijediti uzastopno bez obzira na početak novog tjedna.",
     "setHasNoExercises": "Ova serija još nema vježbe!",
     "exerciseNr": "Vježba {nr}",
@@ -1076,5 +1076,13 @@
         }
     },
     "superset": "Super-serija",
-    "trophies": "Trofeje"
+    "trophies": "Trofeje",
+    "productNotFoundOpenFoodFacts": "Dodaj ovaj proizvod na Open Food Facts i pomogni zajednici!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Dodaj na Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    }
 }

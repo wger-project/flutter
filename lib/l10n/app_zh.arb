@@ -918,5 +918,6 @@
     "@startDate": {
         "description": "The start date of a nutritional plan or routine"
     },
-    "dayTypeCustom": "自定义"
+    "dayTypeCustom": "自定义",
+    "dayTypeHiit": "高强度间歇训练"
 }
