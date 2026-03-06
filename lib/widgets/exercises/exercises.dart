@@ -8,8 +8,7 @@
  * (at your option) any later version.
  *
  * wger Workout Manager is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -211,10 +210,6 @@ class ExerciseDetail extends StatelessWidget {
         ),
       );
 
-      // out.add(ExerciseImageWidget(
-      //   image: _exercise.getMainImage,
-      //   height: 250,
-      // ));
       out.add(const SizedBox(height: PADDING));
     }
 
@@ -254,7 +249,6 @@ class ExerciseDetail extends StatelessWidget {
   }
 
   List<Widget> getVideos() {
-    // TODO: add carousel for the other videos
     final List<Widget> out = [];
     if (_exercise.videos.isNotEmpty && !isDesktop) {
       _exercise.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
@@ -321,8 +315,6 @@ class MuscleRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      //mainAxisAlignment: MainAxisAlignment.spaceAround,
-      //crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Padding(
@@ -367,12 +359,16 @@ class MuscleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final background = isFront ? 'front' : 'back';
 
+    // FIX #145: compare by id instead of object reference to correctly
+    // deduplicate muscles that appear in both main and secondary lists.
+    final mainMuscleIds = muscles.map((m) => m.id).toSet();
+
     return Stack(
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
         ...musclesSecondary
-            .where((m) => !muscles.contains(m))
+            .where((m) => !mainMuscleIds.contains(m.id))
             .map(
               (m) => SvgPicture.asset(
                 'assets/images/muscles/secondary/muscle-${m.id}.svg',
