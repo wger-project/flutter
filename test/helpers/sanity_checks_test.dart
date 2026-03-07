@@ -47,8 +47,6 @@ void main() {
       );
 
       expect(result.isValid, isTrue);
-      expect(result.message, isNull);
-      expect(result.detectedUrl, isNull);
     });
 
     test('detects host mismatch (localhost issue)', () async {
@@ -71,10 +69,6 @@ void main() {
       );
 
       expect(result.isValid, isFalse);
-      expect(result.message, contains('Server misconfiguration detected'));
-      expect(result.message, contains('wger.example.com'));
-      expect(result.message, contains('localhost'));
-      expect(result.detectedUrl, 'http://localhost:8000/api/v2/exercise/?limit=1&offset=1');
     });
 
     test('detects protocol mismatch (https vs http)', () async {
@@ -97,9 +91,6 @@ void main() {
       );
 
       expect(result.isValid, isFalse);
-      expect(result.message, contains('Protocol mismatch detected'));
-      expect(result.message, contains('https'));
-      expect(result.message, contains('http'));
     });
 
     test('returns valid when next URL is null (no pagination)', () async {
@@ -136,7 +127,6 @@ void main() {
       );
 
       expect(result.isValid, isFalse);
-      expect(result.message, contains('Could not reach server endpoint'));
     });
 
     test('handles network errors gracefully', () async {
@@ -151,7 +141,6 @@ void main() {
       );
 
       expect(result.isValid, isFalse);
-      expect(result.message, contains('Error checking server configuration'));
     });
 
     test('includes correct headers in request', () async {
@@ -198,28 +187,6 @@ void main() {
       );
 
       expect(result.isValid, isTrue);
-    });
-  });
-
-  group('SanityCheckResult', () {
-    test('creates valid result correctly', () {
-      const result = SanityCheckResult(isValid: true);
-
-      expect(result.isValid, isTrue);
-      expect(result.message, isNull);
-      expect(result.detectedUrl, isNull);
-    });
-
-    test('creates invalid result with message', () {
-      const result = SanityCheckResult(
-        isValid: false,
-        message: 'Test error',
-        detectedUrl: 'http://localhost',
-      );
-
-      expect(result.isValid, isFalse);
-      expect(result.message, 'Test error');
-      expect(result.detectedUrl, 'http://localhost');
     });
   });
 }

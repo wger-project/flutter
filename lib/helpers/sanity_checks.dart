@@ -16,15 +16,13 @@ import 'package:http/http.dart' as http;
 Future<SanityCheckResult> checkServerPaginationUrls({
   required String baseUrl,
   required String token,
-
-  /// Custom client is only used for tests
   http.Client? client,
 }) async {
   final httpClient = client ?? http.Client();
+
   try {
     final baseUri = Uri.parse(baseUrl);
     final expectedHost = baseUri.host;
-    final expectedPort = baseUri.port;
     final expectedScheme = baseUri.scheme;
 
     final response = await httpClient.get(
@@ -36,10 +34,7 @@ Future<SanityCheckResult> checkServerPaginationUrls({
     );
 
     if (response.statusCode != 200) {
-      return const SanityCheckResult(
-        isValid: false,
-        message: 'Could not reach server endpoint',
-      );
+      return const SanityCheckResult(isValid: false);
     }
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -51,35 +46,13 @@ Future<SanityCheckResult> checkServerPaginationUrls({
 
     final nextUri = Uri.parse(nextUrl);
 
-    if (nextUri.host != expectedHost) {
-      return SanityCheckResult(
-        isValid: false,
-        message:
-            'Server misconfiguration detected!\n\n'
-            'You are connecting to: $expectedScheme://$expectedHost${expectedPort != 0 ? ":$expectedPort" : ""}\n'
-            'But pagination links point to: ${nextUri.scheme}://${nextUri.host}${nextUri.hasPort ? ":${nextUri.port}" : ""}\n\n'
-            'This usually means your reverse proxy is not configured correctly.',
-        detectedUrl: nextUrl,
-      );
-    }
-
-    if (nextUri.scheme != expectedScheme) {
-      return SanityCheckResult(
-        isValid: false,
-        message:
-            'Protocol mismatch detected!\n\n'
-            'You are using: $expectedScheme\n'
-            'But server returns: ${nextUri.scheme}',
-        detectedUrl: nextUrl,
-      );
+    if (nextUri.host != expectedHost || nextUri.scheme != expectedScheme) {
+      return const SanityCheckResult(isValid: false);
     }
 
     return const SanityCheckResult(isValid: true);
   } catch (e) {
-    return SanityCheckResult(
-      isValid: false,
-      message: 'Error checking server configuration: $e',
-    );
+    return const SanityCheckResult(isValid: false);
   }
 }
 
@@ -87,11 +60,7 @@ Future<SanityCheckResult> checkServerPaginationUrls({
 class SanityCheckResult {
   const SanityCheckResult({
     required this.isValid,
-    this.message,
-    this.detectedUrl,
   });
 
   final bool isValid;
-  final String? message;
-  final String? detectedUrl;
 }

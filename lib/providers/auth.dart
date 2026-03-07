@@ -54,8 +54,8 @@ class AuthProvider with ChangeNotifier {
   PackageInfo? applicationVersion;
   Map<String, String> metadata = {};
   AuthState state = AuthState.loggedOut;
-  String? _serverConfigWarning;
-  String? get serverConfigWarning => _serverConfigWarning;
+  bool _serverConfigWarning = false;
+  bool get serverConfigWarning => _serverConfigWarning;
 
   static const MIN_APP_VERSION_URL = 'min-app-version';
   static const SERVER_VERSION_URL = 'version';
@@ -71,7 +71,7 @@ class AuthProvider with ChangeNotifier {
 
   /// Clear the server config warnings
   void clearServerConfigWarning() {
-    _serverConfigWarning = null;
+    _serverConfigWarning = false;
     notifyListeners();
   }
 
@@ -207,8 +207,9 @@ class AuthProvider with ChangeNotifier {
         baseUrl: serverUrl,
         token: token!,
       );
-      if (!sanityCheck.isValid && sanityCheck.message != null) {
-        _serverConfigWarning = sanityCheck.message;
+
+      if (!sanityCheck.isValid) {
+        _serverConfigWarning = true;
         notifyListeners();
       }
     } catch (e) {
