@@ -219,9 +219,9 @@ class _AuthCardState extends State<AuthCard> {
 
       if (context.mounted && res == LoginActions.proceed) {
         final authProvider = context.read<AuthProvider>();
-        if (authProvider.serverConfigWarning != null) {
+        if (authProvider.serverConfigWarning) {
           if (context.mounted) {
-            showServerConfigWarning(context, authProvider.serverConfigWarning!);
+            showServerConfigWarning(context);
             authProvider.clearServerConfigWarning();
           }
         }

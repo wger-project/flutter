@@ -13,7 +13,7 @@ import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Shows a warning dialog when server misconfiguration is detected
-void showServerConfigWarning(BuildContext context, String message) {
+void showServerConfigWarning(BuildContext context) {
   final i18n = AppLocalizations.of(context);
 
   showDialog(
@@ -26,27 +26,21 @@ void showServerConfigWarning(BuildContext context, String message) {
           Expanded(child: Text(i18n.serverConfigIssueTitle)),
         ],
       ),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(message),
-            const SizedBox(height: 16),
-            Text(
-              i18n.serverConfigIssueWarning,
-              style: const TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
+      content: Text(i18n.serverConfigIssueMessage),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(i18n.understand),
+        ),
+        TextButton(
+          onPressed: () {
+            launchURL(
+              'https://wger.readthedocs.io/en/latest/administration/errors.html#wrong-pagination-links',
+              context,
+            );
+            Navigator.pop(context);
+          },
+          child: Text(i18n.viewDocumentation),
         ),
       ],
     ),
