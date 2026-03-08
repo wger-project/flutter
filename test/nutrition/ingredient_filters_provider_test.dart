@@ -13,7 +13,7 @@ void main() {
   });
 
   test('changing vegan filter updates provider and saves value', () async {
-    final container = ProviderContainer(
+    final container = ProviderContainer.test(
       overrides: [
         ingredientFiltersNotifierProvider.overrideWith(
           () => IngredientFiltersNotifier(
@@ -24,8 +24,6 @@ void main() {
         ),
       ],
     );
-
-    addTearDown(container.dispose);
 
     await container.read(ingredientFiltersNotifierProvider.notifier).toggleVegan(true);
 
