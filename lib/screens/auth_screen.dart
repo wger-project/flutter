@@ -30,6 +30,7 @@ import 'package:wger/widgets/auth/email_field.dart';
 import 'package:wger/widgets/auth/password_field.dart';
 import 'package:wger/widgets/auth/server_field.dart';
 import 'package:wger/widgets/auth/username_field.dart';
+import 'package:wger/widgets/core/server_config_warning_dialog.dart';
 
 import '../providers/auth.dart';
 
@@ -206,6 +207,17 @@ class _AuthCardState extends State<AuthCard> {
         );
         return;
       }
+
+      if (context.mounted && res == LoginActions.proceed) {
+        final authProvider = context.read<AuthProvider>();
+        if (authProvider.serverConfigWarning) {
+          if (context.mounted) {
+            showServerConfigWarning(context);
+            authProvider.clearServerConfigWarning();
+          }
+        }
+      }
+
       if (context.mounted) {
         setState(() {
           _isLoading = false;

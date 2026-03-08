@@ -29,6 +29,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/sanity_checks.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 
 import 'helpers.dart';
@@ -53,6 +54,8 @@ class AuthProvider with ChangeNotifier {
   PackageInfo? applicationVersion;
   Map<String, String> metadata = {};
   AuthState state = AuthState.loggedOut;
+  bool _serverConfigWarning = false;
+  bool get serverConfigWarning => _serverConfigWarning;
 
   static const MIN_APP_VERSION_URL = 'min-app-version';
   static const SERVER_VERSION_URL = 'version';
@@ -64,6 +67,12 @@ class AuthProvider with ChangeNotifier {
 
   AuthProvider([http.Client? client]) {
     this.client = client ?? http.Client();
+  }
+
+  /// Clear the server config warnings
+  void clearServerConfigWarning() {
+    _serverConfigWarning = false;
+    notifyListeners();
   }
 
   /// flag to indicate that the application has successfully loaded all initial data
@@ -190,6 +199,21 @@ class AuthProvider with ChangeNotifier {
     if (await applicationUpdateRequired()) {
       state = AuthState.updateRequired;
       return LoginActions.update;
+    }
+
+    // Check server configuration sanity
+    try {
+      final sanityCheck = await checkServerPaginationUrls(
+        baseUrl: serverUrl,
+        token: token!,
+      );
+
+      if (!sanityCheck.isValid) {
+        _serverConfigWarning = true;
+        notifyListeners();
+      }
+    } catch (e) {
+      _logger.info('Sanity check error: $e');
     }
 
     // Log user in

@@ -1136,5 +1136,21 @@
   "addToOpenFoodFacts": "Add to Open Food Facts",
   "@addToOpenFoodFacts": {
     "description": "Label shown as the clickable link to go on Open Food Facts"
+  },
+  "serverConfigIssueTitle": "Server Configuration Issue",
+  "@serverConfigIssueTitle": {
+   "description": "Title of the dialog shown when server misconfiguration is detected"
+   },
+   "serverConfigIssueMessage": "Server misconfiguration detected, headers are not being passed correctly, please consult the documentation.",
+   "@serverConfigIssueMessage": {
+   "description": "Message explaining server misconfiguration and linking to documentation"
+   },
+   "understand": "I understand",
+   "@understand": {
+   "description": "Button label to acknowledge and dismiss the server configuration warning"
+   },
+   "viewDocumentation": "View documentation",
+   "@viewDocumentation": {
+   "description": "Button label to open the documentation about server configuration"
    }
 }
