@@ -20,12 +20,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -83,6 +86,7 @@ void main() {
   );
 
   setUp(() {
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
     final MealItem mealItem = MealItem(ingredientId: ingredient.id, amount: 2);
@@ -97,7 +101,7 @@ void main() {
       mockNutrition.searchIngredient(
         any,
         languageCode: anyNamed('languageCode'),
-        searchEnglish: anyNamed('searchEnglish'),
+        searchLanguage: anyNamed('searchLanguage'),
       ),
     ).thenAnswer(
       (_) => Future.value([ingredient1, ingredient2]),
@@ -109,24 +113,27 @@ void main() {
   Widget createMealItemFormScreen(Meal meal, String code, bool test, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => mockNutrition,
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        home: Scaffold(
-          body: Scrollable(
-            viewportBuilder: (BuildContext context, ViewportOffset position) =>
-                getMealItemForm(meal, const [], code, test),
+    return ProviderScope(
+      child: ChangeNotifierProvider<NutritionPlansProvider>(
+        create: (context) => mockNutrition,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          home: Scaffold(
+            body: Scrollable(
+              viewportBuilder: (BuildContext context, ViewportOffset position) =>
+                  getMealItemForm(meal, const [], code, test),
+            ),
           ),
+          routes: {
+            NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+          },
         ),
-        routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-        },
       ),
     );
+    // ProviderScope closes here
   }
 
   testWidgets('Test the widgets on the meal item form', (WidgetTester tester) async {
@@ -343,7 +350,7 @@ void main() {
         mockNutrition.searchIngredient(
           any,
           languageCode: anyNamed('languageCode'),
-          searchEnglish: anyNamed('searchEnglish'),
+          searchLanguage: anyNamed('searchLanguage'),
         ),
       ).thenAnswer((_) => Future.value([ingredient1]));
 
