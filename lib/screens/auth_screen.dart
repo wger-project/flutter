@@ -199,8 +199,12 @@ class _AuthCardState extends State<AuthCard> {
         );
       }
 
-      // Check if update is required else continue normally
-      if (res == LoginActions.update && mounted) {
+      // Only push the app-update screen for a genuine app update requirement.
+      // If the server was too old, login() already logged out silently and the
+      // user stays here to connect to a different server — no screen push needed.
+      if (res == LoginActions.update &&
+          context.read<AuthProvider>().state == AuthState.updateRequired &&
+          mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
         );

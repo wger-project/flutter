@@ -105,6 +105,46 @@ class AuthProvider with ChangeNotifier {
     return needUpdate;
   }
 
+  /// Checks whether the connected server meets the minimum version required
+  /// by this build of the app.
+  ///
+  /// [version] overrides [serverVersion] and is intended for unit testing.
+  bool serverUpdateRequired([String? version]) {
+    final rawVersion = version ?? serverVersion;
+    if (rawVersion == null) {
+      // If we couldn't read the server version, allow the login to proceed
+      // so as not to lock out users on unexpected server configurations.
+      _logger.warning('serverUpdateRequired: serverVersion is null, skipping check');
+      return false;
+    }
+
+    try {
+      // Server versions may use Python-style pre-release suffixes such as
+      // "2.5.0a2", "2.5.0b1", "2.5.0rc1", or appended build metadata like
+      // "-beta" / " (git-abc123)". Extract only the leading numeric X.Y.Z part.
+      final match = RegExp(r'^\d+\.\d+(\.\d+)?').firstMatch(rawVersion);
+      if (match == null) {
+        _logger.warning(
+          'serverUpdateRequired: no numeric version found in "$rawVersion", skipping check',
+        );
+        return false;
+      }
+      final sanitized = match.group(0)!;
+      final current = Version.parse(sanitized);
+      final required = Version.parse(MIN_SERVER_VERSION);
+
+      final needUpdate = current < required;
+      if (needUpdate) {
+        _logger.fine('Server update required: server $current < minimum $required');
+      }
+
+      return needUpdate;
+    } on FormatException catch (e) {
+      _logger.warning('serverUpdateRequired: could not parse server version "$rawVersion": $e');
+      return false;
+    }
+  }
+
   /// Registers a new user
   Future<LoginActions> register({
     required String username,
@@ -186,7 +226,14 @@ class AuthProvider with ChangeNotifier {
 
     await initVersions(serverUrl);
 
-    // If update is required don't log in user
+    // If the server is too old for this app version, log out silently so the
+    // user lands back on the auth screen and can connect to a different server.
+    if (serverUpdateRequired()) {
+      await logout(shouldNotify: false);
+      return LoginActions.update;
+    }
+
+    // If app update is required don't log in user
     if (await applicationUpdateRequired()) {
       state = AuthState.updateRequired;
       return LoginActions.update;
@@ -263,7 +310,14 @@ class AuthProvider with ChangeNotifier {
 
     await initVersions(serverUrl!);
 
-    // If update is required don't log in user
+    // If the server is too old for this app version, log out silently so the
+    // user lands back on the auth screen and can connect to a different server.
+    if (serverUpdateRequired()) {
+      await logout();
+      return;
+    }
+
+    // If app update is required don't log in user
     if (await applicationUpdateRequired()) {
       state = AuthState.updateRequired;
     } else {
