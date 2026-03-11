@@ -17,10 +17,15 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -31,7 +36,10 @@ import 'nutritional_plan_form_test.mocks.dart';
 void main() {
   late MockNutritionPlansProvider mockNutrition;
 
-  setUp(() {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
     mockNutrition = MockNutritionPlansProvider();
     when(
       mockNutrition.searchIngredient(
@@ -68,18 +76,20 @@ void main() {
   });
 
   Widget createWidgetUnderTest() {
-    return ChangeNotifierProvider<NutritionPlansProvider>.value(
-      value: mockNutrition,
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: IngredientTypeahead(
-            TextEditingController(),
-            TextEditingController(),
-            selectIngredient: (id, name, amount) {},
-            onDeselectIngredient: () {},
-            onUpdateSearchQuery: (query) {},
+    return ProviderScope(
+      child: ChangeNotifierProvider<NutritionPlansProvider>.value(
+        value: mockNutrition,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: IngredientTypeahead(
+              TextEditingController(),
+              TextEditingController(),
+              selectIngredient: (id, name, amount) {},
+              onDeselectIngredient: () {},
+              onUpdateSearchQuery: (query) {},
+            ),
           ),
         ),
       ),
@@ -107,11 +117,11 @@ void main() {
     expect(tester.widget<SwitchListTile>(vegetarianSwitchFinder).value, isFalse);
 
     await tester.tap(veganSwitchFinder);
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(tester.widget<SwitchListTile>(veganSwitchFinder).value, isTrue);
 
     await tester.tap(vegetarianSwitchFinder);
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(tester.widget<SwitchListTile>(vegetarianSwitchFinder).value, isTrue);
   });
 
@@ -126,7 +136,7 @@ void main() {
 
     // Toggle Vegan switch to ON
     await tester.tap(find.widgetWithText(SwitchListTile, 'Vegan'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Close'));
     await tester.pumpAndSettle();

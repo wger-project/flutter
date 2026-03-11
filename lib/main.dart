@@ -33,7 +33,6 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/providers/wger_base_riverpod.dart';
@@ -74,15 +73,13 @@ import 'providers/auth.dart';
 void _setupLogging() {
   Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
   Logger.root.onRecord.listen((record) {
+    // ignore: avoid_print
     print('${record.level.name}: ${record.time} [${record.loggerName}] ${record.message}');
     InMemoryLogStore().add(record);
   });
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-late final bool initialVegan;
-late final bool initialVegetarian;
-late final IngredientSearchLanguage initialSearchLanguage;
 
 void main() async {
   // Needs to be called before runApp
@@ -98,10 +95,6 @@ void main() async {
 
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
-  //sharedpreference for filters in nutrition
-  initialVegan = await PreferenceHelper.instance.getIngredientVeganFilter();
-  initialVegetarian = await PreferenceHelper.instance.getIngredientVegetarianFilter();
-  initialSearchLanguage = await PreferenceHelper.instance.getIngredientSearchLanguage();
   // Catch errors from Flutter itself (widget build, layout, paint, etc.)
   //
   // NOTE: it seems this sometimes makes problems and even freezes the flutter
@@ -233,13 +226,6 @@ class MainApp extends StatelessWidget {
             builder: (ctx, user, _) => riverpod.ProviderScope(
               overrides: [
                 wgerBaseProvider.overrideWithValue(baseInstance),
-                ingredientFiltersNotifierProvider.overrideWith(
-                  () => IngredientFiltersNotifier(
-                    initialVegan: initialVegan,
-                    initialVegetarian: initialVegetarian,
-                    initialSearchLanguage: initialSearchLanguage,
-                  ),
-                ),
               ],
               child: riverpod.Consumer(
                 builder: (rpCtx, ref, _) {

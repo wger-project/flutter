@@ -3888,17 +3888,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get searchLanguage =>
-      (super.noSuchMethod(
-            Invocation.getter(#searchLanguage),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#searchLanguage),
-            ),
-          )
-          as String);
-
-  @override
   String get searchLanguageAll =>
       (super.noSuchMethod(
             Invocation.getter(#searchLanguageAll),

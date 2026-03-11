@@ -114,7 +114,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
 
   @override
   Widget build(BuildContext context) {
-    final filters = ref.watch(ingredientFiltersNotifierProvider);
+    final filters = ref.watch(ingredientFiltersSyncProvider);
     return Column(
       children: [
         TypeAheadField<Ingredient>(
@@ -239,31 +239,16 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   }
 
   Widget filterButton() {
-    final filters = ref.watch(ingredientFiltersNotifierProvider);
+    final filters = ref.watch(ingredientFiltersSyncProvider);
     final i18n = AppLocalizations.of(context);
     final languageCode = Localizations.localeOf(context).languageCode;
     // If we are in English, we don't need the "Current & English" option
     final isEnglish = languageCode == LANGUAGE_SHORT_ENGLISH;
-    final dropdownItems = [
-      DropdownMenuItem(
-        value: IngredientSearchLanguage.current,
-        child: Text(i18n.searchLanguageCurrent(languageCode)),
-      ),
-      if (!isEnglish)
-        DropdownMenuItem(
-          value: IngredientSearchLanguage.currentAndEnglish,
-          child: Text(i18n.searchLanguageEnglish(languageCode)),
-        ),
-      DropdownMenuItem(
-        value: IngredientSearchLanguage.all,
-        child: Text(i18n.searchLanguageAll),
-      ),
-    ];
 
     if (isEnglish && filters.searchLanguage == IngredientSearchLanguage.currentAndEnglish) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref
-            .read(ingredientFiltersNotifierProvider.notifier)
+            .read(ingredientFiltersProvider.notifier)
             .chooseLanguage(IngredientSearchLanguage.current);
       });
     }
@@ -278,7 +263,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
               builder: (context, setDialogState) {
                 return Consumer(
                   builder: (context, ref, _) {
-                    final filters = ref.watch(ingredientFiltersNotifierProvider);
+                    final filters = ref.watch(ingredientFiltersSyncProvider);
                     return AlertDialog(
                       title: Text(i18n.filter),
                       content: Column(
@@ -287,17 +272,50 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                           ListTile(
                             contentPadding: EdgeInsets.zero,
                             title: Text(i18n.language),
-                            subtitle: DropdownButton<IngredientSearchLanguage>(
-                              value: filters.searchLanguage,
-                              isExpanded: true,
-                              onChanged: (IngredientSearchLanguage? newValue) {
-                                setDialogState(() {
-                                  ref
-                                      .read(ingredientFiltersNotifierProvider.notifier)
-                                      .chooseLanguage(newValue!);
-                                });
+                            subtitle: Builder(
+                              builder: (context) {
+                                final localItems = <DropdownMenuItem<IngredientSearchLanguage>>[
+                                  DropdownMenuItem(
+                                    value: IngredientSearchLanguage.current,
+                                    child: Text(i18n.searchLanguageCurrent(languageCode)),
+                                  ),
+                                  if (!isEnglish)
+                                    DropdownMenuItem(
+                                      value: IngredientSearchLanguage.currentAndEnglish,
+                                      child: Text(i18n.searchLanguageEnglish(languageCode)),
+                                    ),
+                                  DropdownMenuItem(
+                                    value: IngredientSearchLanguage.all,
+                                    child: Text(i18n.searchLanguageAll),
+                                  ),
+                                ];
+
+                                IngredientSearchLanguage? selectedLanguage = filters.searchLanguage;
+                                final containsSelected = localItems.any(
+                                  (it) => it.value == selectedLanguage,
+                                );
+                                if (!containsSelected) {
+                                  // If the saved preference isn't present in this
+                                  // locale's items, fall back to null so Dropdown
+                                  // shows a valid state.
+                                  selectedLanguage = null;
+                                }
+
+                                return DropdownButton<IngredientSearchLanguage>(
+                                  value: selectedLanguage,
+                                  isExpanded: true,
+                                  onChanged: (IngredientSearchLanguage? newValue) {
+                                    setDialogState(() {
+                                      if (newValue != null) {
+                                        ref
+                                            .read(ingredientFiltersProvider.notifier)
+                                            .chooseLanguage(newValue);
+                                      }
+                                    });
+                                  },
+                                  items: localItems,
+                                );
                               },
-                              items: dropdownItems,
                             ),
                           ),
                           SwitchListTile(
@@ -306,9 +324,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                             contentPadding: EdgeInsets.zero,
                             onChanged: (val) {
                               setDialogState(() {
-                                ref
-                                    .read(ingredientFiltersNotifierProvider.notifier)
-                                    .toggleVegan(val);
+                                ref.read(ingredientFiltersProvider.notifier).toggleVegan(val);
                               });
                             },
                           ),
@@ -318,9 +334,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                             contentPadding: EdgeInsets.zero,
                             onChanged: (val) {
                               setDialogState(() {
-                                ref
-                                    .read(ingredientFiltersNotifierProvider.notifier)
-                                    .toggleVegetarian(val);
+                                ref.read(ingredientFiltersProvider.notifier).toggleVegetarian(val);
                               });
                             },
                           ),
