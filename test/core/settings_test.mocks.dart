@@ -358,13 +358,20 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i11.NutritionPlans
   _i12.Future<List<_i7.Ingredient>> searchIngredient(
     String? name, {
     String? languageCode = 'en',
-    bool? searchEnglish = false,
+    _i11.IngredientSearchLanguage? searchLanguage = _i11.IngredientSearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
               #searchIngredient,
               [name],
-              {#languageCode: languageCode, #searchEnglish: searchEnglish},
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+              },
             ),
             returnValue: _i12.Future<List<_i7.Ingredient>>.value(
               <_i7.Ingredient>[],
@@ -488,9 +495,17 @@ class MockUserProvider extends _i1.Mock implements _i14.UserProvider {
           as _i8.SharedPreferencesAsync);
 
   @override
-  List<_i14.DashboardWidget> get dashboardOrder =>
+  List<_i14.DashboardWidget> get dashboardWidgets =>
       (super.noSuchMethod(
-            Invocation.getter(#dashboardOrder),
+            Invocation.getter(#dashboardWidgets),
+            returnValue: <_i14.DashboardWidget>[],
+          )
+          as List<_i14.DashboardWidget>);
+
+  @override
+  List<_i14.DashboardWidget> get allDashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#allDashboardWidgets),
             returnValue: <_i14.DashboardWidget>[],
           )
           as List<_i14.DashboardWidget>);
@@ -689,6 +704,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
     Uri? uri, {
     int? maxRetries = 3,
     Duration? initialDelay = const Duration(milliseconds: 250),
+    Duration? timeout = const Duration(seconds: 15),
     String? language,
   }) =>
       (super.noSuchMethod(
@@ -698,6 +714,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
               {
                 #maxRetries: maxRetries,
                 #initialDelay: initialDelay,
+                #timeout: timeout,
                 #language: language,
               },
             ),
@@ -706,9 +723,17 @@ class MockWgerBaseProvider extends _i1.Mock implements _i2.WgerBaseProvider {
           as _i12.Future<dynamic>);
 
   @override
-  _i12.Future<List<dynamic>> fetchPaginated(Uri? uri, {String? language}) =>
+  _i12.Future<List<dynamic>> fetchPaginated(
+    Uri? uri, {
+    String? language,
+    Duration? timeout = const Duration(seconds: 15),
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchPaginated, [uri], {#language: language}),
+            Invocation.method(
+              #fetchPaginated,
+              [uri],
+              {#language: language, #timeout: timeout},
+            ),
             returnValue: _i12.Future<List<dynamic>>.value(<dynamic>[]),
           )
           as _i12.Future<List<dynamic>>);

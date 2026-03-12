@@ -51,7 +51,7 @@ class SettingsDashboardVisibility extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           buildDefaultDragHandles: false,
           onReorder: user.setDashboardOrder,
-          children: user.dashboardOrder.asMap().entries.map((entry) {
+          children: user.allDashboardWidgets.asMap().entries.map((entry) {
             final index = entry.key;
             final w = entry.value;
 

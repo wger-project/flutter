@@ -24,7 +24,8 @@ enum DeviceType {
   androidWear('wearScreenshots'),
 
   iOSPhoneBig('iPhone 6.9', isAndroid: false),
-  iOSPhoneSmall('iPhone 6.7', isAndroid: false);
+  iOSPhoneSmall('iPhone 6.7', isAndroid: false)
+  ;
 
   final String folderName;
   final bool isAndroid;

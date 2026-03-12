@@ -298,7 +298,8 @@ class AuthProvider with ChangeNotifier {
       out =
           '/${applicationVersion!.version} '
           '(${applicationVersion!.packageName}; '
-          'build: ${applicationVersion!.buildNumber})'
+          'build: ${applicationVersion!.buildNumber}; '
+          'platform: ${Platform.operatingSystem})'
           ' - https://github.com/wger-project';
     }
     return 'wger App$out';

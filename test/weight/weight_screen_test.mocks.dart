@@ -107,9 +107,17 @@ class MockUserProvider extends _i1.Mock implements _i9.UserProvider {
           as _i3.SharedPreferencesAsync);
 
   @override
-  List<_i9.DashboardWidget> get dashboardOrder =>
+  List<_i9.DashboardWidget> get dashboardWidgets =>
       (super.noSuchMethod(
-            Invocation.getter(#dashboardOrder),
+            Invocation.getter(#dashboardWidgets),
+            returnValue: <_i9.DashboardWidget>[],
+          )
+          as List<_i9.DashboardWidget>);
+
+  @override
+  List<_i9.DashboardWidget> get allDashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#allDashboardWidgets),
             returnValue: <_i9.DashboardWidget>[],
           )
           as List<_i9.DashboardWidget>);
@@ -503,13 +511,20 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i14.NutritionPlans
   _i12.Future<List<_i8.Ingredient>> searchIngredient(
     String? name, {
     String? languageCode = 'en',
-    bool? searchEnglish = false,
+    _i14.IngredientSearchLanguage? searchLanguage = _i14.IngredientSearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
               #searchIngredient,
               [name],
-              {#languageCode: languageCode, #searchEnglish: searchEnglish},
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+              },
             ),
             returnValue: _i12.Future<List<_i8.Ingredient>>.value(
               <_i8.Ingredient>[],

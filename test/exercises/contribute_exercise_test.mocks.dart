@@ -361,9 +361,17 @@ class MockUserProvider extends _i1.Mock implements _i15.UserProvider {
           as _i4.SharedPreferencesAsync);
 
   @override
-  List<_i15.DashboardWidget> get dashboardOrder =>
+  List<_i15.DashboardWidget> get dashboardWidgets =>
       (super.noSuchMethod(
-            Invocation.getter(#dashboardOrder),
+            Invocation.getter(#dashboardWidgets),
+            returnValue: <_i15.DashboardWidget>[],
+          )
+          as List<_i15.DashboardWidget>);
+
+  @override
+  List<_i15.DashboardWidget> get allDashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#allDashboardWidgets),
             returnValue: <_i15.DashboardWidget>[],
           )
           as List<_i15.DashboardWidget>);

@@ -68,11 +68,13 @@ class Log {
     this.repetitions,
     this.repetitionsTarget,
     this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
+    this.repetitionsUnitObj,
     this.rir,
     this.rirTarget,
     this.weight,
     this.weightTarget,
     this.weightUnitId = WEIGHT_UNIT_KG,
+    this.weightUnitObj,
     DateTime? date,
   }) : date = date ?? DateTime.now();
 
@@ -111,9 +113,11 @@ class Log {
     num? repetitions,
     num? repetitionsTarget,
     int? repetitionsUnitId,
+    RepetitionUnit? repetitionsUnitObj,
     num? weight,
     num? weightTarget,
     int? weightUnitId,
+    WeightUnit? weightUnitObj,
     DateTime? date,
   }) {
     final out = Log(
@@ -125,11 +129,13 @@ class Log {
       repetitions: repetitions ?? this.repetitions,
       repetitionsTarget: repetitionsTarget ?? this.repetitionsTarget,
       repetitionsUnitId: repetitionsUnitId ?? this.repetitionsUnitId,
+      repetitionsUnitObj: repetitionsUnitObj ?? this.repetitionsUnitObj,
       rir: rir ?? this.rir,
       rirTarget: rirTarget ?? this.rirTarget,
       weight: weight ?? this.weight,
       weightTarget: weightTarget ?? this.weightTarget,
       weightUnitId: weightUnitId ?? this.weightUnitId,
+      weightUnitObj: weightUnitObj ?? this.weightUnitObj,
       date: date ?? this.date,
     );
 
@@ -137,9 +143,16 @@ class Log {
       out.sessionId = sessionId;
     }
 
-    out.exercise = exerciseObj;
-    out.repetitionUnit = repetitionsUnitObj;
-    out.weightUnitObj = weightUnitObj;
+    if (repetitionsUnitObj != null) {
+      out.repetitionsUnitObj = repetitionsUnitObj;
+      out.repetitionsUnitId = repetitionsUnitObj.id;
+    }
+
+    if (weightUnitObj != null) {
+      out.weightUnitObj = weightUnitObj;
+      out.weightUnitId = weightUnitObj.id;
+    }
+    // out.exercise = exercise;
 
     return out;
   }

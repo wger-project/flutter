@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,10 +41,16 @@ class InMemoryLogStore {
 
   List<LogRecord> get logs => List.unmodifiable(_logs);
 
-  List<String> getFormattedLogs({Level? minLevel}) {
+  /// Returns formatted log entries
+  List<String> getFormattedLogs({Level? minLevel, int maxEntries = 50}) {
     final level = minLevel ?? Logger.root.level;
-    return _logs
-        .where((log) => log.level >= level)
+    final filtered = _logs.where((log) => log.level >= level).toList();
+
+    final start = filtered.length - maxEntries;
+    final slice = start > 0 ? filtered.sublist(start) : filtered;
+
+    // Return newest entries first (reverse order)
+    return slice.reversed
         .map(
           (log) =>
               '${log.time.toIso8601String()} ${log.level.name} [${log.loggerName}] ${log.message}',

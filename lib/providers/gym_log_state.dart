@@ -20,6 +20,8 @@ import 'package:clock/clock.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 
 part 'gym_log_state.g.dart';
 
@@ -44,5 +46,13 @@ class GymLogNotifier extends _$GymLogNotifier {
 
   void setRepetitions(num repetitions) {
     state = state?.copyWith(repetitions: repetitions);
+  }
+
+  void setRepetitionUnit(RepetitionUnit repetitionUnit) {
+    state = state?.copyWith(repetitionsUnitObj: repetitionUnit);
+  }
+
+  void setWeightUnit(WeightUnit weightUnit) {
+    state = state?.copyWith(weightUnitObj: weightUnit);
   }
 }

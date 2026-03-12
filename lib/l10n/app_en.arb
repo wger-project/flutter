@@ -899,7 +899,7 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
-  "fitInWeek": "Fit in week",
+  "fitInWeek": "Fixed weekly schedule",
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
   "superset": "Superset",
@@ -1130,5 +1130,45 @@
   "lightMode": "Always light mode",
   "systemMode": "System settings",
   "youAreOffline": "You are offline",
-  "offlineModeInfo": "Some features are unavailable until you reconnect to the internet (buttons and menus will be disabled). Currently, this mainly affects editing routines and nutrition plans, but logging workouts and meals works offline. The data will be synced automatically once you are back online."
+  "offlineModeInfo": "Some features are unavailable until you reconnect to the internet (buttons and menus will be disabled). Currently, this mainly affects editing routines and nutrition plans, but logging workouts and meals works offline. The data will be synced automatically once you are back online.",
+  "productNotFoundOpenFoodFacts": "You can add this product to Open Food Facts to help the community!",
+  "@productNotFoundOpenFoodFacts": {
+  "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+  },
+  "addToOpenFoodFacts": "Add to Open Food Facts",
+  "@addToOpenFoodFacts": {
+    "description": "Label shown as the clickable link to go on Open Food Facts"
+   },
+  "isVegan": "Vegan",
+  "@isVegan": {
+    "description": "Label for vegan toggle"
+  },
+  "isVegetarian": "Vegetarian",
+  "@isVegetarian": {
+    "description": "Label for vegetarian toggle"
+  },
+  "filter": "Filter",
+  "@filter": {
+    "description": "Label for filter button"
+  },
+  "searchLanguageCurrent": "Only in current language ({lang})",
+  "@searchLanguageCurrent": {
+  "type": "text",
+  "placeholders": {
+    "lang": {
+      "type": "String"
+      }
+    }
+  },
+  "searchLanguageEnglish": "Current language ({lang}) & English",
+  "@searchLanguageEnglish": {
+    "type": "text",
+    "placeholders": {
+      "lang": {
+        "type": "String"
+      }
+    }
+  },
+  "searchLanguageAll": "All languages",
+  "@searchLanguageAll": {}
 }

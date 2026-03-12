@@ -32,9 +32,9 @@ import 'package:wger/providers/workout_logs.dart';
 import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
-import 'package:wger/widgets/routines/forms/reps_unit.dart';
+import 'package:wger/widgets/routines/forms/repetitions.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
-import 'package:wger/widgets/routines/forms/weight_unit.dart';
+import 'package:wger/widgets/routines/forms/weight.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
 
@@ -43,7 +43,6 @@ class LogPage extends ConsumerWidget {
 
   final PageController _controller;
   LogPage(this._controller);
-  final GlobalKey<_LogFormWidgetState> _logFormKey = GlobalKey<_LogFormWidgetState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,7 +67,7 @@ class LogPage extends ConsumerWidget {
     }
     final setConfigData = slotEntryPage.setConfigData!;
 
-    final log = ref.watch(gymLogProvider);
+    final log = ref.read(gymLogProvider);
 
     // Mark done sets
     final decorationStyle = slotEntryPage.logDone
@@ -142,8 +141,7 @@ class LogPage extends ConsumerWidget {
               child: LogFormWidget(
                 controller: _controller,
                 configData: setConfigData,
-                // log: log!,
-                key: _logFormKey,
+                key: ValueKey('log-form-${slotEntryPage.uuid}'),
               ),
             ),
           ),
@@ -208,171 +206,6 @@ class LogsPlatesWidget extends ConsumerWidget {
   }
 }
 
-class LogsRepsWidget extends ConsumerWidget {
-  final _logger = Logger('LogsRepsWidget');
-
-  final num valueChange;
-
-  LogsRepsWidget({
-    super.key,
-    num? valueChange,
-  }) : valueChange = valueChange ?? 1;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-    final i18n = AppLocalizations.of(context);
-
-    final logNotifier = ref.read(gymLogProvider.notifier);
-    final log = ref.watch(gymLogProvider);
-
-    final currentReps = log?.repetitions;
-    final repText = currentReps != null ? numberFormat.format(currentReps) : '';
-
-    return Row(
-      children: [
-        // "Quick-remove" button
-        IconButton(
-          icon: const Icon(Icons.remove, color: Colors.black),
-          onPressed: () {
-            final base = currentReps ?? 0;
-            final newValue = base - valueChange;
-            if (newValue >= 0 && log != null) {
-              logNotifier.setRepetitions(newValue);
-            }
-          },
-        ),
-
-        // Text field
-        Expanded(
-          child: TextFormField(
-            decoration: InputDecoration(labelText: i18n.repetitions),
-            enabled: true,
-            key: ValueKey('reps-field-$repText'),
-            initialValue: repText,
-            keyboardType: textInputTypeDecimal,
-            onChanged: (value) {
-              try {
-                final newValue = numberFormat.parse(value);
-                logNotifier.setRepetitions(newValue);
-              } on FormatException catch (error) {
-                _logger.finer('Error parsing repetitions: $error');
-              }
-            },
-            onSaved: (newValue) {
-              if (newValue == null || log == null) {
-                return;
-              }
-              logNotifier.setRepetitions(numberFormat.parse(newValue));
-            },
-            validator: (value) {
-              if (numberFormat.tryParse(value ?? '') == null) {
-                return i18n.enterValidNumber;
-              }
-              return null;
-            },
-          ),
-        ),
-
-        // "Quick-add" button
-        IconButton(
-          icon: const Icon(Icons.add, color: Colors.black),
-          onPressed: () {
-            final base = currentReps ?? 0;
-            final newValue = base + valueChange;
-            if (newValue >= 0 && log != null) {
-              logNotifier.setRepetitions(newValue);
-            }
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class LogsWeightWidget extends ConsumerWidget {
-  final _logger = Logger('LogsWeightWidget');
-
-  final num valueChange;
-
-  LogsWeightWidget({
-    super.key,
-    num? valueChange,
-  }) : valueChange = valueChange ?? 1.25;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-    final i18n = AppLocalizations.of(context);
-
-    final plateProvider = ref.read(plateCalculatorProvider.notifier);
-    final logProvider = ref.read(gymLogProvider.notifier);
-    final log = ref.watch(gymLogProvider);
-
-    final currentWeight = log?.weight;
-    final weightText = currentWeight != null ? numberFormat.format(currentWeight) : '';
-
-    return Row(
-      children: [
-        IconButton(
-          // "Quick-remove" button
-          icon: const Icon(Icons.remove, color: Colors.black),
-          onPressed: () {
-            final base = currentWeight ?? 0;
-            final newValue = base - valueChange;
-            if (newValue >= 0 && log != null) {
-              logProvider.setWeight(newValue);
-            }
-          },
-        ),
-
-        // Text field
-        Expanded(
-          child: TextFormField(
-            key: ValueKey('weight-field-$weightText'),
-            decoration: InputDecoration(labelText: i18n.weight),
-            initialValue: weightText,
-            keyboardType: textInputTypeDecimal,
-            onChanged: (value) {
-              try {
-                final newValue = numberFormat.parse(value);
-                plateProvider.setWeight(newValue);
-                logProvider.setWeight(newValue);
-              } on FormatException catch (error) {
-                _logger.finer('Error parsing weight: $error');
-              }
-            },
-            onSaved: (newValue) {
-              if (newValue == null || log == null) {
-                return;
-              }
-              logProvider.setWeight(numberFormat.parse(newValue));
-            },
-            validator: (value) {
-              if (numberFormat.tryParse(value ?? '') == null) {
-                return i18n.enterValidNumber;
-              }
-              return null;
-            },
-          ),
-        ),
-
-        // "Quick-add" button
-        IconButton(
-          icon: const Icon(Icons.add, color: Colors.black),
-          onPressed: () {
-            final base = currentWeight ?? 0;
-            final newValue = base + valueChange;
-            if (log != null) {
-              logProvider.setWeight(newValue);
-            }
-          },
-        ),
-      ],
-    );
-  }
-}
-
 class LogsPastLogsWidget extends ConsumerWidget {
   final List<Log> pastLogs;
 
@@ -405,9 +238,7 @@ class LogsPastLogsWidget extends ConsumerWidget {
                 logProvider.setLog(pastLog);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(AppLocalizations.of(context).dataCopied),
-                  ),
+                  SnackBar(content: Text(AppLocalizations.of(context).dataCopied)),
                 );
               },
               contentPadding: const EdgeInsets.symmetric(horizontal: 40),
@@ -460,14 +291,14 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
             Row(
               children: [
                 Flexible(
-                  child: LogsRepsWidget(
+                  child: RepetitionInputWidget(
                     key: const ValueKey('logs-reps-widget'),
                     valueChange: widget.configData.repetitionsRounding,
                   ),
                 ),
                 const SizedBox(width: 8),
                 Flexible(
-                  child: LogsWeightWidget(
+                  child: WeightInputWidget(
                     key: const ValueKey('logs-weight-widget'),
                     valueChange: widget.configData.weightRounding,
                   ),
@@ -479,7 +310,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Flexible(
-                  child: LogsRepsWidget(
+                  child: RepetitionInputWidget(
                     key: const ValueKey('logs-reps-widget'),
                     valueChange: widget.configData.repetitionsRounding,
                   ),
@@ -488,7 +319,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 Flexible(
                   child: RepetitionUnitInputWidget(
                     key: const ValueKey('repetition-unit-input-widget'),
-                    log!.repetitionsUnitId,
+                    log!.repetitionsUnitObj,
                     onChanged: (v) => {},
                   ),
                 ),
@@ -500,7 +331,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Flexible(
-                  child: LogsWeightWidget(
+                  child: WeightInputWidget(
                     key: const ValueKey('logs-weight-widget'),
                     valueChange: widget.configData.weightRounding,
                   ),
@@ -508,7 +339,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: WeightUnitInputWidget(
-                    log!.weightUnitId,
+                    log!.weightUnitObj,
                     onChanged: (v) => {},
                     key: const ValueKey('weight-unit-input-widget'),
                   ),

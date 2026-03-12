@@ -1,13 +1,34 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2026 - 2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -65,6 +86,7 @@ void main() {
   );
 
   setUp(() {
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
     final MealItem mealItem = MealItem(ingredientId: ingredient.id, amount: 2);
@@ -79,7 +101,7 @@ void main() {
       mockNutrition.searchIngredient(
         any,
         languageCode: anyNamed('languageCode'),
-        searchEnglish: anyNamed('searchEnglish'),
+        searchLanguage: anyNamed('searchLanguage'),
       ),
     ).thenAnswer(
       (_) => Future.value([ingredient1, ingredient2]),
@@ -91,24 +113,27 @@ void main() {
   Widget createMealItemFormScreen(Meal meal, String code, bool test, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => mockNutrition,
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        navigatorKey: key,
-        home: Scaffold(
-          body: Scrollable(
-            viewportBuilder: (BuildContext context, ViewportOffset position) =>
-                getMealItemForm(meal, const [], code, test),
+    return ProviderScope(
+      child: ChangeNotifierProvider<NutritionPlansProvider>(
+        create: (context) => mockNutrition,
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          home: Scaffold(
+            body: Scrollable(
+              viewportBuilder: (BuildContext context, ViewportOffset position) =>
+                  getMealItemForm(meal, const [], code, test),
+            ),
           ),
+          routes: {
+            NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+          },
         ),
-        routes: {
-          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-        },
       ),
     );
+    // ProviderScope closes here
   }
 
   testWidgets('Test the widgets on the meal item form', (WidgetTester tester) async {
@@ -186,7 +211,7 @@ void main() {
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();
 
-      expect(find.text('Please enter a valid number'), findsOneWidget);
+      expect(find.text('Please enter a value'), findsOneWidget);
     });
 
     testWidgets('add correct weight type', (WidgetTester tester) async {
@@ -253,8 +278,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Please select an ingredient'), findsOneWidget);
-
-      expect(find.text('Please enter a valid number'), findsOneWidget);
+      expect(find.text('Please enter a value'), findsOneWidget);
     });
 
     testWidgets('save ingredient without weight', (WidgetTester tester) async {
@@ -273,25 +297,7 @@ void main() {
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();
 
-      expect(find.text('Please enter a valid number'), findsOneWidget);
-    });
-
-    //TODO: isn't this test just a duplicate of the above one? can be removed?
-    testWidgets('save ingredient with incorrect weight input type', (WidgetTester tester) async {
-      await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
-
-      await tester.tap(find.byKey(const Key('scan-button')));
-      await tester.pumpAndSettle();
-
-      expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsOneWidget);
-
-      await tester.tap(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Please enter a valid number'), findsOneWidget);
+      expect(find.text('Please enter a value'), findsOneWidget);
     });
 
     testWidgets(
@@ -344,7 +350,7 @@ void main() {
         mockNutrition.searchIngredient(
           any,
           languageCode: anyNamed('languageCode'),
-          searchEnglish: anyNamed('searchEnglish'),
+          searchLanguage: anyNamed('searchLanguage'),
         ),
       ).thenAnswer((_) => Future.value([ingredient1]));
 

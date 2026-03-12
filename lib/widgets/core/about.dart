@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -129,35 +131,43 @@ class AboutPage extends StatelessWidget {
                 onTap: () => Navigator.of(context).pushNamed(AddExerciseScreen.routeName),
               ),
 
-              _buildSectionSpacer(),
-              _buildSectionHeader(context, i18n.aboutDonateTitle),
-              Text(i18n.aboutDonateText),
-              const SizedBox(height: 15),
-              // Using Wrap for buttons to handle different screen sizes potentially
-              Center(
-                child: Wrap(
-                  spacing: 10.0,
-                  runSpacing: 10.0,
-                  alignment: WrapAlignment.center,
+              // Don't show the donate section under iOS. The app was rejected once because
+              // although the donations are optional, they must be done using in-app purchases
+              if (!Platform.isIOS)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ElevatedButton.icon(
-                      icon: const FaIcon(FontAwesomeIcons.mugHot, size: 18),
-                      label: const Text('Buy me a coffee'),
-                      onPressed: () => launchURL(BUY_ME_A_COFFEE_URL, context),
-                    ),
-                    ElevatedButton.icon(
-                      icon: const FaIcon(FontAwesomeIcons.solidHeart, size: 18),
-                      label: const Text('Liberapay'),
-                      onPressed: () => launchURL(LIBERAPAY_URL, context),
-                    ),
-                    ElevatedButton.icon(
-                      icon: const FaIcon(FontAwesomeIcons.github, size: 18),
-                      label: const Text('GitHub Sponsors'),
-                      onPressed: () => launchURL(GITHUB_SPONSORS_URL, context),
+                    _buildSectionSpacer(),
+                    _buildSectionHeader(context, i18n.aboutDonateTitle),
+                    Text(i18n.aboutDonateText),
+                    const SizedBox(height: 15),
+                    // Using Wrap for buttons to handle different screen sizes potentially
+                    Center(
+                      child: Wrap(
+                        spacing: 10.0,
+                        runSpacing: 10.0,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          ElevatedButton.icon(
+                            icon: const FaIcon(FontAwesomeIcons.mugHot, size: 18),
+                            label: const Text('Buy me a coffee'),
+                            onPressed: () => launchURL(BUY_ME_A_COFFEE_URL, context),
+                          ),
+                          ElevatedButton.icon(
+                            icon: const FaIcon(FontAwesomeIcons.solidHeart, size: 18),
+                            label: const Text('Liberapay'),
+                            onPressed: () => launchURL(LIBERAPAY_URL, context),
+                          ),
+                          ElevatedButton.icon(
+                            icon: const FaIcon(FontAwesomeIcons.github, size: 18),
+                            label: const Text('GitHub Sponsors'),
+                            onPressed: () => launchURL(GITHUB_SPONSORS_URL, context),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
 
               _buildSectionSpacer(),
               _buildSectionHeader(context, i18n.aboutJoinCommunityTitle),

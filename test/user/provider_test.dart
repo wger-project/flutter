@@ -54,7 +54,7 @@ void main() {
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     mockWgerBaseProvider = MockWgerBaseProvider();
-    userProvider = UserProvider(mockWgerBaseProvider);
+    userProvider = UserProvider(mockWgerBaseProvider, prefs: SharedPreferencesAsync());
 
     when(mockWgerBaseProvider.makeUrl(any)).thenReturn(tProfileUri);
     when(
@@ -106,10 +106,10 @@ void main() {
 
   group('dashboard config', () {
     test('initial config should be default (all visible, default order)', () {
-      expect(userProvider.dashboardOrder.length, 6);
+      expect(userProvider.dashboardWidgets.length, 6);
 
       expect(
-        userProvider.dashboardOrder,
+        userProvider.allDashboardWidgets,
         orderedEquals([
           DashboardWidget.trophies,
           DashboardWidget.routines,
@@ -136,16 +136,16 @@ void main() {
 
     test('reordering should update order', () async {
       // arrange
-      final initialFirst = userProvider.dashboardOrder[0];
-      final initialSecond = userProvider.dashboardOrder[1];
+      final initialFirst = userProvider.dashboardWidgets[0];
+      final initialSecond = userProvider.dashboardWidgets[1];
 
       // act: move first to second position
       // oldIndex: 0, newIndex: 2 (because insert is before index)
       await userProvider.setDashboardOrder(0, 2);
 
       // assert
-      expect(userProvider.dashboardOrder[0], initialSecond);
-      expect(userProvider.dashboardOrder[1], initialFirst);
+      expect(userProvider.dashboardWidgets[0], initialSecond);
+      expect(userProvider.dashboardWidgets[1], initialFirst);
     });
 
     test('should load config from prefs', () async {
@@ -169,21 +169,18 @@ void main() {
       // Missing: trophies (0), weight (3), measurements (4), calendar (5)
       // 1. trophies (index 0) inserted at 0 -> [trophies, nutrition, routines]
       // 2. weight (index 3) inserted at 3 -> [trophies, nutrition, routines, weight]
-
-      expect(newProvider.dashboardOrder[0], DashboardWidget.trophies);
-      expect(newProvider.dashboardOrder[1], DashboardWidget.nutrition);
-      expect(newProvider.dashboardOrder[2], DashboardWidget.routines);
-      expect(newProvider.dashboardOrder[3], DashboardWidget.weight);
+      expect(newProvider.allDashboardWidgets[0], DashboardWidget.trophies);
+      expect(newProvider.allDashboardWidgets[1], DashboardWidget.nutrition);
+      expect(newProvider.allDashboardWidgets[2], DashboardWidget.routines);
+      expect(newProvider.allDashboardWidgets[3], DashboardWidget.weight);
 
       // Check visibility
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.nutrition), true);
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
 
       // Missing items should be visible by default
-      expect(
-        newProvider.isDashboardWidgetVisible(DashboardWidget.weight),
-        true,
-      );
+      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.weight), true);
+      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.trophies), true);
     });
   });
 }

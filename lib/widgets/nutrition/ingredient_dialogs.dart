@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -162,6 +180,7 @@ class IngredientScanResultDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     Ingredient? ingredient;
     NutritionalGoals? goals;
     String? title;
@@ -169,9 +188,7 @@ class IngredientScanResultDialog extends StatelessWidget {
 
     if (snapshot.connectionState == ConnectionState.done) {
       ingredient = snapshot.data;
-      title = ingredient != null
-          ? AppLocalizations.of(context).productFound
-          : AppLocalizations.of(context).productNotFound;
+      title = ingredient != null ? i18n.productFound : i18n.productNotFound;
       if (ingredient != null) {
         goals = ingredient.nutritionalValues.toGoals();
         source = ingredient.sourceName ?? 'unknown';
@@ -194,15 +211,25 @@ class IngredientScanResultDialog extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done && ingredient == null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(barcode),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        i18n.productNotFoundDescription(barcode),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        i18n.productNotFoundOpenFoodFacts,
+                      ),
+                    ],
                   ),
                 ),
+
               if (ingredient != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
-                    AppLocalizations.of(context).productFoundDescription(ingredient.name),
+                    i18n.productFoundDescription(ingredient.name),
                   ),
                 ),
               if (ingredient?.image?.url != null) ingredientImage(ingredient!.image!.url, context),
@@ -238,6 +265,17 @@ class IngredientScanResultDialog extends StatelessWidget {
             child: Text(MaterialLocalizations.of(context).continueButtonLabel),
             onPressed: () {
               onSelectIngredient(ingredient!.id, ingredient.name, null);
+              Navigator.of(context).pop();
+            },
+          ),
+        // if didn't find a result after scanning
+        if (snapshot.connectionState == ConnectionState.done && ingredient == null)
+          TextButton.icon(
+            key: const Key('ingredient-scan-result-dialog-open-food-facts-button'),
+            icon: const Icon(Icons.add_circle_outline),
+            label: Text(i18n.addToOpenFoodFacts),
+            onPressed: () {
+              launchURL('https://world.openfoodfacts.org/cgi/product.pl', context);
               Navigator.of(context).pop();
             },
           ),

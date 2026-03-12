@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,6 +33,12 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
+
+enum IngredientSearchLanguage {
+  current,
+  currentAndEnglish,
+  all,
+}
 
 class NutritionPlansProvider with ChangeNotifier {
   final _logger = Logger('NutritionPlansProvider');
@@ -387,28 +393,57 @@ class NutritionPlansProvider with ChangeNotifier {
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',
-    bool searchEnglish = false,
+    IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
+    bool isVegan = false,
+    bool isVegetarian = false,
   }) async {
     if (name.length <= 1) {
       return [];
     }
+    print("isVegan in search result is $isVegan");
+    print("isVegetarian in search result is $isVegetarian");
+    final List<String> languages = [];
 
-    final languages = [languageCode];
-    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
-      languages.add(LANGUAGE_SHORT_ENGLISH);
+    switch (searchLanguage) {
+      case IngredientSearchLanguage.current:
+        languages.add(languageCode);
+        break;
+      case IngredientSearchLanguage.currentAndEnglish:
+        languages.add(languageCode);
+        if (languageCode != LANGUAGE_SHORT_ENGLISH) {
+          languages.add(LANGUAGE_SHORT_ENGLISH);
+        }
+        break;
+      case IngredientSearchLanguage.all:
+        // Don't add any language code to search in all languages
+        break;
     }
 
+    final query = {
+      'name__search': name,
+      'limit': API_RESULTS_PAGE_SIZE,
+    };
+
+    if (languages.isNotEmpty) {
+      query['language__code'] = languages.join(',');
+    }
+
+    if (isVegan) {
+      query['is_vegan'] = 'true';
+    }
+
+    if (isVegetarian) {
+      query['is_vegetarian'] = 'true';
+    }
+    print("query is $query");
     // Send the request
-    _logger.info("Fetching ingredients from server");
+    _logger.info('Fetching ingredients from server');
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
         _ingredientInfoPath,
-        query: {
-          'name__search': name,
-          'language__code': languages.join(','),
-          'limit': API_RESULTS_PAGE_SIZE,
-        },
+        query: query,
       ),
+      timeout: const Duration(seconds: 20),
     );
 
     return (response['results'] as List)
