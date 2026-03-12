@@ -122,7 +122,7 @@ class AuthProvider with ChangeNotifier {
     // Strip common non-semver suffixes emitted by Python/Django backends,
     // e.g. '2.5.0a2' → '2.5.0', '2.3.0 (git-abc1234)' → '2.3.0'.
     final sanitized = rawVersion
-        .replaceFirst(RegExp(r'\s.*$'), '')        // strip trailing space + anything after
+        .replaceFirst(RegExp(r'\s.*$'), '') // strip trailing space + anything after
         .replaceFirst(RegExp(r'[a-zA-Z].*$'), ''); // strip alpha/beta/rc suffix
 
     final Version current;
