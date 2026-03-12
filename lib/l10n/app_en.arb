@@ -762,6 +762,18 @@
   "@appUpdateTitle": {},
   "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
   "@appUpdateContent": {},
+  "serverUpdateTitle": "Server update required",
+  "@serverUpdateTitle": {},
+  "serverUpdateContent": "The connected server is too old for this version of the app. Please ask the server administrator to update to at least version {minVersion}.",
+  "@serverUpdateContent": {
+    "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+    "type": "text",
+    "placeholders": {
+      "minVersion": {
+        "type": "String"
+      }
+    }
+  },
   "productFound": "Product found",
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"

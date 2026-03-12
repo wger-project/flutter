@@ -61,6 +61,7 @@ import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
 import 'package:wger/screens/trophy_screen.dart';
 import 'package:wger/screens/update_app_screen.dart';
+import 'package:wger/screens/update_server_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
@@ -144,6 +145,8 @@ class MainApp extends StatelessWidget {
         return HomeTabsScreen();
       case AuthState.updateRequired:
         return const UpdateAppScreen();
+      case AuthState.serverUpdateRequired:
+        return const UpdateServerScreen();
       default:
         return FutureBuilder(
           future: auth.tryAutoLogin(),

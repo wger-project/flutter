@@ -40,6 +40,7 @@ enum LoginActions {
 
 enum AuthState {
   updateRequired,
+  serverUpdateRequired,
   loggedIn,
   loggedOut,
 }
@@ -118,31 +119,31 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
 
+    // Strip common non-semver suffixes emitted by Python/Django backends,
+    // e.g. '2.5.0a2' → '2.5.0', '2.3.0 (git-abc1234)' → '2.3.0'.
+    final sanitized = rawVersion
+        .replaceFirst(RegExp(r'\s.*$'), '')        // strip trailing space + anything after
+        .replaceFirst(RegExp(r'[a-zA-Z].*$'), ''); // strip alpha/beta/rc suffix
+
+    final Version current;
     try {
-      // Server versions may use Python-style pre-release suffixes such as
-      // "2.5.0a2", "2.5.0b1", "2.5.0rc1", or appended build metadata like
-      // "-beta" / " (git-abc123)". Extract only the leading numeric X.Y.Z part.
-      final match = RegExp(r'^\d+\.\d+(\.\d+)?').firstMatch(rawVersion);
-      if (match == null) {
-        _logger.warning(
-          'serverUpdateRequired: no numeric version found in "$rawVersion", skipping check',
-        );
-        return false;
-      }
-      final sanitized = match.group(0)!;
-      final current = Version.parse(sanitized);
-      final required = Version.parse(MIN_SERVER_VERSION);
-
-      final needUpdate = current < required;
-      if (needUpdate) {
-        _logger.fine('Server update required: server $current < minimum $required');
-      }
-
-      return needUpdate;
-    } on FormatException catch (e) {
-      _logger.warning('serverUpdateRequired: could not parse server version "$rawVersion": $e');
+      current = Version.parse(sanitized);
+    } on FormatException {
+      // Completely unparseable version string — be lenient and allow login.
+      _logger.warning(
+        'serverUpdateRequired: could not parse server version "$rawVersion" '
+        '(sanitized: "$sanitized"), skipping check',
+      );
       return false;
     }
+    final required = Version.parse(MIN_SERVER_VERSION);
+
+    final needUpdate = current < required;
+    if (needUpdate) {
+      _logger.fine('Server update required: server $current < minimum $required');
+    }
+
+    return needUpdate;
   }
 
   /// Registers a new user
@@ -226,10 +227,10 @@ class AuthProvider with ChangeNotifier {
 
     await initVersions(serverUrl);
 
-    // If the server is too old for this app version, log out silently so the
-    // user lands back on the auth screen and can connect to a different server.
+    // If the server is too old for this app version, surface the dedicated
+    // screen so the user knows what to do (ask their server admin to upgrade).
     if (serverUpdateRequired()) {
-      await logout(shouldNotify: false);
+      state = AuthState.serverUpdateRequired;
       return LoginActions.update;
     }
 
@@ -310,10 +311,11 @@ class AuthProvider with ChangeNotifier {
 
     await initVersions(serverUrl!);
 
-    // If the server is too old for this app version, log out silently so the
-    // user lands back on the auth screen and can connect to a different server.
+    // If the server is too old for this app version, surface the dedicated
+    // screen so the user knows what to do (ask their server admin to upgrade).
     if (serverUpdateRequired()) {
-      await logout();
+      state = AuthState.serverUpdateRequired;
+      notifyListeners();
       return;
     }
 
