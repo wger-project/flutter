@@ -65,3 +65,6 @@ ios/fastlane/output
 ios/Runner.ipa
 ios/Runner.app.dSYM.zip
 
+#Flutter Version Management
+.fvm/
+
