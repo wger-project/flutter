@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -163,7 +163,18 @@ Schema schema = const Schema([
     'measurements_category',
     [
       Column.text('name'),
-      Column.real('unit'),
+      Column.text('uuid'),
+      Column.text('unit'),
+    ],
+  ),
+  Table(
+    'measurements_measurement',
+    [
+      Column.text('uuid'),
+      Column.text('category_id'), // UUID
+      Column.text('date'),
+      Column.real('value'),
+      Column.text('notes'),
     ],
   ),
   Table(

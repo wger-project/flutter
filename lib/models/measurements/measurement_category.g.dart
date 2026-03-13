@@ -9,14 +9,14 @@ part of 'measurement_category.dart';
 MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'name', 'unit']);
   return MeasurementCategory(
-    id: (json['id'] as num?)?.toInt(),
+    id: json['id'] as String?,
     name: json['name'] as String,
     unit: json['unit'] as String,
     entries:
         (json['entries'] as List<dynamic>?)
             ?.map((e) => MeasurementEntry.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
   );
 }
 

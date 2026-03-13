@@ -12,8 +12,8 @@ MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['id', 'category', 'date', 'value', 'notes'],
   );
   return MeasurementEntry(
-    id: (json['id'] as num?)?.toInt(),
-    category: (json['category'] as num).toInt(),
+    id: json['id'] as String?,
+    category: json['category'] as String,
     date: DateTime.parse(json['date'] as String),
     value: json['value'] as num,
     notes: json['notes'] as String? ?? '',

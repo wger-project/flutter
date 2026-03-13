@@ -3076,12 +3076,13 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
   $MeasurementCategoryTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => uuid.v4(),
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -3117,8 +3118,6 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -3146,7 +3145,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return MeasurementCategory(
       id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
       name: attachedDatabase.typeMapping.read(
@@ -3167,7 +3166,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
 }
 
 class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCategory> {
-  final Value<int> id;
+  final Value<String> id;
   final Value<String> name;
   final Value<String> unit;
   final Value<int> rowid;
@@ -3178,15 +3177,14 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     this.rowid = const Value.absent(),
   });
   MeasurementCategoryTableCompanion.insert({
-    required int id,
+    this.id = const Value.absent(),
     required String name,
     required String unit,
     this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       name = Value(name),
+  }) : name = Value(name),
        unit = Value(unit);
   static Insertable<MeasurementCategory> custom({
-    Expression<int>? id,
+    Expression<String>? id,
     Expression<String>? name,
     Expression<String>? unit,
     Expression<int>? rowid,
@@ -3200,7 +3198,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   }
 
   MeasurementCategoryTableCompanion copyWith({
-    Value<int>? id,
+    Value<String>? id,
     Value<String>? name,
     Value<String>? unit,
     Value<int>? rowid,
@@ -3217,7 +3215,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -3237,6 +3235,247 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('unit: $unit, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MeasurementEntryTableTable extends MeasurementEntryTable
+    with TableInfo<$MeasurementEntryTableTable, MeasurementEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MeasurementEntryTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => uuid.v4(),
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, category, date, value, notes];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'measurements_measurement';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MeasurementEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category_id']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_notesMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  MeasurementEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MeasurementEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+    );
+  }
+
+  @override
+  $MeasurementEntryTableTable createAlias(String alias) {
+    return $MeasurementEntryTableTable(attachedDatabase, alias);
+  }
+}
+
+class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
+  final Value<String> id;
+  final Value<String> category;
+  final Value<DateTime> date;
+  final Value<double> value;
+  final Value<String> notes;
+  final Value<int> rowid;
+  const MeasurementEntryTableCompanion({
+    this.id = const Value.absent(),
+    this.category = const Value.absent(),
+    this.date = const Value.absent(),
+    this.value = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MeasurementEntryTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String category,
+    required DateTime date,
+    required double value,
+    required String notes,
+    this.rowid = const Value.absent(),
+  }) : category = Value(category),
+       date = Value(date),
+       value = Value(value),
+       notes = Value(notes);
+  static Insertable<MeasurementEntry> custom({
+    Expression<String>? id,
+    Expression<String>? category,
+    Expression<DateTime>? date,
+    Expression<double>? value,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (category != null) 'category_id': category,
+      if (date != null) 'date': date,
+      if (value != null) 'value': value,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MeasurementEntryTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? category,
+    Value<DateTime>? date,
+    Value<double>? value,
+    Value<String>? notes,
+    Value<int>? rowid,
+  }) {
+    return MeasurementEntryTableCompanion(
+      id: id ?? this.id,
+      category: category ?? this.category,
+      date: date ?? this.date,
+      value: value ?? this.value,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (category.present) {
+      map['category_id'] = Variable<String>(category.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MeasurementEntryTableCompanion(')
+          ..write('id: $id, ')
+          ..write('category: $category, ')
+          ..write('date: $date, ')
+          ..write('value: $value, ')
+          ..write('notes: $notes, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4471,6 +4710,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   );
   late final $MeasurementCategoryTableTable measurementCategoryTable =
       $MeasurementCategoryTableTable(this);
+  late final $MeasurementEntryTableTable measurementEntryTable = $MeasurementEntryTableTable(this);
   late final $WorkoutLogTableTable workoutLogTable = $WorkoutLogTableTable(
     this,
   );
@@ -4498,6 +4738,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     exerciseVideoTable,
     weightEntryTable,
     measurementCategoryTable,
+    measurementEntryTable,
     workoutLogTable,
     workoutSessionTable,
     routineRepetitionUnitTable,
@@ -9173,14 +9414,14 @@ typedef $$WeightEntryTableTableProcessedTableManager =
     >;
 typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
     MeasurementCategoryTableCompanion Function({
-      required int id,
+      Value<String> id,
       required String name,
       required String unit,
       Value<int> rowid,
     });
 typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
     MeasurementCategoryTableCompanion Function({
-      Value<int> id,
+      Value<String> id,
       Value<String> name,
       Value<String> unit,
       Value<int> rowid,
@@ -9195,7 +9436,7 @@ class $$MeasurementCategoryTableTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
+  ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
   );
@@ -9220,7 +9461,7 @@ class $$MeasurementCategoryTableTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
+  ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
   );
@@ -9245,7 +9486,8 @@ class $$MeasurementCategoryTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
@@ -9297,7 +9539,7 @@ class $$MeasurementCategoryTableTableTableManager
           ),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
+                Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> unit = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -9309,7 +9551,7 @@ class $$MeasurementCategoryTableTableTableManager
               ),
           createCompanionCallback:
               ({
-                required int id,
+                Value<String> id = const Value.absent(),
                 required String name,
                 required String unit,
                 Value<int> rowid = const Value.absent(),
@@ -9345,6 +9587,213 @@ typedef $$MeasurementCategoryTableTableProcessedTableManager =
         >,
       ),
       MeasurementCategory,
+      PrefetchHooks Function()
+    >;
+typedef $$MeasurementEntryTableTableCreateCompanionBuilder =
+    MeasurementEntryTableCompanion Function({
+      Value<String> id,
+      required String category,
+      required DateTime date,
+      required double value,
+      required String notes,
+      Value<int> rowid,
+    });
+typedef $$MeasurementEntryTableTableUpdateCompanionBuilder =
+    MeasurementEntryTableCompanion Function({
+      Value<String> id,
+      Value<String> category,
+      Value<DateTime> date,
+      Value<double> value,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+
+class $$MeasurementEntryTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $MeasurementEntryTableTable> {
+  $$MeasurementEntryTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MeasurementEntryTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $MeasurementEntryTableTable> {
+  $$MeasurementEntryTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MeasurementEntryTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $MeasurementEntryTableTable> {
+  $$MeasurementEntryTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$MeasurementEntryTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $MeasurementEntryTableTable,
+          MeasurementEntry,
+          $$MeasurementEntryTableTableFilterComposer,
+          $$MeasurementEntryTableTableOrderingComposer,
+          $$MeasurementEntryTableTableAnnotationComposer,
+          $$MeasurementEntryTableTableCreateCompanionBuilder,
+          $$MeasurementEntryTableTableUpdateCompanionBuilder,
+          (
+            MeasurementEntry,
+            BaseReferences<_$DriftPowersyncDatabase, $MeasurementEntryTableTable, MeasurementEntry>,
+          ),
+          MeasurementEntry,
+          PrefetchHooks Function()
+        > {
+  $$MeasurementEntryTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $MeasurementEntryTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$MeasurementEntryTableTableFilterComposer(
+            $db: db,
+            $table: table,
+          ),
+          createOrderingComposer: () => $$MeasurementEntryTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$MeasurementEntryTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MeasurementEntryTableCompanion(
+                id: id,
+                category: category,
+                date: date,
+                value: value,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                required String category,
+                required DateTime date,
+                required double value,
+                required String notes,
+                Value<int> rowid = const Value.absent(),
+              }) => MeasurementEntryTableCompanion.insert(
+                id: id,
+                category: category,
+                date: date,
+                value: value,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MeasurementEntryTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $MeasurementEntryTableTable,
+      MeasurementEntry,
+      $$MeasurementEntryTableTableFilterComposer,
+      $$MeasurementEntryTableTableOrderingComposer,
+      $$MeasurementEntryTableTableAnnotationComposer,
+      $$MeasurementEntryTableTableCreateCompanionBuilder,
+      $$MeasurementEntryTableTableUpdateCompanionBuilder,
+      (
+        MeasurementEntry,
+        BaseReferences<_$DriftPowersyncDatabase, $MeasurementEntryTableTable, MeasurementEntry>,
+      ),
+      MeasurementEntry,
       PrefetchHooks Function()
     >;
 typedef $$WorkoutLogTableTableCreateCompanionBuilder =
@@ -10357,6 +10806,8 @@ class $DriftPowersyncDatabaseManager {
         _db,
         _db.measurementCategoryTable,
       );
+  $$MeasurementEntryTableTableTableManager get measurementEntryTable =>
+      $$MeasurementEntryTableTableTableManager(_db, _db.measurementEntryTable);
   $$WorkoutLogTableTableTableManager get workoutLogTable =>
       $$WorkoutLogTableTableTableManager(_db, _db.workoutLogTable);
   $$WorkoutSessionTableTableTableManager get workoutSessionTable =>
