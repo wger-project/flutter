@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -35,13 +53,13 @@ void main() {
 
   const int tCategoryId = 1;
   const MeasurementCategory tMeasurementCategory = MeasurementCategory(
-    id: 1,
+    uuid: 1,
     name: 'Strength',
     unit: 'kN',
   );
   final List<MeasurementCategory> tMeasurementCategories = [
-    const MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
-    const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+    const MeasurementCategory(uuid: 1, name: 'Strength', unit: 'kN'),
+    const MeasurementCategory(uuid: 2, name: 'Biceps', unit: 'cm'),
   ];
   final Map<String, dynamic> tMeasurementCategoriesMap = jsonDecode(
     fixture('measurement/measurement_categories.json'),
@@ -160,27 +178,27 @@ void main() {
       // arrange
       final List<MeasurementCategory> tMeasurementCategories = [
         MeasurementCategory(
-          id: 1,
+          uuid: 1,
           name: 'Strength',
           unit: 'kN',
           entries: [
             MeasurementEntry(
-              id: 1,
-              category: 1,
+              uuid: 1,
+              categoryId: 1,
               date: DateTime(2021, 7, 21),
               value: 10,
               notes: 'Some important notes',
             ),
             MeasurementEntry(
-              id: 2,
-              category: 1,
+              uuid: 2,
+              categoryId: 1,
               date: DateTime(2021, 7, 10),
               value: 15.00,
               notes: '',
             ),
           ],
         ),
-        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+        const MeasurementCategory(uuid: 2, name: 'Biceps', unit: 'cm'),
       ];
 
       // act
@@ -193,7 +211,7 @@ void main() {
 
   group('addCategory()', () {
     const MeasurementCategory tMeasurementCategoryWithoutId = MeasurementCategory(
-      id: null,
+      uuid: null,
       name: 'Strength',
       unit: 'kN',
     );
@@ -204,9 +222,9 @@ void main() {
       fixture('measurement/measurement_category_without_id_to_json.json'),
     );
     final List<MeasurementCategory> tMeasurementCategoriesAdded = [
-      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
-      const MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
-      const MeasurementCategory(id: 1, name: 'Strength', unit: 'kN'),
+      const MeasurementCategory(uuid: 2, name: 'Biceps', unit: 'cm'),
+      const MeasurementCategory(uuid: 1, name: 'Strength', unit: 'kN'),
+      const MeasurementCategory(uuid: 1, name: 'Strength', unit: 'kN'),
     ];
     setUp(() {
       when(
@@ -250,7 +268,7 @@ void main() {
         ).thenAnswer((realInvocation) => Future.value(Response('', 200)));
 
         final List<MeasurementCategory> tMeasurementCategoriesOneDeleted = [
-          const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+          const MeasurementCategory(uuid: 2, name: 'Biceps', unit: 'cm'),
         ];
 
         // act
@@ -301,8 +319,8 @@ void main() {
     test('should add the new MeasurementCategory and remove the old one', () async {
       // arrange
       final List<MeasurementCategory> tMeasurementCategoriesEdited = [
-        const MeasurementCategory(id: 1, name: 'Triceps', unit: 'm'),
-        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+        const MeasurementCategory(uuid: 1, name: 'Triceps', unit: 'm'),
+        const MeasurementCategory(uuid: 2, name: 'Biceps', unit: 'cm'),
       ];
 
       // act
@@ -347,16 +365,16 @@ void main() {
 
   group('addEntry()', () {
     final MeasurementEntry tMeasurementEntry = MeasurementEntry(
-      id: 3,
-      category: 1,
+      uuid: 3,
+      categoryId: 1,
       date: DateTime(2021, 7, 9),
       value: 15.00,
       notes: '',
     );
 
     final MeasurementEntry tMeasurementEntryWithoutId = MeasurementEntry(
-      id: null,
-      category: 1,
+      uuid: null,
+      categoryId: 1,
       date: DateTime(2021, 7, 9),
       value: 15.0,
       notes: '',
@@ -364,20 +382,20 @@ void main() {
 
     final List<MeasurementCategory> tMeasurementCategories = [
       MeasurementCategory(
-        id: 1,
+        uuid: 1,
         name: 'Strength',
         unit: 'kN',
         entries: [
           MeasurementEntry(
-            id: 1,
-            category: 1,
+            uuid: 1,
+            categoryId: 1,
             date: DateTime(2021, 7, 21),
             value: 10,
             notes: 'Some important notes',
           ),
           MeasurementEntry(
-            id: 2,
-            category: 1,
+            uuid: 2,
+            categoryId: 1,
             date: DateTime(2021, 7, 10),
             value: 15.00,
             notes: '',
@@ -385,7 +403,7 @@ void main() {
           tMeasurementEntry,
         ],
       ),
-      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+      const MeasurementCategory(uuid: 2, name: 'Biceps', unit: 'cm'),
     ];
 
     setUp(() async {
@@ -437,8 +455,8 @@ void main() {
     test('should throw a NoSuchEntryException if no category is found', () {
       // arrange
       final MeasurementEntry tMeasurementEntryWrongCategory = MeasurementEntry(
-        id: 3,
-        category: 83,
+        uuid: 3,
+        categoryId: 83,
         date: DateTime(2021, 7, 9),
         value: 15.00,
         notes: '',
@@ -462,20 +480,20 @@ void main() {
     const int tEntryId = 2;
     final List<MeasurementCategory> tMeasurementCategories = [
       MeasurementCategory(
-        id: 1,
+        uuid: 1,
         name: 'Strength',
         unit: 'kN',
         entries: [
           MeasurementEntry(
-            id: 1,
-            category: 1,
+            uuid: 1,
+            categoryId: 1,
             date: DateTime(2021, 7, 21),
             value: 10,
             notes: 'Some important notes',
           ),
         ],
       ),
-      const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+      const MeasurementCategory(uuid: 2, name: 'Biceps', unit: 'cm'),
     ];
 
     setUp(() async {
@@ -528,27 +546,27 @@ void main() {
         // arrange
         final List<MeasurementCategory> tMeasurementCategories = [
           MeasurementCategory(
-            id: 1,
+            uuid: 1,
             name: 'Strength',
             unit: 'kN',
             entries: [
               MeasurementEntry(
-                id: 1,
-                category: 1,
+                uuid: 1,
+                categoryId: 1,
                 date: DateTime(2021, 7, 21),
                 value: 10,
                 notes: 'Some important notes',
               ),
               MeasurementEntry(
-                id: 2,
-                category: 1,
+                uuid: 2,
+                categoryId: 1,
                 date: DateTime(2021, 7, 10),
                 value: 15.00,
                 notes: '',
               ),
             ],
           ),
-          const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+          const MeasurementCategory(uuid: 2, name: 'Biceps', unit: 'cm'),
         ];
         when(mockWgerBaseProvider.deleteRequest(any, any)).thenThrow(WgerHttpException.fromMap({}));
 
@@ -587,27 +605,27 @@ void main() {
       // arrange
       final List<MeasurementCategory> tMeasurementCategoriesEdited = [
         MeasurementCategory(
-          id: 1,
+          uuid: 1,
           name: 'Strength',
           unit: 'kN',
           entries: [
             MeasurementEntry(
-              id: 1,
-              category: 1,
+              uuid: 1,
+              categoryId: 1,
               date: DateTime(2021, 7, 21),
               value: 23,
               notes: 'I just wanted to edit this to see what happens',
             ),
             MeasurementEntry(
-              id: 2,
-              category: 1,
+              uuid: 2,
+              categoryId: 1,
               date: DateTime(2021, 7, 10),
               value: 15.00,
               notes: '',
             ),
           ],
         ),
-        const MeasurementCategory(id: 2, name: 'Biceps', unit: 'cm'),
+        const MeasurementCategory(uuid: 2, name: 'Biceps', unit: 'cm'),
       ];
 
       // act

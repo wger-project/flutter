@@ -21,6 +21,7 @@ import 'package:drift_sqlite_async/drift_sqlite_async.dart';
 import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:powersync/powersync.dart' show uuid;
+import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/int_to_string_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';

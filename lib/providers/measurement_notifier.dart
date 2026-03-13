@@ -32,19 +32,26 @@ part 'measurement_notifier.g.dart';
 @riverpod
 final class MeasurementNotifier extends _$MeasurementNotifier {
   final _logger = Logger('MeasurementNotifier');
+
   late final MeasurementRepository _repo;
+
   @override
   Stream<List<MeasurementCategory>> build() {
     _repo = ref.read(measurementRepositoryProvider);
-    _logger.finer('Building MeasurementEntryNotifier (categories stream)');
+    _logger.finer('Building stream');
 
-    // Return the repository stream that emits fully populated categories
-    // including their entries.
     return _repo.watchAll();
   }
 
-  Future<void> deleteEntry(String id) async {
-    await _repo.deleteLocalDrift(id);
+  Stream<MeasurementCategory?> watchCategoryByUuid(String uuid) {
+    _logger.finer('Watching local measurement category by uuid $uuid (via notifier)');
+    // Nutze ref.read hier, statt auf das `late final _repo` zu vertrauen,
+    // damit die Methode auch funktioniert, falls build() noch nicht gelaufen ist.
+    return _repo.watchLocalDriftCategoryByUuid(uuid);
+  }
+
+  Future<void> deleteEntry(String uuid) async {
+    await _repo.deleteLocalDrift(uuid);
   }
 
   Future<void> updateEntry(MeasurementEntry entry) async {
@@ -56,8 +63,8 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
   }
 
   // --- MeasurementCategory operations (delegated to repository) ---
-  Future<void> deleteCategory(String id) async {
-    await _repo.deleteLocalDriftCategory(id);
+  Future<void> deleteCategory(String uuid) async {
+    await _repo.deleteLocalDriftCategory(uuid);
   }
 
   Future<void> updateCategory(MeasurementCategory category) async {

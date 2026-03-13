@@ -17,7 +17,7 @@
  */
 
 import 'package:drift/drift.dart';
-import 'package:powersync/powersync.dart' show uuid;
+import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
@@ -26,7 +26,8 @@ class MeasurementCategoryTable extends Table {
   @override
   String get tableName => 'measurements_category';
 
-  TextColumn get id => text().clientDefault(() => uuid.v4())(); // uuid
+  IntColumn get id => integer()();
+  TextColumn get uuid => text().clientDefault(() => ps.uuid.v4())();
 
   TextColumn get name => text()();
   TextColumn get unit => text()();
@@ -37,8 +38,9 @@ class MeasurementEntryTable extends Table {
   @override
   String get tableName => 'measurements_measurement';
 
-  TextColumn get id => text().clientDefault(() => uuid.v4())(); // uuid
-  TextColumn get category => text().named('category_id')(); // uuid of MeasurementCategory
+  IntColumn get id => integer().named('id')();
+  TextColumn get uuid => text().clientDefault(() => ps.uuid.v4())();
+  IntColumn get categoryId => integer().named('category_id')(); // ID of MeasurementCategory
 
   DateTimeColumn get date => dateTime()();
   RealColumn get value => real()();

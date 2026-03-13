@@ -19,11 +19,16 @@
 import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/helpers/uuid.dart';
 
 class MeasurementEntry extends Equatable {
-  final String id;
+  final String uuid;
 
-  final String category;
+  /// Is set by the server, not locally
+  final int? id;
+
+  /// Category UUID
+  final int categoryId;
 
   final DateTime date;
 
@@ -31,23 +36,24 @@ class MeasurementEntry extends Equatable {
 
   final String notes;
 
-  const MeasurementEntry({
-    required this.id,
-    required this.category,
+  MeasurementEntry({
+    String? uuid,
+    this.id,
+    required this.categoryId,
     required this.date,
     required this.value,
     required this.notes,
-  });
+  }) : uuid = uuid ?? uuidV4();
 
   MeasurementEntry copyWith({
-    String? id,
-    String? category,
+    String? uuid,
+    int? category,
     DateTime? date,
     num? value,
     String? notes,
   }) => MeasurementEntry(
-    id: id ?? this.id,
-    category: category ?? this.category,
+    uuid: uuid ?? uuid,
+    categoryId: category ?? categoryId,
     date: date ?? this.date,
     value: value ?? this.value,
     notes: notes ?? this.notes,
@@ -56,8 +62,8 @@ class MeasurementEntry extends Equatable {
   // Boilerplate
   MeasurementEntryTableCompanion toCompanion({bool includeId = false}) {
     return MeasurementEntryTableCompanion(
-      id: Value(id),
-      category: Value(category),
+      uuid: Value(uuid),
+      categoryId: Value(categoryId),
       date: Value(date),
       value: Value(value.toDouble()),
       notes: Value(notes),
@@ -65,5 +71,5 @@ class MeasurementEntry extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, category, date, value, notes];
+  List<Object?> get props => [uuid, categoryId, date, value, notes];
 }

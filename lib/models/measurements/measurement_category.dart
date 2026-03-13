@@ -20,10 +20,13 @@ import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/helpers/uuid.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
 class MeasurementCategory extends Equatable {
-  final String id;
+  final String uuid;
+
+  final int? id;
 
   final String name;
 
@@ -31,21 +34,24 @@ class MeasurementCategory extends Equatable {
 
   final List<MeasurementEntry> entries;
 
-  const MeasurementCategory({
-    required this.id,
+  MeasurementCategory({
+    String? uuid,
+    this.id,
     required this.name,
     required this.unit,
     this.entries = const [],
-  });
+  }) : uuid = uuid ?? uuidV4();
 
   MeasurementCategory copyWith({
-    String? id,
+    String? uuid,
+    int? numericalId,
     String? name,
     String? unit,
     List<MeasurementEntry>? entries,
   }) {
     return MeasurementCategory(
-      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      id: numericalId ?? this.id,
       name: name ?? this.name,
       unit: unit ?? this.unit,
       entries: entries ?? this.entries,
@@ -54,7 +60,7 @@ class MeasurementCategory extends Equatable {
 
   MeasurementEntry findEntryById(String entryId) {
     return entries.firstWhere(
-      (entry) => entry.id == entryId,
+      (entry) => entry.uuid == entryId,
       orElse: () => throw const NoSuchEntryException(),
     );
   }
@@ -62,12 +68,12 @@ class MeasurementCategory extends Equatable {
   // Boilerplate
   MeasurementCategoryTableCompanion toCompanion({bool includeId = false}) {
     return MeasurementCategoryTableCompanion(
-      id: Value(id),
+      uuid: Value(uuid),
       name: Value(name),
       unit: Value(unit),
     );
   }
 
   @override
-  List<Object?> get props => [id, name, unit, entries];
+  List<Object?> get props => [uuid, name, unit, entries];
 }

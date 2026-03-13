@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -39,7 +39,7 @@ class MeasurementCategoryForm extends StatelessWidget {
   MeasurementCategoryForm([MeasurementCategory? category]) {
     //this._category = category ?? MeasurementCategory();
     if (category != null) {
-      categoryData['id'] = category.id;
+      categoryData['id'] = category.uuid;
       categoryData['unit'] = category.unit;
       categoryData['name'] = category.name;
     }
@@ -106,7 +106,7 @@ class MeasurementCategoryForm extends StatelessWidget {
                       listen: false,
                     ).addCategory(
                       MeasurementCategory(
-                        id: categoryData['id'],
+                        uuid: categoryData['id'],
                         name: categoryData['name'],
                         unit: categoryData['unit'],
                       ),
@@ -133,25 +133,25 @@ class MeasurementCategoryForm extends StatelessWidget {
 
 class MeasurementEntryForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
-  final int _categoryId;
+  final String _categoryUuid;
   final _valueController = TextEditingController();
   final _dateController = TextEditingController(text: '');
   final _notesController = TextEditingController();
 
   late final Map<String, dynamic> _entryData;
 
-  MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry]) {
+  MeasurementEntryForm(this._categoryUuid, [MeasurementEntry? entry]) {
     _entryData = {
       'id': null,
-      'category': _categoryId,
+      'category': _categoryUuid,
       'date': DateTime.now(),
       'value': '',
       'notes': '',
     };
 
     if (entry != null) {
-      _entryData['id'] = entry.id;
-      _entryData['category'] = entry.category;
+      _entryData['id'] = entry.uuid;
+      _entryData['category'] = entry.categoryId;
       _entryData['value'] = entry.value;
       _entryData['date'] = entry.date;
       _entryData['notes'] = entry.notes;
@@ -167,7 +167,7 @@ class MeasurementEntryForm extends StatelessWidget {
 
     final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
     final measurementCategory = measurementProvider.categories.firstWhere(
-      (category) => category.id == _categoryId,
+      (category) => category.uuid == _categoryUuid,
     );
 
     if (_dateController.text.isEmpty) {
@@ -290,8 +290,8 @@ class MeasurementEntryForm extends StatelessWidget {
                       listen: false,
                     ).addEntry(
                       MeasurementEntry(
-                        id: _entryData['id'],
-                        category: _entryData['category'],
+                        uuid: _entryData['id'],
+                        categoryId: _entryData['category'],
                         date: _entryData['date'],
                         value: _entryData['value'],
                         notes: _entryData['notes'],

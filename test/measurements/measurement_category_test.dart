@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
@@ -6,8 +24,8 @@ import 'package:wger/models/measurements/measurement_entry.dart';
 void main() {
   final List<MeasurementEntry> tMeasurementEntries = [
     MeasurementEntry(
-      id: 1234,
-      category: 123,
+      uuid: 1234,
+      categoryId: 123,
       date: DateTime(2021, 7, 22),
       value: 83,
       notes: 'notes',
@@ -15,8 +33,8 @@ void main() {
   ];
 
   final MeasurementEntry tMeasurementEntry = MeasurementEntry(
-    id: 1234,
-    category: 123,
+    uuid: 1234,
+    categoryId: 123,
     date: DateTime(2021, 7, 22),
     value: 83,
     notes: 'notes',
@@ -24,7 +42,7 @@ void main() {
   const int tMeasurementEntryId = 1234;
 
   final MeasurementCategory tMeasurementCategory = MeasurementCategory(
-    id: 123,
+    uuid: 123,
     name: 'Bizeps',
     unit: 'cm',
     entries: tMeasurementEntries,
@@ -77,7 +95,7 @@ void main() {
       // arrange
 
       final MeasurementCategory tMeasurementCategoryCopied = MeasurementCategory(
-        id: 1234,
+        uuid: 1234,
         name: 'Coolness',
         unit: 'lp',
         entries: tMeasurementEntries,
@@ -85,7 +103,7 @@ void main() {
 
       // act
       final result = tMeasurementCategory.copyWith(
-        id: 1234,
+        uuid: 1234,
         name: 'Coolness',
         unit: 'lp',
         entries: tMeasurementEntries,
