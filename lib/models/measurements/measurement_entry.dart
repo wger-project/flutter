@@ -16,27 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
+import 'package:wger/database/powersync/database.dart';
 
-part 'measurement_entry.g.dart';
-
-@JsonSerializable()
 class MeasurementEntry extends Equatable {
-  @JsonKey(required: true)
-  final String? id;
+  final String id;
 
-  @JsonKey(required: true)
   final String category;
 
-  @JsonKey(required: true, toJson: dateToYYYYMMDD)
   final DateTime date;
 
-  @JsonKey(required: true)
   final num value;
 
-  @JsonKey(required: true, defaultValue: '')
   final String notes;
 
   const MeasurementEntry({
@@ -62,9 +54,15 @@ class MeasurementEntry extends Equatable {
   );
 
   // Boilerplate
-  factory MeasurementEntry.fromJson(Map<String, dynamic> json) => _$MeasurementEntryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MeasurementEntryToJson(this);
+  MeasurementEntryTableCompanion toCompanion({bool includeId = false}) {
+    return MeasurementEntryTableCompanion(
+      id: Value(id),
+      category: Value(category),
+      date: Value(date),
+      value: Value(value.toDouble()),
+      notes: Value(notes),
+    );
+  }
 
   @override
   List<Object?> get props => [id, category, date, value, notes];

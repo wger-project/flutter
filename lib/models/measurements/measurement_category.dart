@@ -16,25 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
-part 'measurement_category.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class MeasurementCategory extends Equatable {
-  @JsonKey(required: true)
-  final String? id;
+  final String id;
 
-  @JsonKey(required: true)
   final String name;
 
-  @JsonKey(required: true)
   final String unit;
 
-  @JsonKey(toJson: _nullValue)
   final List<MeasurementEntry> entries;
 
   const MeasurementCategory({
@@ -66,15 +60,14 @@ class MeasurementCategory extends Equatable {
   }
 
   // Boilerplate
-  factory MeasurementCategory.fromJson(Map<String, dynamic> json) =>
-      _$MeasurementCategoryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MeasurementCategoryToJson(this);
+  MeasurementCategoryTableCompanion toCompanion({bool includeId = false}) {
+    return MeasurementCategoryTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      unit: Value(unit),
+    );
+  }
 
   @override
   List<Object?> get props => [id, name, unit, entries];
-
-  // Helper function which makes the entries list of the toJson output null, as it isn't needed
-  //ignore: always_declare_return_types
-  static _nullValue(_) => null;
 }

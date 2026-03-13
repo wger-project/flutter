@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,16 +30,9 @@ final class WeightEntryNotifier extends _$WeightEntryNotifier {
   late final BodyWeightRepository _repo;
 
   @override
-  // BodyWeightState build() {
   Stream<List<WeightEntry>> build() {
     _repo = ref.read(bodyWeightRepositoryProvider);
     _logger.finer('Building WeightEntryNotifier');
-
-    // final state = BodyWeightState();
-    // repo.watchAllDrift(database).listen((entries) {
-    //   state.setItems(entries);
-    // });
-    // return state;
 
     return _repo.watchAllDrift();
   }
