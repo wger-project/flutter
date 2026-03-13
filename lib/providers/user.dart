@@ -28,6 +28,7 @@ import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 
 enum DashboardWidget {
+  networkInfo('networkInfo'),
   trophies('trophies'),
   routines('routines'),
   nutrition('nutrition'),

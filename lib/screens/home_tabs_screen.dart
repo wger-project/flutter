@@ -78,8 +78,15 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
   @override
   void initState() {
     super.initState();
-    // Loading data here, since the build method can be called more than once
-    _initialData = _loadEntries();
+    // Start loading initial data after the first frame so that
+    // InheritedWidgets (Localizations, MediaQuery, Providers) are
+    // available. We still keep didChangeDependencies() as a
+    // fallback in case dependencies change later.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _initialData ??= _loadEntries();
+      }
+    });
   }
 
   @override
@@ -140,7 +147,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       // ref.read(weightEntryProvider);
 
       // await ref.watch(workoutLogProvider.future);
-      // await ref.read(workoutLogProvider.future);
+      await ref.read(workoutLogProvider.future);
 
       final routinesProvider = ref.read(routinesRiverpodProvider.notifier);
       final routines = ref.read(routinesRiverpodProvider);

@@ -106,11 +106,12 @@ void main() {
 
   group('dashboard config', () {
     test('initial config should be default (all visible, default order)', () {
-      expect(userProvider.dashboardWidgets.length, 6);
+      expect(userProvider.dashboardWidgets.length, 7);
 
       expect(
         userProvider.allDashboardWidgets,
         orderedEquals([
+          DashboardWidget.networkInfo,
           DashboardWidget.trophies,
           DashboardWidget.routines,
           DashboardWidget.nutrition,
@@ -166,19 +167,22 @@ void main() {
 
       // assert
       // Loaded: [nutrition, routines]
-      // Missing: trophies (0), weight (3), measurements (4), calendar (5)
-      // 1. trophies (index 0) inserted at 0 -> [trophies, nutrition, routines]
-      // 2. weight (index 3) inserted at 3 -> [trophies, nutrition, routines, weight]
-      expect(newProvider.allDashboardWidgets[0], DashboardWidget.trophies);
-      expect(newProvider.allDashboardWidgets[1], DashboardWidget.nutrition);
-      expect(newProvider.allDashboardWidgets[2], DashboardWidget.routines);
-      expect(newProvider.allDashboardWidgets[3], DashboardWidget.weight);
+      // Missing: network(0),  trophies (1), weight (4), measurements (5), calendar (6)
+      // 1. network (index 0) inserted at 0 -> [network, trophies, nutrition, routines]
+      // 2. trophies (index 1) inserted at 1 -> [network, trophies, nutrition, routines]
+      // 3. weight (index 4) inserted at 4 -> [network, trophies, nutrition, routines, weight]
+      expect(newProvider.allDashboardWidgets[0], DashboardWidget.networkInfo);
+      expect(newProvider.allDashboardWidgets[1], DashboardWidget.trophies);
+      expect(newProvider.allDashboardWidgets[2], DashboardWidget.nutrition);
+      expect(newProvider.allDashboardWidgets[3], DashboardWidget.routines);
+      expect(newProvider.allDashboardWidgets[4], DashboardWidget.weight);
 
       // Check visibility
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.nutrition), true);
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
 
       // Missing items should be visible by default
+      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.networkInfo), true);
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.weight), true);
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.trophies), true);
     });

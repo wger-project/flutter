@@ -96,10 +96,11 @@ void main() {
     await tester.pumpWidget(createWidget());
     await tester.pumpAndSettle();
 
-    // Initial order: trophies, routines, nutrition, weight...
-    expect(userProvider.dashboardWidgets[0], DashboardWidget.trophies);
-    expect(userProvider.dashboardWidgets[1], DashboardWidget.routines);
-    expect(userProvider.dashboardWidgets[2], DashboardWidget.nutrition);
+    // Initial order: network info, trophies, routines, nutrition, weight...
+    expect(userProvider.dashboardWidgets[0], DashboardWidget.networkInfo);
+    expect(userProvider.dashboardWidgets[1], DashboardWidget.trophies);
+    expect(userProvider.dashboardWidgets[2], DashboardWidget.routines);
+    expect(userProvider.dashboardWidgets[3], DashboardWidget.nutrition);
 
     // Find drag handle for Trophies (index 0)
     final handleFinder = find.byIcon(Icons.drag_handle);
@@ -110,10 +111,9 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify order changed
-    // 100px drag seems to skip 2 items (trophies moves to index 2)
-    // [routines, nutrition, trophies, ...]
-    expect(userProvider.dashboardWidgets[0], DashboardWidget.routines);
-    expect(userProvider.dashboardWidgets[1], DashboardWidget.nutrition);
-    expect(userProvider.dashboardWidgets[2], DashboardWidget.trophies);
+    // 100px drag seems to skip 2 items (network moves to index 2)
+    expect(userProvider.dashboardWidgets[0], DashboardWidget.trophies);
+    expect(userProvider.dashboardWidgets[1], DashboardWidget.routines);
+    expect(userProvider.dashboardWidgets[2], DashboardWidget.networkInfo);
   });
 }
