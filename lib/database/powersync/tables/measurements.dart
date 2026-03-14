@@ -40,7 +40,8 @@ class MeasurementEntryTable extends Table {
 
   IntColumn get id => integer().named('id')();
   TextColumn get uuid => text().clientDefault(() => ps.uuid.v4())();
-  IntColumn get categoryId => integer().named('category_id')(); // ID of MeasurementCategory
+  IntColumn get categoryId =>
+      integer().named('category_id').references(MeasurementCategoryTable, #id)();
 
   DateTimeColumn get date => dateTime()();
   RealColumn get value => real()();

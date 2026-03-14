@@ -26,8 +26,9 @@ import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/measurement.dart';
+import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
@@ -85,8 +86,8 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   /// Loads and organizes all events from various providers into the calendar.
   ///
   /// This method asynchronously fetches and processes data from multiple sources:
-  /// - **Weight entries**: Retrieves weight measurements from [BodyWeightProvider]
-  /// - **Measurements**: Retrieves body measurements from [MeasurementProvider]
+  /// - **Weight entries**: Retrieves weight measurements from [weightEntryProvider]
+  /// - **Measurements**: Retrieves body measurements from [measurementProvider]
   /// - **Workout sessions**: Fetches workout session data from [RoutinesRiverpod]
   /// - **Nutritional plans**: Retrieves calorie diary entries from [NutritionPlansProvider]
   ///
@@ -125,8 +126,14 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     }
 
     // Process measurements
-    final measurementProvider = context.read<MeasurementProvider>();
-    for (final category in measurementProvider.categories) {
+    List<MeasurementCategory> categories = [];
+    try {
+      categories = await ref.read(measurementProvider.future);
+    } catch (_) {
+      categories = ref.read(measurementProvider).asData?.value ?? [];
+    }
+
+    for (final category in categories) {
       for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
 
@@ -134,6 +141,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
           newEvents[date] = [];
         }
 
+        // Add events to lists
         newEvents[date]?.add(
           Event(
             EventType.measurement,
