@@ -16,24 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart';
-import 'package:equatable/equatable.dart';
+import 'package:drift/drift.dart' hide JsonKey;
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/uuid.dart';
 
-class MeasurementEntry extends Equatable {
+part 'measurement_entry.freezed.dart';
+
+@freezed
+class MeasurementEntry with _$MeasurementEntry {
+  @override
   final String uuid;
 
   /// Is set by the server, not locally
+  @override
   final int? id;
 
   /// Category UUID
+  @override
   final int categoryId;
 
+  @override
   final DateTime date;
 
+  @override
   final num value;
 
+  @override
   final String notes;
 
   MeasurementEntry({
@@ -45,20 +54,6 @@ class MeasurementEntry extends Equatable {
     required this.notes,
   }) : uuid = uuid ?? uuidV4();
 
-  MeasurementEntry copyWith({
-    String? uuid,
-    int? category,
-    DateTime? date,
-    num? value,
-    String? notes,
-  }) => MeasurementEntry(
-    uuid: uuid ?? uuid,
-    categoryId: category ?? categoryId,
-    date: date ?? this.date,
-    value: value ?? this.value,
-    notes: notes ?? this.notes,
-  );
-
   // Boilerplate
   MeasurementEntryTableCompanion toCompanion({bool includeId = false}) {
     return MeasurementEntryTableCompanion(
@@ -69,7 +64,4 @@ class MeasurementEntry extends Equatable {
       notes: Value(notes),
     );
   }
-
-  @override
-  List<Object?> get props => [uuid, categoryId, date, value, notes];
 }

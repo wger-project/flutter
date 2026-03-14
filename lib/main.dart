@@ -29,7 +29,6 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/gallery.dart';
-import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/providers/wger_base_riverpod.dart';
@@ -165,13 +164,6 @@ class MainApp extends StatelessWidget {
           ),
           update: (context, auth, previous) =>
               previous ?? NutritionPlansProvider(WgerBaseProvider(auth), []),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, MeasurementProvider>(
-          create: (context) => MeasurementProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
-          update: (context, base, previous) =>
-              previous ?? MeasurementProvider(WgerBaseProvider(base)),
         ),
         ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
           create: (context) => UserProvider(

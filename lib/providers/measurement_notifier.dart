@@ -20,6 +20,7 @@
  * Riverpod notifier for measurement entries backed by Drift.
  */
 
+import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
@@ -45,9 +46,18 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
 
   Stream<MeasurementCategory?> watchCategoryByUuid(String uuid) {
     _logger.finer('Watching local measurement category by uuid $uuid (via notifier)');
-    // Nutze ref.read hier, statt auf das `late final _repo` zu vertrauen,
-    // damit die Methode auch funktioniert, falls build() noch nicht gelaufen ist.
     return _repo.watchLocalDriftCategoryByUuid(uuid);
+  }
+
+  Future<MeasurementCategory?> getCategoryByUuid(String uuid) async {
+    // Data already loaded
+    final categories = state.asData?.value;
+    if (categories != null) {
+      return categories.firstWhereOrNull((c) => c.uuid == uuid);
+    }
+
+    // Read from DB
+    return _repo.watchLocalDriftCategoryByUuid(uuid).first;
   }
 
   Future<void> deleteEntry(String uuid) async {

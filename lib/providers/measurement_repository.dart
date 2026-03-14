@@ -20,6 +20,7 @@
  * Repository for measurement entries (local Drift operations).
  */
 
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
@@ -77,12 +78,9 @@ class MeasurementRepository {
     });
   }
 
-  Stream<MeasurementCategory?> watchLocalDriftCategoryByUuid(String id) {
-    _logger.finer('Watching local measurement category by id $id (via watchAll)');
-    return watchAll().map((categories) {
-      final matches = categories.where((c) => c.uuid == id);
-      return matches.isEmpty ? null : matches.first;
-    });
+  Stream<MeasurementCategory?> watchLocalDriftCategoryByUuid(String uuid) {
+    _logger.finer('Watching local measurement category $uuid');
+    return watchAll().map((categories) => categories.firstWhereOrNull((c) => c.uuid == uuid));
   }
 
   // Entries

@@ -16,51 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart';
-import 'package:equatable/equatable.dart';
+import 'package:drift/drift.dart' hide JsonKey;
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/uuid.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
-class MeasurementCategory extends Equatable {
+part 'measurement_category.freezed.dart';
+
+@freezed
+class MeasurementCategory with _$MeasurementCategory {
+  @override
   final String uuid;
 
+  @override
   final int? id;
 
+  @override
   final String name;
 
+  @override
   final String unit;
 
+  @override
   final List<MeasurementEntry> entries;
 
   MeasurementCategory({
     String? uuid,
     this.id,
-    required this.name,
-    required this.unit,
+    this.name = '',
+    this.unit = '',
     this.entries = const [],
   }) : uuid = uuid ?? uuidV4();
 
-  MeasurementCategory copyWith({
-    String? uuid,
-    int? numericalId,
-    String? name,
-    String? unit,
-    List<MeasurementEntry>? entries,
-  }) {
-    return MeasurementCategory(
-      uuid: uuid ?? this.uuid,
-      id: numericalId ?? this.id,
-      name: name ?? this.name,
-      unit: unit ?? this.unit,
-      entries: entries ?? this.entries,
-    );
-  }
-
-  MeasurementEntry findEntryById(String entryId) {
+  MeasurementEntry findEntryByUuid(String entryUuid) {
     return entries.firstWhere(
-      (entry) => entry.uuid == entryId,
+      (entry) => entry.uuid == entryUuid,
       orElse: () => throw const NoSuchEntryException(),
     );
   }
@@ -73,7 +65,4 @@ class MeasurementCategory extends Equatable {
       unit: Value(unit),
     );
   }
-
-  @override
-  List<Object?> get props => [uuid, name, unit, entries];
 }

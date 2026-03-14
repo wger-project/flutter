@@ -27,7 +27,6 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/gallery.dart';
-import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/trophies.dart';
@@ -121,7 +120,6 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     if (!authProvider.dataInit) {
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final galleryProvider = context.read<GalleryProvider>();
-      final measurementProvider = context.read<MeasurementProvider>();
       final userProvider = context.read<UserProvider>();
 
       // ref.watch(routinesRiverpodProvider);
@@ -159,7 +157,6 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
         galleryProvider.fetchAndSetGallery(),
         nutritionPlansProvider.fetchAndSetAllPlansSparse(),
         routinesProvider.fetchAllRoutinesSparse(),
-        measurementProvider.fetchAndSetAllCategoriesAndEntries(),
         trophyNotifier.fetchAll(language: languageCode),
       ]);
 

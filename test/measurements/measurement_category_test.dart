@@ -119,7 +119,7 @@ void main() {
       // arrange
 
       // act
-      final result = tMeasurementCategory.findEntryById(tMeasurementEntryId);
+      final result = tMeasurementCategory.findEntryByUuid(tMeasurementEntryId);
 
       // assert
       expect(result, tMeasurementEntry);
@@ -127,7 +127,7 @@ void main() {
 
     test('should throw a NoSuchEntryException if no MeasurementEntry was found', () {
       // act & assert
-      expect(() => tMeasurementCategory.findEntryById(83), throwsA(isA<NoSuchEntryException>()));
+      expect(() => tMeasurementCategory.findEntryByUuid(83), throwsA(isA<NoSuchEntryException>()));
     });
   });
 }

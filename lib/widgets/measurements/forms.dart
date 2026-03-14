@@ -17,15 +17,17 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
-import 'package:wger/providers/measurement.dart';
+import 'package:wger/providers/measurement_notifier.dart';
+import 'package:wger/widgets/core/error.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 
-class MeasurementCategoryForm extends StatelessWidget {
+class MeasurementCategoryForm extends ConsumerWidget {
   final _form = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final unitController = TextEditingController();
@@ -37,7 +39,6 @@ class MeasurementCategoryForm extends StatelessWidget {
   };
 
   MeasurementCategoryForm([MeasurementCategory? category]) {
-    //this._category = category ?? MeasurementCategory();
     if (category != null) {
       categoryData['id'] = category.uuid;
       categoryData['unit'] = category.unit;
@@ -49,7 +50,7 @@ class MeasurementCategoryForm extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Form(
       key: _form,
       child: Column(
@@ -99,26 +100,17 @@ class MeasurementCategoryForm extends StatelessWidget {
               }
               _form.currentState!.save();
 
+              final notifier = ref.read(measurementProvider.notifier);
+              final category = MeasurementCategory(
+                uuid: categoryData['id'],
+                name: categoryData['name'],
+                unit: categoryData['unit'],
+              );
+
               // Save the entry on the server
               categoryData['id'] == null
-                  ? await Provider.of<MeasurementProvider>(
-                      context,
-                      listen: false,
-                    ).addCategory(
-                      MeasurementCategory(
-                        uuid: categoryData['id'],
-                        name: categoryData['name'],
-                        unit: categoryData['unit'],
-                      ),
-                    )
-                  : await Provider.of<MeasurementProvider>(
-                      context,
-                      listen: false,
-                    ).editCategory(
-                      categoryData['id'],
-                      categoryData['name'],
-                      categoryData['unit'],
-                    );
+                  ? await notifier.addCategory(category)
+                  : notifier.updateCategory(category);
 
               if (context.mounted) {
                 Navigator.of(context).pop();
@@ -131,7 +123,7 @@ class MeasurementCategoryForm extends StatelessWidget {
   }
 }
 
-class MeasurementEntryForm extends StatelessWidget {
+class MeasurementEntryForm extends ConsumerWidget {
   final _form = GlobalKey<FormState>();
   final String _categoryUuid;
   final _valueController = TextEditingController();
@@ -143,7 +135,6 @@ class MeasurementEntryForm extends StatelessWidget {
   MeasurementEntryForm(this._categoryUuid, [MeasurementEntry? entry]) {
     _entryData = {
       'id': null,
-      'category': _categoryUuid,
       'date': DateTime.now(),
       'value': '',
       'notes': '',
@@ -151,7 +142,6 @@ class MeasurementEntryForm extends StatelessWidget {
 
     if (entry != null) {
       _entryData['id'] = entry.uuid;
-      _entryData['category'] = entry.categoryId;
       _entryData['value'] = entry.value;
       _entryData['date'] = entry.date;
       _entryData['notes'] = entry.notes;
@@ -162,13 +152,11 @@ class MeasurementEntryForm extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
 
-    final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
-    final measurementCategory = measurementProvider.categories.firstWhere(
-      (category) => category.uuid == _categoryUuid,
-    );
+    final notifier = ref.read(measurementProvider.notifier);
+    final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryByUuid(_categoryUuid);
 
     if (_dateController.text.isEmpty) {
       _dateController.text = dateFormat.format(_entryData['date']);
@@ -181,140 +169,144 @@ class MeasurementEntryForm extends StatelessWidget {
       _valueController.text = numberFormat.format(_entryData['value']);
     }
 
-    return Form(
-      key: _form,
-      child: Column(
-        children: [
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).date,
-              suffixIcon: const Icon(
-                Icons.calendar_today,
-                key: Key('calendarIcon'),
-              ),
-            ),
-            readOnly: true,
-            // Hide text cursor
-            controller: _dateController,
-            onTap: () async {
-              // Stop keyboard from appearing
-              FocusScope.of(context).requestFocus(FocusNode());
+    return FutureBuilder(
+      future: categoryFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const BoxedProgressIndicator();
+        }
+        if (snapshot.hasError) {
+          return StreamErrorIndicator(snapshot.error.toString());
+        }
+        if (!snapshot.hasData || snapshot.data == null) {
+          return const Text('Category not found');
+        }
 
-              // Show Date Picker Here
-              final pickedDate = await showDatePicker(
-                context: context,
-                initialDate: _entryData['date'],
-                firstDate: DateTime(DateTime.now().year - 10),
-                lastDate: DateTime.now(),
+        final category = snapshot.data!;
 
-                // TODO(x): we need to filter out dates that already have an entry
-                selectableDayPredicate: (day) {
-                  // Always allow the current initial date
-                  if (day == _entryData['date']) {
-                    return true;
-                  }
-                  return true;
+        return Form(
+          key: _form,
+          child: Column(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).date,
+                  suffixIcon: const Icon(
+                    Icons.calendar_today,
+                    key: Key('calendarIcon'),
+                  ),
+                ),
+                readOnly: true,
+                // Hide text cursor
+                controller: _dateController,
+                onTap: () async {
+                  // Stop keyboard from appearing
+                  FocusScope.of(context).requestFocus(FocusNode());
+
+                  // Show Date Picker Here
+                  final pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: _entryData['date'],
+                    firstDate: DateTime(DateTime.now().year - 10),
+                    lastDate: DateTime.now(),
+
+                    // TODO(x): we need to filter out dates that already have an entry
+                    selectableDayPredicate: (day) {
+                      // Always allow the current initial date
+                      if (day == _entryData['date']) {
+                        return true;
+                      }
+                      return true;
+                    },
+                  );
+
+                  _dateController.text = pickedDate == null ? '' : dateFormat.format(pickedDate);
                 },
-              );
-
-              _dateController.text = pickedDate == null ? '' : dateFormat.format(pickedDate);
-            },
-            onSaved: (newValue) {
-              _entryData['date'] = dateFormat.parse(newValue!);
-            },
-            validator: (value) {
-              if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
-              }
-              return null;
-            },
-          ),
-          // Value
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).value,
-              suffixIcon: Text(measurementCategory.unit),
-              suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-            ),
-            controller: _valueController,
-            keyboardType: textInputTypeDecimal,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
-              }
-              try {
-                numberFormat.parse(value);
-              } catch (error) {
-                return AppLocalizations.of(context).enterValidNumber;
-              }
-              return null;
-            },
-            onSaved: (newValue) {
-              _entryData['value'] = numberFormat.parse(newValue!);
-            },
-          ),
-          // Value
-          TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
-            controller: _notesController,
-            onSaved: (newValue) {
-              _entryData['notes'] = newValue;
-            },
-            validator: (value) {
-              const minLength = 0;
-              const maxLength = 100;
-              if (value!.isNotEmpty && (value.length < minLength || value.length > maxLength)) {
-                return AppLocalizations.of(context).enterCharacters(
-                  minLength.toString(),
-                  maxLength.toString(),
-                );
-              }
-              return null;
-            },
-          ),
-
-          ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
-            onPressed: () async {
-              // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
-
-              // Save the entry on the server
-              _entryData['id'] == null
-                  ? await Provider.of<MeasurementProvider>(
-                      context,
-                      listen: false,
-                    ).addEntry(
-                      MeasurementEntry(
-                        uuid: _entryData['id'],
-                        categoryId: _entryData['category'],
-                        date: _entryData['date'],
-                        value: _entryData['value'],
-                        notes: _entryData['notes'],
-                      ),
-                    )
-                  : await Provider.of<MeasurementProvider>(
-                      context,
-                      listen: false,
-                    ).editEntry(
-                      _entryData['id'],
-                      _entryData['category'],
-                      _entryData['value'],
-                      _entryData['notes'],
-                      _entryData['date'],
+                onSaved: (newValue) {
+                  _entryData['date'] = dateFormat.parse(newValue!);
+                },
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return AppLocalizations.of(context).enterValue;
+                  }
+                  return null;
+                },
+              ),
+              // Value
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).value,
+                  suffixIcon: Text(category.unit),
+                  suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                ),
+                controller: _valueController,
+                keyboardType: textInputTypeDecimal,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return AppLocalizations.of(context).enterValue;
+                  }
+                  try {
+                    numberFormat.parse(value);
+                  } catch (error) {
+                    return AppLocalizations.of(context).enterValidNumber;
+                  }
+                  return null;
+                },
+                onSaved: (newValue) {
+                  _entryData['value'] = numberFormat.parse(newValue!);
+                },
+              ),
+              // Value
+              TextFormField(
+                decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
+                controller: _notesController,
+                onSaved: (newValue) {
+                  _entryData['notes'] = newValue;
+                },
+                validator: (value) {
+                  const minLength = 0;
+                  const maxLength = 100;
+                  if (value!.isNotEmpty && (value.length < minLength || value.length > maxLength)) {
+                    return AppLocalizations.of(context).enterCharacters(
+                      minLength.toString(),
+                      maxLength.toString(),
                     );
+                  }
+                  return null;
+                },
+              ),
 
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
+              ElevatedButton(
+                child: Text(AppLocalizations.of(context).save),
+                onPressed: () async {
+                  // Validate and save the current values to the weightEntry
+                  final isValid = _form.currentState!.validate();
+                  if (!isValid) {
+                    return;
+                  }
+                  _form.currentState!.save();
+
+                  // Save the entry on the server
+                  final entry = MeasurementEntry(
+                    uuid: _entryData['id'],
+                    categoryId: category.id!,
+                    date: _entryData['date'],
+                    value: _entryData['value'],
+                    notes: _entryData['notes'],
+                  );
+                  _entryData['id'] == null
+                      ? await notifier.addEntry(entry)
+                      : await notifier.updateEntry(entry);
+
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
