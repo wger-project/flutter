@@ -37,6 +37,8 @@ class Ingredient {
   @JsonKey(required: true, name: 'remote_id')
   final String? remoteId;
 
+  final int? languageId;
+
   @JsonKey(required: true, name: 'source_name')
   final String? sourceName;
 
@@ -103,6 +105,7 @@ class Ingredient {
     required this.remoteId,
     required this.sourceName,
     required this.sourceUrl,
+    this.languageId,
     this.licenseObjectURl,
     required this.id,
     required this.code,

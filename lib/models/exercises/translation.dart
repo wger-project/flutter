@@ -25,15 +25,15 @@ import 'package:wger/models/exercises/exercise.dart';
 class Translation extends Equatable {
   final int? id;
   final String? uuid;
-  late int languageId;
-  late Language languageObj;
+  late final int languageId;
+  late final Language languageObj;
   final DateTime? created;
-  late int? exerciseId;
+  late final int? exerciseId;
   final String name;
   final String description;
 
-  List<Comment> notes = [];
-  List<Alias> aliases = [];
+  final List<Comment> notes = [];
+  final List<Alias> aliases = [];
 
   Translation({
     this.id,
@@ -42,7 +42,7 @@ class Translation extends Equatable {
     required this.name,
     required this.description,
     int? exerciseId,
-    language,
+    Language? language,
   }) {
     if (exerciseId != null) {
       this.exerciseId = exerciseId;
@@ -50,7 +50,7 @@ class Translation extends Equatable {
 
     if (language != null) {
       languageObj = language;
-      languageId = language.uuid;
+      languageId = language.id;
     }
   }
 

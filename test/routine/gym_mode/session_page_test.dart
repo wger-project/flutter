@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -61,9 +61,9 @@ void main() {
     when(mockRepository.editLocalDrift(any)).thenAnswer(
       (_) => Future.value(testRoutine.sessions[0]),
     );
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(any)).thenAnswer(
-      (_) => Future.value(testRoutine),
-    );
+    // when(mockRoutinesProvider.fetchAndSetRoutineFull(any)).thenAnswer(
+    //   (_) => Future.value(testRoutine),
+    // );
   });
 
   Widget renderSessionPage({locale = 'en'}) {

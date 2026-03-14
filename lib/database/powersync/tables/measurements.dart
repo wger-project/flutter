@@ -33,6 +33,15 @@ class MeasurementCategoryTable extends Table {
   TextColumn get unit => text()();
 }
 
+const PowersyncMeasurementCategoryTable = ps.Table(
+  'measurements_category',
+  [
+    ps.Column.text('uuid'),
+    ps.Column.text('name'),
+    ps.Column.text('unit'),
+  ],
+);
+
 @UseRowClass(MeasurementEntry)
 class MeasurementEntryTable extends Table {
   @override
@@ -47,3 +56,17 @@ class MeasurementEntryTable extends Table {
   RealColumn get value => real()();
   TextColumn get notes => text()();
 }
+
+const PowersyncMeasurementEntryTable = ps.Table(
+  'measurements_measurement',
+  [
+    ps.Column.text('uuid'),
+    ps.Column.integer('category_id'),
+    ps.Column.text('date'),
+    ps.Column.real('value'),
+    ps.Column.text('notes'),
+  ],
+  indexes: [
+    ps.Index('category_idx', [ps.IndexedColumn('category_id')]),
+  ],
+);

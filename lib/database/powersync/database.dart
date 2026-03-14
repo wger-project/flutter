@@ -34,6 +34,7 @@ import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -41,7 +42,6 @@ import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
-import '../../models/measurements/measurement_entry.dart';
 import 'powersync.dart';
 import 'tables/exercise.dart';
 import 'tables/ingredient.dart';

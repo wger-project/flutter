@@ -17,6 +17,7 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/models/core/language.dart';
 
 @UseRowClass(Language)
@@ -28,3 +29,11 @@ class LanguageTable extends Table {
   TextColumn get shortName => text().named('short_name')();
   TextColumn get fullName => text().named('full_name')();
 }
+
+const PowersyncLanguageTable = ps.Table(
+  'core_language',
+  [
+    ps.Column.text('short_name'),
+    ps.Column.text('full_name'),
+  ],
+);

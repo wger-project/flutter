@@ -17,6 +17,7 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/models/core/license.dart';
 
 @UseRowClass(License)
@@ -29,3 +30,12 @@ class LicenseTable extends Table {
   TextColumn get fullName => text().named('full_name')();
   TextColumn get url => text()();
 }
+
+const PowersyncLicenseTable = ps.Table(
+  'core_license',
+  [
+    ps.Column.text('short_name'),
+    ps.Column.text('full_name'),
+    ps.Column.text('url'),
+  ],
+);
