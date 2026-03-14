@@ -1,12 +1,31 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/gallery.dart';
-import 'package:wger/providers/measurement.dart';
+import 'package:wger/providers/measurement_repository.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
@@ -46,8 +65,10 @@ Widget createDashboardScreen({Locale? locale}) {
     mockBodyWeightRepository.watchAllDrift(),
   ).thenAnswer((_) => Stream.value(getWeightEntries()));
 
-  final mockMeasurementProvider = MockMeasurementProvider();
-  when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
+  final mockMeasurementRepo = MockMeasurementRepository();
+  when(
+    mockMeasurementRepo.watchAll(),
+  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
 
   final mockUserProvider = MockUserProvider();
   when(mockUserProvider.profile).thenReturn(tProfile1);
@@ -55,6 +76,7 @@ Widget createDashboardScreen({Locale? locale}) {
   final container = riverpod.ProviderContainer.test(
     overrides: [
       bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
     ],
   );
   container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
@@ -84,9 +106,6 @@ Widget createDashboardScreen({Locale? locale}) {
 
           ChangeNotifierProvider<NutritionPlansProvider>(
             create: (context) => mockNutritionProvider,
-          ),
-          ChangeNotifierProvider<MeasurementProvider>(
-            create: (context) => mockMeasurementProvider,
           ),
         ],
         child: MaterialApp(

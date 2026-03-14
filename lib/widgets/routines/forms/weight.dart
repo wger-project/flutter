@@ -86,7 +86,7 @@ class WeightInputWidget extends ConsumerStatefulWidget {
 }
 
 class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
-  final _logger = Logger('LogsWeightWidget');
+  final _logger = Logger('WeightInputWidget');
   late TextEditingController _controller;
   num? _lastWeight;
 

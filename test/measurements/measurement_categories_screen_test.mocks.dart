@@ -3,14 +3,12 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
-import 'dart:ui' as _i7;
+import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/measurements/measurement_category.dart' as _i3;
-import 'package:wger/models/measurements/measurement_entry.dart' as _i6;
-import 'package:wger/providers/base_provider.dart' as _i2;
-import 'package:wger/providers/measurement.dart' as _i4;
+import 'package:wger/models/measurements/measurement_category.dart' as _i4;
+import 'package:wger/models/measurements/measurement_entry.dart' as _i5;
+import 'package:wger/providers/measurement_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -27,178 +25,85 @@ import 'package:wger/providers/measurement.dart' as _i4;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
-  _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeMeasurementCategory_1 extends _i1.SmartFake implements _i3.MeasurementCategory {
-  _FakeMeasurementCategory_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-/// A class which mocks [MeasurementProvider].
+/// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMeasurementProvider extends _i1.Mock implements _i4.MeasurementProvider {
-  MockMeasurementProvider() {
+class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepository {
+  MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.WgerBaseProvider get baseProvider =>
+  _i3.Stream<List<_i4.MeasurementCategory>> watchAll() =>
       (super.noSuchMethod(
-            Invocation.getter(#baseProvider),
-            returnValue: _FakeWgerBaseProvider_0(
-              this,
-              Invocation.getter(#baseProvider),
-            ),
+            Invocation.method(#watchAll, []),
+            returnValue: _i3.Stream<List<_i4.MeasurementCategory>>.empty(),
           )
-          as _i2.WgerBaseProvider);
+          as _i3.Stream<List<_i4.MeasurementCategory>>);
 
   @override
-  List<_i3.MeasurementCategory> get categories =>
-      (super.noSuchMethod(
-            Invocation.getter(#categories),
-            returnValue: <_i3.MeasurementCategory>[],
-          )
-          as List<_i3.MeasurementCategory>);
-
-  @override
-  bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
-
-  @override
-  void clear() => super.noSuchMethod(
-    Invocation.method(#clear, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i3.MeasurementCategory findCategoryById(int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#findCategoryById, [id]),
-            returnValue: _FakeMeasurementCategory_1(
-              this,
-              Invocation.method(#findCategoryById, [id]),
-            ),
-          )
-          as _i3.MeasurementCategory);
-
-  @override
-  _i5.Future<void> fetchAndSetCategories() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetCategories, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> fetchAndSetCategoryEntries(int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetCategoryEntries, [id]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> fetchAndSetAllCategoriesAndEntries() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetAllCategoriesAndEntries, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> addCategory(_i3.MeasurementCategory? category) =>
-      (super.noSuchMethod(
-            Invocation.method(#addCategory, [category]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> deleteCategory(int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteCategory, [id]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> editCategory(int? id, String? newName, String? newUnit) =>
-      (super.noSuchMethod(
-            Invocation.method(#editCategory, [id, newName, newUnit]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> addEntry(_i6.MeasurementEntry? entry) =>
-      (super.noSuchMethod(
-            Invocation.method(#addEntry, [entry]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> deleteEntry(int? id, int? categoryId) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteEntry, [id, categoryId]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> editEntry(
-    int? id,
-    int? categoryId,
-    num? newValue,
-    String? newNotes,
-    DateTime? newDate,
+  _i3.Stream<_i4.MeasurementCategory?> watchLocalDriftCategoryByUuid(
+    String? uuid,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#editEntry, [
-              id,
-              categoryId,
-              newValue,
-              newNotes,
-              newDate,
-            ]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            Invocation.method(#watchLocalDriftCategoryByUuid, [uuid]),
+            returnValue: _i3.Stream<_i4.MeasurementCategory?>.empty(),
           )
-          as _i5.Future<void>);
+          as _i3.Stream<_i4.MeasurementCategory?>);
 
   @override
-  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#addListener, [listener]),
-    returnValueForMissingStub: null,
-  );
+  _i3.Future<void> deleteLocalDrift(String? uuid) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDrift, [uuid]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 
   @override
-  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#removeListener, [listener]),
-    returnValueForMissingStub: null,
-  );
+  _i3.Future<void> updateLocalDrift(_i5.MeasurementEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLocalDrift, [entry]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 
   @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
+  _i3.Future<void> addLocalDrift(_i5.MeasurementEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDrift, [entry]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 
   @override
-  void notifyListeners() => super.noSuchMethod(
-    Invocation.method(#notifyListeners, []),
-    returnValueForMissingStub: null,
-  );
+  _i3.Future<void> deleteLocalDriftCategory(String? uuid) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDriftCategory, [uuid]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> updateLocalDriftCategory(
+    _i4.MeasurementCategory? category,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLocalDriftCategory, [category]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDriftCategory(_i4.MeasurementCategory? category) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftCategory, [category]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 }

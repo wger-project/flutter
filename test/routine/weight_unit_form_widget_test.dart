@@ -27,7 +27,7 @@ import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/weight.dart';
 
 void main() {
-  int? result;
+  WeightUnit? result;
 
   const unit1 = WeightUnit(id: 1, name: 'kg');
   const unit2 = WeightUnit(id: 2, name: 'donkeys');

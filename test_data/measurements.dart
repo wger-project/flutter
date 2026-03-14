@@ -20,6 +20,7 @@ import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
 final testMeasurementEntry1 = MeasurementEntry(
+  id: 1,
   uuid: '1',
   categoryId: 1,
   date: DateTime(2022, 9, 10),
@@ -27,6 +28,7 @@ final testMeasurementEntry1 = MeasurementEntry(
   notes: '',
 );
 final testMeasurementEntry2 = MeasurementEntry(
+  id: 2,
   uuid: '2',
   categoryId: 1,
   date: DateTime(2022, 10, 5),
@@ -34,6 +36,7 @@ final testMeasurementEntry2 = MeasurementEntry(
   notes: '',
 );
 final testMeasurementEntry3 = MeasurementEntry(
+  id: 3,
   uuid: '3',
   categoryId: 1,
   date: DateTime(2022, 10, 10),
@@ -41,6 +44,7 @@ final testMeasurementEntry3 = MeasurementEntry(
   notes: '',
 );
 final testMeasurementEntry4 = MeasurementEntry(
+  id: 4,
   uuid: '4',
   categoryId: 1,
   date: DateTime(2022, 11, 1),
@@ -48,6 +52,7 @@ final testMeasurementEntry4 = MeasurementEntry(
   notes: '',
 );
 final testMeasurementEntry5 = MeasurementEntry(
+  id: 5,
   uuid: '5',
   categoryId: 1,
   date: DateTime(2022, 11, 10),
@@ -55,6 +60,7 @@ final testMeasurementEntry5 = MeasurementEntry(
   notes: '',
 );
 final testMeasurementEntry6 = MeasurementEntry(
+  id: 6,
   uuid: '6',
   categoryId: 1,
   date: DateTime(2022, 11, 15),
@@ -62,20 +68,47 @@ final testMeasurementEntry6 = MeasurementEntry(
   notes: '',
 );
 
-List<MeasurementCategory> getMeasurementCategories() {
-  final category = MeasurementCategory(
-    uuid: '1',
-    name: 'Body fat',
-    unit: '%',
-    entries: [
-      testMeasurementEntry1,
-      testMeasurementEntry2,
-      testMeasurementEntry3,
-      testMeasurementEntry4,
-      testMeasurementEntry5,
-      testMeasurementEntry6,
-    ],
-  );
+final testMeasurementEntry7 = MeasurementEntry(
+  id: 7,
+  uuid: '7',
+  categoryId: 2,
+  date: DateTime(2026, 02, 1),
+  value: 40,
+  notes: '',
+);
 
-  return [category];
+final testMeasurementEntry8 = MeasurementEntry(
+  id: 8,
+  uuid: '8',
+  categoryId: 2,
+  date: DateTime(2026, 03, 14),
+  value: 45,
+  notes: '',
+);
+
+List<MeasurementCategory> getMeasurementCategories() {
+  return [
+    MeasurementCategory(
+      uuid: '1',
+      name: 'Body fat',
+      unit: '%',
+      entries: [
+        testMeasurementEntry1,
+        testMeasurementEntry2,
+        testMeasurementEntry3,
+        testMeasurementEntry4,
+        testMeasurementEntry5,
+        testMeasurementEntry6,
+      ],
+    ),
+    MeasurementCategory(
+      uuid: '1',
+      name: 'Biceps',
+      unit: 'cm',
+      entries: [
+        testMeasurementEntry7,
+        testMeasurementEntry8,
+      ],
+    ),
+  ];
 }

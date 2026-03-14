@@ -3,12 +3,12 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i3;
 
-import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/providers/auth.dart' as _i2;
-import 'package:wger/providers/base_provider.dart' as _i4;
+import 'package:wger/models/measurements/measurement_category.dart' as _i4;
+import 'package:wger/models/measurements/measurement_entry.dart' as _i5;
+import 'package:wger/providers/measurement_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,168 +25,85 @@ import 'package:wger/providers/base_provider.dart' as _i4;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-/// A class which mocks [WgerBaseProvider].
+/// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
-  MockWgerBaseProvider() {
+class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepository {
+  MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.AuthProvider get auth =>
+  _i3.Stream<List<_i4.MeasurementCategory>> watchAll() =>
       (super.noSuchMethod(
-            Invocation.getter(#auth),
-            returnValue: _FakeAuthProvider_0(this, Invocation.getter(#auth)),
+            Invocation.method(#watchAll, []),
+            returnValue: _i3.Stream<List<_i4.MeasurementCategory>>.empty(),
           )
-          as _i2.AuthProvider);
+          as _i3.Stream<List<_i4.MeasurementCategory>>);
 
   @override
-  _i3.Client get client =>
-      (super.noSuchMethod(
-            Invocation.getter(#client),
-            returnValue: _FakeClient_1(this, Invocation.getter(#client)),
-          )
-          as _i3.Client);
-
-  @override
-  set auth(_i2.AuthProvider? value) => super.noSuchMethod(
-    Invocation.setter(#auth, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set client(_i3.Client? value) => super.noSuchMethod(
-    Invocation.setter(#client, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  Map<String, String> getDefaultHeaders({
-    bool? includeAuth = false,
-    String? language,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {
-              #includeAuth: includeAuth,
-              #language: language,
-            }),
-            returnValue: <String, String>{},
-          )
-          as Map<String, String>);
-
-  @override
-  Uri makeUrl(
-    String? path, {
-    int? id,
-    String? objectMethod,
-    Map<String, dynamic>? query,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #makeUrl,
-              [path],
-              {#id: id, #objectMethod: objectMethod, #query: query},
-            ),
-            returnValue: _FakeUri_2(
-              this,
-              Invocation.method(
-                #makeUrl,
-                [path],
-                {#id: id, #objectMethod: objectMethod, #query: query},
-              ),
-            ),
-          )
-          as Uri);
-
-  @override
-  _i5.Future<dynamic> fetch(
-    Uri? uri, {
-    int? maxRetries = 3,
-    Duration? initialDelay = const Duration(milliseconds: 250),
-    Duration? timeout = const Duration(seconds: 15),
-    String? language,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #fetch,
-              [uri],
-              {
-                #maxRetries: maxRetries,
-                #initialDelay: initialDelay,
-                #timeout: timeout,
-                #language: language,
-              },
-            ),
-            returnValue: _i5.Future<dynamic>.value(),
-          )
-          as _i5.Future<dynamic>);
-
-  @override
-  _i5.Future<List<dynamic>> fetchPaginated(
-    Uri? uri, {
-    String? language,
-    Duration? timeout = const Duration(seconds: 15),
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #fetchPaginated,
-              [uri],
-              {#language: language, #timeout: timeout},
-            ),
-            returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
-          )
-          as _i5.Future<List<dynamic>>);
-
-  @override
-  _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
-      (super.noSuchMethod(
-            Invocation.method(#post, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i5.Future<Map<String, dynamic>>);
-
-  @override
-  _i5.Future<Map<String, dynamic>> patch(
-    Map<String, dynamic>? data,
-    Uri? uri,
+  _i3.Stream<_i4.MeasurementCategory?> watchLocalDriftCategoryByUuid(
+    String? uuid,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#patch, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
+            Invocation.method(#watchLocalDriftCategoryByUuid, [uuid]),
+            returnValue: _i3.Stream<_i4.MeasurementCategory?>.empty(),
           )
-          as _i5.Future<Map<String, dynamic>>);
+          as _i3.Stream<_i4.MeasurementCategory?>);
 
   @override
-  _i5.Future<_i3.Response> deleteRequest(String? url, int? id) =>
+  _i3.Future<void> deleteLocalDrift(String? uuid) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteRequest, [url, id]),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
-                this,
-                Invocation.method(#deleteRequest, [url, id]),
-              ),
-            ),
+            Invocation.method(#deleteLocalDrift, [uuid]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i5.Future<_i3.Response>);
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> updateLocalDrift(_i5.MeasurementEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLocalDrift, [entry]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDrift(_i5.MeasurementEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDrift, [entry]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> deleteLocalDriftCategory(String? uuid) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDriftCategory, [uuid]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> updateLocalDriftCategory(
+    _i4.MeasurementCategory? category,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLocalDriftCategory, [category]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDriftCategory(_i4.MeasurementCategory? category) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftCategory, [category]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 }

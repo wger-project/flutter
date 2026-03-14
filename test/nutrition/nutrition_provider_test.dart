@@ -2,15 +2,18 @@ import 'dart:convert';
 
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/nutrition.dart';
 
 import '../fixtures/fixture_reader.dart';
-import '../measurements/measurement_provider_test.mocks.dart';
+import 'nutrition_provider_test.mocks.dart';
 
+@GenerateMocks([WgerBaseProvider])
 void main() {
   final now = DateTime.now();
   late NutritionPlansProvider nutritionProvider;

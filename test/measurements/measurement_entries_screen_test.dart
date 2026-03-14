@@ -17,61 +17,45 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/models/measurements/measurement_entry.dart';
-import 'package:wger/providers/measurement.dart';
+import 'package:wger/providers/measurement_repository.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/measurement_entries_screen.dart';
 
-import '../nutrition/nutritional_plan_form_test.mocks.dart';
-import 'measurement_categories_screen_test.mocks.dart';
+import '../../test_data/measurements.dart';
+import 'measurement_entries_screen_test.mocks.dart';
 
+@GenerateMocks([MeasurementRepository, NutritionPlansProvider])
 void main() {
-  late MockMeasurementProvider mockMeasurementProvider;
+  late MockMeasurementRepository mockMeasurementRepo;
   late MockNutritionPlansProvider mockNutritionPlansProvider;
 
   setUp(() {
-    mockMeasurementProvider = MockMeasurementProvider();
-    when(mockMeasurementProvider.findCategoryById(any)).thenReturn(
-      MeasurementCategory(
-        uuid: 1,
-        name: 'body fat',
-        unit: '%',
-        entries: [
-          MeasurementEntry(
-            uuid: 1,
-            categoryId: 1,
-            date: DateTime(2021, 8, 1),
-            value: 10.2,
-            notes: '',
-          ),
-          MeasurementEntry(
-            uuid: 1,
-            categoryId: 1,
-            date: DateTime(2021, 8, 10),
-            value: 18.1,
-            notes: 'a',
-          ),
-        ],
-      ),
-    );
+    mockMeasurementRepo = MockMeasurementRepository();
+    when(
+      mockMeasurementRepo.watchLocalDriftCategoryByUuid(any),
+    ).thenAnswer((_) => Stream<MeasurementCategory>.value(getMeasurementCategories()[0]));
 
     mockNutritionPlansProvider = MockNutritionPlansProvider();
     when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
     when(mockNutritionPlansProvider.items).thenReturn([]);
   });
 
-  Widget createHomeScreen({locale = 'en'}) {
+  Widget createEntriesScreen({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => mockNutritionPlansProvider,
-      child: ChangeNotifierProvider<MeasurementProvider>(
-        create: (context) => mockMeasurementProvider,
+    return ProviderScope(
+      overrides: [
+        measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+      ],
+      child: ChangeNotifierProvider<NutritionPlansProvider>(
+        create: (context) => mockNutritionPlansProvider,
         child: MaterialApp(
           locale: Locale(locale),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -80,7 +64,7 @@ void main() {
           home: TextButton(
             onPressed: () => key.currentState!.push(
               MaterialPageRoute<void>(
-                settings: const RouteSettings(arguments: 1),
+                settings: const RouteSettings(arguments: '1'),
                 builder: (_) => const MeasurementEntriesScreen(),
               ),
             ),
@@ -92,32 +76,34 @@ void main() {
   }
 
   testWidgets('Test the widgets on the measurement entries screen', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(createEntriesScreen());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
     // Nav bar
-    expect(find.text('body fat'), findsOneWidget);
+    expect(find.text('Body fat'), findsOneWidget);
 
     // Entries
-    expect(find.text('15 %'), findsNWidgets(1));
+    expect(find.text('30 %'), findsNWidgets(1));
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
+    await tester.pumpWidget(createEntriesScreen());
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
     // From the entries list and from the chart
-    expect(find.text('8/1/2021'), findsWidgets);
-    expect(find.text('8/10/2021'), findsWidgets);
+    expect(find.text('9/10/2022'), findsWidgets);
+    expect(find.text('10/5/2022'), findsWidgets);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen(locale: 'de'));
+    await tester.pumpWidget(createEntriesScreen(locale: 'de'));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
-    expect(find.text('1.8.2021'), findsWidgets);
-    expect(find.text('10.8.2021'), findsWidgets);
+
+    // From the entries list and from the chart
+    expect(find.text('10.9.2022'), findsWidgets);
+    expect(find.text('5.10.2022'), findsWidgets);
   });
 }

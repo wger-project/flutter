@@ -88,7 +88,7 @@ class RepetitionInputWidget extends ConsumerStatefulWidget {
 }
 
 class _RepetitionInputWidgetState extends ConsumerState<RepetitionInputWidget> {
-  final _logger = Logger('LogsRepsWidget');
+  final _logger = Logger('RepetitionUnitInputWidget');
   late TextEditingController _controller;
   num? _lastReps;
 
