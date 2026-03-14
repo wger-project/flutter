@@ -17,10 +17,10 @@
  */
 
 import 'package:equatable/equatable.dart';
+import 'package:wger/models/core/language.dart';
 import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/language.dart';
 
 class Translation extends Equatable {
   final int? id;

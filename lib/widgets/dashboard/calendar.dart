@@ -81,6 +81,16 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadEvents();
     });
+
+    // React to changes in the providers so the calendar updates automatically
+    // TODO: refine this
+    ref.listen<riverpod.AsyncValue<List<WeightEntry>>>(weightEntryProvider, (prev, next) {
+      loadEvents();
+    });
+
+    ref.listen<riverpod.AsyncValue<List<MeasurementCategory>>>(measurementProvider, (prev, next) {
+      loadEvents();
+    });
   }
 
   /// Loads and organizes all events from various providers into the calendar.
@@ -100,8 +110,6 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   /// **Note**: This method checks if the widget is still mounted before updating
   /// the state after the async workout session fetch operation.
   void loadEvents() async {
-    // TODO: refactor widget so it reacts to changes in the weight entries provider (and the others)
-
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final i18n = AppLocalizations.of(context);
 
