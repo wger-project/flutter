@@ -20,20 +20,22 @@ import 'package:drift/drift.dart';
 import 'package:drift_sqlite_async/drift_sqlite_async.dart';
 import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:powersync/powersync.dart' show uuid;
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/int_to_string_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/core/language.dart';
+import 'package:wger/models/core/license.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
-import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/session.dart';
@@ -42,7 +44,9 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import '../../models/measurements/measurement_entry.dart';
 import 'powersync.dart';
 import 'tables/exercise.dart';
+import 'tables/ingredient.dart';
 import 'tables/language.dart';
+import 'tables/license.dart';
 import 'tables/measurements.dart';
 import 'tables/routines.dart';
 import 'tables/weight.dart';
@@ -53,6 +57,7 @@ part 'database.g.dart';
   tables: [
     // Core
     LanguageTable,
+    LicenseTable,
 
     // Exercises
     ExerciseTable,
@@ -66,14 +71,22 @@ part 'database.g.dart';
     ExerciseImageTable,
     ExerciseVideoTable,
 
-    // User data
+    // Body weight
     WeightEntryTable,
+
+    // Measurements
     MeasurementCategoryTable,
     MeasurementEntryTable,
+
+    // Routines
     WorkoutLogTable,
     WorkoutSessionTable,
     RoutineRepetitionUnitTable,
     RoutineWeightUnitTable,
+
+    // Nutrition
+    IngredientTable,
+    IngredientImageTable,
   ],
   //include: {'queries.drift'},
 )

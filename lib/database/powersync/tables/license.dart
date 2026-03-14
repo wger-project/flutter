@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2026 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,14 +17,15 @@
  */
 
 import 'package:drift/drift.dart';
-import 'package:wger/models/core/language.dart';
+import 'package:wger/models/core/license.dart';
 
-@UseRowClass(Language)
-class LanguageTable extends Table {
+@UseRowClass(License)
+class LicenseTable extends Table {
   @override
-  String get tableName => 'core_language';
+  String get tableName => 'core_license';
 
   IntColumn get id => integer()();
   TextColumn get shortName => text().named('short_name')();
   TextColumn get fullName => text().named('full_name')();
+  TextColumn get url => text()();
 }

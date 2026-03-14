@@ -16,15 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart';
-import 'package:wger/models/core/language.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-@UseRowClass(Language)
-class LanguageTable extends Table {
-  @override
-  String get tableName => 'core_language';
+part 'license.freezed.dart';
 
-  IntColumn get id => integer()();
-  TextColumn get shortName => text().named('short_name')();
-  TextColumn get fullName => text().named('full_name')();
+@freezed
+abstract class License with _$License {
+  const factory License({
+    required int id,
+    required String shortName,
+    required String fullName,
+    required String url,
+  }) = _License;
 }

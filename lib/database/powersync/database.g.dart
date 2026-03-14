@@ -181,6 +181,217 @@ class LanguageTableCompanion extends UpdateCompanion<Language> {
   }
 }
 
+class $LicenseTableTable extends LicenseTable with TableInfo<$LicenseTableTable, License> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LicenseTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shortNameMeta = const VerificationMeta(
+    'shortName',
+  );
+  @override
+  late final GeneratedColumn<String> shortName = GeneratedColumn<String>(
+    'short_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fullNameMeta = const VerificationMeta(
+    'fullName',
+  );
+  @override
+  late final GeneratedColumn<String> fullName = GeneratedColumn<String>(
+    'full_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  @override
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+    'url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, shortName, fullName, url];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'core_license';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<License> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('short_name')) {
+      context.handle(
+        _shortNameMeta,
+        shortName.isAcceptableOrUnknown(data['short_name']!, _shortNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_shortNameMeta);
+    }
+    if (data.containsKey('full_name')) {
+      context.handle(
+        _fullNameMeta,
+        fullName.isAcceptableOrUnknown(data['full_name']!, _fullNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fullNameMeta);
+    }
+    if (data.containsKey('url')) {
+      context.handle(
+        _urlMeta,
+        url.isAcceptableOrUnknown(data['url']!, _urlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_urlMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  License map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return License(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      shortName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}short_name'],
+      )!,
+      fullName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}full_name'],
+      )!,
+      url: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}url'],
+      )!,
+    );
+  }
+
+  @override
+  $LicenseTableTable createAlias(String alias) {
+    return $LicenseTableTable(attachedDatabase, alias);
+  }
+}
+
+class LicenseTableCompanion extends UpdateCompanion<License> {
+  final Value<int> id;
+  final Value<String> shortName;
+  final Value<String> fullName;
+  final Value<String> url;
+  final Value<int> rowid;
+  const LicenseTableCompanion({
+    this.id = const Value.absent(),
+    this.shortName = const Value.absent(),
+    this.fullName = const Value.absent(),
+    this.url = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LicenseTableCompanion.insert({
+    required int id,
+    required String shortName,
+    required String fullName,
+    required String url,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       shortName = Value(shortName),
+       fullName = Value(fullName),
+       url = Value(url);
+  static Insertable<License> custom({
+    Expression<int>? id,
+    Expression<String>? shortName,
+    Expression<String>? fullName,
+    Expression<String>? url,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (shortName != null) 'short_name': shortName,
+      if (fullName != null) 'full_name': fullName,
+      if (url != null) 'url': url,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LicenseTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? shortName,
+    Value<String>? fullName,
+    Value<String>? url,
+    Value<int>? rowid,
+  }) {
+    return LicenseTableCompanion(
+      id: id ?? this.id,
+      shortName: shortName ?? this.shortName,
+      fullName: fullName ?? this.fullName,
+      url: url ?? this.url,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (shortName.present) {
+      map['short_name'] = Variable<String>(shortName.value);
+    }
+    if (fullName.present) {
+      map['full_name'] = Variable<String>(fullName.value);
+    }
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LicenseTableCompanion(')
+          ..write('id: $id, ')
+          ..write('shortName: $shortName, ')
+          ..write('fullName: $fullName, ')
+          ..write('url: $url, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ExerciseCategoryTableTable extends ExerciseCategoryTable
     with TableInfo<$ExerciseCategoryTableTable, ExerciseCategory> {
   @override
@@ -4765,10 +4976,1230 @@ class RoutineWeightUnitTableCompanion extends UpdateCompanion<WeightUnit> {
   }
 }
 
+class $IngredientTableTable extends IngredientTable
+    with TableInfo<$IngredientTableTable, Ingredient> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $IngredientTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => ps.uuid.v4(),
+  );
+  static const VerificationMeta _remoteIdMeta = const VerificationMeta(
+    'remoteId',
+  );
+  @override
+  late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
+    'remote_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceNameMeta = const VerificationMeta(
+    'sourceName',
+  );
+  @override
+  late final GeneratedColumn<String> sourceName = GeneratedColumn<String>(
+    'source_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceUrlMeta = const VerificationMeta(
+    'sourceUrl',
+  );
+  @override
+  late final GeneratedColumn<String> sourceUrl = GeneratedColumn<String>(
+    'source_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _licenseObjectURlMeta = const VerificationMeta(
+    'licenseObjectURl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseObjectURl = GeneratedColumn<String>(
+    'license_object_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdMeta = const VerificationMeta(
+    'created',
+  );
+  @override
+  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
+    'created',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _energyMeta = const VerificationMeta('energy');
+  @override
+  late final GeneratedColumn<int> energy = GeneratedColumn<int>(
+    'energy',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _carbohydratesMeta = const VerificationMeta(
+    'carbohydrates',
+  );
+  @override
+  late final GeneratedColumn<double> carbohydrates = GeneratedColumn<double>(
+    'carbohydrates',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _carbohydratesSugarMeta = const VerificationMeta(
+    'carbohydratesSugar',
+  );
+  @override
+  late final GeneratedColumn<double> carbohydratesSugar = GeneratedColumn<double>(
+    'carbohydrates_sugar',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _proteinMeta = const VerificationMeta(
+    'protein',
+  );
+  @override
+  late final GeneratedColumn<double> protein = GeneratedColumn<double>(
+    'protein',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fatMeta = const VerificationMeta('fat');
+  @override
+  late final GeneratedColumn<double> fat = GeneratedColumn<double>(
+    'fat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fatSaturatedMeta = const VerificationMeta(
+    'fatSaturated',
+  );
+  @override
+  late final GeneratedColumn<double> fatSaturated = GeneratedColumn<double>(
+    'fat_saturated',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fiberMeta = const VerificationMeta('fiber');
+  @override
+  late final GeneratedColumn<double> fiber = GeneratedColumn<double>(
+    'fiber',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sodiumMeta = const VerificationMeta('sodium');
+  @override
+  late final GeneratedColumn<double> sodium = GeneratedColumn<double>(
+    'sodium',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isVeganMeta = const VerificationMeta(
+    'isVegan',
+  );
+  @override
+  late final GeneratedColumn<bool> isVegan = GeneratedColumn<bool>(
+    'is_vegan',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_vegan" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isVegetarianMeta = const VerificationMeta(
+    'isVegetarian',
+  );
+  @override
+  late final GeneratedColumn<bool> isVegetarian = GeneratedColumn<bool>(
+    'is_vegetarian',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_vegetarian" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    uuid,
+    remoteId,
+    sourceName,
+    sourceUrl,
+    licenseObjectURl,
+    code,
+    name,
+    created,
+    energy,
+    carbohydrates,
+    carbohydratesSugar,
+    protein,
+    fat,
+    fatSaturated,
+    fiber,
+    sodium,
+    isVegan,
+    isVegetarian,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'nutrition_ingredient';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Ingredient> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(
+        _uuidMeta,
+        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
+      );
+    }
+    if (data.containsKey('remote_id')) {
+      context.handle(
+        _remoteIdMeta,
+        remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta),
+      );
+    }
+    if (data.containsKey('source_name')) {
+      context.handle(
+        _sourceNameMeta,
+        sourceName.isAcceptableOrUnknown(data['source_name']!, _sourceNameMeta),
+      );
+    }
+    if (data.containsKey('source_url')) {
+      context.handle(
+        _sourceUrlMeta,
+        sourceUrl.isAcceptableOrUnknown(data['source_url']!, _sourceUrlMeta),
+      );
+    }
+    if (data.containsKey('license_object_url')) {
+      context.handle(
+        _licenseObjectURlMeta,
+        licenseObjectURl.isAcceptableOrUnknown(
+          data['license_object_url']!,
+          _licenseObjectURlMeta,
+        ),
+      );
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('created')) {
+      context.handle(
+        _createdMeta,
+        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdMeta);
+    }
+    if (data.containsKey('energy')) {
+      context.handle(
+        _energyMeta,
+        energy.isAcceptableOrUnknown(data['energy']!, _energyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_energyMeta);
+    }
+    if (data.containsKey('carbohydrates')) {
+      context.handle(
+        _carbohydratesMeta,
+        carbohydrates.isAcceptableOrUnknown(
+          data['carbohydrates']!,
+          _carbohydratesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_carbohydratesMeta);
+    }
+    if (data.containsKey('carbohydrates_sugar')) {
+      context.handle(
+        _carbohydratesSugarMeta,
+        carbohydratesSugar.isAcceptableOrUnknown(
+          data['carbohydrates_sugar']!,
+          _carbohydratesSugarMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_carbohydratesSugarMeta);
+    }
+    if (data.containsKey('protein')) {
+      context.handle(
+        _proteinMeta,
+        protein.isAcceptableOrUnknown(data['protein']!, _proteinMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_proteinMeta);
+    }
+    if (data.containsKey('fat')) {
+      context.handle(
+        _fatMeta,
+        fat.isAcceptableOrUnknown(data['fat']!, _fatMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fatMeta);
+    }
+    if (data.containsKey('fat_saturated')) {
+      context.handle(
+        _fatSaturatedMeta,
+        fatSaturated.isAcceptableOrUnknown(
+          data['fat_saturated']!,
+          _fatSaturatedMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fatSaturatedMeta);
+    }
+    if (data.containsKey('fiber')) {
+      context.handle(
+        _fiberMeta,
+        fiber.isAcceptableOrUnknown(data['fiber']!, _fiberMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fiberMeta);
+    }
+    if (data.containsKey('sodium')) {
+      context.handle(
+        _sodiumMeta,
+        sodium.isAcceptableOrUnknown(data['sodium']!, _sodiumMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sodiumMeta);
+    }
+    if (data.containsKey('is_vegan')) {
+      context.handle(
+        _isVeganMeta,
+        isVegan.isAcceptableOrUnknown(data['is_vegan']!, _isVeganMeta),
+      );
+    }
+    if (data.containsKey('is_vegetarian')) {
+      context.handle(
+        _isVegetarianMeta,
+        isVegetarian.isAcceptableOrUnknown(
+          data['is_vegetarian']!,
+          _isVegetarianMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  Ingredient map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Ingredient(
+      remoteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remote_id'],
+      ),
+      sourceName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_name'],
+      ),
+      sourceUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_url'],
+      ),
+      licenseObjectURl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_object_url'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      energy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}energy'],
+      )!,
+      carbohydrates: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}carbohydrates'],
+      )!,
+      carbohydratesSugar: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}carbohydrates_sugar'],
+      )!,
+      protein: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}protein'],
+      )!,
+      fat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}fat'],
+      )!,
+      fatSaturated: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}fat_saturated'],
+      )!,
+      fiber: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}fiber'],
+      )!,
+      sodium: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}sodium'],
+      )!,
+      isVegan: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_vegan'],
+      )!,
+      isVegetarian: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_vegetarian'],
+      )!,
+    );
+  }
+
+  @override
+  $IngredientTableTable createAlias(String alias) {
+    return $IngredientTableTable(attachedDatabase, alias);
+  }
+}
+
+class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
+  final Value<int> id;
+  final Value<String> uuid;
+  final Value<String?> remoteId;
+  final Value<String?> sourceName;
+  final Value<String?> sourceUrl;
+  final Value<String?> licenseObjectURl;
+  final Value<String?> code;
+  final Value<String> name;
+  final Value<DateTime> created;
+  final Value<int> energy;
+  final Value<double> carbohydrates;
+  final Value<double> carbohydratesSugar;
+  final Value<double> protein;
+  final Value<double> fat;
+  final Value<double> fatSaturated;
+  final Value<double> fiber;
+  final Value<double> sodium;
+  final Value<bool> isVegan;
+  final Value<bool> isVegetarian;
+  final Value<int> rowid;
+  const IngredientTableCompanion({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    this.remoteId = const Value.absent(),
+    this.sourceName = const Value.absent(),
+    this.sourceUrl = const Value.absent(),
+    this.licenseObjectURl = const Value.absent(),
+    this.code = const Value.absent(),
+    this.name = const Value.absent(),
+    this.created = const Value.absent(),
+    this.energy = const Value.absent(),
+    this.carbohydrates = const Value.absent(),
+    this.carbohydratesSugar = const Value.absent(),
+    this.protein = const Value.absent(),
+    this.fat = const Value.absent(),
+    this.fatSaturated = const Value.absent(),
+    this.fiber = const Value.absent(),
+    this.sodium = const Value.absent(),
+    this.isVegan = const Value.absent(),
+    this.isVegetarian = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  IngredientTableCompanion.insert({
+    required int id,
+    this.uuid = const Value.absent(),
+    this.remoteId = const Value.absent(),
+    this.sourceName = const Value.absent(),
+    this.sourceUrl = const Value.absent(),
+    this.licenseObjectURl = const Value.absent(),
+    this.code = const Value.absent(),
+    required String name,
+    required DateTime created,
+    required int energy,
+    required double carbohydrates,
+    required double carbohydratesSugar,
+    required double protein,
+    required double fat,
+    required double fatSaturated,
+    required double fiber,
+    required double sodium,
+    this.isVegan = const Value.absent(),
+    this.isVegetarian = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       created = Value(created),
+       energy = Value(energy),
+       carbohydrates = Value(carbohydrates),
+       carbohydratesSugar = Value(carbohydratesSugar),
+       protein = Value(protein),
+       fat = Value(fat),
+       fatSaturated = Value(fatSaturated),
+       fiber = Value(fiber),
+       sodium = Value(sodium);
+  static Insertable<Ingredient> custom({
+    Expression<int>? id,
+    Expression<String>? uuid,
+    Expression<String>? remoteId,
+    Expression<String>? sourceName,
+    Expression<String>? sourceUrl,
+    Expression<String>? licenseObjectURl,
+    Expression<String>? code,
+    Expression<String>? name,
+    Expression<DateTime>? created,
+    Expression<int>? energy,
+    Expression<double>? carbohydrates,
+    Expression<double>? carbohydratesSugar,
+    Expression<double>? protein,
+    Expression<double>? fat,
+    Expression<double>? fatSaturated,
+    Expression<double>? fiber,
+    Expression<double>? sodium,
+    Expression<bool>? isVegan,
+    Expression<bool>? isVegetarian,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
+      if (remoteId != null) 'remote_id': remoteId,
+      if (sourceName != null) 'source_name': sourceName,
+      if (sourceUrl != null) 'source_url': sourceUrl,
+      if (licenseObjectURl != null) 'license_object_url': licenseObjectURl,
+      if (code != null) 'code': code,
+      if (name != null) 'name': name,
+      if (created != null) 'created': created,
+      if (energy != null) 'energy': energy,
+      if (carbohydrates != null) 'carbohydrates': carbohydrates,
+      if (carbohydratesSugar != null) 'carbohydrates_sugar': carbohydratesSugar,
+      if (protein != null) 'protein': protein,
+      if (fat != null) 'fat': fat,
+      if (fatSaturated != null) 'fat_saturated': fatSaturated,
+      if (fiber != null) 'fiber': fiber,
+      if (sodium != null) 'sodium': sodium,
+      if (isVegan != null) 'is_vegan': isVegan,
+      if (isVegetarian != null) 'is_vegetarian': isVegetarian,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  IngredientTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? uuid,
+    Value<String?>? remoteId,
+    Value<String?>? sourceName,
+    Value<String?>? sourceUrl,
+    Value<String?>? licenseObjectURl,
+    Value<String?>? code,
+    Value<String>? name,
+    Value<DateTime>? created,
+    Value<int>? energy,
+    Value<double>? carbohydrates,
+    Value<double>? carbohydratesSugar,
+    Value<double>? protein,
+    Value<double>? fat,
+    Value<double>? fatSaturated,
+    Value<double>? fiber,
+    Value<double>? sodium,
+    Value<bool>? isVegan,
+    Value<bool>? isVegetarian,
+    Value<int>? rowid,
+  }) {
+    return IngredientTableCompanion(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      remoteId: remoteId ?? this.remoteId,
+      sourceName: sourceName ?? this.sourceName,
+      sourceUrl: sourceUrl ?? this.sourceUrl,
+      licenseObjectURl: licenseObjectURl ?? this.licenseObjectURl,
+      code: code ?? this.code,
+      name: name ?? this.name,
+      created: created ?? this.created,
+      energy: energy ?? this.energy,
+      carbohydrates: carbohydrates ?? this.carbohydrates,
+      carbohydratesSugar: carbohydratesSugar ?? this.carbohydratesSugar,
+      protein: protein ?? this.protein,
+      fat: fat ?? this.fat,
+      fatSaturated: fatSaturated ?? this.fatSaturated,
+      fiber: fiber ?? this.fiber,
+      sodium: sodium ?? this.sodium,
+      isVegan: isVegan ?? this.isVegan,
+      isVegetarian: isVegetarian ?? this.isVegetarian,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
+    }
+    if (remoteId.present) {
+      map['remote_id'] = Variable<String>(remoteId.value);
+    }
+    if (sourceName.present) {
+      map['source_name'] = Variable<String>(sourceName.value);
+    }
+    if (sourceUrl.present) {
+      map['source_url'] = Variable<String>(sourceUrl.value);
+    }
+    if (licenseObjectURl.present) {
+      map['license_object_url'] = Variable<String>(licenseObjectURl.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (created.present) {
+      map['created'] = Variable<DateTime>(created.value);
+    }
+    if (energy.present) {
+      map['energy'] = Variable<int>(energy.value);
+    }
+    if (carbohydrates.present) {
+      map['carbohydrates'] = Variable<double>(carbohydrates.value);
+    }
+    if (carbohydratesSugar.present) {
+      map['carbohydrates_sugar'] = Variable<double>(carbohydratesSugar.value);
+    }
+    if (protein.present) {
+      map['protein'] = Variable<double>(protein.value);
+    }
+    if (fat.present) {
+      map['fat'] = Variable<double>(fat.value);
+    }
+    if (fatSaturated.present) {
+      map['fat_saturated'] = Variable<double>(fatSaturated.value);
+    }
+    if (fiber.present) {
+      map['fiber'] = Variable<double>(fiber.value);
+    }
+    if (sodium.present) {
+      map['sodium'] = Variable<double>(sodium.value);
+    }
+    if (isVegan.present) {
+      map['is_vegan'] = Variable<bool>(isVegan.value);
+    }
+    if (isVegetarian.present) {
+      map['is_vegetarian'] = Variable<bool>(isVegetarian.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('IngredientTableCompanion(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('remoteId: $remoteId, ')
+          ..write('sourceName: $sourceName, ')
+          ..write('sourceUrl: $sourceUrl, ')
+          ..write('licenseObjectURl: $licenseObjectURl, ')
+          ..write('code: $code, ')
+          ..write('name: $name, ')
+          ..write('created: $created, ')
+          ..write('energy: $energy, ')
+          ..write('carbohydrates: $carbohydrates, ')
+          ..write('carbohydratesSugar: $carbohydratesSugar, ')
+          ..write('protein: $protein, ')
+          ..write('fat: $fat, ')
+          ..write('fatSaturated: $fatSaturated, ')
+          ..write('fiber: $fiber, ')
+          ..write('sodium: $sodium, ')
+          ..write('isVegan: $isVegan, ')
+          ..write('isVegetarian: $isVegetarian, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $IngredientImageTableTable extends IngredientImageTable
+    with TableInfo<$IngredientImageTableTable, IngredientImage> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $IngredientImageTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ingredientIdMeta = const VerificationMeta(
+    'ingredientId',
+  );
+  @override
+  late final GeneratedColumn<int> ingredientId = GeneratedColumn<int>(
+    'ingredient_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES nutrition_ingredient (id)',
+    ),
+  );
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  @override
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+    'image',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sizeMeta = const VerificationMeta('size');
+  @override
+  late final GeneratedColumn<int> size = GeneratedColumn<int>(
+    'size',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseIdMeta = const VerificationMeta(
+    'licenseId',
+  );
+  @override
+  late final GeneratedColumn<int> licenseId = GeneratedColumn<int>(
+    'license',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorMeta = const VerificationMeta('author');
+  @override
+  late final GeneratedColumn<String> author = GeneratedColumn<String>(
+    'license_author',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorUrlMeta = const VerificationMeta(
+    'authorUrl',
+  );
+  @override
+  late final GeneratedColumn<String> authorUrl = GeneratedColumn<String>(
+    'license_author_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'license_title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _objectUrlMeta = const VerificationMeta(
+    'objectUrl',
+  );
+  @override
+  late final GeneratedColumn<String> objectUrl = GeneratedColumn<String>(
+    'license_object_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _derivativeSourceUrlMeta = const VerificationMeta(
+    'derivativeSourceUrl',
+  );
+  @override
+  late final GeneratedColumn<String> derivativeSourceUrl = GeneratedColumn<String>(
+    'license_derivative_source_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    uuid,
+    ingredientId,
+    url,
+    size,
+    licenseId,
+    author,
+    authorUrl,
+    title,
+    objectUrl,
+    derivativeSourceUrl,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'nutrition_ingredientimage';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<IngredientImage> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(
+        _uuidMeta,
+        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uuidMeta);
+    }
+    if (data.containsKey('ingredient_id')) {
+      context.handle(
+        _ingredientIdMeta,
+        ingredientId.isAcceptableOrUnknown(
+          data['ingredient_id']!,
+          _ingredientIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_ingredientIdMeta);
+    }
+    if (data.containsKey('image')) {
+      context.handle(
+        _urlMeta,
+        url.isAcceptableOrUnknown(data['image']!, _urlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_urlMeta);
+    }
+    if (data.containsKey('size')) {
+      context.handle(
+        _sizeMeta,
+        size.isAcceptableOrUnknown(data['size']!, _sizeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sizeMeta);
+    }
+    if (data.containsKey('license')) {
+      context.handle(
+        _licenseIdMeta,
+        licenseId.isAcceptableOrUnknown(data['license']!, _licenseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseIdMeta);
+    }
+    if (data.containsKey('license_author')) {
+      context.handle(
+        _authorMeta,
+        author.isAcceptableOrUnknown(data['license_author']!, _authorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_authorMeta);
+    }
+    if (data.containsKey('license_author_url')) {
+      context.handle(
+        _authorUrlMeta,
+        authorUrl.isAcceptableOrUnknown(
+          data['license_author_url']!,
+          _authorUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_authorUrlMeta);
+    }
+    if (data.containsKey('license_title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['license_title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('license_object_url')) {
+      context.handle(
+        _objectUrlMeta,
+        objectUrl.isAcceptableOrUnknown(
+          data['license_object_url']!,
+          _objectUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_objectUrlMeta);
+    }
+    if (data.containsKey('license_derivative_source_url')) {
+      context.handle(
+        _derivativeSourceUrlMeta,
+        derivativeSourceUrl.isAcceptableOrUnknown(
+          data['license_derivative_source_url']!,
+          _derivativeSourceUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_derivativeSourceUrlMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  IngredientImage map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return IngredientImage(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uuid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uuid'],
+      )!,
+      ingredientId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ingredient_id'],
+      )!,
+      url: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image'],
+      )!,
+      size: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size'],
+      )!,
+      licenseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}license'],
+      )!,
+      author: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_author'],
+      )!,
+      authorUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_author_url'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_title'],
+      )!,
+      objectUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_object_url'],
+      )!,
+      derivativeSourceUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_derivative_source_url'],
+      )!,
+    );
+  }
+
+  @override
+  $IngredientImageTableTable createAlias(String alias) {
+    return $IngredientImageTableTable(attachedDatabase, alias);
+  }
+}
+
+class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
+  final Value<int> id;
+  final Value<String> uuid;
+  final Value<int> ingredientId;
+  final Value<String> url;
+  final Value<int> size;
+  final Value<int> licenseId;
+  final Value<String> author;
+  final Value<String> authorUrl;
+  final Value<String> title;
+  final Value<String> objectUrl;
+  final Value<String> derivativeSourceUrl;
+  final Value<int> rowid;
+  const IngredientImageTableCompanion({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    this.ingredientId = const Value.absent(),
+    this.url = const Value.absent(),
+    this.size = const Value.absent(),
+    this.licenseId = const Value.absent(),
+    this.author = const Value.absent(),
+    this.authorUrl = const Value.absent(),
+    this.title = const Value.absent(),
+    this.objectUrl = const Value.absent(),
+    this.derivativeSourceUrl = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  IngredientImageTableCompanion.insert({
+    required int id,
+    required String uuid,
+    required int ingredientId,
+    required String url,
+    required int size,
+    required int licenseId,
+    required String author,
+    required String authorUrl,
+    required String title,
+    required String objectUrl,
+    required String derivativeSourceUrl,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       uuid = Value(uuid),
+       ingredientId = Value(ingredientId),
+       url = Value(url),
+       size = Value(size),
+       licenseId = Value(licenseId),
+       author = Value(author),
+       authorUrl = Value(authorUrl),
+       title = Value(title),
+       objectUrl = Value(objectUrl),
+       derivativeSourceUrl = Value(derivativeSourceUrl);
+  static Insertable<IngredientImage> custom({
+    Expression<int>? id,
+    Expression<String>? uuid,
+    Expression<int>? ingredientId,
+    Expression<String>? url,
+    Expression<int>? size,
+    Expression<int>? licenseId,
+    Expression<String>? author,
+    Expression<String>? authorUrl,
+    Expression<String>? title,
+    Expression<String>? objectUrl,
+    Expression<String>? derivativeSourceUrl,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
+      if (ingredientId != null) 'ingredient_id': ingredientId,
+      if (url != null) 'image': url,
+      if (size != null) 'size': size,
+      if (licenseId != null) 'license': licenseId,
+      if (author != null) 'license_author': author,
+      if (authorUrl != null) 'license_author_url': authorUrl,
+      if (title != null) 'license_title': title,
+      if (objectUrl != null) 'license_object_url': objectUrl,
+      if (derivativeSourceUrl != null) 'license_derivative_source_url': derivativeSourceUrl,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  IngredientImageTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? uuid,
+    Value<int>? ingredientId,
+    Value<String>? url,
+    Value<int>? size,
+    Value<int>? licenseId,
+    Value<String>? author,
+    Value<String>? authorUrl,
+    Value<String>? title,
+    Value<String>? objectUrl,
+    Value<String>? derivativeSourceUrl,
+    Value<int>? rowid,
+  }) {
+    return IngredientImageTableCompanion(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      ingredientId: ingredientId ?? this.ingredientId,
+      url: url ?? this.url,
+      size: size ?? this.size,
+      licenseId: licenseId ?? this.licenseId,
+      author: author ?? this.author,
+      authorUrl: authorUrl ?? this.authorUrl,
+      title: title ?? this.title,
+      objectUrl: objectUrl ?? this.objectUrl,
+      derivativeSourceUrl: derivativeSourceUrl ?? this.derivativeSourceUrl,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
+    }
+    if (ingredientId.present) {
+      map['ingredient_id'] = Variable<int>(ingredientId.value);
+    }
+    if (url.present) {
+      map['image'] = Variable<String>(url.value);
+    }
+    if (size.present) {
+      map['size'] = Variable<int>(size.value);
+    }
+    if (licenseId.present) {
+      map['license'] = Variable<int>(licenseId.value);
+    }
+    if (author.present) {
+      map['license_author'] = Variable<String>(author.value);
+    }
+    if (authorUrl.present) {
+      map['license_author_url'] = Variable<String>(authorUrl.value);
+    }
+    if (title.present) {
+      map['license_title'] = Variable<String>(title.value);
+    }
+    if (objectUrl.present) {
+      map['license_object_url'] = Variable<String>(objectUrl.value);
+    }
+    if (derivativeSourceUrl.present) {
+      map['license_derivative_source_url'] = Variable<String>(
+        derivativeSourceUrl.value,
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('IngredientImageTableCompanion(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('ingredientId: $ingredientId, ')
+          ..write('url: $url, ')
+          ..write('size: $size, ')
+          ..write('licenseId: $licenseId, ')
+          ..write('author: $author, ')
+          ..write('authorUrl: $authorUrl, ')
+          ..write('title: $title, ')
+          ..write('objectUrl: $objectUrl, ')
+          ..write('derivativeSourceUrl: $derivativeSourceUrl, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   _$DriftPowersyncDatabase(QueryExecutor e) : super(e);
   $DriftPowersyncDatabaseManager get managers => $DriftPowersyncDatabaseManager(this);
   late final $LanguageTableTable languageTable = $LanguageTableTable(this);
+  late final $LicenseTableTable licenseTable = $LicenseTableTable(this);
   late final $ExerciseCategoryTableTable exerciseCategoryTable = $ExerciseCategoryTableTable(this);
   late final $ExerciseTableTable exerciseTable = $ExerciseTableTable(this);
   late final $ExerciseTranslationTableTable exerciseTranslationTable =
@@ -4796,12 +6227,17 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   late final $RoutineWeightUnitTableTable routineWeightUnitTable = $RoutineWeightUnitTableTable(
     this,
   );
+  late final $IngredientTableTable ingredientTable = $IngredientTableTable(
+    this,
+  );
+  late final $IngredientImageTableTable ingredientImageTable = $IngredientImageTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     languageTable,
+    licenseTable,
     exerciseCategoryTable,
     exerciseTable,
     exerciseTranslationTable,
@@ -4819,6 +6255,8 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     workoutSessionTable,
     routineRepetitionUnitTable,
     routineWeightUnitTable,
+    ingredientTable,
+    ingredientImageTable,
   ];
   @override
   DriftDatabaseOptions get options => const DriftDatabaseOptions(storeDateTimeAsText: true);
@@ -5090,6 +6528,185 @@ typedef $$LanguageTableTableProcessedTableManager =
       (Language, $$LanguageTableTableReferences),
       Language,
       PrefetchHooks Function({bool exerciseTranslationTableRefs})
+    >;
+typedef $$LicenseTableTableCreateCompanionBuilder =
+    LicenseTableCompanion Function({
+      required int id,
+      required String shortName,
+      required String fullName,
+      required String url,
+      Value<int> rowid,
+    });
+typedef $$LicenseTableTableUpdateCompanionBuilder =
+    LicenseTableCompanion Function({
+      Value<int> id,
+      Value<String> shortName,
+      Value<String> fullName,
+      Value<String> url,
+      Value<int> rowid,
+    });
+
+class $$LicenseTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $LicenseTableTable> {
+  $$LicenseTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shortName => $composableBuilder(
+    column: $table.shortName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fullName => $composableBuilder(
+    column: $table.fullName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LicenseTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $LicenseTableTable> {
+  $$LicenseTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get shortName => $composableBuilder(
+    column: $table.shortName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fullName => $composableBuilder(
+    column: $table.fullName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LicenseTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $LicenseTableTable> {
+  $$LicenseTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get shortName =>
+      $composableBuilder(column: $table.shortName, builder: (column) => column);
+
+  GeneratedColumn<String> get fullName =>
+      $composableBuilder(column: $table.fullName, builder: (column) => column);
+
+  GeneratedColumn<String> get url =>
+      $composableBuilder(column: $table.url, builder: (column) => column);
+}
+
+class $$LicenseTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $LicenseTableTable,
+          License,
+          $$LicenseTableTableFilterComposer,
+          $$LicenseTableTableOrderingComposer,
+          $$LicenseTableTableAnnotationComposer,
+          $$LicenseTableTableCreateCompanionBuilder,
+          $$LicenseTableTableUpdateCompanionBuilder,
+          (
+            License,
+            BaseReferences<_$DriftPowersyncDatabase, $LicenseTableTable, License>,
+          ),
+          License,
+          PrefetchHooks Function()
+        > {
+  $$LicenseTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $LicenseTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$LicenseTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$LicenseTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LicenseTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> shortName = const Value.absent(),
+                Value<String> fullName = const Value.absent(),
+                Value<String> url = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LicenseTableCompanion(
+                id: id,
+                shortName: shortName,
+                fullName: fullName,
+                url: url,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String shortName,
+                required String fullName,
+                required String url,
+                Value<int> rowid = const Value.absent(),
+              }) => LicenseTableCompanion.insert(
+                id: id,
+                shortName: shortName,
+                fullName: fullName,
+                url: url,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LicenseTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $LicenseTableTable,
+      License,
+      $$LicenseTableTableFilterComposer,
+      $$LicenseTableTableOrderingComposer,
+      $$LicenseTableTableAnnotationComposer,
+      $$LicenseTableTableCreateCompanionBuilder,
+      $$LicenseTableTableUpdateCompanionBuilder,
+      (
+        License,
+        BaseReferences<_$DriftPowersyncDatabase, $LicenseTableTable, License>,
+      ),
+      License,
+      PrefetchHooks Function()
     >;
 typedef $$ExerciseCategoryTableTableCreateCompanionBuilder =
     ExerciseCategoryTableCompanion Function({
@@ -9505,6 +11122,43 @@ typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$MeasurementCategoryTableTableReferences
+    extends
+        BaseReferences<
+          _$DriftPowersyncDatabase,
+          $MeasurementCategoryTableTable,
+          MeasurementCategory
+        > {
+  $$MeasurementCategoryTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$MeasurementEntryTableTable, List<MeasurementEntry>>
+  _measurementEntryTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.measurementEntryTable,
+    aliasName: $_aliasNameGenerator(
+      db.measurementCategoryTable.id,
+      db.measurementEntryTable.categoryId,
+    ),
+  );
+
+  $$MeasurementEntryTableTableProcessedTableManager get measurementEntryTableRefs {
+    final manager = $$MeasurementEntryTableTableTableManager(
+      $_db,
+      $_db.measurementEntryTable,
+    ).filter((f) => f.categoryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _measurementEntryTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
 class $$MeasurementCategoryTableTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $MeasurementCategoryTableTable> {
   $$MeasurementCategoryTableTableFilterComposer({
@@ -9533,6 +11187,30 @@ class $$MeasurementCategoryTableTableFilterComposer
     column: $table.unit,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> measurementEntryTableRefs(
+    Expression<bool> Function($$MeasurementEntryTableTableFilterComposer f) f,
+  ) {
+    final $$MeasurementEntryTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.measurementEntryTable,
+      getReferencedColumn: (t) => t.categoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MeasurementEntryTableTableFilterComposer(
+            $db: $db,
+            $table: $db.measurementEntryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$MeasurementCategoryTableTableOrderingComposer
@@ -9584,6 +11262,30 @@ class $$MeasurementCategoryTableTableAnnotationComposer
 
   GeneratedColumn<String> get unit =>
       $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  Expression<T> measurementEntryTableRefs<T extends Object>(
+    Expression<T> Function($$MeasurementEntryTableTableAnnotationComposer a) f,
+  ) {
+    final $$MeasurementEntryTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.measurementEntryTable,
+      getReferencedColumn: (t) => t.categoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MeasurementEntryTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.measurementEntryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$MeasurementCategoryTableTableTableManager
@@ -9597,16 +11299,9 @@ class $$MeasurementCategoryTableTableTableManager
           $$MeasurementCategoryTableTableAnnotationComposer,
           $$MeasurementCategoryTableTableCreateCompanionBuilder,
           $$MeasurementCategoryTableTableUpdateCompanionBuilder,
-          (
-            MeasurementCategory,
-            BaseReferences<
-              _$DriftPowersyncDatabase,
-              $MeasurementCategoryTableTable,
-              MeasurementCategory
-            >,
-          ),
+          (MeasurementCategory, $$MeasurementCategoryTableTableReferences),
           MeasurementCategory,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool measurementEntryTableRefs})
         > {
   $$MeasurementCategoryTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -9655,9 +11350,45 @@ class $$MeasurementCategoryTableTableTableManager
                 unit: unit,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MeasurementCategoryTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({measurementEntryTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (measurementEntryTableRefs) db.measurementEntryTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (measurementEntryTableRefs)
+                    await $_getPrefetchedData<
+                      MeasurementCategory,
+                      $MeasurementCategoryTableTable,
+                      MeasurementEntry
+                    >(
+                      currentTable: table,
+                      referencedTable: $$MeasurementCategoryTableTableReferences
+                          ._measurementEntryTableRefsTable(db),
+                      managerFromTypedResult: (p0) => $$MeasurementCategoryTableTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).measurementEntryTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.categoryId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -9672,16 +11403,9 @@ typedef $$MeasurementCategoryTableTableProcessedTableManager =
       $$MeasurementCategoryTableTableAnnotationComposer,
       $$MeasurementCategoryTableTableCreateCompanionBuilder,
       $$MeasurementCategoryTableTableUpdateCompanionBuilder,
-      (
-        MeasurementCategory,
-        BaseReferences<
-          _$DriftPowersyncDatabase,
-          $MeasurementCategoryTableTable,
-          MeasurementCategory
-        >,
-      ),
+      (MeasurementCategory, $$MeasurementCategoryTableTableReferences),
       MeasurementCategory,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool measurementEntryTableRefs})
     >;
 typedef $$MeasurementEntryTableTableCreateCompanionBuilder =
     MeasurementEntryTableCompanion Function({
@@ -9704,6 +11428,39 @@ typedef $$MeasurementEntryTableTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
+final class $$MeasurementEntryTableTableReferences
+    extends
+        BaseReferences<_$DriftPowersyncDatabase, $MeasurementEntryTableTable, MeasurementEntry> {
+  $$MeasurementEntryTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $MeasurementCategoryTableTable _categoryIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.measurementCategoryTable.createAlias(
+    $_aliasNameGenerator(
+      db.measurementEntryTable.categoryId,
+      db.measurementCategoryTable.id,
+    ),
+  );
+
+  $$MeasurementCategoryTableTableProcessedTableManager get categoryId {
+    final $_column = $_itemColumn<int>('category_id')!;
+
+    final manager = $$MeasurementCategoryTableTableTableManager(
+      $_db,
+      $_db.measurementCategoryTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_categoryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
 class $$MeasurementEntryTableTableFilterComposer
     extends Composer<_$DriftPowersyncDatabase, $MeasurementEntryTableTable> {
   $$MeasurementEntryTableTableFilterComposer({
@@ -9723,11 +11480,6 @@ class $$MeasurementEntryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get categoryId => $composableBuilder(
-    column: $table.categoryId,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<DateTime> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnFilters(column),
@@ -9742,6 +11494,28 @@ class $$MeasurementEntryTableTableFilterComposer
     column: $table.notes,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$MeasurementCategoryTableTableFilterComposer get categoryId {
+    final $$MeasurementCategoryTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.categoryId,
+      referencedTable: $db.measurementCategoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MeasurementCategoryTableTableFilterComposer(
+            $db: $db,
+            $table: $db.measurementCategoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$MeasurementEntryTableTableOrderingComposer
@@ -9763,11 +11537,6 @@ class $$MeasurementEntryTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get categoryId => $composableBuilder(
-    column: $table.categoryId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<DateTime> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnOrderings(column),
@@ -9782,6 +11551,28 @@ class $$MeasurementEntryTableTableOrderingComposer
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$MeasurementCategoryTableTableOrderingComposer get categoryId {
+    final $$MeasurementCategoryTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.categoryId,
+      referencedTable: $db.measurementCategoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MeasurementCategoryTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.measurementCategoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$MeasurementEntryTableTableAnnotationComposer
@@ -9798,11 +11589,6 @@ class $$MeasurementEntryTableTableAnnotationComposer
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
 
-  GeneratedColumn<int> get categoryId => $composableBuilder(
-    column: $table.categoryId,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 
@@ -9811,6 +11597,28 @@ class $$MeasurementEntryTableTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  $$MeasurementCategoryTableTableAnnotationComposer get categoryId {
+    final $$MeasurementCategoryTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.categoryId,
+      referencedTable: $db.measurementCategoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MeasurementCategoryTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.measurementCategoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$MeasurementEntryTableTableTableManager
@@ -9824,12 +11632,9 @@ class $$MeasurementEntryTableTableTableManager
           $$MeasurementEntryTableTableAnnotationComposer,
           $$MeasurementEntryTableTableCreateCompanionBuilder,
           $$MeasurementEntryTableTableUpdateCompanionBuilder,
-          (
-            MeasurementEntry,
-            BaseReferences<_$DriftPowersyncDatabase, $MeasurementEntryTableTable, MeasurementEntry>,
-          ),
+          (MeasurementEntry, $$MeasurementEntryTableTableReferences),
           MeasurementEntry,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool categoryId})
         > {
   $$MeasurementEntryTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -9886,9 +11691,55 @@ class $$MeasurementEntryTableTableTableManager
                 notes: notes,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MeasurementEntryTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({categoryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (categoryId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.categoryId,
+                                referencedTable: $$MeasurementEntryTableTableReferences
+                                    ._categoryIdTable(db),
+                                referencedColumn: $$MeasurementEntryTableTableReferences
+                                    ._categoryIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -9903,12 +11754,9 @@ typedef $$MeasurementEntryTableTableProcessedTableManager =
       $$MeasurementEntryTableTableAnnotationComposer,
       $$MeasurementEntryTableTableCreateCompanionBuilder,
       $$MeasurementEntryTableTableUpdateCompanionBuilder,
-      (
-        MeasurementEntry,
-        BaseReferences<_$DriftPowersyncDatabase, $MeasurementEntryTableTable, MeasurementEntry>,
-      ),
+      (MeasurementEntry, $$MeasurementEntryTableTableReferences),
       MeasurementEntry,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool categoryId})
     >;
 typedef $$WorkoutLogTableTableCreateCompanionBuilder =
     WorkoutLogTableCompanion Function({
@@ -10881,12 +12729,1045 @@ typedef $$RoutineWeightUnitTableTableProcessedTableManager =
       WeightUnit,
       PrefetchHooks Function()
     >;
+typedef $$IngredientTableTableCreateCompanionBuilder =
+    IngredientTableCompanion Function({
+      required int id,
+      Value<String> uuid,
+      Value<String?> remoteId,
+      Value<String?> sourceName,
+      Value<String?> sourceUrl,
+      Value<String?> licenseObjectURl,
+      Value<String?> code,
+      required String name,
+      required DateTime created,
+      required int energy,
+      required double carbohydrates,
+      required double carbohydratesSugar,
+      required double protein,
+      required double fat,
+      required double fatSaturated,
+      required double fiber,
+      required double sodium,
+      Value<bool> isVegan,
+      Value<bool> isVegetarian,
+      Value<int> rowid,
+    });
+typedef $$IngredientTableTableUpdateCompanionBuilder =
+    IngredientTableCompanion Function({
+      Value<int> id,
+      Value<String> uuid,
+      Value<String?> remoteId,
+      Value<String?> sourceName,
+      Value<String?> sourceUrl,
+      Value<String?> licenseObjectURl,
+      Value<String?> code,
+      Value<String> name,
+      Value<DateTime> created,
+      Value<int> energy,
+      Value<double> carbohydrates,
+      Value<double> carbohydratesSugar,
+      Value<double> protein,
+      Value<double> fat,
+      Value<double> fatSaturated,
+      Value<double> fiber,
+      Value<double> sodium,
+      Value<bool> isVegan,
+      Value<bool> isVegetarian,
+      Value<int> rowid,
+    });
+
+final class $$IngredientTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $IngredientTableTable, Ingredient> {
+  $$IngredientTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$IngredientImageTableTable, List<IngredientImage>>
+  _ingredientImageTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.ingredientImageTable,
+    aliasName: $_aliasNameGenerator(
+      db.ingredientTable.id,
+      db.ingredientImageTable.ingredientId,
+    ),
+  );
+
+  $$IngredientImageTableTableProcessedTableManager get ingredientImageTableRefs {
+    final manager = $$IngredientImageTableTableTableManager(
+      $_db,
+      $_db.ingredientImageTable,
+    ).filter((f) => f.ingredientId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _ingredientImageTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$IngredientTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $IngredientTableTable> {
+  $$IngredientTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get remoteId => $composableBuilder(
+    column: $table.remoteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceName => $composableBuilder(
+    column: $table.sourceName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceUrl => $composableBuilder(
+    column: $table.sourceUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseObjectURl => $composableBuilder(
+    column: $table.licenseObjectURl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get energy => $composableBuilder(
+    column: $table.energy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get carbohydrates => $composableBuilder(
+    column: $table.carbohydrates,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get carbohydratesSugar => $composableBuilder(
+    column: $table.carbohydratesSugar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get protein => $composableBuilder(
+    column: $table.protein,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get fat => $composableBuilder(
+    column: $table.fat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get fatSaturated => $composableBuilder(
+    column: $table.fatSaturated,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get fiber => $composableBuilder(
+    column: $table.fiber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get sodium => $composableBuilder(
+    column: $table.sodium,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isVegan => $composableBuilder(
+    column: $table.isVegan,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isVegetarian => $composableBuilder(
+    column: $table.isVegetarian,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> ingredientImageTableRefs(
+    Expression<bool> Function($$IngredientImageTableTableFilterComposer f) f,
+  ) {
+    final $$IngredientImageTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.ingredientImageTable,
+      getReferencedColumn: (t) => t.ingredientId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientImageTableTableFilterComposer(
+            $db: $db,
+            $table: $db.ingredientImageTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$IngredientTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $IngredientTableTable> {
+  $$IngredientTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get remoteId => $composableBuilder(
+    column: $table.remoteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceName => $composableBuilder(
+    column: $table.sourceName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceUrl => $composableBuilder(
+    column: $table.sourceUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseObjectURl => $composableBuilder(
+    column: $table.licenseObjectURl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get energy => $composableBuilder(
+    column: $table.energy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get carbohydrates => $composableBuilder(
+    column: $table.carbohydrates,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get carbohydratesSugar => $composableBuilder(
+    column: $table.carbohydratesSugar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get protein => $composableBuilder(
+    column: $table.protein,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get fat => $composableBuilder(
+    column: $table.fat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get fatSaturated => $composableBuilder(
+    column: $table.fatSaturated,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get fiber => $composableBuilder(
+    column: $table.fiber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get sodium => $composableBuilder(
+    column: $table.sodium,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isVegan => $composableBuilder(
+    column: $table.isVegan,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isVegetarian => $composableBuilder(
+    column: $table.isVegetarian,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$IngredientTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $IngredientTableTable> {
+  $$IngredientTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => column);
+
+  GeneratedColumn<String> get remoteId =>
+      $composableBuilder(column: $table.remoteId, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceName => $composableBuilder(
+    column: $table.sourceName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceUrl =>
+      $composableBuilder(column: $table.sourceUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get licenseObjectURl => $composableBuilder(
+    column: $table.licenseObjectURl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get created =>
+      $composableBuilder(column: $table.created, builder: (column) => column);
+
+  GeneratedColumn<int> get energy =>
+      $composableBuilder(column: $table.energy, builder: (column) => column);
+
+  GeneratedColumn<double> get carbohydrates => $composableBuilder(
+    column: $table.carbohydrates,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get carbohydratesSugar => $composableBuilder(
+    column: $table.carbohydratesSugar,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get protein =>
+      $composableBuilder(column: $table.protein, builder: (column) => column);
+
+  GeneratedColumn<double> get fat =>
+      $composableBuilder(column: $table.fat, builder: (column) => column);
+
+  GeneratedColumn<double> get fatSaturated => $composableBuilder(
+    column: $table.fatSaturated,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get fiber =>
+      $composableBuilder(column: $table.fiber, builder: (column) => column);
+
+  GeneratedColumn<double> get sodium =>
+      $composableBuilder(column: $table.sodium, builder: (column) => column);
+
+  GeneratedColumn<bool> get isVegan =>
+      $composableBuilder(column: $table.isVegan, builder: (column) => column);
+
+  GeneratedColumn<bool> get isVegetarian => $composableBuilder(
+    column: $table.isVegetarian,
+    builder: (column) => column,
+  );
+
+  Expression<T> ingredientImageTableRefs<T extends Object>(
+    Expression<T> Function($$IngredientImageTableTableAnnotationComposer a) f,
+  ) {
+    final $$IngredientImageTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.ingredientImageTable,
+      getReferencedColumn: (t) => t.ingredientId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientImageTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ingredientImageTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$IngredientTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $IngredientTableTable,
+          Ingredient,
+          $$IngredientTableTableFilterComposer,
+          $$IngredientTableTableOrderingComposer,
+          $$IngredientTableTableAnnotationComposer,
+          $$IngredientTableTableCreateCompanionBuilder,
+          $$IngredientTableTableUpdateCompanionBuilder,
+          (Ingredient, $$IngredientTableTableReferences),
+          Ingredient,
+          PrefetchHooks Function({bool ingredientImageTableRefs})
+        > {
+  $$IngredientTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $IngredientTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$IngredientTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$IngredientTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$IngredientTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                Value<String?> remoteId = const Value.absent(),
+                Value<String?> sourceName = const Value.absent(),
+                Value<String?> sourceUrl = const Value.absent(),
+                Value<String?> licenseObjectURl = const Value.absent(),
+                Value<String?> code = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<DateTime> created = const Value.absent(),
+                Value<int> energy = const Value.absent(),
+                Value<double> carbohydrates = const Value.absent(),
+                Value<double> carbohydratesSugar = const Value.absent(),
+                Value<double> protein = const Value.absent(),
+                Value<double> fat = const Value.absent(),
+                Value<double> fatSaturated = const Value.absent(),
+                Value<double> fiber = const Value.absent(),
+                Value<double> sodium = const Value.absent(),
+                Value<bool> isVegan = const Value.absent(),
+                Value<bool> isVegetarian = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => IngredientTableCompanion(
+                id: id,
+                uuid: uuid,
+                remoteId: remoteId,
+                sourceName: sourceName,
+                sourceUrl: sourceUrl,
+                licenseObjectURl: licenseObjectURl,
+                code: code,
+                name: name,
+                created: created,
+                energy: energy,
+                carbohydrates: carbohydrates,
+                carbohydratesSugar: carbohydratesSugar,
+                protein: protein,
+                fat: fat,
+                fatSaturated: fatSaturated,
+                fiber: fiber,
+                sodium: sodium,
+                isVegan: isVegan,
+                isVegetarian: isVegetarian,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                Value<String> uuid = const Value.absent(),
+                Value<String?> remoteId = const Value.absent(),
+                Value<String?> sourceName = const Value.absent(),
+                Value<String?> sourceUrl = const Value.absent(),
+                Value<String?> licenseObjectURl = const Value.absent(),
+                Value<String?> code = const Value.absent(),
+                required String name,
+                required DateTime created,
+                required int energy,
+                required double carbohydrates,
+                required double carbohydratesSugar,
+                required double protein,
+                required double fat,
+                required double fatSaturated,
+                required double fiber,
+                required double sodium,
+                Value<bool> isVegan = const Value.absent(),
+                Value<bool> isVegetarian = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => IngredientTableCompanion.insert(
+                id: id,
+                uuid: uuid,
+                remoteId: remoteId,
+                sourceName: sourceName,
+                sourceUrl: sourceUrl,
+                licenseObjectURl: licenseObjectURl,
+                code: code,
+                name: name,
+                created: created,
+                energy: energy,
+                carbohydrates: carbohydrates,
+                carbohydratesSugar: carbohydratesSugar,
+                protein: protein,
+                fat: fat,
+                fatSaturated: fatSaturated,
+                fiber: fiber,
+                sodium: sodium,
+                isVegan: isVegan,
+                isVegetarian: isVegetarian,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$IngredientTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({ingredientImageTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (ingredientImageTableRefs) db.ingredientImageTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (ingredientImageTableRefs)
+                    await $_getPrefetchedData<Ingredient, $IngredientTableTable, IngredientImage>(
+                      currentTable: table,
+                      referencedTable: $$IngredientTableTableReferences
+                          ._ingredientImageTableRefsTable(db),
+                      managerFromTypedResult: (p0) => $$IngredientTableTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).ingredientImageTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where(
+                            (e) => e.ingredientId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$IngredientTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $IngredientTableTable,
+      Ingredient,
+      $$IngredientTableTableFilterComposer,
+      $$IngredientTableTableOrderingComposer,
+      $$IngredientTableTableAnnotationComposer,
+      $$IngredientTableTableCreateCompanionBuilder,
+      $$IngredientTableTableUpdateCompanionBuilder,
+      (Ingredient, $$IngredientTableTableReferences),
+      Ingredient,
+      PrefetchHooks Function({bool ingredientImageTableRefs})
+    >;
+typedef $$IngredientImageTableTableCreateCompanionBuilder =
+    IngredientImageTableCompanion Function({
+      required int id,
+      required String uuid,
+      required int ingredientId,
+      required String url,
+      required int size,
+      required int licenseId,
+      required String author,
+      required String authorUrl,
+      required String title,
+      required String objectUrl,
+      required String derivativeSourceUrl,
+      Value<int> rowid,
+    });
+typedef $$IngredientImageTableTableUpdateCompanionBuilder =
+    IngredientImageTableCompanion Function({
+      Value<int> id,
+      Value<String> uuid,
+      Value<int> ingredientId,
+      Value<String> url,
+      Value<int> size,
+      Value<int> licenseId,
+      Value<String> author,
+      Value<String> authorUrl,
+      Value<String> title,
+      Value<String> objectUrl,
+      Value<String> derivativeSourceUrl,
+      Value<int> rowid,
+    });
+
+final class $$IngredientImageTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $IngredientImageTableTable, IngredientImage> {
+  $$IngredientImageTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $IngredientTableTable _ingredientIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.ingredientTable.createAlias(
+    $_aliasNameGenerator(
+      db.ingredientImageTable.ingredientId,
+      db.ingredientTable.id,
+    ),
+  );
+
+  $$IngredientTableTableProcessedTableManager get ingredientId {
+    final $_column = $_itemColumn<int>('ingredient_id')!;
+
+    final manager = $$IngredientTableTableTableManager(
+      $_db,
+      $_db.ingredientTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_ingredientIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$IngredientImageTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $IngredientImageTableTable> {
+  $$IngredientImageTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get size => $composableBuilder(
+    column: $table.size,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get licenseId => $composableBuilder(
+    column: $table.licenseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get author => $composableBuilder(
+    column: $table.author,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authorUrl => $composableBuilder(
+    column: $table.authorUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get objectUrl => $composableBuilder(
+    column: $table.objectUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get derivativeSourceUrl => $composableBuilder(
+    column: $table.derivativeSourceUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$IngredientTableTableFilterComposer get ingredientId {
+    final $$IngredientTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.ingredientId,
+      referencedTable: $db.ingredientTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientTableTableFilterComposer(
+            $db: $db,
+            $table: $db.ingredientTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IngredientImageTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $IngredientImageTableTable> {
+  $$IngredientImageTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get size => $composableBuilder(
+    column: $table.size,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get licenseId => $composableBuilder(
+    column: $table.licenseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get author => $composableBuilder(
+    column: $table.author,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authorUrl => $composableBuilder(
+    column: $table.authorUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get objectUrl => $composableBuilder(
+    column: $table.objectUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get derivativeSourceUrl => $composableBuilder(
+    column: $table.derivativeSourceUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$IngredientTableTableOrderingComposer get ingredientId {
+    final $$IngredientTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.ingredientId,
+      referencedTable: $db.ingredientTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.ingredientTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IngredientImageTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $IngredientImageTableTable> {
+  $$IngredientImageTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => column);
+
+  GeneratedColumn<String> get url =>
+      $composableBuilder(column: $table.url, builder: (column) => column);
+
+  GeneratedColumn<int> get size =>
+      $composableBuilder(column: $table.size, builder: (column) => column);
+
+  GeneratedColumn<int> get licenseId =>
+      $composableBuilder(column: $table.licenseId, builder: (column) => column);
+
+  GeneratedColumn<String> get author =>
+      $composableBuilder(column: $table.author, builder: (column) => column);
+
+  GeneratedColumn<String> get authorUrl =>
+      $composableBuilder(column: $table.authorUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get objectUrl =>
+      $composableBuilder(column: $table.objectUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get derivativeSourceUrl => $composableBuilder(
+    column: $table.derivativeSourceUrl,
+    builder: (column) => column,
+  );
+
+  $$IngredientTableTableAnnotationComposer get ingredientId {
+    final $$IngredientTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.ingredientId,
+      referencedTable: $db.ingredientTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ingredientTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IngredientImageTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $IngredientImageTableTable,
+          IngredientImage,
+          $$IngredientImageTableTableFilterComposer,
+          $$IngredientImageTableTableOrderingComposer,
+          $$IngredientImageTableTableAnnotationComposer,
+          $$IngredientImageTableTableCreateCompanionBuilder,
+          $$IngredientImageTableTableUpdateCompanionBuilder,
+          (IngredientImage, $$IngredientImageTableTableReferences),
+          IngredientImage,
+          PrefetchHooks Function({bool ingredientId})
+        > {
+  $$IngredientImageTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $IngredientImageTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$IngredientImageTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$IngredientImageTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$IngredientImageTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                Value<int> ingredientId = const Value.absent(),
+                Value<String> url = const Value.absent(),
+                Value<int> size = const Value.absent(),
+                Value<int> licenseId = const Value.absent(),
+                Value<String> author = const Value.absent(),
+                Value<String> authorUrl = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> objectUrl = const Value.absent(),
+                Value<String> derivativeSourceUrl = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => IngredientImageTableCompanion(
+                id: id,
+                uuid: uuid,
+                ingredientId: ingredientId,
+                url: url,
+                size: size,
+                licenseId: licenseId,
+                author: author,
+                authorUrl: authorUrl,
+                title: title,
+                objectUrl: objectUrl,
+                derivativeSourceUrl: derivativeSourceUrl,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String uuid,
+                required int ingredientId,
+                required String url,
+                required int size,
+                required int licenseId,
+                required String author,
+                required String authorUrl,
+                required String title,
+                required String objectUrl,
+                required String derivativeSourceUrl,
+                Value<int> rowid = const Value.absent(),
+              }) => IngredientImageTableCompanion.insert(
+                id: id,
+                uuid: uuid,
+                ingredientId: ingredientId,
+                url: url,
+                size: size,
+                licenseId: licenseId,
+                author: author,
+                authorUrl: authorUrl,
+                title: title,
+                objectUrl: objectUrl,
+                derivativeSourceUrl: derivativeSourceUrl,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$IngredientImageTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({ingredientId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (ingredientId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.ingredientId,
+                                referencedTable: $$IngredientImageTableTableReferences
+                                    ._ingredientIdTable(db),
+                                referencedColumn: $$IngredientImageTableTableReferences
+                                    ._ingredientIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$IngredientImageTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $IngredientImageTableTable,
+      IngredientImage,
+      $$IngredientImageTableTableFilterComposer,
+      $$IngredientImageTableTableOrderingComposer,
+      $$IngredientImageTableTableAnnotationComposer,
+      $$IngredientImageTableTableCreateCompanionBuilder,
+      $$IngredientImageTableTableUpdateCompanionBuilder,
+      (IngredientImage, $$IngredientImageTableTableReferences),
+      IngredientImage,
+      PrefetchHooks Function({bool ingredientId})
+    >;
 
 class $DriftPowersyncDatabaseManager {
   final _$DriftPowersyncDatabase _db;
   $DriftPowersyncDatabaseManager(this._db);
   $$LanguageTableTableTableManager get languageTable =>
       $$LanguageTableTableTableManager(_db, _db.languageTable);
+  $$LicenseTableTableTableManager get licenseTable =>
+      $$LicenseTableTableTableManager(_db, _db.licenseTable);
   $$ExerciseCategoryTableTableTableManager get exerciseCategoryTable =>
       $$ExerciseCategoryTableTableTableManager(_db, _db.exerciseCategoryTable);
   $$ExerciseTableTableTableManager get exerciseTable =>
@@ -10936,4 +13817,8 @@ class $DriftPowersyncDatabaseManager {
         _db,
         _db.routineWeightUnitTable,
       );
+  $$IngredientTableTableTableManager get ingredientTable =>
+      $$IngredientTableTableTableManager(_db, _db.ingredientTable);
+  $$IngredientImageTableTableTableManager get ingredientImageTable =>
+      $$IngredientImageTableTableTableManager(_db, _db.ingredientImageTable);
 }
