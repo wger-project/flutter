@@ -63,11 +63,11 @@ class MeasurementRepository {
         final entry = row.readTableOrNull(_db.measurementEntryTable);
 
         final current = map.putIfAbsent(
-          category.uuid,
+          category.id,
           () => category.copyWith(entries: []),
         );
 
-        if (entry != null && !current.entries.any((e) => e.uuid == entry.uuid)) {
+        if (entry != null && !current.entries.any((e) => e.id == entry.id)) {
           current.entries.add(entry);
         }
       }
@@ -78,20 +78,20 @@ class MeasurementRepository {
     });
   }
 
-  Stream<MeasurementCategory?> watchLocalDriftCategoryByUuid(String uuid) {
-    _logger.finer('Watching local measurement category $uuid');
-    return watchAll().map((categories) => categories.firstWhereOrNull((c) => c.uuid == uuid));
+  Stream<MeasurementCategory?> watchLocalDriftCategoryById(String id) {
+    _logger.finer('Watching local measurement category $id');
+    return watchAll().map((categories) => categories.firstWhereOrNull((c) => c.id == id));
   }
 
   // Entries
-  Future<void> deleteLocalDrift(String uuid) async {
-    _logger.finer('Deleting local measurement entry $uuid');
-    await (_db.delete(_db.measurementEntryTable)..where((t) => t.uuid.equals(uuid))).go();
+  Future<void> deleteLocalDrift(String id) async {
+    _logger.finer('Deleting local measurement entry $id');
+    await (_db.delete(_db.measurementEntryTable)..where((t) => t.id.equals(id))).go();
   }
 
   Future<void> updateLocalDrift(MeasurementEntry entry) async {
-    _logger.finer('Updating local measurement entry ${entry.uuid}');
-    final stmt = _db.update(_db.measurementEntryTable)..where((t) => t.uuid.equals(entry.uuid));
+    _logger.finer('Updating local measurement entry ${entry.id}');
+    final stmt = _db.update(_db.measurementEntryTable)..where((t) => t.id.equals(entry.id));
     await stmt.write(entry.toCompanion());
   }
 
@@ -101,15 +101,14 @@ class MeasurementRepository {
   }
 
   // Categories
-  Future<void> deleteLocalDriftCategory(String uuid) async {
-    _logger.finer('Deleting local measurement category $uuid');
-    await (_db.delete(_db.measurementCategoryTable)..where((t) => t.uuid.equals(uuid))).go();
+  Future<void> deleteLocalDriftCategory(String id) async {
+    _logger.finer('Deleting local measurement category $id');
+    await (_db.delete(_db.measurementCategoryTable)..where((t) => t.id.equals(id))).go();
   }
 
   Future<void> updateLocalDriftCategory(MeasurementCategory category) async {
-    _logger.finer('Updating local measurement category ${category.uuid}');
-    final stmt = _db.update(_db.measurementCategoryTable)
-      ..where((t) => t.uuid.equals(category.uuid));
+    _logger.finer('Updating local measurement category ${category.id}');
+    final stmt = _db.update(_db.measurementCategoryTable)..where((t) => t.id.equals(category.id));
     await stmt.write(category.toCompanion());
   }
 

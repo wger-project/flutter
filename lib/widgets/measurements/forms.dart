@@ -40,7 +40,7 @@ class MeasurementCategoryForm extends ConsumerWidget {
 
   MeasurementCategoryForm([MeasurementCategory? category]) {
     if (category != null) {
-      categoryData['id'] = category.uuid;
+      categoryData['id'] = category.id;
       categoryData['unit'] = category.unit;
       categoryData['name'] = category.name;
     }
@@ -102,7 +102,7 @@ class MeasurementCategoryForm extends ConsumerWidget {
 
               final notifier = ref.read(measurementProvider.notifier);
               final category = MeasurementCategory(
-                uuid: categoryData['id'],
+                id: categoryData['id'],
                 name: categoryData['name'],
                 unit: categoryData['unit'],
               );
@@ -141,7 +141,7 @@ class MeasurementEntryForm extends ConsumerWidget {
     };
 
     if (entry != null) {
-      _entryData['id'] = entry.uuid;
+      _entryData['id'] = entry.id;
       _entryData['value'] = entry.value;
       _entryData['date'] = entry.date;
       _entryData['notes'] = entry.notes;
@@ -156,7 +156,7 @@ class MeasurementEntryForm extends ConsumerWidget {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
 
     final notifier = ref.read(measurementProvider.notifier);
-    final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryByUuid(_categoryUuid);
+    final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(_categoryUuid);
 
     if (_dateController.text.isEmpty) {
       _dateController.text = dateFormat.format(_entryData['date']);
@@ -288,8 +288,8 @@ class MeasurementEntryForm extends ConsumerWidget {
 
                   // Save the entry on the server
                   final entry = MeasurementEntry(
-                    uuid: _entryData['id'],
-                    categoryId: category.id!,
+                    id: _entryData['id'],
+                    categoryId: category.id,
                     date: _entryData['date'],
                     value: _entryData['value'],
                     notes: _entryData['notes'],

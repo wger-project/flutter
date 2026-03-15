@@ -26,8 +26,7 @@ class MeasurementCategoryTable extends Table {
   @override
   String get tableName => 'measurements_category';
 
-  IntColumn get id => integer()();
-  TextColumn get uuid => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
 
   TextColumn get name => text()();
   TextColumn get unit => text()();
@@ -36,7 +35,6 @@ class MeasurementCategoryTable extends Table {
 const PowersyncMeasurementCategoryTable = ps.Table(
   'measurements_category',
   [
-    ps.Column.text('uuid'),
     ps.Column.text('name'),
     ps.Column.text('unit'),
   ],
@@ -47,10 +45,9 @@ class MeasurementEntryTable extends Table {
   @override
   String get tableName => 'measurements_measurement';
 
-  IntColumn get id => integer().named('id')();
-  TextColumn get uuid => text().clientDefault(() => ps.uuid.v4())();
-  IntColumn get categoryId =>
-      integer().named('category_id').references(MeasurementCategoryTable, #id)();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
+  TextColumn get categoryId =>
+      text().named('category_id').references(MeasurementCategoryTable, #id)();
 
   DateTimeColumn get date => dateTime()();
   RealColumn get value => real()();
@@ -60,8 +57,7 @@ class MeasurementEntryTable extends Table {
 const PowersyncMeasurementEntryTable = ps.Table(
   'measurements_measurement',
   [
-    ps.Column.text('uuid'),
-    ps.Column.integer('category_id'),
+    ps.Column.text('category_id'),
     ps.Column.text('date'),
     ps.Column.real('value'),
     ps.Column.text('notes'),

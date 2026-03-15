@@ -29,7 +29,7 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/trophies.dart';
-import 'package:wger/providers/workout_log_repository.dart';
+import 'package:wger/providers/workout_logs_repository.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/logs/log_overview_routine.dart';

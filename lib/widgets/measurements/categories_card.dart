@@ -82,7 +82,7 @@ class CategoriesCard extends StatelessWidget {
                             Navigator.pushNamed(
                               context,
                               MeasurementEntriesScreen.routeName,
-                              arguments: currentCategory.uuid,
+                              arguments: currentCategory.id,
                             );
                           },
                         ),
@@ -93,7 +93,7 @@ class CategoriesCard extends StatelessWidget {
                               FormScreen.routeName,
                               arguments: FormScreenArguments(
                                 AppLocalizations.of(context).newEntry,
-                                MeasurementEntryForm(currentCategory.uuid),
+                                MeasurementEntryForm(currentCategory.id),
                               ),
                             );
                           },

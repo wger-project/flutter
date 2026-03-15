@@ -44,24 +44,24 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     return _repo.watchAll();
   }
 
-  Stream<MeasurementCategory?> watchCategoryByUuid(String uuid) {
-    _logger.finer('Watching local measurement category by uuid $uuid (via notifier)');
-    return _repo.watchLocalDriftCategoryByUuid(uuid);
+  Stream<MeasurementCategory?> watchCategoryById(String id) {
+    _logger.finer('Watching local measurement category $id');
+    return _repo.watchLocalDriftCategoryById(id);
   }
 
-  Future<MeasurementCategory?> getCategoryByUuid(String uuid) async {
+  Future<MeasurementCategory?> getCategoryById(String id) async {
     // Data already loaded
     final categories = state.asData?.value;
     if (categories != null) {
-      return categories.firstWhereOrNull((c) => c.uuid == uuid);
+      return categories.firstWhereOrNull((c) => c.id == id);
     }
 
     // Read from DB
-    return _repo.watchLocalDriftCategoryByUuid(uuid).first;
+    return _repo.watchLocalDriftCategoryById(id).first;
   }
 
-  Future<void> deleteEntry(String uuid) async {
-    await _repo.deleteLocalDrift(uuid);
+  Future<void> deleteEntry(String id) async {
+    await _repo.deleteLocalDrift(id);
   }
 
   Future<void> updateEntry(MeasurementEntry entry) async {
@@ -73,8 +73,8 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
   }
 
   // --- MeasurementCategory operations (delegated to repository) ---
-  Future<void> deleteCategory(String uuid) async {
-    await _repo.deleteLocalDriftCategory(uuid);
+  Future<void> deleteCategory(String id) async {
+    await _repo.deleteLocalDriftCategory(id);
   }
 
   Future<void> updateCategory(MeasurementCategory category) async {

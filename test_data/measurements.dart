@@ -20,67 +20,59 @@ import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
 final testMeasurementEntry1 = MeasurementEntry(
-  id: 1,
-  uuid: '1',
-  categoryId: 1,
+  id: '1',
+  categoryId: '1',
   date: DateTime(2022, 9, 10),
   value: 30,
   notes: '',
 );
 final testMeasurementEntry2 = MeasurementEntry(
-  id: 2,
-  uuid: '2',
-  categoryId: 1,
+  id: '2',
+  categoryId: '1',
   date: DateTime(2022, 10, 5),
   value: 25,
   notes: '',
 );
 final testMeasurementEntry3 = MeasurementEntry(
-  id: 3,
-  uuid: '3',
-  categoryId: 1,
+  id: '3',
+  categoryId: '1',
   date: DateTime(2022, 10, 10),
   value: 17,
   notes: '',
 );
 final testMeasurementEntry4 = MeasurementEntry(
-  id: 4,
-  uuid: '4',
-  categoryId: 1,
+  id: '4',
+  categoryId: '1',
   date: DateTime(2022, 11, 1),
   value: 17,
   notes: '',
 );
 final testMeasurementEntry5 = MeasurementEntry(
-  id: 5,
-  uuid: '5',
-  categoryId: 1,
+  id: '5',
+  categoryId: '1',
   date: DateTime(2022, 11, 10),
   value: 20,
   notes: '',
 );
 final testMeasurementEntry6 = MeasurementEntry(
-  id: 6,
-  uuid: '6',
-  categoryId: 1,
+  id: '6',
+  categoryId: '1',
   date: DateTime(2022, 11, 15),
   value: 23,
   notes: '',
 );
 
 final testMeasurementEntry7 = MeasurementEntry(
-  id: 7,
-  uuid: '7',
-  categoryId: 2,
+  id: '7',
+  categoryId: '2',
   date: DateTime(2026, 02, 1),
   value: 40,
   notes: '',
 );
 
 final testMeasurementEntry8 = MeasurementEntry(
-  id: 8,
-  uuid: '8',
-  categoryId: 2,
+  id: '8',
+  categoryId: '2',
   date: DateTime(2026, 03, 14),
   value: 45,
   notes: '',
@@ -89,7 +81,7 @@ final testMeasurementEntry8 = MeasurementEntry(
 List<MeasurementCategory> getMeasurementCategories() {
   return [
     MeasurementCategory(
-      uuid: '1',
+      id: '1',
       name: 'Body fat',
       unit: '%',
       entries: [
@@ -102,7 +94,7 @@ List<MeasurementCategory> getMeasurementCategories() {
       ],
     ),
     MeasurementCategory(
-      uuid: '1',
+      id: '1',
       name: 'Biceps',
       unit: 'cm',
       entries: [

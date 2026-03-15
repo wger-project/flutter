@@ -42,19 +42,19 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
           as _i3.Stream<List<_i4.MeasurementCategory>>);
 
   @override
-  _i3.Stream<_i4.MeasurementCategory?> watchLocalDriftCategoryByUuid(
-    String? uuid,
+  _i3.Stream<_i4.MeasurementCategory?> watchLocalDriftCategoryById(
+    String? id,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#watchLocalDriftCategoryByUuid, [uuid]),
+            Invocation.method(#watchLocalDriftCategoryById, [id]),
             returnValue: _i3.Stream<_i4.MeasurementCategory?>.empty(),
           )
           as _i3.Stream<_i4.MeasurementCategory?>);
 
   @override
-  _i3.Future<void> deleteLocalDrift(String? uuid) =>
+  _i3.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteLocalDrift, [uuid]),
+            Invocation.method(#deleteLocalDrift, [id]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
@@ -79,9 +79,9 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> deleteLocalDriftCategory(String? uuid) =>
+  _i3.Future<void> deleteLocalDriftCategory(String? id) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteLocalDriftCategory, [uuid]),
+            Invocation.method(#deleteLocalDriftCategory, [id]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

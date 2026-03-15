@@ -18,23 +18,18 @@
 
 import 'package:drift/drift.dart' hide JsonKey;
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:powersync/powersync.dart' show uuid;
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/helpers/uuid.dart';
 
 part 'measurement_entry.freezed.dart';
 
 @freezed
 class MeasurementEntry with _$MeasurementEntry {
   @override
-  final String uuid;
+  final String id;
 
-  /// Is set by the server, not locally
   @override
-  final int? id;
-
-  /// Category UUID
-  @override
-  final int categoryId;
+  final String categoryId;
 
   @override
   final DateTime date;
@@ -46,18 +41,17 @@ class MeasurementEntry with _$MeasurementEntry {
   final String notes;
 
   MeasurementEntry({
-    String? uuid,
-    this.id,
+    String? id,
     required this.categoryId,
     required this.date,
     required this.value,
     required this.notes,
-  }) : uuid = uuid ?? uuidV4();
+  }) : id = id ?? uuid.v7();
 
   // Boilerplate
   MeasurementEntryTableCompanion toCompanion({bool includeId = false}) {
     return MeasurementEntryTableCompanion(
-      uuid: Value(uuid),
+      id: Value(id),
       categoryId: Value(categoryId),
       date: Value(date),
       value: Value(value.toDouble()),

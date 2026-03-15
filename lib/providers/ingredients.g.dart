@@ -12,8 +12,7 @@ part of 'ingredients.dart';
 @ProviderFor(IngredientNotifier)
 final ingredientProvider = IngredientNotifierProvider._();
 
-final class IngredientNotifierProvider
-    extends $AsyncNotifierProvider<IngredientNotifier, void> {
+final class IngredientNotifierProvider extends $AsyncNotifierProvider<IngredientNotifier, void> {
   IngredientNotifierProvider._()
     : super(
         from: null,
@@ -33,8 +32,7 @@ final class IngredientNotifierProvider
   IngredientNotifier create() => IngredientNotifier();
 }
 
-String _$ingredientNotifierHash() =>
-    r'6f6c21a67c28be1cee92f625a33c0988c8154f6d';
+String _$ingredientNotifierHash() => r'85cc77d8bdda350aecf85f6c3f20aaa391c13f0b';
 
 abstract class _$IngredientNotifier extends $AsyncNotifier<void> {
   FutureOr<void> build();

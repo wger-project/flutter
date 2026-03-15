@@ -39,29 +39,9 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   await db.initialize();
 
   final baseProvider = ref.read(wgerBaseProvider);
-
   final currentConnector = DjangoConnector(baseUrl: baseProvider.auth.serverUrl!);
+
   db.connect(connector: currentConnector);
-
-  // if (ref.read(sessionProvider).value != null) {
-  //   currentConnector = DjangoConnector();
-  //   db.connect(connector: currentConnector);
-  // }
-
-  // final instance = Supabase.instance.client.auth;
-  // final sub = instance.onAuthStateChange.listen((data) async {
-  //   final event = data.event;
-  //   if (event == AuthChangeEvent.signedIn) {
-  //     currentConnector = DjangoConnector();
-  //     db.connect(connector: currentConnector!);
-  //   } else if (event == AuthChangeEvent.signedOut) {
-  //     currentConnector = null;
-  //     await db.disconnect();
-  //   } else if (event == AuthChangeEvent.tokenRefreshed) {
-  //     currentConnector?.prefetchCredentials();
-  //   }
-  // });
-  // ref.onDispose(sub.cancel);
   ref.onDispose(db.close);
 
   return db;

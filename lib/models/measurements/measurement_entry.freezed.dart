@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MeasurementEntry {
 
- String get uuid; int? get id; int get categoryId; DateTime get date; num get value; String get notes;
+ String get id; String get categoryId; DateTime get date; num get value; String get notes;
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MeasurementEntryCopyWith<MeasurementEntry> get copyWith => _$MeasurementEntryCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementEntry&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.id, id) || other.id == id)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.date, date) || other.date == date)&&(identical(other.value, value) || other.value == value)&&(identical(other.notes, notes) || other.notes == notes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.date, date) || other.date == date)&&(identical(other.value, value) || other.value == value)&&(identical(other.notes, notes) || other.notes == notes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uuid,id,categoryId,date,value,notes);
+int get hashCode => Object.hash(runtimeType,id,categoryId,date,value,notes);
 
 @override
 String toString() {
-  return 'MeasurementEntry(uuid: $uuid, id: $id, categoryId: $categoryId, date: $date, value: $value, notes: $notes)';
+  return 'MeasurementEntry(id: $id, categoryId: $categoryId, date: $date, value: $value, notes: $notes)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MeasurementEntryCopyWith<$Res>  {
   factory $MeasurementEntryCopyWith(MeasurementEntry value, $Res Function(MeasurementEntry) _then) = _$MeasurementEntryCopyWithImpl;
 @useResult
 $Res call({
- String? uuid, int? id, int categoryId, DateTime date, num value, String notes
+ String? id, String categoryId, DateTime date, num value, String notes
 });
 
 
@@ -62,12 +62,11 @@ class _$MeasurementEntryCopyWithImpl<$Res>
 
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uuid = freezed,Object? id = freezed,Object? categoryId = null,Object? date = null,Object? value = null,Object? notes = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? categoryId = null,Object? date = null,Object? value = null,Object? notes = null,}) {
   return _then(MeasurementEntry(
-uuid: freezed == uuid ? _self.uuid! : uuid // ignore: cast_nullable_to_non_nullable
-as String?,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,categoryId: null == categoryId ? _self.categoryId : categoryId // ignore: cast_nullable_to_non_nullable
-as int,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id! : id // ignore: cast_nullable_to_non_nullable
+as String?,categoryId: null == categoryId ? _self.categoryId : categoryId // ignore: cast_nullable_to_non_nullable
+as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as DateTime,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as num,notes: null == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String,

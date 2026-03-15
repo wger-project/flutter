@@ -32,6 +32,7 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     remoteId: json['remote_id'] as String?,
     sourceName: json['source_name'] as String?,
     sourceUrl: json['source_url'] as String?,
+    languageId: (json['languageId'] as num?)?.toInt(),
     licenseObjectURl: json['license_object_url'] as String?,
     id: (json['id'] as num).toInt(),
     code: json['code'] as String?,
@@ -61,6 +62,7 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic>{
   'id': instance.id,
   'remote_id': instance.remoteId,
+  'languageId': instance.languageId,
   'source_name': instance.sourceName,
   'source_url': instance.sourceUrl,
   'license_object_url': instance.licenseObjectURl,

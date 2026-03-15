@@ -32,15 +32,15 @@ void main() {
   group('findEntryById()', () {
     test('should find an entry in the entries list', () {
       // act
-      final result = category.findEntryByUuid('1');
+      final result = category.findEntryById('1');
 
       // assert
-      expect(result.id, 1);
+      expect(result.id, '1');
     });
 
     test('should throw a NoSuchEntryException if no MeasurementEntry was found', () {
       // act & assert
-      expect(() => category.findEntryByUuid('abc'), throwsA(isA<NoSuchEntryException>()));
+      expect(() => category.findEntryById('abc'), throwsA(isA<NoSuchEntryException>()));
     });
   });
 }

@@ -44,7 +44,7 @@ class MeasurementEntriesScreen extends ConsumerWidget {
     final notifier = ref.read(measurementProvider.notifier);
 
     return StreamBuilder<MeasurementCategory?>(
-      stream: notifier.watchCategoryByUuid(categoryUuid),
+      stream: notifier.watchCategoryById(categoryUuid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const BoxedProgressIndicator();
@@ -105,7 +105,7 @@ class MeasurementEntriesScreen extends ConsumerWidget {
                                 ),
                                 onPressed: () {
                                   // Confirmed, delete the workout
-                                  notifier.deleteCategory(category.uuid);
+                                  notifier.deleteCategory(category.id);
 
                                   // Close the popup
                                   Navigator.of(contextDialog).pop();

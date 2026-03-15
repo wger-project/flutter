@@ -3287,22 +3287,13 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
   $MeasurementCategoryTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
-  @override
-  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
-    'uuid',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v4(),
+    clientDefault: () => ps.uuid.v7(),
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -3323,7 +3314,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, uuid, name, unit];
+  List<GeneratedColumn> get $columns => [id, name, unit];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3338,14 +3329,6 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('uuid')) {
-      context.handle(
-        _uuidMeta,
-        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
-      );
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -3372,12 +3355,8 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
   MeasurementCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return MeasurementCategory(
-      uuid: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}uuid'],
-      )!,
       id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
       name: attachedDatabase.typeMapping.read(
@@ -3398,37 +3377,31 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
 }
 
 class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCategory> {
-  final Value<int> id;
-  final Value<String> uuid;
+  final Value<String> id;
   final Value<String> name;
   final Value<String> unit;
   final Value<int> rowid;
   const MeasurementCategoryTableCompanion({
     this.id = const Value.absent(),
-    this.uuid = const Value.absent(),
     this.name = const Value.absent(),
     this.unit = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MeasurementCategoryTableCompanion.insert({
-    required int id,
-    this.uuid = const Value.absent(),
+    this.id = const Value.absent(),
     required String name,
     required String unit,
     this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       name = Value(name),
+  }) : name = Value(name),
        unit = Value(unit);
   static Insertable<MeasurementCategory> custom({
-    Expression<int>? id,
-    Expression<String>? uuid,
+    Expression<String>? id,
     Expression<String>? name,
     Expression<String>? unit,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (uuid != null) 'uuid': uuid,
       if (name != null) 'name': name,
       if (unit != null) 'unit': unit,
       if (rowid != null) 'rowid': rowid,
@@ -3436,15 +3409,13 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   }
 
   MeasurementCategoryTableCompanion copyWith({
-    Value<int>? id,
-    Value<String>? uuid,
+    Value<String>? id,
     Value<String>? name,
     Value<String>? unit,
     Value<int>? rowid,
   }) {
     return MeasurementCategoryTableCompanion(
       id: id ?? this.id,
-      uuid: uuid ?? this.uuid,
       name: name ?? this.name,
       unit: unit ?? this.unit,
       rowid: rowid ?? this.rowid,
@@ -3455,10 +3426,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (uuid.present) {
-      map['uuid'] = Variable<String>(uuid.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -3476,7 +3444,6 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   String toString() {
     return (StringBuffer('MeasurementCategoryTableCompanion(')
           ..write('id: $id, ')
-          ..write('uuid: $uuid, ')
           ..write('name: $name, ')
           ..write('unit: $unit, ')
           ..write('rowid: $rowid')
@@ -3493,32 +3460,23 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
   $MeasurementEntryTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
-  @override
-  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
-    'uuid',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v4(),
+    clientDefault: () => ps.uuid.v7(),
   );
   static const VerificationMeta _categoryIdMeta = const VerificationMeta(
     'categoryId',
   );
   @override
-  late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> categoryId = GeneratedColumn<String>(
     'category_id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES measurements_category (id)',
@@ -3552,14 +3510,7 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    uuid,
-    categoryId,
-    date,
-    value,
-    notes,
-  ];
+  List<GeneratedColumn> get $columns => [id, categoryId, date, value, notes];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3574,14 +3525,6 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('uuid')) {
-      context.handle(
-        _uuidMeta,
-        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
-      );
     }
     if (data.containsKey('category_id')) {
       context.handle(
@@ -3624,16 +3567,12 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
   MeasurementEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return MeasurementEntry(
-      uuid: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}uuid'],
-      )!,
       id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
       categoryId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}category_id'],
       )!,
       date: attachedDatabase.typeMapping.read(
@@ -3658,16 +3597,14 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
 }
 
 class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
-  final Value<int> id;
-  final Value<String> uuid;
-  final Value<int> categoryId;
+  final Value<String> id;
+  final Value<String> categoryId;
   final Value<DateTime> date;
   final Value<double> value;
   final Value<String> notes;
   final Value<int> rowid;
   const MeasurementEntryTableCompanion({
     this.id = const Value.absent(),
-    this.uuid = const Value.absent(),
     this.categoryId = const Value.absent(),
     this.date = const Value.absent(),
     this.value = const Value.absent(),
@@ -3675,22 +3612,19 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     this.rowid = const Value.absent(),
   });
   MeasurementEntryTableCompanion.insert({
-    required int id,
-    this.uuid = const Value.absent(),
-    required int categoryId,
+    this.id = const Value.absent(),
+    required String categoryId,
     required DateTime date,
     required double value,
     required String notes,
     this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       categoryId = Value(categoryId),
+  }) : categoryId = Value(categoryId),
        date = Value(date),
        value = Value(value),
        notes = Value(notes);
   static Insertable<MeasurementEntry> custom({
-    Expression<int>? id,
-    Expression<String>? uuid,
-    Expression<int>? categoryId,
+    Expression<String>? id,
+    Expression<String>? categoryId,
     Expression<DateTime>? date,
     Expression<double>? value,
     Expression<String>? notes,
@@ -3698,7 +3632,6 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (uuid != null) 'uuid': uuid,
       if (categoryId != null) 'category_id': categoryId,
       if (date != null) 'date': date,
       if (value != null) 'value': value,
@@ -3708,9 +3641,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
   }
 
   MeasurementEntryTableCompanion copyWith({
-    Value<int>? id,
-    Value<String>? uuid,
-    Value<int>? categoryId,
+    Value<String>? id,
+    Value<String>? categoryId,
     Value<DateTime>? date,
     Value<double>? value,
     Value<String>? notes,
@@ -3718,7 +3650,6 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
   }) {
     return MeasurementEntryTableCompanion(
       id: id ?? this.id,
-      uuid: uuid ?? this.uuid,
       categoryId: categoryId ?? this.categoryId,
       date: date ?? this.date,
       value: value ?? this.value,
@@ -3731,13 +3662,10 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (uuid.present) {
-      map['uuid'] = Variable<String>(uuid.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (categoryId.present) {
-      map['category_id'] = Variable<int>(categoryId.value);
+      map['category_id'] = Variable<String>(categoryId.value);
     }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
@@ -3758,7 +3686,6 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
   String toString() {
     return (StringBuffer('MeasurementEntryTableCompanion(')
           ..write('id: $id, ')
-          ..write('uuid: $uuid, ')
           ..write('categoryId: $categoryId, ')
           ..write('date: $date, ')
           ..write('value: $value, ')
@@ -5001,6 +4928,17 @@ class $IngredientTableTable extends IngredientTable
     requiredDuringInsert: false,
     clientDefault: () => ps.uuid.v4(),
   );
+  static const VerificationMeta _languageIdMeta = const VerificationMeta(
+    'languageId',
+  );
+  @override
+  late final GeneratedColumn<int> languageId = GeneratedColumn<int>(
+    'language_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _remoteIdMeta = const VerificationMeta(
     'remoteId',
   );
@@ -5188,6 +5126,7 @@ class $IngredientTableTable extends IngredientTable
   List<GeneratedColumn> get $columns => [
     id,
     uuid,
+    languageId,
     remoteId,
     sourceName,
     sourceUrl,
@@ -5228,6 +5167,14 @@ class $IngredientTableTable extends IngredientTable
         _uuidMeta,
         uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
       );
+    }
+    if (data.containsKey('language_id')) {
+      context.handle(
+        _languageIdMeta,
+        languageId.isAcceptableOrUnknown(data['language_id']!, _languageIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_languageIdMeta);
     }
     if (data.containsKey('remote_id')) {
       context.handle(
@@ -5387,6 +5334,10 @@ class $IngredientTableTable extends IngredientTable
         DriftSqlType.string,
         data['${effectivePrefix}source_url'],
       ),
+      languageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}language_id'],
+      )!,
       licenseObjectURl: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}license_object_url'],
@@ -5459,6 +5410,7 @@ class $IngredientTableTable extends IngredientTable
 class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
   final Value<int> id;
   final Value<String> uuid;
+  final Value<int> languageId;
   final Value<String?> remoteId;
   final Value<String?> sourceName;
   final Value<String?> sourceUrl;
@@ -5480,6 +5432,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
   const IngredientTableCompanion({
     this.id = const Value.absent(),
     this.uuid = const Value.absent(),
+    this.languageId = const Value.absent(),
     this.remoteId = const Value.absent(),
     this.sourceName = const Value.absent(),
     this.sourceUrl = const Value.absent(),
@@ -5502,6 +5455,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
   IngredientTableCompanion.insert({
     required int id,
     this.uuid = const Value.absent(),
+    required int languageId,
     this.remoteId = const Value.absent(),
     this.sourceName = const Value.absent(),
     this.sourceUrl = const Value.absent(),
@@ -5521,6 +5475,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     this.isVegetarian = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
+       languageId = Value(languageId),
        name = Value(name),
        created = Value(created),
        energy = Value(energy),
@@ -5534,6 +5489,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
   static Insertable<Ingredient> custom({
     Expression<int>? id,
     Expression<String>? uuid,
+    Expression<int>? languageId,
     Expression<String>? remoteId,
     Expression<String>? sourceName,
     Expression<String>? sourceUrl,
@@ -5556,6 +5512,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (uuid != null) 'uuid': uuid,
+      if (languageId != null) 'language_id': languageId,
       if (remoteId != null) 'remote_id': remoteId,
       if (sourceName != null) 'source_name': sourceName,
       if (sourceUrl != null) 'source_url': sourceUrl,
@@ -5580,6 +5537,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
   IngredientTableCompanion copyWith({
     Value<int>? id,
     Value<String>? uuid,
+    Value<int>? languageId,
     Value<String?>? remoteId,
     Value<String?>? sourceName,
     Value<String?>? sourceUrl,
@@ -5602,6 +5560,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     return IngredientTableCompanion(
       id: id ?? this.id,
       uuid: uuid ?? this.uuid,
+      languageId: languageId ?? this.languageId,
       remoteId: remoteId ?? this.remoteId,
       sourceName: sourceName ?? this.sourceName,
       sourceUrl: sourceUrl ?? this.sourceUrl,
@@ -5631,6 +5590,9 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     }
     if (uuid.present) {
       map['uuid'] = Variable<String>(uuid.value);
+    }
+    if (languageId.present) {
+      map['language_id'] = Variable<int>(languageId.value);
     }
     if (remoteId.present) {
       map['remote_id'] = Variable<String>(remoteId.value);
@@ -5694,6 +5656,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     return (StringBuffer('IngredientTableCompanion(')
           ..write('id: $id, ')
           ..write('uuid: $uuid, ')
+          ..write('languageId: $languageId, ')
           ..write('remoteId: $remoteId, ')
           ..write('sourceName: $sourceName, ')
           ..write('sourceUrl: $sourceUrl, ')
@@ -5778,7 +5741,7 @@ class $IngredientImageTableTable extends IngredientImageTable
   );
   @override
   late final GeneratedColumn<int> licenseId = GeneratedColumn<int>(
-    'license',
+    'license_id',
     aliasedName,
     false,
     type: DriftSqlType.int,
@@ -5901,10 +5864,10 @@ class $IngredientImageTableTable extends IngredientImageTable
     } else if (isInserting) {
       context.missing(_sizeMeta);
     }
-    if (data.containsKey('license')) {
+    if (data.containsKey('license_id')) {
       context.handle(
         _licenseIdMeta,
-        licenseId.isAcceptableOrUnknown(data['license']!, _licenseIdMeta),
+        licenseId.isAcceptableOrUnknown(data['license_id']!, _licenseIdMeta),
       );
     } else if (isInserting) {
       context.missing(_licenseIdMeta);
@@ -5989,7 +5952,7 @@ class $IngredientImageTableTable extends IngredientImageTable
       )!,
       licenseId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}license'],
+        data['${effectivePrefix}license_id'],
       )!,
       author: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -6091,7 +6054,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
       if (ingredientId != null) 'ingredient_id': ingredientId,
       if (url != null) 'image': url,
       if (size != null) 'size': size,
-      if (licenseId != null) 'license': licenseId,
+      if (licenseId != null) 'license_id': licenseId,
       if (author != null) 'license_author': author,
       if (authorUrl != null) 'license_author_url': authorUrl,
       if (title != null) 'license_title': title,
@@ -6150,7 +6113,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
       map['size'] = Variable<int>(size.value);
     }
     if (licenseId.present) {
-      map['license'] = Variable<int>(licenseId.value);
+      map['license_id'] = Variable<int>(licenseId.value);
     }
     if (author.present) {
       map['license_author'] = Variable<String>(author.value);
@@ -11107,16 +11070,14 @@ typedef $$WeightEntryTableTableProcessedTableManager =
     >;
 typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
     MeasurementCategoryTableCompanion Function({
-      required int id,
-      Value<String> uuid,
+      Value<String> id,
       required String name,
       required String unit,
       Value<int> rowid,
     });
 typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
     MeasurementCategoryTableCompanion Function({
-      Value<int> id,
-      Value<String> uuid,
+      Value<String> id,
       Value<String> name,
       Value<String> unit,
       Value<int> rowid,
@@ -11148,7 +11109,7 @@ final class $$MeasurementCategoryTableTableReferences
     final manager = $$MeasurementEntryTableTableTableManager(
       $_db,
       $_db.measurementEntryTable,
-    ).filter((f) => f.categoryId.id.sqlEquals($_itemColumn<int>('id')!));
+    ).filter((f) => f.categoryId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(
       _measurementEntryTableRefsTable($_db),
@@ -11168,13 +11129,8 @@ class $$MeasurementCategoryTableTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
+  ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get uuid => $composableBuilder(
-    column: $table.uuid,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11222,13 +11178,8 @@ class $$MeasurementCategoryTableTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
+  ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get uuid => $composableBuilder(
-    column: $table.uuid,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -11252,10 +11203,8 @@ class $$MeasurementCategoryTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get uuid =>
-      $composableBuilder(column: $table.uuid, builder: (column) => column);
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
@@ -11324,28 +11273,24 @@ class $$MeasurementCategoryTableTableTableManager
           ),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
-                Value<String> uuid = const Value.absent(),
+                Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> unit = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion(
                 id: id,
-                uuid: uuid,
                 name: name,
                 unit: unit,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                required int id,
-                Value<String> uuid = const Value.absent(),
+                Value<String> id = const Value.absent(),
                 required String name,
                 required String unit,
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion.insert(
                 id: id,
-                uuid: uuid,
                 name: name,
                 unit: unit,
                 rowid: rowid,
@@ -11409,9 +11354,8 @@ typedef $$MeasurementCategoryTableTableProcessedTableManager =
     >;
 typedef $$MeasurementEntryTableTableCreateCompanionBuilder =
     MeasurementEntryTableCompanion Function({
-      required int id,
-      Value<String> uuid,
-      required int categoryId,
+      Value<String> id,
+      required String categoryId,
       required DateTime date,
       required double value,
       required String notes,
@@ -11419,9 +11363,8 @@ typedef $$MeasurementEntryTableTableCreateCompanionBuilder =
     });
 typedef $$MeasurementEntryTableTableUpdateCompanionBuilder =
     MeasurementEntryTableCompanion Function({
-      Value<int> id,
-      Value<String> uuid,
-      Value<int> categoryId,
+      Value<String> id,
+      Value<String> categoryId,
       Value<DateTime> date,
       Value<double> value,
       Value<String> notes,
@@ -11447,7 +11390,7 @@ final class $$MeasurementEntryTableTableReferences
   );
 
   $$MeasurementCategoryTableTableProcessedTableManager get categoryId {
-    final $_column = $_itemColumn<int>('category_id')!;
+    final $_column = $_itemColumn<String>('category_id')!;
 
     final manager = $$MeasurementCategoryTableTableTableManager(
       $_db,
@@ -11470,13 +11413,8 @@ class $$MeasurementEntryTableTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
+  ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get uuid => $composableBuilder(
-    column: $table.uuid,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11527,13 +11465,8 @@ class $$MeasurementEntryTableTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
+  ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get uuid => $composableBuilder(
-    column: $table.uuid,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -11584,10 +11517,8 @@ class $$MeasurementEntryTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get uuid =>
-      $composableBuilder(column: $table.uuid, builder: (column) => column);
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
@@ -11657,16 +11588,14 @@ class $$MeasurementEntryTableTableTableManager
           ),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
-                Value<String> uuid = const Value.absent(),
-                Value<int> categoryId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> categoryId = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<double> value = const Value.absent(),
                 Value<String> notes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementEntryTableCompanion(
                 id: id,
-                uuid: uuid,
                 categoryId: categoryId,
                 date: date,
                 value: value,
@@ -11675,16 +11604,14 @@ class $$MeasurementEntryTableTableTableManager
               ),
           createCompanionCallback:
               ({
-                required int id,
-                Value<String> uuid = const Value.absent(),
-                required int categoryId,
+                Value<String> id = const Value.absent(),
+                required String categoryId,
                 required DateTime date,
                 required double value,
                 required String notes,
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementEntryTableCompanion.insert(
                 id: id,
-                uuid: uuid,
                 categoryId: categoryId,
                 date: date,
                 value: value,
@@ -12733,6 +12660,7 @@ typedef $$IngredientTableTableCreateCompanionBuilder =
     IngredientTableCompanion Function({
       required int id,
       Value<String> uuid,
+      required int languageId,
       Value<String?> remoteId,
       Value<String?> sourceName,
       Value<String?> sourceUrl,
@@ -12756,6 +12684,7 @@ typedef $$IngredientTableTableUpdateCompanionBuilder =
     IngredientTableCompanion Function({
       Value<int> id,
       Value<String> uuid,
+      Value<int> languageId,
       Value<String?> remoteId,
       Value<String?> sourceName,
       Value<String?> sourceUrl,
@@ -12824,6 +12753,11 @@ class $$IngredientTableTableFilterComposer
 
   ColumnFilters<String> get uuid => $composableBuilder(
     column: $table.uuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get languageId => $composableBuilder(
+    column: $table.languageId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12956,6 +12890,11 @@ class $$IngredientTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get languageId => $composableBuilder(
+    column: $table.languageId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get remoteId => $composableBuilder(
     column: $table.remoteId,
     builder: (column) => ColumnOrderings(column),
@@ -13055,6 +12994,11 @@ class $$IngredientTableTableAnnotationComposer
 
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
+
+  GeneratedColumn<int> get languageId => $composableBuilder(
+    column: $table.languageId,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get remoteId =>
       $composableBuilder(column: $table.remoteId, builder: (column) => column);
@@ -13176,6 +13120,7 @@ class $$IngredientTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> uuid = const Value.absent(),
+                Value<int> languageId = const Value.absent(),
                 Value<String?> remoteId = const Value.absent(),
                 Value<String?> sourceName = const Value.absent(),
                 Value<String?> sourceUrl = const Value.absent(),
@@ -13197,6 +13142,7 @@ class $$IngredientTableTableTableManager
               }) => IngredientTableCompanion(
                 id: id,
                 uuid: uuid,
+                languageId: languageId,
                 remoteId: remoteId,
                 sourceName: sourceName,
                 sourceUrl: sourceUrl,
@@ -13220,6 +13166,7 @@ class $$IngredientTableTableTableManager
               ({
                 required int id,
                 Value<String> uuid = const Value.absent(),
+                required int languageId,
                 Value<String?> remoteId = const Value.absent(),
                 Value<String?> sourceName = const Value.absent(),
                 Value<String?> sourceUrl = const Value.absent(),
@@ -13241,6 +13188,7 @@ class $$IngredientTableTableTableManager
               }) => IngredientTableCompanion.insert(
                 id: id,
                 uuid: uuid,
+                languageId: languageId,
                 remoteId: remoteId,
                 sourceName: sourceName,
                 sourceUrl: sourceUrl,

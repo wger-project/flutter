@@ -31,7 +31,6 @@ linter:
     # https://github.com/dart-lang/linter/blob/master/example/all.yaml
     always_declare_return_types: true
     always_put_control_body_on_new_line: true
-    always_require_non_null_named_parameters: true
     always_specify_types: false # decided against using it for now
     annotate_overrides: true
     avoid_bool_literals_in_conditional_expressions: true
@@ -73,12 +72,10 @@ linter:
     flutter_style_todos: false
     hash_and_equals: true
     implementation_imports: true
-    iterable_contains_unrelated_type: true
     leading_newlines_in_multiline_strings: true
     library_names: true
     library_prefixes: true
     library_private_types_in_public_api: false
-    list_remove_unrelated_type: true
     missing_whitespace_between_adjacent_strings: false
     no_adjacent_strings_in_list: true
     no_duplicate_case_values: true
@@ -88,7 +85,6 @@ linter:
     null_check_on_nullable_type_parameter: true
     null_closures: true
     overridden_fields: true
-    package_api_docs: true
     package_names: true
     package_prefixed_library_names: true
     prefer_adjacent_string_concatenation: true
@@ -100,7 +96,6 @@ linter:
     prefer_const_declarations: true
     prefer_const_literals_to_create_immutables: true
     prefer_contains: true
-    prefer_equal_for_default_values: true
     prefer_final_fields: true
     prefer_final_in_for_each: true
     prefer_final_locals: true
