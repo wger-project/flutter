@@ -660,7 +660,7 @@
     },
     "baseNameEnglish": "Sve vježbe trebaju osnovno ime na engleskom jeziku",
     "next": "Sljedeća",
-    "contributeExercise": "Doprinesi vježbu",
+    "contributeExercise": "Dodaj vježbu",
     "bench": "Klupa",
     "@bench": {
         "description": "Generated entry for translation for server strings"
@@ -1084,5 +1084,36 @@
     "addToOpenFoodFacts": "Dodaj na Open Food Facts",
     "@addToOpenFoodFacts": {
         "description": "Label shown as the clickable link to go on Open Food Facts"
-    }
+    },
+    "isVegan": "Veganski",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Vegetarijanski",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filtar",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Samo na trenutačnom jeziku ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Trenutačni jezik ({lang}) i engleski",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Svi jezici"
 }
