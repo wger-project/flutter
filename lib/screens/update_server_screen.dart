@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,12 +40,7 @@ class UpdateServerScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         content: Text(i18n.serverUpdateContent(MIN_SERVER_VERSION)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-          ),
-        ],
+        actions: null,
       ),
     );
   }
