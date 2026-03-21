@@ -30,7 +30,7 @@ class WorkoutLogTable extends Table {
   @override
   String get tableName => 'manager_workoutlog';
 
-  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   IntColumn get exerciseId => integer().named('exercise_id')();
   IntColumn get routineId => integer().named('routine_id')();
   IntColumn get sessionId => integer().named('session_id').nullable()();
@@ -84,7 +84,7 @@ class WorkoutSessionTable extends Table {
   @override
   String get tableName => 'manager_workoutsession';
 
-  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   IntColumn get routineId => integer().named('routine_id').nullable()();
   IntColumn get dayId => integer().named('day_id').nullable()();
   DateTimeColumn get date => dateTime()();
@@ -98,7 +98,7 @@ class WorkoutSessionTable extends Table {
 const PowersyncWorkoutSessionTable = ps.Table(
   'manager_workoutsession',
   [
-    ps.Column.text('uuid'),
+    ps.Column.text('id'),
     ps.Column.integer('routine_id'),
     ps.Column.integer('day_id'),
     ps.Column.text('date'),

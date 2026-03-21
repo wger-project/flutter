@@ -20,6 +20,7 @@ import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:powersync/powersync.dart' show uuid;
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -31,10 +32,10 @@ const IMPRESSION_MAP = {1: 'bad', 2: 'neutral', 3: 'good'};
 class WorkoutSession {
   final _logger = Logger('WorkoutSession');
 
-  String? id;
+  String id;
   late int? routineId;
   int? dayId;
-  late DateTime date;
+  DateTime date;
   late int impression;
   late String? notes;
   late TimeOfDay? timeStart;
@@ -43,7 +44,7 @@ class WorkoutSession {
   List<Log> logs = [];
 
   WorkoutSession({
-    this.id,
+    String? id,
     this.dayId,
     required this.routineId,
     this.impression = DEFAULT_IMPRESSION,
@@ -52,13 +53,12 @@ class WorkoutSession {
     this.timeEnd,
     this.logs = const [],
     DateTime? date,
-  }) {
-    this.date = date ?? clock.now();
-  }
+  }) : id = id ?? uuid.v7(),
+       date = date ?? clock.now();
 
   WorkoutSessionTableCompanion toCompanion({bool includeId = false}) {
     return WorkoutSessionTableCompanion(
-      id: includeId && id != null ? drift.Value(id!) : const drift.Value.absent(),
+      id: drift.Value(id),
       routineId: routineId != null ? drift.Value(routineId) : const drift.Value.absent(),
       dayId: dayId != null ? drift.Value(dayId) : const drift.Value.absent(),
       date: drift.Value(date.toUtc()),

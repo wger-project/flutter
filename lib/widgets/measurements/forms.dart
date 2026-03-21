@@ -125,14 +125,14 @@ class MeasurementCategoryForm extends ConsumerWidget {
 
 class MeasurementEntryForm extends ConsumerWidget {
   final _form = GlobalKey<FormState>();
-  final String _categoryUuid;
+  final String _categoryId;
   final _valueController = TextEditingController();
   final _dateController = TextEditingController(text: '');
   final _notesController = TextEditingController();
 
   late final Map<String, dynamic> _entryData;
 
-  MeasurementEntryForm(this._categoryUuid, [MeasurementEntry? entry]) {
+  MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry]) {
     _entryData = {
       'id': null,
       'date': DateTime.now(),
@@ -156,7 +156,7 @@ class MeasurementEntryForm extends ConsumerWidget {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
 
     final notifier = ref.read(measurementProvider.notifier);
-    final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(_categoryUuid);
+    final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(_categoryId);
 
     if (_dateController.text.isEmpty) {
       _dateController.text = dateFormat.format(_entryData['date']);

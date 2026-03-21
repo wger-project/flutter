@@ -49,6 +49,7 @@ class MeasurementEntryTable extends Table {
   TextColumn get categoryId =>
       text().named('category_id').references(MeasurementCategoryTable, #id)();
 
+  // DateTimeColumn get date => dateTime().map(const DatetimeToYYYYMMDDConverter())();
   DateTimeColumn get date => dateTime()();
   RealColumn get value => real()();
   TextColumn get notes => text()();

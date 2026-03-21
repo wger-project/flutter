@@ -40,11 +40,11 @@ class MeasurementEntriesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categoryUuid = ModalRoute.of(context)!.settings.arguments as String;
+    final categoryId = ModalRoute.of(context)!.settings.arguments as String;
     final notifier = ref.read(measurementProvider.notifier);
 
     return StreamBuilder<MeasurementCategory?>(
-      stream: notifier.watchCategoryById(categoryUuid),
+      stream: notifier.watchCategoryById(categoryId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const BoxedProgressIndicator();
@@ -104,7 +104,7 @@ class MeasurementEntriesScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  // Confirmed, delete the workout
+                                  // Confirmed, delete the category
                                   notifier.deleteCategory(category.id);
 
                                   // Close the popup
@@ -154,7 +154,7 @@ class MeasurementEntriesScreen extends ConsumerWidget {
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   AppLocalizations.of(context).newEntry,
-                  MeasurementEntryForm(categoryUuid),
+                  MeasurementEntryForm(categoryId),
                 ),
               );
             },
