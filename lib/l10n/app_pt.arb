@@ -1029,5 +1029,16 @@
             }
         }
     },
-    "searchLanguageAll": "Todos os idiomas"
+    "searchLanguageAll": "Todos os idiomas",
+    "serverUpdateTitle": "É necessário atualizar o servidor",
+    "serverUpdateContent": "O servidor é demasiado velho para esta versão da app. Por favor, pede ao administrador do servidor para atualizar para, pelo menos, a versão {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    }
 }
