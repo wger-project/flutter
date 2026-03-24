@@ -38,6 +38,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
   final _form = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
+  bool _isVerifying = false;
 
   @override
   void initState() {
@@ -101,23 +102,44 @@ class _UserProfileFormState extends State<UserProfileForm> {
           ),
           if (!widget._profile.emailVerified)
             OutlinedButton(
-              onPressed: () async {
-                // Email is already verified
-                if (widget._profile.emailVerified) {
-                  return;
-                }
+              // If _isVerifying is true, setting onPressed to null disables the button
+              onPressed: _isVerifying
+                  ? null
+                  : () async {
+                      setState(() {
+                        _isVerifying = true;
+                      });
 
-                // Verify
-                await context.read<UserProvider>().verifyEmail();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(context).verifiedEmailInfo(widget._profile.email),
-                    ),
-                  ),
-                );
-              },
-              child: Text(AppLocalizations.of(context).verify),
+                      try {
+                        // Verify
+                        await context.read<UserProvider>().verifyEmail();
+                        if (!context.mounted) return;
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                AppLocalizations.of(
+                                  context,
+                                ).verifiedEmailInfo(widget._profile.email),
+                              ),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        setState(() {
+                          _isVerifying = false;
+                        });
+                      }
+                    },
+              child: _isVerifying
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : Text(AppLocalizations.of(context).verify),
             ),
           ElevatedButton(
             onPressed: () async {
