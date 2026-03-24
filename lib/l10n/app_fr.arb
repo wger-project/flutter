@@ -964,5 +964,58 @@
             }
         }
     },
-    "superset": "Superset"
+    "superset": "Superset",
+    "personalRecords": "Enregistrements personnels",
+    "noTrophies": "Vous n'avez pas encore de trophées",
+    "serverUpdateTitle": "Mise à jour du serveur requise",
+    "serverUpdateContent": "Le serveur connecté est trop ancien pour cette version de l'application. Demandez à l'administrateur du serveur de le mettre à jour au moins à la version {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "productNotFoundOpenFoodFacts": "Vous pouvez ajouter de produit sur Open Food Facts pour aider la communauté !",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Ajouter à Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Vegan",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Végétarien",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filtre",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Seulement dans la langue actuelle ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Langue actuelle ({lang}) et Anglais",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Toutes les langues",
+    "trophies": "Trophées"
 }
