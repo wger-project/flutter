@@ -55,6 +55,9 @@ class HealthSyncState {
 /// Initial sync lookback period
 const int healthSyncInitialDays = 30;
 
+/// Conversion factor from kg to lb
+const double kgToLb = 2.20462;
+
 @Riverpod(keepAlive: true)
 class HealthSyncNotifier extends _$HealthSyncNotifier {
   final _logger = Logger('HealthSyncNotifier');
@@ -121,8 +124,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     state = const HealthSyncState();
   }
 
-  /// Main sync method: read weight data from health platform, post new entries to backend
-  Future<int> syncOnAppOpen({List<WeightEntry>? existingEntries}) async {
+  /// Main sync method: read weight data from health platform, post new entries to backend.
+  /// If [isMetric] is false, converts kg values from the health platform to lb before POSTing.
+  Future<int> syncOnAppOpen({List<WeightEntry>? existingEntries, bool isMetric = true}) async {
     final prefs = PreferenceHelper.instance;
     final enabled = await prefs.getHealthSyncEnabled();
     if (!enabled) {
@@ -136,6 +140,23 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
 
     try {
       await _health.configure();
+
+      // Ensure we have permission to read weight data
+      final hasPerms = await _health.hasPermissions(
+        [HealthDataType.WEIGHT],
+        permissions: [HealthDataAccess.READ],
+      );
+      if (hasPerms != true) {
+        final authorized = await _health.requestAuthorization(
+          [HealthDataType.WEIGHT],
+          permissions: [HealthDataAccess.READ],
+        );
+        if (!authorized) {
+          _logger.warning('Health permissions not granted during sync');
+          state = state.copyWith(isSyncing: false);
+          return 0;
+        }
+      }
 
       // Determine the start time for the query
       final lastSyncStr = await prefs.getLastHealthSyncTimestamp();
@@ -171,8 +192,12 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       for (final point in dataPoints) {
         try {
           final value = (point.value as NumericHealthValue).numericValue;
-          final weightKg = (value * 100).roundToDouble() / 100; // Round to 2 decimal places
+          final weightKg = value.toDouble();
           final timestamp = point.dateFrom;
+
+          // Convert to user's preferred unit
+          final weight = isMetric ? weightKg : weightKg * kgToLb;
+          final weightRounded = (weight * 100).roundToDouble() / 100;
 
           // Fallback dedup: skip if an entry with the same timestamp exists locally
           if (existingEntries != null) {
@@ -191,7 +216,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
           }
 
           // POST to backend with original timestamp
-          final entry = WeightEntry(weight: weightKg, date: timestamp);
+          final entry = WeightEntry(weight: weightRounded, date: timestamp);
           await _baseProvider.post(
             entry.toJson(),
             _baseProvider.makeUrl(_weightEntryUrl),

@@ -24,6 +24,8 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/user.dart';
+import 'package:wger/widgets/measurements/charts.dart';
 
 class WeightForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
@@ -41,6 +43,10 @@ class WeightForm extends StatelessWidget {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
+    final profile = context.read<UserProvider>().profile;
+    final unitLabel = profile != null
+        ? weightUnit(profile.isMetric, context)
+        : AppLocalizations.of(context).kg;
 
     if (weightController.text.isEmpty && _weightEntry.weight != 0) {
       weightController.text = numberFormat.format(_weightEntry.weight);
@@ -127,7 +133,7 @@ class WeightForm extends StatelessWidget {
           TextFormField(
             key: const Key('weightInput'),
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).weight,
+              labelText: '${AppLocalizations.of(context).weight} ($unitLabel)',
               prefix: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

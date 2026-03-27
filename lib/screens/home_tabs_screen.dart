@@ -151,8 +151,12 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
 
     // Trigger health sync after weight entries are loaded (non-blocking)
     final weightProviderForSync = context.read<BodyWeightProvider>();
+    final userProviderForSync = context.read<UserProvider>();
+    final isMetric = userProviderForSync.profile?.isMetric ?? true;
     final healthNotifier = ref.read(healthSyncProvider.notifier);
-    healthNotifier.syncOnAppOpen(existingEntries: weightProviderForSync.items).then((syncCount) {
+    healthNotifier
+        .syncOnAppOpen(existingEntries: weightProviderForSync.items, isMetric: isMetric)
+        .then((syncCount) {
       if (syncCount > 0) {
         weightProviderForSync.fetchAndSetEntries();
       }
