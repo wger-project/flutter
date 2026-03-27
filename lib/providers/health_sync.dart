@@ -95,8 +95,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     return Platform.isIOS;
   }
 
-  /// Enable health sync: request permissions, save preference, trigger initial sync
-  Future<int> enableSync() async {
+  /// Enable health sync: request permissions, save preference, trigger initial sync.
+  /// If [isMetric] is false, converts kg values from the health platform to lb before POSTing.
+  Future<int> enableSync({bool isMetric = true}) async {
     _logger.info('Enabling health sync');
 
     await _health.configure();
@@ -114,7 +115,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     await PreferenceHelper.instance.setHealthSyncEnabled(true);
     state = state.copyWith(isEnabled: true);
 
-    return syncOnAppOpen();
+    return syncOnAppOpen(isMetric: isMetric);
   }
 
   /// Disable health sync: clear preferences

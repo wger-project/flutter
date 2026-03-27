@@ -18,7 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as provider;
+import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/health_sync.dart';
+import 'package:wger/providers/user.dart';
 
 class HealthSyncSettingsTile extends ConsumerStatefulWidget {
   const HealthSyncSettingsTile({super.key});
@@ -62,11 +65,18 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
           : (enabled) async {
               final notifier = ref.read(healthSyncProvider.notifier);
               if (enabled) {
-                final count = await notifier.enableSync();
+                final profile = provider.Provider.of<UserProvider>(context, listen: false).profile;
+                final isMetric = profile?.isMetric ?? true;
+                final count = await notifier.enableSync(isMetric: isMetric);
                 if (context.mounted && count > 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Synced $count weight entries from Health')),
-                  );
+                  // Refresh weight entries so the dashboard/weight screen updates
+                  await provider.Provider.of<BodyWeightProvider>(context, listen: false)
+                      .fetchAndSetEntries();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Synced $count weight entries from Health')),
+                    );
+                  }
                 }
               } else {
                 await notifier.disableSync();
