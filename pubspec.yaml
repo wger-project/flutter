@@ -50,6 +50,7 @@ dependencies:
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.0.0
   get_it: ^8.3.0
+  health: ^13.3.1
   http: ^1.6.0
   image_picker: ^1.2.1
   intl: ^0.20.0

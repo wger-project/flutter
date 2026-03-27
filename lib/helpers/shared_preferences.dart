@@ -68,4 +68,30 @@ class PreferenceHelper {
       );
     }
   }
+
+  // Health sync
+  static const _healthSyncEnabledKey = 'healthSyncEnabled';
+  static const _lastHealthSyncTimestampKey = 'lastHealthSyncTimestamp';
+
+  Future<void> setHealthSyncEnabled(bool value) async {
+    await PreferenceHelper.asyncPref.setBool(_healthSyncEnabledKey, value);
+  }
+
+  Future<bool> getHealthSyncEnabled() async {
+    final value = await PreferenceHelper.asyncPref.getBool(_healthSyncEnabledKey);
+    return value ?? false;
+  }
+
+  Future<void> setLastHealthSyncTimestamp(String value) async {
+    await PreferenceHelper.asyncPref.setString(_lastHealthSyncTimestampKey, value);
+  }
+
+  Future<String?> getLastHealthSyncTimestamp() async {
+    return PreferenceHelper.asyncPref.getString(_lastHealthSyncTimestampKey);
+  }
+
+  Future<void> clearHealthSyncPreferences() async {
+    await PreferenceHelper.asyncPref.remove(_healthSyncEnabledKey);
+    await PreferenceHelper.asyncPref.remove(_lastHealthSyncTimestampKey);
+  }
 }

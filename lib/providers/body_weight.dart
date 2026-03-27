@@ -58,7 +58,12 @@ class BodyWeightProvider with ChangeNotifier {
 
   WeightEntry? findByDate(DateTime date) {
     try {
-      return _entries.firstWhere((plan) => plan.date == date);
+      return _entries.firstWhere(
+        (entry) =>
+            entry.date.year == date.year &&
+            entry.date.month == date.month &&
+            entry.date.day == date.day,
+      );
     } on StateError {
       return null;
     }

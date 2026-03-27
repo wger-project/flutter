@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -57,17 +58,21 @@ void main() {
   });
 
   Widget createSettingsScreen({locale = 'en'}) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NutritionPlansProvider>(create: (context) => mockNutritionProvider),
-        ChangeNotifierProvider<ExercisesProvider>(create: (context) => mockExerciseProvider),
-        ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
-      ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const SettingsPage(),
+    return ProviderScope(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<NutritionPlansProvider>(
+            create: (context) => mockNutritionProvider,
+          ),
+          ChangeNotifierProvider<ExercisesProvider>(create: (context) => mockExerciseProvider),
+          ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
+        ],
+        child: MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const SettingsPage(),
+        ),
       ),
     );
   }

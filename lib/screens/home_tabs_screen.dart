@@ -28,6 +28,7 @@ import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/health_sync.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
@@ -147,6 +148,15 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     }
 
     authProvider.dataInit = true;
+
+    // Trigger health sync after weight entries are loaded (non-blocking)
+    final weightProviderForSync = context.read<BodyWeightProvider>();
+    final healthNotifier = ref.read(healthSyncProvider.notifier);
+    healthNotifier.syncOnAppOpen(existingEntries: weightProviderForSync.items).then((syncCount) {
+      if (syncCount > 0) {
+        weightProviderForSync.fetchAndSetEntries();
+      }
+    });
   }
 
   @override
