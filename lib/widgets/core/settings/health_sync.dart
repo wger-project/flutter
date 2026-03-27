@@ -50,7 +50,7 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
   @override
   Widget build(BuildContext context) {
     // Hide entirely if platform check hasn't completed or is unavailable
-    if (_isAvailable == null || _isAvailable == false) {
+    if (_isAvailable != true) {
       return const SizedBox.shrink();
     }
 

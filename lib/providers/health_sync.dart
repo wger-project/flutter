@@ -52,10 +52,7 @@ class HealthSyncState {
   }
 }
 
-/// Initial sync lookback period
 const int healthSyncInitialDays = 30;
-
-/// Conversion factor from kg to lb
 const double kgToLb = 2.20462;
 
 @Riverpod(keepAlive: true)
@@ -187,6 +184,14 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
 
       _logger.info('Found ${dataPoints.length} weight data points');
 
+      // Build a Set of existing timestamps for O(1) dedup lookups
+      final existingTimestamps = existingEntries != null
+          ? {
+              for (final e in existingEntries)
+                DateTime(e.date.year, e.date.month, e.date.day, e.date.hour, e.date.minute),
+            }
+          : <DateTime>{};
+
       int syncedCount = 0;
       DateTime? latestSynced;
 
@@ -196,27 +201,22 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
           final weightKg = value.toDouble();
           final timestamp = point.dateFrom;
 
-          // Convert to user's preferred unit
           final weight = isMetric ? weightKg : weightKg * kgToLb;
           final weightRounded = (weight * 100).roundToDouble() / 100;
 
-          // Fallback dedup: skip if an entry with the same timestamp exists locally
-          if (existingEntries != null) {
-            final duplicate = existingEntries.any(
-              (e) =>
-                  e.date.year == timestamp.year &&
-                  e.date.month == timestamp.month &&
-                  e.date.day == timestamp.day &&
-                  e.date.hour == timestamp.hour &&
-                  e.date.minute == timestamp.minute,
-            );
-            if (duplicate) {
-              _logger.fine('Skipping duplicate entry for $timestamp');
-              continue;
-            }
+          // Skip if an entry with the same timestamp already exists locally
+          final normalizedTimestamp = DateTime(
+            timestamp.year,
+            timestamp.month,
+            timestamp.day,
+            timestamp.hour,
+            timestamp.minute,
+          );
+          if (existingTimestamps.contains(normalizedTimestamp)) {
+            _logger.fine('Skipping duplicate entry for $timestamp');
+            continue;
           }
 
-          // POST to backend with original timestamp
           final entry = WeightEntry(weight: weightRounded, date: timestamp);
           await _baseProvider.post(
             entry.toJson(),
