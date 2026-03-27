@@ -43,7 +43,7 @@ class SettingsPage extends StatelessWidget {
           ),
           const SettingsExerciseCache(),
           const SettingsIngredientCache(),
-          ListTile(title: Text('Health', style: Theme.of(context).textTheme.headlineSmall)),
+          ListTile(title: Text(i18n.health, style: Theme.of(context).textTheme.headlineSmall)),
           const HealthSyncSettingsTile(),
           ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
           const SettingsTheme(),

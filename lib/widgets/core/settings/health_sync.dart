@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/health_sync.dart';
 import 'package:wger/providers/user.dart';
@@ -56,9 +57,11 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
 
     final syncState = ref.watch(healthSyncProvider);
 
+    final i18n = AppLocalizations.of(context);
+
     return SwitchListTile(
-      title: const Text('Health sync'),
-      subtitle: const Text('Import weight from Apple Health or Health Connect'),
+      title: Text(i18n.healthSync),
+      subtitle: Text(i18n.healthSyncDescription),
       value: syncState.isEnabled,
       onChanged: syncState.isSyncing
           ? null
@@ -74,7 +77,7 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
                       .fetchAndSetEntries();
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Synced $count weight entries from Health')),
+                      SnackBar(content: Text(i18n.healthSyncSuccess(count))),
                     );
                   }
                 }
