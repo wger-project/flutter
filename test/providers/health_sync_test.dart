@@ -31,9 +31,6 @@ void main() {
       expect(kgToLb, closeTo(2.20462, 0.00001));
     });
 
-    test('Initial sync lookback is 30 days', () {
-      expect(healthSyncInitialDays, 30);
-    });
   });
 
   group('Weight unit conversion', () {

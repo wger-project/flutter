@@ -52,7 +52,6 @@ class HealthSyncState {
   }
 }
 
-const int healthSyncInitialDays = 30;
 const double kgToLb = 2.20462;
 
 @Riverpod(keepAlive: true)
@@ -162,7 +161,8 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       if (lastSyncStr != null) {
         startTime = DateTime.parse(lastSyncStr);
       } else {
-        startTime = DateTime.now().subtract(const Duration(days: healthSyncInitialDays));
+        // Pull all available history on first sync
+        startTime = DateTime(2000);
       }
       final endTime = DateTime.now();
 
