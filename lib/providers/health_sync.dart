@@ -108,6 +108,11 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       return 0;
     }
 
+    // Request access to historical data (older than 30 days) on Android
+    if (Platform.isAndroid) {
+      await _health.requestHealthDataHistoryAuthorization();
+    }
+
     await PreferenceHelper.instance.setHealthSyncEnabled(true);
     state = state.copyWith(isEnabled: true);
 
