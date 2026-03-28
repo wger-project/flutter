@@ -896,6 +896,7 @@
   "unVerifiedEmail": "Unverified email",
   "verifiedEmailReason": "You need to verify your email to contribute exercises",
   "verifiedEmailInfo": "A verification email was sent to {email}",
+  "verifiedEmailSent": "Email Sent",
   "@verifiedEmailInfo": {
     "placeholders": {
       "email": {
