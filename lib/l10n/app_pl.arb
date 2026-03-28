@@ -833,5 +833,7 @@
     "darkMode": "Zawsze używaj trybu ciemnego",
     "lightMode": "Zawsze używaj trybu jasnego",
     "systemMode": "Ustawienia systemu",
-    "fitInWeek": "Dopasuj w tygodniu"
+    "fitInWeek": "Dopasuj w tygodniu",
+    "dayTypeAmrap": "Tak dużo rund jak to możliwe",
+    "trophies": "Trofea"
 }
