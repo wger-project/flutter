@@ -102,6 +102,13 @@ class _UserProfileFormState extends State<UserProfileForm> {
           ),
           if (!widget._profile.emailVerified)
             OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                // Applying the "Darker background" when disabled
+                disabledBackgroundColor: Colors.grey.shade300,
+                side: BorderSide(
+                  color: _isVerifying ? Colors.grey : Colors.green,
+                ),
+              ),
               // If _isVerifying is true, setting onPressed to null disables the button
               onPressed: _isVerifying
                   ? null
@@ -131,15 +138,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
                         });
                       }
                     },
-              child: _isVerifying
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : Text(AppLocalizations.of(context).verify),
+              child: _isVerifying ? const Text("Email sent") : Text(AppLocalizations.of(context).verify),
             ),
           ElevatedButton(
             onPressed: () async {
