@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/native.dart';
@@ -23,9 +24,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight.dart';
@@ -47,9 +50,9 @@ void main() {
     database.close();
   });
 
-  Widget createNutritionalPlan({locale = 'en'}) {
+  Widget createNutritionalPlan({locale = 'en', MockWgerBaseProvider? baseProvider}) {
     final key = GlobalKey<NavigatorState>();
-    final mockBaseProvider = MockWgerBaseProvider();
+    final mockBaseProvider = baseProvider ?? MockWgerBaseProvider();
     final plan = getNutritionalPlan();
 
     return MultiProvider(
@@ -175,4 +178,42 @@ void main() {
 
     expect(find.textContaining('17:00'), findsOneWidget);
   });
+
+  testWidgets(
+    'loading indicator does not reappear after popup menu tap',
+    (WidgetTester tester) async {
+      final completer = Completer<NutritionalPlan>();
+      final mockBaseProvider = MockWgerBaseProvider();
+
+      // When fetch is called, return our controlled future
+      when(
+        mockBaseProvider.makeUrl(any, id: anyNamed('id')),
+      ).thenReturn(Uri.parse('http://fake.url'));
+      when(mockBaseProvider.fetch(any)).thenAnswer((_) => completer.future);
+
+      await tester.pumpWidget(createNutritionalPlan(baseProvider: mockBaseProvider));
+      await tester.tap(find.byType(TextButton));
+
+      // Two pumps: first for route transition, second for FutureBuilder waiting state
+      await tester.pump();
+      await tester.pump();
+
+      // Future is still pending — spinner must be visible
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      // Now resolve the future — simulates network response
+      completer.complete(getNutritionalPlan());
+      await tester.pumpAndSettle();
+
+      // Spinner gone after successful load
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+
+      // Tap popup menu — this is the exact scenario that triggered the bug
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pump();
+
+      // Core assertion: spinner must NOT reappear after menu tap
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+    },
+  );
 }
