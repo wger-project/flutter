@@ -228,6 +228,16 @@
       }
     }
   },
+  "setNr": "Set {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set within a group of same exercises.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
   "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
   "@sameRepetitions": {},
   "comment": "Comment",
