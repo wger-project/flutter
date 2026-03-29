@@ -136,6 +136,7 @@ class MeasurementEntryForm extends StatelessWidget {
   final int _categoryId;
   final _valueController = TextEditingController();
   final _dateController = TextEditingController(text: '');
+  final _timeController = TextEditingController(text: '');
   final _notesController = TextEditingController();
 
   late final Map<String, dynamic> _entryData;
@@ -164,6 +165,7 @@ class MeasurementEntryForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
 
     final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
     final measurementCategory = measurementProvider.categories.firstWhere(
@@ -172,6 +174,9 @@ class MeasurementEntryForm extends StatelessWidget {
 
     if (_dateController.text.isEmpty) {
       _dateController.text = dateFormat.format(_entryData['date']);
+    }
+    if (_timeController.text.isEmpty) {
+      _timeController.text = TimeOfDay.fromDateTime(_entryData['date']).format(context);
     }
 
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
@@ -185,6 +190,7 @@ class MeasurementEntryForm extends StatelessWidget {
       key: _form,
       child: Column(
         children: [
+          // Date
           TextFormField(
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).date,
@@ -206,14 +212,19 @@ class MeasurementEntryForm extends StatelessWidget {
                 initialDate: _entryData['date'],
                 firstDate: DateTime(DateTime.now().year - 10),
                 lastDate: DateTime.now(),
-
-              
               );
 
-              _dateController.text = pickedDate == null ? '' : dateFormat.format(pickedDate);
+              if (pickedDate != null) {
+                _dateController.text = dateFormat.format(pickedDate);
+              }
             },
             onSaved: (newValue) {
-              _entryData['date'] = dateFormat.parse(newValue!);
+              final date = dateFormat.parse(newValue!);
+              _entryData['date'] = (_entryData['date'] as DateTime).copyWith(
+                year: date.year,
+                month: date.month,
+                day: date.day,
+              );
             },
             validator: (value) {
               if (value!.isEmpty) {
@@ -222,6 +233,38 @@ class MeasurementEntryForm extends StatelessWidget {
               return null;
             },
           ),
+
+          // Time
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).time,
+              suffixIcon: const Icon(
+                Icons.access_time_outlined,
+                key: Key('clockIcon'),
+              ),
+            ),
+            readOnly: true,
+            controller: _timeController,
+            onTap: () async {
+              final pickedTime = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.fromDateTime(_entryData['date']),
+              );
+
+              if (pickedTime != null) {
+                _timeController.text = pickedTime.format(context);
+              }
+            },
+            onSaved: (newValue) {
+              final time = timeFormat.parse(newValue!);
+              _entryData['date'] = (_entryData['date'] as DateTime).copyWith(
+                hour: time.hour,
+                minute: time.minute,
+                second: time.second,
+              );
+            },
+          ),
+
           // Value
           TextFormField(
             decoration: InputDecoration(
@@ -246,7 +289,7 @@ class MeasurementEntryForm extends StatelessWidget {
               _entryData['value'] = numberFormat.parse(newValue!);
             },
           ),
-          // Value
+          // Notes
           TextFormField(
             decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
             controller: _notesController,
