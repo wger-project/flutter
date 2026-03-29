@@ -133,7 +133,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
                       }
                     },
               child: _isVerifying
-                  ? const Text(AppLocalizations.of(context).verifiedEmailSent)
+                  ? Text(AppLocalizations.of(context).verifiedEmailSent) 
                   : Text(AppLocalizations.of(context).verify),
             ),
           ElevatedButton(
