@@ -1115,5 +1115,16 @@
             }
         }
     },
-    "searchLanguageAll": "Svi jezici"
+    "searchLanguageAll": "Svi jezici",
+    "serverUpdateTitle": "Potrebno je aktualizirati server",
+    "serverUpdateContent": "Povezani server je prestar za ovu verziju aplikacije. Zamoli administratora servera da ga aktualizira barem na verziju {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    }
 }
