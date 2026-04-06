@@ -835,5 +835,8 @@
     "systemMode": "Ustawienia systemu",
     "fitInWeek": "Dopasuj w tygodniu",
     "dayTypeAmrap": "Tak dużo rund jak to możliwe",
-    "trophies": "Trofea"
+    "trophies": "Trofea",
+    "dashboardWidgets": "Kokpit widgetów",
+    "dayTypeCustom": "Niestandardowy",
+    "dayTypeEnom": "Każda minuta w minutę"
 }
