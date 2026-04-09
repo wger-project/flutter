@@ -88,6 +88,23 @@ void main() {
       expect(weightEntryNew.weight, 80);
     });
 
+    test('findByDate matches by calendar date regardless of time', () {
+      final provider = BodyWeightProvider(mockBaseProvider);
+      provider.items = [
+        WeightEntry(id: 1, weight: 80, date: DateTime(2021, 3, 15, 7, 15)),
+        WeightEntry(id: 2, weight: 81, date: DateTime(2021, 3, 16, 20, 0)),
+      ];
+
+      // Same calendar date, different time
+      final found = provider.findByDate(DateTime(2021, 3, 15, 22, 30));
+      expect(found, isNotNull);
+      expect(found!.id, 1);
+
+      // No entry for this date
+      final notFound = provider.findByDate(DateTime(2021, 3, 17));
+      expect(notFound, isNull);
+    });
+
     test('Test deleting an existing weight entry', () async {
       // Arrange
       final uri = Uri(

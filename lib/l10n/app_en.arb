@@ -1190,5 +1190,26 @@
     }
   },
   "searchLanguageAll": "All languages",
-  "@searchLanguageAll": {}
+  "@searchLanguageAll": {},
+  "healthSync": "Health sync",
+  "@healthSync": {
+    "description": "Title for the health platform sync setting"
+  },
+  "healthSyncDescription": "Import weight from Apple Health or Health Connect",
+  "@healthSyncDescription": {
+    "description": "Subtitle for the health platform sync setting"
+  },
+  "healthSyncSuccess": "Synced {count} weight entries from Health",
+  "@healthSyncSuccess": {
+    "description": "Snackbar message after successful health sync",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "health": "Health",
+  "@health": {
+    "description": "Section header for health-related settings"
+  }
 }

@@ -15,8 +15,9 @@ WeightEntry _$WeightEntryFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$WeightEntryToJson(WeightEntry instance) => <String, dynamic>{
-  'id': instance.id,
-  'weight': numToString(instance.weight),
-  'date': dateToUtcIso8601(instance.date),
-};
+Map<String, dynamic> _$WeightEntryToJson(WeightEntry instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'weight': numToString(instance.weight),
+      'date': dateToUtcIso8601(instance.date),
+    };

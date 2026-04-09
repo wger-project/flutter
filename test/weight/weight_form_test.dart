@@ -18,19 +18,37 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/user/profile.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 import '../../test_data/body_weight.dart';
+import '../../test_data/profile.dart';
+import 'weight_form_test.mocks.dart';
 
+@GenerateMocks([UserProvider])
 void main() {
+  late MockUserProvider mockUserProvider;
+
+  setUp(() {
+    mockUserProvider = MockUserProvider();
+    when(mockUserProvider.profile).thenReturn(tProfile1);
+  });
+
   Widget createWeightForm({locale = 'en', weightEntry = WeightEntry}) {
-    return MaterialApp(
-      locale: Locale(locale),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(body: WeightForm(weightEntry)),
+    return ChangeNotifierProvider<UserProvider>.value(
+      value: mockUserProvider,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: WeightForm(weightEntry)),
+      ),
     );
   }
 

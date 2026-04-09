@@ -26,6 +26,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Workout photos</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>wger uses your health data to automatically sync weight measurements from your smart scale</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

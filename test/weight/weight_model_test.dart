@@ -59,5 +59,19 @@ void main() {
       expect(weightModel.weight, 80);
       expect(weightModel.date, DateTime.utc(2020, 10, 01));
     });
+
+    test('copyWith preserves decimal weight values', () {
+      final entry = WeightEntry(id: 1, weight: 80.5, date: DateTime.utc(2020, 10, 01));
+      final copied = entry.copyWith(weight: 81.3);
+
+      expect(copied.weight, 81.3);
+    });
+
+    test('copyWith with null weight keeps original value', () {
+      final entry = WeightEntry(id: 1, weight: 80.5, date: DateTime.utc(2020, 10, 01));
+      final copied = entry.copyWith();
+
+      expect(copied.weight, 80.5);
+    });
   });
 }

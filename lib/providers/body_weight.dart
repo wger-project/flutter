@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/date.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -58,7 +59,9 @@ class BodyWeightProvider with ChangeNotifier {
 
   WeightEntry? findByDate(DateTime date) {
     try {
-      return _entries.firstWhere((plan) => plan.date == date);
+      return _entries.firstWhere(
+        (entry) => entry.date.isSameDayAs(date),
+      );
     } on StateError {
       return null;
     }

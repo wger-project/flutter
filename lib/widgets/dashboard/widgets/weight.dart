@@ -35,101 +35,102 @@ class DashboardWeightWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.read<UserProvider>().profile;
-    final weightProvider = context.read<BodyWeightProvider>();
-
-    final (entriesAll, entries7dAvg) = sensibleRange(
-      weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
-    );
 
     return Consumer<BodyWeightProvider>(
-      builder: (context, _, _) => Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(
-                AppLocalizations.of(context).weight,
-                style: Theme.of(context).textTheme.headlineSmall,
+      builder: (context, weightProvider, _) {
+        final (entriesAll, entries7dAvg) = sensibleRange(
+          weightProvider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
+        );
+
+        return Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(
+                  AppLocalizations.of(context).weight,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                leading: FaIcon(
+                  FontAwesomeIcons.weightScale,
+                  color: Theme.of(context).textTheme.headlineSmall!.color,
+                ),
               ),
-              leading: FaIcon(
-                FontAwesomeIcons.weightScale,
-                color: Theme.of(context).textTheme.headlineSmall!.color,
-              ),
-            ),
-            Column(
-              children: [
-                if (weightProvider.items.isNotEmpty)
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 200,
-                        child: MeasurementChartWidgetFl(
-                          entriesAll,
-                          weightUnit(profile!.isMetric, context),
-                          avgs: entries7dAvg,
+              Column(
+                children: [
+                  if (weightProvider.items.isNotEmpty)
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 200,
+                          child: MeasurementChartWidgetFl(
+                            entriesAll,
+                            weightUnit(profile!.isMetric, context),
+                            avgs: entries7dAvg,
+                          ),
                         ),
-                      ),
-                      if (entries7dAvg.isNotEmpty)
-                        MeasurementOverallChangeWidget(
-                          entries7dAvg.first,
-                          entries7dAvg.last,
-                          weightUnit(profile.isMetric, context),
-                        ),
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  TextButton(
-                                    child: Text(
-                                      AppLocalizations.of(context).goToDetailPage,
-                                      overflow: TextOverflow.ellipsis,
+                        if (entries7dAvg.isNotEmpty)
+                          MeasurementOverallChangeWidget(
+                            entries7dAvg.first,
+                            entries7dAvg.last,
+                            weightUnit(profile.isMetric, context),
+                          ),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      child: Text(
+                                        AppLocalizations.of(context).goToDetailPage,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pushNamed(WeightScreen.routeName);
+                                      },
                                     ),
-                                    onPressed: () {
-                                      Navigator.of(context).pushNamed(WeightScreen.routeName);
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.add),
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        FormScreen.routeName,
-                                        arguments: FormScreenArguments(
-                                          AppLocalizations.of(context).newEntry,
-                                          WeightForm(
-                                            weightProvider.getNewestEntry()?.copyWith(
-                                              id: null,
-                                              date: DateTime.now(),
+                                    IconButton(
+                                      icon: const Icon(Icons.add),
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          FormScreen.routeName,
+                                          arguments: FormScreenArguments(
+                                            AppLocalizations.of(context).newEntry,
+                                            WeightForm(
+                                              weightProvider.getNewestEntry()?.copyWith(
+                                                id: null,
+                                                date: DateTime.now(),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  )
-                else
-                  NothingFound(
-                    AppLocalizations.of(context).noWeightEntries,
-                    AppLocalizations.of(context).newEntry,
-                    WeightForm(),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
+                            );
+                          },
+                        ),
+                      ],
+                    )
+                  else
+                    NothingFound(
+                      AppLocalizations.of(context).noWeightEntries,
+                      AppLocalizations.of(context).newEntry,
+                      WeightForm(),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
