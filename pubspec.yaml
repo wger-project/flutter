@@ -62,7 +62,7 @@ dependencies:
   provider: ^6.1.5+1
   rive: ^0.13.20
   riverpod_annotation: ^4.0.0
-  shared_preferences: ^2.5.3
+  shared_preferences: ^2.5.5
   drift_flutter: ^0.2.8
   table_calendar: ^3.0.8
   url_launcher: ^6.3.2
