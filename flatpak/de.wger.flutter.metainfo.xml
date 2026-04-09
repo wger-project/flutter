@@ -29,11 +29,14 @@
     </description>
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>AGPL-3.0-or-later</project_license>
-    <recommends>
+    <supports>
         <control>touch</control>
         <control>pointing</control>
         <control>keyboard</control>
-    </recommends>
+    </supports>
+    <requires>
+        <display_length compare="ge">360</display_length>
+    </requires>
     <developer_name>wger</developer_name>
     <url type="homepage">https://wger.de/</url>
     <url type="contact">https://fosstodon.org/@wger</url>
