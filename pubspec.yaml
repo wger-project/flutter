@@ -35,7 +35,7 @@ dependencies:
   carousel_slider: ^5.1.2
   clock: ^1.1.2
   collection: ^1.18.0
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^1.0.9
   drift: ^2.31.0
   equatable: ^2.0.8
   fl_chart: ^1.2.0
