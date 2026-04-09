@@ -385,7 +385,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
       day: dayChestShoulders,
       slots: [
         SlotData(
-          comment: 'Bench press',
+          comment: '',
           isSuperset: false,
           exerciseIds: [1],
           setConfigs: [
@@ -406,7 +406,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
           ],
         ),
         SlotData(
-          comment: 'Side rises',
+          comment: '',
           isSuperset: false,
           exerciseIds: [6],
           setConfigs: [
@@ -435,7 +435,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
       day: dayLegs,
       slots: [
         SlotData(
-          comment: 'Squats',
+          comment: 'Make sure to go deep. Slow down, and push through your heels',
           isSuperset: false,
           exerciseIds: [8],
           setConfigs: [
@@ -477,7 +477,9 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     id: 1,
     created: DateTime(2021, 01, 01),
     name: '3 day workout',
-    description: 'This is a 3 day workout and this text is important',
+    description:
+        'This is a sample routine, it focuses on X, Y and Z and is the first '
+        'step to give you a good base to build on',
     start: DateTime(2024, 11, 01),
     end: DateTime(2024, 12, 01),
     days: [dayChestShoulders, dayLegs],

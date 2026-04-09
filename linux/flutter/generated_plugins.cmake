@@ -5,11 +5,13 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_linux
   rive_common
+  sqlite3_flutter_libs
   url_launcher_linux
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   flutter_zxing
+  jni
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

@@ -21,7 +21,7 @@
     "@selectIngredient": {
         "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
     },
-    "logIngredient": "حفظ في مذكرة التغذية",
+    "logIngredient": "حفظ في مذكرة التغذيةسجل المكونات في دفتر التغذية",
     "equipment": "الادوات",
     "@equipment": {
         "description": "Equipment needed to perform an exercise"
@@ -567,7 +567,7 @@
     "@unit": {
         "description": "The unit used for a repetition (kg, time, etc.)"
     },
-    "aboutPageTitle": "عن وقر wger",
+    "aboutPageTitle": "نبذة عنا والدعم",
     "plateCalculatorNotDivisible": "لا يمكن الوصول إلى الوزن بالأطباق المتوفرة",
     "@plateCalculatorNotDivisible": {
         "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
@@ -856,5 +856,263 @@
     "@volume": {
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
-    "ingredientLogged": "تم تسجيل المكون في اليوميات"
+    "ingredientLogged": "تم تسجيل المكون في اليوميات",
+    "topSet": "القيمة تمثل المجموعة، مثل \"10 × 80 كجم\".",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "onlyLogging": "تتبع السعرات الحرارية فقط",
+    "goalEnergy": "هدف الطاقة",
+    "goalProtein": "هدف البروتين",
+    "goalCarbohydrates": "هدف الكاربوهدرات",
+    "goalFat": "هدف الدهون",
+    "goalFiber": "هدف الالياف",
+    "errorInfoDescription": "نأسف، ولكن حدث خطأ ما. يمكنك مساعدتنا في إصلاح هذا الخطأ عن طريق الإبلاغ عنه على GitHub.",
+    "errorInfoDescription2": "يمكنك الاستمرار في استخدام التطبيق، ولكن قد لا تعمل بعض الميزات.",
+    "errorViewDetails": "التفاصيل التقنية",
+    "applicationLogs": "سجلات التطبيق",
+    "errorCouldNotConnectToServer": "لم يتمكن التطبيق من الاتصال بالخادم",
+    "errorCouldNotConnectToServerDetails": "لم يتمكن التطبيق من الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت أو عنوان URL الخاص بالخادم، ثم المحاولة مرة أخرى. إذا استمرت المشكلة، فاتصل بمسؤول الخادم.",
+    "max": "الاقصى",
+    "min": "الادنى",
+    "chartDuringPlanTitle": "{chartName} خلال الخطة الغذائية {planName}",
+    "@chartDuringPlanTitle": {
+        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+        "type": "text",
+        "placeholders": {
+            "chartName": {
+                "type": "String"
+            },
+            "planName": {
+                "type": "String"
+            }
+        }
+    },
+    "endDate": "تاريخ الانتهاء",
+    "@endDate": {
+        "description": "The End date of a nutritional plan or routine"
+    },
+    "today": "اليوم",
+    "loggedToday": "سجل اليوم",
+    "surplus": "فائض",
+    "@surplus": {
+        "description": "Caloric surplus (either planned or unplanned)"
+    },
+    "deficit": "العجز",
+    "@deficit": {
+        "description": "Caloric deficit (either planned or unplanned)"
+    },
+    "kcalValue": "{value} kcal",
+    "@kcalValue": {
+        "description": "A value in kcal, e.g. 500 kcal",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "gValue": "{value} g",
+    "@gValue": {
+        "description": "A value in grams, e.g. 5 g",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "percentValue": "{value} %",
+    "@percentValue": {
+        "description": "A value in percent, e.g. 10 %",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "noTrophies": "ليس لديك أي جوائز حتى الآن",
+    "overview": "ملخص",
+    "aboutWhySupportTitle": "مفتوح المصدر ومجاني الاستخدام ❤️",
+    "aboutDonateTitle": "تبرع",
+    "aboutDiscordTitle": "Discord",
+    "others": "آخرون",
+    "serverUpdateTitle": "يلزم تحديث الخادم",
+    "serverUpdateContent": "الخادم المتصل قديم جدًا بالنسبة لهذا الإصدار من التطبيق. يُرجى مطالبة مسؤول الخادم بتحديثه إلى الإصدار {minVersion} على الأقل.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "identicalExercisePleaseDiscard": "إذا لاحظت وجود تمرين مطابق للتمرين الذي تضيفه، فيرجى حذف مسودتك وتعديل ذلك التمرين بدلاً من ذلك.",
+    "imageDetailsTitle": "إذا لاحظت وجود تمرين مطابق للتمرين الذي تضيفه، فيرجى حذف مسودتك وتعديل ذلك التمرين بدلاً من ذلك.",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "عنوان",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "ادخل عنوان الصورة",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "رابط الموقع المصدر",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "المؤلف(ون)",
+    "authorHint": "ادخل اسم المؤلف",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "رابط إلى موقع المؤلف أو ملفه الشخصي",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "يرجى ذكر المصدر الأصلي إذا كان هذا العمل مشتقاً.",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "العمل المشتق هو عمل قائم على عمل سابق ولكنه يحتوي على محتوى جديد وإبداعي كافٍ يخول له الحصول على حقوق الطبع والنشر الخاصة به.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "نوع الصورة",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "بإرسال هذه الصورة، فإنك توافق على نشرها بموجب ترخيص CC-BY-SA-4. يجب أن تكون الصورة إما من عملك الخاص أو أن يكون المؤلف قد نشرها بموجب ترخيص متوافق معها.",
+    "imageDetailsLicenseNoticeLinkToLicense": "مشهدة نص الترخيص",
+    "imageFormatNotSupported": "{imageFormat} غير مدعوم",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "لا يتم دعم الصور بصيغة {imageFormat} حتى الآن.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "add": "اضفة",
+    "@add": {
+        "description": "Add button text"
+    },
+    "fitInWeek": "جدول أسبوعي ثابت",
+    "fitInWeekHelp": "في حالة التفعيل، ستتكرر الأيام في دورة أسبوعية، وإلا ستتبع الأيام بالتسلسل دون مراعاة بداية أسبوع جديد.",
+    "addSuperset": "أضف مجموعة فائقة",
+    "superset": "مجموعة فائقة",
+    "setHasProgression": "تتضمن المجموعة تقدمًا",
+    "setHasProgressionWarning": "يرجى العلم أنه لا يمكن حاليًا تعديل جميع إعدادات المجموعة على تطبيق الهاتف المحمول أو ضبط التقدم التلقائي. لذا، يُرجى استخدام تطبيق الويب في الوقت الحالي.",
+    "setHasNoExercises": "لا تحتوي هذه المجموعة على أي تمارين حتى الآن!",
+    "enterTextInLanguage": "الرجاء إدخال النص باللغة الصحيحة!",
+    "settingsTitle": "الاعدادات",
+    "settingsCacheTitle": "تخزين مؤقت",
+    "settingsExerciseCacheDescription": "ذاكرة التخزين للتمارين",
+    "settingsIngredientCacheDescription": "ذاكرة التخزين للمكونات",
+    "settingsCacheDeletedSnackbar": "تم حذف ذاكرة التخزين بنجاح",
+    "simpleMode": "الوضع البسيط",
+    "simpleModeHelp": "قم بإخفاء بعض الإعدادات المتقدمة عند تحرير التمارين",
+    "progressionRules": "يخضع هذا التمرين لقواعد تقدم ولا يمكن تعديله عبر تطبيق الهاتف المحمول. يُرجى استخدام تطبيق الويب لتعديل هذا التمرين.",
+    "resistance_band": "شريط مقاومة",
+    "@resistance_band": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "log": "سجل",
+    "@log": {
+        "description": "Log a specific meal (imperative form)"
+    },
+    "done": "تم",
+    "overallChangeWeight": "التغيير الإجمالي",
+    "@overallChangeWeight": {
+        "description": "Overall change in weight, added for localization"
+    },
+    "goalTypeMeals": "من الوجبات",
+    "@goalTypeMeals": {
+        "description": "added for localization of Class GoalType's filed meals"
+    },
+    "goalTypeBasic": "اساسي",
+    "@goalTypeBasic": {
+        "description": "added for localization of Class GoalType's filed basic"
+    },
+    "goalTypeAdvanced": "متقدم",
+    "@goalTypeAdvanced": {
+        "description": "added for localization of Class GoalType's filed advanced"
+    },
+    "indicatorRaw": "خام",
+    "@indicatorRaw": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "indicatorAvg": "متوسط",
+    "@indicatorAvg": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "endWorkout": "انهاء التمرين",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "themeMode": "وضع المظهر",
+    "darkMode": "دائماً مظلم",
+    "lightMode": "دائماً فاتح",
+    "systemMode": "اعدادات النظام",
+    "productNotFoundOpenFoodFacts": "يمكنك إضافة هذا المنتج إلى موقع Open Food Facts لمساعدة المجتمع!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "إضافة Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "نباتي",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "نباتي",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "فلتر",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "متوفر فقط باللغة الحالية ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "اللغة الحالية ({lang}) والإنجليزية",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "كافة اللغات"
 }

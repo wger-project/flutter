@@ -35,7 +35,7 @@ dependencies:
   carousel_slider: ^5.1.2
   clock: ^1.1.2
   collection: ^1.18.0
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^1.0.9
   drift: ^2.31.0
   equatable: ^2.0.8
   fl_chart: ^1.2.0
@@ -45,7 +45,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.7.0
   flutter_svg: ^2.2.4
   flutter_svg_icons: ^0.0.1
-  flutter_typeahead: ^5.2.0
+  flutter_typeahead: ^6.0.0
   flutter_zxing: ^2.2.1
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.0.0
@@ -62,8 +62,8 @@ dependencies:
   provider: ^6.1.5+1
   rive: ^0.13.20
   riverpod_annotation: ^4.0.0
-  shared_preferences: ^2.5.3
-  sqlite3_flutter_libs: ^0.6.0+eol
+  shared_preferences: ^2.5.5
+  drift_flutter: ^0.2.8
   table_calendar: ^3.0.8
   url_launcher: ^6.3.2
   version: ^3.0.2
@@ -80,7 +80,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   freezed: ^3.2.0
   json_serializable: ^6.11.2
-  mockito: ^5.4.4
+  mockito: ^5.6.4
   network_image_mock: ^2.1.1
   riverpod_generator: ^4.0.3
   shared_preferences_platform_interface: ^2.0.0

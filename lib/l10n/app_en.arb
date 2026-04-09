@@ -228,6 +228,16 @@
       }
     }
   },
+  "setNr": "Set {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set within a group of same exercises.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
   "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
   "@sameRepetitions": {},
   "comment": "Comment",
@@ -762,6 +772,18 @@
   "@appUpdateTitle": {},
   "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
   "@appUpdateContent": {},
+  "serverUpdateTitle": "Server update required",
+  "@serverUpdateTitle": {},
+  "serverUpdateContent": "The connected server is too old for this version of the app. Please ask the server administrator to update to at least version {minVersion}.",
+  "@serverUpdateContent": {
+    "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+    "type": "text",
+    "placeholders": {
+      "minVersion": {
+        "type": "String"
+      }
+    }
+  },
   "productFound": "Product found",
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"
