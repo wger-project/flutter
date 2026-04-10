@@ -529,7 +529,7 @@ as String,
 /// @nodoc
 mixin _$ExerciseTranslationSubmissionApi {
 
- String get name; String get description; int get language;@JsonKey(name: 'license_author') String get author; List<ExerciseAliasSubmissionApi> get aliases; List<ExerciseCommentSubmissionApi> get comments;
+ String get name;@JsonKey(name: 'description_source') String get description; int get language;@JsonKey(name: 'license_author') String get author; List<ExerciseAliasSubmissionApi> get aliases; List<ExerciseCommentSubmissionApi> get comments;
 /// Create a copy of ExerciseTranslationSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -562,7 +562,7 @@ abstract mixin class $ExerciseTranslationSubmissionApiCopyWith<$Res>  {
   factory $ExerciseTranslationSubmissionApiCopyWith(ExerciseTranslationSubmissionApi value, $Res Function(ExerciseTranslationSubmissionApi) _then) = _$ExerciseTranslationSubmissionApiCopyWithImpl;
 @useResult
 $Res call({
- String name, String description, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
+ String name,@JsonKey(name: 'description_source') String description, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
 });
 
 
@@ -669,7 +669,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'description_source')  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExerciseTranslationSubmissionApi() when $default != null:
 return $default(_that.name,_that.description,_that.language,_that.author,_that.aliases,_that.comments);case _:
@@ -690,7 +690,7 @@ return $default(_that.name,_that.description,_that.language,_that.author,_that.a
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'description_source')  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseTranslationSubmissionApi():
 return $default(_that.name,_that.description,_that.language,_that.author,_that.aliases,_that.comments);}
@@ -707,7 +707,7 @@ return $default(_that.name,_that.description,_that.language,_that.author,_that.a
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(name: 'description_source')  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseTranslationSubmissionApi() when $default != null:
 return $default(_that.name,_that.description,_that.language,_that.author,_that.aliases,_that.comments);case _:
@@ -722,11 +722,11 @@ return $default(_that.name,_that.description,_that.language,_that.author,_that.a
 @JsonSerializable()
 
 class _ExerciseTranslationSubmissionApi implements ExerciseTranslationSubmissionApi {
-  const _ExerciseTranslationSubmissionApi({required this.name, required this.description, required this.language, @JsonKey(name: 'license_author') required this.author, final  List<ExerciseAliasSubmissionApi> aliases = const [], final  List<ExerciseCommentSubmissionApi> comments = const []}): _aliases = aliases,_comments = comments;
+  const _ExerciseTranslationSubmissionApi({required this.name, @JsonKey(name: 'description_source') required this.description, required this.language, @JsonKey(name: 'license_author') required this.author, final  List<ExerciseAliasSubmissionApi> aliases = const [], final  List<ExerciseCommentSubmissionApi> comments = const []}): _aliases = aliases,_comments = comments;
   factory _ExerciseTranslationSubmissionApi.fromJson(Map<String, dynamic> json) => _$ExerciseTranslationSubmissionApiFromJson(json);
 
 @override final  String name;
-@override final  String description;
+@override@JsonKey(name: 'description_source') final  String description;
 @override final  int language;
 @override@JsonKey(name: 'license_author') final  String author;
  final  List<ExerciseAliasSubmissionApi> _aliases;
@@ -777,7 +777,7 @@ abstract mixin class _$ExerciseTranslationSubmissionApiCopyWith<$Res> implements
   factory _$ExerciseTranslationSubmissionApiCopyWith(_ExerciseTranslationSubmissionApi value, $Res Function(_ExerciseTranslationSubmissionApi) _then) = __$ExerciseTranslationSubmissionApiCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String description, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
+ String name,@JsonKey(name: 'description_source') String description, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
 });
 
 
