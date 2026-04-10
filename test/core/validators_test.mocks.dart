@@ -2678,6 +2678,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get serverUpdateTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverUpdateTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverUpdateTitle),
+            ),
+          )
+          as String);
+
+  @override
   String get productFound =>
       (super.noSuchMethod(
             Invocation.getter(#productFound),
@@ -3921,6 +3932,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String setNr(String? nr) =>
+      (super.noSuchMethod(
+            Invocation.method(#setNr, [nr]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#setNr, [nr]),
+            ),
+          )
+          as String);
+
+  @override
   String topSet(String? value) =>
       (super.noSuchMethod(
             Invocation.method(#topSet, [value]),
@@ -4059,6 +4081,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#nrOfSets, [nrOfSets]),
+            ),
+          )
+          as String);
+
+  @override
+  String serverUpdateContent(String? minVersion) =>
+      (super.noSuchMethod(
+            Invocation.method(#serverUpdateContent, [minVersion]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#serverUpdateContent, [minVersion]),
             ),
           )
           as String);
