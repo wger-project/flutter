@@ -151,7 +151,7 @@ void main() {
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
       expect(find.byIcon(Icons.info), findsNWidgets(2));
 
-      await tester.scrollUntilVisible(find.text('300g Broccoli cake'), 30);
+      await tester.scrollUntilVisible(find.text('300 g Broccoli cake'), 30);
       expect(find.text('300 g Broccoli cake'), findsOneWidget);
 
       expect(find.byType(Card), findsNWidgets(3));
