@@ -16,6 +16,8 @@ jobs:
   build_linux:
     name: Build application - ${{ matrix.platform }}
     runs-on: ${{ matrix.runner }}
+    outputs:
+      flutter_sdk_version: ${{ steps.flutter-version.outputs.flutter_sdk_version }}
     strategy:
       matrix:
         include:
@@ -28,6 +30,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref }}
+
+      - name: Read Flutter SDK version
+        id: flutter-version
+        run: |
+          flutter_sdk_version=$(grep 'flutter-version:' .github/actions/flutter-common/action.yml | awk '{print $2}')
+          echo "flutter_sdk_version=$flutter_sdk_version" >> "$GITHUB_OUTPUT"
 
       - name: Common setup
         uses: ./.github/actions/flutter-common
@@ -60,26 +68,29 @@ jobs:
         with:
           repository: wger-project/de.wger.flutter
 
+          # TODO: remove after release!!
+          #       This was just needed because the bump-versions.py script was refactored
+          ref: release-1.11.0
+
       - name: Bump version and update manifest
         run: |
-          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.11.0 ../flatpak-flutter
+          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.14.1 ../flatpak-flutter
           pip install -r ../flatpak-flutter/requirements.txt
-          python bump-wger-version.py ${{ inputs.ref }}
+          python bump-versions.py ${{ inputs.ref }} ${{ needs.build_linux.outputs.flutter_sdk_version }}
           ../flatpak-flutter/flatpak-flutter.py --app-module wger flatpak-flutter.json
 
-      # TODO: this is currently commented out because it seems the action used below
-      #       doesn't work anymore. This is probably not all that surprising as it
-      #       isn't being developed anymore. This should be update so that the process
-      #       works automatically again, till then this can be done manually.
+      - name: Push updated config to flathub repository
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-      #- name: Push updated config to flathub repository
-      #  uses: cpina/github-action-push-to-another-repository@main
-      #  env:
-      #    SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-      #  with:
-      #    destination-github-username: wger-project
-      #    destination-repository-name: de.wger.flutter
-      #    user-email: github-actions@github.com
-      #    target-branch: release-${{ inputs.ref }}
-      #    create-target-branch-if-needed: true
-      #    commit-message: Update to ${{ inputs.ref }}
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git checkout -b release-${{ inputs.ref }}
+          git add -A
+          git commit -m "Update to ${{ inputs.ref }}"
+          git push origin release-${{ inputs.ref }}
