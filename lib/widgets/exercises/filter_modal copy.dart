@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020 - 2026 wger Team
+ * Copyright (C) 2020, 2021 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,21 +32,17 @@ class ExerciseFilterModalBody extends ConsumerStatefulWidget {
 }
 
 class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBody> {
-  // Senior Note: Local state is only for transient UI states (like expansion panels).
-  // The actual filter data stays in the Provider.
+  late Filters filters;
+
+  @override
+  void initState() {
+    super.initState();
+    filters = pr.Provider.of<ExercisesProvider>(context, listen: false).filters!;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    // 1. Watch the legacy provider to ensure UI updates when data changes
-    final exerciseProvider = pr.Provider.of<ExercisesProvider>(context);
-    final filters = exerciseProvider.filters;
-
-    // Safety check if provider hasn't initialized filters yet
-    if (filters == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -55,7 +51,6 @@ class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBod
           dividerColor: Colors.transparent,
           expansionCallback: (panelIndex, isExpanded) {
             setState(() {
-              // Toggle expansion locally
               filters.filterCategories[panelIndex].isExpanded = isExpanded;
             });
           },
@@ -65,8 +60,7 @@ class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBod
               backgroundColor: Colors.transparent,
               isExpanded: filterCategory.isExpanded,
               headerBuilder: (context, isExpanded) {
-                return Align(
-                  alignment: Alignment.centerLeft,
+                return Container(
                   child: Text(
                     filterCategory.title,
                     style: theme.textTheme.headlineSmall,
@@ -78,21 +72,34 @@ class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBod
                   return SwitchListTile(
                     title: Text(getServerStringTranslation(currentEntry.key.name, context)),
                     value: currentEntry.value,
-                    onChanged: (bool newValue) {
-                      // 2. Update the map entry
-                      filterCategory.items[currentEntry.key] = newValue;
+                    onChanged: (_) {
+                      setState(() {
+                        filterCategory.items.update(currentEntry.key, (value) => !value);
+                        // Provider.of<ExercisesProvider>(context, listen: false).setFilters(filters);
+                        final exerciseProvider = pr.Provider.of<ExercisesProvider>(
+                          context,
+                          listen: false,
+                        );
 
-                      // 3. Extract dependencies for the bridge call
-                      final riverpodFilters = ref.read(exerciseFiltersSyncProvider);
-                      final languageCode = Localizations.localeOf(context).languageCode;
+                        final filters = exerciseProvider.filters;
 
-                      // 4. Update the provider (Triggers API/DB search automatically)
-                      // Senior Note: We use copyWith to ensure we preserve the existing searchTerm
-                      exerciseProvider.setFilters(
-                        filters.copyWith(searchTerm: filters.searchTerm),
-                        exerciseFilters: riverpodFilters,
-                        languageCode: languageCode,
-                      );
+                        // if (filters != null && filters.searchTerm != _exerciseNameController.text) {
+                        // final exerciseFilters = ref.read(exerciseFiltersSyncProvider);
+                        // final exerciseFilters = pr.Provider.of<exerciseFiltersSyncProvider>(
+                        //   context,
+                        //   listen: false,
+                        // );
+                        // final exerciseFilters = exerciseFiltersSyncProvider;
+                        final exerciseFilters = ref.read(exerciseFiltersSyncProvider);
+                        final languageCode = Localizations.localeOf(context).languageCode;
+                        exerciseProvider.setFilters(
+                          // filters.copyWith(searchTerm: _exerciseNameController.text),
+                          filters?.copyWith(searchTerm: 'bad'),
+                          exerciseFilters: exerciseFilters,
+                          languageCode: languageCode,
+                        );
+                        // }
+                      });
                     },
                   );
                 }).toList(),

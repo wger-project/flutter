@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -87,7 +88,11 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
             return context.read<ExercisesProvider>().searchExercise(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
-              searchEnglish: _searchEnglish,
+              // searchEnglish: _searchEnglish,
+              searchLanguage: _searchEnglish
+                  ? ExerciseSearchLanguage.currentAndEnglish
+                  : ExerciseSearchLanguage.current,
+              searchMode: ExerciseSearchMode.fulltext,
             );
           },
           itemBuilder:

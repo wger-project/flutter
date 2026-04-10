@@ -4,7 +4,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i11;
-import 'dart:ui' as _i13;
+import 'dart:ui' as _i14;
 
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
@@ -12,6 +12,7 @@ import 'package:wger/database/exercises/exercise_database.dart' as _i5;
 import 'package:wger/models/exercises/category.dart' as _i7;
 import 'package:wger/models/exercises/equipment.dart' as _i8;
 import 'package:wger/models/exercises/exercise.dart' as _i6;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i13;
 import 'package:wger/models/exercises/language.dart' as _i10;
 import 'package:wger/models/exercises/muscle.dart' as _i9;
 import 'package:wger/providers/auth.dart' as _i2;
@@ -348,9 +349,17 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
-  _i11.Future<void> setFilters(_i12.Filters? newFilters) =>
+  _i11.Future<void> setFilters(
+    _i12.Filters? newFilters, {
+    required _i13.ExerciseFilters? exerciseFilters,
+    required String? languageCode,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#setFilters, [newFilters]),
+            Invocation.method(
+              #setFilters,
+              [newFilters],
+              {#exerciseFilters: exerciseFilters, #languageCode: languageCode},
+            ),
             returnValue: _i11.Future<void>.value(),
             returnValueForMissingStub: _i11.Future<void>.value(),
           )
@@ -363,9 +372,15 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
   );
 
   @override
-  _i11.Future<void> findByFilters() =>
+  _i11.Future<void> findByFilters({
+    _i13.ExerciseFilters? exerciseFilters = const _i13.ExerciseFilters(),
+    String? languageCode = 'en',
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#findByFilters, []),
+            Invocation.method(#findByFilters, [], {
+              #exerciseFilters: exerciseFilters,
+              #languageCode: languageCode,
+            }),
             returnValue: _i11.Future<void>.value(),
             returnValueForMissingStub: _i11.Future<void>.value(),
           )
@@ -616,13 +631,20 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
   _i11.Future<List<_i6.Exercise>> searchExercise(
     String? name, {
     String? languageCode = 'en',
-    bool? searchEnglish = false,
+    _i13.ExerciseSearchLanguage? searchLanguage = _i13.ExerciseSearchLanguage.currentAndEnglish,
+    _i13.ExerciseSearchMode? searchMode = _i13.ExerciseSearchMode.fulltext,
+    _i7.ExerciseCategory? category,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
               #searchExercise,
               [name],
-              {#languageCode: languageCode, #searchEnglish: searchEnglish},
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #category: category,
+              },
             ),
             returnValue: _i11.Future<List<_i6.Exercise>>.value(
               <_i6.Exercise>[],
@@ -631,13 +653,13 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
           as _i11.Future<List<_i6.Exercise>>);
 
   @override
-  void addListener(_i13.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i14.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeListener(_i13.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i14.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );
