@@ -23,6 +23,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -184,6 +185,8 @@ class IngredientFormState extends State<IngredientForm> {
   final _timeController = TextEditingController(text: ''); // optional
   final _mealItem = MealItem.empty();
   var _searchQuery = ''; // copy from typeahead. for filtering suggestions
+  List<IngredientWeightUnit> _weightUnits = [];
+  IngredientWeightUnit? _selectedWeightUnit;
 
   @override
   void dispose() {
@@ -208,6 +211,16 @@ class IngredientFormState extends State<IngredientForm> {
         _amountController.text = amount.toStringAsFixed(0);
         _mealItem.amount = amount;
       }
+      _selectedWeightUnit = null;
+      _mealItem.weightUnitId = null;
+      _mealItem.weightUnitObj = null;
+    });
+
+    // Load weight units for this ingredient
+    Provider.of<NutritionPlansProvider>(context, listen: false).fetchWeightUnits(id).then((units) {
+      setState(() {
+        _weightUnits = units;
+      });
     });
   }
 
@@ -268,8 +281,43 @@ class IngredientFormState extends State<IngredientForm> {
                 Expanded(
                   child: TextFormField(
                     key: const Key('field-weight'),
-                    // needed ?
-                    decoration: InputDecoration(labelText: i18n.weight),
+                    decoration: InputDecoration(
+                      labelText: i18n.weight,
+                      suffix: _weightUnits.isNotEmpty
+                          ? DropdownButton<int?>(
+                              value: _selectedWeightUnit?.id,
+                              underline: const SizedBox(),
+                              isDense: true,
+                              items: [
+                                DropdownMenuItem<int?>(
+                                  value: null,
+                                  child: Text(i18n.g),
+                                ),
+                                ..._weightUnits.map(
+                                  (unit) => DropdownMenuItem<int?>(
+                                    value: unit.id,
+                                    child: Text('${unit.name} (${unit.grams}g)'),
+                                  ),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value == null) {
+                                    _selectedWeightUnit = null;
+                                    _mealItem.weightUnitId = null;
+                                    _mealItem.weightUnitObj = null;
+                                  } else {
+                                    _selectedWeightUnit = _weightUnits.firstWhere(
+                                      (u) => u.id == value,
+                                    );
+                                    _mealItem.weightUnitId = value;
+                                    _mealItem.weightUnitObj = _selectedWeightUnit;
+                                  }
+                                });
+                              },
+                            )
+                          : Text(i18n.g),
+                    ),
                     controller: _amountController,
                     keyboardType: textInputTypeDecimal,
                     onChanged: (value) {
@@ -443,7 +491,9 @@ class IngredientFormState extends State<IngredientForm> {
                     child: ListTile(
                       onTap: select,
                       title: Text(
-                        '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
+                        suggestions[index].weightUnitObj != null
+                            ? '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)} × ${suggestions[index].weightUnitObj!.name})'
+                            : '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
                       ),
                       subtitle: Text(
                         getShortNutritionValues(
