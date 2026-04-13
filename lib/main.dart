@@ -233,9 +233,9 @@ class MainApp extends StatelessWidget {
               child: riverpod.Consumer(
                 builder: (rpCtx, ref, _) {
                   return ChangeNotifierProxyProvider2<
-                      AuthProvider,
-                      ExercisesProvider,
-                      RoutinesProvider
+                    AuthProvider,
+                    ExercisesProvider,
+                    RoutinesProvider
                   >(
                     create: (context) => RoutinesProvider(
                       WgerBaseProvider(Provider.of(context, listen: false)),
@@ -244,7 +244,7 @@ class MainApp extends StatelessWidget {
                       [],
                     ),
                     update: (context, auth, exercises, previous) =>
-                    previous ??
+                        previous ??
                         RoutinesProvider(
                           WgerBaseProvider(auth),
                           exercises,
@@ -267,9 +267,9 @@ class MainApp extends StatelessWidget {
                         GymModeScreen.routeName: (ctx) => const GymModeScreen(),
                         HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
                         MeasurementCategoriesScreen.routeName: (ctx) =>
-                        const MeasurementCategoriesScreen(),
+                            const MeasurementCategoriesScreen(),
                         MeasurementEntriesScreen.routeName: (ctx) =>
-                        const MeasurementEntriesScreen(),
+                            const MeasurementEntriesScreen(),
                         NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
                         NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
                         NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
@@ -288,7 +288,7 @@ class MainApp extends StatelessWidget {
                         LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
                         ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
                         ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
-                        const ConfigureDashboardWidgetsScreen(),
+                            const ConfigureDashboardWidgetsScreen(),
                         TrophyScreen.routeName: (ctx) => const TrophyScreen(),
                       },
                       localizationsDelegates: AppLocalizations.localizationsDelegates,

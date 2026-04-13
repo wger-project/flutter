@@ -80,7 +80,12 @@ void main() {
       );
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, PlateNotifierMock(), []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        exercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       final plan = await provider.fetchAndSetRoutineSparse(325397);
       final plans = provider.getPlans();
 
@@ -108,7 +113,12 @@ void main() {
       );
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, PlateNotifierMock(), []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        exercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
 
       await provider.fetchAndSetRoutineSparse(325397);
       await provider.deleteRoutine(325397);
@@ -127,7 +137,12 @@ void main() {
       ).thenAnswer((_) => Future.value(tRepetitionUnits['results']));
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, PlateNotifierMock(), []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        exercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       await provider.fetchAndSetRepetitionUnits();
       final repetitionUnits = provider.repetitionUnits;
 
@@ -145,7 +160,12 @@ void main() {
       final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, testExercisesProvider, PlateNotifierMock(), []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        testExercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       await provider.fetchAndSetWeightUnits();
       final weightUnits = provider.weightUnits;
 
@@ -174,7 +194,12 @@ void main() {
       final prefs = PreferenceHelper.asyncPref;
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, PlateNotifierMock(), []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        exercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       await provider.fetchAndSetUnits();
       final prefsJson = jsonDecode((await prefs.getString(PREFS_WORKOUT_UNITS))!);
 
@@ -235,7 +260,12 @@ void main() {
         (_) async => Future.value(testCrunches),
       );
 
-      final provider = RoutinesProvider(mockBaseProvider, mockExercisesProvider, PlateNotifierMock(), []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        mockExercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       provider.repetitionUnits = testRepetitionUnits;
       provider.weightUnits = testWeightUnits;
 

@@ -209,7 +209,7 @@ class RoutinesProvider with ChangeNotifier {
 
           if (setConfig.weightUnitId != null) {
             setConfig.weightUnit = _weightUnits.firstWhere(
-                  (e) => e.id == setConfig.weightUnitId,
+              (e) => e.id == setConfig.weightUnitId,
             );
           } else {
             setConfig.weightUnit = defaultWeightUnit;
