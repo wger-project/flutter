@@ -81,6 +81,8 @@ sealed class ExerciseSubmissionApi with _$ExerciseSubmissionApi {
 
     @JsonKey(name: 'license_author') required String author,
     @JsonKey(includeToJson: true, name: 'variation_group') String? variationGroup,
+
+    /// Exercise ID to connect to -- the server copies that exercise's variation group
     @JsonKey(includeToJson: true, name: 'variations_connect_to') int? variationConnectTo,
 
     required List<ExerciseTranslationSubmissionApi> translations,

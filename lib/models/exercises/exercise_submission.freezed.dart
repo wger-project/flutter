@@ -813,7 +813,8 @@ as List<ExerciseCommentSubmissionApi>,
 /// @nodoc
 mixin _$ExerciseSubmissionApi {
 
- int get category; List<int> get muscles;@JsonKey(name: 'muscles_secondary') List<int> get musclesSecondary; List<int> get equipment;@JsonKey(name: 'license_author') String get author;@JsonKey(includeToJson: true, name: 'variation_group') String? get variationGroup;@JsonKey(includeToJson: true, name: 'variations_connect_to') int? get variationConnectTo; List<ExerciseTranslationSubmissionApi> get translations;
+ int get category; List<int> get muscles;@JsonKey(name: 'muscles_secondary') List<int> get musclesSecondary; List<int> get equipment;@JsonKey(name: 'license_author') String get author;@JsonKey(includeToJson: true, name: 'variation_group') String? get variationGroup;/// Exercise ID to connect to -- the server copies that exercise's variation group
+@JsonKey(includeToJson: true, name: 'variations_connect_to') int? get variationConnectTo; List<ExerciseTranslationSubmissionApi> get translations;
 /// Create a copy of ExerciseSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1035,6 +1036,7 @@ class _ExerciseSubmissionApi implements ExerciseSubmissionApi {
 
 @override@JsonKey(name: 'license_author') final  String author;
 @override@JsonKey(includeToJson: true, name: 'variation_group') final  String? variationGroup;
+/// Exercise ID to connect to -- the server copies that exercise's variation group
 @override@JsonKey(includeToJson: true, name: 'variations_connect_to') final  int? variationConnectTo;
  final  List<ExerciseTranslationSubmissionApi> _translations;
 @override List<ExerciseTranslationSubmissionApi> get translations {

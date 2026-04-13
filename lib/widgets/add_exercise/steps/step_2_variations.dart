@@ -52,8 +52,7 @@ class Step2Variations extends StatelessWidget {
                         Consumer<AddExerciseProvider>(
                           builder: (ctx, provider, __) => Switch(
                             value: provider.variationGroup == key,
-                            onChanged: (state) =>
-                                provider.variationGroup = state ? key : null,
+                            onChanged: (state) => provider.variationGroup = state ? key : null,
                           ),
                         ),
                       ],

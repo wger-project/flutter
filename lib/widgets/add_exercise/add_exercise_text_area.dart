@@ -180,12 +180,12 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         IconButton(
           icon: const Icon(Icons.format_list_bulleted),
           tooltip: i18n.editorList,
-          onPressed: () => _surroundSelection('\n- ', '\n- \n- '),
+          onPressed: () => _surroundSelection('\n- ', ''),
         ),
         IconButton(
           icon: const Icon(Icons.format_list_numbered),
           tooltip: i18n.editorList,
-          onPressed: () => _surroundSelection('\n1. ', '\n1. \n1. '),
+          onPressed: () => _surroundSelection('\n1. ', ''),
         ),
       ],
     );

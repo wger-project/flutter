@@ -176,7 +176,7 @@ class MeasurementEntryForm extends StatelessWidget {
       _dateController.text = dateFormat.format(_entryData['date']);
     }
     if (_timeController.text.isEmpty) {
-      _timeController.text = TimeOfDay.fromDateTime(_entryData['date']).format(context);
+      _timeController.text = timeFormat.format(_entryData['date']);
     }
 
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
@@ -252,7 +252,16 @@ class MeasurementEntryForm extends StatelessWidget {
               );
 
               if (pickedTime != null) {
-                _timeController.text = pickedTime.format(context);
+                // Use DateFormat.Hm to stay consistent with onSaved parsing
+                final now = DateTime.now();
+                final dt = DateTime(
+                  now.year,
+                  now.month,
+                  now.day,
+                  pickedTime.hour,
+                  pickedTime.minute,
+                );
+                _timeController.text = timeFormat.format(dt);
               }
             },
             onSaved: (newValue) {
