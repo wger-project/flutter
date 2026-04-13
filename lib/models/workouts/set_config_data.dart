@@ -107,7 +107,7 @@ class SetConfigData {
     this.maxNrOfSets,
     this.weight,
     this.maxWeight,
-    this.weightUnitId = WEIGHT_UNIT_KG,
+    this.weightUnitId,
     this.weightRounding,
     this.repetitions,
     this.maxRepetitions,
