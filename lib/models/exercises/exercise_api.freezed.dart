@@ -23,7 +23,7 @@ ExerciseApiData _$ExerciseApiDataFromJson(
 mixin _$ExerciseApiData {
 
  int get id; String get uuid;// ignore: invalid_annotation_target
-@JsonKey(name: 'variations') int? get variationId;// ignore: invalid_annotation_target
+@JsonKey(name: 'variation_group') String? get variationGroup;// ignore: invalid_annotation_target
 @JsonKey(name: 'created') DateTime get created;// ignore: invalid_annotation_target
 @JsonKey(name: 'last_update') DateTime get lastUpdate;// ignore: invalid_annotation_target
 @JsonKey(name: 'last_update_global') DateTime get lastUpdateGlobal; ExerciseCategory get category; List<Muscle> get muscles;// ignore: invalid_annotation_target
@@ -44,16 +44,16 @@ $ExerciseApiDataCopyWith<ExerciseApiData> get copyWith => _$ExerciseApiDataCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseApiData&&(identical(other.id, id) || other.id == id)&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.variationId, variationId) || other.variationId == variationId)&&(identical(other.created, created) || other.created == created)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.lastUpdateGlobal, lastUpdateGlobal) || other.lastUpdateGlobal == lastUpdateGlobal)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.muscles, muscles)&&const DeepCollectionEquality().equals(other.musclesSecondary, musclesSecondary)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&const DeepCollectionEquality().equals(other.translations, translations)&&const DeepCollectionEquality().equals(other.images, images)&&const DeepCollectionEquality().equals(other.videos, videos)&&const DeepCollectionEquality().equals(other.authors, authors)&&const DeepCollectionEquality().equals(other.authorsGlobal, authorsGlobal));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseApiData&&(identical(other.id, id) || other.id == id)&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.created, created) || other.created == created)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.lastUpdateGlobal, lastUpdateGlobal) || other.lastUpdateGlobal == lastUpdateGlobal)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.muscles, muscles)&&const DeepCollectionEquality().equals(other.musclesSecondary, musclesSecondary)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&const DeepCollectionEquality().equals(other.translations, translations)&&const DeepCollectionEquality().equals(other.images, images)&&const DeepCollectionEquality().equals(other.videos, videos)&&const DeepCollectionEquality().equals(other.authors, authors)&&const DeepCollectionEquality().equals(other.authorsGlobal, authorsGlobal));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uuid,variationId,created,lastUpdate,lastUpdateGlobal,category,const DeepCollectionEquality().hash(muscles),const DeepCollectionEquality().hash(musclesSecondary),const DeepCollectionEquality().hash(equipment),const DeepCollectionEquality().hash(translations),const DeepCollectionEquality().hash(images),const DeepCollectionEquality().hash(videos),const DeepCollectionEquality().hash(authors),const DeepCollectionEquality().hash(authorsGlobal));
+int get hashCode => Object.hash(runtimeType,id,uuid,variationGroup,created,lastUpdate,lastUpdateGlobal,category,const DeepCollectionEquality().hash(muscles),const DeepCollectionEquality().hash(musclesSecondary),const DeepCollectionEquality().hash(equipment),const DeepCollectionEquality().hash(translations),const DeepCollectionEquality().hash(images),const DeepCollectionEquality().hash(videos),const DeepCollectionEquality().hash(authors),const DeepCollectionEquality().hash(authorsGlobal));
 
 @override
 String toString() {
-  return 'ExerciseApiData(id: $id, uuid: $uuid, variationId: $variationId, created: $created, lastUpdate: $lastUpdate, lastUpdateGlobal: $lastUpdateGlobal, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, translations: $translations, images: $images, videos: $videos, authors: $authors, authorsGlobal: $authorsGlobal)';
+  return 'ExerciseApiData(id: $id, uuid: $uuid, variationGroup: $variationGroup, created: $created, lastUpdate: $lastUpdate, lastUpdateGlobal: $lastUpdateGlobal, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, translations: $translations, images: $images, videos: $videos, authors: $authors, authorsGlobal: $authorsGlobal)';
 }
 
 
@@ -64,7 +64,7 @@ abstract mixin class $ExerciseApiDataCopyWith<$Res>  {
   factory $ExerciseApiDataCopyWith(ExerciseApiData value, $Res Function(ExerciseApiData) _then) = _$ExerciseApiDataCopyWithImpl;
 @useResult
 $Res call({
- int id, String uuid,@JsonKey(name: 'variations') int? variationId,@JsonKey(name: 'created') DateTime created,@JsonKey(name: 'last_update') DateTime lastUpdate,@JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal, ExerciseCategory category, List<Muscle> muscles,@JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary, List<Equipment> equipment,@JsonKey(name: 'translations', defaultValue: []) List<Translation> translations, List<ExerciseImage> images, List<Video> videos,@JsonKey(name: 'author_history') List<String> authors,@JsonKey(name: 'total_authors_history') List<String> authorsGlobal
+ int id, String uuid,@JsonKey(name: 'variation_group') String? variationGroup,@JsonKey(name: 'created') DateTime created,@JsonKey(name: 'last_update') DateTime lastUpdate,@JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal, ExerciseCategory category, List<Muscle> muscles,@JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary, List<Equipment> equipment,@JsonKey(name: 'translations', defaultValue: []) List<Translation> translations, List<ExerciseImage> images, List<Video> videos,@JsonKey(name: 'author_history') List<String> authors,@JsonKey(name: 'total_authors_history') List<String> authorsGlobal
 });
 
 
@@ -81,12 +81,12 @@ class _$ExerciseApiDataCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseApiData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uuid = null,Object? variationId = freezed,Object? created = null,Object? lastUpdate = null,Object? lastUpdateGlobal = null,Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? translations = null,Object? images = null,Object? videos = null,Object? authors = null,Object? authorsGlobal = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uuid = null,Object? variationGroup = freezed,Object? created = null,Object? lastUpdate = null,Object? lastUpdateGlobal = null,Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? translations = null,Object? images = null,Object? videos = null,Object? authors = null,Object? authorsGlobal = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uuid: null == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
-as String,variationId: freezed == variationId ? _self.variationId : variationId // ignore: cast_nullable_to_non_nullable
-as int?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
+as String,variationGroup: freezed == variationGroup ? _self.variationGroup : variationGroup // ignore: cast_nullable_to_non_nullable
+as String?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUpdate: null == lastUpdate ? _self.lastUpdate : lastUpdate // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUpdateGlobal: null == lastUpdateGlobal ? _self.lastUpdateGlobal : lastUpdateGlobal // ignore: cast_nullable_to_non_nullable
 as DateTime,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
@@ -180,10 +180,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uuid, @JsonKey(name: 'variations')  int? variationId, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uuid, @JsonKey(name: 'variation_group')  String? variationGroup, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExerciseBaseData() when $default != null:
-return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);case _:
+return $default(_that.id,_that.uuid,_that.variationGroup,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);case _:
   return orElse();
 
 }
@@ -201,10 +201,10 @@ return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUp
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uuid, @JsonKey(name: 'variations')  int? variationId, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uuid, @JsonKey(name: 'variation_group')  String? variationGroup, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseBaseData():
-return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);}
+return $default(_that.id,_that.uuid,_that.variationGroup,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -218,10 +218,10 @@ return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUp
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uuid, @JsonKey(name: 'variations')  int? variationId, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uuid, @JsonKey(name: 'variation_group')  String? variationGroup, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)?  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseBaseData() when $default != null:
-return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);case _:
+return $default(_that.id,_that.uuid,_that.variationGroup,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);case _:
   return null;
 
 }
@@ -233,13 +233,13 @@ return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUp
 @JsonSerializable()
 
 class _ExerciseBaseData implements ExerciseApiData {
-   _ExerciseBaseData({required this.id, required this.uuid, @JsonKey(name: 'variations') this.variationId = null, @JsonKey(name: 'created') required this.created, @JsonKey(name: 'last_update') required this.lastUpdate, @JsonKey(name: 'last_update_global') required this.lastUpdateGlobal, required this.category, required final  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary') required final  List<Muscle> musclesSecondary, required final  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: []) required final  List<Translation> translations, required final  List<ExerciseImage> images, required final  List<Video> videos, @JsonKey(name: 'author_history') required final  List<String> authors, @JsonKey(name: 'total_authors_history') required final  List<String> authorsGlobal}): _muscles = muscles,_musclesSecondary = musclesSecondary,_equipment = equipment,_translations = translations,_images = images,_videos = videos,_authors = authors,_authorsGlobal = authorsGlobal;
+   _ExerciseBaseData({required this.id, required this.uuid, @JsonKey(name: 'variation_group') this.variationGroup = null, @JsonKey(name: 'created') required this.created, @JsonKey(name: 'last_update') required this.lastUpdate, @JsonKey(name: 'last_update_global') required this.lastUpdateGlobal, required this.category, required final  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary') required final  List<Muscle> musclesSecondary, required final  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: []) required final  List<Translation> translations, required final  List<ExerciseImage> images, required final  List<Video> videos, @JsonKey(name: 'author_history') required final  List<String> authors, @JsonKey(name: 'total_authors_history') required final  List<String> authorsGlobal}): _muscles = muscles,_musclesSecondary = musclesSecondary,_equipment = equipment,_translations = translations,_images = images,_videos = videos,_authors = authors,_authorsGlobal = authorsGlobal;
   factory _ExerciseBaseData.fromJson(Map<String, dynamic> json) => _$ExerciseBaseDataFromJson(json);
 
 @override final  int id;
 @override final  String uuid;
 // ignore: invalid_annotation_target
-@override@JsonKey(name: 'variations') final  int? variationId;
+@override@JsonKey(name: 'variation_group') final  String? variationGroup;
 // ignore: invalid_annotation_target
 @override@JsonKey(name: 'created') final  DateTime created;
 // ignore: invalid_annotation_target
@@ -327,16 +327,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseBaseData&&(identical(other.id, id) || other.id == id)&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.variationId, variationId) || other.variationId == variationId)&&(identical(other.created, created) || other.created == created)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.lastUpdateGlobal, lastUpdateGlobal) || other.lastUpdateGlobal == lastUpdateGlobal)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._muscles, _muscles)&&const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&const DeepCollectionEquality().equals(other._translations, _translations)&&const DeepCollectionEquality().equals(other._images, _images)&&const DeepCollectionEquality().equals(other._videos, _videos)&&const DeepCollectionEquality().equals(other._authors, _authors)&&const DeepCollectionEquality().equals(other._authorsGlobal, _authorsGlobal));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseBaseData&&(identical(other.id, id) || other.id == id)&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.created, created) || other.created == created)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.lastUpdateGlobal, lastUpdateGlobal) || other.lastUpdateGlobal == lastUpdateGlobal)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._muscles, _muscles)&&const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&const DeepCollectionEquality().equals(other._translations, _translations)&&const DeepCollectionEquality().equals(other._images, _images)&&const DeepCollectionEquality().equals(other._videos, _videos)&&const DeepCollectionEquality().equals(other._authors, _authors)&&const DeepCollectionEquality().equals(other._authorsGlobal, _authorsGlobal));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uuid,variationId,created,lastUpdate,lastUpdateGlobal,category,const DeepCollectionEquality().hash(_muscles),const DeepCollectionEquality().hash(_musclesSecondary),const DeepCollectionEquality().hash(_equipment),const DeepCollectionEquality().hash(_translations),const DeepCollectionEquality().hash(_images),const DeepCollectionEquality().hash(_videos),const DeepCollectionEquality().hash(_authors),const DeepCollectionEquality().hash(_authorsGlobal));
+int get hashCode => Object.hash(runtimeType,id,uuid,variationGroup,created,lastUpdate,lastUpdateGlobal,category,const DeepCollectionEquality().hash(_muscles),const DeepCollectionEquality().hash(_musclesSecondary),const DeepCollectionEquality().hash(_equipment),const DeepCollectionEquality().hash(_translations),const DeepCollectionEquality().hash(_images),const DeepCollectionEquality().hash(_videos),const DeepCollectionEquality().hash(_authors),const DeepCollectionEquality().hash(_authorsGlobal));
 
 @override
 String toString() {
-  return 'ExerciseApiData(id: $id, uuid: $uuid, variationId: $variationId, created: $created, lastUpdate: $lastUpdate, lastUpdateGlobal: $lastUpdateGlobal, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, translations: $translations, images: $images, videos: $videos, authors: $authors, authorsGlobal: $authorsGlobal)';
+  return 'ExerciseApiData(id: $id, uuid: $uuid, variationGroup: $variationGroup, created: $created, lastUpdate: $lastUpdate, lastUpdateGlobal: $lastUpdateGlobal, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, translations: $translations, images: $images, videos: $videos, authors: $authors, authorsGlobal: $authorsGlobal)';
 }
 
 
@@ -347,7 +347,7 @@ abstract mixin class _$ExerciseBaseDataCopyWith<$Res> implements $ExerciseApiDat
   factory _$ExerciseBaseDataCopyWith(_ExerciseBaseData value, $Res Function(_ExerciseBaseData) _then) = __$ExerciseBaseDataCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String uuid,@JsonKey(name: 'variations') int? variationId,@JsonKey(name: 'created') DateTime created,@JsonKey(name: 'last_update') DateTime lastUpdate,@JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal, ExerciseCategory category, List<Muscle> muscles,@JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary, List<Equipment> equipment,@JsonKey(name: 'translations', defaultValue: []) List<Translation> translations, List<ExerciseImage> images, List<Video> videos,@JsonKey(name: 'author_history') List<String> authors,@JsonKey(name: 'total_authors_history') List<String> authorsGlobal
+ int id, String uuid,@JsonKey(name: 'variation_group') String? variationGroup,@JsonKey(name: 'created') DateTime created,@JsonKey(name: 'last_update') DateTime lastUpdate,@JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal, ExerciseCategory category, List<Muscle> muscles,@JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary, List<Equipment> equipment,@JsonKey(name: 'translations', defaultValue: []) List<Translation> translations, List<ExerciseImage> images, List<Video> videos,@JsonKey(name: 'author_history') List<String> authors,@JsonKey(name: 'total_authors_history') List<String> authorsGlobal
 });
 
 
@@ -364,12 +364,12 @@ class __$ExerciseBaseDataCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseApiData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uuid = null,Object? variationId = freezed,Object? created = null,Object? lastUpdate = null,Object? lastUpdateGlobal = null,Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? translations = null,Object? images = null,Object? videos = null,Object? authors = null,Object? authorsGlobal = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uuid = null,Object? variationGroup = freezed,Object? created = null,Object? lastUpdate = null,Object? lastUpdateGlobal = null,Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? translations = null,Object? images = null,Object? videos = null,Object? authors = null,Object? authorsGlobal = null,}) {
   return _then(_ExerciseBaseData(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uuid: null == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
-as String,variationId: freezed == variationId ? _self.variationId : variationId // ignore: cast_nullable_to_non_nullable
-as int?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
+as String,variationGroup: freezed == variationGroup ? _self.variationGroup : variationGroup // ignore: cast_nullable_to_non_nullable
+as String?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUpdate: null == lastUpdate ? _self.lastUpdate : lastUpdate // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUpdateGlobal: null == lastUpdateGlobal ? _self.lastUpdateGlobal : lastUpdateGlobal // ignore: cast_nullable_to_non_nullable
 as DateTime,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable

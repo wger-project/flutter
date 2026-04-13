@@ -68,7 +68,7 @@ _ExerciseSubmissionApi _$ExerciseSubmissionApiFromJson(
       .toList(),
   equipment: (json['equipment'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
   author: json['license_author'] as String,
-  variation: (json['variation'] as num?)?.toInt(),
+  variationGroup: json['variation_group'] as String?,
   variationConnectTo: (json['variations_connect_to'] as num?)?.toInt(),
   translations: (json['translations'] as List<dynamic>)
       .map(
@@ -87,7 +87,7 @@ Map<String, dynamic> _$ExerciseSubmissionApiToJson(
   'muscles_secondary': instance.musclesSecondary,
   'equipment': instance.equipment,
   'license_author': instance.author,
-  'variation': instance.variation,
+  'variation_group': instance.variationGroup,
   'variations_connect_to': instance.variationConnectTo,
   'translations': instance.translations,
 };

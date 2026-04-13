@@ -43,8 +43,8 @@ class Exercise extends Equatable {
   @JsonKey(required: true)
   late final String? uuid;
 
-  @JsonKey(required: true, name: 'variations')
-  late final int? variationId;
+  @JsonKey(required: true, name: 'variation_group')
+  late final String? variationGroup;
 
   @JsonKey(required: true, name: 'created')
   late final DateTime? created;
@@ -100,7 +100,7 @@ class Exercise extends Equatable {
     this.created,
     this.lastUpdate,
     this.lastUpdateGlobal,
-    this.variationId,
+    this.variationGroup,
     List<Muscle>? muscles,
     List<Muscle>? musclesSecondary,
     List<Equipment>? equipment,
@@ -184,7 +184,7 @@ class Exercise extends Equatable {
     authors = exerciseData.authors;
     authorsGlobal = exerciseData.authorsGlobal;
 
-    variationId = exerciseData.variationId;
+    variationGroup = exerciseData.variationGroup;
   }
 
   /// Returns translation for the given language

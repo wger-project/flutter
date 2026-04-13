@@ -21,7 +21,7 @@ sealed class ExerciseApiData with _$ExerciseApiData {
     required int id,
     required String uuid,
     // ignore: invalid_annotation_target
-    @Default(null) @JsonKey(name: 'variations') int? variationId,
+    @Default(null) @JsonKey(name: 'variation_group') String? variationGroup,
     // ignore: invalid_annotation_target
     @JsonKey(name: 'created') required DateTime created,
     // ignore: invalid_annotation_target

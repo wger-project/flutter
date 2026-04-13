@@ -46,7 +46,7 @@ void main() {
   }
 
   testWidgets('Test the widgets on the exercise detail widget', (WidgetTester tester) async {
-    when(mockProvider.findExercisesByVariationId(any, exerciseIdToExclude: 1)).thenReturn([]);
+    when(mockProvider.findExercisesByVariationGroup(any, exerciseIdToExclude: 1)).thenReturn([]);
 
     await tester.pumpWidget(createHomeScreen());
     await tester.pumpAndSettle();

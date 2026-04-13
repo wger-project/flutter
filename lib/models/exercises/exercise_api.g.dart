@@ -9,7 +9,7 @@ part of 'exercise_api.dart';
 _ExerciseBaseData _$ExerciseBaseDataFromJson(Map<String, dynamic> json) => _ExerciseBaseData(
   id: (json['id'] as num).toInt(),
   uuid: json['uuid'] as String,
-  variationId: (json['variations'] as num?)?.toInt() ?? null,
+  variationGroup: json['variation_group'] as String? ?? null,
   created: DateTime.parse(json['created'] as String),
   lastUpdate: DateTime.parse(json['last_update'] as String),
   lastUpdateGlobal: DateTime.parse(json['last_update_global'] as String),
@@ -43,7 +43,7 @@ _ExerciseBaseData _$ExerciseBaseDataFromJson(Map<String, dynamic> json) => _Exer
 Map<String, dynamic> _$ExerciseBaseDataToJson(_ExerciseBaseData instance) => <String, dynamic>{
   'id': instance.id,
   'uuid': instance.uuid,
-  'variations': instance.variationId,
+  'variation_group': instance.variationGroup,
   'created': instance.created.toIso8601String(),
   'last_update': instance.lastUpdate.toIso8601String(),
   'last_update_global': instance.lastUpdateGlobal.toIso8601String(),
