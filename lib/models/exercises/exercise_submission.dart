@@ -51,9 +51,7 @@ sealed class ExerciseCommentSubmissionApi with _$ExerciseCommentSubmissionApi {
 sealed class ExerciseTranslationSubmissionApi with _$ExerciseTranslationSubmissionApi {
   const factory ExerciseTranslationSubmissionApi({
     required String name,
-
-    @JsonKey(name: 'description_source') required String description,
-
+    @JsonKey(name: 'description_source') required String descriptionSource,
     required int language,
 
     @JsonKey(name: 'license_author') required String author,
@@ -80,6 +78,7 @@ sealed class ExerciseSubmissionApi with _$ExerciseSubmissionApi {
     required List<int> equipment,
 
     @JsonKey(name: 'license_author') required String author,
+
     @JsonKey(includeToJson: true, name: 'variation_group') String? variationGroup,
 
     /// Exercise ID to connect to -- the server copies that exercise's variation group

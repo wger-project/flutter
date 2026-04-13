@@ -126,7 +126,7 @@ class AddExerciseProvider with ChangeNotifier {
           author: author,
           language: languageEn!.id,
           name: exerciseNameEn!,
-          description: descriptionEn!,
+          descriptionSource: descriptionEn!,
           aliases: alternateNamesEn
               .where((element) => element.isNotEmpty)
               .map((e) => ExerciseAliasSubmissionApi(alias: e))
@@ -139,7 +139,7 @@ class AddExerciseProvider with ChangeNotifier {
             author: author,
             language: languageTranslation!.id,
             name: exerciseNameTrans!,
-            description: descriptionTrans!,
+            descriptionSource: descriptionTrans!,
             aliases: alternateNamesTrans
                 .where((element) => element.isNotEmpty)
                 .map((e) => ExerciseAliasSubmissionApi(alias: e))

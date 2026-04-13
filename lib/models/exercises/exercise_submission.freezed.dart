@@ -529,7 +529,7 @@ as String,
 /// @nodoc
 mixin _$ExerciseTranslationSubmissionApi {
 
- String get name;@JsonKey(name: 'description_source') String get description; int get language;@JsonKey(name: 'license_author') String get author; List<ExerciseAliasSubmissionApi> get aliases; List<ExerciseCommentSubmissionApi> get comments;
+ String get name;@JsonKey(name: 'description_source') String get descriptionSource; int get language;@JsonKey(name: 'license_author') String get author; List<ExerciseAliasSubmissionApi> get aliases; List<ExerciseCommentSubmissionApi> get comments;
 /// Create a copy of ExerciseTranslationSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -542,16 +542,16 @@ $ExerciseTranslationSubmissionApiCopyWith<ExerciseTranslationSubmissionApi> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other.aliases, aliases)&&const DeepCollectionEquality().equals(other.comments, comments));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.descriptionSource, descriptionSource) || other.descriptionSource == descriptionSource)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other.aliases, aliases)&&const DeepCollectionEquality().equals(other.comments, comments));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,description,language,author,const DeepCollectionEquality().hash(aliases),const DeepCollectionEquality().hash(comments));
+int get hashCode => Object.hash(runtimeType,name,descriptionSource,language,author,const DeepCollectionEquality().hash(aliases),const DeepCollectionEquality().hash(comments));
 
 @override
 String toString() {
-  return 'ExerciseTranslationSubmissionApi(name: $name, description: $description, language: $language, author: $author, aliases: $aliases, comments: $comments)';
+  return 'ExerciseTranslationSubmissionApi(name: $name, descriptionSource: $descriptionSource, language: $language, author: $author, aliases: $aliases, comments: $comments)';
 }
 
 
@@ -562,7 +562,7 @@ abstract mixin class $ExerciseTranslationSubmissionApiCopyWith<$Res>  {
   factory $ExerciseTranslationSubmissionApiCopyWith(ExerciseTranslationSubmissionApi value, $Res Function(ExerciseTranslationSubmissionApi) _then) = _$ExerciseTranslationSubmissionApiCopyWithImpl;
 @useResult
 $Res call({
- String name,@JsonKey(name: 'description_source') String description, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
+ String name,@JsonKey(name: 'description_source') String descriptionSource, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
 });
 
 
@@ -579,10 +579,10 @@ class _$ExerciseTranslationSubmissionApiCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseTranslationSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? description = null,Object? language = null,Object? author = null,Object? aliases = null,Object? comments = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? descriptionSource = null,Object? language = null,Object? author = null,Object? aliases = null,Object? comments = null,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,descriptionSource: null == descriptionSource ? _self.descriptionSource : descriptionSource // ignore: cast_nullable_to_non_nullable
 as String,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
 as int,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String,aliases: null == aliases ? _self.aliases : aliases // ignore: cast_nullable_to_non_nullable
@@ -669,10 +669,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'description_source')  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'description_source')  String descriptionSource,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExerciseTranslationSubmissionApi() when $default != null:
-return $default(_that.name,_that.description,_that.language,_that.author,_that.aliases,_that.comments);case _:
+return $default(_that.name,_that.descriptionSource,_that.language,_that.author,_that.aliases,_that.comments);case _:
   return orElse();
 
 }
@@ -690,10 +690,10 @@ return $default(_that.name,_that.description,_that.language,_that.author,_that.a
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'description_source')  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'description_source')  String descriptionSource,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseTranslationSubmissionApi():
-return $default(_that.name,_that.description,_that.language,_that.author,_that.aliases,_that.comments);}
+return $default(_that.name,_that.descriptionSource,_that.language,_that.author,_that.aliases,_that.comments);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -707,10 +707,10 @@ return $default(_that.name,_that.description,_that.language,_that.author,_that.a
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(name: 'description_source')  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(name: 'description_source')  String descriptionSource,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseTranslationSubmissionApi() when $default != null:
-return $default(_that.name,_that.description,_that.language,_that.author,_that.aliases,_that.comments);case _:
+return $default(_that.name,_that.descriptionSource,_that.language,_that.author,_that.aliases,_that.comments);case _:
   return null;
 
 }
@@ -722,11 +722,11 @@ return $default(_that.name,_that.description,_that.language,_that.author,_that.a
 @JsonSerializable()
 
 class _ExerciseTranslationSubmissionApi implements ExerciseTranslationSubmissionApi {
-  const _ExerciseTranslationSubmissionApi({required this.name, @JsonKey(name: 'description_source') required this.description, required this.language, @JsonKey(name: 'license_author') required this.author, final  List<ExerciseAliasSubmissionApi> aliases = const [], final  List<ExerciseCommentSubmissionApi> comments = const []}): _aliases = aliases,_comments = comments;
+  const _ExerciseTranslationSubmissionApi({required this.name, @JsonKey(name: 'description_source') required this.descriptionSource, required this.language, @JsonKey(name: 'license_author') required this.author, final  List<ExerciseAliasSubmissionApi> aliases = const [], final  List<ExerciseCommentSubmissionApi> comments = const []}): _aliases = aliases,_comments = comments;
   factory _ExerciseTranslationSubmissionApi.fromJson(Map<String, dynamic> json) => _$ExerciseTranslationSubmissionApiFromJson(json);
 
 @override final  String name;
-@override@JsonKey(name: 'description_source') final  String description;
+@override@JsonKey(name: 'description_source') final  String descriptionSource;
 @override final  int language;
 @override@JsonKey(name: 'license_author') final  String author;
  final  List<ExerciseAliasSubmissionApi> _aliases;
@@ -757,16 +757,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other._aliases, _aliases)&&const DeepCollectionEquality().equals(other._comments, _comments));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.descriptionSource, descriptionSource) || other.descriptionSource == descriptionSource)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other._aliases, _aliases)&&const DeepCollectionEquality().equals(other._comments, _comments));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,description,language,author,const DeepCollectionEquality().hash(_aliases),const DeepCollectionEquality().hash(_comments));
+int get hashCode => Object.hash(runtimeType,name,descriptionSource,language,author,const DeepCollectionEquality().hash(_aliases),const DeepCollectionEquality().hash(_comments));
 
 @override
 String toString() {
-  return 'ExerciseTranslationSubmissionApi(name: $name, description: $description, language: $language, author: $author, aliases: $aliases, comments: $comments)';
+  return 'ExerciseTranslationSubmissionApi(name: $name, descriptionSource: $descriptionSource, language: $language, author: $author, aliases: $aliases, comments: $comments)';
 }
 
 
@@ -777,7 +777,7 @@ abstract mixin class _$ExerciseTranslationSubmissionApiCopyWith<$Res> implements
   factory _$ExerciseTranslationSubmissionApiCopyWith(_ExerciseTranslationSubmissionApi value, $Res Function(_ExerciseTranslationSubmissionApi) _then) = __$ExerciseTranslationSubmissionApiCopyWithImpl;
 @override @useResult
 $Res call({
- String name,@JsonKey(name: 'description_source') String description, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
+ String name,@JsonKey(name: 'description_source') String descriptionSource, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
 });
 
 
@@ -794,10 +794,10 @@ class __$ExerciseTranslationSubmissionApiCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseTranslationSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? description = null,Object? language = null,Object? author = null,Object? aliases = null,Object? comments = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? descriptionSource = null,Object? language = null,Object? author = null,Object? aliases = null,Object? comments = null,}) {
   return _then(_ExerciseTranslationSubmissionApi(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,descriptionSource: null == descriptionSource ? _self.descriptionSource : descriptionSource // ignore: cast_nullable_to_non_nullable
 as String,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
 as int,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String,aliases: null == aliases ? _self._aliases : aliases // ignore: cast_nullable_to_non_nullable
