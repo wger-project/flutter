@@ -113,7 +113,7 @@ class AddExerciseProvider with ChangeNotifier {
 
   ExerciseSubmissionApi get exerciseApiObject {
     return ExerciseSubmissionApi(
-      author: '',
+      author: author,
       variationGroup: _variationGroup,
       variationConnectTo: _variationConnectToExercise,
       category: category!.id,
@@ -123,7 +123,7 @@ class AddExerciseProvider with ChangeNotifier {
       translations: [
         // Base language (English)
         ExerciseTranslationSubmissionApi(
-          author: '',
+          author: author,
           language: languageEn!.id,
           name: exerciseNameEn!,
           description: descriptionEn!,
@@ -136,7 +136,7 @@ class AddExerciseProvider with ChangeNotifier {
         // Optional translation
         if (languageTranslation != null)
           ExerciseTranslationSubmissionApi(
-            author: '',
+            author: author,
             language: languageTranslation!.id,
             name: exerciseNameTrans!,
             description: descriptionTrans!,
