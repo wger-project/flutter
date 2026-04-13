@@ -5,7 +5,6 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/variation.dart';
 
 class MuscleConverter extends TypeConverter<Muscle, String> {
   const MuscleConverter();
@@ -59,20 +58,6 @@ class LanguageConverter extends TypeConverter<Language, String> {
 
   @override
   String toSql(Language value) {
-    return json.encode(value.toJson());
-  }
-}
-
-class VariationConverter extends TypeConverter<Variation, String> {
-  const VariationConverter();
-
-  @override
-  Variation fromSql(String fromDb) {
-    return Variation.fromJson(json.decode(fromDb) as Map<String, dynamic>);
-  }
-
-  @override
-  String toSql(Variation value) {
     return json.encode(value.toJson());
   }
 }

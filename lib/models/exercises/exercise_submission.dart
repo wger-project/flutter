@@ -80,9 +80,7 @@ sealed class ExerciseSubmissionApi with _$ExerciseSubmissionApi {
     required List<int> equipment,
 
     @JsonKey(name: 'license_author') required String author,
-
-    @JsonKey(includeToJson: true) int? variation,
-
+    @JsonKey(includeToJson: true, name: 'variation_group') String? variationGroup,
     @JsonKey(includeToJson: true, name: 'variations_connect_to') int? variationConnectTo,
 
     required List<ExerciseTranslationSubmissionApi> translations,

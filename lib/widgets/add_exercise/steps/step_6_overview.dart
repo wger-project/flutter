@@ -92,8 +92,8 @@ class Step6Overview extends StatelessWidget {
                 children: [
                   Text(i18n.variations),
                   Text(
-                    provider.variationId != null
-                        ? 'Using variation ID ${provider.variationId}'
+                    provider.variationGroup != null
+                        ? 'Using variation group ${provider.variationGroup}'
                         : provider.variationConnectToExercise != null
                         ? 'Connecting to exercise ${provider.variationConnectToExercise}'
                         : '',

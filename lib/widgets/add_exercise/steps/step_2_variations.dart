@@ -51,8 +51,9 @@ class Step2Variations extends StatelessWidget {
                         ),
                         Consumer<AddExerciseProvider>(
                           builder: (ctx, provider, __) => Switch(
-                            value: provider.variationId == key,
-                            onChanged: (state) => provider.variationId = key,
+                            value: provider.variationGroup == key,
+                            onChanged: (state) =>
+                                provider.variationGroup = state ? key : null,
                           ),
                         ),
                       ],
@@ -60,7 +61,7 @@ class Step2Variations extends StatelessWidget {
                   ),
                   // Exercise bases without variations
                   ...exerciseProvider.exercises
-                      .where((b) => b.variationId == null)
+                      .where((b) => b.variationGroup == null)
                       .map(
                         (base) => Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

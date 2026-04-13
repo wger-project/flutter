@@ -26,7 +26,6 @@ import 'package:wger/models/exercises/exercise_submission.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/variation.dart';
 
 import 'base_provider.dart';
 
@@ -46,7 +45,7 @@ class AddExerciseProvider with ChangeNotifier {
   String? exerciseNameTrans;
   String? descriptionEn;
   String? descriptionTrans;
-  int? _variationId;
+  String? _variationGroup;
   int? _variationConnectToExercise;
   Language? languageEn;
   Language? languageTranslation;
@@ -86,20 +85,16 @@ class AddExerciseProvider with ChangeNotifier {
 
   set variationConnectToExercise(int? value) {
     _variationConnectToExercise = value;
-    _variationId = null;
+    _variationGroup = null;
     notifyListeners();
   }
 
-  int? get variationId => _variationId;
+  String? get variationGroup => _variationGroup;
 
-  set variationId(int? variation) {
-    _variationId = variation;
+  set variationGroup(String? value) {
+    _variationGroup = value;
     _variationConnectToExercise = null;
     notifyListeners();
-  }
-
-  Variation get variation {
-    return Variation(id: _variationId!);
   }
 
   List<Muscle> get primaryMuscles => [..._primaryMuscles];
@@ -119,7 +114,7 @@ class AddExerciseProvider with ChangeNotifier {
   ExerciseSubmissionApi get exerciseApiObject {
     return ExerciseSubmissionApi(
       author: author,
-      variation: _variationId,
+      variationGroup: _variationGroup,
       variationConnectTo: _variationConnectToExercise,
       category: category!.id,
       muscles: _primaryMuscles.map((e) => e.id).toList(),
