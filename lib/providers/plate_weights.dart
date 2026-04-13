@@ -55,9 +55,6 @@ class PlateCalculatorState {
   final List<num> availablePlatesKg = const [0.5, 1, 1.25, 2, 2.5, 5, 10, 15, 20, 25];
   final List<num> availablePlatesLb = const [2.5, 5, 10, 25, 35, 45];
 
-  final availableBarWeightsKg = [10, 15, 20];
-  final availableBarWeightsLb = [15, 20, 25, 33, 45];
-
   PlateCalculatorState({
     this.useColors = true,
     num? barWeight,
@@ -104,10 +101,6 @@ class PlateCalculatorState {
 
   List<num> get availablePlates {
     return isMetric ? availablePlatesKg : availablePlatesLb;
-  }
-
-  List<num> get availableBarsWeights {
-    return isMetric ? availableBarWeightsKg : availableBarWeightsLb;
   }
 
   List<num> get platesList {

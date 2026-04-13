@@ -115,7 +115,7 @@ Widget createGymModeResultsScreen({String locale = 'en'}) {
         gymStateProvider.overrideWithValue(
           GymModeState(
             routine: routine,
-            dayId: routine.days.first.id!,
+            dayId: routine.days.first.id,
             iteration: 1,
             showExercisePages: true,
             showTimerPages: true,

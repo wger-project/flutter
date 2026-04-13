@@ -284,7 +284,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify initial step is 0
-      var stepper = tester.widget<Stepper>(find.byType(Stepper));
+      final stepper = tester.widget<Stepper>(find.byType(Stepper));
       expect(stepper.currentStep, equals(0));
 
       // Get localized text for UI elements
