@@ -17,6 +17,9 @@
   "fat_saturated": "0.100",
   "fiber": "9.100",
   "sodium": "0.260",
+  "is_vegan": true,
+  "is_vegetarian": true,
+  "nutriscore": "c",
   "weight_units": [],
   "language": {
       "id": 1,
