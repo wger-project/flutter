@@ -68,10 +68,6 @@ jobs:
         with:
           repository: wger-project/de.wger.flutter
 
-          # TODO: remove after release!!
-          #       This was just needed because the bump-versions.py script was refactored
-          ref: release-1.11.0
-
       - name: Bump version and update manifest
         run: |
           git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.14.1 ../flatpak-flutter
