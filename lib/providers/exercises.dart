@@ -675,10 +675,6 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
-  ///
-  /// TODO: currently we still only use the results to extract the IDs and then
-  ///       fetch the exercises one by one (and hope they are in the local db),
-  ///        which is not ideal.
   Future<List<Exercise>> searchExercise(
     String name, {
     String languageCode = LANGUAGE_SHORT_ENGLISH,
@@ -705,18 +701,9 @@ class ExercisesProvider with ChangeNotifier {
       ),
     );
 
-    // Load the exercises
-    final ids = (result['results'] as List).map<int>((data) => data['id'] as int).toList();
-
-    final List<Exercise> out = [];
-    for (final id in ids) {
-      final exercise = await fetchAndSetExercise(id);
-      if (exercise != null) {
-        out.add(exercise);
-      }
-    }
-
-    return out;
+    return (result['results'] as List)
+        .map((e) => Exercise.fromApiDataJson(e as Map<String, dynamic>, _languages))
+        .toList();
   }
 }
 

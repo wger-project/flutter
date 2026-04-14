@@ -162,8 +162,8 @@ class Exercise extends Equatable {
     lastUpdate = exerciseData.lastUpdate;
     lastUpdateGlobal = exerciseData.lastUpdateGlobal;
 
-    musclesSecondary = exerciseData.muscles;
     muscles = exerciseData.muscles;
+    musclesSecondary = exerciseData.musclesSecondary;
     equipment = exerciseData.equipment;
     category = exerciseData.category;
     translations = exerciseData.translations.map((e) {
