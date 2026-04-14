@@ -101,7 +101,7 @@
     "@close": {
         "description": "Translation for close"
     },
-    "successfullyDeleted": "Removido com êxito",
+    "successfullyDeleted": "Excluído com sucesso.",
     "@successfullyDeleted": {
         "description": "Message when an item was successfully deleted"
     },
@@ -167,7 +167,7 @@
     "@pause": {
         "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
     },
-    "success": "Bem-sucedido",
+    "success": "Bem sucedido",
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
     },
@@ -419,7 +419,7 @@
     "@rir": {
         "description": "Shorthand for Repetitions In Reserve"
     },
-    "setUnitsAndRir": "Unidades e RIR da série",
+    "setUnitsAndRir": "Definir unidades e RiR",
     "@setUnitsAndRir": {
         "description": "Label shown on the slider where the user can toggle showing units and RiR",
         "type": "text"
@@ -905,7 +905,7 @@
     "aboutJoinCommunityTitle": "Entre para a comunidade",
     "aboutDiscordTitle": "Discord",
     "others": "Outros",
-    "fitInWeek": "Treino na semana",
+    "fitInWeek": "Cronograma semanal fixo",
     "fitInWeekHelp": "Se ligado, os dias vão se repetir semanalmente, caso contrário os dias seguirão sequencialmente se considerar o começo de uma nova semana.",
     "addSuperset": "Adicionar superséries",
     "setHasProgression": "Treino tem prograssão",
@@ -1064,5 +1064,67 @@
     "slotEntryTypeMyo": "Myo",
     "slotEntryTypeDropset": "Drop set",
     "trophies": "Troféus",
-    "noTrophies": "Você ainda não possui troféus"
+    "noTrophies": "Você ainda não possui troféus",
+    "dashboardWidgets": "Widgets do painel de controle",
+    "personalRecords": "Registros pessoais",
+    "serverUpdateTitle": "Atualização do servidor necessária",
+    "serverUpdateContent": "O servidor conectado é muito antigo para esta versão do aplicativo. Peça ao administrador do servidor para atualizá-lo para pelo menos a versão {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "productNotFoundOpenFoodFacts": "Você pode adicionar este produto ao Open Food Facts para ajudar a comunidade!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Adicionar ao Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Vegano",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Vegetariano",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filtro",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Somente no idioma atual ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Idioma atual ({lang}) e inglês",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Todos os idiomas",
+    "topSet": "Série principal: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    }
 }

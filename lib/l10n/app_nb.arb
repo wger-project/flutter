@@ -260,5 +260,24 @@
     "success": "Vellykket",
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "exerciseList": "Treningsliste",
+    "exercises": "Øvelser",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    },
+    "exerciseName": "Navn på øvelse",
+    "@exerciseName": {
+        "description": "Label for the name of a workout exercise"
+    },
+    "searchExercise": "Søk for å legge til øvelser",
+    "@searchExercise": {
+        "description": "Label on set form. Selected exercises are added to the set"
+    },
+    "noIngredientsDefined": "Ingen ingredienser lagt til",
+    "searchNamesInEnglish": "Søk også etter navn på engelsk",
+    "muscles": "Muskler",
+    "@muscles": {
+        "description": "(main) muscles trained by an exercise"
     }
 }
