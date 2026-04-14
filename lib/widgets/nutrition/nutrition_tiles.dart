@@ -70,7 +70,9 @@ class DiaryEntryTile extends StatelessWidget {
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       title: Text(
-        '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient.name}',
+        diaryEntry.weightUnitObj != null
+            ? '${diaryEntry.amount.toStringAsFixed(0)} × ${diaryEntry.weightUnitObj!.name} ${diaryEntry.ingredient.name}'
+            : '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient.name}',
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: getNutritionRow(

@@ -31,6 +31,7 @@ import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
+import '../../test_data/nutritional_plans.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
 void main() {
@@ -123,6 +124,71 @@ void main() {
     await tester.tap(vegetarianSwitchFinder);
     await tester.pumpAndSettle();
     expect(tester.widget<SwitchListTile>(vegetarianSwitchFinder).value, isTrue);
+  });
+
+  testWidgets('Shows only Vegan chip when ingredient is vegan', (WidgetTester tester) async {
+    // ingredient1 (Water) is vegan + vegetarian
+    when(
+      mockNutrition.searchIngredient(
+        any,
+        languageCode: anyNamed('languageCode'),
+        searchLanguage: anyNamed('searchLanguage'),
+        isVegan: anyNamed('isVegan'),
+        isVegetarian: anyNamed('isVegetarian'),
+      ),
+    ).thenAnswer((_) => Future.value([ingredient1]));
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.enterText(find.byType(TextFormField), 'Water');
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Vegan'), findsOneWidget);
+    expect(find.text('Vegetarian'), findsNothing);
+  });
+
+  testWidgets('Shows Vegetarian chip when ingredient is only vegetarian', (
+    WidgetTester tester,
+  ) async {
+    // milk is vegetarian but not vegan
+    when(
+      mockNutrition.searchIngredient(
+        any,
+        languageCode: anyNamed('languageCode'),
+        searchLanguage: anyNamed('searchLanguage'),
+        isVegan: anyNamed('isVegan'),
+        isVegetarian: anyNamed('isVegetarian'),
+      ),
+    ).thenAnswer((_) => Future.value([milk]));
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.enterText(find.byType(TextFormField), 'Milk');
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Vegetarian'), findsOneWidget);
+    expect(find.text('Vegan'), findsNothing);
+  });
+
+  testWidgets('Shows no dietary chips when ingredient has no info', (WidgetTester tester) async {
+    // ingredient2 (Burger soup) has no dietary info
+    when(
+      mockNutrition.searchIngredient(
+        any,
+        languageCode: anyNamed('languageCode'),
+        searchLanguage: anyNamed('searchLanguage'),
+        isVegan: anyNamed('isVegan'),
+        isVegetarian: anyNamed('isVegetarian'),
+      ),
+    ).thenAnswer((_) => Future.value([ingredient2]));
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.enterText(find.byType(TextFormField), 'Burger');
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Vegan'), findsNothing);
+    expect(find.text('Vegetarian'), findsNothing);
   });
 
   testWidgets('Search calls provider with correct filter values', (WidgetTester tester) async {

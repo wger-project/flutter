@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -108,8 +108,8 @@ void main() {
       expect(find.text('Less fat, more protein'), findsOneWidget);
       expect(find.byIcon(Icons.info_outline), findsNWidgets(3)); // 2 meals, 1 "other logs"
       expect(find.byIcon(Icons.info), findsNothing);
-      expect(find.text('100g Water'), findsNothing);
-      expect(find.text('75g Burger soup'), findsNothing);
+      expect(find.text('100 g Water'), findsNothing);
+      expect(find.text('75 g Burger soup'), findsNothing);
 
       // tap the first info button changes it and reveals ingredients for the first meal
       var infoOutlineButtons = find.byIcon(Icons.info_outline);
@@ -124,8 +124,8 @@ void main() {
       }
 
       // Ingredients show up now
-      expect(find.text('100g Water'), findsOneWidget);
-      expect(find.text('75g Burger soup'), findsOneWidget);
+      expect(find.text('100 g Water'), findsOneWidget);
+      expect(find.text('75 g Burger soup'), findsOneWidget);
 
       // .. and the button icon has changed
       expect(find.byIcon(Icons.info_outline), findsNWidgets(2));
@@ -136,7 +136,7 @@ void main() {
       infoOutlineButtons = find.byIcon(Icons.info_outline);
 
       await tester.scrollUntilVisible(infoOutlineButtons.first, 30);
-      expect(find.text('300g Broccoli cake'), findsNothing);
+      expect(find.text('300 g Broccoli cake'), findsNothing);
 
       await tester.tap(infoOutlineButtons.first);
       await tester.pumpAndSettle();
@@ -151,8 +151,8 @@ void main() {
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
       expect(find.byIcon(Icons.info), findsNWidgets(2));
 
-      await tester.scrollUntilVisible(find.text('300g Broccoli cake'), 30);
-      expect(find.text('300g Broccoli cake'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('300 g Broccoli cake'), 30);
+      expect(find.text('300 g Broccoli cake'), findsOneWidget);
 
       expect(find.byType(Card), findsNWidgets(3));
 

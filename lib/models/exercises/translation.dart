@@ -51,6 +51,9 @@ class Translation extends Equatable {
   @JsonKey(required: true)
   final String description;
 
+  @JsonKey(name: 'description_source', defaultValue: '')
+  final String descriptionSource;
+
   @JsonKey(includeFromJson: true, includeToJson: false)
   List<Comment> notes = [];
 
@@ -63,6 +66,7 @@ class Translation extends Equatable {
     this.created,
     required this.name,
     required this.description,
+    this.descriptionSource = '',
     int? exerciseId,
     language,
   }) {
@@ -99,5 +103,6 @@ class Translation extends Equatable {
     created,
     name,
     description,
+    descriptionSource,
   ];
 }

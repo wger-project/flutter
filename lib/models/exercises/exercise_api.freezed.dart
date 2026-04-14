@@ -23,7 +23,7 @@ ExerciseApiData _$ExerciseApiDataFromJson(
 mixin _$ExerciseApiData {
 
  int get id; String get uuid;// ignore: invalid_annotation_target
-@JsonKey(name: 'variations') int? get variationId;// ignore: invalid_annotation_target
+@JsonKey(name: 'variation_group') String? get variationGroup;// ignore: invalid_annotation_target
 @JsonKey(name: 'created') DateTime get created;// ignore: invalid_annotation_target
 @JsonKey(name: 'last_update') DateTime get lastUpdate;// ignore: invalid_annotation_target
 @JsonKey(name: 'last_update_global') DateTime get lastUpdateGlobal; ExerciseCategory get category; List<Muscle> get muscles;// ignore: invalid_annotation_target
@@ -44,16 +44,16 @@ $ExerciseApiDataCopyWith<ExerciseApiData> get copyWith => _$ExerciseApiDataCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseApiData&&(identical(other.id, id) || other.id == id)&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.variationId, variationId) || other.variationId == variationId)&&(identical(other.created, created) || other.created == created)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.lastUpdateGlobal, lastUpdateGlobal) || other.lastUpdateGlobal == lastUpdateGlobal)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.muscles, muscles)&&const DeepCollectionEquality().equals(other.musclesSecondary, musclesSecondary)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&const DeepCollectionEquality().equals(other.translations, translations)&&const DeepCollectionEquality().equals(other.images, images)&&const DeepCollectionEquality().equals(other.videos, videos)&&const DeepCollectionEquality().equals(other.authors, authors)&&const DeepCollectionEquality().equals(other.authorsGlobal, authorsGlobal));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseApiData&&(identical(other.id, id) || other.id == id)&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.created, created) || other.created == created)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.lastUpdateGlobal, lastUpdateGlobal) || other.lastUpdateGlobal == lastUpdateGlobal)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.muscles, muscles)&&const DeepCollectionEquality().equals(other.musclesSecondary, musclesSecondary)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&const DeepCollectionEquality().equals(other.translations, translations)&&const DeepCollectionEquality().equals(other.images, images)&&const DeepCollectionEquality().equals(other.videos, videos)&&const DeepCollectionEquality().equals(other.authors, authors)&&const DeepCollectionEquality().equals(other.authorsGlobal, authorsGlobal));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uuid,variationId,created,lastUpdate,lastUpdateGlobal,category,const DeepCollectionEquality().hash(muscles),const DeepCollectionEquality().hash(musclesSecondary),const DeepCollectionEquality().hash(equipment),const DeepCollectionEquality().hash(translations),const DeepCollectionEquality().hash(images),const DeepCollectionEquality().hash(videos),const DeepCollectionEquality().hash(authors),const DeepCollectionEquality().hash(authorsGlobal));
+int get hashCode => Object.hash(runtimeType,id,uuid,variationGroup,created,lastUpdate,lastUpdateGlobal,category,const DeepCollectionEquality().hash(muscles),const DeepCollectionEquality().hash(musclesSecondary),const DeepCollectionEquality().hash(equipment),const DeepCollectionEquality().hash(translations),const DeepCollectionEquality().hash(images),const DeepCollectionEquality().hash(videos),const DeepCollectionEquality().hash(authors),const DeepCollectionEquality().hash(authorsGlobal));
 
 @override
 String toString() {
-  return 'ExerciseApiData(id: $id, uuid: $uuid, variationId: $variationId, created: $created, lastUpdate: $lastUpdate, lastUpdateGlobal: $lastUpdateGlobal, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, translations: $translations, images: $images, videos: $videos, authors: $authors, authorsGlobal: $authorsGlobal)';
+  return 'ExerciseApiData(id: $id, uuid: $uuid, variationGroup: $variationGroup, created: $created, lastUpdate: $lastUpdate, lastUpdateGlobal: $lastUpdateGlobal, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, translations: $translations, images: $images, videos: $videos, authors: $authors, authorsGlobal: $authorsGlobal)';
 }
 
 
@@ -64,7 +64,7 @@ abstract mixin class $ExerciseApiDataCopyWith<$Res>  {
   factory $ExerciseApiDataCopyWith(ExerciseApiData value, $Res Function(ExerciseApiData) _then) = _$ExerciseApiDataCopyWithImpl;
 @useResult
 $Res call({
- int id, String uuid,@JsonKey(name: 'variations') int? variationId,@JsonKey(name: 'created') DateTime created,@JsonKey(name: 'last_update') DateTime lastUpdate,@JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal, ExerciseCategory category, List<Muscle> muscles,@JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary, List<Equipment> equipment,@JsonKey(name: 'translations', defaultValue: []) List<Translation> translations, List<ExerciseImage> images, List<Video> videos,@JsonKey(name: 'author_history') List<String> authors,@JsonKey(name: 'total_authors_history') List<String> authorsGlobal
+ int id, String uuid,@JsonKey(name: 'variation_group') String? variationGroup,@JsonKey(name: 'created') DateTime created,@JsonKey(name: 'last_update') DateTime lastUpdate,@JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal, ExerciseCategory category, List<Muscle> muscles,@JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary, List<Equipment> equipment,@JsonKey(name: 'translations', defaultValue: []) List<Translation> translations, List<ExerciseImage> images, List<Video> videos,@JsonKey(name: 'author_history') List<String> authors,@JsonKey(name: 'total_authors_history') List<String> authorsGlobal
 });
 
 
@@ -81,12 +81,12 @@ class _$ExerciseApiDataCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseApiData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uuid = null,Object? variationId = freezed,Object? created = null,Object? lastUpdate = null,Object? lastUpdateGlobal = null,Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? translations = null,Object? images = null,Object? videos = null,Object? authors = null,Object? authorsGlobal = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uuid = null,Object? variationGroup = freezed,Object? created = null,Object? lastUpdate = null,Object? lastUpdateGlobal = null,Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? translations = null,Object? images = null,Object? videos = null,Object? authors = null,Object? authorsGlobal = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uuid: null == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
-as String,variationId: freezed == variationId ? _self.variationId : variationId // ignore: cast_nullable_to_non_nullable
-as int?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
+as String,variationGroup: freezed == variationGroup ? _self.variationGroup : variationGroup // ignore: cast_nullable_to_non_nullable
+as String?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUpdate: null == lastUpdate ? _self.lastUpdate : lastUpdate // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUpdateGlobal: null == lastUpdateGlobal ? _self.lastUpdateGlobal : lastUpdateGlobal // ignore: cast_nullable_to_non_nullable
 as DateTime,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
@@ -180,10 +180,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uuid, @JsonKey(name: 'variations')  int? variationId, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uuid, @JsonKey(name: 'variation_group')  String? variationGroup, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExerciseBaseData() when $default != null:
-return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);case _:
+return $default(_that.id,_that.uuid,_that.variationGroup,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);case _:
   return orElse();
 
 }
@@ -201,10 +201,10 @@ return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUp
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uuid, @JsonKey(name: 'variations')  int? variationId, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uuid, @JsonKey(name: 'variation_group')  String? variationGroup, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseBaseData():
-return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);}
+return $default(_that.id,_that.uuid,_that.variationGroup,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -218,10 +218,10 @@ return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUp
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uuid, @JsonKey(name: 'variations')  int? variationId, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uuid, @JsonKey(name: 'variation_group')  String? variationGroup, @JsonKey(name: 'created')  DateTime created, @JsonKey(name: 'last_update')  DateTime lastUpdate, @JsonKey(name: 'last_update_global')  DateTime lastUpdateGlobal,  ExerciseCategory category,  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary')  List<Muscle> musclesSecondary,  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: [])  List<Translation> translations,  List<ExerciseImage> images,  List<Video> videos, @JsonKey(name: 'author_history')  List<String> authors, @JsonKey(name: 'total_authors_history')  List<String> authorsGlobal)?  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseBaseData() when $default != null:
-return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);case _:
+return $default(_that.id,_that.uuid,_that.variationGroup,_that.created,_that.lastUpdate,_that.lastUpdateGlobal,_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.translations,_that.images,_that.videos,_that.authors,_that.authorsGlobal);case _:
   return null;
 
 }
@@ -233,13 +233,13 @@ return $default(_that.id,_that.uuid,_that.variationId,_that.created,_that.lastUp
 @JsonSerializable()
 
 class _ExerciseBaseData implements ExerciseApiData {
-   _ExerciseBaseData({required this.id, required this.uuid, @JsonKey(name: 'variations') this.variationId = null, @JsonKey(name: 'created') required this.created, @JsonKey(name: 'last_update') required this.lastUpdate, @JsonKey(name: 'last_update_global') required this.lastUpdateGlobal, required this.category, required final  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary') required final  List<Muscle> musclesSecondary, required final  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: []) required final  List<Translation> translations, required final  List<ExerciseImage> images, required final  List<Video> videos, @JsonKey(name: 'author_history') required final  List<String> authors, @JsonKey(name: 'total_authors_history') required final  List<String> authorsGlobal}): _muscles = muscles,_musclesSecondary = musclesSecondary,_equipment = equipment,_translations = translations,_images = images,_videos = videos,_authors = authors,_authorsGlobal = authorsGlobal;
+   _ExerciseBaseData({required this.id, required this.uuid, @JsonKey(name: 'variation_group') this.variationGroup = null, @JsonKey(name: 'created') required this.created, @JsonKey(name: 'last_update') required this.lastUpdate, @JsonKey(name: 'last_update_global') required this.lastUpdateGlobal, required this.category, required final  List<Muscle> muscles, @JsonKey(name: 'muscles_secondary') required final  List<Muscle> musclesSecondary, required final  List<Equipment> equipment, @JsonKey(name: 'translations', defaultValue: []) required final  List<Translation> translations, required final  List<ExerciseImage> images, required final  List<Video> videos, @JsonKey(name: 'author_history') required final  List<String> authors, @JsonKey(name: 'total_authors_history') required final  List<String> authorsGlobal}): _muscles = muscles,_musclesSecondary = musclesSecondary,_equipment = equipment,_translations = translations,_images = images,_videos = videos,_authors = authors,_authorsGlobal = authorsGlobal;
   factory _ExerciseBaseData.fromJson(Map<String, dynamic> json) => _$ExerciseBaseDataFromJson(json);
 
 @override final  int id;
 @override final  String uuid;
 // ignore: invalid_annotation_target
-@override@JsonKey(name: 'variations') final  int? variationId;
+@override@JsonKey(name: 'variation_group') final  String? variationGroup;
 // ignore: invalid_annotation_target
 @override@JsonKey(name: 'created') final  DateTime created;
 // ignore: invalid_annotation_target
@@ -327,16 +327,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseBaseData&&(identical(other.id, id) || other.id == id)&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.variationId, variationId) || other.variationId == variationId)&&(identical(other.created, created) || other.created == created)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.lastUpdateGlobal, lastUpdateGlobal) || other.lastUpdateGlobal == lastUpdateGlobal)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._muscles, _muscles)&&const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&const DeepCollectionEquality().equals(other._translations, _translations)&&const DeepCollectionEquality().equals(other._images, _images)&&const DeepCollectionEquality().equals(other._videos, _videos)&&const DeepCollectionEquality().equals(other._authors, _authors)&&const DeepCollectionEquality().equals(other._authorsGlobal, _authorsGlobal));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseBaseData&&(identical(other.id, id) || other.id == id)&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.created, created) || other.created == created)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.lastUpdateGlobal, lastUpdateGlobal) || other.lastUpdateGlobal == lastUpdateGlobal)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._muscles, _muscles)&&const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&const DeepCollectionEquality().equals(other._translations, _translations)&&const DeepCollectionEquality().equals(other._images, _images)&&const DeepCollectionEquality().equals(other._videos, _videos)&&const DeepCollectionEquality().equals(other._authors, _authors)&&const DeepCollectionEquality().equals(other._authorsGlobal, _authorsGlobal));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uuid,variationId,created,lastUpdate,lastUpdateGlobal,category,const DeepCollectionEquality().hash(_muscles),const DeepCollectionEquality().hash(_musclesSecondary),const DeepCollectionEquality().hash(_equipment),const DeepCollectionEquality().hash(_translations),const DeepCollectionEquality().hash(_images),const DeepCollectionEquality().hash(_videos),const DeepCollectionEquality().hash(_authors),const DeepCollectionEquality().hash(_authorsGlobal));
+int get hashCode => Object.hash(runtimeType,id,uuid,variationGroup,created,lastUpdate,lastUpdateGlobal,category,const DeepCollectionEquality().hash(_muscles),const DeepCollectionEquality().hash(_musclesSecondary),const DeepCollectionEquality().hash(_equipment),const DeepCollectionEquality().hash(_translations),const DeepCollectionEquality().hash(_images),const DeepCollectionEquality().hash(_videos),const DeepCollectionEquality().hash(_authors),const DeepCollectionEquality().hash(_authorsGlobal));
 
 @override
 String toString() {
-  return 'ExerciseApiData(id: $id, uuid: $uuid, variationId: $variationId, created: $created, lastUpdate: $lastUpdate, lastUpdateGlobal: $lastUpdateGlobal, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, translations: $translations, images: $images, videos: $videos, authors: $authors, authorsGlobal: $authorsGlobal)';
+  return 'ExerciseApiData(id: $id, uuid: $uuid, variationGroup: $variationGroup, created: $created, lastUpdate: $lastUpdate, lastUpdateGlobal: $lastUpdateGlobal, category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, translations: $translations, images: $images, videos: $videos, authors: $authors, authorsGlobal: $authorsGlobal)';
 }
 
 
@@ -347,7 +347,7 @@ abstract mixin class _$ExerciseBaseDataCopyWith<$Res> implements $ExerciseApiDat
   factory _$ExerciseBaseDataCopyWith(_ExerciseBaseData value, $Res Function(_ExerciseBaseData) _then) = __$ExerciseBaseDataCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String uuid,@JsonKey(name: 'variations') int? variationId,@JsonKey(name: 'created') DateTime created,@JsonKey(name: 'last_update') DateTime lastUpdate,@JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal, ExerciseCategory category, List<Muscle> muscles,@JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary, List<Equipment> equipment,@JsonKey(name: 'translations', defaultValue: []) List<Translation> translations, List<ExerciseImage> images, List<Video> videos,@JsonKey(name: 'author_history') List<String> authors,@JsonKey(name: 'total_authors_history') List<String> authorsGlobal
+ int id, String uuid,@JsonKey(name: 'variation_group') String? variationGroup,@JsonKey(name: 'created') DateTime created,@JsonKey(name: 'last_update') DateTime lastUpdate,@JsonKey(name: 'last_update_global') DateTime lastUpdateGlobal, ExerciseCategory category, List<Muscle> muscles,@JsonKey(name: 'muscles_secondary') List<Muscle> musclesSecondary, List<Equipment> equipment,@JsonKey(name: 'translations', defaultValue: []) List<Translation> translations, List<ExerciseImage> images, List<Video> videos,@JsonKey(name: 'author_history') List<String> authors,@JsonKey(name: 'total_authors_history') List<String> authorsGlobal
 });
 
 
@@ -364,12 +364,12 @@ class __$ExerciseBaseDataCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseApiData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uuid = null,Object? variationId = freezed,Object? created = null,Object? lastUpdate = null,Object? lastUpdateGlobal = null,Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? translations = null,Object? images = null,Object? videos = null,Object? authors = null,Object? authorsGlobal = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uuid = null,Object? variationGroup = freezed,Object? created = null,Object? lastUpdate = null,Object? lastUpdateGlobal = null,Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? translations = null,Object? images = null,Object? videos = null,Object? authors = null,Object? authorsGlobal = null,}) {
   return _then(_ExerciseBaseData(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uuid: null == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
-as String,variationId: freezed == variationId ? _self.variationId : variationId // ignore: cast_nullable_to_non_nullable
-as int?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
+as String,variationGroup: freezed == variationGroup ? _self.variationGroup : variationGroup // ignore: cast_nullable_to_non_nullable
+as String?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUpdate: null == lastUpdate ? _self.lastUpdate : lastUpdate // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUpdateGlobal: null == lastUpdateGlobal ? _self.lastUpdateGlobal : lastUpdateGlobal // ignore: cast_nullable_to_non_nullable
 as DateTime,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
@@ -382,825 +382,6 @@ as List<ExerciseImage>,videos: null == videos ? _self._videos : videos // ignore
 as List<Video>,authors: null == authors ? _self._authors : authors // ignore: cast_nullable_to_non_nullable
 as List<String>,authorsGlobal: null == authorsGlobal ? _self._authorsGlobal : authorsGlobal // ignore: cast_nullable_to_non_nullable
 as List<String>,
-  ));
-}
-
-
-}
-
-
-/// @nodoc
-mixin _$ExerciseSearchDetails {
-
-// ignore: invalid_annotation_target
-@JsonKey(name: 'id') int get translationId;// ignore: invalid_annotation_target
-@JsonKey(name: 'base_id') int get exerciseId; String get name; String get category; String? get image;// ignore: invalid_annotation_target
-@JsonKey(name: 'image_thumbnail') String? get imageThumbnail;
-/// Create a copy of ExerciseSearchDetails
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ExerciseSearchDetailsCopyWith<ExerciseSearchDetails> get copyWith => _$ExerciseSearchDetailsCopyWithImpl<ExerciseSearchDetails>(this as ExerciseSearchDetails, _$identity);
-
-  /// Serializes this ExerciseSearchDetails to a JSON map.
-  Map<String, dynamic> toJson();
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseSearchDetails&&(identical(other.translationId, translationId) || other.translationId == translationId)&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageThumbnail, imageThumbnail) || other.imageThumbnail == imageThumbnail));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,translationId,exerciseId,name,category,image,imageThumbnail);
-
-@override
-String toString() {
-  return 'ExerciseSearchDetails(translationId: $translationId, exerciseId: $exerciseId, name: $name, category: $category, image: $image, imageThumbnail: $imageThumbnail)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $ExerciseSearchDetailsCopyWith<$Res>  {
-  factory $ExerciseSearchDetailsCopyWith(ExerciseSearchDetails value, $Res Function(ExerciseSearchDetails) _then) = _$ExerciseSearchDetailsCopyWithImpl;
-@useResult
-$Res call({
-@JsonKey(name: 'id') int translationId,@JsonKey(name: 'base_id') int exerciseId, String name, String category, String? image,@JsonKey(name: 'image_thumbnail') String? imageThumbnail
-});
-
-
-
-
-}
-/// @nodoc
-class _$ExerciseSearchDetailsCopyWithImpl<$Res>
-    implements $ExerciseSearchDetailsCopyWith<$Res> {
-  _$ExerciseSearchDetailsCopyWithImpl(this._self, this._then);
-
-  final ExerciseSearchDetails _self;
-  final $Res Function(ExerciseSearchDetails) _then;
-
-/// Create a copy of ExerciseSearchDetails
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? translationId = null,Object? exerciseId = null,Object? name = null,Object? category = null,Object? image = freezed,Object? imageThumbnail = freezed,}) {
-  return _then(_self.copyWith(
-translationId: null == translationId ? _self.translationId : translationId // ignore: cast_nullable_to_non_nullable
-as int,exerciseId: null == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as String,image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
-as String?,imageThumbnail: freezed == imageThumbnail ? _self.imageThumbnail : imageThumbnail // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [ExerciseSearchDetails].
-extension ExerciseSearchDetailsPatterns on ExerciseSearchDetails {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ExerciseSearchDetails value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _ExerciseSearchDetails() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ExerciseSearchDetails value)  $default,){
-final _that = this;
-switch (_that) {
-case _ExerciseSearchDetails():
-return $default(_that);}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ExerciseSearchDetails value)?  $default,){
-final _that = this;
-switch (_that) {
-case _ExerciseSearchDetails() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  int translationId, @JsonKey(name: 'base_id')  int exerciseId,  String name,  String category,  String? image, @JsonKey(name: 'image_thumbnail')  String? imageThumbnail)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _ExerciseSearchDetails() when $default != null:
-return $default(_that.translationId,_that.exerciseId,_that.name,_that.category,_that.image,_that.imageThumbnail);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  int translationId, @JsonKey(name: 'base_id')  int exerciseId,  String name,  String category,  String? image, @JsonKey(name: 'image_thumbnail')  String? imageThumbnail)  $default,) {final _that = this;
-switch (_that) {
-case _ExerciseSearchDetails():
-return $default(_that.translationId,_that.exerciseId,_that.name,_that.category,_that.image,_that.imageThumbnail);}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id')  int translationId, @JsonKey(name: 'base_id')  int exerciseId,  String name,  String category,  String? image, @JsonKey(name: 'image_thumbnail')  String? imageThumbnail)?  $default,) {final _that = this;
-switch (_that) {
-case _ExerciseSearchDetails() when $default != null:
-return $default(_that.translationId,_that.exerciseId,_that.name,_that.category,_that.image,_that.imageThumbnail);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-@JsonSerializable()
-
-class _ExerciseSearchDetails implements ExerciseSearchDetails {
-   _ExerciseSearchDetails({@JsonKey(name: 'id') required this.translationId, @JsonKey(name: 'base_id') required this.exerciseId, required this.name, required this.category, required this.image, @JsonKey(name: 'image_thumbnail') required this.imageThumbnail});
-  factory _ExerciseSearchDetails.fromJson(Map<String, dynamic> json) => _$ExerciseSearchDetailsFromJson(json);
-
-// ignore: invalid_annotation_target
-@override@JsonKey(name: 'id') final  int translationId;
-// ignore: invalid_annotation_target
-@override@JsonKey(name: 'base_id') final  int exerciseId;
-@override final  String name;
-@override final  String category;
-@override final  String? image;
-// ignore: invalid_annotation_target
-@override@JsonKey(name: 'image_thumbnail') final  String? imageThumbnail;
-
-/// Create a copy of ExerciseSearchDetails
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ExerciseSearchDetailsCopyWith<_ExerciseSearchDetails> get copyWith => __$ExerciseSearchDetailsCopyWithImpl<_ExerciseSearchDetails>(this, _$identity);
-
-@override
-Map<String, dynamic> toJson() {
-  return _$ExerciseSearchDetailsToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseSearchDetails&&(identical(other.translationId, translationId) || other.translationId == translationId)&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageThumbnail, imageThumbnail) || other.imageThumbnail == imageThumbnail));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,translationId,exerciseId,name,category,image,imageThumbnail);
-
-@override
-String toString() {
-  return 'ExerciseSearchDetails(translationId: $translationId, exerciseId: $exerciseId, name: $name, category: $category, image: $image, imageThumbnail: $imageThumbnail)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ExerciseSearchDetailsCopyWith<$Res> implements $ExerciseSearchDetailsCopyWith<$Res> {
-  factory _$ExerciseSearchDetailsCopyWith(_ExerciseSearchDetails value, $Res Function(_ExerciseSearchDetails) _then) = __$ExerciseSearchDetailsCopyWithImpl;
-@override @useResult
-$Res call({
-@JsonKey(name: 'id') int translationId,@JsonKey(name: 'base_id') int exerciseId, String name, String category, String? image,@JsonKey(name: 'image_thumbnail') String? imageThumbnail
-});
-
-
-
-
-}
-/// @nodoc
-class __$ExerciseSearchDetailsCopyWithImpl<$Res>
-    implements _$ExerciseSearchDetailsCopyWith<$Res> {
-  __$ExerciseSearchDetailsCopyWithImpl(this._self, this._then);
-
-  final _ExerciseSearchDetails _self;
-  final $Res Function(_ExerciseSearchDetails) _then;
-
-/// Create a copy of ExerciseSearchDetails
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? translationId = null,Object? exerciseId = null,Object? name = null,Object? category = null,Object? image = freezed,Object? imageThumbnail = freezed,}) {
-  return _then(_ExerciseSearchDetails(
-translationId: null == translationId ? _self.translationId : translationId // ignore: cast_nullable_to_non_nullable
-as int,exerciseId: null == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as String,image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
-as String?,imageThumbnail: freezed == imageThumbnail ? _self.imageThumbnail : imageThumbnail // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-
-}
-
-
-/// @nodoc
-mixin _$ExerciseSearchEntry {
-
- String get value; ExerciseSearchDetails get data;
-/// Create a copy of ExerciseSearchEntry
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ExerciseSearchEntryCopyWith<ExerciseSearchEntry> get copyWith => _$ExerciseSearchEntryCopyWithImpl<ExerciseSearchEntry>(this as ExerciseSearchEntry, _$identity);
-
-  /// Serializes this ExerciseSearchEntry to a JSON map.
-  Map<String, dynamic> toJson();
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseSearchEntry&&(identical(other.value, value) || other.value == value)&&(identical(other.data, data) || other.data == data));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,value,data);
-
-@override
-String toString() {
-  return 'ExerciseSearchEntry(value: $value, data: $data)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $ExerciseSearchEntryCopyWith<$Res>  {
-  factory $ExerciseSearchEntryCopyWith(ExerciseSearchEntry value, $Res Function(ExerciseSearchEntry) _then) = _$ExerciseSearchEntryCopyWithImpl;
-@useResult
-$Res call({
- String value, ExerciseSearchDetails data
-});
-
-
-$ExerciseSearchDetailsCopyWith<$Res> get data;
-
-}
-/// @nodoc
-class _$ExerciseSearchEntryCopyWithImpl<$Res>
-    implements $ExerciseSearchEntryCopyWith<$Res> {
-  _$ExerciseSearchEntryCopyWithImpl(this._self, this._then);
-
-  final ExerciseSearchEntry _self;
-  final $Res Function(ExerciseSearchEntry) _then;
-
-/// Create a copy of ExerciseSearchEntry
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? value = null,Object? data = null,}) {
-  return _then(_self.copyWith(
-value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
-as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as ExerciseSearchDetails,
-  ));
-}
-/// Create a copy of ExerciseSearchEntry
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ExerciseSearchDetailsCopyWith<$Res> get data {
-  
-  return $ExerciseSearchDetailsCopyWith<$Res>(_self.data, (value) {
-    return _then(_self.copyWith(data: value));
-  });
-}
-}
-
-
-/// Adds pattern-matching-related methods to [ExerciseSearchEntry].
-extension ExerciseSearchEntryPatterns on ExerciseSearchEntry {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ExerciseSearchEntry value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _ExerciseSearchEntry() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ExerciseSearchEntry value)  $default,){
-final _that = this;
-switch (_that) {
-case _ExerciseSearchEntry():
-return $default(_that);}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ExerciseSearchEntry value)?  $default,){
-final _that = this;
-switch (_that) {
-case _ExerciseSearchEntry() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String value,  ExerciseSearchDetails data)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _ExerciseSearchEntry() when $default != null:
-return $default(_that.value,_that.data);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String value,  ExerciseSearchDetails data)  $default,) {final _that = this;
-switch (_that) {
-case _ExerciseSearchEntry():
-return $default(_that.value,_that.data);}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String value,  ExerciseSearchDetails data)?  $default,) {final _that = this;
-switch (_that) {
-case _ExerciseSearchEntry() when $default != null:
-return $default(_that.value,_that.data);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-@JsonSerializable()
-
-class _ExerciseSearchEntry implements ExerciseSearchEntry {
-   _ExerciseSearchEntry({required this.value, required this.data});
-  factory _ExerciseSearchEntry.fromJson(Map<String, dynamic> json) => _$ExerciseSearchEntryFromJson(json);
-
-@override final  String value;
-@override final  ExerciseSearchDetails data;
-
-/// Create a copy of ExerciseSearchEntry
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ExerciseSearchEntryCopyWith<_ExerciseSearchEntry> get copyWith => __$ExerciseSearchEntryCopyWithImpl<_ExerciseSearchEntry>(this, _$identity);
-
-@override
-Map<String, dynamic> toJson() {
-  return _$ExerciseSearchEntryToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseSearchEntry&&(identical(other.value, value) || other.value == value)&&(identical(other.data, data) || other.data == data));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,value,data);
-
-@override
-String toString() {
-  return 'ExerciseSearchEntry(value: $value, data: $data)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ExerciseSearchEntryCopyWith<$Res> implements $ExerciseSearchEntryCopyWith<$Res> {
-  factory _$ExerciseSearchEntryCopyWith(_ExerciseSearchEntry value, $Res Function(_ExerciseSearchEntry) _then) = __$ExerciseSearchEntryCopyWithImpl;
-@override @useResult
-$Res call({
- String value, ExerciseSearchDetails data
-});
-
-
-@override $ExerciseSearchDetailsCopyWith<$Res> get data;
-
-}
-/// @nodoc
-class __$ExerciseSearchEntryCopyWithImpl<$Res>
-    implements _$ExerciseSearchEntryCopyWith<$Res> {
-  __$ExerciseSearchEntryCopyWithImpl(this._self, this._then);
-
-  final _ExerciseSearchEntry _self;
-  final $Res Function(_ExerciseSearchEntry) _then;
-
-/// Create a copy of ExerciseSearchEntry
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? value = null,Object? data = null,}) {
-  return _then(_ExerciseSearchEntry(
-value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
-as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as ExerciseSearchDetails,
-  ));
-}
-
-/// Create a copy of ExerciseSearchEntry
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ExerciseSearchDetailsCopyWith<$Res> get data {
-  
-  return $ExerciseSearchDetailsCopyWith<$Res>(_self.data, (value) {
-    return _then(_self.copyWith(data: value));
-  });
-}
-}
-
-
-/// @nodoc
-mixin _$ExerciseApiSearch {
-
- List<ExerciseSearchEntry> get suggestions;
-/// Create a copy of ExerciseApiSearch
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ExerciseApiSearchCopyWith<ExerciseApiSearch> get copyWith => _$ExerciseApiSearchCopyWithImpl<ExerciseApiSearch>(this as ExerciseApiSearch, _$identity);
-
-  /// Serializes this ExerciseApiSearch to a JSON map.
-  Map<String, dynamic> toJson();
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseApiSearch&&const DeepCollectionEquality().equals(other.suggestions, suggestions));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(suggestions));
-
-@override
-String toString() {
-  return 'ExerciseApiSearch(suggestions: $suggestions)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $ExerciseApiSearchCopyWith<$Res>  {
-  factory $ExerciseApiSearchCopyWith(ExerciseApiSearch value, $Res Function(ExerciseApiSearch) _then) = _$ExerciseApiSearchCopyWithImpl;
-@useResult
-$Res call({
- List<ExerciseSearchEntry> suggestions
-});
-
-
-
-
-}
-/// @nodoc
-class _$ExerciseApiSearchCopyWithImpl<$Res>
-    implements $ExerciseApiSearchCopyWith<$Res> {
-  _$ExerciseApiSearchCopyWithImpl(this._self, this._then);
-
-  final ExerciseApiSearch _self;
-  final $Res Function(ExerciseApiSearch) _then;
-
-/// Create a copy of ExerciseApiSearch
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? suggestions = null,}) {
-  return _then(_self.copyWith(
-suggestions: null == suggestions ? _self.suggestions : suggestions // ignore: cast_nullable_to_non_nullable
-as List<ExerciseSearchEntry>,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [ExerciseApiSearch].
-extension ExerciseApiSearchPatterns on ExerciseApiSearch {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ExerciseApiSearch value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _ExerciseApiSearch() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ExerciseApiSearch value)  $default,){
-final _that = this;
-switch (_that) {
-case _ExerciseApiSearch():
-return $default(_that);}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ExerciseApiSearch value)?  $default,){
-final _that = this;
-switch (_that) {
-case _ExerciseApiSearch() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ExerciseSearchEntry> suggestions)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _ExerciseApiSearch() when $default != null:
-return $default(_that.suggestions);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ExerciseSearchEntry> suggestions)  $default,) {final _that = this;
-switch (_that) {
-case _ExerciseApiSearch():
-return $default(_that.suggestions);}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ExerciseSearchEntry> suggestions)?  $default,) {final _that = this;
-switch (_that) {
-case _ExerciseApiSearch() when $default != null:
-return $default(_that.suggestions);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-@JsonSerializable()
-
-class _ExerciseApiSearch implements ExerciseApiSearch {
-   _ExerciseApiSearch({required final  List<ExerciseSearchEntry> suggestions}): _suggestions = suggestions;
-  factory _ExerciseApiSearch.fromJson(Map<String, dynamic> json) => _$ExerciseApiSearchFromJson(json);
-
- final  List<ExerciseSearchEntry> _suggestions;
-@override List<ExerciseSearchEntry> get suggestions {
-  if (_suggestions is EqualUnmodifiableListView) return _suggestions;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_suggestions);
-}
-
-
-/// Create a copy of ExerciseApiSearch
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ExerciseApiSearchCopyWith<_ExerciseApiSearch> get copyWith => __$ExerciseApiSearchCopyWithImpl<_ExerciseApiSearch>(this, _$identity);
-
-@override
-Map<String, dynamic> toJson() {
-  return _$ExerciseApiSearchToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseApiSearch&&const DeepCollectionEquality().equals(other._suggestions, _suggestions));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_suggestions));
-
-@override
-String toString() {
-  return 'ExerciseApiSearch(suggestions: $suggestions)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ExerciseApiSearchCopyWith<$Res> implements $ExerciseApiSearchCopyWith<$Res> {
-  factory _$ExerciseApiSearchCopyWith(_ExerciseApiSearch value, $Res Function(_ExerciseApiSearch) _then) = __$ExerciseApiSearchCopyWithImpl;
-@override @useResult
-$Res call({
- List<ExerciseSearchEntry> suggestions
-});
-
-
-
-
-}
-/// @nodoc
-class __$ExerciseApiSearchCopyWithImpl<$Res>
-    implements _$ExerciseApiSearchCopyWith<$Res> {
-  __$ExerciseApiSearchCopyWithImpl(this._self, this._then);
-
-  final _ExerciseApiSearch _self;
-  final $Res Function(_ExerciseApiSearch) _then;
-
-/// Create a copy of ExerciseApiSearch
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? suggestions = null,}) {
-  return _then(_ExerciseApiSearch(
-suggestions: null == suggestions ? _self._suggestions : suggestions // ignore: cast_nullable_to_non_nullable
-as List<ExerciseSearchEntry>,
   ));
 }
 

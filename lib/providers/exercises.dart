@@ -49,7 +49,6 @@ class ExercisesProvider with ChangeNotifier {
 
   static const exerciseUrlPath = 'exercise';
   static const exerciseInfoUrlPath = 'exerciseinfo';
-  static const exerciseSearchPath = 'exercise/search';
 
   static const categoriesUrlPath = 'exercisecategory';
   static const musclesUrlPath = 'muscle';
@@ -81,15 +80,15 @@ class ExercisesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<int, List<Exercise>> get exerciseByVariation {
-    final Map<int, List<Exercise>> variations = {};
+  Map<String, List<Exercise>> get exerciseByVariation {
+    final Map<String, List<Exercise>> variations = {};
 
-    for (final exercise in exercises.where((e) => e.variationId != null)) {
-      if (!variations.containsKey(exercise.variationId)) {
-        variations[exercise.variationId!] = [];
+    for (final exercise in exercises.where((e) => e.variationGroup != null)) {
+      if (!variations.containsKey(exercise.variationGroup)) {
+        variations[exercise.variationGroup!] = [];
       }
 
-      variations[exercise.variationId]!.add(exercise);
+      variations[exercise.variationGroup]!.add(exercise);
     }
 
     return variations;
@@ -187,12 +186,12 @@ class ExercisesProvider with ChangeNotifier {
   /// returned exercises. Since this is typically called by one exercise, we are
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
-  List<Exercise> findExercisesByVariationId(int? variationId, {int? exerciseIdToExclude}) {
-    if (variationId == null) {
+  List<Exercise> findExercisesByVariationGroup(String? variationGroup, {int? exerciseIdToExclude}) {
+    if (variationGroup == null) {
       return [];
     }
 
-    var out = exercises.where((base) => base.variationId == variationId).toList();
+    var out = exercises.where((base) => base.variationGroup == variationGroup).toList();
 
     if (exerciseIdToExclude != null) {
       out = out.where((e) => e.id != exerciseIdToExclude).toList();
@@ -693,26 +692,18 @@ class ExercisesProvider with ChangeNotifier {
     // Send the request
     final result = await baseProvider.fetch(
       baseProvider.makeUrl(
-        exerciseSearchPath,
-        query: {'term': name, 'language': languages.join(',')},
+        exerciseInfoUrlPath,
+        query: {
+          'name__search': name,
+          'language__code': languages.join(','),
+          'limit': API_RESULTS_PAGE_SIZE,
+        },
       ),
     );
 
-    // Load the exercises
-    final results = ExerciseApiSearch.fromJson(result);
-
-    final List<Exercise> out = [];
-    for (final result in results.suggestions) {
-      final exercise = await fetchAndSetExercise(result.data.exerciseId);
-      if (exercise != null) {
-        out.add(exercise);
-      }
-    }
-    // return Future.wait(
-    //   results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
-    // );
-
-    return out;
+    return (result['results'] as List)
+        .map((e) => Exercise.fromApiDataJson(e as Map<String, dynamic>, _languages))
+        .toList();
   }
 }
 

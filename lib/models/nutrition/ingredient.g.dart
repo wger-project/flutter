@@ -45,8 +45,9 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     fatSaturated: stringToNum(json['fat_saturated'] as String?),
     fiber: stringToNum(json['fiber'] as String?),
     sodium: stringToNum(json['sodium'] as String?),
-    isVegan: json['is_vegan'] as bool? ?? false,
-    isVegetarian: json['is_vegetarian'] as bool? ?? false,
+    isVegan: json['is_vegan'] as bool?,
+    isVegetarian: json['is_vegetarian'] as bool?,
+    nutriscore: $enumDecodeNullable(_$NutriScoreEnumMap, json['nutriscore']),
     image: json['image'] == null
         ? null
         : IngredientImage.fromJson(json['image'] as Map<String, dynamic>),
@@ -77,6 +78,15 @@ Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic
   'sodium': numToString(instance.sodium),
   'is_vegan': instance.isVegan,
   'is_vegetarian': instance.isVegetarian,
+  'nutriscore': _$NutriScoreEnumMap[instance.nutriscore],
   'image': instance.image,
   'thumbnails': instance.thumbnails,
+};
+
+const _$NutriScoreEnumMap = {
+  NutriScore.a: 'a',
+  NutriScore.b: 'b',
+  NutriScore.c: 'c',
+  NutriScore.d: 'd',
+  NutriScore.e: 'e',
 };

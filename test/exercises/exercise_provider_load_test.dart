@@ -104,9 +104,8 @@ void main() {
         'Obliquus externus abdominis',
       ]);
       expect(exercise.musclesSecondary.map((e) => e.name), [
-        'Biceps femoris',
-        'Brachialis',
-        'Obliquus externus abdominis',
+        'Anterior deltoid',
+        'Trapezius',
       ]);
       expect(exercise.images.map((e) => e.uuid), [
         '1f5d2b2f-d4ea-4eeb-9377-56176465e08d',

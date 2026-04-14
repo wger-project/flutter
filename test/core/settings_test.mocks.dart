@@ -6,7 +6,7 @@
 import 'dart:async' as _i18;
 import 'dart:ui' as _i19;
 
-import 'package:flutter/material.dart' as _i22;
+import 'package:flutter/material.dart' as _i23;
 import 'package:http/http.dart' as _i16;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:shared_preferences/shared_preferences.dart' as _i14;
@@ -18,15 +18,16 @@ import 'package:wger/models/exercises/exercise.dart' as _i4;
 import 'package:wger/models/exercises/language.dart' as _i8;
 import 'package:wger/models/exercises/muscle.dart' as _i7;
 import 'package:wger/models/nutrition/ingredient.dart' as _i13;
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart' as _i21;
 import 'package:wger/models/nutrition/meal.dart' as _i11;
 import 'package:wger/models/nutrition/meal_item.dart' as _i12;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i10;
-import 'package:wger/models/user/profile.dart' as _i23;
+import 'package:wger/models/user/profile.dart' as _i24;
 import 'package:wger/providers/auth.dart' as _i15;
 import 'package:wger/providers/base_provider.dart' as _i2;
 import 'package:wger/providers/exercises.dart' as _i17;
 import 'package:wger/providers/nutrition.dart' as _i20;
-import 'package:wger/providers/user.dart' as _i21;
+import 'package:wger/providers/user.dart' as _i22;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -165,12 +166,12 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
           as List<_i4.Exercise>);
 
   @override
-  Map<int, List<_i4.Exercise>> get exerciseByVariation =>
+  Map<String, List<_i4.Exercise>> get exerciseByVariation =>
       (super.noSuchMethod(
             Invocation.getter(#exerciseByVariation),
-            returnValue: <int, List<_i4.Exercise>>{},
+            returnValue: <String, List<_i4.Exercise>>{},
           )
-          as Map<int, List<_i4.Exercise>>);
+          as Map<String, List<_i4.Exercise>>);
 
   @override
   List<_i5.ExerciseCategory> get categories =>
@@ -274,14 +275,14 @@ class MockExercisesProvider extends _i1.Mock implements _i17.ExercisesProvider {
           as _i4.Exercise);
 
   @override
-  List<_i4.Exercise> findExercisesByVariationId(
-    int? variationId, {
+  List<_i4.Exercise> findExercisesByVariationGroup(
+    String? variationGroup, {
     int? exerciseIdToExclude,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
-              #findExercisesByVariationId,
-              [variationId],
+              #findExercisesByVariationGroup,
+              [variationGroup],
               {#exerciseIdToExclude: exerciseIdToExclude},
             ),
             returnValue: <_i4.Exercise>[],
@@ -802,6 +803,18 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i20.NutritionPlans
           as _i18.Future<_i13.Ingredient>);
 
   @override
+  _i18.Future<List<_i21.IngredientWeightUnit>> fetchWeightUnits(
+    int? ingredientId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchWeightUnits, [ingredientId]),
+            returnValue: _i18.Future<List<_i21.IngredientWeightUnit>>.value(
+              <_i21.IngredientWeightUnit>[],
+            ),
+          )
+          as _i18.Future<List<_i21.IngredientWeightUnit>>);
+
+  @override
   _i18.Future<void> fetchIngredientsFromCache() =>
       (super.noSuchMethod(
             Invocation.method(#fetchIngredientsFromCache, []),
@@ -915,18 +928,18 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i20.NutritionPlans
 /// A class which mocks [UserProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProvider extends _i1.Mock implements _i21.UserProvider {
+class MockUserProvider extends _i1.Mock implements _i22.UserProvider {
   MockUserProvider() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i22.ThemeMode get themeMode =>
+  _i23.ThemeMode get themeMode =>
       (super.noSuchMethod(
             Invocation.getter(#themeMode),
-            returnValue: _i22.ThemeMode.system,
+            returnValue: _i23.ThemeMode.system,
           )
-          as _i22.ThemeMode);
+          as _i23.ThemeMode);
 
   @override
   _i2.WgerBaseProvider get baseProvider =>
@@ -951,23 +964,23 @@ class MockUserProvider extends _i1.Mock implements _i21.UserProvider {
           as _i14.SharedPreferencesAsync);
 
   @override
-  List<_i21.DashboardWidget> get dashboardWidgets =>
+  List<_i22.DashboardWidget> get dashboardWidgets =>
       (super.noSuchMethod(
             Invocation.getter(#dashboardWidgets),
-            returnValue: <_i21.DashboardWidget>[],
+            returnValue: <_i22.DashboardWidget>[],
           )
-          as List<_i21.DashboardWidget>);
+          as List<_i22.DashboardWidget>);
 
   @override
-  List<_i21.DashboardWidget> get allDashboardWidgets =>
+  List<_i22.DashboardWidget> get allDashboardWidgets =>
       (super.noSuchMethod(
             Invocation.getter(#allDashboardWidgets),
-            returnValue: <_i21.DashboardWidget>[],
+            returnValue: <_i22.DashboardWidget>[],
           )
-          as List<_i21.DashboardWidget>);
+          as List<_i22.DashboardWidget>);
 
   @override
-  set themeMode(_i22.ThemeMode? value) => super.noSuchMethod(
+  set themeMode(_i23.ThemeMode? value) => super.noSuchMethod(
     Invocation.setter(#themeMode, value),
     returnValueForMissingStub: null,
   );
@@ -979,7 +992,7 @@ class MockUserProvider extends _i1.Mock implements _i21.UserProvider {
   );
 
   @override
-  set profile(_i23.Profile? value) => super.noSuchMethod(
+  set profile(_i24.Profile? value) => super.noSuchMethod(
     Invocation.setter(#profile, value),
     returnValueForMissingStub: null,
   );
@@ -995,7 +1008,7 @@ class MockUserProvider extends _i1.Mock implements _i21.UserProvider {
   );
 
   @override
-  bool isDashboardWidgetVisible(_i21.DashboardWidget? key) =>
+  bool isDashboardWidgetVisible(_i22.DashboardWidget? key) =>
       (super.noSuchMethod(
             Invocation.method(#isDashboardWidgetVisible, [key]),
             returnValue: false,
@@ -1004,7 +1017,7 @@ class MockUserProvider extends _i1.Mock implements _i21.UserProvider {
 
   @override
   _i18.Future<void> setDashboardWidgetVisible(
-    _i21.DashboardWidget? key,
+    _i22.DashboardWidget? key,
     bool? visible,
   ) =>
       (super.noSuchMethod(
@@ -1024,7 +1037,7 @@ class MockUserProvider extends _i1.Mock implements _i21.UserProvider {
           as _i18.Future<void>);
 
   @override
-  void setThemeMode(_i22.ThemeMode? mode) => super.noSuchMethod(
+  void setThemeMode(_i23.ThemeMode? mode) => super.noSuchMethod(
     Invocation.method(#setThemeMode, [mode]),
     returnValueForMissingStub: null,
   );

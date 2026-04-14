@@ -17,6 +17,8 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
@@ -110,6 +112,35 @@ void main() {
 
     test('Test that the getter returns all meal items for a plan', () {
       expect(plan.dedupMealItems, plan.meals[0].mealItems + plan.meals[1].mealItems);
+    });
+  });
+
+  group('weight unit tests', () {
+    test('MealItem nutritionalValues without weight unit uses grams', () {
+      final item = MealItem(ingredientId: 1, amount: 200);
+      item.ingredient = ingredient1;
+      // ingredient1: energy=500 per 100g, so 200g = 1000
+      expect(item.nutritionalValues.energy, closeTo(1000, 0.01));
+      expect(item.nutritionalValues.protein, closeTo(10, 0.01));
+    });
+
+    test('MealItem nutritionalValues with weight unit', () {
+      final unit = const IngredientWeightUnit(id: 1, name: 'Serving', grams: 50);
+      final item = MealItem(ingredientId: 1, amount: 3);
+      item.ingredient = ingredient1;
+      item.weightUnitObj = unit;
+      // 3 servings * 50g = 150g, energy = 500 * 150 / 100 = 750
+      expect(item.nutritionalValues.energy, closeTo(750, 0.01));
+      expect(item.nutritionalValues.protein, closeTo(7.5, 0.01));
+    });
+
+    test('MealItem nutritionalValues with weight unit amount 1', () {
+      final unit = const IngredientWeightUnit(id: 2, name: 'Cup', grams: 240);
+      final item = MealItem(ingredientId: 1, amount: 1);
+      item.ingredient = ingredient1;
+      item.weightUnitObj = unit;
+      // 1 * 240g, energy = 500 * 240 / 100 = 1200
+      expect(item.nutritionalValues.energy, closeTo(1200, 0.01));
     });
   });
 }
