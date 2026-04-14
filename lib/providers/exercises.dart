@@ -49,7 +49,6 @@ class ExercisesProvider with ChangeNotifier {
 
   static const exerciseUrlPath = 'exercise';
   static const exerciseInfoUrlPath = 'exerciseinfo';
-  static const exerciseSearchPath = 'exercise/search';
 
   static const categoriesUrlPath = 'exercisecategory';
   static const musclesUrlPath = 'muscle';
@@ -676,6 +675,10 @@ class ExercisesProvider with ChangeNotifier {
   ///
   /// We could do this locally, but the server has better text searching capabilities
   /// with postgresql.
+  ///
+  /// TODO: currently we still only use the results to extract the IDs and then
+  ///       fetch the exercises one by one (and hope they are in the local db),
+  ///        which is not ideal.
   Future<List<Exercise>> searchExercise(
     String name, {
     String languageCode = LANGUAGE_SHORT_ENGLISH,
@@ -693,24 +696,25 @@ class ExercisesProvider with ChangeNotifier {
     // Send the request
     final result = await baseProvider.fetch(
       baseProvider.makeUrl(
-        exerciseSearchPath,
-        query: {'term': name, 'language': languages.join(',')},
+        exerciseInfoUrlPath,
+        query: {
+          'name__search': name,
+          'language__code': languages.join(','),
+          'limit': API_RESULTS_PAGE_SIZE,
+        },
       ),
     );
 
     // Load the exercises
-    final results = ExerciseApiSearch.fromJson(result);
+    final ids = (result['results'] as List).map<int>((data) => data['id'] as int).toList();
 
     final List<Exercise> out = [];
-    for (final result in results.suggestions) {
-      final exercise = await fetchAndSetExercise(result.data.exerciseId);
+    for (final id in ids) {
+      final exercise = await fetchAndSetExercise(id);
       if (exercise != null) {
         out.add(exercise);
       }
     }
-    // return Future.wait(
-    //   results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
-    // );
 
     return out;
   }

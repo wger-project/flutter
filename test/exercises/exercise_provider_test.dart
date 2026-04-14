@@ -48,7 +48,7 @@ void main() {
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
-  const String searchExerciseUrl = 'exercise/search';
+  const String exerciseSearchUrl = 'exerciseinfo';
 
   final Uri tCategoryEntriesUri = Uri(
     scheme: 'http',
@@ -83,7 +83,7 @@ void main() {
   final Uri tSearchByNameUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$searchExerciseUrl/',
+    path: 'api/v2/$exerciseSearchUrl/',
   );
 
   const category1 = ExerciseCategory(id: 1, name: 'Arms');
@@ -364,22 +364,39 @@ void main() {
         setUp(() {
           const String tSearchTerm = 'press';
           const String tSearchLanguage = 'en';
-          final Map<String, dynamic> query = {'term': tSearchTerm, 'language': tSearchLanguage};
+          final Map<String, dynamic> query = {
+            'name__search': tSearchTerm,
+            'language__code': tSearchLanguage,
+            'limit': '100',
+          };
           tSearchByNameUri = Uri(
             scheme: 'http',
             host: 'localhost',
-            path: 'api/v2/$searchExerciseUrl/',
+            path: 'api/v2/$exerciseSearchUrl/',
             queryParameters: query,
           );
-          final Map<String, dynamic> tSearchResponse = jsonDecode(
-            fixture('exercises/exercise_search_entries.json'),
+          final exerciseInfoEntry = jsonDecode(
+            fixture('exercises/exerciseinfo_response.json'),
           );
+          final Map<String, dynamic> tSearchResponse = {
+            'count': 2,
+            'next': null,
+            'previous': null,
+            'results': [
+              {...exerciseInfoEntry, 'id': 1},
+              {...exerciseInfoEntry, 'id': 2},
+            ],
+          };
 
           // Mock exercise search
           when(
             mockBaseProvider.makeUrl(
-              searchExerciseUrl,
-              query: {'term': tSearchTerm, 'language': tSearchLanguage},
+              exerciseSearchUrl,
+              query: {
+                'name__search': tSearchTerm,
+                'language__code': tSearchLanguage,
+                'limit': '100',
+              },
             ),
           ).thenReturn(tSearchByNameUri);
           when(mockBaseProvider.fetch(tSearchByNameUri)).thenAnswer((_) async => tSearchResponse);
