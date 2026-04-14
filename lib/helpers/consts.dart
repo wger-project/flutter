@@ -25,7 +25,11 @@ const double ICON_SIZE_SMALL = 20;
 
 /// Default wger server during login
 const DEFAULT_SERVER_PROD = 'https://wger.de';
-const DEFAULT_SERVER_TEST = 'https://wger-master.rge.uber.space/';
+
+// Default wger test server during development
+const DEFAULT_SERVER_TEST = 'https://dev.wger.de';
+const TESTSERVER_USER_NAME = 'user';
+const TESTSERVER_PASSWORD = 'flutteruser';
 
 /// Minimum server version required by this version of the app.
 ///
@@ -33,10 +37,6 @@ const DEFAULT_SERVER_TEST = 'https://wger-master.rge.uber.space/';
 /// in a newer server release. The check is performed during login and
 /// auto-login and mirrors what the server does with MIN_APP_VERSION.
 const MIN_SERVER_VERSION = '2.5';
-
-// Debug mode Login Data
-const TESTSERVER_USER_NAME = 'user';
-const TESTSERVER_PASSWORD = 'flutteruser';
 
 /// Default impression for a workout session (neutral)
 const DEFAULT_IMPRESSION = 2;
