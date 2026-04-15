@@ -1,1 +1,15 @@
-{}
+{
+    "userProfile": "Profile Yako",
+    "login": "Pinda muApp",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "logout": "Buda muApp",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "register": "Kuzvinyoresa",
+    "@register": {
+        "description": "Text for registration button"
+    }
+}
