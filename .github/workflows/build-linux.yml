@@ -6,11 +6,18 @@ on:
         description: 'Branch/Tag to build'
         required: true
         default: 'master'
+      generate_manifest:
+        description: 'Update flathub manifest'
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       ref:
         required: true
         type: string
+      generate_manifest:
+        type: boolean
+        default: true
     secrets:
       SSH_DEPLOY_KEY:
         required: true
@@ -62,6 +69,7 @@ jobs:
   generate_flathub_manifest:
     runs-on: ubuntu-latest
     name: Update flathub manifest
+    if: ${{ inputs.generate_manifest }}
 
     # If the job fails just continue, this can be done manually later
     continue-on-error: true
@@ -70,17 +78,6 @@ jobs:
       - build_linux
 
     steps:
-      - name: Check for SSH deploy key
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-
-        # Note that this will only happen when triggered manually via workflow_dispatch
-        run: |
-          if [ -z "$SSH_DEPLOY_KEY" ]; then
-            echo "::error::SSH_DEPLOY_KEY not available, skipping flathub manifest update"
-            exit 1
-          fi
-
       - name: Checkout flatpak-flathub repo
         uses: actions/checkout@v6
         with:
