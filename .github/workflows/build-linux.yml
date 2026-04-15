@@ -63,15 +63,23 @@ jobs:
     runs-on: ubuntu-latest
     name: Update flathub manifest
 
-    # This will (only) be empty if started manually via workflow_dispatch
-    if: ${{ secrets.SSH_DEPLOY_KEY != '' }}
-
     # If the job fails just continue, this can be done manually later
     continue-on-error: true
 
     needs:
       - build_linux
+
     steps:
+      - name: Check for SSH deploy key
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+
+        # Note that this will only happen when triggered manually via workflow_dispatch
+        run: |
+          if [ -z "$SSH_DEPLOY_KEY" ]; then
+            echo "::error::SSH_DEPLOY_KEY not available, skipping flathub manifest update"
+            exit 1
+          fi
 
       - name: Checkout flatpak-flathub repo
         uses: actions/checkout@v6
