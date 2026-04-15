@@ -148,6 +148,6 @@ jobs:
             builds-ios/Runner.app.zip
             builds-ipa/Runner.xcarchive.zip
             builds-macos/wger.app.zip
-            builds-windows/wger.exe
+            builds-windows/windows-x64.zip
 
 
