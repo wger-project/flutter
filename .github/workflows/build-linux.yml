@@ -1,5 +1,11 @@
 name: Build Linux
 on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch/Tag to build'
+        required: true
+        default: 'master'
   workflow_call:
     inputs:
       ref:
@@ -57,8 +63,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Update flathub manifest
 
+    # This will (only) be empty if started manually via workflow_dispatch
+    if: ${{ secrets.SSH_DEPLOY_KEY != '' }}
+
     # If the job fails just continue, this can be done manually later
     continue-on-error: true
+
     needs:
       - build_linux
     steps:
