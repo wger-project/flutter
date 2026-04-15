@@ -1,4 +1,4 @@
-name: Build release artefacts
+name: Make release
 on:
   workflow_dispatch:
     inputs:
