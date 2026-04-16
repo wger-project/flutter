@@ -14,11 +14,14 @@ wger er et Open Source-prosjekt og handler om:
 
 Kroppen din: Ikke noe behov for å google ingrediensene i favorittmatene dine – velg dine daglige måltider fra mer enn 78 000 produkter og se næringsverdiene. Legg til måltider i ernæringsplanen og hold oversikt over kostholdet ditt i kalenderen.
 
-Treningene dine: Du vet hva som er best for kroppen din. Lag dine egne treningsøkter fra et voksende utvalg på 200 forskjellige øvelser. Bruk deretter Gym-modus for å guide deg gjennom treningen mens du logger vektene dine med ett trykk.
+Treningene dine:
+Du vet hva som er best for kroppen din. Lag dine egne treningsøkter fra et voksende utvalg på 200 forskjellige øvelser. Bruk deretter Gym-modus for å guide deg gjennom treningen mens du logger vektene dine med ett trykk.
 
-Fremgangen din: Mist aldri målet av syne. Spor vekten din og hold statistikken din.
+Fremgangen din:
+Mist aldri målet av syne. Spor vekten din og hold statistikken din.
 
-Dataene dine: wger er din personlige treningsdagbok – men du eier dataene dine. Bruk REST API-et for å få tilgang til dem og gjøre fantastiske ting med dem.
+Dataene dine:
+Wger er din personlige treningsdagbok – men du eier dataene dine. Bruk REST API-et for å få tilgang til dem og gjøre fantastiske ting med dem.
 
 Vær oppmerksom på: Denne gratis appen er ikke basert på ekstern finansiering, og vi ber deg ikke om å donere penger. Den er et fellesskapsprosjekt som vokser konstant. Så vær forberedt på nye funksjoner når som helst!
 
