@@ -34,7 +34,7 @@ part 'measurement_notifier.g.dart';
 final class MeasurementNotifier extends _$MeasurementNotifier {
   final _logger = Logger('MeasurementNotifier');
 
-  late final MeasurementRepository _repo;
+  late MeasurementRepository _repo;
 
   @override
   Stream<List<MeasurementCategory>> build() {

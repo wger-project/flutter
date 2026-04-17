@@ -34,7 +34,7 @@ part 'ingredients.g.dart';
 final class IngredientNotifier extends _$IngredientNotifier {
   final _logger = Logger('IngredientProvider');
 
-  late final IngredientRepository _repo;
+  late IngredientRepository _repo;
 
   // Cache for fetched ingredients keyed by id. Stores null when DB had no row.
   final Map<int, Ingredient?> _cache = {};

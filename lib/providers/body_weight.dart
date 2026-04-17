@@ -27,7 +27,7 @@ part 'body_weight.g.dart';
 @riverpod
 final class WeightEntryNotifier extends _$WeightEntryNotifier {
   final _logger = Logger('WeightEntryNotifier');
-  late final BodyWeightRepository _repo;
+  late BodyWeightRepository _repo;
 
   @override
   Stream<List<WeightEntry>> build() {

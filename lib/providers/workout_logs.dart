@@ -27,7 +27,7 @@ part 'workout_logs.g.dart';
 @riverpod
 final class WorkoutLogNotifier extends _$WorkoutLogNotifier {
   final _logger = Logger('WorkoutLogNotifier');
-  late final WorkoutLogRepository _repo;
+  late WorkoutLogRepository _repo;
 
   @override
   Stream<List<Log>> build() {

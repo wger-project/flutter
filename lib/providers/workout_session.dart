@@ -33,7 +33,7 @@ Future<void> sessionStateReady(Ref ref) {
 @riverpod
 final class WorkoutSessionNotifier extends _$WorkoutSessionNotifier {
   final _logger = Logger('WorkoutSessionNotifier');
-  late final WorkoutSessionRepository _repo;
+  late WorkoutSessionRepository _repo;
 
   @override
   Stream<List<WorkoutSession>> build() {
