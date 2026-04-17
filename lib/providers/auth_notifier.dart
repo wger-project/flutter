@@ -27,6 +27,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:version/version.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/providers/auth_state.dart';
@@ -250,15 +251,56 @@ class AuthNotifier extends _$AuthNotifier {
         applicationVersion: appVersion,
       ),
     );
+    // If PowerSync was already running from a previous session, swap its
+    // connector so it picks up the new user's credentials.
+    await _reconnectPowerSyncIfBuilt(serverUrl);
     return LoginActions.proceed;
   }
 
   Future<void> logout() async {
     _logger.fine('logging out');
+
+    // Wipe the local PowerSync cache before we clear the auth state. We only
+    // do this if the DB has actually been built; reading the provider here
+    // would otherwise force-build it (which needs credentials we're about to
+    // remove). On the next login, `_reconnectPowerSyncIfBuilt` picks up the
+    // fresh credentials.
+    await _wipePowerSyncIfBuilt();
+
     state = AsyncData(
       AuthState(applicationVersion: _currentOrBlank().applicationVersion),
     );
     await PreferenceHelper.asyncPref.remove(PREFS_USER);
+  }
+
+  /// Wipes the local PowerSync database if it has already been built.
+  /// No-op when PowerSync hasn't been initialised yet (e.g. during the
+  /// pre-login reset on app start, before any data widgets have run).
+  Future<void> _wipePowerSyncIfBuilt() async {
+    if (!ref.exists(powerSyncInstanceProvider)) {
+      return;
+    }
+    try {
+      final db = await ref.read(powerSyncInstanceProvider.future);
+      await db.disconnectAndClear();
+    } catch (e, s) {
+      _logger.warning('PowerSync wipe failed', e, s);
+    }
+  }
+
+  /// Reconnects an already-built PowerSync DB with a fresh connector for the
+  /// given [serverUrl]. No-op when PowerSync hasn't been built yet: the next
+  /// access will build it with the current (post-login) auth state.
+  Future<void> _reconnectPowerSyncIfBuilt(String serverUrl) async {
+    if (!ref.exists(powerSyncInstanceProvider)) {
+      return;
+    }
+    try {
+      final db = await ref.read(powerSyncInstanceProvider.future);
+      connectPowerSync(db, serverUrl);
+    } catch (e, s) {
+      _logger.warning('PowerSync reconnect failed', e, s);
+    }
   }
 
   /// Refreshes the server version into the state.

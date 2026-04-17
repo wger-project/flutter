@@ -39,12 +39,17 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   await db.initialize();
 
   final baseProvider = ref.read(wgerBaseProvider);
-  final currentConnector = DjangoConnector(baseUrl: baseProvider.serverUrl!);
-
-  db.connect(connector: currentConnector);
+  connectPowerSync(db, baseProvider.serverUrl!);
   ref.onDispose(db.close);
 
   return db;
+}
+
+/// Creates a fresh [DjangoConnector] for [baseUrl] and connects [db] to it.
+/// Used both at initial creation and after a logout/login cycle to pick up
+/// the new user's server URL / credentials.
+void connectPowerSync(PowerSyncDatabase db, String baseUrl) {
+  db.connect(connector: DjangoConnector(baseUrl: baseUrl));
 }
 
 final _syncStatusInternal = StreamProvider<SyncStatus?>((ref) {

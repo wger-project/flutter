@@ -152,16 +152,18 @@ class MainSettingsDialog extends ConsumerWidget {
             //dense: true,
             leading: const Icon(Icons.exit_to_app),
             title: Text(AppLocalizations.of(context).logout),
-            onTap: () {
-              ref.read(authProvider.notifier).logout();
-              // context.read<RoutinesProvider>().clear();
+            onTap: () async {
+              final navigator = Navigator.of(context);
+
+              // Auth logout wipes the local PowerSync DB as part of its
+              // lifecycle. Await it so we don't race the navigation.
+              await ref.read(authProvider.notifier).logout();
               ref.read(nutritionProvider.notifier).clear();
-              // context.read<BodyWeightProvider>().clear();
               ref.read(galleryProvider.notifier).clear();
               ref.read(userProfileProvider.notifier).clear();
 
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed('/');
+              navigator.pop();
+              navigator.pushReplacementNamed('/');
             },
           ),
         ],
