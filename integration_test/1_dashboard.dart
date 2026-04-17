@@ -17,15 +17,14 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/gallery_repository.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/measurement_repository.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
@@ -41,6 +40,7 @@ import '../test/nutrition/nutritional_plan_screen_test.mocks.dart';
 import '../test/weight/weight_screen_test.mocks.dart' as weight;
 import '../test_data/body_weight.dart';
 import '../test_data/exercises.dart';
+import '../test_data/gallery.dart';
 import '../test_data/measurements.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
@@ -58,7 +58,8 @@ class _FakeAuthNotifier extends AuthNotifier {
 Widget createDashboardScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
-  final mockGalleryProvider = MockGalleryProvider();
+  final mockGalleryRepo = MockGalleryRepository();
+  when(mockGalleryRepo.fetchAll()).thenAnswer((_) async => getTestImages());
 
   final mockNutritionRepo = weight.MockNutritionRepository();
   final mockIngredientRepo = weight.MockIngredientRepository();
@@ -82,7 +83,7 @@ Widget createDashboardScreen({Locale? locale}) {
     token: 'test-token',
     serverUrl: 'http://localhost',
   );
-  final container = riverpod.ProviderContainer.test(
+  final container = ProviderContainer.test(
     overrides: [
       bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
@@ -90,6 +91,7 @@ Widget createDashboardScreen({Locale? locale}) {
       userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
       nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
       ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      galleryRepositoryProvider.overrideWithValue(mockGalleryRepo),
     ],
   );
   container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
@@ -98,7 +100,7 @@ Widget createDashboardScreen({Locale? locale}) {
 
   // Seed the nutrition notifier with the screenshot plan so the dashboard can
   // show it without going through the server.
-  container.read(nutritionProvider.notifier).state = riverpod.AsyncData([
+  container.read(nutritionProvider.notifier).state = AsyncData([
     getNutritionalPlanScreenshot(),
   ]);
 
@@ -108,22 +110,15 @@ Widget createDashboardScreen({Locale? locale}) {
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,
     ),
-    child: riverpod.UncontrolledProviderScope(
+    child: UncontrolledProviderScope(
       container: container,
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<GalleryProvider>(
-            create: (context) => mockGalleryProvider,
-          ),
-        ],
-        child: MaterialApp(
-          locale: locale,
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          theme: wgerLightTheme,
-          home: HomeTabsScreen(),
-        ),
+      child: MaterialApp(
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        home: HomeTabsScreen(),
       ),
     ),
   );

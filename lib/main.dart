@@ -30,7 +30,6 @@ import 'package:wger/providers/app_settings_notifier.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/wger_base_riverpod.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/auth_screen.dart';
@@ -170,13 +169,6 @@ class MainApp extends ConsumerWidget {
         return MultiProvider(
           providers: [
             Provider<WgerBaseProvider>.value(value: base),
-            ChangeNotifierProvider<GalleryProvider>(
-              create: (_) => GalleryProvider(
-                serverUrl: base.serverUrl,
-                token: base.token,
-                applicationVersion: base.applicationVersion,
-              ),
-            ),
             ChangeNotifierProvider<AddExerciseProvider>(
               create: (_) => AddExerciseProvider(base),
             ),

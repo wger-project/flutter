@@ -20,13 +20,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/trophies.dart';
@@ -120,7 +119,6 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
 
     if (authState != null && !authState.dataInit) {
       final nutritionNotifier = ref.read(nutritionProvider.notifier);
-      final galleryProvider = context.read<GalleryProvider>();
 
       // ref.watch(routinesRiverpodProvider);
       // ref.read(exerciseStateProvider);
@@ -153,7 +151,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       // Plans, weight and gallery
       widget._logger.info('Loading routines, weight, measurements and gallery');
       await Future.wait([
-        galleryProvider.fetchAndSetGallery(),
+        ref.read(galleryProvider.future),
         nutritionNotifier.fetchAndSetAllPlansSparse(),
         routinesProvider.fetchAllRoutinesSparse(),
         trophyNotifier.fetchAll(language: languageCode),

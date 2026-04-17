@@ -17,39 +17,40 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/image.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 
 import 'forms.dart';
 
-class Gallery extends StatelessWidget {
+class Gallery extends ConsumerWidget {
   const Gallery();
 
   @override
-  Widget build(BuildContext context) {
-    final provider = Provider.of<GalleryProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final images = ref.watch(galleryProvider).value ?? const [];
+    final notifier = ref.read(galleryProvider.notifier);
 
     return Padding(
       padding: const EdgeInsets.all(5),
       child: RefreshIndicator(
-        onRefresh: () => provider.fetchAndSetGallery(),
-        child: provider.images.isEmpty
+        onRefresh: () => notifier.refresh(),
+        child: images.isEmpty
             ? const TextPrompt()
             : MasonryGridView.count(
                 crossAxisCount: 2,
                 mainAxisSpacing: 5,
                 crossAxisSpacing: 5,
-                itemCount: provider.images.length,
+                itemCount: images.length,
                 itemBuilder: (context, index) {
-                  final currentImage = provider.images[index];
+                  final currentImage = images[index];
 
                   return GestureDetector(
                     onTap: () {
@@ -79,7 +80,7 @@ class Gallery extends StatelessWidget {
   }
 }
 
-class ImageDetail extends StatelessWidget {
+class ImageDetail extends ConsumerWidget {
   const ImageDetail({
     super.key,
     required this.image,
@@ -88,7 +89,7 @@ class ImageDetail extends StatelessWidget {
   final gallery.Image image;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       key: Key('image-${image.id!}-detail'),
       padding: const EdgeInsets.all(10),
@@ -120,10 +121,7 @@ class ImageDetail extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
-                  Provider.of<GalleryProvider>(
-                    context,
-                    listen: false,
-                  ).deleteImage(image);
+                  ref.read(galleryProvider.notifier).deleteImage(image);
                   Navigator.of(context).pop();
                 },
               ),

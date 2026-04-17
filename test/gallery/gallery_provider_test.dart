@@ -16,86 +16,71 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/gallery_notifier.dart';
+import 'package:wger/providers/gallery_repository.dart';
 
-import '../other/base_provider_test.mocks.dart';
+import 'gallery_provider_test.mocks.dart';
 
+@GenerateMocks([GalleryRepository])
 void main() {
-  group('test gallery provider', () {
-    test('Test that fetch and set gallery', () async {
-      final client = MockClient();
+  late MockGalleryRepository mockRepo;
+  late ProviderContainer container;
 
-      when(
-        client.get(
-          Uri.https('localhost', 'api/v2/gallery/'),
-          headers: anyNamed('headers'),
-        ),
-      ).thenAnswer(
-        (_) async => http.Response(
-          '{"count":1,"next":null,"previous":null,"results":['
-          '{"id":58,'
-          '"date":"2022-01-09",'
-          '"image":"https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg",'
-          '"description":"eggsaddjujuit\'ddayhadIforcanview",'
-          '"height":1280,"width":960}]}',
-          200,
-        ),
-      );
+  final image1 = gallery.Image(
+    id: 58,
+    date: DateTime(2022, 01, 09),
+    url: 'https://example.com/1.jpg',
+    description: 'image 1',
+  );
+  final image2 = gallery.Image(
+    id: 59,
+    date: DateTime(2022, 02, 14),
+    url: 'https://example.com/2.jpg',
+    description: 'image 2',
+  );
 
-      final galleryProvider = GalleryProvider(
-        serverUrl: 'https://localhost',
-        token: 'FooBar',
-        client: client,
-      );
+  setUp(() {
+    mockRepo = MockGalleryRepository();
+    when(mockRepo.fetchAll()).thenAnswer((_) async => [image2, image1]);
 
-      await galleryProvider.fetchAndSetGallery();
+    container = ProviderContainer(
+      overrides: [galleryRepositoryProvider.overrideWithValue(mockRepo)],
+    );
+  });
 
-      // Check that everything is ok
-      expect(galleryProvider.images.length, 1);
-    });
+  tearDown(() {
+    container.dispose();
+  });
 
-    test('Test that delete gallery photo', () async {
-      final client = MockClient();
+  test('build fetches the gallery from the repository', () async {
+    final images = await container.read(galleryProvider.future);
 
-      when(
-        client.delete(
-          Uri.https('localhost', 'api/v2/gallery/58/'),
-          headers: anyNamed('headers'),
-        ),
-      ).thenAnswer(
-        (_) async => http.Response(
-          '{"id":58,'
-          '"date":"2022-01-09",'
-          '"image":"https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg",'
-          '"description":"eggsaddjujuit\'ddayhadIforcanview",'
-          '"height":1280,"width":960}',
-          200,
-        ),
-      );
+    expect(images, hasLength(2));
+    expect(images.first.id, 59); // sorted newest first
+    verify(mockRepo.fetchAll()).called(1);
+  });
 
-      final galleryProvider = GalleryProvider(
-        serverUrl: 'https://localhost',
-        token: 'FooBar',
-        client: client,
-      );
+  test('deleteImage removes the image from state', () async {
+    await container.read(galleryProvider.future);
+    when(mockRepo.deleteImage(any)).thenAnswer((_) async {});
 
-      final image = gallery.Image(
-        id: 58,
-        date: DateTime(2022, 01, 09),
-        url: 'https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg',
-        description: "eggsaddjujuit'ddayhadIforcanview",
-      );
+    await container.read(galleryProvider.notifier).deleteImage(image1);
 
-      galleryProvider.images.add(image);
+    final images = container.read(galleryProvider).value!;
+    expect(images.map((e) => e.id), [image2.id]);
+    verify(mockRepo.deleteImage(image1.id!)).called(1);
+  });
 
-      await galleryProvider.deleteImage(image);
+  test('clear() resets the state to an empty list', () async {
+    await container.read(galleryProvider.future);
+    expect(container.read(galleryProvider).value, hasLength(2));
 
-      // Check that everything is ok
-      expect(galleryProvider.images.length, 0);
-    });
+    container.read(galleryProvider.notifier).clear();
+    expect(container.read(galleryProvider).value, isEmpty);
   });
 }

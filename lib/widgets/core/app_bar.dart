@@ -19,11 +19,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:powersync/powersync.dart' as ps;
-import 'package:provider/provider.dart';
 import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -158,7 +157,7 @@ class MainSettingsDialog extends ConsumerWidget {
               // context.read<RoutinesProvider>().clear();
               ref.read(nutritionProvider.notifier).clear();
               // context.read<BodyWeightProvider>().clear();
-              context.read<GalleryProvider>().clear();
+              ref.read(galleryProvider.notifier).clear();
               ref.read(userProfileProvider.notifier).clear();
 
               Navigator.of(context).pop();

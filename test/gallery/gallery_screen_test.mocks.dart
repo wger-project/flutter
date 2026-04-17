@@ -3,15 +3,12 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
-import 'dart:ui' as _i8;
+import 'dart:async' as _i4;
 
-import 'package:http/http.dart' as _i2;
-import 'package:image_picker/image_picker.dart' as _i6;
+import 'package:image_picker/image_picker.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i7;
-import 'package:wger/models/gallery/image.dart' as _i4;
-import 'package:wger/providers/gallery.dart' as _i3;
+import 'package:wger/models/gallery/image.dart' as _i2;
+import 'package:wger/providers/gallery_repository.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -28,245 +25,53 @@ import 'package:wger/providers/gallery.dart' as _i3;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeClient_0 extends _i1.SmartFake implements _i2.Client {
-  _FakeClient_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeImage_0 extends _i1.SmartFake implements _i2.Image {
+  _FakeImage_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeUri_1 extends _i1.SmartFake implements Uri {
-  _FakeUri_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeResponse_2 extends _i1.SmartFake implements _i2.Response {
-  _FakeResponse_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-/// A class which mocks [GalleryProvider].
+/// A class which mocks [GalleryRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGalleryProvider extends _i1.Mock implements _i3.GalleryProvider {
-  MockGalleryProvider() {
+class MockGalleryRepository extends _i1.Mock implements _i3.GalleryRepository {
+  MockGalleryRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  List<_i4.Image> get images =>
+  _i4.Future<List<_i2.Image>> fetchAll() =>
       (super.noSuchMethod(
-            Invocation.getter(#images),
-            returnValue: <_i4.Image>[],
+            Invocation.method(#fetchAll, []),
+            returnValue: _i4.Future<List<_i2.Image>>.value(<_i2.Image>[]),
           )
-          as List<_i4.Image>);
+          as _i4.Future<List<_i2.Image>>);
 
   @override
-  set images(List<_i4.Image>? value) => super.noSuchMethod(
-    Invocation.setter(#images, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i2.Client get client =>
-      (super.noSuchMethod(
-            Invocation.getter(#client),
-            returnValue: _FakeClient_0(this, Invocation.getter(#client)),
-          )
-          as _i2.Client);
-
-  @override
-  set client(_i2.Client? value) => super.noSuchMethod(
-    Invocation.setter(#client, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
-
-  @override
-  void clear() => super.noSuchMethod(
-    Invocation.method(#clear, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i5.Future<void> fetchAndSetGallery() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetGallery, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> addImage(_i4.Image? image, _i6.XFile? imageFile) =>
+  _i4.Future<_i2.Image> addImage(_i2.Image? image, _i5.XFile? imageFile) =>
       (super.noSuchMethod(
             Invocation.method(#addImage, [image, imageFile]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<_i2.Image>.value(
+              _FakeImage_0(
+                this,
+                Invocation.method(#addImage, [image, imageFile]),
+              ),
+            ),
           )
-          as _i5.Future<void>);
+          as _i4.Future<_i2.Image>);
 
   @override
-  _i5.Future<void> editImage(_i4.Image? image, _i6.XFile? imageFile) =>
+  _i4.Future<String?> editImage(_i2.Image? image, _i5.XFile? imageFile) =>
       (super.noSuchMethod(
             Invocation.method(#editImage, [image, imageFile]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<String?>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<String?>);
 
   @override
-  _i5.Future<void> deleteImage(_i4.Image? image) =>
+  _i4.Future<void> deleteImage(int? id) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteImage, [image]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            Invocation.method(#deleteImage, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
-
-  @override
-  String getAppNameHeaderValue() =>
-      (super.noSuchMethod(
-            Invocation.method(#getAppNameHeaderValue, []),
-            returnValue: _i7.dummyValue<String>(
-              this,
-              Invocation.method(#getAppNameHeaderValue, []),
-            ),
-          )
-          as String);
-
-  @override
-  Map<String, String> getDefaultHeaders({
-    bool? includeAuth = false,
-    String? language,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {
-              #includeAuth: includeAuth,
-              #language: language,
-            }),
-            returnValue: <String, String>{},
-          )
-          as Map<String, String>);
-
-  @override
-  Uri makeUrl(
-    String? path, {
-    int? id,
-    String? objectMethod,
-    Map<String, dynamic>? query,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #makeUrl,
-              [path],
-              {#id: id, #objectMethod: objectMethod, #query: query},
-            ),
-            returnValue: _FakeUri_1(
-              this,
-              Invocation.method(
-                #makeUrl,
-                [path],
-                {#id: id, #objectMethod: objectMethod, #query: query},
-              ),
-            ),
-          )
-          as Uri);
-
-  @override
-  _i5.Future<dynamic> fetch(
-    Uri? uri, {
-    int? maxRetries = 3,
-    Duration? initialDelay = const Duration(milliseconds: 250),
-    Duration? timeout = const Duration(seconds: 15),
-    String? language,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #fetch,
-              [uri],
-              {
-                #maxRetries: maxRetries,
-                #initialDelay: initialDelay,
-                #timeout: timeout,
-                #language: language,
-              },
-            ),
-            returnValue: _i5.Future<dynamic>.value(),
-          )
-          as _i5.Future<dynamic>);
-
-  @override
-  _i5.Future<List<dynamic>> fetchPaginated(
-    Uri? uri, {
-    String? language,
-    Duration? timeout = const Duration(seconds: 15),
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #fetchPaginated,
-              [uri],
-              {#language: language, #timeout: timeout},
-            ),
-            returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
-          )
-          as _i5.Future<List<dynamic>>);
-
-  @override
-  _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
-      (super.noSuchMethod(
-            Invocation.method(#post, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i5.Future<Map<String, dynamic>>);
-
-  @override
-  _i5.Future<Map<String, dynamic>> patch(
-    Map<String, dynamic>? data,
-    Uri? uri,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#patch, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i5.Future<Map<String, dynamic>>);
-
-  @override
-  _i5.Future<_i2.Response> deleteRequest(String? url, int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteRequest, [url, id]),
-            returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_2(
-                this,
-                Invocation.method(#deleteRequest, [url, id]),
-              ),
-            ),
-          )
-          as _i5.Future<_i2.Response>);
-
-  @override
-  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#addListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#removeListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-    Invocation.method(#notifyListeners, []),
-    returnValueForMissingStub: null,
-  );
+          as _i4.Future<void>);
 }

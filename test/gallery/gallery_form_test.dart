@@ -17,32 +17,37 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/gallery_repository.dart';
 import 'package:wger/widgets/gallery/forms.dart';
 
 import '../../test_data/gallery.dart';
 import 'gallery_form_test.mocks.dart';
 
-@GenerateMocks([GalleryProvider])
+@GenerateMocks([GalleryRepository])
 void main() {
   late gallery.Image image;
-  final mockGalleryProvider = MockGalleryProvider();
+  late MockGalleryRepository mockGalleryRepository;
 
   setUp(() {
     image = getTestImages()[0];
+    mockGalleryRepository = MockGalleryRepository();
+    when(mockGalleryRepository.fetchAll()).thenAnswer((_) async => []);
+    when(mockGalleryRepository.editImage(any, any)).thenAnswer((_) async => null);
   });
 
   Widget createScreen({useImage = true, locale = 'en'}) {
-    return ChangeNotifierProvider<GalleryProvider>(
-      create: (context) => mockGalleryProvider,
+    return ProviderScope(
+      overrides: [
+        galleryRepositoryProvider.overrideWithValue(mockGalleryRepository),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -69,8 +74,8 @@ void main() {
     await tester.pump();
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockGalleryProvider.addImage(any, any));
-    verify(mockGalleryProvider.editImage(any, any));
+    verifyNever(mockGalleryRepository.addImage(any, any));
+    verify(mockGalleryRepository.editImage(any, any));
   });
 
   testWidgets('Test opening the form for a new image', (WidgetTester tester) async {

@@ -19,15 +19,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/gallery_notifier.dart';
 
-class ImageForm extends StatefulWidget {
+class ImageForm extends ConsumerStatefulWidget {
   late final gallery.Image _image;
 
   ImageForm([gallery.Image? image]) {
@@ -35,10 +35,10 @@ class ImageForm extends StatefulWidget {
   }
 
   @override
-  _ImageFormState createState() => _ImageFormState();
+  ConsumerState<ImageForm> createState() => _ImageFormState();
 }
 
-class _ImageFormState extends State<ImageForm> {
+class _ImageFormState extends ConsumerState<ImageForm> {
   final _form = GlobalKey<FormState>();
 
   XFile? _file;
@@ -202,19 +202,13 @@ class _ImageFormState extends State<ImageForm> {
               }
               _form.currentState!.save();
 
+              final notifier = ref.read(galleryProvider.notifier);
               if (widget._image.id == null) {
-                Provider.of<GalleryProvider>(
-                  context,
-                  listen: false,
-                ).addImage(widget._image, _file!);
-                Navigator.of(context).pop();
+                notifier.addImage(widget._image, _file!);
               } else {
-                Provider.of<GalleryProvider>(
-                  context,
-                  listen: false,
-                ).editImage(widget._image, _file);
-                Navigator.of(context).pop();
+                notifier.editImage(widget._image, _file);
               }
+              Navigator.of(context).pop();
             },
           ),
         ],
