@@ -38,64 +38,47 @@ class SessionPage extends ConsumerStatefulWidget {
 }
 
 class _SessionPageState extends ConsumerState<SessionPage> {
-  late Future<void> _initData;
-  List<WorkoutSession> sessions = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _initData = _reloadRoutineData();
-  }
-
-  Future<void> _reloadRoutineData() async {
-    sessions = await ref.read(workoutSessionProvider.future);
-  }
-
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final gymState = ref.read(gymStateProvider);
+    final sessionsAsync = ref.watch(workoutSessionProvider);
 
     return Column(
       children: [
         NavigationHeader(i18n.workoutSession, widget._controller),
         Expanded(
-          child: FutureBuilder<void>(
-            future: _initData,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else {
-                final session = sessions.firstWhere(
-                  (s) => s.date.isSameDayAs(clock.now()) && s.routineId == gymState.routine.id,
-                  orElse: () => WorkoutSession(
-                    dayId: gymState.dayId,
-                    date: clock.now(),
-                    routineId: gymState.routine.id,
-                    timeStart: gymState.startTime,
-                    timeEnd: TimeOfDay.fromDateTime(clock.now()),
-                  ),
-                );
+          child: sessionsAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, _) => Center(child: Text('Error: $error')),
+            data: (sessions) {
+              final session = sessions.firstWhere(
+                (s) => s.date.isSameDayAs(clock.now()) && s.routineId == gymState.routine.id,
+                orElse: () => WorkoutSession(
+                  dayId: gymState.dayId,
+                  date: clock.now(),
+                  routineId: gymState.routine.id,
+                  timeStart: gymState.startTime,
+                  timeEnd: TimeOfDay.fromDateTime(clock.now()),
+                ),
+              );
 
-                return Column(
-                  children: [
-                    Expanded(child: Container()),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: SessionForm(
-                        gymState.routine.id!,
-                        onSaved: () => widget._controller.nextPage(
-                          duration: DEFAULT_ANIMATION_DURATION,
-                          curve: DEFAULT_ANIMATION_CURVE,
-                        ),
-                        session: session,
+              return Column(
+                children: [
+                  Expanded(child: Container()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: SessionForm(
+                      gymState.routine.id!,
+                      onSaved: () => widget._controller.nextPage(
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
                       ),
+                      session: session,
                     ),
-                  ],
-                );
-              }
+                  ),
+                ],
+              );
             },
           ),
         ),

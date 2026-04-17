@@ -98,7 +98,6 @@ class WorkoutSessionTable extends Table {
 const PowersyncWorkoutSessionTable = ps.Table(
   'manager_workoutsession',
   [
-    ps.Column.text('id'),
     ps.Column.integer('routine_id'),
     ps.Column.integer('day_id'),
     ps.Column.text('date'),

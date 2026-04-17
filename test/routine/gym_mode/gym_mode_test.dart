@@ -20,12 +20,17 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
@@ -40,6 +45,20 @@ import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 import '../../../test_data/exercises.dart';
 import '../../../test_data/routines.dart';
+import 'gym_mode_test.mocks.dart';
+
+@GenerateMocks([WorkoutSessionRepository])
+class _FakeRoutinesRiverpod extends RoutinesRiverpod {
+  _FakeRoutinesRiverpod(this._routine);
+
+  final Routine _routine;
+
+  @override
+  RoutinesState build() => RoutinesState(routines: [_routine]);
+
+  @override
+  Future<Routine> fetchAndSetRoutineFull(int routineId) async => _routine;
+}
 
 void main() {
   final key = GlobalKey<NavigatorState>();
@@ -47,15 +66,23 @@ void main() {
   final testRoutine = getTestRoutine();
   final testExercises = getTestExercises();
 
+  final mockSessionRepo = MockWorkoutSessionRepository();
+
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    when(mockSessionRepo.watchAllDrift()).thenAnswer(
+      (_) => Stream<List<WorkoutSession>>.multi((controller) {
+        controller.add(testRoutine.sessions);
+      }),
+    );
   });
 
   Widget renderGymMode({locale = 'en'}) {
     return riverpod.ProviderScope(
       overrides: [
-        routinesRiverpodProvider.overrideWithValue(RoutinesState(routines: [testRoutine])),
+        routinesRiverpodProvider.overrideWith(() => _FakeRoutinesRiverpod(testRoutine)),
         exercisesProvider.overrideWith((ref) => Stream<List<Exercise>>.value(<Exercise>[])),
+        workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
       ],
       child: MaterialApp(
         locale: Locale(locale),

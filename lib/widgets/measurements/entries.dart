@@ -46,7 +46,7 @@ class EntriesList extends ConsumerWidget {
         .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
-    final datetimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode).add_Hm();
+    final datetimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
 
     return Column(
       children: [

@@ -65,17 +65,14 @@ void main() {
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
         workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepository),
+        trophyRepositoryProvider.overrideWithValue(mockRepository),
       ],
     );
 
     container.read(routinesRiverpodProvider.notifier).state = RoutinesState(routines: [routine]);
 
-    return ProviderScope(
-      overrides: [
-        networkStatusProvider.overrideWithValue(isOnline),
-        workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepository),
-        trophyRepositoryProvider.overrideWithValue(mockRepository),
-      ],
+    return UncontrolledProviderScope(
+      container: container,
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -32,7 +32,7 @@ final class IngredientNotifierProvider extends $AsyncNotifierProvider<Ingredient
   IngredientNotifier create() => IngredientNotifier();
 }
 
-String _$ingredientNotifierHash() => r'85cc77d8bdda350aecf85f6c3f20aaa391c13f0b';
+String _$ingredientNotifierHash() => r'746f1f3b19d2df68724a60e51bba69b67121f801';
 
 abstract class _$IngredientNotifier extends $AsyncNotifier<void> {
   FutureOr<void> build();

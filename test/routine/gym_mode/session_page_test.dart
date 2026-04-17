@@ -43,6 +43,11 @@ void main() {
   setUp(() {
     testRoutine = getTestRoutine();
     mockRepository = MockWorkoutSessionRepository();
+    when(mockRepository.watchAllDrift()).thenAnswer(
+      (_) => Stream<List<WorkoutSession>>.multi((controller) {
+        controller.add(testRoutine.sessions);
+      }),
+    );
 
     container = ProviderContainer.test(
       overrides: [
@@ -55,7 +60,7 @@ void main() {
       showTimerPages: true,
       dayId: 1,
       iteration: 1,
-      routine: getTestRoutine(),
+      routine: testRoutine,
     );
     notifier.calculatePages();
     when(mockRepository.editLocalDrift(any)).thenAnswer(

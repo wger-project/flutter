@@ -33,7 +33,7 @@ final class WeightEntryNotifierProvider
   WeightEntryNotifier create() => WeightEntryNotifier();
 }
 
-String _$weightEntryNotifierHash() => r'd7ebd22ba0ee1f4aa4b27367f921e4e4c6c7c619';
+String _$weightEntryNotifierHash() => r'c5cc65c04a047dc44bc02ae33ea45e76cd81894a';
 
 abstract class _$WeightEntryNotifier extends $StreamNotifier<List<WeightEntry>> {
   Stream<List<WeightEntry>> build();

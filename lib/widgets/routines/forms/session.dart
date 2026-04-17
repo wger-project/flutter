@@ -32,11 +32,13 @@ class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');
   final WorkoutSession _session;
   final Function()? _onSaved;
+  final bool _isNew;
 
   static const SLIDER_START = -0.5;
 
   SessionForm(int routineId, {Function()? onSaved, WorkoutSession? session, int? dayId})
     : _onSaved = onSaved,
+      _isNew = session == null,
       _session =
           session ??
           WorkoutSession(
@@ -250,7 +252,7 @@ class _SessionFormState extends ConsumerState<SessionForm> {
 
               // Save the entry on the server
               try {
-                if (widget._session.id == null) {
+                if (widget._isNew) {
                   widget._logger.fine('Adding new session');
                   await sessionProvider.addEntry(widget._session);
                 } else {

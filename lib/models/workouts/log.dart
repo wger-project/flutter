@@ -157,7 +157,7 @@ class Log {
       out.weightUnitObj = weightUnitObj;
       out.weightUnitId = weightUnitObj.id;
     }
-    // out.exercise = exercise;
+    out.exerciseObj = exerciseObj;
 
     return out;
   }
