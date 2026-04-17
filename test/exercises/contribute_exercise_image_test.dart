@@ -1,41 +1,60 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
-import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
+import 'package:wger/providers/add_exercise_repository.dart';
 
 import 'contribute_exercise_image_test.mocks.dart';
 
-/// Unit tests for AddExerciseProvider image metadata handling
+/// Unit tests for the exercise-contribution image metadata handling
 ///
 /// Tests the functionality added for issue #931 - storing and managing
 /// CC BY-SA 4.0 license metadata alongside exercise images.
-///
-/// Key areas tested:
-/// - Adding images with complete/partial/no metadata
-/// - Edge cases (empty lists, duplicates, special characters)
-/// - State management (clear, remove)
-/// - Image ordering and batch operations
-
-@GenerateMocks([AddExerciseProvider, WgerBaseProvider])
+@GenerateMocks([AddExerciseRepository])
 void main() {
-  late MockWgerBaseProvider mockBaseProvider;
-  late AddExerciseProvider provider;
+  late ProviderContainer container;
+
+  AddExerciseNotifier notifier() => container.read(addExerciseProvider.notifier);
+  List<ExerciseSubmissionImage> images() => container.read(addExerciseProvider).exerciseImages;
 
   setUp(() {
-    mockBaseProvider = MockWgerBaseProvider();
-    provider = AddExerciseProvider(mockBaseProvider);
+    container = ProviderContainer(
+      overrides: [
+        addExerciseRepositoryProvider.overrideWithValue(MockAddExerciseRepository()),
+      ],
+    );
+  });
+
+  tearDown(() {
+    container.dispose();
   });
 
   group('Image metadata handling', () {
-    /// Verify that all CC BY-SA license fields are stored correctly
-    /// Tests: title, author, authorUrl, sourceUrl, derivativeSourceUrl, style
     test('should store image with all license fields', () {
       final mockFile = File('test.jpg');
 
-      provider.addExerciseImages([
+      notifier().addExerciseImages([
         ExerciseSubmissionImage(
           imageFile: mockFile,
           title: 'Test Title',
@@ -47,111 +66,99 @@ void main() {
         ),
       ]);
 
-      expect(provider.exerciseImages.length, 1);
-      expect(provider.exerciseImages.first.imageFile.path, mockFile.path);
+      expect(images().length, 1);
+      expect(images().first.imageFile.path, mockFile.path);
     });
 
-    /// License fields are optional - provider should handle null/empty values
-    /// Only non-empty fields should be included in the metadata map
     test('should handle empty fields gracefully', () {
       final mockFile = File('test2.jpg');
 
-      provider.addExerciseImages([
+      notifier().addExerciseImages([
         ExerciseSubmissionImage(imageFile: mockFile, title: 'Only Title', type: ImageType.threeD),
       ]);
 
-      expect(provider.exerciseImages.length, 1);
+      expect(images().length, 1);
     });
 
-    /// Each image can have different metadata - test storing multiple
-    /// images with unique license information
     test('should handle multiple images with different metadata', () {
       final file1 = File('image1.jpg');
       final file2 = File('image2.jpg');
 
-      provider.addExerciseImages([ExerciseSubmissionImage(imageFile: file1, author: 'Author 1')]);
-      provider.addExerciseImages([ExerciseSubmissionImage(imageFile: file2, author: 'Author 1')]);
+      notifier().addExerciseImages([ExerciseSubmissionImage(imageFile: file1, author: 'Author 1')]);
+      notifier().addExerciseImages([ExerciseSubmissionImage(imageFile: file2, author: 'Author 1')]);
 
-      expect(provider.exerciseImages.length, 2);
-      expect(provider.exerciseImages[0].imageFile.path, file1.path);
-      expect(provider.exerciseImages[1].imageFile.path, file2.path);
+      expect(images().length, 2);
+      expect(images()[0].imageFile.path, file1.path);
+      expect(images()[1].imageFile.path, file2.path);
     });
 
-    /// Edge case: calling addExerciseImages with empty list should not crash
     test('should handle empty image list', () {
-      provider.addExerciseImages([]);
+      notifier().addExerciseImages([]);
 
-      expect(provider.exerciseImages.length, 0);
+      expect(images().length, 0);
     });
 
-    /// Removing an image should also remove its associated metadata
-    /// to prevent memory leaks
     test('should remove image and its metadata', () {
       final mockFile = File('to_remove.jpg');
-      provider.addExerciseImages([ExerciseSubmissionImage(imageFile: mockFile)]);
+      notifier().addExerciseImages([ExerciseSubmissionImage(imageFile: mockFile)]);
 
-      expect(provider.exerciseImages.length, 1);
+      expect(images().length, 1);
 
-      provider.removeImage(mockFile.path);
+      notifier().removeImage(mockFile.path);
 
-      expect(provider.exerciseImages.length, 0);
+      expect(images().length, 0);
     });
 
-    /// Attempting to remove a non-existent image should throw StateError
-    /// (from firstWhere with no orElse)
-    test('should handle removing non-existent image gracefully', () {
-      expect(() => provider.removeImage('nonexistent.jpg'), throwsStateError);
+    test('should ignore removing non-existent image', () {
+      // Removing a path that doesn't exist should be a no-op (different from
+      // the old ChangeNotifier which threw StateError). The filter-based
+      // implementation is forgiving.
+      notifier().removeImage('nonexistent.jpg');
+      expect(images().length, 0);
     });
 
-    /// clear() should reset all state including images and metadata
     test('should clear all images and metadata', () {
-      provider.addExerciseImages([
+      notifier().addExerciseImages([
         ExerciseSubmissionImage(imageFile: File('image1.jpg'), title: 'Image 1'),
         ExerciseSubmissionImage(imageFile: File('image2.jpg'), title: 'Image 2'),
       ]);
 
-      expect(provider.exerciseImages.length, 2);
+      expect(images().length, 2);
 
-      provider.clear();
+      notifier().clear();
 
-      expect(provider.exerciseImages.length, 0);
+      expect(images().length, 0);
     });
 
-    /// Clearing an already empty list should not cause errors
     test('should handle clearing empty list', () {
-      expect(provider.exerciseImages.length, 0);
-
-      provider.clear();
-
-      expect(provider.exerciseImages.length, 0);
+      expect(images().length, 0);
+      notifier().clear();
+      expect(images().length, 0);
     });
 
-    /// Removing one image from a set should not affect others
     test('should allow removing specific image from multiple images', () {
       final file1 = File('keep1.jpg');
       final file2 = File('remove.jpg');
       final file3 = File('keep2.jpg');
 
-      provider.addExerciseImages([ExerciseSubmissionImage(imageFile: file1)]);
-      provider.addExerciseImages([ExerciseSubmissionImage(imageFile: file2)]);
-      provider.addExerciseImages([ExerciseSubmissionImage(imageFile: file3)]);
+      notifier().addExerciseImages([ExerciseSubmissionImage(imageFile: file1)]);
+      notifier().addExerciseImages([ExerciseSubmissionImage(imageFile: file2)]);
+      notifier().addExerciseImages([ExerciseSubmissionImage(imageFile: file3)]);
 
-      expect(provider.exerciseImages.length, 3);
+      expect(images().length, 3);
 
-      provider.removeImage(file2.path);
+      notifier().removeImage(file2.path);
 
-      expect(provider.exerciseImages.length, 2);
-      expect(provider.exerciseImages[0].imageFile.path, file1.path);
-      expect(provider.exerciseImages[1].imageFile.path, file3.path);
+      expect(images().length, 2);
+      expect(images()[0].imageFile.path, file1.path);
+      expect(images()[1].imageFile.path, file3.path);
     });
 
-    /// Test with extremely long strings (1000 chars) to ensure no
-    /// buffer overflow or validation issues
     test('should handle very long metadata strings', () {
       final mockFile = File('long.jpg');
       final longString = 'a' * 1000;
 
-      provider.addExerciseImages([
+      notifier().addExerciseImages([
         ExerciseSubmissionImage(
           imageFile: mockFile,
           title: longString,
@@ -160,15 +167,13 @@ void main() {
         ),
       ]);
 
-      expect(provider.exerciseImages.length, 1);
+      expect(images().length, 1);
     });
 
-    /// Unicode characters, emojis, and URL-encoded strings should all work
-    /// Tests international character support
     test('should handle special characters in metadata', () {
       final mockFile = File('special.jpg');
 
-      provider.addExerciseImages([
+      notifier().addExerciseImages([
         ExerciseSubmissionImage(
           imageFile: mockFile,
           title: 'Title with émojis 🎉 and spëcial çhars',
@@ -177,23 +182,22 @@ void main() {
         ),
       ]);
 
-      expect(provider.exerciseImages.length, 1);
+      expect(images().length, 1);
     });
   });
 
   group('State management', () {
-    /// clear() should reset ALL provider state, not just images
-    /// Ensures no data leaks between exercises
     test('should reset all state after clear', () {
-      provider.exerciseNameEn = 'Test Exercise';
-      provider.descriptionEn = 'Description';
-      provider.addExerciseImages([ExerciseSubmissionImage(imageFile: File('test.jpg'))]);
+      notifier().setExerciseNameEn('Test Exercise');
+      notifier().setDescriptionEn('Description');
+      notifier().addExerciseImages([ExerciseSubmissionImage(imageFile: File('test.jpg'))]);
 
-      provider.clear();
+      notifier().clear();
 
-      expect(provider.exerciseImages.length, 0);
-      expect(provider.exerciseNameEn, isNull);
-      expect(provider.descriptionEn, isNull);
+      final state = container.read(addExerciseProvider);
+      expect(state.exerciseImages.length, 0);
+      expect(state.exerciseNameEn, isNull);
+      expect(state.descriptionEn, isNull);
     });
   });
 }

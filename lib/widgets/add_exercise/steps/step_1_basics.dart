@@ -17,8 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/exercises/validators.dart';
 import 'package:wger/helpers/i18n.dart';
@@ -27,7 +26,7 @@ import 'package:wger/models/core/language.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/providers/add_exercise.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
 import 'package:wger/providers/core_data.dart';
 import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
@@ -42,7 +41,7 @@ class Step1Basics extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final addExerciseProvider = context.read<AddExerciseProvider>();
+    final notifier = ref.read(addExerciseProvider.notifier);
 
     final languagesAsync = ref.watch(languagesProvider);
     final categoriesAsync = ref.watch(exerciseCategoriesProvider);
@@ -56,108 +55,116 @@ class Step1Basics extends ConsumerWidget {
 
     // Doing it like this because the languages list is empty before the stream loads
     final matched = languages.where((l) => l.shortName == LANGUAGE_SHORT_ENGLISH);
-    addExerciseProvider.languageEn = matched.isNotEmpty ? matched.first : null;
+    final newLanguageEn = matched.isNotEmpty ? matched.first : null;
+    if (ref.read(addExerciseProvider).languageEn != newLanguageEn) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifier.setLanguageEn(newLanguageEn);
+      });
+    }
 
     return Form(
       key: formkey,
-      child: Consumer<AddExerciseProvider>(
-        builder: (context, provider, child) => Column(
-          children: [
-            AddExerciseTextArea(
-              initialValue: addExerciseProvider.exerciseNameEn ?? '',
-              title: '${AppLocalizations.of(context).name}*',
-              helperText: AppLocalizations.of(context).baseNameEnglish,
-              validator: (name) => validateName(name, context),
-              onChange: (value) => addExerciseProvider.exerciseNameEn = value,
-              onSaved: (String? name) => addExerciseProvider.exerciseNameEn = name,
-            ),
-            AddExerciseTextArea(
-              title: AppLocalizations.of(context).alternativeNames,
-              isMultiline: true,
-              initialValue: addExerciseProvider.alternateNamesEn.join('\n'),
-              helperText: AppLocalizations.of(context).oneNamePerLine,
-              onChange: (value) => addExerciseProvider.alternateNamesEn = value.split('\n'),
-              onSaved: (String? alternateName) =>
-                  addExerciseProvider.alternateNamesEn = alternateName!.split('\n'),
-            ),
-            AddExerciseTextArea(
-              title: '${AppLocalizations.of(context).author}*',
-              isMultiline: false,
-              validator: (name) => validateAuthorName(name, context),
-              initialValue: addExerciseProvider.author,
-              onChange: (v) => addExerciseProvider.author = v,
-              onSaved: (String? author) => addExerciseProvider.author = author!,
-            ),
-            ExerciseCategoryInputWidget<ExerciseCategory>(
-              key: const Key('category-dropdown'),
-              entries: categories,
-              title: '${AppLocalizations.of(context).category}*',
-              callback: (ExerciseCategory newValue) {
-                addExerciseProvider.category = newValue;
-              },
-              validator: (ExerciseCategory? category) {
-                if (category == null) {
-                  return AppLocalizations.of(context).selectEntry;
-                }
-              },
-              displayName: (ExerciseCategory c) => getServerStringTranslation(c.name, context),
-            ),
-            AddExerciseMultiselectButton<Equipment>(
-              key: const Key('equipment-multiselect'),
-              title: AppLocalizations.of(context).equipment,
-              items: equipment,
-              initialItems: addExerciseProvider.equipment,
-              onChange: (dynamic entries) {
-                addExerciseProvider.equipment = entries.cast<Equipment>();
-              },
-              onSaved: (dynamic entries) {
-                addExerciseProvider.equipment = entries.cast<Equipment>();
-              },
-              displayName: (Equipment e) => getServerStringTranslation(e.name, context),
-            ),
-            AddExerciseMultiselectButton<Muscle>(
-              key: const Key('primary-muscles-multiselect'),
-              title: AppLocalizations.of(context).muscles,
-              items: muscles,
-              initialItems: addExerciseProvider.primaryMuscles,
-              onChange: (dynamic muscles) {
-                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-              },
-              onSaved: (dynamic muscles) {
-                addExerciseProvider.primaryMuscles = muscles.cast<Muscle>();
-              },
-              displayName: (Muscle e) =>
-                  e.name +
-                  (e.nameEn.isNotEmpty
-                      ? '\n(${getServerStringTranslation(e.nameEn, context)})'
-                      : ''),
-            ),
-            AddExerciseMultiselectButton<Muscle>(
-              key: const Key('secondary-muscles-multiselect'),
-              title: AppLocalizations.of(context).musclesSecondary,
-              items: muscles,
-              initialItems: addExerciseProvider.secondaryMuscles,
-              onChange: (dynamic muscles) {
-                addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
-              },
-              onSaved: (dynamic muscles) {
-                addExerciseProvider.secondaryMuscles = muscles.cast<Muscle>();
-              },
-              displayName: (Muscle e) =>
-                  e.name +
-                  (e.nameEn.isNotEmpty
-                      ? '\n(${getServerStringTranslation(e.nameEn, context)})'
-                      : ''),
-            ),
-            MuscleRowWidget(
-              muscles: provider.primaryMuscles,
-              musclesSecondary: provider.secondaryMuscles,
-            ),
-            const MuscleColorHelper(main: true),
-            const SizedBox(height: 5),
-            const MuscleColorHelper(main: false),
-          ],
-        ),
+      child: Consumer(
+        builder: (context, ref, child) {
+          final state = ref.watch(addExerciseProvider);
+          return Column(
+            children: [
+              AddExerciseTextArea(
+                initialValue: state.exerciseNameEn ?? '',
+                title: '${AppLocalizations.of(context).name}*',
+                helperText: AppLocalizations.of(context).baseNameEnglish,
+                validator: (name) => validateName(name, context),
+                onChange: (value) => notifier.setExerciseNameEn(value),
+                onSaved: (String? name) => notifier.setExerciseNameEn(name),
+              ),
+              AddExerciseTextArea(
+                title: AppLocalizations.of(context).alternativeNames,
+                isMultiline: true,
+                initialValue: state.alternateNamesEn.join('\n'),
+                helperText: AppLocalizations.of(context).oneNamePerLine,
+                onChange: (value) => notifier.setAlternateNamesEn(value.split('\n')),
+                onSaved: (String? alternateName) =>
+                    notifier.setAlternateNamesEn(alternateName!.split('\n')),
+              ),
+              AddExerciseTextArea(
+                title: '${AppLocalizations.of(context).author}*',
+                isMultiline: false,
+                validator: (name) => validateAuthorName(name, context),
+                initialValue: state.author,
+                onChange: (v) => notifier.setAuthor(v),
+                onSaved: (String? author) => notifier.setAuthor(author!),
+              ),
+              ExerciseCategoryInputWidget<ExerciseCategory>(
+                key: const Key('category-dropdown'),
+                entries: categories,
+                title: '${AppLocalizations.of(context).category}*',
+                callback: (ExerciseCategory newValue) {
+                  notifier.setCategory(newValue);
+                },
+                validator: (ExerciseCategory? category) {
+                  if (category == null) {
+                    return AppLocalizations.of(context).selectEntry;
+                  }
+                },
+                displayName: (ExerciseCategory c) => getServerStringTranslation(c.name, context),
+              ),
+              AddExerciseMultiselectButton<Equipment>(
+                key: const Key('equipment-multiselect'),
+                title: AppLocalizations.of(context).equipment,
+                items: equipment,
+                initialItems: state.equipment,
+                onChange: (dynamic entries) {
+                  notifier.setEquipment(entries.cast<Equipment>());
+                },
+                onSaved: (dynamic entries) {
+                  notifier.setEquipment(entries.cast<Equipment>());
+                },
+                displayName: (Equipment e) => getServerStringTranslation(e.name, context),
+              ),
+              AddExerciseMultiselectButton<Muscle>(
+                key: const Key('primary-muscles-multiselect'),
+                title: AppLocalizations.of(context).muscles,
+                items: muscles,
+                initialItems: state.primaryMuscles,
+                onChange: (dynamic muscles) {
+                  notifier.setPrimaryMuscles(muscles.cast<Muscle>());
+                },
+                onSaved: (dynamic muscles) {
+                  notifier.setPrimaryMuscles(muscles.cast<Muscle>());
+                },
+                displayName: (Muscle e) =>
+                    e.name +
+                    (e.nameEn.isNotEmpty
+                        ? '\n(${getServerStringTranslation(e.nameEn, context)})'
+                        : ''),
+              ),
+              AddExerciseMultiselectButton<Muscle>(
+                key: const Key('secondary-muscles-multiselect'),
+                title: AppLocalizations.of(context).musclesSecondary,
+                items: muscles,
+                initialItems: state.secondaryMuscles,
+                onChange: (dynamic muscles) {
+                  notifier.setSecondaryMuscles(muscles.cast<Muscle>());
+                },
+                onSaved: (dynamic muscles) {
+                  notifier.setSecondaryMuscles(muscles.cast<Muscle>());
+                },
+                displayName: (Muscle e) =>
+                    e.name +
+                    (e.nameEn.isNotEmpty
+                        ? '\n(${getServerStringTranslation(e.nameEn, context)})'
+                        : ''),
+              ),
+              MuscleRowWidget(
+                muscles: state.primaryMuscles,
+                musclesSecondary: state.secondaryMuscles,
+              ),
+              const MuscleColorHelper(main: true),
+              const SizedBox(height: 5),
+              const MuscleColorHelper(main: false),
+            ],
+          );
+        },
       ),
     );
   }

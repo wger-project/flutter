@@ -1,16 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
-import 'package:wger/providers/add_exercise.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
 
 /// Widget to preview selected exercise images
 ///
 /// Displays images in a horizontal scrollable list with thumbnails.
 /// Each image shows a preview thumbnail and optionally a delete button.
 /// Can optionally include an "add more" button at the end of the list.
-class PreviewExerciseImages extends StatelessWidget {
+class PreviewExerciseImages extends ConsumerWidget {
   final List<ExerciseSubmissionImage> selectedImages;
   final VoidCallback? onAddMore;
   final bool allowEdit;
@@ -23,7 +23,7 @@ class PreviewExerciseImages extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Calculate item count: images + optional "add more" button
     final itemCount = selectedImages.length + (allowEdit && onAddMore != null ? 1 : 0);
 
@@ -40,13 +40,13 @@ class PreviewExerciseImages extends StatelessWidget {
 
           // Show image thumbnail
           final image = selectedImages[index];
-          return _buildImageCard(context, image.imageFile);
+          return _buildImageCard(context, ref, image.imageFile);
         },
       ),
     );
   }
 
-  Widget _buildImageCard(BuildContext context, File image) {
+  Widget _buildImageCard(BuildContext context, WidgetRef ref, File image) {
     return Container(
       width: 120,
       margin: const EdgeInsets.only(right: 8),
@@ -72,7 +72,7 @@ class PreviewExerciseImages extends StatelessWidget {
                   padding: const EdgeInsets.all(4),
                 ),
                 onPressed: () {
-                  context.read<AddExerciseProvider>().removeImage(image.path);
+                  ref.read(addExerciseProvider.notifier).removeImage(image.path);
                 },
               ),
             ),

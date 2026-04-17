@@ -18,19 +18,15 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer, Provider;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/app_settings_notifier.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/auth_screen.dart';
 import 'package:wger/screens/dashboard.dart';
@@ -161,59 +157,50 @@ class MainApp extends ConsumerWidget {
         home: Scaffold(body: Center(child: Text('$error'))),
       ),
       data: (authState) {
-        final base = ref.watch(wgerBaseProvider);
         final themeMode = ref.watch(
           appSettingsProvider.select((s) => s.value?.themeMode ?? ThemeMode.system),
         );
 
-        return MultiProvider(
-          providers: [
-            Provider<WgerBaseProvider>.value(value: base),
-            ChangeNotifierProvider<AddExerciseProvider>(
-              create: (_) => AddExerciseProvider(base),
-            ),
-          ],
-          child: MaterialApp(
-            title: 'wger',
-            navigatorKey: navigatorKey,
-            theme: wgerLightTheme,
-            darkTheme: wgerDarkTheme,
-            highContrastTheme: wgerLightThemeHc,
-            highContrastDarkTheme: wgerDarkThemeHc,
-            themeMode: themeMode,
-            home: _getHomeScreen(authState),
-            routes: {
-              DashboardScreen.routeName: (ctx) => const DashboardScreen(),
-              FormScreen.routeName: (ctx) => const FormScreen(),
-              GalleryScreen.routeName: (ctx) => const GalleryScreen(),
-              GymModeScreen.routeName: (ctx) => const GymModeScreen(),
-              HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
-              MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
-              MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
-              NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
-              NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
-              NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-              LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
-              LogMealScreen.routeName: (ctx) => const LogMealScreen(),
-              WeightScreen.routeName: (ctx) => const WeightScreen(),
-              RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-              RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
-              WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
-              RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
-              ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
-              ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
-              AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
-              AboutPage.routeName: (ctx) => const AboutPage(),
-              SettingsPage.routeName: (ctx) => const SettingsPage(),
-              LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
-              ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
-              ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
-                  const ConfigureDashboardWidgetsScreen(),
-              TrophyScreen.routeName: (ctx) => const TrophyScreen(),
-            },
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-          ),
+        return MaterialApp(
+          title: 'wger',
+          navigatorKey: navigatorKey,
+          theme: wgerLightTheme,
+          darkTheme: wgerDarkTheme,
+          highContrastTheme: wgerLightThemeHc,
+          highContrastDarkTheme: wgerDarkThemeHc,
+          themeMode: themeMode,
+          home: _getHomeScreen(authState),
+          routes: {
+            DashboardScreen.routeName: (ctx) => const DashboardScreen(),
+            FormScreen.routeName: (ctx) => const FormScreen(),
+            GalleryScreen.routeName: (ctx) => const GalleryScreen(),
+            GymModeScreen.routeName: (ctx) => const GymModeScreen(),
+            HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
+            MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
+            MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
+            NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
+            NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
+            NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+            LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
+            LogMealScreen.routeName: (ctx) => const LogMealScreen(),
+            WeightScreen.routeName: (ctx) => const WeightScreen(),
+            RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+            RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
+            WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
+            RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
+            ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
+            ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
+            AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
+            AboutPage.routeName: (ctx) => const AboutPage(),
+            SettingsPage.routeName: (ctx) => const SettingsPage(),
+            LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
+            ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
+            ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
+                const ConfigureDashboardWidgetsScreen(),
+            TrophyScreen.routeName: (ctx) => const TrophyScreen(),
+          },
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
         );
       },
     );

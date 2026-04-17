@@ -18,14 +18,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/providers/add_exercise.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/exercise_screen.dart';
@@ -102,11 +101,11 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
                           _isLoading = true;
                           errorWidget = const SizedBox.shrink();
                         });
-                        final addExerciseProvider = context.read<AddExerciseProvider>();
+                        final addExerciseNotifier = ref.read(addExerciseProvider.notifier);
 
                         Exercise? exercise;
                         try {
-                          final exerciseId = await addExerciseProvider.postExerciseToServer();
+                          final exerciseId = await addExerciseNotifier.postExerciseToServer();
                           exercise = ref.read(exerciseStateProvider.notifier).getById(exerciseId);
                         } on WgerHttpException catch (error) {
                           if (context.mounted) {

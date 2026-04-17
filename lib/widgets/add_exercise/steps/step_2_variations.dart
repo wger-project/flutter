@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' as provider;
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/add_exercise.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
 
 class Step2Variations extends ConsumerWidget {
@@ -50,11 +49,16 @@ class Step2Variations extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        provider.Consumer<AddExerciseProvider>(
-                          builder: (ctx, provider, __) => Switch(
-                            value: provider.variationGroup == key,
-                            onChanged: (state) => provider.variationGroup = state ? key : null,
-                          ),
+                        Consumer(
+                          builder: (ctx, ref, __) {
+                            final state = ref.watch(addExerciseProvider);
+                            return Switch(
+                              value: state.variationGroup == key,
+                              onChanged: (newState) => ref
+                                  .read(addExerciseProvider.notifier)
+                                  .setVariationGroup(newState ? key : null),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -83,11 +87,16 @@ class Step2Variations extends ConsumerWidget {
                                 ],
                               ),
                             ),
-                            provider.Consumer<AddExerciseProvider>(
-                              builder: (ctx, provider, __) => Switch(
-                                value: provider.variationConnectToExercise == base.id,
-                                onChanged: (state) => provider.variationConnectToExercise = base.id,
-                              ),
+                            Consumer(
+                              builder: (ctx, ref, __) {
+                                final state = ref.watch(addExerciseProvider);
+                                return Switch(
+                                  value: state.variationConnectToExercise == base.id,
+                                  onChanged: (_) => ref
+                                      .read(addExerciseProvider.notifier)
+                                      .setVariationConnectToExercise(base.id),
+                                );
+                              },
                             ),
                           ],
                         ),
