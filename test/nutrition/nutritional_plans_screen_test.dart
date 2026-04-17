@@ -31,21 +31,32 @@ import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
 import 'nutritional_plans_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider, http.Client, BodyWeightRepository])
+@GenerateMocks([WgerBaseProvider, http.Client, BodyWeightRepository, UserProfileRepository])
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
   final client = MockClient();
   late IngredientDatabase database;
+  late MockUserProfileRepository mockUserProfileRepository;
+
+  final testProfile = Profile(
+    username: 'test',
+    emailVerified: true,
+    isTrustworthy: true,
+    email: 'test@example.com',
+    weightUnitStr: 'kg',
+  );
 
   setUp(() {
     database = IngredientDatabase.inMemory(NativeDatabase.memory());
+    mockUserProfileRepository = MockUserProfileRepository();
+    when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => testProfile);
   });
 
   tearDown(() {
@@ -65,7 +76,10 @@ void main() {
     when(mockBaseProvider.serverUrl).thenReturn('http://localhost');
 
     return riverpod.ProviderScope(
-      overrides: [bodyWeightRepositoryProvider.overrideWithValue(MockBodyWeightRepository())],
+      overrides: [
+        bodyWeightRepositoryProvider.overrideWithValue(MockBodyWeightRepository()),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
+      ],
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider<NutritionPlansProvider>(
@@ -87,19 +101,6 @@ void main() {
               ],
               database: database,
             ),
-          ),
-          ChangeNotifierProvider<UserProvider>(
-            create: (context) =>
-                UserProvider(
-                    mockBaseProvider,
-                  )
-                  ..profile = Profile(
-                    username: 'test',
-                    emailVerified: true,
-                    isTrustworthy: true,
-                    email: 'test@example.com',
-                    weightUnitStr: 'kg',
-                  ),
           ),
         ],
         child: MaterialApp(

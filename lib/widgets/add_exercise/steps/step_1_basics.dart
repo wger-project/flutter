@@ -30,7 +30,6 @@ import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/core_data.dart';
 import 'package:wger/providers/exercise_data.dart';
-import 'package:wger/providers/user.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_multiselect_button.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
@@ -43,7 +42,6 @@ class Step1Basics extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userProvider = context.read<UserProvider>();
     final addExerciseProvider = context.read<AddExerciseProvider>();
 
     final languagesAsync = ref.watch(languagesProvider);

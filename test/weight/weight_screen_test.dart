@@ -25,7 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
@@ -35,19 +35,19 @@ import '../../test_data/body_weight.dart';
 import '../../test_data/profile.dart';
 import 'weight_screen_test.mocks.dart';
 
-@GenerateMocks([UserProvider, NutritionPlansProvider, BodyWeightRepository])
+@GenerateMocks([NutritionPlansProvider, BodyWeightRepository, UserProfileRepository])
 void main() {
-  late MockUserProvider mockUserProvider;
   late MockNutritionPlansProvider mockNutritionPlansProvider;
+  late MockUserProfileRepository mockUserProfileRepository;
   MockBodyWeightRepository mockBodyWeightRepository = MockBodyWeightRepository();
 
   setUp(() {
-    mockUserProvider = MockUserProvider();
-    when(mockUserProvider.profile).thenReturn(tProfile1);
-
     mockNutritionPlansProvider = MockNutritionPlansProvider();
     when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
     when(mockNutritionPlansProvider.items).thenReturn([]);
+
+    mockUserProfileRepository = MockUserProfileRepository();
+    when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => tProfile1);
 
     mockBodyWeightRepository = MockBodyWeightRepository();
     when(
@@ -62,14 +62,12 @@ void main() {
     return riverpod.ProviderScope(
       overrides: [
         bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
       ],
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider<NutritionPlansProvider>(
             create: (ctx) => mockNutritionPlansProvider,
-          ),
-          ChangeNotifierProvider<UserProvider>(
-            create: (context) => mockUserProvider,
           ),
         ],
         child: MaterialApp(

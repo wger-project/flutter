@@ -29,11 +29,10 @@ import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement_repository.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/exercises/contribute_exercise_test.mocks.dart';
 import '../test/gallery/gallery_form_test.mocks.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
 import '../test/nutrition/nutritional_plan_screen_test.mocks.dart';
@@ -76,8 +75,8 @@ Widget createDashboardScreen({Locale? locale}) {
     mockMeasurementRepo.watchAll(),
   ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
 
-  final mockUserProvider = MockUserProvider();
-  when(mockUserProvider.profile).thenReturn(tProfile1);
+  final mockUserProfileRepo = weight.MockUserProfileRepository();
+  when(mockUserProfileRepo.fetchProfile()).thenAnswer((_) async => tProfile1);
 
   final loggedInAuth = const AuthState(
     status: AuthStatus.loggedIn,
@@ -89,6 +88,7 @@ Widget createDashboardScreen({Locale? locale}) {
       bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
       authProvider.overrideWith(() => _FakeAuthNotifier(loggedInAuth)),
+      userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
     ],
   );
   container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
@@ -105,10 +105,6 @@ Widget createDashboardScreen({Locale? locale}) {
       container: container,
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider<UserProvider>(
-            create: (context) => mockUserProvider,
-          ),
-
           ChangeNotifierProvider<GalleryProvider>(
             create: (context) => mockGalleryProvider,
           ),

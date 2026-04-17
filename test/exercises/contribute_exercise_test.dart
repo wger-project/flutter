@@ -32,7 +32,7 @@ import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/core_data.dart';
 import 'package:wger/providers/exercise_data.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import '../../test_data/profile.dart';
@@ -46,16 +46,19 @@ import 'contribute_exercise_test.mocks.dart';
 /// - Provider integration and state management
 /// - Exercise submission flow (success and error handling)
 /// - Access control for verified and unverified users
-@GenerateMocks([AddExerciseProvider, UserProvider])
+@GenerateMocks([AddExerciseProvider, UserProfileRepository])
 void main() {
   final mockAddExerciseProvider = MockAddExerciseProvider();
-  final mockUserProvider = MockUserProvider();
+  late MockUserProfileRepository mockUserProfileRepository;
 
   setUp(() {
     when(mockAddExerciseProvider.equipment).thenReturn([]);
     when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.variationConnectToExercise).thenReturn(null);
+
+    mockUserProfileRepository = MockUserProfileRepository();
+    when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => tProfile1);
   });
 
   /// Creates a test widget tree with all necessary providers.
@@ -73,11 +76,11 @@ void main() {
         exerciseEquipmentProvider.overrideWith(
           (ref) => Stream<List<Equipment>>.value(<Equipment>[]),
         ),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
       ],
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider<AddExerciseProvider>(create: (context) => mockAddExerciseProvider),
-          ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
         ],
         child: MaterialApp(
           locale: Locale(locale),
@@ -92,7 +95,6 @@ void main() {
   /// Sets up a verified user profile (isTrustworthy = true).
   void setupVerifiedUser() {
     tProfile1.isTrustworthy = true;
-    when(mockUserProvider.profile).thenReturn(tProfile1);
   }
 
   /// Sets up AddExerciseProvider default values.
@@ -474,7 +476,6 @@ void main() {
     testWidgets('Unverified users cannot access exercise form', (WidgetTester tester) async {
       // Setup: Create unverified user (isTrustworthy = false)
       tProfile1.isTrustworthy = false;
-      when(mockUserProvider.profile).thenReturn(tProfile1);
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());
@@ -507,7 +508,6 @@ void main() {
     testWidgets('Email verification warning displays correct message', (WidgetTester tester) async {
       // Setup: Create unverified user
       tProfile1.isTrustworthy = false;
-      when(mockUserProvider.profile).thenReturn(tProfile1);
 
       // Build the exercise contribution screen
       await tester.pumpWidget(createExerciseScreen());

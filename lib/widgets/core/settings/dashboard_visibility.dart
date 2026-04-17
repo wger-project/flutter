@@ -17,15 +17,15 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/app_settings_notifier.dart';
 
-class SettingsDashboardVisibility extends StatelessWidget {
+class SettingsDashboardVisibility extends ConsumerWidget {
   const SettingsDashboardVisibility({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
 
     String getTitle(DashboardWidget w) {
@@ -47,36 +47,35 @@ class SettingsDashboardVisibility extends StatelessWidget {
       }
     }
 
-    return Consumer<UserProvider>(
-      builder: (context, user, _) {
-        return ReorderableListView(
-          physics: const NeverScrollableScrollPhysics(),
-          buildDefaultDragHandles: false,
-          onReorder: user.setDashboardOrder,
-          children: user.allDashboardWidgets.asMap().entries.map((entry) {
-            final index = entry.key;
-            final w = entry.value;
+    final items = ref.watch(
+      appSettingsProvider.select((s) => s.value?.dashboardItems ?? const <DashboardItem>[]),
+    );
+    final notifier = ref.read(appSettingsProvider.notifier);
 
-            return ListTile(
-              key: ValueKey(w),
-              title: Text(getTitle(w)),
-              leading: IconButton(
-                icon: user.isDashboardWidgetVisible(w)
-                    ? const Icon(Icons.visibility)
-                    : const Icon(Icons.visibility_off, color: Colors.grey),
-                onPressed: () => user.setDashboardWidgetVisible(
-                  w,
-                  !user.isDashboardWidgetVisible(w),
-                ),
-              ),
-              trailing: ReorderableDragStartListener(
-                index: index,
-                child: const Icon(Icons.drag_handle),
-              ),
-            );
-          }).toList(),
+    return ReorderableListView(
+      physics: const NeverScrollableScrollPhysics(),
+      buildDefaultDragHandles: false,
+      onReorder: notifier.setDashboardOrder,
+      children: items.asMap().entries.map((entry) {
+        final index = entry.key;
+        final item = entry.value;
+        final w = item.widget;
+
+        return ListTile(
+          key: ValueKey(w),
+          title: Text(getTitle(w)),
+          leading: IconButton(
+            icon: item.isVisible
+                ? const Icon(Icons.visibility)
+                : const Icon(Icons.visibility_off, color: Colors.grey),
+            onPressed: () => notifier.setWidgetVisible(w, !item.isVisible),
+          ),
+          trailing: ReorderableDragStartListener(
+            index: index,
+            child: const Icon(Icons.drag_handle),
+          ),
         );
-      },
+      }).toList(),
     );
   }
 }

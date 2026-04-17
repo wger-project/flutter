@@ -23,7 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -40,8 +40,8 @@ Widget createWeightScreen({Locale? locale}) {
     mockBodyWeightRepository.watchAllDrift(),
   ).thenAnswer((_) => Stream.value(getWeightEntries()));
 
-  final mockUserProvider = MockUserProvider();
-  when(mockUserProvider.profile).thenReturn(tProfile1);
+  final mockUserProfileRepository = MockUserProfileRepository();
+  when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => tProfile1);
 
   final mockNutritionPlansProvider = MockNutritionPlansProvider();
   when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
@@ -56,12 +56,10 @@ Widget createWeightScreen({Locale? locale}) {
     child: riverpod.ProviderScope(
       overrides: [
         bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
       ],
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider<UserProvider>(
-            create: (context) => mockUserProvider,
-          ),
           ChangeNotifierProvider<NutritionPlansProvider>(
             create: (context) => mockNutritionPlansProvider,
           ),

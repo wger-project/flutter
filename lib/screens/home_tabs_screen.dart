@@ -30,7 +30,7 @@ import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/trophies.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/providers/workout_logs.dart';
 import 'package:wger/providers/workout_session.dart';
 import 'package:wger/screens/dashboard.dart';
@@ -121,7 +121,6 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     if (authState != null && !authState.dataInit) {
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final galleryProvider = context.read<GalleryProvider>();
-      final userProvider = context.read<UserProvider>();
 
       // ref.watch(routinesRiverpodProvider);
       // ref.read(exerciseStateProvider);
@@ -135,7 +134,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       widget._logger.info('Loading base data');
       await Future.wait([
         authNotifier.setServerVersion(),
-        userProvider.fetchAndSetProfile(),
+        ref.read(userProfileProvider.future),
         nutritionPlansProvider.fetchIngredientsFromCache(),
       ]);
       // await ref.read(routineWeightUnitProvider.future);

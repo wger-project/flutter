@@ -19,10 +19,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
@@ -36,7 +35,7 @@ class DashboardWeightWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = context.read<UserProvider>().profile;
+    final profile = ref.read(userProfileProvider).value;
     final entriesList = ref.watch(weightEntryProvider);
 
     return Card(

@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/app_settings_notifier.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/dashboard/calendar.dart';
 import 'package:wger/widgets/dashboard/widgets/measurements.dart';
@@ -30,7 +30,7 @@ import 'package:wger/widgets/dashboard/widgets/routines.dart';
 import 'package:wger/widgets/dashboard/widgets/trophies.dart';
 import 'package:wger/widgets/dashboard/widgets/weight.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   static const routeName = '/dashboard';
@@ -55,10 +55,14 @@ class DashboardScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final width = MediaQuery.sizeOf(context).width;
     final isMobile = width < MATERIAL_XS_BREAKPOINT;
-    final user = Provider.of<UserProvider>(context);
+    final visibleWidgets = ref.watch(
+      appSettingsProvider.select(
+        (s) => s.value?.dashboardItems.visibleWidgets ?? const <DashboardWidget>[],
+      ),
+    );
 
     late final int crossAxisCount;
     if (width < MATERIAL_XS_BREAKPOINT) {
@@ -79,16 +83,15 @@ class DashboardScreen extends StatelessWidget {
           child: isMobile
               ? ListView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) =>
-                      _getDashboardWidget(user.dashboardWidgets[index]),
-                  itemCount: user.dashboardWidgets.length,
+                  itemBuilder: (context, index) => _getDashboardWidget(visibleWidgets[index]),
+                  itemCount: visibleWidgets.length,
                 )
               : GridView.builder(
                   padding: const EdgeInsets.all(10),
                   itemBuilder: (context, index) => SingleChildScrollView(
-                    child: _getDashboardWidget(user.dashboardWidgets[index]),
+                    child: _getDashboardWidget(visibleWidgets[index]),
                   ),
-                  itemCount: user.dashboardWidgets.length,
+                  itemCount: visibleWidgets.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
                     childAspectRatio: 0.7,

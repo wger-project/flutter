@@ -19,12 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 import 'package:wger/widgets/measurements/charts.dart';
@@ -57,7 +56,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     // Format the weight change text and determine color
     final String weightChangeText;
     final Color weightChangeColor;
-    final profile = context.read<UserProvider>().profile;
+    final profile = ref.read(userProfileProvider).value;
 
     final unit = weightUnit(profile!.isMetric, context);
 

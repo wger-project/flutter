@@ -18,98 +18,95 @@
 
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/models/user/profile.dart';
+import 'package:wger/providers/app_settings_notifier.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 
 import '../fixtures/fixture_reader.dart';
 import 'provider_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
+@GenerateMocks([UserProfileRepository])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  late UserProvider userProvider;
-  late MockWgerBaseProvider mockWgerBaseProvider;
 
-  const String profileUrl = 'userprofile';
-  final Map<String, dynamic> tUserProfileMap = jsonDecode(
-    fixture('user/userprofile_response.json'),
+  final Profile tProfile = Profile.fromJson(
+    jsonDecode(fixture('user/userprofile_response.json')) as Map<String, dynamic>,
   );
-  final Uri tProfileUri = Uri(
-    scheme: 'http',
-    host: 'localhost',
-    path: 'api/v2/$profileUrl/',
-  );
-  final Uri tEmailVerifyUri = Uri(
-    scheme: 'http',
-    host: 'localhost',
-    path: 'api/v2/$profileUrl/verify-email',
-  );
+
+  late MockUserProfileRepository mockRepo;
+  late ProviderContainer container;
 
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-    mockWgerBaseProvider = MockWgerBaseProvider();
-    userProvider = UserProvider(mockWgerBaseProvider, prefs: SharedPreferencesAsync());
+    mockRepo = MockUserProfileRepository();
+    when(mockRepo.fetchProfile()).thenAnswer((_) async => tProfile);
 
-    when(mockWgerBaseProvider.makeUrl(any)).thenReturn(tProfileUri);
-    when(
-      mockWgerBaseProvider.makeUrl(any, objectMethod: 'verify-email'),
-    ).thenReturn(tEmailVerifyUri);
-    when(
-      mockWgerBaseProvider.fetch(any),
-    ).thenAnswer((realInvocation) => Future.value(tUserProfileMap));
+    container = ProviderContainer(
+      overrides: [
+        userProfileRepositoryProvider.overrideWithValue(mockRepo),
+      ],
+    );
   });
 
-  group('house keeping', () {
-    test('should clear the profile list with clear()', () async {
-      // arrange
-      await userProvider.fetchAndSetProfile();
-
-      // assert
-      expect(userProvider.profile, isNot(null));
-      expect(userProvider.profile!.username, 'admin');
-
-      // act
-      userProvider.clear();
-
-      // assert
-      expect(userProvider.profile, null);
-    });
+  tearDown(() {
+    container.dispose();
   });
 
   group('profile', () {
-    test('Loading the profile from the server works', () async {
-      // arrange
-      await userProvider.fetchAndSetProfile();
+    test('build fetches the profile from the repository', () async {
+      final profile = await container.read(userProfileProvider.future);
 
-      // assert
-      expect(userProvider.profile!.username, 'admin');
-      expect(userProvider.profile!.emailVerified, true);
-      expect(userProvider.profile!.email, 'me@example.com');
-      expect(userProvider.profile!.isTrustworthy, true);
+      expect(profile, isNotNull);
+      expect(profile!.username, 'admin');
+      expect(profile.emailVerified, true);
+      expect(profile.email, 'me@example.com');
+      expect(profile.isTrustworthy, true);
+      verify(mockRepo.fetchProfile()).called(1);
     });
 
-    test('Sending the verify email works', () async {
-      // arrange
-      await userProvider.fetchAndSetProfile();
-      await userProvider.verifyEmail();
+    test('clear() resets the profile to null', () async {
+      await container.read(userProfileProvider.future);
+      expect(container.read(userProfileProvider).value, isNotNull);
 
-      // assert
-      verify(userProvider.baseProvider.fetch(tEmailVerifyUri));
+      container.read(userProfileProvider.notifier).clear();
+      expect(container.read(userProfileProvider).value, isNull);
+    });
+
+    test('saveProfile delegates to the repository', () async {
+      await container.read(userProfileProvider.future);
+      when(mockRepo.saveProfile(any)).thenAnswer((_) async {});
+
+      await container.read(userProfileProvider.notifier).saveProfile();
+
+      verify(mockRepo.saveProfile(tProfile)).called(1);
+    });
+
+    test('verifyEmail delegates to the repository', () async {
+      await container.read(userProfileProvider.future);
+      when(mockRepo.verifyEmail()).thenAnswer((_) async {});
+
+      await container.read(userProfileProvider.notifier).verifyEmail();
+
+      verify(mockRepo.verifyEmail()).called(1);
     });
   });
 
   group('dashboard config', () {
-    test('initial config should be default (all visible, default order)', () {
-      expect(userProvider.dashboardWidgets.length, 7);
+    test('initial config is default (all visible, default order)', () async {
+      final settings = await container.read(appSettingsProvider.future);
+      final items = settings.dashboardItems;
 
+      expect(items.allWidgets.length, DashboardWidget.values.length);
       expect(
-        userProvider.allDashboardWidgets,
+        items.allWidgets,
         orderedEquals([
           DashboardWidget.networkInfo,
           DashboardWidget.trophies,
@@ -120,71 +117,75 @@ void main() {
           DashboardWidget.calendar,
         ]),
       );
-      expect(userProvider.isDashboardWidgetVisible(DashboardWidget.routines), true);
+      expect(items.isWidgetVisible(DashboardWidget.routines), true);
     });
 
-    test('toggling visibility should update state', () async {
-      // act
-      await userProvider.setDashboardWidgetVisible(DashboardWidget.routines, false);
+    test('toggling visibility updates state', () async {
+      await container.read(appSettingsProvider.future);
+      final notifier = container.read(appSettingsProvider.notifier);
 
-      // assert
-      expect(userProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
+      await notifier.setWidgetVisible(DashboardWidget.routines, false);
+      var items = container.read(appSettingsProvider).value!.dashboardItems;
+      expect(items.isWidgetVisible(DashboardWidget.routines), false);
 
-      // re-enable
-      await userProvider.setDashboardWidgetVisible(DashboardWidget.routines, true);
-      expect(userProvider.isDashboardWidgetVisible(DashboardWidget.routines), true);
+      await notifier.setWidgetVisible(DashboardWidget.routines, true);
+      items = container.read(appSettingsProvider).value!.dashboardItems;
+      expect(items.isWidgetVisible(DashboardWidget.routines), true);
     });
 
-    test('reordering should update order', () async {
-      // arrange
-      final initialFirst = userProvider.dashboardWidgets[0];
-      final initialSecond = userProvider.dashboardWidgets[1];
+    test('reordering updates order', () async {
+      await container.read(appSettingsProvider.future);
+      final notifier = container.read(appSettingsProvider.notifier);
 
-      // act: move first to second position
-      // oldIndex: 0, newIndex: 2 (because insert is before index)
-      await userProvider.setDashboardOrder(0, 2);
+      final initial = container.read(appSettingsProvider).value!.dashboardItems.visibleWidgets;
+      final initialFirst = initial[0];
+      final initialSecond = initial[1];
 
-      // assert
-      expect(userProvider.dashboardWidgets[0], initialSecond);
-      expect(userProvider.dashboardWidgets[1], initialFirst);
+      // move first to second position (ReorderableListView semantics)
+      await notifier.setDashboardOrder(0, 2);
+
+      final updated = container.read(appSettingsProvider).value!.dashboardItems.visibleWidgets;
+      expect(updated[0], initialSecond);
+      expect(updated[1], initialFirst);
     });
 
-    test('should load config from prefs', () async {
-      // arrange
+    test('loads config from prefs when present', () async {
+      // Use a dedicated in-memory prefs instance to avoid bleed from other tests.
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
       final prefs = SharedPreferencesAsync();
       final customConfig = [
         {'widget': 'nutrition', 'visible': true},
         {'widget': 'routines', 'visible': false},
       ];
-      await prefs.setString(
-        UserProvider.PREFS_DASHBOARD_CONFIG,
-        jsonEncode(customConfig),
+      await prefs.setString(PREFS_DASHBOARD_CONFIG, jsonEncode(customConfig));
+
+      // Fresh container so the keepAlive notifier builds with the just-written prefs.
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [
+          userProfileRepositoryProvider.overrideWithValue(mockRepo),
+          appSettingsPrefsProvider.overrideWithValue(prefs),
+        ],
       );
 
-      // act
-      final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
-      await Future.delayed(const Duration(milliseconds: 100)); // wait for async prefs load
+      final settings = await container.read(appSettingsProvider.future);
+      final items = settings.dashboardItems;
 
-      // assert
-      // Loaded: [nutrition, routines]
-      // Missing: network(0),  trophies (1), weight (4), measurements (5), calendar (6)
-      // 1. network (index 0) inserted at 0 -> [network, trophies, nutrition, routines]
-      // 2. trophies (index 1) inserted at 1 -> [network, trophies, nutrition, routines]
-      // 3. weight (index 4) inserted at 4 -> [network, trophies, nutrition, routines, weight]
-      expect(newProvider.allDashboardWidgets[0], DashboardWidget.networkInfo);
-      expect(newProvider.allDashboardWidgets[1], DashboardWidget.trophies);
-      expect(newProvider.allDashboardWidgets[2], DashboardWidget.nutrition);
-      expect(newProvider.allDashboardWidgets[3], DashboardWidget.routines);
-      expect(newProvider.allDashboardWidgets[4], DashboardWidget.weight);
+      // Loaded: [nutrition, routines], then defaults insert around:
+      // networkInfo (0) → 0, trophies (1) → 1, weight (4), measurements (5), calendar (6)
+      expect(items.allWidgets[0], DashboardWidget.networkInfo);
+      expect(items.allWidgets[1], DashboardWidget.trophies);
+      expect(items.allWidgets[2], DashboardWidget.nutrition);
+      expect(items.allWidgets[3], DashboardWidget.routines);
+      expect(items.allWidgets[4], DashboardWidget.weight);
 
-      // Check visibility
-      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.nutrition), true);
-      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
+      expect(items.isWidgetVisible(DashboardWidget.nutrition), true);
+      expect(items.isWidgetVisible(DashboardWidget.routines), false);
 
-      // Missing items should be visible by default
-      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.networkInfo), true);
-      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.weight), true);
-      expect(newProvider.isDashboardWidgetVisible(DashboardWidget.trophies), true);
+      // Missing items default to visible
+      expect(items.isWidgetVisible(DashboardWidget.networkInfo), true);
+      expect(items.isWidgetVisible(DashboardWidget.weight), true);
+      expect(items.isWidgetVisible(DashboardWidget.trophies), true);
     });
   });
 }

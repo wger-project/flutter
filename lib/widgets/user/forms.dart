@@ -17,13 +17,13 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/user/profile.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/theme/theme.dart';
 
-class UserProfileForm extends StatefulWidget {
+class UserProfileForm extends ConsumerStatefulWidget {
   late final Profile _profile;
 
   UserProfileForm(Profile profile) {
@@ -31,10 +31,10 @@ class UserProfileForm extends StatefulWidget {
   }
 
   @override
-  State<UserProfileForm> createState() => _UserProfileFormState();
+  ConsumerState<UserProfileForm> createState() => _UserProfileFormState();
 }
 
-class _UserProfileFormState extends State<UserProfileForm> {
+class _UserProfileFormState extends ConsumerState<UserProfileForm> {
   final _form = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
@@ -108,7 +108,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
                 }
 
                 // Verify
-                await context.read<UserProvider>().verifyEmail();
+                await ref.read(userProfileProvider.notifier).verifyEmail();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -129,7 +129,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
               _form.currentState!.save();
 
               // Update profile
-              context.read<UserProvider>().saveProfile();
+              ref.read(userProfileProvider.notifier).saveProfile();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

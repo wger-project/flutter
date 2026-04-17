@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/widgets/add_exercise/image_details_form.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
@@ -22,16 +23,16 @@ import 'package:wger/widgets/add_exercise/preview_images.dart';
 /// 2. ImageDetailsForm is shown to collect license metadata
 /// 3. Image + metadata is stored in AddExerciseProvider
 /// 4. Final upload happens in Step 6 when user clicks "Submit"
-class Step5Images extends StatefulWidget {
+class Step5Images extends ConsumerStatefulWidget {
   final GlobalKey<FormState> formkey;
 
   const Step5Images({required this.formkey});
 
   @override
-  State<Step5Images> createState() => _Step5ImagesState();
+  ConsumerState<Step5Images> createState() => _Step5ImagesState();
 }
 
-class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin {
+class _Step5ImagesState extends ConsumerState<Step5Images> with ExerciseImagePickerMixin {
   /// Currently selected image waiting for metadata input
   /// When non-null, ImageDetailsForm is displayed instead of image picker
   ExerciseSubmissionImage? _currentImageToAdd;
@@ -76,7 +77,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
   ///
   /// [pickFromCamera] - If true, opens camera; otherwise opens gallery
   void _pickAndShowImageDetails(BuildContext context, {bool pickFromCamera = false}) async {
-    final userProvider = context.read<UserProvider>();
+    final profile = ref.read(userProfileProvider).value;
     final imagePicker = ImagePicker();
 
     XFile? selectedImage;
@@ -118,7 +119,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
       setState(() {
         _currentImageToAdd = ExerciseSubmissionImage(
           imageFile: imageFile,
-          author: userProvider.profile?.username ?? '',
+          author: profile?.username ?? '',
         );
       });
     }

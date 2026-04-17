@@ -27,7 +27,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/add_exercise/steps/step_1_basics.dart';
 import 'package:wger/widgets/add_exercise/steps/step_2_variations.dart';
@@ -40,16 +40,18 @@ import 'package:wger/widgets/user/forms.dart';
 
 import 'form_screen.dart';
 
-class AddExerciseScreen extends StatelessWidget {
+class AddExerciseScreen extends ConsumerWidget {
   const AddExerciseScreen({super.key});
 
   static const routeName = '/exercises/add';
 
   @override
-  Widget build(BuildContext context) {
-    final profile = context.read<UserProvider>().profile;
-
-    return profile!.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider).value;
+    if (profile == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    return profile.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
   }
 }
 
@@ -226,12 +228,12 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
   }
 }
 
-class EmailNotVerified extends StatelessWidget {
+class EmailNotVerified extends ConsumerWidget {
   const EmailNotVerified({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final user = context.read<UserProvider>().profile;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProfileProvider).value;
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).unVerifiedEmail),

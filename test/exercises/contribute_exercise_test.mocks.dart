@@ -6,20 +6,18 @@
 import 'dart:async' as _i12;
 import 'dart:ui' as _i13;
 
-import 'package:flutter/material.dart' as _i15;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:shared_preferences/shared_preferences.dart' as _i3;
 import 'package:wger/models/core/language.dart' as _i10;
 import 'package:wger/models/exercises/category.dart' as _i11;
 import 'package:wger/models/exercises/equipment.dart' as _i7;
 import 'package:wger/models/exercises/exercise_submission.dart' as _i9;
 import 'package:wger/models/exercises/exercise_submission_images.dart' as _i5;
 import 'package:wger/models/exercises/muscle.dart' as _i8;
-import 'package:wger/models/user/profile.dart' as _i16;
+import 'package:wger/models/user/profile.dart' as _i3;
 import 'package:wger/providers/add_exercise.dart' as _i4;
 import 'package:wger/providers/base_provider.dart' as _i2;
-import 'package:wger/providers/user.dart' as _i14;
+import 'package:wger/providers/user_profile_repository.dart' as _i14;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -41,9 +39,8 @@ class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvi
     : super(parent, parentInvocation);
 }
 
-class _FakeSharedPreferencesAsync_1 extends _i1.SmartFake implements _i3.SharedPreferencesAsync {
-  _FakeSharedPreferencesAsync_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeProfile_1 extends _i1.SmartFake implements _i3.Profile {
+  _FakeProfile_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AddExerciseProvider].
@@ -309,136 +306,28 @@ class MockAddExerciseProvider extends _i1.Mock implements _i4.AddExerciseProvide
   );
 }
 
-/// A class which mocks [UserProvider].
+/// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProvider extends _i1.Mock implements _i14.UserProvider {
-  MockUserProvider() {
+class MockUserProfileRepository extends _i1.Mock implements _i14.UserProfileRepository {
+  MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i15.ThemeMode get themeMode =>
+  _i12.Future<_i3.Profile> fetchProfile() =>
       (super.noSuchMethod(
-            Invocation.getter(#themeMode),
-            returnValue: _i15.ThemeMode.system,
-          )
-          as _i15.ThemeMode);
-
-  @override
-  _i2.WgerBaseProvider get baseProvider =>
-      (super.noSuchMethod(
-            Invocation.getter(#baseProvider),
-            returnValue: _FakeWgerBaseProvider_0(
-              this,
-              Invocation.getter(#baseProvider),
+            Invocation.method(#fetchProfile, []),
+            returnValue: _i12.Future<_i3.Profile>.value(
+              _FakeProfile_1(this, Invocation.method(#fetchProfile, [])),
             ),
           )
-          as _i2.WgerBaseProvider);
+          as _i12.Future<_i3.Profile>);
 
   @override
-  _i3.SharedPreferencesAsync get prefs =>
+  _i12.Future<void> saveProfile(_i3.Profile? profile) =>
       (super.noSuchMethod(
-            Invocation.getter(#prefs),
-            returnValue: _FakeSharedPreferencesAsync_1(
-              this,
-              Invocation.getter(#prefs),
-            ),
-          )
-          as _i3.SharedPreferencesAsync);
-
-  @override
-  List<_i14.DashboardWidget> get dashboardWidgets =>
-      (super.noSuchMethod(
-            Invocation.getter(#dashboardWidgets),
-            returnValue: <_i14.DashboardWidget>[],
-          )
-          as List<_i14.DashboardWidget>);
-
-  @override
-  List<_i14.DashboardWidget> get allDashboardWidgets =>
-      (super.noSuchMethod(
-            Invocation.getter(#allDashboardWidgets),
-            returnValue: <_i14.DashboardWidget>[],
-          )
-          as List<_i14.DashboardWidget>);
-
-  @override
-  set themeMode(_i15.ThemeMode? value) => super.noSuchMethod(
-    Invocation.setter(#themeMode, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set prefs(_i3.SharedPreferencesAsync? value) => super.noSuchMethod(
-    Invocation.setter(#prefs, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set profile(_i16.Profile? value) => super.noSuchMethod(
-    Invocation.setter(#profile, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
-
-  @override
-  void clear() => super.noSuchMethod(
-    Invocation.method(#clear, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  bool isDashboardWidgetVisible(_i14.DashboardWidget? key) =>
-      (super.noSuchMethod(
-            Invocation.method(#isDashboardWidgetVisible, [key]),
-            returnValue: false,
-          )
-          as bool);
-
-  @override
-  _i12.Future<void> setDashboardWidgetVisible(
-    _i14.DashboardWidget? key,
-    bool? visible,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#setDashboardWidgetVisible, [key, visible]),
-            returnValue: _i12.Future<void>.value(),
-            returnValueForMissingStub: _i12.Future<void>.value(),
-          )
-          as _i12.Future<void>);
-
-  @override
-  _i12.Future<void> setDashboardOrder(int? oldIndex, int? newIndex) =>
-      (super.noSuchMethod(
-            Invocation.method(#setDashboardOrder, [oldIndex, newIndex]),
-            returnValue: _i12.Future<void>.value(),
-            returnValueForMissingStub: _i12.Future<void>.value(),
-          )
-          as _i12.Future<void>);
-
-  @override
-  void setThemeMode(_i15.ThemeMode? mode) => super.noSuchMethod(
-    Invocation.method(#setThemeMode, [mode]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i12.Future<void> fetchAndSetProfile() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetProfile, []),
-            returnValue: _i12.Future<void>.value(),
-            returnValueForMissingStub: _i12.Future<void>.value(),
-          )
-          as _i12.Future<void>);
-
-  @override
-  _i12.Future<void> saveProfile() =>
-      (super.noSuchMethod(
-            Invocation.method(#saveProfile, []),
+            Invocation.method(#saveProfile, [profile]),
             returnValue: _i12.Future<void>.value(),
             returnValueForMissingStub: _i12.Future<void>.value(),
           )
@@ -452,28 +341,4 @@ class MockUserProvider extends _i1.Mock implements _i14.UserProvider {
             returnValueForMissingStub: _i12.Future<void>.value(),
           )
           as _i12.Future<void>);
-
-  @override
-  void addListener(_i13.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#addListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void removeListener(_i13.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#removeListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-    Invocation.method(#notifyListeners, []),
-    returnValueForMissingStub: null,
-  );
 }

@@ -17,103 +17,115 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/app_settings_notifier.dart';
 import 'package:wger/widgets/core/settings/dashboard_visibility.dart';
 
-import 'settings_dashboard_visibility_test.mocks.dart';
-
-@GenerateMocks([WgerBaseProvider])
 void main() {
-  late UserProvider userProvider;
-  late MockWgerBaseProvider mockBaseProvider;
-
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-    mockBaseProvider = MockWgerBaseProvider();
-    userProvider = UserProvider(mockBaseProvider, prefs: SharedPreferencesAsync());
   });
 
-  Widget createWidget() {
-    return ChangeNotifierProvider<UserProvider>.value(
-      value: userProvider,
-      child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: SettingsDashboardVisibility(),
-        ),
-      ),
-    );
+  Widget createWidget({ProviderContainer? container}) {
+    final scope = container == null
+        ? ProviderScope(
+            overrides: [
+              appSettingsPrefsProvider.overrideWithValue(SharedPreferencesAsync()),
+            ],
+            child: _buildApp(),
+          )
+        : UncontrolledProviderScope(container: container, child: _buildApp());
+    return scope;
   }
 
   testWidgets('renders list of dashboard widgets', (tester) async {
     await tester.pumpWidget(createWidget());
     await tester.pumpAndSettle();
 
-    // Verify all items are present
     expect(find.byType(ListTile), findsNWidgets(DashboardWidget.values.length));
     expect(find.text('Routines'), findsOneWidget);
   });
 
-  testWidgets('toggle visibility updates provider', (tester) async {
-    await tester.pumpWidget(createWidget());
+  testWidgets('toggle visibility updates state', (tester) async {
+    final container = ProviderContainer(
+      overrides: [
+        appSettingsPrefsProvider.overrideWithValue(SharedPreferencesAsync()),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(createWidget(container: container));
     await tester.pumpAndSettle();
 
-    // Routines should be visible initally (default is true)
-    expect(userProvider.isDashboardWidgetVisible(DashboardWidget.routines), true);
+    expect(
+      container
+          .read(appSettingsProvider)
+          .value!
+          .dashboardItems
+          .isWidgetVisible(DashboardWidget.routines),
+      true,
+    );
 
-    // Find the visibility icon for Routines
     final routineTile = find.byKey(const ValueKey(DashboardWidget.routines));
     final iconBtn = find.descendant(of: routineTile, matching: find.byType(IconButton));
-
-    // Check icon is 'visibility'
     expect(find.descendant(of: iconBtn, matching: find.byIcon(Icons.visibility)), findsOneWidget);
 
-    // Tap to toggle
     await tester.tap(iconBtn);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    // Check provider state
-    expect(userProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
-
-    // Check icon is 'visibility_off'
+    expect(
+      container
+          .read(appSettingsProvider)
+          .value!
+          .dashboardItems
+          .isWidgetVisible(DashboardWidget.routines),
+      false,
+    );
     expect(
       find.descendant(of: iconBtn, matching: find.byIcon(Icons.visibility_off)),
       findsOneWidget,
     );
   });
 
-  // Reordering test is a bit flaky without full drag setup, but we can try
   testWidgets('dragging reorders items', (tester) async {
-    await tester.pumpWidget(createWidget());
+    final container = ProviderContainer(
+      overrides: [
+        appSettingsPrefsProvider.overrideWithValue(SharedPreferencesAsync()),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(createWidget(container: container));
     await tester.pumpAndSettle();
 
-    // Initial order: network info, trophies, routines, nutrition, weight...
-    expect(userProvider.dashboardWidgets[0], DashboardWidget.networkInfo);
-    expect(userProvider.dashboardWidgets[1], DashboardWidget.trophies);
-    expect(userProvider.dashboardWidgets[2], DashboardWidget.routines);
-    expect(userProvider.dashboardWidgets[3], DashboardWidget.nutrition);
+    final initial = container.read(appSettingsProvider).value!.dashboardItems.visibleWidgets;
+    expect(initial[0], DashboardWidget.networkInfo);
+    expect(initial[1], DashboardWidget.trophies);
+    expect(initial[2], DashboardWidget.routines);
+    expect(initial[3], DashboardWidget.nutrition);
 
-    // Find drag handle for Trophies (index 0)
     final handleFinder = find.byIcon(Icons.drag_handle);
     final firstHandle = handleFinder.at(0);
 
-    // Drag first item down
-    await tester.drag(firstHandle, const Offset(0, 100)); // Drag down enough to swap
+    await tester.drag(firstHandle, const Offset(0, 100));
     await tester.pumpAndSettle();
 
-    // Verify order changed
-    // 100px drag seems to skip 2 items (network moves to index 2)
-    expect(userProvider.dashboardWidgets[0], DashboardWidget.trophies);
-    expect(userProvider.dashboardWidgets[1], DashboardWidget.routines);
-    expect(userProvider.dashboardWidgets[2], DashboardWidget.networkInfo);
+    final updated = container.read(appSettingsProvider).value!.dashboardItems.visibleWidgets;
+    expect(updated[0], DashboardWidget.trophies);
+    expect(updated[1], DashboardWidget.routines);
+    expect(updated[2], DashboardWidget.networkInfo);
   });
+}
+
+Widget _buildApp() {
+  return const MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(body: SettingsDashboardVisibility()),
+  );
 }

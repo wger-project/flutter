@@ -23,7 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
@@ -36,7 +36,7 @@ class WeightOverview extends riverpod.ConsumerWidget {
 
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
-    final profile = context.read<UserProvider>().profile;
+    final profile = ref.read(userProfileProvider).value;
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final plans = context.read<NutritionPlansProvider>().items;
 

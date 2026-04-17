@@ -28,7 +28,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/user/provider_test.mocks.dart';
+import '../test/nutrition/nutrition_provider_test.mocks.dart';
 import '../test/weight/weight_provider_test.mocks.dart';
 import '../test_data/body_weight.dart';
 import '../test_data/nutritional_plans.dart';

@@ -25,7 +25,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/widgets/core/about.dart';
@@ -133,7 +133,7 @@ class MainSettingsDialog extends ConsumerWidget {
               arguments: FormScreenArguments(
                 AppLocalizations.of(context).userProfile,
                 UserProfileForm(
-                  context.read<UserProvider>().profile!,
+                  ref.read(userProfileProvider).value!,
                 ),
               ),
             ),
@@ -159,7 +159,7 @@ class MainSettingsDialog extends ConsumerWidget {
               context.read<NutritionPlansProvider>().clear();
               // context.read<BodyWeightProvider>().clear();
               context.read<GalleryProvider>().clear();
-              context.read<UserProvider>().clear();
+              ref.read(userProfileProvider.notifier).clear();
 
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');
