@@ -4,13 +4,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i9;
-import 'dart:ui' as _i13;
+import 'dart:ui' as _i14;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/database/ingredients/ingredients_database.dart' as _i3;
 import 'package:wger/models/measurements/measurement_category.dart' as _i10;
 import 'package:wger/models/measurements/measurement_entry.dart' as _i11;
 import 'package:wger/models/nutrition/ingredient.dart' as _i7;
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart' as _i13;
 import 'package:wger/models/nutrition/meal.dart' as _i5;
 import 'package:wger/models/nutrition/meal_item.dart' as _i6;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i4;
@@ -405,6 +406,18 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i12.NutritionPlans
           as _i9.Future<_i7.Ingredient>);
 
   @override
+  _i9.Future<List<_i13.IngredientWeightUnit>> fetchWeightUnits(
+    int? ingredientId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchWeightUnits, [ingredientId]),
+            returnValue: _i9.Future<List<_i13.IngredientWeightUnit>>.value(
+              <_i13.IngredientWeightUnit>[],
+            ),
+          )
+          as _i9.Future<List<_i13.IngredientWeightUnit>>);
+
+  @override
   _i9.Future<void> fetchIngredientsFromCache() =>
       (super.noSuchMethod(
             Invocation.method(#fetchIngredientsFromCache, []),
@@ -491,13 +504,13 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i12.NutritionPlans
           as _i9.Future<void>);
 
   @override
-  void addListener(_i13.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i14.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeListener(_i13.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i14.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );

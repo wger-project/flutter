@@ -696,10 +696,6 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
         DriftSqlType.dateTime,
         data['${effectivePrefix}last_update'],
       )!,
-      variationId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}variation_id'],
-      ),
       categoryId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}category_id'],
@@ -3709,7 +3705,7 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v4(),
+    clientDefault: () => ps.uuid.v7(),
   );
   static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
     'exerciseId',
@@ -4297,7 +4293,7 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v4(),
+    clientDefault: () => ps.uuid.v7(),
   );
   static const VerificationMeta _routineIdMeta = const VerificationMeta(
     'routineId',

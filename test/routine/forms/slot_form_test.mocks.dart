@@ -3,24 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i13;
-import 'dart:ui' as _i17;
+import 'dart:async' as _i8;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i16;
-import 'package:wger/models/exercises/exercise.dart' as _i15;
-import 'package:wger/models/workouts/base_config.dart' as _i9;
-import 'package:wger/models/workouts/day.dart' as _i6;
-import 'package:wger/models/workouts/day_data.dart' as _i14;
-import 'package:wger/models/workouts/log.dart' as _i11;
-import 'package:wger/models/workouts/repetition_unit.dart' as _i4;
-import 'package:wger/models/workouts/routine.dart' as _i5;
-import 'package:wger/models/workouts/session.dart' as _i10;
-import 'package:wger/models/workouts/slot.dart' as _i7;
-import 'package:wger/models/workouts/slot_entry.dart' as _i8;
-import 'package:wger/models/workouts/weight_unit.dart' as _i3;
-import 'package:wger/providers/base_provider.dart' as _i2;
-import 'package:wger/providers/routines.dart' as _i12;
+import 'package:wger/models/workouts/base_config.dart' as _i6;
+import 'package:wger/models/workouts/day.dart' as _i3;
+import 'package:wger/models/workouts/routine.dart' as _i2;
+import 'package:wger/models/workouts/slot.dart' as _i4;
+import 'package:wger/models/workouts/slot_entry.dart' as _i5;
+import 'package:wger/providers/routines.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -37,558 +28,228 @@ import 'package:wger/providers/routines.dart' as _i12;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
-  _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeRoutine_0 extends _i1.SmartFake implements _i2.Routine {
+  _FakeRoutine_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeWeightUnit_1 extends _i1.SmartFake implements _i3.WeightUnit {
-  _FakeWeightUnit_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeDay_1 extends _i1.SmartFake implements _i3.Day {
+  _FakeDay_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeRepetitionUnit_2 extends _i1.SmartFake implements _i4.RepetitionUnit {
-  _FakeRepetitionUnit_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeSlot_2 extends _i1.SmartFake implements _i4.Slot {
+  _FakeSlot_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeRoutine_3 extends _i1.SmartFake implements _i5.Routine {
-  _FakeRoutine_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSlotEntry_3 extends _i1.SmartFake implements _i5.SlotEntry {
+  _FakeSlotEntry_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeDay_4 extends _i1.SmartFake implements _i6.Day {
-  _FakeDay_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeBaseConfig_4 extends _i1.SmartFake implements _i6.BaseConfig {
+  _FakeBaseConfig_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeSlot_5 extends _i1.SmartFake implements _i7.Slot {
-  _FakeSlot_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeSlotEntry_6 extends _i1.SmartFake implements _i8.SlotEntry {
-  _FakeSlotEntry_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeBaseConfig_7 extends _i1.SmartFake implements _i9.BaseConfig {
-  _FakeBaseConfig_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeWorkoutSession_8 extends _i1.SmartFake implements _i10.WorkoutSession {
-  _FakeWorkoutSession_8(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeLog_9 extends _i1.SmartFake implements _i11.Log {
-  _FakeLog_9(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-/// A class which mocks [RoutinesProvider].
+/// A class which mocks [RoutinesRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesProvider extends _i1.Mock implements _i12.RoutinesProvider {
-  MockRoutinesProvider() {
+class MockRoutinesRepository extends _i1.Mock implements _i7.RoutinesRepository {
+  MockRoutinesRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.WgerBaseProvider get baseProvider =>
+  _i8.Future<List<_i2.Routine>> fetchAllRoutinesSparseServer() =>
       (super.noSuchMethod(
-            Invocation.getter(#baseProvider),
-            returnValue: _FakeWgerBaseProvider_0(
-              this,
-              Invocation.getter(#baseProvider),
-            ),
+            Invocation.method(#fetchAllRoutinesSparseServer, []),
+            returnValue: _i8.Future<List<_i2.Routine>>.value(<_i2.Routine>[]),
           )
-          as _i2.WgerBaseProvider);
+          as _i8.Future<List<_i2.Routine>>);
 
   @override
-  List<_i5.Routine> get items =>
+  _i8.Future<_i2.Routine> fetchAndSetRoutineFullServer(int? routineId) =>
       (super.noSuchMethod(
-            Invocation.getter(#items),
-            returnValue: <_i5.Routine>[],
-          )
-          as List<_i5.Routine>);
-
-  @override
-  List<_i3.WeightUnit> get weightUnits =>
-      (super.noSuchMethod(
-            Invocation.getter(#weightUnits),
-            returnValue: <_i3.WeightUnit>[],
-          )
-          as List<_i3.WeightUnit>);
-
-  @override
-  _i3.WeightUnit get defaultWeightUnit =>
-      (super.noSuchMethod(
-            Invocation.getter(#defaultWeightUnit),
-            returnValue: _FakeWeightUnit_1(
-              this,
-              Invocation.getter(#defaultWeightUnit),
-            ),
-          )
-          as _i3.WeightUnit);
-
-  @override
-  List<_i4.RepetitionUnit> get repetitionUnits =>
-      (super.noSuchMethod(
-            Invocation.getter(#repetitionUnits),
-            returnValue: <_i4.RepetitionUnit>[],
-          )
-          as List<_i4.RepetitionUnit>);
-
-  @override
-  _i4.RepetitionUnit get defaultRepetitionUnit =>
-      (super.noSuchMethod(
-            Invocation.getter(#defaultRepetitionUnit),
-            returnValue: _FakeRepetitionUnit_2(
-              this,
-              Invocation.getter(#defaultRepetitionUnit),
-            ),
-          )
-          as _i4.RepetitionUnit);
-
-  @override
-  set activeRoutine(_i5.Routine? value) => super.noSuchMethod(
-    Invocation.setter(#activeRoutine, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set weightUnits(List<_i3.WeightUnit>? weightUnits) => super.noSuchMethod(
-    Invocation.setter(#weightUnits, weightUnits),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set repetitionUnits(List<_i4.RepetitionUnit>? repetitionUnits) => super.noSuchMethod(
-    Invocation.setter(#repetitionUnits, repetitionUnits),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
-
-  @override
-  void clear() => super.noSuchMethod(
-    Invocation.method(#clear, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i3.WeightUnit findWeightUnitById(int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#findWeightUnitById, [id]),
-            returnValue: _FakeWeightUnit_1(
-              this,
-              Invocation.method(#findWeightUnitById, [id]),
-            ),
-          )
-          as _i3.WeightUnit);
-
-  @override
-  _i4.RepetitionUnit findRepetitionUnitById(int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#findRepetitionUnitById, [id]),
-            returnValue: _FakeRepetitionUnit_2(
-              this,
-              Invocation.method(#findRepetitionUnitById, [id]),
-            ),
-          )
-          as _i4.RepetitionUnit);
-
-  @override
-  List<_i5.Routine> getPlans() =>
-      (super.noSuchMethod(
-            Invocation.method(#getPlans, []),
-            returnValue: <_i5.Routine>[],
-          )
-          as List<_i5.Routine>);
-
-  @override
-  _i5.Routine findById(int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#findById, [id]),
-            returnValue: _FakeRoutine_3(
-              this,
-              Invocation.method(#findById, [id]),
-            ),
-          )
-          as _i5.Routine);
-
-  @override
-  int findIndexById(int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#findIndexById, [id]),
-            returnValue: 0,
-          )
-          as int);
-
-  @override
-  _i13.Future<void> fetchAndSetAllRoutinesFull() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetAllRoutinesFull, []),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> fetchAndSetAllRoutinesSparse() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetAllRoutinesSparse, []),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> setExercisesAndUnits(
-    List<_i14.DayData>? entries, {
-    Map<int, _i15.Exercise>? exercises,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #setExercisesAndUnits,
-              [entries],
-              {#exercises: exercises},
-            ),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<_i5.Routine> fetchAndSetRoutineSparse(int? planId) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetRoutineSparse, [planId]),
-            returnValue: _i13.Future<_i5.Routine>.value(
-              _FakeRoutine_3(
+            Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
+            returnValue: _i8.Future<_i2.Routine>.value(
+              _FakeRoutine_0(
                 this,
-                Invocation.method(#fetchAndSetRoutineSparse, [planId]),
+                Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
               ),
             ),
           )
-          as _i13.Future<_i5.Routine>);
+          as _i8.Future<_i2.Routine>);
 
   @override
-  _i13.Future<_i5.Routine> fetchAndSetRoutineFull(int? routineId) =>
+  _i8.Future<_i2.Routine> addRoutineServer(_i2.Routine? routine) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchAndSetRoutineFull, [routineId]),
-            returnValue: _i13.Future<_i5.Routine>.value(
-              _FakeRoutine_3(
+            Invocation.method(#addRoutineServer, [routine]),
+            returnValue: _i8.Future<_i2.Routine>.value(
+              _FakeRoutine_0(
                 this,
-                Invocation.method(#fetchAndSetRoutineFull, [routineId]),
+                Invocation.method(#addRoutineServer, [routine]),
               ),
             ),
           )
-          as _i13.Future<_i5.Routine>);
+          as _i8.Future<_i2.Routine>);
 
   @override
-  _i13.Future<_i5.Routine> addRoutine(_i5.Routine? routine) =>
+  _i8.Future<_i2.Routine> editRoutineServer(_i2.Routine? routine) =>
       (super.noSuchMethod(
-            Invocation.method(#addRoutine, [routine]),
-            returnValue: _i13.Future<_i5.Routine>.value(
-              _FakeRoutine_3(this, Invocation.method(#addRoutine, [routine])),
+            Invocation.method(#editRoutineServer, [routine]),
+            returnValue: _i8.Future<_i2.Routine>.value(
+              _FakeRoutine_0(
+                this,
+                Invocation.method(#editRoutineServer, [routine]),
+              ),
             ),
           )
-          as _i13.Future<_i5.Routine>);
+          as _i8.Future<_i2.Routine>);
 
   @override
-  _i13.Future<void> editRoutine(_i5.Routine? routine) =>
+  _i8.Future<void> deleteRoutineServer(int? id) =>
       (super.noSuchMethod(
-            Invocation.method(#editRoutine, [routine]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
+            Invocation.method(#deleteRoutineServer, [id]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i13.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i13.Future<void> deleteRoutine(int? id) =>
+  _i8.Future<_i3.Day> addDayServer(_i3.Day? day) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteRoutine, [id]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> fetchAndSetRepetitionUnits() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetRepetitionUnits, []),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> fetchAndSetWeightUnits() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetWeightUnits, []),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> fetchAndSetUnits() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetUnits, []),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<_i6.Day> addDay(_i6.Day? day) =>
-      (super.noSuchMethod(
-            Invocation.method(#addDay, [day]),
-            returnValue: _i13.Future<_i6.Day>.value(
-              _FakeDay_4(this, Invocation.method(#addDay, [day])),
+            Invocation.method(#addDayServer, [day]),
+            returnValue: _i8.Future<_i3.Day>.value(
+              _FakeDay_1(this, Invocation.method(#addDayServer, [day])),
             ),
           )
-          as _i13.Future<_i6.Day>);
+          as _i8.Future<_i3.Day>);
 
   @override
-  _i13.Future<void> editDay(_i6.Day? day) =>
+  _i8.Future<void> editDayServer(_i3.Day? day) =>
       (super.noSuchMethod(
-            Invocation.method(#editDay, [day]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
+            Invocation.method(#editDayServer, [day]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i13.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i13.Future<void> editDays(List<_i6.Day>? days) =>
+  _i8.Future<void> deleteDayServer(int? dayId) =>
       (super.noSuchMethod(
-            Invocation.method(#editDays, [days]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
+            Invocation.method(#deleteDayServer, [dayId]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i13.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i13.Future<void> deleteDay(int? dayId) =>
+  _i8.Future<_i4.Slot> addSlotServer(_i4.Slot? slot) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteDay, [dayId]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<_i7.Slot> addSlot(_i7.Slot? slot, int? routineId) =>
-      (super.noSuchMethod(
-            Invocation.method(#addSlot, [slot, routineId]),
-            returnValue: _i13.Future<_i7.Slot>.value(
-              _FakeSlot_5(this, Invocation.method(#addSlot, [slot, routineId])),
+            Invocation.method(#addSlotServer, [slot]),
+            returnValue: _i8.Future<_i4.Slot>.value(
+              _FakeSlot_2(this, Invocation.method(#addSlotServer, [slot])),
             ),
           )
-          as _i13.Future<_i7.Slot>);
+          as _i8.Future<_i4.Slot>);
 
   @override
-  _i13.Future<void> deleteSlot(int? slotId, int? routineId) =>
+  _i8.Future<void> deleteSlotServer(int? slotId) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteSlot, [slotId, routineId]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
+            Invocation.method(#deleteSlotServer, [slotId]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i13.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i13.Future<void> editSlot(_i7.Slot? slot, int? routineId) =>
+  _i8.Future<void> editSlotServer(_i4.Slot? slot) =>
       (super.noSuchMethod(
-            Invocation.method(#editSlot, [slot, routineId]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
+            Invocation.method(#editSlotServer, [slot]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i13.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i13.Future<void> editSlots(List<_i7.Slot>? slots, int? routineId) =>
+  _i8.Future<_i5.SlotEntry> addSlotEntryServer(_i5.SlotEntry? entry) =>
       (super.noSuchMethod(
-            Invocation.method(#editSlots, [slots, routineId]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
+            Invocation.method(#addSlotEntryServer, [entry]),
+            returnValue: _i8.Future<_i5.SlotEntry>.value(
+              _FakeSlotEntry_3(
+                this,
+                Invocation.method(#addSlotEntryServer, [entry]),
+              ),
+            ),
           )
-          as _i13.Future<void>);
+          as _i8.Future<_i5.SlotEntry>);
 
   @override
-  _i13.Future<_i8.SlotEntry> addSlotEntry(
-    _i8.SlotEntry? entry,
-    int? routineId,
+  _i8.Future<void> deleteSlotEntryServer(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteSlotEntryServer, [id]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> editSlotEntryServer(_i5.SlotEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#editSlotEntryServer, [entry]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<_i6.BaseConfig> editConfigServer(
+    _i6.BaseConfig? config,
+    _i5.ConfigType? type,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#addSlotEntry, [entry, routineId]),
-            returnValue: _i13.Future<_i8.SlotEntry>.value(
-              _FakeSlotEntry_6(
+            Invocation.method(#editConfigServer, [config, type]),
+            returnValue: _i8.Future<_i6.BaseConfig>.value(
+              _FakeBaseConfig_4(
                 this,
-                Invocation.method(#addSlotEntry, [entry, routineId]),
+                Invocation.method(#editConfigServer, [config, type]),
               ),
             ),
           )
-          as _i13.Future<_i8.SlotEntry>);
+          as _i8.Future<_i6.BaseConfig>);
 
   @override
-  _i13.Future<void> deleteSlotEntry(int? id, int? routineId) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteSlotEntry, [id, routineId]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> editSlotEntry(_i8.SlotEntry? entry, int? routineId) =>
-      (super.noSuchMethod(
-            Invocation.method(#editSlotEntry, [entry, routineId]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  String getConfigUrl(_i8.ConfigType? type) =>
-      (super.noSuchMethod(
-            Invocation.method(#getConfigUrl, [type]),
-            returnValue: _i16.dummyValue<String>(
-              this,
-              Invocation.method(#getConfigUrl, [type]),
-            ),
-          )
-          as String);
-
-  @override
-  _i13.Future<_i9.BaseConfig> editConfig(
-    _i9.BaseConfig? config,
-    _i8.ConfigType? type,
+  _i8.Future<_i6.BaseConfig> addConfigServer(
+    _i6.BaseConfig? config,
+    _i5.ConfigType? type,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#editConfig, [config, type]),
-            returnValue: _i13.Future<_i9.BaseConfig>.value(
-              _FakeBaseConfig_7(
+            Invocation.method(#addConfigServer, [config, type]),
+            returnValue: _i8.Future<_i6.BaseConfig>.value(
+              _FakeBaseConfig_4(
                 this,
-                Invocation.method(#editConfig, [config, type]),
+                Invocation.method(#addConfigServer, [config, type]),
               ),
             ),
           )
-          as _i13.Future<_i9.BaseConfig>);
+          as _i8.Future<_i6.BaseConfig>);
 
   @override
-  _i13.Future<_i9.BaseConfig> addConfig(
-    _i9.BaseConfig? config,
-    _i8.ConfigType? type,
-  ) =>
+  _i8.Future<void> deleteConfigServer(int? id, _i5.ConfigType? type) =>
       (super.noSuchMethod(
-            Invocation.method(#addConfig, [config, type]),
-            returnValue: _i13.Future<_i9.BaseConfig>.value(
-              _FakeBaseConfig_7(
-                this,
-                Invocation.method(#addConfig, [config, type]),
-              ),
-            ),
+            Invocation.method(#deleteConfigServer, [id, type]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i13.Future<_i9.BaseConfig>);
+          as _i8.Future<void>);
 
   @override
-  _i13.Future<void> deleteConfig(int? id, _i8.ConfigType? type) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteConfig, [id, type]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<void> handleConfig(
-    _i8.SlotEntry? entry,
+  _i8.Future<void> handleConfigServer(
+    _i5.SlotEntry? entry,
     num? value,
-    _i8.ConfigType? type,
+    _i5.ConfigType? type,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#handleConfig, [entry, value, type]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
+            Invocation.method(#handleConfigServer, [entry, value, type]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i13.Future<void>);
-
-  @override
-  _i13.Future<List<_i10.WorkoutSession>> fetchSessionData() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchSessionData, []),
-            returnValue: _i13.Future<List<_i10.WorkoutSession>>.value(
-              <_i10.WorkoutSession>[],
-            ),
-          )
-          as _i13.Future<List<_i10.WorkoutSession>>);
-
-  @override
-  _i13.Future<_i10.WorkoutSession> addSession(
-    _i10.WorkoutSession? session,
-    int? routineId,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#addSession, [session, routineId]),
-            returnValue: _i13.Future<_i10.WorkoutSession>.value(
-              _FakeWorkoutSession_8(
-                this,
-                Invocation.method(#addSession, [session, routineId]),
-              ),
-            ),
-          )
-          as _i13.Future<_i10.WorkoutSession>);
-
-  @override
-  _i13.Future<_i10.WorkoutSession> editSession(_i10.WorkoutSession? session) =>
-      (super.noSuchMethod(
-            Invocation.method(#editSession, [session]),
-            returnValue: _i13.Future<_i10.WorkoutSession>.value(
-              _FakeWorkoutSession_8(
-                this,
-                Invocation.method(#editSession, [session]),
-              ),
-            ),
-          )
-          as _i13.Future<_i10.WorkoutSession>);
-
-  @override
-  _i13.Future<_i11.Log> addLog(_i11.Log? log) =>
-      (super.noSuchMethod(
-            Invocation.method(#addLog, [log]),
-            returnValue: _i13.Future<_i11.Log>.value(
-              _FakeLog_9(this, Invocation.method(#addLog, [log])),
-            ),
-          )
-          as _i13.Future<_i11.Log>);
-
-  @override
-  _i13.Future<void> deleteLog(int? logId, int? routineId) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteLog, [logId, routineId]),
-            returnValue: _i13.Future<void>.value(),
-            returnValueForMissingStub: _i13.Future<void>.value(),
-          )
-          as _i13.Future<void>);
-
-  @override
-  void addListener(_i17.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#addListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void removeListener(_i17.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#removeListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-    Invocation.method(#notifyListeners, []),
-    returnValueForMissingStub: null,
-  );
+          as _i8.Future<void>);
 }

@@ -148,7 +148,7 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
   Widget errorMessage = const SizedBox.shrink();
 
   Future<void> _handleAddSet(Slot slot, int slotIndex) async {
-    final provider = Provider.of<RoutinesProvider>(context, listen: false);
+    final provider = ref.read(routinesRiverpodProvider.notifier);
     if (slot.entries.isEmpty) {
       return;
     }

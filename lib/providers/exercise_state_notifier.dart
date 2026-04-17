@@ -161,32 +161,32 @@ final class ExerciseStateNotifier extends _$ExerciseStateNotifier {
     return state.exercises.firstWhere((e) => e.id == id);
   }
 
-  Map<int, List<Exercise>> get exerciseByVariation {
-    final Map<int, List<Exercise>> variations = {};
+  Map<String, List<Exercise>> get exerciseByVariation {
+    final Map<String, List<Exercise>> variations = {};
 
-    for (final exercise in state.exercises.where((e) => e.variationId != null)) {
-      if (!variations.containsKey(exercise.variationId)) {
-        variations[exercise.variationId!] = [];
+    for (final exercise in state.exercises.where((e) => e.variationGroup != null)) {
+      if (!variations.containsKey(exercise.variationGroup)) {
+        variations[exercise.variationGroup!] = [];
       }
 
-      variations[exercise.variationId]!.add(exercise);
+      variations[exercise.variationGroup]!.add(exercise);
     }
 
     return variations;
   }
 
-  /// Find exercises by variation IDs
+  /// Find exercises by variation group
   ///
   /// exerciseIdToExclude: the ID of the exercise to exclude from the list of
   /// returned exercises. Since this is typically called by one exercise, we are
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
-  List<Exercise> findExercisesByVariationId(int? variationId, {int? exerciseIdToExclude}) {
-    if (variationId == null) {
+  List<Exercise> findExercisesByVariationGroup(String? variationGroup, {int? exerciseIdToExclude}) {
+    if (variationGroup == null) {
       return [];
     }
 
-    var out = state.exercises.where((base) => base.variationId == variationId).toList();
+    var out = state.exercises.where((base) => base.variationGroup == variationGroup).toList();
 
     if (exerciseIdToExclude != null) {
       out = out.where((e) => e.id != exerciseIdToExclude).toList();
