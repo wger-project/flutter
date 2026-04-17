@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -8,7 +26,6 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise_submission.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/variation.dart';
 
 import 'base_provider.dart';
 
@@ -28,7 +45,7 @@ class AddExerciseProvider with ChangeNotifier {
   String? exerciseNameTrans;
   String? descriptionEn;
   String? descriptionTrans;
-  int? _variationId;
+  String? _variationGroup;
   int? _variationConnectToExercise;
   Language? languageEn;
   Language? languageTranslation;
@@ -68,20 +85,16 @@ class AddExerciseProvider with ChangeNotifier {
 
   set variationConnectToExercise(int? value) {
     _variationConnectToExercise = value;
-    _variationId = null;
+    _variationGroup = null;
     notifyListeners();
   }
 
-  int? get variationId => _variationId;
+  String? get variationGroup => _variationGroup;
 
-  set variationId(int? variation) {
-    _variationId = variation;
+  set variationGroup(String? value) {
+    _variationGroup = value;
     _variationConnectToExercise = null;
     notifyListeners();
-  }
-
-  Variation get variation {
-    return Variation(id: _variationId!);
   }
 
   List<Muscle> get primaryMuscles => [..._primaryMuscles];
@@ -100,8 +113,8 @@ class AddExerciseProvider with ChangeNotifier {
 
   ExerciseSubmissionApi get exerciseApiObject {
     return ExerciseSubmissionApi(
-      author: '',
-      variation: _variationId,
+      author: author,
+      variationGroup: _variationGroup,
       variationConnectTo: _variationConnectToExercise,
       category: category!.id,
       muscles: _primaryMuscles.map((e) => e.id).toList(),
@@ -110,10 +123,10 @@ class AddExerciseProvider with ChangeNotifier {
       translations: [
         // Base language (English)
         ExerciseTranslationSubmissionApi(
-          author: '',
+          author: author,
           language: languageEn!.id,
           name: exerciseNameEn!,
-          description: descriptionEn!,
+          descriptionSource: descriptionEn!,
           aliases: alternateNamesEn
               .where((element) => element.isNotEmpty)
               .map((e) => ExerciseAliasSubmissionApi(alias: e))
@@ -123,10 +136,10 @@ class AddExerciseProvider with ChangeNotifier {
         // Optional translation
         if (languageTranslation != null)
           ExerciseTranslationSubmissionApi(
-            author: '',
+            author: author,
             language: languageTranslation!.id,
             name: exerciseNameTrans!,
-            description: descriptionTrans!,
+            descriptionSource: descriptionTrans!,
             aliases: alternateNamesTrans
                 .where((element) => element.isNotEmpty)
                 .map((e) => ExerciseAliasSubmissionApi(alias: e))
@@ -190,8 +203,9 @@ class AddExerciseProvider with ChangeNotifier {
 
       request.files.add(await http.MultipartFile.fromPath('image', image.imageFile.path));
       request.fields['exercise'] = exerciseId.toString();
-      request.fields['license'] = CC_BY_SA_4_ID.toString();
       request.fields['is_main'] = 'false';
+      request.fields['license'] = CC_BY_SA_4_ID.toString();
+      request.fields['license_author'] = author;
 
       final details = image.toJson();
       if (details.isNotEmpty) {

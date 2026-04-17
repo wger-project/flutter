@@ -1,6 +1,11 @@
 name: Update screenshots
 on:
   workflow_dispatch:
+    inputs:
+      commit_screenshots:
+        description: 'Commit and push screenshots to the repository'
+        type: boolean
+        default: false
 
 jobs:
   screenshots_apple:
@@ -120,6 +125,7 @@ jobs:
 
   commit_screenshots:
     name: 'Commit and push'
+    if: ${{ inputs.commit_screenshots }}
     needs:
       - screenshots_apple
       - screenshots_android

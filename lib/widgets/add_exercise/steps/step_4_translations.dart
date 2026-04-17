@@ -79,8 +79,10 @@ class _Step4TranslationState extends ConsumerState<Step4Translation> {
                   },
                 ),
                 AddExerciseTextArea(
+                  initialValue: addExerciseProvider.exerciseNameTrans ?? '',
                   title: '${i18n.name}*',
                   validator: (name) => validateName(name, context),
+                  onChange: (v) => addExerciseProvider.exerciseNameTrans = v,
                   onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name!,
                 ),
                 AddExerciseTextArea(
@@ -107,7 +109,9 @@ class _Step4TranslationState extends ConsumerState<Step4Translation> {
                 ),
                 Consumer<AddExerciseProvider>(
                   builder: (ctx, provider, __) => AddExerciseTextArea(
-                    onChange: (value) => {},
+                    useMarkdownEditor: true,
+                    initialValue: provider.descriptionTrans ?? '',
+                    onChange: (value) => provider.descriptionTrans = value,
                     title: '${i18n.description}*',
                     helperText: i18n.enterTextInLanguage,
                     isMultiline: true,

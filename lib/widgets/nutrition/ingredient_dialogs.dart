@@ -24,6 +24,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
+import 'package:wger/widgets/nutrition/nutri_score_badge.dart';
 
 Widget ingredientImage(String url, BuildContext context) {
   var radius = 100.0;
@@ -130,6 +131,10 @@ class IngredientDetails extends StatelessWidget {
                     showGperKg: false,
                   ),
                 ),
+              if (snapshot.hasData) ...[
+                const SizedBox(height: 12),
+                _DietaryInfoSection(ingredient: ingredient!),
+              ],
               if (snapshot.hasData && ingredient!.licenseObjectURl == null)
                 Text('Source: ${source!}'),
               if (snapshot.hasData && ingredient!.licenseObjectURl != null)
@@ -286,6 +291,59 @@ class IngredientScanResultDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
+        ),
+      ],
+    );
+  }
+}
+
+class _DietaryInfoSection extends StatelessWidget {
+  final Ingredient ingredient;
+
+  const _DietaryInfoSection({required this.ingredient});
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(i18n.isVegan),
+            if (ingredient.isVegan == null)
+              const Text('N/A')
+            else if (ingredient.isVegan!)
+              Icon(Icons.eco, color: Colors.green[700])
+            else
+              Icon(Icons.block, color: Colors.red[400]),
+          ],
+        ),
+        const Divider(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(i18n.isVegetarian),
+            if (ingredient.isVegetarian == null)
+              const Text('N/A')
+            else if (ingredient.isVegetarian!)
+              Icon(Icons.eco, color: Colors.green[700])
+            else
+              Icon(Icons.block, color: Colors.red[400]),
+          ],
+        ),
+        const Divider(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Nutri-Score'),
+            if (ingredient.nutriscore != null)
+              NutriScoreBadge(score: ingredient.nutriscore!)
+            else
+              const Text('N/A'),
+          ],
         ),
       ],
     );

@@ -31,7 +31,7 @@ class Exercise extends Equatable {
 
   late final int id;
   late final String uuid;
-  late final int? variationId;
+  late final String? variationGroup;
   late final DateTime? created;
   late final DateTime? lastUpdate;
   late final DateTime? lastUpdateGlobal;
@@ -55,8 +55,7 @@ class Exercise extends Equatable {
     required this.uuid,
     this.created,
     this.lastUpdate,
-    // this.lastUpdateGlobal,
-    this.variationId,
+    this.variationGroup,
     required this.categoryId,
     List<Muscle>? muscles,
     List<Muscle>? musclesSecondary,

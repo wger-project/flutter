@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/native.dart';
@@ -28,6 +29,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight_repository.dart';
@@ -53,9 +55,9 @@ void main() {
     database.close();
   });
 
-  Widget createNutritionalPlan({locale = 'en'}) {
+  Widget createNutritionalPlan({locale = 'en', MockWgerBaseProvider? baseProvider}) {
     final key = GlobalKey<NavigatorState>();
-    final mockBaseProvider = MockWgerBaseProvider();
+    final mockBaseProvider = baseProvider ?? MockWgerBaseProvider();
     final plan = getNutritionalPlan();
 
     return riverpod.ProviderScope(
@@ -116,8 +118,8 @@ void main() {
       expect(find.text('Less fat, more protein'), findsOneWidget);
       expect(find.byIcon(Icons.info_outline), findsNWidgets(3)); // 2 meals, 1 "other logs"
       expect(find.byIcon(Icons.info), findsNothing);
-      expect(find.text('100g Water'), findsNothing);
-      expect(find.text('75g Burger soup'), findsNothing);
+      expect(find.text('100 g Water'), findsNothing);
+      expect(find.text('75 g Burger soup'), findsNothing);
 
       // tap the first info button changes it and reveals ingredients for the first meal
       var infoOutlineButtons = find.byIcon(Icons.info_outline);
@@ -132,8 +134,8 @@ void main() {
       }
 
       // Ingredients show up now
-      expect(find.text('100g Water'), findsOneWidget);
-      expect(find.text('75g Burger soup'), findsOneWidget);
+      expect(find.text('100 g Water'), findsOneWidget);
+      expect(find.text('75 g Burger soup'), findsOneWidget);
 
       // .. and the button icon has changed
       expect(find.byIcon(Icons.info_outline), findsNWidgets(2));
@@ -144,7 +146,7 @@ void main() {
       infoOutlineButtons = find.byIcon(Icons.info_outline);
 
       await tester.scrollUntilVisible(infoOutlineButtons.first, 30);
-      expect(find.text('300g Broccoli cake'), findsNothing);
+      expect(find.text('300 g Broccoli cake'), findsNothing);
 
       await tester.tap(infoOutlineButtons.first);
       await tester.pumpAndSettle();
@@ -159,8 +161,8 @@ void main() {
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
       expect(find.byIcon(Icons.info), findsNWidgets(2));
 
-      await tester.scrollUntilVisible(find.text('300g Broccoli cake'), 30);
-      expect(find.text('300g Broccoli cake'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('300 g Broccoli cake'), 30);
+      expect(find.text('300 g Broccoli cake'), findsOneWidget);
 
       expect(find.byType(Card), findsNWidgets(3));
 
@@ -186,4 +188,42 @@ void main() {
 
     expect(find.textContaining('17:00'), findsOneWidget);
   });
+
+  testWidgets(
+    'loading indicator does not reappear after popup menu tap',
+    (WidgetTester tester) async {
+      final completer = Completer<NutritionalPlan>();
+      final mockBaseProvider = MockWgerBaseProvider();
+
+      // When fetch is called, return our controlled future
+      when(
+        mockBaseProvider.makeUrl(any, id: anyNamed('id')),
+      ).thenReturn(Uri.parse('http://fake.url'));
+      when(mockBaseProvider.fetch(any)).thenAnswer((_) => completer.future);
+
+      await tester.pumpWidget(createNutritionalPlan(baseProvider: mockBaseProvider));
+      await tester.tap(find.byType(TextButton));
+
+      // Two pumps: first for route transition, second for FutureBuilder waiting state
+      await tester.pump();
+      await tester.pump();
+
+      // Future is still pending — spinner must be visible
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      // Now resolve the future — simulates network response
+      completer.complete(getNutritionalPlan());
+      await tester.pumpAndSettle();
+
+      // Spinner gone after successful load
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+
+      // Tap popup menu — this is the exact scenario that triggered the bug
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pump();
+
+      // Core assertion: spinner must NOT reappear after menu tap
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+    },
+  );
 }

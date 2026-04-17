@@ -3,6 +3,9 @@ Version=1.0
 Type=Application
 Name=wger
 Comment=Fitness/workout, nutrition and weight tracker
+
+# TODO: find out why the categories break Flathub's desktop file validation
+# HealthFitness;Exercise;Nutrition
 Categories=Education;Utility;Sports;
 Icon=de.wger.flutter
 Exec=wger

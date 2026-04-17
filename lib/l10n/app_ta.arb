@@ -34,7 +34,7 @@
     "@gPerBodyKg": {
         "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
     },
-    "fatShort": "F",
+    "fatShort": "கொ",
     "@fatShort": {
         "description": "The first letter or short name of the word 'Fat', used in overviews"
     },
@@ -206,7 +206,7 @@
     "@musclesSecondary": {
         "description": "secondary muscles trained by an exercise"
     },
-    "reps": "பிரதிநிதிகள்",
+    "reps": "முறை",
     "@reps": {
         "description": "Shorthand for repetitions, used when space constraints are tighter"
     },
@@ -283,7 +283,7 @@
     },
     "onlyLogging": "கலோரிகளை மட்டுமே கண்காணிக்கவும்",
     "onlyLoggingHelpText": "உங்கள் கலோரிகளை மட்டுமே உள்நுழைய விரும்பினால், குறிப்பிட்ட உணவுடன் விரிவான ஊட்டச்சத்து திட்டத்தை அமைக்க விரும்பவில்லை என்றால் பெட்டியை சரிபார்க்கவும்",
-    "goalMacro": "ரோ இலக்குகள்",
+    "goalMacro": "மேக்ரோ இலக்குகள்",
     "@goalMacro": {
         "description": "The goal for macronutrients"
     },
@@ -424,12 +424,12 @@
         }
     },
     "protein": "புரதம்",
-    "proteinShort": "ப",
+    "proteinShort": "பு",
     "@proteinShort": {
         "description": "The first letter or short name of the word 'Protein', used in overviews"
     },
     "carbohydrates": "கார்போஐட்ரேட்டுகள்",
-    "carbohydratesShort": "C",
+    "carbohydratesShort": "கா",
     "@carbohydratesShort": {
         "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
     },
@@ -581,7 +581,7 @@
     "@productNotFound": {
         "description": "Header label for dialog when product is not found with barcode"
     },
-    "productNotFoundDescription": "ச்கேன் செய்யப்பட்ட பார்கோடு {barcode} with உடன் தயாரிப்பு WGER தரவுத்தளத்தில் காணப்படவில்லை",
+    "productNotFoundDescription": "ஸ்கேன் செய்யப்பட்ட பார்கோடு {barcode} கொண்ட தயாரிப்பு WGER தரவுத்தளத்தில் கண்டறியப்படவில்லை",
     "@productNotFoundDescription": {
         "description": "Dialog info when product is not found with barcode",
         "type": "text",
@@ -591,7 +591,7 @@
             }
         }
     },
-    "scanBarcode": "ச்கேன் பார்கோடு",
+    "scanBarcode": "ஸ்கேன் பார்கோடு",
     "@scanBarcode": {
         "description": "Label for scan barcode button"
     },
@@ -678,7 +678,7 @@
     "@body_weight": {
         "description": "Generated entry for translation for server strings"
     },
-    "calves": "கன்றுகள்",
+    "calves": "கெண்டைக்கால்கள்",
     "@calves": {
         "description": "Generated entry for translation for server strings"
     },
@@ -833,7 +833,7 @@
     },
     "noRoutines": "உங்களுக்கு எந்த நடைமுறைகளும் இல்லை",
     "restTime": "ஓய்வு நேரம்",
-    "sets": "செட்",
+    "sets": "சுற்றுகள்",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
     },
@@ -889,5 +889,13 @@
     "enterTextInLanguage": "சரியான மொழியில் உரையை உள்ளிடவும்!",
     "others": "மற்றவை",
     "noTrophies": "இன்னும் நீங்கள் எந்தப் பதக்கமும் பெறவில்லை",
-    "gymModeShowExercises": "பயிற்சி மேலோட்டப் பக்கங்களை காண்பி"
+    "gymModeShowExercises": "பயிற்சி மேலோட்டப் பக்கங்களை காண்பி",
+    "startDate": "தொடக்க தேதி",
+    "@startDate": {
+        "description": "The start date of a nutritional plan or routine"
+    },
+    "addToOpenFoodFacts": "Open Food Facts-க்குத் தகவலைப் பகிரவும்",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,11 +25,18 @@ const double ICON_SIZE_SMALL = 20;
 
 /// Default wger server during login
 const DEFAULT_SERVER_PROD = 'https://wger.de';
-const DEFAULT_SERVER_TEST = 'https://wger-master.rge.uber.space/';
 
-// Debug mode Login Data
+// Default wger test server during development
+const DEFAULT_SERVER_TEST = 'https://dev.wger.de';
 const TESTSERVER_USER_NAME = 'user';
 const TESTSERVER_PASSWORD = 'flutteruser';
+
+/// Minimum server version required by this version of the app.
+///
+/// Bump this value whenever you depend on API changes that are only available
+/// in a newer server release. The check is performed during login and
+/// auto-login and mirrors what the server does with MIN_APP_VERSION.
+const MIN_SERVER_VERSION = '2.5';
 
 /// Default impression for a workout session (neutral)
 const DEFAULT_IMPRESSION = 2;

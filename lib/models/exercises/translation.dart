@@ -32,8 +32,10 @@ class Translation extends Equatable {
   final String name;
   final String description;
 
-  final List<Comment> notes = [];
-  final List<Alias> aliases = [];
+  final String descriptionSource;
+
+  List<Comment> notes = [];
+  List<Alias> aliases = [];
 
   Translation({
     this.id,
@@ -41,6 +43,7 @@ class Translation extends Equatable {
     this.created,
     required this.name,
     required this.description,
+    this.descriptionSource = '',
     int? exerciseId,
     Language? language,
   }) {
@@ -72,5 +75,6 @@ class Translation extends Equatable {
     created,
     name,
     description,
+    descriptionSource,
   ];
 }

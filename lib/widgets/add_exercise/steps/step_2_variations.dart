@@ -52,8 +52,8 @@ class Step2Variations extends ConsumerWidget {
                         ),
                         provider.Consumer<AddExerciseProvider>(
                           builder: (ctx, provider, __) => Switch(
-                            value: provider.variationId == key,
-                            onChanged: (state) => provider.variationId = key,
+                            value: provider.variationGroup == key,
+                            onChanged: (state) => provider.variationGroup = state ? key : null,
                           ),
                         ),
                       ],
@@ -61,7 +61,7 @@ class Step2Variations extends ConsumerWidget {
                   ),
                   // Exercise bases without variations
                   ...exerciseProvider.allExercises
-                      .where((b) => b.variationId == null)
+                      .where((b) => b.variationGroup == null)
                       .map(
                         (base) => Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

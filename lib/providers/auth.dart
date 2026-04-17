@@ -40,6 +40,7 @@ enum LoginActions {
 
 enum AuthState {
   updateRequired,
+  serverUpdateRequired,
   loggedIn,
   loggedOut,
 }
@@ -100,6 +101,46 @@ class AuthProvider with ChangeNotifier {
     final needUpdate = requiredAppVersion > currentVersion;
     if (needUpdate) {
       _logger.fine('Application update required: $requiredAppVersion > $currentVersion');
+    }
+
+    return needUpdate;
+  }
+
+  /// Checks whether the connected server meets the minimum version required
+  /// by this build of the app.
+  ///
+  /// [version] overrides [serverVersion] and is intended for unit testing.
+  bool serverUpdateRequired([String? version]) {
+    final rawVersion = version ?? serverVersion;
+    if (rawVersion == null) {
+      // If we couldn't read the server version, allow the login to proceed
+      // so as not to lock out users on unexpected server configurations.
+      _logger.warning('serverUpdateRequired: serverVersion is null, skipping check');
+      return false;
+    }
+
+    // Strip common non-semver suffixes emitted by Python/Django backends,
+    // e.g. '2.5.0a2' → '2.5.0', '2.3.0 (git-abc1234)' → '2.3.0'.
+    final sanitized = rawVersion
+        .replaceFirst(RegExp(r'\s.*$'), '') // strip trailing space + anything after
+        .replaceFirst(RegExp(r'[a-zA-Z].*$'), ''); // strip alpha/beta/rc suffix
+
+    final Version current;
+    try {
+      current = Version.parse(sanitized);
+    } on FormatException {
+      // Completely unparseable version string — be lenient and allow login.
+      _logger.warning(
+        'serverUpdateRequired: could not parse server version "$rawVersion" '
+        '(sanitized: "$sanitized"), skipping check',
+      );
+      return false;
+    }
+    final required = Version.parse(MIN_SERVER_VERSION);
+
+    final needUpdate = current < required;
+    if (needUpdate) {
+      _logger.fine('Server update required: server $current < minimum $required');
     }
 
     return needUpdate;
@@ -186,7 +227,14 @@ class AuthProvider with ChangeNotifier {
 
     await initVersions(serverUrl);
 
-    // If update is required don't log in user
+    // If the server is too old for this app version, surface the dedicated
+    // screen so the user knows what to do (ask their server admin to upgrade).
+    if (serverUpdateRequired()) {
+      state = AuthState.serverUpdateRequired;
+      return LoginActions.update;
+    }
+
+    // If app update is required don't log in user
     if (await applicationUpdateRequired()) {
       state = AuthState.updateRequired;
       return LoginActions.update;
@@ -263,7 +311,15 @@ class AuthProvider with ChangeNotifier {
 
     await initVersions(serverUrl!);
 
-    // If update is required don't log in user
+    // If the server is too old for this app version, surface the dedicated
+    // screen so the user knows what to do (ask their server admin to upgrade).
+    if (serverUpdateRequired()) {
+      state = AuthState.serverUpdateRequired;
+      notifyListeners();
+      return;
+    }
+
+    // If app update is required don't log in user
     if (await applicationUpdateRequired()) {
       state = AuthState.updateRequired;
     } else {

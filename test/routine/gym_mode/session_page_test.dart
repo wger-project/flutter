@@ -93,7 +93,6 @@ void main() {
       await tester.pumpWidget(renderSessionPage());
       await tester.pumpAndSettle();
 
-      debugDumpApp();
       expect(find.text('10:00'), findsOneWidget);
       expect(find.text('12:34'), findsOneWidget);
       expect(find.text('This is a note'), findsOneWidget);

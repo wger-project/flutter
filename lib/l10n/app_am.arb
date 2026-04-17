@@ -1,78 +1,169 @@
 {
-  "labelWorkoutPlan": "የአካል ብቃት እንቅስቃሴ ዕቅድ",
-  "@labelWorkoutPlan": {
-    "description": "Title for screen workout plan"
-  },
-  "labelWorkoutLogs": "የሥልጠና ምዝግብ ማስታወሻዎች",
-  "@labelWorkoutLogs": {
-    "description": "(Workout) logs"
-  },
-  "labelBottomNavNutrition": "ኣመጋገብ",
-  "@labelBottomNavNutrition": {
-    "description": "Label used in bottom navigation, use a short word"
-  },
-  "labelBottomNavWorkout": "የአካል ብቃት እንቅስቃሴ",
-  "@labelBottomNavWorkout": {
-    "description": "Label used in bottom navigation, use a short word"
-  },
-  "loginInstead": "በምትኩ ይግቡ",
-  "@loginInstead": {},
-  "registerInstead": "በምትኩ ይመዝገቡ",
-  "@registerInstead": {},
-  "reset": "ዳግም አስጀምር",
-  "@reset": {
-    "description": "Button text allowing the user to reset the entered values to the default"
-  },
-  "customServerHint": "የራስዎን Server አድራሻ ያስገቡ ፣ አለበለዚያ default ጥቅም ላይ ይውላል",
-  "@customServerHint": {
-    "description": "Hint text for the form where the users can enter their own wger instance"
-  },
-  "invalidUsername": "እባክዎ የሚሰራ የተጠቃሚ ስም ያስገቡ",
-  "@invalidUsername": {
-    "description": "Error message when the user enters an invalid username"
-  },
-  "username": "የተጠቃሚ ስም",
-  "@username": {},
-  "email": "የ ኢሜል አድራሻ",
-  "@email": {},
-  "invalidEmail": "እባክህን ትክክለኛ ኢሜል አስገባ",
-  "@invalidEmail": {
-    "description": "Error message when the user enters an invalid email"
-  },
-  "confirmPassword": "የይለፍ ቃል አረጋግጥ",
-  "@confirmPassword": {},
-  "password": "የይለፍ ቃል",
-  "@password": {},
-  "passwordTooShort": "የይለፍ ቃሉ በጣም አጭር ነው",
-  "@passwordTooShort": {
-    "description": "Error message when the user a password that is too short"
-  },
-  "passwordsDontMatch": "የይለፍ ቃሎቹ አይዛመዱም",
-  "@passwordsDontMatch": {
-    "description": "Error message when the user enters two different passwords during registration"
-  },
-  "usernameValidChars": "የተጠቃሚ ስም ፊደሎችን ፣ አሃዞችን እና @, +, ., -, and _ ምልክቶችን ብቻ ሊይዝ ይችላል",
-  "@usernameValidChars": {
-    "description": "Error message when the user tries to register a username with forbidden characters"
-  },
-  "invalidUrl": "እባክዎ የሚሰራ URL ያስገቡ",
-  "@invalidUrl": {
-    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-  },
-  "useCustomServer": "የራሶትን Server ይጠቀሙ",
-  "@useCustomServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "register": "ይመዝገቡ",
-  "@register": {
-    "description": "Text for registration button"
-  },
-  "logout": "ውጣ",
-  "@logout": {
-    "description": "Text for logout button"
-  },
-  "login": "ግባ",
-  "@login": {
-    "description": "Text for login button"
-  }
+    "labelWorkoutPlan": "የአካል ብቃት እንቅስቃሴ ዕቅድ",
+    "@labelWorkoutPlan": {
+        "description": "Title for screen workout plan"
+    },
+    "labelWorkoutLogs": "የሥልጠና መዝገቦች",
+    "@labelWorkoutLogs": {
+        "description": "(Workout) logs"
+    },
+    "labelBottomNavNutrition": "ኣመጋገብ",
+    "@labelBottomNavNutrition": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelBottomNavWorkout": "የአካል ብቃት እንቅስቃሴ",
+    "@labelBottomNavWorkout": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "loginInstead": "በምትኩ ይግቡ",
+    "registerInstead": "ይመዝገቡ",
+    "reset": "ዳግም አስጀምር",
+    "@reset": {
+        "description": "Button text allowing the user to reset the entered values to the default"
+    },
+    "customServerHint": "የራስዎን Server አድራሻ ያስገቡ ፣ አለበለዚያ default ጥቅም ላይ ይውላል",
+    "@customServerHint": {
+        "description": "Hint text for the form where the users can enter their own wger instance"
+    },
+    "invalidUsername": "እባክዎ የሚሰራ የተጠቃሚ ስም ያስገቡ",
+    "@invalidUsername": {
+        "description": "Error message when the user enters an invalid username"
+    },
+    "username": "የተጠቃሚ ስም",
+    "email": "የኢሜል አድራሻ",
+    "invalidEmail": "እባክዎ ትክክለኛ ኢሜል ያስገቡ",
+    "@invalidEmail": {
+        "description": "Error message when the user enters an invalid email"
+    },
+    "confirmPassword": "የይለፍ ቃል አረጋግጥ",
+    "password": "የይለፍ ቃል",
+    "passwordTooShort": "የይለፍ ቃሉ በጣም አጭር ነው",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "passwordsDontMatch": "የይለፍ ቃሎቹ አይዛመዱም",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "usernameValidChars": "የተጠቃሚ ስም ፊደሎችን ፣ አሃዞችን እና @, +, ., -, and _ ምልክቶችን ብቻ ሊይዝ ይችላል",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "invalidUrl": "እባክዎ የሚሰራ URL ያስገቡ",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "useCustomServer": "የራሶትን Server ይጠቀሙ",
+    "@useCustomServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "register": "ይመዝገቡ",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "logout": "ውጣ",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "login": "ግባ",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "useApiToken": "API ቁልፍ ይጠቀሙ",
+    "useUsernameAndPassword": "የተጠቃሚ ስም እና የይለፍ ቃል ይጠቀሙ",
+    "invalidApiToken": "እባክዎ የሚሰራ የኤፒአይ ቁልፍ ይጠቀሙ",
+    "@invalidApiToken": {
+        "description": "Error message when the user enters an invalid API key"
+    },
+    "apiTokenValidChars": "የኤፒአይ ቁልፍ a-f ፊደላት፣ 0-9 ቁጥሮች እና በትክክል 40 ፊደላት መሆን አለበት።",
+    "@apiTokenValidChars": {
+        "description": "Error message when the user tries to input a API key with forbidden characters"
+    },
+    "dashboardWidgets": "ዳሽቦርድ መግብሮች",
+    "labelDashboard": "ዳሽቦርድ",
+    "@labelDashboard": {
+        "description": "Title for screen dashboard"
+    },
+    "success": "ተሳክቷል",
+    "@success": {
+        "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "successfullyDeleted": "ተሰርዟል",
+    "@successfullyDeleted": {
+        "description": "Message when an item was successfully deleted"
+    },
+    "successfullySaved": "ተመዝግቧል",
+    "@successfullySaved": {
+        "description": "Message when an item was successfully saved"
+    },
+    "exerciseList": "እንቅስቃሴ ዝርዝር",
+    "exercise": "እንቅስቃሴ",
+    "@exercise": {
+        "description": "An exercise for a workout"
+    },
+    "exercises": "እንቅስቃሴዎች",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    },
+    "exerciseName": "እንቅስቃሴ ስም",
+    "@exerciseName": {
+        "description": "Label for the name of a workout exercise"
+    },
+    "searchExercise": "እንቅስቃሴዎች ይፈልጉ እና ይጨምሩ",
+    "@searchExercise": {
+        "description": "Label on set form. Selected exercises are added to the set"
+    },
+    "noIngredientsDefined": "የተገለጹ ንጥረ ነገሮች የሉም",
+    "noMatchingExerciseFound": "ተዛማጅ እንቅስቃሴዎች አልተገኙም",
+    "@noMatchingExerciseFound": {
+        "description": "Message returned if no exercises match the searched string"
+    },
+    "searchNamesInEnglish": "እንዲሁም ስሞችን በእንግሊዝኛ ይፈልጉ",
+    "equipment": "መሳሪያዎች",
+    "@equipment": {
+        "description": "Equipment needed to perform an exercise"
+    },
+    "muscles": "ጡንቻዎች",
+    "@muscles": {
+        "description": "(main) muscles trained by an exercise"
+    },
+    "musclesSecondary": "ሁለተኛ ደረጃ ጡንቻዎች",
+    "@musclesSecondary": {
+        "description": "secondary muscles trained by an exercise"
+    },
+    "category": "ምድብ",
+    "@category": {
+        "description": "Category for an exercise, ingredient, etc."
+    },
+    "startDate": "የመጀመሪያ ቀን",
+    "@startDate": {
+        "description": "The start date of a nutritional plan or routine"
+    },
+    "dayTypeCustom": "ብጁ",
+    "dayTypeEnom": "በየደቂቃው ፣ በደቂቃው ላይ",
+    "dayTypeAmrap": "በተቻለ ያህል ዙሮች",
+    "dayTypeRft": "ዙሮች ለጊዜ",
+    "dayTypeAfap": "በተቻለ ፍጥነት",
+    "slotEntryTypeNormal": "መደበኛ",
+    "slotEntryTypePartial": "ከፊል",
+    "slotEntryTypeForced": "በግዳጅ",
+    "slotEntryTypeTut": "በውጥረት ስር",
+    "slotEntryTypeJump": "ይዝለሉ",
+    "trophies": "ዋንጫዎች",
+    "routines": "ልማዶች",
+    "newRoutine": "አዲስ ልማድ",
+    "noRoutines": "ምንም ልማዶች የሉዎትም",
+    "reps": "ድግግሞሾች",
+    "@reps": {
+        "description": "Shorthand for repetitions, used when space constraints are tighter"
+    },
+    "restTime": "የእረፍት ጊዜ",
+    "sets": "ስብስቦች",
+    "@sets": {
+        "description": "The number of sets to be done for one exercise"
+    },
+    "rir": "መጠባበቂያ ድግግሞሾች",
+    "@rir": {
+        "description": "Shorthand for Repetitions In Reserve"
+    }
 }

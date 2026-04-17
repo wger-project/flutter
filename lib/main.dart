@@ -57,6 +57,7 @@ import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
 import 'package:wger/screens/trophy_screen.dart';
 import 'package:wger/screens/update_app_screen.dart';
+import 'package:wger/screens/update_server_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/about.dart';
@@ -114,6 +115,14 @@ void main() async {
 
   // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
   PlatformDispatcher.instance.onError = (error, stack) {
+    // Skip the StackFrame assertion error from the stack_trace package.
+    // This is a known Flutter framework issue where async gap markers in stack
+    // traces cause an assertion failure in StackFrame.fromStackTraceLine.
+    if (error is AssertionError && error.toString().contains('asynchronous gap')) {
+      logger.warning('Suppressed StackFrame assertion error (known Flutter issue)');
+      return true;
+    }
+
     logger.severe('Error caught by PlatformDispatcher.instance.onError: $error');
     logger.severe('Stack trace: $stack');
 
@@ -141,6 +150,8 @@ class MainApp extends StatelessWidget {
       // return HomeTabsScreen();
       case AuthState.updateRequired:
         return const UpdateAppScreen();
+      case AuthState.serverUpdateRequired:
+        return const UpdateServerScreen();
       default:
         return FutureBuilder(
           future: auth.tryAutoLogin(),

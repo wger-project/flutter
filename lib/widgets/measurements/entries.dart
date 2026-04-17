@@ -46,6 +46,8 @@ class EntriesList extends ConsumerWidget {
         .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
+    final datetimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode).add_Hm();
+
     return Column(
       children: [
         ...getOverviewWidgetsSeries(
@@ -67,11 +69,7 @@ class EntriesList extends ConsumerWidget {
               return Card(
                 child: ListTile(
                   title: Text('${numberFormat.format(currentEntry.value)} ${_category.unit}'),
-                  subtitle: Text(
-                    DateFormat.yMd(
-                      Localizations.localeOf(context).languageCode,
-                    ).format(currentEntry.date),
-                  ),
+                  subtitle: Text(datetimeFormat.format(currentEntry.date)),
                   trailing: PopupMenuButton(
                     itemBuilder: (BuildContext context) {
                       return [

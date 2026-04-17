@@ -83,13 +83,13 @@ class ExerciseDetail extends ConsumerWidget {
   }
 
   List<Widget> getVariations(BuildContext context) {
-    final variations = _exerciseStateNotifier.findExercisesByVariationId(
-      _exercise.variationId,
+    final variations = _exerciseStateNotifier.findExercisesByVariationGroup(
+      _exercise.variationGroup,
       exerciseIdToExclude: _exercise.id,
     );
 
     final List<Widget> out = [];
-    if (_exercise.variationId == null) {
+    if (_exercise.variationGroup == null) {
       return out;
     }
 

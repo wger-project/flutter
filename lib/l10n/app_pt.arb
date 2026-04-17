@@ -282,7 +282,7 @@
     },
     "repetitionUnit": "Unidade de repetição",
     "dayDescriptionHelp": "Uma descrição do que é feito neste dia (por exemplo, 'dia de treino') ou quais partes do corpo são treinadas (por exemplo, 'peito e ombros')",
-    "setNr": "Set {nr}",
+    "setNr": "Série {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
         "type": "text",
@@ -320,7 +320,7 @@
         "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
     },
     "saturatedFat": "Gordura saturada",
-    "jumpTo": "Pular",
+    "jumpTo": "Ir para",
     "@jumpTo": {
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
@@ -849,5 +849,196 @@
     "enterTextInLanguage": "Por favor, introduz o texto la linguagem correta!",
     "checkInformationBeforeSubmitting": "Por favor, verifica que a informação introduzida está correta antes de submeter o exercício",
     "identicalExercisePleaseDiscard": "Se encontrares um exercício igual ao que estás a introduzir, por favor descarta o teu rascunho e edita antes esse exercício.",
-    "overview": "Panorama"
+    "overview": "Panorama",
+    "dashboardWidgets": "Widgets do Painel de Controle",
+    "dayTypeCustom": "Personalizado",
+    "dayTypeEnom": "A cada minuto, pontualmente",
+    "dayTypeAmrap": "O máximo de rodadas possíveis",
+    "dayTypeHiit": "Treinamento Intervalado de Alta Intensidade",
+    "dayTypeTabata": "Tabata",
+    "dayTypeEdt": "Treinamento de densidade crescente",
+    "dayTypeRft": "Rodadas por tempo",
+    "dayTypeAfap": "O mais rápido possível",
+    "slotEntryTypeNormal": "Normal",
+    "slotEntryTypeDropset": "Conjunto de queda",
+    "slotEntryTypeMyo": "Músculos",
+    "slotEntryTypePartial": "Parcial",
+    "slotEntryTypeForced": "Forçado",
+    "slotEntryTypeTut": "Tempo sob tensão",
+    "slotEntryTypeIso": "Posição isométrica",
+    "slotEntryTypeJump": "Pular",
+    "trophies": "Troféus",
+    "topSet": "Conjunto superior: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "impressionGood": "Bom",
+    "impressionNeutral": "Neutro",
+    "impressionBad": "Ruim",
+    "personalRecords": "Registros pessoais",
+    "gymModeShowExercises": "Exibir páginas de visão geral do exercício",
+    "gymModeShowTimer": "Exibir o cronômetro entre as séries",
+    "gymModeTimerType": "Tipo de temporizador",
+    "gymModeTimerTypeHelText": "Se uma sequência de eventos tiver um tempo de pausa, uma contagem regressiva é sempre utilizada.",
+    "countdown": "Contagem regressiva",
+    "stopwatch": "Cronômetro",
+    "gymModeDefaultCountdownTime": "Tempo de contagem regressiva padrão, em segundos",
+    "gymModeNotifyOnCountdownFinish": "Notificar quando a contagem regressiva terminar",
+    "duration": "Duração",
+    "durationHoursMinutes": "{hours}h {minutes}m",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "O volume de um treino ou série, ou seja, peso x repetições",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Treino concluído",
+    "noTrophies": "Você ainda não possui troféus",
+    "formMinMaxValues": "Por favor, insira um valor entre {min} e {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "imageDetailsTitle": "Título para formulário de detalhes da imagem",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Rótulo para o campo de título da imagem",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Texto de dica para o campo de título da imagem",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Rótulo para o campo de link de origem",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Autor(es)",
+    "authorHint": "Texto de dica para o campo do autor",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Rótulo para o campo de link do autor",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Rótulo para campo de fonte derivada",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Uma obra derivada é baseada em uma obra anterior, mas contém conteúdo novo e criativo suficiente para lhe conferir direito autoral próprio.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Rótulo para seletor de tipo de imagem",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "Ao enviar esta imagem, você concorda em liberá-la sob a licença CC-BY-SA-4. A imagem deve ser de sua autoria ou o autor deve tê-la liberado sob uma licença compatível com esta.",
+    "imageDetailsLicenseNoticeLinkToLicense": "Consulte o texto da licença.",
+    "imageFormatNotSupported": "{imageFormat} Não suportado",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "{imageFormat} Imagens ainda não são suportadas.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "add": "Adicionar texto ao botão",
+    "@add": {
+        "description": "Add button text"
+    },
+    "superset": "Super Série",
+    "endWorkout": "Fim do treino",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "productNotFoundOpenFoodFacts": "Você pode adicionar este produto ao Open Food Facts para ajudar a comunidade!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Adicionar ao Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Vegano",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Vegetariano",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filtrar",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Somente no idioma atual ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Idioma atual ({lang}) e inglês",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Todos os idiomas",
+    "serverUpdateTitle": "É necessário atualizar o servidor",
+    "serverUpdateContent": "O servidor é demasiado velho para esta versão da app. Por favor, pede ao administrador do servidor para atualizar para, pelo menos, a versão {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    }
 }

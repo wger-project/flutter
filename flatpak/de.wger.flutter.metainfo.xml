@@ -29,11 +29,14 @@
     </description>
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>AGPL-3.0-or-later</project_license>
-    <recommends>
+    <supports>
         <control>touch</control>
         <control>pointing</control>
         <control>keyboard</control>
-    </recommends>
+    </supports>
+    <requires>
+        <display_length compare="ge">360</display_length>
+    </requires>
     <developer_name>wger</developer_name>
     <url type="homepage">https://wger.de/</url>
     <url type="contact">https://fosstodon.org/@wger</url>
@@ -84,6 +87,12 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release version="1.11.0" date="2026-04-14">
+            <description>
+                <p>Bug fixes and improvements.</p>
+            </description>
+            <url>https://github.com/wger-project/flutter/releases/tag/1.11.0</url>
+        </release>
         <release version="1.10.2" date="2026-02-28">
             <description>
                 <p>Bug fixes and improvements.</p>

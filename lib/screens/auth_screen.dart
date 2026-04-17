@@ -24,6 +24,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/update_app_screen.dart';
+import 'package:wger/screens/update_server_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/auth/api_token_field.dart';
 import 'package:wger/widgets/auth/email_field.dart';
@@ -199,12 +200,20 @@ class _AuthCardState extends State<AuthCard> {
         );
       }
 
-      // Check if update is required else continue normally
+      // Navigate to the appropriate "update required" screen.
       if (res == LoginActions.update && mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
-        );
-        return;
+        final authState = context.read<AuthProvider>().state;
+        if (authState == AuthState.updateRequired) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
+          );
+          return;
+        } else if (authState == AuthState.serverUpdateRequired) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const UpdateServerScreen()),
+          );
+          return;
+        }
       }
       if (context.mounted) {
         setState(() {

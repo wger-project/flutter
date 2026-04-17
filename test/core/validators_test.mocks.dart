@@ -724,6 +724,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get slotEntryTypeWarmup =>
+      (super.noSuchMethod(
+            Invocation.getter(#slotEntryTypeWarmup),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#slotEntryTypeWarmup),
+            ),
+          )
+          as String);
+
+  @override
   String get slotEntryTypePartial =>
       (super.noSuchMethod(
             Invocation.getter(#slotEntryTypePartial),
@@ -2260,6 +2271,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get preview =>
+      (super.noSuchMethod(
+            Invocation.getter(#preview),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#preview),
+            ),
+          )
+          as String);
+
+  @override
   String get loadingText =>
       (super.noSuchMethod(
             Invocation.getter(#loadingText),
@@ -2673,6 +2695,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#appUpdateContent),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverUpdateTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverUpdateTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverUpdateTitle),
             ),
           )
           as String);
@@ -3140,6 +3173,50 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#baseData),
+            ),
+          )
+          as String);
+
+  @override
+  String get useBasicMarkdown =>
+      (super.noSuchMethod(
+            Invocation.getter(#useBasicMarkdown),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#useBasicMarkdown),
+            ),
+          )
+          as String);
+
+  @override
+  String get editorBold =>
+      (super.noSuchMethod(
+            Invocation.getter(#editorBold),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#editorBold),
+            ),
+          )
+          as String);
+
+  @override
+  String get editorItalic =>
+      (super.noSuchMethod(
+            Invocation.getter(#editorItalic),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#editorItalic),
+            ),
+          )
+          as String);
+
+  @override
+  String get editorList =>
+      (super.noSuchMethod(
+            Invocation.getter(#editorList),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#editorList),
             ),
           )
           as String);
@@ -3954,6 +4031,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String setNr(String? nr) =>
+      (super.noSuchMethod(
+            Invocation.method(#setNr, [nr]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#setNr, [nr]),
+            ),
+          )
+          as String);
+
+  @override
   String topSet(String? value) =>
       (super.noSuchMethod(
             Invocation.method(#topSet, [value]),
@@ -4092,6 +4180,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#nrOfSets, [nrOfSets]),
+            ),
+          )
+          as String);
+
+  @override
+  String serverUpdateContent(String? minVersion) =>
+      (super.noSuchMethod(
+            Invocation.method(#serverUpdateContent, [minVersion]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#serverUpdateContent, [minVersion]),
             ),
           )
           as String);

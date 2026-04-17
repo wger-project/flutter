@@ -90,11 +90,13 @@ class Log {
 
     weight = setConfig.weight;
     weightTarget = setConfig.weight;
-    weightUnit = setConfig.weightUnit;
+    weightUnitId = setConfig.weightUnitId ?? WEIGHT_UNIT_KG;
+    weightUnitObj = setConfig.weightUnit;
 
     repetitions = setConfig.repetitions;
     repetitionsTarget = setConfig.repetitions;
-    repetitionUnit = setConfig.repetitionsUnit;
+    repetitionsUnitId = setConfig.repetitionsUnitId ?? REP_UNIT_REPETITIONS_ID;
+    repetitionsUnitObj = setConfig.repetitionsUnit;
 
     rir = setConfig.rir;
     rirTarget = setConfig.rir;

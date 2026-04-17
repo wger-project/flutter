@@ -105,7 +105,7 @@ void main() {
     when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.variationConnectToExercise).thenReturn(null);
-    when(mockAddExerciseProvider.variationId).thenReturn(null);
+    when(mockAddExerciseProvider.variationGroup).thenReturn(null);
     when(mockAddExerciseProvider.category).thenReturn(null);
     when(mockAddExerciseProvider.languageEn).thenReturn(null);
     when(mockAddExerciseProvider.languageTranslation).thenReturn(null);
