@@ -17,12 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
@@ -103,11 +103,16 @@ String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
   return '${consumed.toStringAsFixed(0)} / ${planned.toStringAsFixed(0)} ${loc.kcal}';
 }
 
-void showIngredientDetails(BuildContext context, int id, {void Function()? select}) {
+void showIngredientDetails(
+  BuildContext context,
+  WidgetRef ref,
+  int id, {
+  void Function()? select,
+}) {
   showDialog(
     context: context,
     builder: (context) => FutureBuilder<Ingredient>(
-      future: Provider.of<NutritionPlansProvider>(context, listen: false).fetchIngredient(id),
+      future: ref.read(nutritionProvider.notifier).fetchIngredient(id),
       builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
         return IngredientDetails(snapshot, onSelect: select);
       },

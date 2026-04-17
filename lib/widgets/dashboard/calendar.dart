@@ -19,7 +19,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
@@ -29,7 +28,7 @@ import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement_notifier.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -99,7 +98,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   /// - **Weight entries**: Retrieves weight measurements from [weightEntryProvider]
   /// - **Measurements**: Retrieves body measurements from [measurementProvider]
   /// - **Workout sessions**: Fetches workout session data from [RoutinesRiverpod]
-  /// - **Nutritional plans**: Retrieves calorie diary entries from [NutritionPlansProvider]
+  /// - **Nutritional plans**: Retrieves calorie diary entries from [nutritionProvider]
   ///
   /// Each event is formatted according to the current locale and stored in the
   /// [_events] map, keyed by date. The date format is determined by [DateFormatLists.format].
@@ -185,8 +184,8 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     }
 
     // Process nutritional plans
-    final nutritionProvider = context.read<NutritionPlansProvider>();
-    for (final plan in nutritionProvider.items) {
+    final plans = ref.read(nutritionProvider).value ?? const [];
+    for (final plan in plans) {
       for (final entry in plan.logEntriesValues.entries) {
         final date = DateFormatLists.format(entry.key);
         if (!newEvents.containsKey(date)) {

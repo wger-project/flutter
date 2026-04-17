@@ -18,43 +18,60 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
 import '../../test_data/nutritional_plans.dart';
-import 'nutritional_meal_form_test.mocks.dart';
+import 'nutritional_plan_form_test.mocks.dart';
 
-@GenerateMocks([NutritionPlansProvider])
 void main() {
-  var mockNutrition = MockNutritionPlansProvider();
+  late MockNutritionRepository mockRepo;
+  late MockIngredientRepository mockIngredientRepo;
+  late ProviderContainer container;
 
   var plan1 = NutritionalPlan.empty();
   var meal1 = Meal();
 
-  setUp(() {
+  setUp(() async {
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
-    mockNutrition = MockNutritionPlansProvider();
+    mockRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
 
-    when(mockNutrition.editMeal(any)).thenAnswer((_) => Future.value(Meal()));
-    when(mockNutrition.addMeal(any, any)).thenAnswer((_) => Future.value(Meal()));
+    when(mockRepo.updateMeal(any, any)).thenAnswer((_) async => Meal(id: 1, plan: 1).toJson());
+    when(mockRepo.createMeal(any)).thenAnswer((_) async => Meal(id: 99, plan: 1).toJson());
+
+    container = ProviderContainer(
+      overrides: [
+        nutritionRepositoryProvider.overrideWithValue(mockRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      ],
+    );
+    // Initialize the notifier so build() runs, then seed plans.
+    await container.read(nutritionProvider.future);
+    container.read(nutritionProvider.notifier).state = AsyncData([plan1]);
+  });
+
+  tearDown(() {
+    container.dispose();
   });
 
   Widget createFormScreen(Meal meal, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => mockNutrition,
+    return UncontrolledProviderScope(
+      container: container,
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -98,8 +115,8 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verify(mockNutrition.editMeal(any));
-    verifyNever(mockNutrition.addMeal(any, any));
+    verify(mockRepo.updateMeal(any, any));
+    verifyNever(mockRepo.createMeal(any));
   });
 
   testWidgets('Test creating a new nutritional plan', (WidgetTester tester) async {
@@ -137,8 +154,8 @@ void main() {
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
       // Correct method was called
-      verifyNever(mockNutrition.editMeal(any));
-      verify(mockNutrition.addMeal(any, any));
+      verifyNever(mockRepo.updateMeal(any, any));
+      verify(mockRepo.createMeal(any));
     });
 
     // Detail page

@@ -21,23 +21,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/app_settings_notifier.dart';
-import 'package:wger/providers/nutrition.dart';
 import 'package:wger/widgets/core/settings.dart';
 
-import '../../test_data/nutritional_plans.dart';
 import 'settings_test.mocks.dart';
 
 @GenerateMocks([
-  NutritionPlansProvider,
   SharedPreferencesAsync,
 ])
 void main() {
-  final mockNutritionProvider = MockNutritionPlansProvider();
   final mockSharedPreferences = MockSharedPreferencesAsync();
 
   setUp(() {
@@ -49,7 +44,6 @@ void main() {
     when(
       mockSharedPreferences.remove(any),
     ).thenAnswer((_) async {});
-    when(mockNutritionProvider.ingredients).thenReturn([ingredient1, ingredient2]);
   });
 
   Widget createSettingsScreen({locale = 'en'}) {
@@ -57,31 +51,14 @@ void main() {
       overrides: [
         appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
       ],
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<NutritionPlansProvider>(
-            create: (context) => mockNutritionProvider,
-          ),
-        ],
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const SettingsPage(),
-        ),
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const SettingsPage(),
       ),
     );
   }
-
-  group('Cache', () {
-    testWidgets('Test resetting the ingredient cache', (WidgetTester tester) async {
-      await tester.pumpWidget(createSettingsScreen());
-      await tester.tap(find.byKey(const ValueKey('cacheIconIngredients')));
-      await tester.pumpAndSettle();
-
-      verify(mockNutritionProvider.clearIngredientCache());
-    });
-  });
 
   group('Theme settings (AppSettingsNotifier)', () {
     test('default theme is system', () async {

@@ -22,7 +22,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer, Provider;
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/core/locator.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -32,7 +31,6 @@ import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/gallery.dart';
-import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/wger_base_riverpod.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/auth_screen.dart';
@@ -87,9 +85,6 @@ void main() async {
   _setupLogging();
 
   final logger = Logger('main');
-
-  // Locator to initialize exerciseDB
-  await ServiceLocator().configure();
 
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
@@ -175,9 +170,6 @@ class MainApp extends ConsumerWidget {
         return MultiProvider(
           providers: [
             Provider<WgerBaseProvider>.value(value: base),
-            ChangeNotifierProvider<NutritionPlansProvider>(
-              create: (_) => NutritionPlansProvider(base, []),
-            ),
             ChangeNotifierProvider<GalleryProvider>(
               create: (_) => GalleryProvider(
                 serverUrl: base.serverUrl,

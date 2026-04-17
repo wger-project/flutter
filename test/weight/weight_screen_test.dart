@@ -17,14 +17,14 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
@@ -35,16 +35,22 @@ import '../../test_data/body_weight.dart';
 import '../../test_data/profile.dart';
 import 'weight_screen_test.mocks.dart';
 
-@GenerateMocks([NutritionPlansProvider, BodyWeightRepository, UserProfileRepository])
+@GenerateMocks([
+  NutritionRepository,
+  IngredientRepository,
+  BodyWeightRepository,
+  UserProfileRepository,
+])
 void main() {
-  late MockNutritionPlansProvider mockNutritionPlansProvider;
+  late MockNutritionRepository mockNutritionRepo;
+  late MockIngredientRepository mockIngredientRepo;
   late MockUserProfileRepository mockUserProfileRepository;
   MockBodyWeightRepository mockBodyWeightRepository = MockBodyWeightRepository();
 
   setUp(() {
-    mockNutritionPlansProvider = MockNutritionPlansProvider();
-    when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
-    when(mockNutritionPlansProvider.items).thenReturn([]);
+    mockNutritionRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
     mockUserProfileRepository = MockUserProfileRepository();
     when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => tProfile1);
@@ -59,24 +65,19 @@ void main() {
   });
 
   Widget createWeightScreen({locale = 'en'}) {
-    return riverpod.ProviderScope(
+    return ProviderScope(
       overrides: [
         bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
+        nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<NutritionPlansProvider>(
-            create: (ctx) => mockNutritionPlansProvider,
-          ),
-        ],
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const WeightScreen(),
-          routes: {FormScreen.routeName: (_) => const FormScreen()},
-        ),
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const WeightScreen(),
+        routes: {FormScreen.routeName: (_) => const FormScreen()},
       ),
     );
   }

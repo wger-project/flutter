@@ -23,14 +23,14 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart' as legacy_provider;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
@@ -154,16 +154,15 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             widget.onUpdateSearchQuery(pattern);
             widget.onDeselectIngredient();
 
-            return legacy_provider.Provider.of<NutritionPlansProvider>(
-              context,
-              listen: false,
-            ).searchIngredient(
-              pattern,
-              languageCode: Localizations.localeOf(context).languageCode,
-              searchLanguage: filters.searchLanguage,
-              isVegan: filters.isVegan,
-              isVegetarian: filters.isVegetarian,
-            );
+            return ref
+                .read(nutritionProvider.notifier)
+                .searchIngredient(
+                  pattern,
+                  languageCode: Localizations.localeOf(context).languageCode,
+                  searchLanguage: filters.searchLanguage,
+                  isVegan: filters.isVegan,
+                  isVegetarian: filters.isVegetarian,
+                );
           },
           itemBuilder: (context, ingredient) {
             final i18n = AppLocalizations.of(context);
@@ -220,6 +219,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                 onPressed: () {
                   showIngredientDetails(
                     context,
+                    ref,
                     ingredient.id,
                     select: () {
                       widget.selectIngredient(ingredient.id, ingredient.name, null);
@@ -234,12 +234,6 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             child: child,
           ),
           onSelected: (suggestion) async {
-            // Cache selected ingredient
-            final provider = legacy_provider.Provider.of<NutritionPlansProvider>(
-              context,
-              listen: false,
-            );
-            await provider.cacheIngredient(suggestion);
             widget.selectIngredient(suggestion.id, suggestion.name, null);
           },
         ),
@@ -262,10 +256,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
         showDialog(
           context: context,
           builder: (context) => FutureBuilder<Ingredient?>(
-            future: legacy_provider.Provider.of<NutritionPlansProvider>(
-              context,
-              listen: false,
-            ).searchIngredientWithBarcode(barcode),
+            future: ref.read(nutritionProvider.notifier).searchIngredientWithBarcode(barcode),
             builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
               return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
             },

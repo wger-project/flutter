@@ -16,15 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -35,16 +33,12 @@ import '../test_data/nutritional_plans.dart';
 
 Widget createNutritionalPlanScreen({Locale? locale}) {
   locale ??= const Locale('en');
-  final mockBaseProvider = MockWgerBaseProvider();
 
   final key = GlobalKey<NavigatorState>();
 
-  // Create a NutritionPlansProvider (still ChangeNotifier)
-  final nutritionProvider = NutritionPlansProvider(
-    mockBaseProvider,
-    [],
-    database: IngredientDatabase.inMemory(NativeDatabase.memory()),
-  );
+  final mockNutritionRepo = MockNutritionRepository();
+  final mockIngredientRepo = MockIngredientRepository();
+  when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
   final mockBodyWeightRepository = MockBodyWeightRepository();
   when(
@@ -57,32 +51,27 @@ Widget createNutritionalPlanScreen({Locale? locale}) {
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,
     ),
-    child: riverpod.ProviderScope(
+    child: ProviderScope(
       overrides: [
         bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+        nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<NutritionPlansProvider>(
-            create: (context) => nutritionProvider,
-          ),
-        ],
-        child: MaterialApp(
-          locale: locale,
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          theme: wgerLightTheme,
-          navigatorKey: key,
-          home: TextButton(
-            onPressed: () => key.currentState!.push(
-              MaterialPageRoute<void>(
-                settings: RouteSettings(arguments: getNutritionalPlanScreenshot()),
-                builder: (_) => const NutritionalPlanScreen(),
-              ),
+      child: MaterialApp(
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(arguments: getNutritionalPlanScreenshot()),
+              builder: (_) => const NutritionalPlanScreen(),
             ),
-            child: const SizedBox(),
           ),
+          child: const SizedBox(),
         ),
       ),
     ),

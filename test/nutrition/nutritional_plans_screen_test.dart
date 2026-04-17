@@ -16,21 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/user/profile.dart';
-import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
@@ -38,12 +36,18 @@ import 'package:wger/widgets/nutrition/forms.dart';
 
 import 'nutritional_plans_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider, http.Client, BodyWeightRepository, UserProfileRepository])
+@GenerateMocks([
+  NutritionRepository,
+  IngredientRepository,
+  http.Client,
+  BodyWeightRepository,
+  UserProfileRepository,
+])
 void main() {
-  final mockBaseProvider = MockWgerBaseProvider();
-  final client = MockClient();
-  late IngredientDatabase database;
+  late MockNutritionRepository mockNutritionRepo;
+  late MockIngredientRepository mockIngredientRepo;
   late MockUserProfileRepository mockUserProfileRepository;
+  late ProviderContainer container;
 
   final testProfile = Profile(
     username: 'test',
@@ -53,63 +57,59 @@ void main() {
     weightUnitStr: 'kg',
   );
 
-  setUp(() {
-    database = IngredientDatabase.inMemory(NativeDatabase.memory());
+  final plans = [
+    NutritionalPlan(
+      id: 1,
+      description: 'test plan 1',
+      creationDate: DateTime(2021, 01, 01),
+      startDate: DateTime(2021, 01, 01),
+    ),
+    NutritionalPlan(
+      id: 2,
+      description: 'test plan 2',
+      creationDate: DateTime(2021, 01, 10),
+      startDate: DateTime(2021, 01, 10),
+    ),
+  ];
+
+  setUp(() async {
+    mockNutritionRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
     mockUserProfileRepository = MockUserProfileRepository();
+
     when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => testProfile);
-  });
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
-  tearDown(() {
-    database.close();
-  });
-
-  Widget createHomeScreen({locale = 'en'}) {
-    when(
-      client.delete(any, headers: anyNamed('headers')),
-    ).thenAnswer((_) async => http.Response('', 200));
-
-    when(mockBaseProvider.deleteRequest(any, any)).thenAnswer(
+    when(mockNutritionRepo.deletePlan(any)).thenAnswer(
       (_) async => http.Response('', 200),
     );
 
-    when(mockBaseProvider.token).thenReturn('1234');
-    when(mockBaseProvider.serverUrl).thenReturn('http://localhost');
-
-    return riverpod.ProviderScope(
+    container = ProviderContainer(
       overrides: [
         bodyWeightRepositoryProvider.overrideWithValue(MockBodyWeightRepository()),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
+        nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<NutritionPlansProvider>(
-            create: (context) => NutritionPlansProvider(
-              mockBaseProvider,
-              [
-                NutritionalPlan(
-                  id: 1,
-                  description: 'test plan 1',
-                  creationDate: DateTime(2021, 01, 01),
-                  startDate: DateTime(2021, 01, 01),
-                ),
-                NutritionalPlan(
-                  id: 2,
-                  description: 'test plan 2',
-                  creationDate: DateTime(2021, 01, 10),
-                  startDate: DateTime(2021, 01, 10),
-                ),
-              ],
-              database: database,
-            ),
-          ),
-        ],
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const NutritionalPlansScreen(),
-          routes: {FormScreen.routeName: (ctx) => const FormScreen()},
-        ),
+    );
+    // Seed the notifier state with the two test plans.
+    await container.read(nutritionProvider.future);
+    container.read(nutritionProvider.notifier).state = AsyncData(plans);
+  });
+
+  tearDown(() {
+    container.dispose();
+  });
+
+  Widget createHomeScreen({locale = 'en'}) {
+    return UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const NutritionalPlansScreen(),
+        routes: {FormScreen.routeName: (ctx) => const FormScreen()},
       ),
     );
   }

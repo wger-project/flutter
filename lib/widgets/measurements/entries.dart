@@ -19,11 +19,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart' as legacy_provider;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement_notifier.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
@@ -37,7 +36,7 @@ class EntriesList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final plans = legacy_provider.Provider.of<NutritionPlansProvider>(context, listen: false).items;
+    final plans = ref.watch(nutritionProvider).value ?? const [];
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final provider = ref.read(measurementProvider.notifier);
 

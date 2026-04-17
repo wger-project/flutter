@@ -4,15 +4,18 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i5;
-import 'dart:convert' as _i6;
-import 'dart:typed_data' as _i7;
+import 'dart:convert' as _i8;
+import 'dart:typed_data' as _i10;
 
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i4;
-import 'package:wger/models/body_weight/weight_entry.dart' as _i9;
-import 'package:wger/providers/base_provider.dart' as _i3;
-import 'package:wger/providers/body_weight_repository.dart' as _i8;
+import 'package:mockito/src/dummies.dart' as _i9;
+import 'package:wger/models/body_weight/weight_entry.dart' as _i12;
+import 'package:wger/models/nutrition/ingredient.dart' as _i3;
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart' as _i6;
+import 'package:wger/providers/body_weight_repository.dart' as _i11;
+import 'package:wger/providers/ingredient_repository.dart' as _i7;
+import 'package:wger/providers/nutrition_repository.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -29,137 +32,39 @@ import 'package:wger/providers/body_weight_repository.dart' as _i8;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeClient_0 extends _i1.SmartFake implements _i2.Client {
-  _FakeClient_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeResponse_0 extends _i1.SmartFake implements _i2.Response {
+  _FakeResponse_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeUri_1 extends _i1.SmartFake implements Uri {
-  _FakeUri_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeIngredient_1 extends _i1.SmartFake implements _i3.Ingredient {
+  _FakeIngredient_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeResponse_2 extends _i1.SmartFake implements _i2.Response {
-  _FakeResponse_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeStreamedResponse_3 extends _i1.SmartFake implements _i2.StreamedResponse {
-  _FakeStreamedResponse_3(Object parent, Invocation parentInvocation)
+class _FakeStreamedResponse_2 extends _i1.SmartFake implements _i2.StreamedResponse {
+  _FakeStreamedResponse_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-/// A class which mocks [WgerBaseProvider].
+/// A class which mocks [NutritionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWgerBaseProvider extends _i1.Mock implements _i3.WgerBaseProvider {
-  MockWgerBaseProvider() {
+class MockNutritionRepository extends _i1.Mock implements _i4.NutritionRepository {
+  MockNutritionRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.Client get client =>
+  _i5.Future<List<dynamic>> fetchAllPlans() =>
       (super.noSuchMethod(
-            Invocation.getter(#client),
-            returnValue: _FakeClient_0(this, Invocation.getter(#client)),
-          )
-          as _i2.Client);
-
-  @override
-  set client(_i2.Client? value) => super.noSuchMethod(
-    Invocation.setter(#client, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  String getAppNameHeaderValue() =>
-      (super.noSuchMethod(
-            Invocation.method(#getAppNameHeaderValue, []),
-            returnValue: _i4.dummyValue<String>(
-              this,
-              Invocation.method(#getAppNameHeaderValue, []),
-            ),
-          )
-          as String);
-
-  @override
-  Map<String, String> getDefaultHeaders({
-    bool? includeAuth = false,
-    String? language,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {
-              #includeAuth: includeAuth,
-              #language: language,
-            }),
-            returnValue: <String, String>{},
-          )
-          as Map<String, String>);
-
-  @override
-  Uri makeUrl(
-    String? path, {
-    int? id,
-    String? objectMethod,
-    Map<String, dynamic>? query,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #makeUrl,
-              [path],
-              {#id: id, #objectMethod: objectMethod, #query: query},
-            ),
-            returnValue: _FakeUri_1(
-              this,
-              Invocation.method(
-                #makeUrl,
-                [path],
-                {#id: id, #objectMethod: objectMethod, #query: query},
-              ),
-            ),
-          )
-          as Uri);
-
-  @override
-  _i5.Future<dynamic> fetch(
-    Uri? uri, {
-    int? maxRetries = 3,
-    Duration? initialDelay = const Duration(milliseconds: 250),
-    Duration? timeout = const Duration(seconds: 15),
-    String? language,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #fetch,
-              [uri],
-              {
-                #maxRetries: maxRetries,
-                #initialDelay: initialDelay,
-                #timeout: timeout,
-                #language: language,
-              },
-            ),
-            returnValue: _i5.Future<dynamic>.value(),
-          )
-          as _i5.Future<dynamic>);
-
-  @override
-  _i5.Future<List<dynamic>> fetchPaginated(
-    Uri? uri, {
-    String? language,
-    Duration? timeout = const Duration(seconds: 15),
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #fetchPaginated,
-              [uri],
-              {#language: language, #timeout: timeout},
-            ),
+            Invocation.method(#fetchAllPlans, []),
             returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
           )
           as _i5.Future<List<dynamic>>);
 
   @override
-  _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
+  _i5.Future<Map<String, dynamic>> fetchPlanSparse(int? planId) =>
       (super.noSuchMethod(
-            Invocation.method(#post, [data, uri]),
+            Invocation.method(#fetchPlanSparse, [planId]),
             returnValue: _i5.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
@@ -167,12 +72,9 @@ class MockWgerBaseProvider extends _i1.Mock implements _i3.WgerBaseProvider {
           as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<Map<String, dynamic>> patch(
-    Map<String, dynamic>? data,
-    Uri? uri,
-  ) =>
+  _i5.Future<Map<String, dynamic>> fetchPlanFull(int? planId) =>
       (super.noSuchMethod(
-            Invocation.method(#patch, [data, uri]),
+            Invocation.method(#fetchPlanFull, [planId]),
             returnValue: _i5.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
@@ -180,17 +82,197 @@ class MockWgerBaseProvider extends _i1.Mock implements _i3.WgerBaseProvider {
           as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<_i2.Response> deleteRequest(String? url, int? id) =>
+  _i5.Future<Map<String, dynamic>> createPlan(Map<String, dynamic>? data) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteRequest, [url, id]),
+            Invocation.method(#createPlan, [data]),
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i5.Future<Map<String, dynamic>>);
+
+  @override
+  _i5.Future<void> updatePlan(int? id, Map<String, dynamic>? data) =>
+      (super.noSuchMethod(
+            Invocation.method(#updatePlan, [id, data]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<_i2.Response> deletePlan(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deletePlan, [id]),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_2(
-                this,
-                Invocation.method(#deleteRequest, [url, id]),
-              ),
+              _FakeResponse_0(this, Invocation.method(#deletePlan, [id])),
             ),
           )
           as _i5.Future<_i2.Response>);
+
+  @override
+  _i5.Future<Map<String, dynamic>> createMeal(Map<String, dynamic>? data) =>
+      (super.noSuchMethod(
+            Invocation.method(#createMeal, [data]),
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i5.Future<Map<String, dynamic>>);
+
+  @override
+  _i5.Future<Map<String, dynamic>> updateMeal(
+    int? id,
+    Map<String, dynamic>? data,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateMeal, [id, data]),
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i5.Future<Map<String, dynamic>>);
+
+  @override
+  _i5.Future<_i2.Response> deleteMeal(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteMeal, [id]),
+            returnValue: _i5.Future<_i2.Response>.value(
+              _FakeResponse_0(this, Invocation.method(#deleteMeal, [id])),
+            ),
+          )
+          as _i5.Future<_i2.Response>);
+
+  @override
+  _i5.Future<Map<String, dynamic>> createMealItem(Map<String, dynamic>? data) =>
+      (super.noSuchMethod(
+            Invocation.method(#createMealItem, [data]),
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i5.Future<Map<String, dynamic>>);
+
+  @override
+  _i5.Future<_i2.Response> deleteMealItem(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteMealItem, [id]),
+            returnValue: _i5.Future<_i2.Response>.value(
+              _FakeResponse_0(this, Invocation.method(#deleteMealItem, [id])),
+            ),
+          )
+          as _i5.Future<_i2.Response>);
+
+  @override
+  _i5.Future<_i3.Ingredient> fetchIngredient(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchIngredient, [id]),
+            returnValue: _i5.Future<_i3.Ingredient>.value(
+              _FakeIngredient_1(
+                this,
+                Invocation.method(#fetchIngredient, [id]),
+              ),
+            ),
+          )
+          as _i5.Future<_i3.Ingredient>);
+
+  @override
+  _i5.Future<List<_i3.Ingredient>> searchIngredient(
+    String? name, {
+    String? languageCode = 'en',
+    _i4.IngredientSearchLanguage? searchLanguage = _i4.IngredientSearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchIngredient,
+              [name],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+              },
+            ),
+            returnValue: _i5.Future<List<_i3.Ingredient>>.value(
+              <_i3.Ingredient>[],
+            ),
+          )
+          as _i5.Future<List<_i3.Ingredient>>);
+
+  @override
+  _i5.Future<_i3.Ingredient?> searchIngredientWithBarcode(String? barcode) =>
+      (super.noSuchMethod(
+            Invocation.method(#searchIngredientWithBarcode, [barcode]),
+            returnValue: _i5.Future<_i3.Ingredient?>.value(),
+          )
+          as _i5.Future<_i3.Ingredient?>);
+
+  @override
+  _i5.Future<List<_i6.IngredientWeightUnit>> fetchWeightUnits(
+    int? ingredientId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchWeightUnits, [ingredientId]),
+            returnValue: _i5.Future<List<_i6.IngredientWeightUnit>>.value(
+              <_i6.IngredientWeightUnit>[],
+            ),
+          )
+          as _i5.Future<List<_i6.IngredientWeightUnit>>);
+
+  @override
+  _i5.Future<List<dynamic>> fetchLogsForPlan(int? planId) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchLogsForPlan, [planId]),
+            returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
+          )
+          as _i5.Future<List<dynamic>>);
+
+  @override
+  _i5.Future<Map<String, dynamic>> createLog(Map<String, dynamic>? data) =>
+      (super.noSuchMethod(
+            Invocation.method(#createLog, [data]),
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i5.Future<Map<String, dynamic>>);
+
+  @override
+  _i5.Future<_i2.Response> deleteLog(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLog, [id]),
+            returnValue: _i5.Future<_i2.Response>.value(
+              _FakeResponse_0(this, Invocation.method(#deleteLog, [id])),
+            ),
+          )
+          as _i5.Future<_i2.Response>);
+}
+
+/// A class which mocks [IngredientRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockIngredientRepository extends _i1.Mock implements _i7.IngredientRepository {
+  MockIngredientRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Stream<_i3.Ingredient?> watchById(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchById, [id]),
+            returnValue: _i5.Stream<_i3.Ingredient?>.empty(),
+          )
+          as _i5.Stream<_i3.Ingredient?>);
+
+  @override
+  _i5.Future<_i3.Ingredient?> getById(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#getById, [id]),
+            returnValue: _i5.Future<_i3.Ingredient?>.value(),
+          )
+          as _i5.Future<_i3.Ingredient?>);
 }
 
 /// A class which mocks [Client].
@@ -206,7 +288,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
       (super.noSuchMethod(
             Invocation.method(#head, [url], {#headers: headers}),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_2(
+              _FakeResponse_0(
                 this,
                 Invocation.method(#head, [url], {#headers: headers}),
               ),
@@ -219,7 +301,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
       (super.noSuchMethod(
             Invocation.method(#get, [url], {#headers: headers}),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_2(
+              _FakeResponse_0(
                 this,
                 Invocation.method(#get, [url], {#headers: headers}),
               ),
@@ -232,7 +314,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i6.Encoding? encoding,
+    _i8.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -241,7 +323,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
               {#headers: headers, #body: body, #encoding: encoding},
             ),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_2(
+              _FakeResponse_0(
                 this,
                 Invocation.method(
                   #post,
@@ -258,7 +340,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i6.Encoding? encoding,
+    _i8.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -267,7 +349,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
               {#headers: headers, #body: body, #encoding: encoding},
             ),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_2(
+              _FakeResponse_0(
                 this,
                 Invocation.method(
                   #put,
@@ -284,7 +366,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i6.Encoding? encoding,
+    _i8.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -293,7 +375,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
               {#headers: headers, #body: body, #encoding: encoding},
             ),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_2(
+              _FakeResponse_0(
                 this,
                 Invocation.method(
                   #patch,
@@ -310,7 +392,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i6.Encoding? encoding,
+    _i8.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -319,7 +401,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
               {#headers: headers, #body: body, #encoding: encoding},
             ),
             returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_2(
+              _FakeResponse_0(
                 this,
                 Invocation.method(
                   #delete,
@@ -336,7 +418,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
       (super.noSuchMethod(
             Invocation.method(#read, [url], {#headers: headers}),
             returnValue: _i5.Future<String>.value(
-              _i4.dummyValue<String>(
+              _i9.dummyValue<String>(
                 this,
                 Invocation.method(#read, [url], {#headers: headers}),
               ),
@@ -345,22 +427,22 @@ class MockClient extends _i1.Mock implements _i2.Client {
           as _i5.Future<String>);
 
   @override
-  _i5.Future<_i7.Uint8List> readBytes(
+  _i5.Future<_i10.Uint8List> readBytes(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#readBytes, [url], {#headers: headers}),
-            returnValue: _i5.Future<_i7.Uint8List>.value(_i7.Uint8List(0)),
+            returnValue: _i5.Future<_i10.Uint8List>.value(_i10.Uint8List(0)),
           )
-          as _i5.Future<_i7.Uint8List>);
+          as _i5.Future<_i10.Uint8List>);
 
   @override
   _i5.Future<_i2.StreamedResponse> send(_i2.BaseRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#send, [request]),
             returnValue: _i5.Future<_i2.StreamedResponse>.value(
-              _FakeStreamedResponse_3(
+              _FakeStreamedResponse_2(
                 this,
                 Invocation.method(#send, [request]),
               ),
@@ -378,18 +460,18 @@ class MockClient extends _i1.Mock implements _i2.Client {
 /// A class which mocks [BodyWeightRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightRepository extends _i1.Mock implements _i8.BodyWeightRepository {
+class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightRepository {
   MockBodyWeightRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Stream<List<_i9.WeightEntry>> watchAllDrift() =>
+  _i5.Stream<List<_i12.WeightEntry>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i5.Stream<List<_i9.WeightEntry>>.empty(),
+            returnValue: _i5.Stream<List<_i12.WeightEntry>>.empty(),
           )
-          as _i5.Stream<List<_i9.WeightEntry>>);
+          as _i5.Stream<List<_i12.WeightEntry>>);
 
   @override
   _i5.Future<void> deleteLocalDrift(String? id) =>
@@ -401,7 +483,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i8.BodyWeightReposit
           as _i5.Future<void>);
 
   @override
-  _i5.Future<void> updateLocalDrift(_i9.WeightEntry? entry) =>
+  _i5.Future<void> updateLocalDrift(_i12.WeightEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDrift, [entry]),
             returnValue: _i5.Future<void>.value(),
@@ -410,7 +492,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i8.BodyWeightReposit
           as _i5.Future<void>);
 
   @override
-  _i5.Future<void> addLocalDrift(_i9.WeightEntry? entry) =>
+  _i5.Future<void> addLocalDrift(_i12.WeightEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
             returnValue: _i5.Future<void>.value(),

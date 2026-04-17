@@ -20,7 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/nutrition/ingredient_filters.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 
 part 'nutrition_ingredient_filters_riverpod.g.dart';
 

@@ -17,12 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 
@@ -33,16 +33,16 @@ class LogMealArguments {
   const LogMealArguments(this.meal, this.popTwice);
 }
 
-class LogMealScreen extends StatefulWidget {
+class LogMealScreen extends ConsumerStatefulWidget {
   const LogMealScreen();
 
   static const routeName = '/log-meal';
 
   @override
-  State<LogMealScreen> createState() => _LogMealScreenState();
+  ConsumerState<LogMealScreen> createState() => _LogMealScreenState();
 }
 
-class _LogMealScreenState extends State<LogMealScreen> {
+class _LogMealScreenState extends ConsumerState<LogMealScreen> {
   double portionPct = 100;
   final _dateController = TextEditingController(text: '');
   final _timeController = TextEditingController();
@@ -80,138 +80,140 @@ class _LogMealScreenState extends State<LogMealScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(i18n.logMeal)),
-      body: Consumer<NutritionPlansProvider>(
-        builder: (context, nutritionProvider, child) => SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: Column(
-              children: [
-                Text(
-                  meal.name,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                if (meal.mealItems.isEmpty)
-                  ListTile(title: Text(i18n.noIngredientsDefined))
-                else
-                  Column(
+      body: Consumer(
+        builder: (context, ref, child) {
+          ref.watch(nutritionProvider);
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: Column(
+                children: [
+                  Text(
+                    meal.name,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  if (meal.mealItems.isEmpty)
+                    ListTile(title: Text(i18n.noIngredientsDefined))
+                  else
+                    Column(
+                      children: [
+                        const DiaryheaderTile(),
+                        ...meal.mealItems.map(
+                          (item) => MealItemEditableFullTile(item, viewMode.withAllDetails, false),
+                        ),
+                        const SizedBox(height: 32),
+                        Text(
+                          'Portion: ${portionPct.round()} %',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        Slider.adaptive(
+                          min: 0,
+                          max: 150,
+                          divisions: 30,
+                          onChanged: (value) => setState(() => portionPct = value),
+                          value: portionPct,
+                        ),
+                      ],
+                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      const DiaryheaderTile(),
-                      ...meal.mealItems.map(
-                        (item) => MealItemEditableFullTile(item, viewMode.withAllDetails, false),
+                      const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
+                      Expanded(
+                        child: TextFormField(
+                          key: const ValueKey('field-date'),
+                          readOnly: true,
+                          decoration: InputDecoration(labelText: i18n.date),
+                          enableInteractiveSelection: false,
+                          controller: _dateController,
+                          onTap: () async {
+                            final pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now().subtract(const Duration(days: 3000)),
+                              lastDate: DateTime.now(),
+                            );
+
+                            if (pickedDate != null) {
+                              _dateController.text = dateFormat.format(pickedDate);
+                            }
+                          },
+                          onSaved: (newValue) {
+                            _dateController.text = newValue!;
+                          },
+                        ),
                       ),
-                      const SizedBox(height: 32),
-                      Text(
-                        'Portion: ${portionPct.round()} %',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
+                      Expanded(
+                        child: TextFormField(
+                          key: const ValueKey('field-time'),
+                          readOnly: true,
+                          decoration: InputDecoration(labelText: i18n.time),
+                          controller: _timeController,
+                          onTap: () async {
+                            // Open time picker
+                            final pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(DateTime.now()),
+                            );
+
+                            if (pickedTime != null) {
+                              _timeController.text = timeToString(pickedTime)!;
+                            }
+                          },
+                          onSaved: (newValue) {
+                            _timeController.text = newValue!;
+                          },
+                        ),
                       ),
-                      Slider.adaptive(
-                        min: 0,
-                        max: 150,
-                        divisions: 30,
-                        onChanged: (value) => setState(() => portionPct = value),
-                        value: portionPct,
+                      const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
+                    ],
+                  ),
+                  const Padding(padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (meal.mealItems.isNotEmpty)
+                        TextButton(
+                          child: Text(i18n.save),
+                          onPressed: () async {
+                            final loggedDate = dateTimeFormat.parse(
+                              '${_dateController.text} ${_timeController.text}',
+                            );
+                            await ref
+                                .read(nutritionProvider.notifier)
+                                .logMealToDiary(meal, loggedDate);
+
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    i18n.mealLogged,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+
+                              Navigator.of(context).pop();
+                              if (args.popTwice) {
+                                Navigator.of(context).pop();
+                              }
+                            }
+                          },
+                        ),
+                      TextButton(
+                        child: Text(
+                          MaterialLocalizations.of(context).cancelButtonLabel,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
                     ],
                   ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
-                    Expanded(
-                      child: TextFormField(
-                        key: const ValueKey('field-date'),
-                        readOnly: true,
-                        decoration: InputDecoration(labelText: i18n.date),
-                        enableInteractiveSelection: false,
-                        controller: _dateController,
-                        onTap: () async {
-                          final pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now().subtract(const Duration(days: 3000)),
-                            lastDate: DateTime.now(),
-                          );
-
-                          if (pickedDate != null) {
-                            _dateController.text = dateFormat.format(pickedDate);
-                          }
-                        },
-                        onSaved: (newValue) {
-                          _dateController.text = newValue!;
-                        },
-                      ),
-                    ),
-                    const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
-                    Expanded(
-                      child: TextFormField(
-                        key: const ValueKey('field-time'),
-                        readOnly: true,
-                        decoration: InputDecoration(labelText: i18n.time),
-                        controller: _timeController,
-                        onTap: () async {
-                          // Open time picker
-                          final pickedTime = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.fromDateTime(DateTime.now()),
-                          );
-
-                          if (pickedTime != null) {
-                            _timeController.text = timeToString(pickedTime)!;
-                          }
-                        },
-                        onSaved: (newValue) {
-                          _timeController.text = newValue!;
-                        },
-                      ),
-                    ),
-                    const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
-                  ],
-                ),
-                const Padding(padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (meal.mealItems.isNotEmpty)
-                      TextButton(
-                        child: Text(i18n.save),
-                        onPressed: () async {
-                          final loggedDate = dateTimeFormat.parse(
-                            '${_dateController.text} ${_timeController.text}',
-                          );
-                          await Provider.of<NutritionPlansProvider>(
-                            context,
-                            listen: false,
-                          ).logMealToDiary(meal, loggedDate);
-
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  i18n.mealLogged,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            );
-
-                            Navigator.of(context).pop();
-                            if (args.popTwice) {
-                              Navigator.of(context).pop();
-                            }
-                          }
-                        },
-                      ),
-                    TextButton(
-                      child: Text(
-                        MaterialLocalizations.of(context).cancelButtonLabel,
-                      ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

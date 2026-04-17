@@ -21,29 +21,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
 import '../../test_data/nutritional_plans.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
 void main() {
-  late MockNutritionPlansProvider mockNutrition;
+  late MockNutritionRepository mockRepo;
+  late MockIngredientRepository mockIngredientRepo;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
-    mockNutrition = MockNutritionPlansProvider();
+    mockRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
+
     when(
-      mockNutrition.searchIngredient(
+      mockRepo.searchIngredient(
         any,
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
@@ -71,26 +75,24 @@ void main() {
         ),
       ]),
     );
-
-    // Mock cacheIngredient as it might be called
-    when(mockNutrition.cacheIngredient(any)).thenAnswer((_) => Future.value());
   });
 
   Widget createWidgetUnderTest() {
     return ProviderScope(
-      child: ChangeNotifierProvider<NutritionPlansProvider>.value(
-        value: mockNutrition,
-        child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
-            body: IngredientTypeahead(
-              TextEditingController(),
-              TextEditingController(),
-              selectIngredient: (id, name, amount) {},
-              onDeselectIngredient: () {},
-              onUpdateSearchQuery: (query) {},
-            ),
+      overrides: [
+        nutritionRepositoryProvider.overrideWithValue(mockRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      ],
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: IngredientTypeahead(
+            TextEditingController(),
+            TextEditingController(),
+            selectIngredient: (id, name, amount) {},
+            onDeselectIngredient: () {},
+            onUpdateSearchQuery: (query) {},
           ),
         ),
       ),
@@ -129,7 +131,7 @@ void main() {
   testWidgets('Shows only Vegan chip when ingredient is vegan', (WidgetTester tester) async {
     // ingredient1 (Water) is vegan + vegetarian
     when(
-      mockNutrition.searchIngredient(
+      mockRepo.searchIngredient(
         any,
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
@@ -152,7 +154,7 @@ void main() {
   ) async {
     // milk is vegetarian but not vegan
     when(
-      mockNutrition.searchIngredient(
+      mockRepo.searchIngredient(
         any,
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
@@ -173,7 +175,7 @@ void main() {
   testWidgets('Shows no dietary chips when ingredient has no info', (WidgetTester tester) async {
     // ingredient2 (Burger soup) has no dietary info
     when(
-      mockNutrition.searchIngredient(
+      mockRepo.searchIngredient(
         any,
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
@@ -216,7 +218,7 @@ void main() {
 
     // Assert
     verify(
-      mockNutrition.searchIngredient(
+      mockRepo.searchIngredient(
         'Apple',
         languageCode: 'en',
         searchLanguage: IngredientSearchLanguage.current,

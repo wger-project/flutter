@@ -17,12 +17,12 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -30,21 +30,21 @@ import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
-class DashboardNutritionWidget extends StatefulWidget {
+class DashboardNutritionWidget extends ConsumerStatefulWidget {
   const DashboardNutritionWidget();
 
   @override
-  _DashboardNutritionWidgetState createState() => _DashboardNutritionWidgetState();
+  ConsumerState<DashboardNutritionWidget> createState() => _DashboardNutritionWidgetState();
 }
 
-class _DashboardNutritionWidgetState extends State<DashboardNutritionWidget> {
+class _DashboardNutritionWidgetState extends ConsumerState<DashboardNutritionWidget> {
   NutritionalPlan? _plan;
   bool _hasContent = false;
 
   @override
   void initState() {
     super.initState();
-    _plan = Provider.of<NutritionPlansProvider>(context, listen: false).currentPlan;
+    _plan = ref.read(nutritionProvider.notifier).currentPlan;
     _hasContent = _plan != null;
   }
 

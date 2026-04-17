@@ -24,7 +24,7 @@ import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/gallery.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
@@ -156,7 +156,7 @@ class MainSettingsDialog extends ConsumerWidget {
             onTap: () {
               ref.read(authProvider.notifier).logout();
               // context.read<RoutinesProvider>().clear();
-              context.read<NutritionPlansProvider>().clear();
+              ref.read(nutritionProvider.notifier).clear();
               // context.read<BodyWeightProvider>().clear();
               context.read<GalleryProvider>().clear();
               ref.read(userProfileProvider.notifier).clear();

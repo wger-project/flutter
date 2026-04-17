@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
@@ -33,16 +33,16 @@ enum NutritionalPlanOptions {
   delete,
 }
 
-class NutritionalPlanScreen extends StatefulWidget {
+class NutritionalPlanScreen extends ConsumerStatefulWidget {
   const NutritionalPlanScreen();
 
   static const routeName = '/nutritional-plan-detail';
 
   @override
-  State<NutritionalPlanScreen> createState() => _NutritionalPlanScreenState();
+  ConsumerState<NutritionalPlanScreen> createState() => _NutritionalPlanScreenState();
 }
 
-class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
+class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
   Future<NutritionalPlan>? _planFuture;
   late NutritionalPlan _nutritionalPlan;
 
@@ -51,10 +51,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
     super.didChangeDependencies();
     if (_planFuture == null) {
       _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
-      _planFuture = Provider.of<NutritionPlansProvider>(
-        context,
-        listen: false,
-      ).fetchAndSetPlanFull(_nutritionalPlan.id!);
+      _planFuture = ref.read(nutritionProvider.notifier).fetchAndSetPlanFull(_nutritionalPlan.id!);
     }
   }
 
@@ -141,10 +138,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                       );
                       break;
                     case NutritionalPlanOptions.delete:
-                      Provider.of<NutritionPlansProvider>(
-                        context,
-                        listen: false,
-                      ).deletePlan(_nutritionalPlan.id!);
+                      ref.read(nutritionProvider.notifier).deletePlan(_nutritionalPlan.id!);
                       Navigator.of(context).pop();
                       break;
                   }
@@ -189,9 +183,11 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                       ],
                     ),
                   )
-                : Consumer<NutritionPlansProvider>(
-                    builder: (context, value, child) =>
-                        NutritionalPlanDetailWidget(_nutritionalPlan),
+                : Consumer(
+                    builder: (context, ref, child) {
+                      ref.watch(nutritionProvider);
+                      return NutritionalPlanDetailWidget(_nutritionalPlan);
+                    },
                   ),
           ),
         ],

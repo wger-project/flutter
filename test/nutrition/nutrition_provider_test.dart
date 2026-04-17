@@ -1,123 +1,104 @@
 import 'dart:convert';
 
-import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 
 import '../fixtures/fixture_reader.dart';
 import 'nutrition_provider_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
+@GenerateMocks([NutritionRepository, IngredientRepository])
 void main() {
   final now = DateTime.now();
-  late NutritionPlansProvider nutritionProvider;
-  late MockWgerBaseProvider mockWgerBaseProvider;
-  late IngredientDatabase database;
-  late Map<String, dynamic> ingredient59887Response;
+  late MockNutritionRepository mockRepo;
+  late MockIngredientRepository mockIngredientRepo;
+
+  late Map<String, dynamic> nutritionalPlanInfoResponse;
+  late Map<String, dynamic> nutritionalPlanDetailResponse;
+  late List<dynamic> nutritionDiaryResponse;
+  late Map<String, dynamic> ingredient10065Response;
+
+  ProviderContainer makeContainer() {
+    final container = ProviderContainer(
+      overrides: [
+        nutritionRepositoryProvider.overrideWithValue(mockRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      ],
+    );
+    addTearDown(container.dispose);
+    return container;
+  }
+
+  /// Creates a container whose [nutritionProvider] is seeded with [plans].
+  Future<ProviderContainer> containerWithPlans(List<NutritionalPlan> plans) async {
+    when(mockRepo.fetchAllPlans()).thenAnswer(
+      (_) async => plans.map((p) => p.toJson()).toList(),
+    );
+    final container = makeContainer();
+    // Ensure the async build() has run so state is AsyncData(...)
+    await container.read(nutritionProvider.future);
+    await container.read(nutritionProvider.notifier).fetchAndSetAllPlansSparse();
+    return container;
+  }
 
   setUp(() {
-    database = IngredientDatabase.inMemory(NativeDatabase.memory());
-    mockWgerBaseProvider = MockWgerBaseProvider();
-    nutritionProvider = NutritionPlansProvider(
-      mockWgerBaseProvider,
-      [],
-      database: database,
-    );
+    mockRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
 
-    const String planInfoUrl = 'nutritionplaninfo';
-    const String planUrl = 'nutritionplan';
-    const String diaryUrl = 'nutritiondiary';
-    const String ingredientInfoUrl = 'ingredientinfo';
-
-    final Map<String, dynamic> nutritionalPlanInfoResponse = jsonDecode(
+    nutritionalPlanInfoResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_info_detail_response.json'),
     );
-    final Map<String, dynamic> nutritionalPlanDetailResponse = jsonDecode(
+    nutritionalPlanDetailResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_detail_response.json'),
     );
-    final List<dynamic> nutritionDiaryResponse = jsonDecode(
+    nutritionDiaryResponse = jsonDecode(
       fixture('nutrition/nutrition_diary_response.json'),
     )['results'];
-    ingredient59887Response = jsonDecode(
-      fixture('nutrition/ingredientinfo_59887.json'),
-    );
-    final Map<String, dynamic> ingredient10065Response = jsonDecode(
+    ingredient10065Response = jsonDecode(
       fixture('nutrition/ingredientinfo_10065.json'),
     );
-    final Map<String, dynamic> ingredient58300Response = jsonDecode(
-      fixture('nutrition/ingredientinfo_58300.json'),
-    );
 
-    final ingredientList = [
-      Ingredient.fromJson(ingredient59887Response),
-      Ingredient.fromJson(ingredient10065Response),
-      Ingredient.fromJson(ingredient58300Response),
-    ];
-
-    nutritionProvider.ingredients = ingredientList;
-
-    final Uri planInfoUri = Uri(
-      scheme: 'http',
-      host: 'localhost',
-      path: 'api/v2/$planInfoUrl/1',
-    );
-    final Uri planUri = Uri(
-      scheme: 'http',
-      host: 'localhost',
-      path: 'api/v2/$planUrl',
-    );
-    final Uri diaryUri = Uri(
-      scheme: 'http',
-      host: 'localhost',
-      path: 'api/v2/$diaryUrl',
-    );
-    final Uri ingredientUri = Uri(
-      scheme: 'http',
-      host: 'localhost',
-      path: 'api/v2/$ingredientInfoUrl',
-    );
-    when(mockWgerBaseProvider.makeUrl(planInfoUrl, id: anyNamed('id'))).thenReturn(planInfoUri);
-    when(mockWgerBaseProvider.makeUrl(planUrl, id: anyNamed('id'))).thenReturn(planUri);
-    when(mockWgerBaseProvider.makeUrl(diaryUrl, query: anyNamed('query'))).thenReturn(diaryUri);
-    when(
-      mockWgerBaseProvider.makeUrl(ingredientInfoUrl, id: anyNamed('id')),
-    ).thenReturn(ingredientUri);
-    when(mockWgerBaseProvider.fetch(planInfoUri)).thenAnswer(
-      (realInvocation) => Future.value(nutritionalPlanInfoResponse),
-    );
-    when(mockWgerBaseProvider.fetch(planUri)).thenAnswer(
-      (realInvocation) => Future.value(nutritionalPlanDetailResponse),
-    );
-    when(mockWgerBaseProvider.fetchPaginated(diaryUri)).thenAnswer(
-      (realInvocation) => Future.value(nutritionDiaryResponse),
-    );
-    when(mockWgerBaseProvider.fetch(ingredientUri)).thenAnswer(
-      (realInvocation) => Future.value(ingredient10065Response),
-    );
-  });
-
-  tearDown(() async {
-    await database.close();
+    // By default the local ingredient repo has no data - fall back to HTTP.
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
   });
 
   group('fetchAndSetPlanFull', () {
     test('should correctly load a full nutritional plan', () async {
       // arrange
-      await nutritionProvider.fetchAndSetPlanFull(1);
+      when(mockRepo.fetchPlanSparse(1)).thenAnswer(
+        (_) async => nutritionalPlanDetailResponse,
+      );
+      when(mockRepo.fetchPlanFull(1)).thenAnswer(
+        (_) async => nutritionalPlanInfoResponse,
+      );
+      when(mockRepo.fetchLogsForPlan(any)).thenAnswer(
+        (_) async => nutritionDiaryResponse,
+      );
+      when(mockRepo.fetchIngredient(any)).thenAnswer(
+        (_) async => Ingredient.fromJson(ingredient10065Response),
+      );
+
+      final container = makeContainer();
+      await container.read(nutritionProvider.future);
+
+      // act
+      await container.read(nutritionProvider.notifier).fetchAndSetPlanFull(1);
 
       // assert
-      expect(nutritionProvider.items.isEmpty, false);
+      final plans = container.read(nutritionProvider).value ?? const [];
+      expect(plans.isEmpty, false);
     });
   });
 
   group('currentPlan', () {
-    test('gibt den aktiven Plan zurück, wenn nur einer aktiv ist', () {
+    test('gibt den aktiven Plan zurück, wenn nur einer aktiv ist', () async {
       final plan = NutritionalPlan(
         id: 1,
         description: 'Aktiver Plan',
@@ -125,11 +106,14 @@ void main() {
         endDate: now.add(const Duration(days: 1)),
         creationDate: now.subtract(const Duration(days: 2)),
       );
-      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [plan], database: database);
-      expect(nutritionProvider.currentPlan, equals(plan));
+      final container = await containerWithPlans([plan]);
+      expect(
+        container.read(nutritionProvider.notifier).currentPlan?.id,
+        equals(plan.id),
+      );
     });
 
-    test('gibt den neuesten aktiven Plan zurück, wenn mehrere aktiv sind', () {
+    test('gibt den neuesten aktiven Plan zurück, wenn mehrere aktiv sind', () async {
       final olderPlan = NutritionalPlan(
         id: 1,
         description: 'Älterer aktiver Plan',
@@ -144,21 +128,21 @@ void main() {
         endDate: now.add(const Duration(days: 5)),
         creationDate: now.subtract(const Duration(days: 2)),
       );
-      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
-        olderPlan,
-        newerPlan,
-      ], database: database);
-      expect(nutritionProvider.currentPlan, equals(newerPlan));
+      final container = await containerWithPlans([olderPlan, newerPlan]);
+      expect(
+        container.read(nutritionProvider.notifier).currentPlan?.id,
+        equals(newerPlan.id),
+      );
     });
   });
 
   group('currentPlan correctly returns the active plan', () {
-    test('no plans available -> null', () {
-      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [], database: database);
-      expect(nutritionProvider.currentPlan, isNull);
+    test('no plans available -> null', () async {
+      final container = await containerWithPlans([]);
+      expect(container.read(nutritionProvider.notifier).currentPlan, isNull);
     });
 
-    test('no active plan -> null', () {
+    test('no active plan -> null', () async {
       final plans = [
         NutritionalPlan(
           id: 1,
@@ -173,117 +157,85 @@ void main() {
           endDate: now.add(const Duration(days: 50)),
         ),
       ];
-      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, plans, database: database);
-      expect(nutritionProvider.currentPlan, isNull);
+      final container = await containerWithPlans(plans);
+      expect(container.read(nutritionProvider.notifier).currentPlan, isNull);
     });
 
-    test('active plan exists -> return it', () {
+    test('active plan exists -> return it', () async {
       final plan = NutritionalPlan(
+        id: 42,
         description: 'Active plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
       );
-      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [plan], database: database);
-      expect(nutritionProvider.currentPlan, equals(plan));
+      final container = await containerWithPlans([plan]);
+      expect(
+        container.read(nutritionProvider.notifier).currentPlan?.id,
+        equals(plan.id),
+      );
     });
 
-    test('inactive plans are ignored', () {
+    test('inactive plans are ignored', () async {
       final inactivePlan = NutritionalPlan(
+        id: 10,
         description: 'Inactive plan',
         startDate: now.subtract(const Duration(days: 10)),
-        endDate: now.add(const Duration(days: 5)),
+        endDate: now.subtract(const Duration(days: 5)),
       );
       final plan = NutritionalPlan(
+        id: 11,
         description: 'Active plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
       );
-      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
-        plan,
-        inactivePlan,
-      ], database: database);
-      expect(nutritionProvider.currentPlan, equals(plan));
+      final container = await containerWithPlans([plan, inactivePlan]);
+      expect(
+        container.read(nutritionProvider.notifier).currentPlan?.id,
+        equals(plan.id),
+      );
     });
 
-    test('several active plans exists -> return newest', () {
+    test('several active plans exists -> return newest', () async {
       final olderPlan = NutritionalPlan(
+        id: 100,
         description: 'Old active plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
         creationDate: now.subtract(const Duration(days: 10)),
       );
       final newerPlan = NutritionalPlan(
+        id: 101,
         description: 'Newer active plan',
         startDate: now.subtract(const Duration(days: 5)),
         endDate: now.add(const Duration(days: 5)),
         creationDate: now.subtract(const Duration(days: 1)),
       );
-      nutritionProvider = NutritionPlansProvider(mockWgerBaseProvider, [
-        olderPlan,
-        newerPlan,
-      ], database: database);
-      expect(nutritionProvider.currentPlan, equals(newerPlan));
+      final container = await containerWithPlans([olderPlan, newerPlan]);
+      expect(
+        container.read(nutritionProvider.notifier).currentPlan?.id,
+        equals(newerPlan.id),
+      );
     });
   });
 
-  group('Ingredient cache DB', () {
-    test('cacheIngredient saves to both in-memory and database cache', () async {
-      nutritionProvider.ingredients = [];
-      final ingredient = Ingredient.fromJson(ingredient59887Response);
+  group('deletePlan', () {
+    test('removes the plan locally on success', () async {
+      final plan = NutritionalPlan(
+        id: 1,
+        description: 'to delete',
+        startDate: now,
+        creationDate: now,
+      );
+      final container = await containerWithPlans([plan]);
 
-      await nutritionProvider.cacheIngredient(ingredient, database: database);
+      when(mockRepo.deletePlan(1)).thenAnswer(
+        (_) async => http.Response('', 204),
+      );
 
-      expect(nutritionProvider.ingredients.length, 1);
-      expect(nutritionProvider.ingredients.first.id, 59887);
+      await container.read(nutritionProvider.notifier).deletePlan(1);
 
-      final rows = await database.select(database.ingredients).get();
-      expect(rows.length, 1);
-      expect(rows.first.id, ingredient.id);
-    });
-    test('that if there is already valid data in the DB, the API is not hit', () async {
-      // Arrange
-      nutritionProvider.ingredients = [];
-      await database
-          .into(database.ingredients)
-          .insert(
-            IngredientsCompanion.insert(
-              id: ingredient59887Response['id'],
-              data: json.encode(ingredient59887Response),
-              lastFetched: DateTime.now(),
-            ),
-          );
-
-      // Act
-      await nutritionProvider.fetchIngredient(59887, database: database);
-
-      // Assert
-      expect(nutritionProvider.ingredients.length, 1);
-      expect(nutritionProvider.ingredients.first.id, 59887);
-      expect(nutritionProvider.ingredients.first.name, 'Baked Beans');
-      verifyNever(mockWgerBaseProvider.fetchPaginated(any));
-    });
-
-    test('fetching an ingredient not present in the DB, the API is hit', () async {
-      // Arrange
-      nutritionProvider.ingredients = [];
-      await database
-          .into(database.ingredients)
-          .insert(
-            IngredientsCompanion.insert(
-              id: ingredient59887Response['id'],
-              data: json.encode(ingredient59887Response),
-              lastFetched: DateTime.now(),
-            ),
-          );
-
-      // Act
-      await nutritionProvider.fetchIngredient(10065, database: database);
-
-      // Assert
-      expect(nutritionProvider.ingredients.length, 1);
-      expect(nutritionProvider.ingredients.first.id, 10065);
-      expect(nutritionProvider.ingredients.first.name, "'Old Times' Orange Fine Cut Marmalade");
-      verify(mockWgerBaseProvider.fetch(any));
+      final plans = container.read(nutritionProvider).value ?? const [];
+      expect(plans, isEmpty);
     });
   });
 }

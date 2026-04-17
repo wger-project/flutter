@@ -27,7 +27,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/gallery.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/trophies.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
@@ -119,7 +119,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     final trophyNotifier = ref.read(trophyStateProvider.notifier);
 
     if (authState != null && !authState.dataInit) {
-      final nutritionPlansProvider = context.read<NutritionPlansProvider>();
+      final nutritionNotifier = ref.read(nutritionProvider.notifier);
       final galleryProvider = context.read<GalleryProvider>();
 
       // ref.watch(routinesRiverpodProvider);
@@ -135,7 +135,6 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       await Future.wait([
         authNotifier.setServerVersion(),
         ref.read(userProfileProvider.future),
-        nutritionPlansProvider.fetchIngredientsFromCache(),
       ]);
       // await ref.read(routineWeightUnitProvider.future);
       // await ref.read(exerciseStateReadyProvider.future);
@@ -155,7 +154,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       widget._logger.info('Loading routines, weight, measurements and gallery');
       await Future.wait([
         galleryProvider.fetchAndSetGallery(),
-        nutritionPlansProvider.fetchAndSetAllPlansSparse(),
+        nutritionNotifier.fetchAndSetAllPlansSparse(),
         routinesProvider.fetchAllRoutinesSparse(),
         trophyNotifier.fetchAll(language: languageCode),
       ]);
@@ -163,9 +162,9 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       //
       // Current nutritional plan
       widget._logger.info('Loading current nutritional plan');
-      if (nutritionPlansProvider.currentPlan != null) {
-        final plan = nutritionPlansProvider.currentPlan!;
-        await nutritionPlansProvider.fetchAndSetPlanFull(plan.id!);
+      if (nutritionNotifier.currentPlan != null) {
+        final plan = nutritionNotifier.currentPlan!;
+        await nutritionNotifier.fetchAndSetPlanFull(plan.id!);
       }
 
       //

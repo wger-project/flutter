@@ -26,7 +26,6 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/consts.dart';
@@ -35,7 +34,9 @@ import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
@@ -63,7 +64,10 @@ void main() {
     sodium: 0.5,
   );
 
-  var mockNutrition = MockNutritionPlansProvider();
+  late MockNutritionRepository mockRepo;
+  late MockIngredientRepository mockIngredientRepo;
+  late ProviderContainer container;
+
   final client = MockClient();
 
   var plan1 = NutritionalPlan.empty();
@@ -85,57 +89,81 @@ void main() {
     (_) => Future.value(http.Response(fixture('nutrition/ingredientinfo_wrong_code.json'), 200)),
   );
 
-  setUp(() {
+  setUp(() async {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
-    final MealItem mealItem = MealItem(ingredientId: ingredient.id, amount: 2);
-    mockNutrition = MockNutritionPlansProvider();
+    final MealItem mealItem = MealItem(
+      id: 10,
+      mealId: 1,
+      ingredientId: ingredient.id,
+      amount: 2,
+    );
+
+    mockRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
+
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
     when(
-      mockNutrition.searchIngredientWithBarcode('123'),
+      mockRepo.searchIngredientWithBarcode('123'),
     ).thenAnswer((_) => Future.value(ingredient));
-    when(mockNutrition.searchIngredientWithBarcode('')).thenAnswer((_) => Future.value(null));
-    when(mockNutrition.searchIngredientWithBarcode('222')).thenAnswer((_) => Future.value(null));
+    when(mockRepo.searchIngredientWithBarcode('')).thenAnswer((_) => Future.value(null));
+    when(mockRepo.searchIngredientWithBarcode('222')).thenAnswer((_) => Future.value(null));
     when(
-      mockNutrition.searchIngredient(
+      mockRepo.searchIngredient(
         any,
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
+        isVegan: anyNamed('isVegan'),
+        isVegetarian: anyNamed('isVegetarian'),
       ),
     ).thenAnswer(
       (_) => Future.value([ingredient1, ingredient2]),
     );
 
-    when(mockNutrition.addMealItem(any, meal1)).thenAnswer((_) => Future.value(mealItem));
-    when(mockNutrition.fetchWeightUnits(1)).thenAnswer((_) => Future.value([]));
-    when(mockNutrition.fetchWeightUnits(2)).thenAnswer((_) => Future.value([]));
+    when(mockRepo.createMealItem(any)).thenAnswer((_) async => mealItem.toJson());
+    when(mockRepo.fetchIngredient(any)).thenAnswer((_) async => ingredient);
+    when(mockRepo.fetchWeightUnits(1)).thenAnswer((_) => Future.value([]));
+    when(mockRepo.fetchWeightUnits(2)).thenAnswer((_) => Future.value([]));
+
+    container = ProviderContainer(
+      overrides: [
+        nutritionRepositoryProvider.overrideWithValue(mockRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      ],
+    );
+    // Initialize the nutrition notifier and seed with plan1 so that
+    // addMealItem can look up the meal/plan.
+    await container.read(nutritionProvider.future);
+    container.read(nutritionProvider.notifier).state = AsyncData([plan1]);
+  });
+
+  tearDown(() {
+    container.dispose();
   });
 
   Widget createMealItemFormScreen(Meal meal, String code, bool test, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ProviderScope(
-      child: ChangeNotifierProvider<NutritionPlansProvider>(
-        create: (context) => mockNutrition,
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: key,
-          home: Scaffold(
-            body: Scrollable(
-              viewportBuilder: (BuildContext context, ViewportOffset position) =>
-                  getMealItemForm(meal, const [], code, test),
-            ),
+    return UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: Scaffold(
+          body: Scrollable(
+            viewportBuilder: (BuildContext context, ViewportOffset position) =>
+                getMealItemForm(meal, const [], code, test),
           ),
-          routes: {
-            NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-          },
         ),
+        routes: {
+          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+        },
       ),
     );
-    // ProviderScope closes here
   }
 
   testWidgets('Test the widgets on the meal item form', (WidgetTester tester) async {
@@ -182,26 +210,6 @@ void main() {
       expect(find.byKey(const Key('ingredient-scan-result-dialog-confirm-button')), findsNothing);
     });
   });
-
-  /*
-  group('Test searchIngredientWithCode() function', () {
-    test('with correct code', () async {
-      final Ingredient? ingredient = await mockNutritionWithClient.searchIngredientWithCode('123');
-      expect(ingredient!.id, 9436);
-    });
-
-    test('with incorrect code', () async {
-      final Ingredient? ingredient = await mockNutritionWithClient.searchIngredientWithCode('222');
-      expect(ingredient, null);
-    });
-
-    test('with empty code', () async {
-      final Ingredient? ingredient = await mockNutritionWithClient.searchIngredientWithCode('');
-      expect(ingredient, null);
-    });
-  });
-
-   */
 
   group('Test weight formfield', () {
     testWidgets('add empty weight', (WidgetTester tester) async {
@@ -322,7 +330,7 @@ void main() {
         await tester.enterText(find.byKey(const Key('field-weight')), '2');
 
         // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
-        when(mockNutrition.fetchIngredient(1)).thenAnswer(
+        when(mockRepo.fetchIngredient(1)).thenAnswer(
           (_) => Future.value(
             Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
           ),
@@ -336,38 +344,8 @@ void main() {
 
         expect(formState.mealItem.amount, 2);
 
-        verify(mockNutrition.addMealItem(any, meal1));
+        verify(mockRepo.createMealItem(any));
       },
     );
-
-    testWidgets('selecting ingredient from autocomplete calls cacheIngredient', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
-      await tester.pumpAndSettle();
-
-      clearInteractions(mockNutrition);
-
-      when(
-        mockNutrition.searchIngredient(
-          any,
-          languageCode: anyNamed('languageCode'),
-          searchLanguage: anyNamed('searchLanguage'),
-        ),
-      ).thenAnswer((_) => Future.value([ingredient1]));
-
-      when(
-        mockNutrition.cacheIngredient(any),
-      ).thenAnswer((_) => Future.value(null));
-
-      await tester.enterText(find.byType(TextFormField).first, 'Water');
-      await tester.pumpAndSettle(const Duration(milliseconds: 600));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byType(ListTile).first);
-      await tester.pumpAndSettle();
-
-      verify(mockNutrition.cacheIngredient(ingredient1)).called(1);
-    });
   });
 }

@@ -17,77 +17,107 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/base_provider.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
 import '../../test_data/body_weight.dart';
 import '../../test_data/nutritional_plans.dart';
+import '../fixtures/fixture_reader.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider, http.Client, BodyWeightRepository])
+@GenerateMocks([
+  NutritionRepository,
+  IngredientRepository,
+  http.Client,
+  BodyWeightRepository,
+])
 void main() {
-  late IngredientDatabase database;
-  late BodyWeightRepository mockRepository;
+  late BodyWeightRepository mockBodyWeightRepository;
+  late MockNutritionRepository mockNutritionRepo;
+  late MockIngredientRepository mockIngredientRepo;
+
+  late Map<String, dynamic> nutritionalPlanInfoResponse;
+  late Map<String, dynamic> nutritionalPlanDetailResponse;
+  late List<dynamic> nutritionDiaryResponse;
+  late Ingredient fetchedIngredient;
 
   setUp(() {
-    mockRepository = MockBodyWeightRepository();
-    when(mockRepository.watchAllDrift()).thenAnswer((_) => Stream.value([testWeightEntry1]));
-    database = IngredientDatabase.inMemory(NativeDatabase.memory());
+    mockBodyWeightRepository = MockBodyWeightRepository();
+    when(
+      mockBodyWeightRepository.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value([testWeightEntry1]));
+
+    mockNutritionRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
+
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
+
+    nutritionalPlanInfoResponse = jsonDecode(
+      fixture('nutrition/nutritional_plan_info_detail_response.json'),
+    );
+    nutritionalPlanDetailResponse = jsonDecode(
+      fixture('nutrition/nutritional_plan_detail_response.json'),
+    );
+    nutritionDiaryResponse = jsonDecode(
+      fixture('nutrition/nutrition_diary_response.json'),
+    )['results'];
+    fetchedIngredient = Ingredient.fromJson(
+      jsonDecode(fixture('nutrition/ingredientinfo_10065.json')),
+    );
+
+    when(
+      mockNutritionRepo.fetchPlanSparse(any),
+    ).thenAnswer((_) async => nutritionalPlanDetailResponse);
+    when(mockNutritionRepo.fetchPlanFull(any)).thenAnswer((_) async => nutritionalPlanInfoResponse);
+    when(mockNutritionRepo.fetchLogsForPlan(any)).thenAnswer((_) async => nutritionDiaryResponse);
+    when(mockNutritionRepo.fetchIngredient(any)).thenAnswer((_) async => fetchedIngredient);
   });
 
-  tearDown(() {
-    database.close();
-  });
+  ProviderContainer makeContainer() {
+    final container = ProviderContainer(
+      overrides: [
+        bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+        nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      ],
+    );
+    addTearDown(container.dispose);
+    return container;
+  }
 
-  Widget createNutritionalPlan({locale = 'en', MockWgerBaseProvider? baseProvider}) {
+  Widget createNutritionalPlan({locale = 'en', required ProviderContainer container}) {
     final key = GlobalKey<NavigatorState>();
-    final mockBaseProvider = baseProvider ?? MockWgerBaseProvider();
     final plan = getNutritionalPlan();
 
-    return riverpod.ProviderScope(
-      overrides: [
-        bodyWeightRepositoryProvider.overrideWithValue(mockRepository),
-      ],
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<NutritionPlansProvider>(
-            create: (context) => NutritionPlansProvider(
-              mockBaseProvider,
-              [],
-              database: database,
+    return UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        key: GlobalKey(),
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(arguments: plan),
+              builder: (_) => const NutritionalPlanScreen(),
             ),
           ),
-        ],
-        child: MaterialApp(
-          key: GlobalKey(),
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: key,
-          home: TextButton(
-            onPressed: () => key.currentState!.push(
-              MaterialPageRoute<void>(
-                settings: RouteSettings(arguments: plan),
-                builder: (_) => const NutritionalPlanScreen(),
-              ),
-            ),
-            child: const SizedBox(),
-          ),
+          child: const SizedBox(),
         ),
       ),
     );
@@ -99,7 +129,8 @@ void main() {
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
 
-      await tester.pumpWidget(createNutritionalPlan());
+      final container = makeContainer();
+      await tester.pumpWidget(createNutritionalPlan(container: container));
       await tester.tap(find.byType(TextButton));
       await tester.pumpAndSettle();
 
@@ -170,7 +201,8 @@ void main() {
   );
 
   testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {
-    await tester.pumpWidget(createNutritionalPlan());
+    final container = makeContainer();
+    await tester.pumpWidget(createNutritionalPlan(container: container));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
@@ -178,7 +210,8 @@ void main() {
   });
 
   testWidgets('Tests the localization of times - DE', (WidgetTester tester) async {
-    await tester.pumpWidget(createNutritionalPlan(locale: 'de'));
+    final container = makeContainer();
+    await tester.pumpWidget(createNutritionalPlan(locale: 'de', container: container));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
@@ -188,16 +221,13 @@ void main() {
   testWidgets(
     'loading indicator does not reappear after popup menu tap',
     (WidgetTester tester) async {
-      final completer = Completer<NutritionalPlan>();
-      final mockBaseProvider = MockWgerBaseProvider();
+      final completer = Completer<Map<String, dynamic>>();
 
-      // When fetch is called, return our controlled future
-      when(
-        mockBaseProvider.makeUrl(any, id: anyNamed('id')),
-      ).thenReturn(Uri.parse('http://fake.url'));
-      when(mockBaseProvider.fetch(any)).thenAnswer((_) => completer.future);
+      // Override the fetchPlanFull behavior so we can control when it completes
+      when(mockNutritionRepo.fetchPlanFull(any)).thenAnswer((_) => completer.future);
 
-      await tester.pumpWidget(createNutritionalPlan(baseProvider: mockBaseProvider));
+      final container = makeContainer();
+      await tester.pumpWidget(createNutritionalPlan(container: container));
       await tester.tap(find.byType(TextButton));
 
       // Two pumps: first for route transition, second for FutureBuilder waiting state
@@ -208,7 +238,7 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
       // Now resolve the future — simulates network response
-      completer.complete(getNutritionalPlan());
+      completer.complete(nutritionalPlanInfoResponse);
       await tester.pumpAndSettle();
 
       // Spinner gone after successful load

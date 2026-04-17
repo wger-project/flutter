@@ -17,13 +17,13 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
@@ -39,7 +39,7 @@ enum viewMode {
   withAllDetails, // + nutritional breakdown of ingredients, + logged today
 }
 
-class MealWidget extends StatefulWidget {
+class MealWidget extends ConsumerStatefulWidget {
   final Meal _meal;
   final List<MealItem> _recentMealItems;
   final bool popTwice;
@@ -53,10 +53,10 @@ class MealWidget extends StatefulWidget {
   );
 
   @override
-  _MealWidgetState createState() => _MealWidgetState();
+  ConsumerState<MealWidget> createState() => _MealWidgetState();
 }
 
-class _MealWidgetState extends State<MealWidget> {
+class _MealWidgetState extends ConsumerState<MealWidget> {
   var _viewMode = viewMode.base;
   bool _editing = false;
 
@@ -139,10 +139,7 @@ class _MealWidgetState extends State<MealWidget> {
                     TextButton.icon(
                       onPressed: () {
                         // Delete the meal
-                        Provider.of<NutritionPlansProvider>(
-                          context,
-                          listen: false,
-                        ).deleteMeal(widget._meal);
+                        ref.read(nutritionProvider.notifier).deleteMeal(widget._meal);
 
                         // and inform the user
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -220,7 +217,7 @@ class _MealWidgetState extends State<MealWidget> {
 }
 
 /// An editable NutritionTile showing the avatar, name, nutritional values
-class MealItemEditableFullTile extends StatelessWidget {
+class MealItemEditableFullTile extends ConsumerWidget {
   final bool _editing;
   final viewMode _viewMode;
   final MealItem _item;
@@ -228,7 +225,7 @@ class MealItemEditableFullTile extends StatelessWidget {
   const MealItemEditableFullTile(this._item, this._viewMode, this._editing);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final values = _item.nutritionalValues;
     final i18n = AppLocalizations.of(context);
 
@@ -253,7 +250,7 @@ class MealItemEditableFullTile extends StatelessWidget {
               iconSize: ICON_SIZE_SMALL,
               onPressed: () {
                 // Delete the meal item
-                Provider.of<NutritionPlansProvider>(context, listen: false).deleteMealItem(_item);
+                ref.read(nutritionProvider.notifier).deleteMealItem(_item);
 
                 // and inform the user
                 ScaffoldMessenger.of(context).showSnackBar(

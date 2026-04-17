@@ -21,20 +21,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/measurement_repository.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/measurement_entries_screen.dart';
 
 import '../../test_data/measurements.dart';
 import 'measurement_entries_screen_test.mocks.dart';
 
-@GenerateMocks([MeasurementRepository, NutritionPlansProvider])
+@GenerateMocks([MeasurementRepository, NutritionRepository, IngredientRepository])
 void main() {
   late MockMeasurementRepository mockMeasurementRepo;
-  late MockNutritionPlansProvider mockNutritionPlansProvider;
+  late MockNutritionRepository mockNutritionRepo;
+  late MockIngredientRepository mockIngredientRepo;
 
   setUp(() {
     mockMeasurementRepo = MockMeasurementRepository();
@@ -42,9 +43,9 @@ void main() {
       mockMeasurementRepo.watchLocalDriftCategoryById(any),
     ).thenAnswer((_) => Stream<MeasurementCategory>.value(getMeasurementCategories()[0]));
 
-    mockNutritionPlansProvider = MockNutritionPlansProvider();
-    when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
-    when(mockNutritionPlansProvider.items).thenReturn([]);
+    mockNutritionRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
   });
 
   Widget createEntriesScreen({locale = 'en'}) {
@@ -53,23 +54,22 @@ void main() {
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+        nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
-      child: ChangeNotifierProvider<NutritionPlansProvider>(
-        create: (context) => mockNutritionPlansProvider,
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: key,
-          home: TextButton(
-            onPressed: () => key.currentState!.push(
-              MaterialPageRoute<void>(
-                settings: const RouteSettings(arguments: '1'),
-                builder: (_) => const MeasurementEntriesScreen(),
-              ),
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: const RouteSettings(arguments: '1'),
+              builder: (_) => const MeasurementEntriesScreen(),
             ),
-            child: Container(),
           ),
+          child: Container(),
         ),
       ),
     );

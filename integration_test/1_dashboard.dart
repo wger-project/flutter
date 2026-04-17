@@ -26,8 +26,10 @@ import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/measurement_repository.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
@@ -58,12 +60,9 @@ Widget createDashboardScreen({Locale? locale}) {
 
   final mockGalleryProvider = MockGalleryProvider();
 
-  final mockNutritionProvider = weight.MockNutritionPlansProvider();
-
-  when(
-    mockNutritionProvider.currentPlan,
-  ).thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
-  when(mockNutritionProvider.items).thenReturn([getNutritionalPlanScreenshot()]);
+  final mockNutritionRepo = weight.MockNutritionRepository();
+  final mockIngredientRepo = weight.MockIngredientRepository();
+  when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
   final mockBodyWeightRepository = MockBodyWeightRepository();
   when(
@@ -89,11 +88,19 @@ Widget createDashboardScreen({Locale? locale}) {
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
       authProvider.overrideWith(() => _FakeAuthNotifier(loggedInAuth)),
       userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
+      nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+      ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
     ],
   );
   container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
     routines: [getTestRoutine(exercises: getScreenshotExercises())],
   );
+
+  // Seed the nutrition notifier with the screenshot plan so the dashboard can
+  // show it without going through the server.
+  container.read(nutritionProvider.notifier).state = riverpod.AsyncData([
+    getNutritionalPlanScreenshot(),
+  ]);
 
   return MediaQuery(
     data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
@@ -107,10 +114,6 @@ Widget createDashboardScreen({Locale? locale}) {
         providers: [
           ChangeNotifierProvider<GalleryProvider>(
             create: (context) => mockGalleryProvider,
-          ),
-
-          ChangeNotifierProvider<NutritionPlansProvider>(
-            create: (context) => mockNutritionProvider,
           ),
         ],
         child: MaterialApp(

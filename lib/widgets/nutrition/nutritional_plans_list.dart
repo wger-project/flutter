@@ -22,16 +22,14 @@ import 'package:intl/intl.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
 class NutritionalPlansList extends riverpod.ConsumerWidget {
-  final NutritionPlansProvider _nutritionProvider;
-
-  const NutritionalPlansList(this._nutritionProvider);
+  const NutritionalPlansList({super.key});
 
   /// Builds the weight change information for a nutritional plan period
   Widget _buildWeightChangeInfo(
@@ -93,15 +91,18 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
 
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
+    final plans = ref.watch(nutritionProvider).value ?? const [];
+    final notifier = ref.read(nutritionProvider.notifier);
+
     return RefreshIndicator(
-      onRefresh: () => _nutritionProvider.fetchAndSetAllPlansSparse(),
-      child: _nutritionProvider.items.isEmpty
+      onRefresh: () => notifier.fetchAndSetAllPlansSparse(),
+      child: plans.isEmpty
           ? const TextPrompt()
           : ListView.builder(
               padding: const EdgeInsets.all(10.0),
-              itemCount: _nutritionProvider.items.length,
+              itemCount: plans.length,
               itemBuilder: (context, index) {
-                final currentPlan = _nutritionProvider.items[index];
+                final currentPlan = plans[index];
                 return Card(
                   child: ListTile(
                     onTap: () {
@@ -167,7 +168,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
                                       ),
                                       onPressed: () {
                                         // Confirmed, delete the plan
-                                        _nutritionProvider.deletePlan(currentPlan.id!);
+                                        notifier.deletePlan(currentPlan.id!);
 
                                         // Close the popup
                                         Navigator.of(contextDialog).pop();

@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -28,13 +28,13 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
-class MealForm extends StatelessWidget {
+class MealForm extends ConsumerWidget {
   late final Meal _meal;
   final int _planId;
 
@@ -49,7 +49,7 @@ class MealForm extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -95,15 +95,8 @@ class MealForm extends StatelessWidget {
                 }
                 _form.currentState!.save();
 
-                _meal.id == null
-                    ? Provider.of<NutritionPlansProvider>(
-                        context,
-                        listen: false,
-                      ).addMeal(_meal, _planId)
-                    : Provider.of<NutritionPlansProvider>(
-                        context,
-                        listen: false,
-                      ).editMeal(_meal);
+                final notifier = ref.read(nutritionProvider.notifier);
+                _meal.id == null ? notifier.addMeal(_meal, _planId) : notifier.editMeal(_meal);
 
                 Navigator.of(context).pop();
               },
@@ -124,9 +117,9 @@ Widget getMealItemForm(
   return IngredientForm(
     // TODO we use planId 0 here cause we don't have one and we don't need it I think?
     recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
-    onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
+    onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) {
       mealItem.mealId = meal.id!;
-      Provider.of<NutritionPlansProvider>(context, listen: false).addMealItem(mealItem, meal);
+      ref.read(nutritionProvider.notifier).addMealItem(mealItem, meal);
     },
     barcode: barcode ?? '',
     test: test ?? false,
@@ -137,11 +130,8 @@ Widget getMealItemForm(
 Widget getIngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
     recent: plan.dedupDiaryEntries,
-    onSave: (BuildContext context, MealItem mealItem, DateTime? dt) {
-      Provider.of<NutritionPlansProvider>(
-        context,
-        listen: false,
-      ).logIngredientToDiary(mealItem, plan.id!, dt);
+    onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) {
+      ref.read(nutritionProvider.notifier).logIngredientToDiary(mealItem, plan.id!, dt);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -157,8 +147,8 @@ Widget getIngredientLogForm(NutritionalPlan plan) {
 
 /// IngredientForm is a form that lets the user pick an ingredient (and amount) to
 /// log to the diary or to add to a meal.
-class IngredientForm extends StatefulWidget {
-  final Function(BuildContext context, MealItem mealItem, DateTime? dt) onSave;
+class IngredientForm extends ConsumerStatefulWidget {
+  final Function(BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) onSave;
   final List<Log> recent;
   final bool withDate;
   final String barcode;
@@ -173,10 +163,10 @@ class IngredientForm extends StatefulWidget {
   });
 
   @override
-  State<IngredientForm> createState() => IngredientFormState();
+  ConsumerState<IngredientForm> createState() => IngredientFormState();
 }
 
-class IngredientFormState extends State<IngredientForm> {
+class IngredientFormState extends ConsumerState<IngredientForm> {
   final _form = GlobalKey<FormState>();
   final _ingredientController = TextEditingController();
   final _ingredientIdController = TextEditingController();
@@ -217,7 +207,7 @@ class IngredientFormState extends State<IngredientForm> {
     });
 
     // Load weight units for this ingredient
-    Provider.of<NutritionPlansProvider>(context, listen: false).fetchWeightUnits(id).then((units) {
+    ref.read(nutritionProvider.notifier).fetchWeightUnits(id).then((units) {
       setState(() {
         _weightUnits = units;
       });
@@ -416,10 +406,9 @@ class IngredientFormState extends State<IngredientForm> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     FutureBuilder<Ingredient>(
-                      future: Provider.of<NutritionPlansProvider>(
-                        context,
-                        listen: false,
-                      ).fetchIngredient(_mealItem.ingredientId),
+                      future: ref
+                          .read(nutritionProvider.notifier)
+                          .fetchIngredient(_mealItem.ingredientId),
                       builder:
                           (
                             BuildContext context,
@@ -463,7 +452,7 @@ class IngredientFormState extends State<IngredientForm> {
                 final loggedDate = dateTimeFormat.parse(
                   '${_dateController.text} ${_timeController.text}',
                 );
-                widget.onSave(context, _mealItem, loggedDate);
+                widget.onSave(context, ref, _mealItem, loggedDate);
 
                 Navigator.of(context).pop();
               },
@@ -509,6 +498,7 @@ class IngredientFormState extends State<IngredientForm> {
                             onPressed: () {
                               showIngredientDetails(
                                 context,
+                                ref,
                                 suggestions[index].ingredient.id,
                                 select: select,
                               );
@@ -552,7 +542,7 @@ enum GoalType {
   }
 }
 
-class PlanForm extends StatefulWidget {
+class PlanForm extends ConsumerStatefulWidget {
   late NutritionalPlan _plan;
 
   PlanForm([NutritionalPlan? plan]) {
@@ -560,10 +550,10 @@ class PlanForm extends StatefulWidget {
   }
 
   @override
-  State<PlanForm> createState() => _PlanFormState();
+  ConsumerState<PlanForm> createState() => _PlanFormState();
 }
 
-class _PlanFormState extends State<PlanForm> {
+class _PlanFormState extends ConsumerState<PlanForm> {
   final _form = GlobalKey<FormState>();
 
   GoalType _goalType = GoalType.meals;
@@ -805,19 +795,14 @@ class _PlanFormState extends State<PlanForm> {
               _form.currentState!.save();
 
               // Save to DB
+              final notifier = ref.read(nutritionProvider.notifier);
               if (widget._plan.id != null) {
-                await Provider.of<NutritionPlansProvider>(
-                  context,
-                  listen: false,
-                ).editPlan(widget._plan);
+                await notifier.editPlan(widget._plan);
                 if (context.mounted) {
                   Navigator.of(context).pop();
                 }
               } else {
-                widget._plan = await Provider.of<NutritionPlansProvider>(
-                  context,
-                  listen: false,
-                ).addPlan(widget._plan);
+                widget._plan = await notifier.addPlan(widget._plan);
                 if (context.mounted) {
                   Navigator.of(context).pushReplacementNamed(
                     NutritionalPlanScreen.routeName,
