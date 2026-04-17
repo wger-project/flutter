@@ -557,15 +557,15 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _variationIdMeta = const VerificationMeta(
-    'variationId',
+  static const VerificationMeta _variationGroupMeta = const VerificationMeta(
+    'variationGroup',
   );
   @override
-  late final GeneratedColumn<int> variationId = GeneratedColumn<int>(
-    'variation_id',
+  late final GeneratedColumn<String> variationGroup = GeneratedColumn<String>(
+    'variation_group',
     aliasedName,
     true,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
   static const VerificationMeta _categoryIdMeta = const VerificationMeta(
@@ -608,7 +608,7 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
   List<GeneratedColumn> get $columns => [
     id,
     uuid,
-    variationId,
+    variationGroup,
     categoryId,
     created,
     lastUpdate,
@@ -638,12 +638,12 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
     } else if (isInserting) {
       context.missing(_uuidMeta);
     }
-    if (data.containsKey('variation_id')) {
+    if (data.containsKey('variation_group')) {
       context.handle(
-        _variationIdMeta,
-        variationId.isAcceptableOrUnknown(
-          data['variation_id']!,
-          _variationIdMeta,
+        _variationGroupMeta,
+        variationGroup.isAcceptableOrUnknown(
+          data['variation_group']!,
+          _variationGroupMeta,
         ),
       );
     }
@@ -696,6 +696,10 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
         DriftSqlType.dateTime,
         data['${effectivePrefix}last_update'],
       )!,
+      variationGroup: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}variation_group'],
+      ),
       categoryId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}category_id'],
@@ -712,7 +716,7 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
 class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
   final Value<int> id;
   final Value<String> uuid;
-  final Value<int?> variationId;
+  final Value<String?> variationGroup;
   final Value<int> categoryId;
   final Value<DateTime> created;
   final Value<DateTime> lastUpdate;
@@ -720,7 +724,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
   const ExerciseTableCompanion({
     this.id = const Value.absent(),
     this.uuid = const Value.absent(),
-    this.variationId = const Value.absent(),
+    this.variationGroup = const Value.absent(),
     this.categoryId = const Value.absent(),
     this.created = const Value.absent(),
     this.lastUpdate = const Value.absent(),
@@ -729,7 +733,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
   ExerciseTableCompanion.insert({
     required int id,
     required String uuid,
-    this.variationId = const Value.absent(),
+    this.variationGroup = const Value.absent(),
     required int categoryId,
     required DateTime created,
     required DateTime lastUpdate,
@@ -742,7 +746,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
   static Insertable<Exercise> custom({
     Expression<int>? id,
     Expression<String>? uuid,
-    Expression<int>? variationId,
+    Expression<String>? variationGroup,
     Expression<int>? categoryId,
     Expression<DateTime>? created,
     Expression<DateTime>? lastUpdate,
@@ -751,7 +755,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (uuid != null) 'uuid': uuid,
-      if (variationId != null) 'variation_id': variationId,
+      if (variationGroup != null) 'variation_group': variationGroup,
       if (categoryId != null) 'category_id': categoryId,
       if (created != null) 'created': created,
       if (lastUpdate != null) 'last_update': lastUpdate,
@@ -762,7 +766,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
   ExerciseTableCompanion copyWith({
     Value<int>? id,
     Value<String>? uuid,
-    Value<int?>? variationId,
+    Value<String?>? variationGroup,
     Value<int>? categoryId,
     Value<DateTime>? created,
     Value<DateTime>? lastUpdate,
@@ -771,7 +775,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
     return ExerciseTableCompanion(
       id: id ?? this.id,
       uuid: uuid ?? this.uuid,
-      variationId: variationId ?? this.variationId,
+      variationGroup: variationGroup ?? this.variationGroup,
       categoryId: categoryId ?? this.categoryId,
       created: created ?? this.created,
       lastUpdate: lastUpdate ?? this.lastUpdate,
@@ -788,8 +792,8 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
     if (uuid.present) {
       map['uuid'] = Variable<String>(uuid.value);
     }
-    if (variationId.present) {
-      map['variation_id'] = Variable<int>(variationId.value);
+    if (variationGroup.present) {
+      map['variation_group'] = Variable<String>(variationGroup.value);
     }
     if (categoryId.present) {
       map['category_id'] = Variable<int>(categoryId.value);
@@ -811,7 +815,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
     return (StringBuffer('ExerciseTableCompanion(')
           ..write('id: $id, ')
           ..write('uuid: $uuid, ')
-          ..write('variationId: $variationId, ')
+          ..write('variationGroup: $variationGroup, ')
           ..write('categoryId: $categoryId, ')
           ..write('created: $created, ')
           ..write('lastUpdate: $lastUpdate, ')
@@ -6930,7 +6934,7 @@ typedef $$ExerciseTableTableCreateCompanionBuilder =
     ExerciseTableCompanion Function({
       required int id,
       required String uuid,
-      Value<int?> variationId,
+      Value<String?> variationGroup,
       required int categoryId,
       required DateTime created,
       required DateTime lastUpdate,
@@ -6940,7 +6944,7 @@ typedef $$ExerciseTableTableUpdateCompanionBuilder =
     ExerciseTableCompanion Function({
       Value<int> id,
       Value<String> uuid,
-      Value<int?> variationId,
+      Value<String?> variationGroup,
       Value<int> categoryId,
       Value<DateTime> created,
       Value<DateTime> lastUpdate,
@@ -7138,8 +7142,8 @@ class $$ExerciseTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get variationId => $composableBuilder(
-    column: $table.variationId,
+  ColumnFilters<String> get variationGroup => $composableBuilder(
+    column: $table.variationGroup,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7339,8 +7343,8 @@ class $$ExerciseTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get variationId => $composableBuilder(
-    column: $table.variationId,
+  ColumnOrderings<String> get variationGroup => $composableBuilder(
+    column: $table.variationGroup,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -7391,8 +7395,8 @@ class $$ExerciseTableTableAnnotationComposer
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
 
-  GeneratedColumn<int> get variationId => $composableBuilder(
-    column: $table.variationId,
+  GeneratedColumn<String> get variationGroup => $composableBuilder(
+    column: $table.variationGroup,
     builder: (column) => column,
   );
 
@@ -7613,7 +7617,7 @@ class $$ExerciseTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> uuid = const Value.absent(),
-                Value<int?> variationId = const Value.absent(),
+                Value<String?> variationGroup = const Value.absent(),
                 Value<int> categoryId = const Value.absent(),
                 Value<DateTime> created = const Value.absent(),
                 Value<DateTime> lastUpdate = const Value.absent(),
@@ -7621,7 +7625,7 @@ class $$ExerciseTableTableTableManager
               }) => ExerciseTableCompanion(
                 id: id,
                 uuid: uuid,
-                variationId: variationId,
+                variationGroup: variationGroup,
                 categoryId: categoryId,
                 created: created,
                 lastUpdate: lastUpdate,
@@ -7631,7 +7635,7 @@ class $$ExerciseTableTableTableManager
               ({
                 required int id,
                 required String uuid,
-                Value<int?> variationId = const Value.absent(),
+                Value<String?> variationGroup = const Value.absent(),
                 required int categoryId,
                 required DateTime created,
                 required DateTime lastUpdate,
@@ -7639,7 +7643,7 @@ class $$ExerciseTableTableTableManager
               }) => ExerciseTableCompanion.insert(
                 id: id,
                 uuid: uuid,
-                variationId: variationId,
+                variationGroup: variationGroup,
                 categoryId: categoryId,
                 created: created,
                 lastUpdate: lastUpdate,

@@ -35,7 +35,7 @@ class ExerciseTable extends Table {
 
   IntColumn get id => integer()();
   TextColumn get uuid => text()();
-  IntColumn get variationId => integer().nullable().named('variation_id')();
+  TextColumn get variationGroup => text().nullable().named('variation_group')();
   IntColumn get categoryId =>
       integer().named('category_id').references(ExerciseCategoryTable, #id)();
   DateTimeColumn get created => dateTime()();
@@ -47,13 +47,13 @@ const PowersyncExerciseTable = ps.Table(
   [
     ps.Column.text('uuid'),
     ps.Column.integer('category_id'),
-    ps.Column.integer('variation_id'),
+    ps.Column.text('variation_group'),
     ps.Column.text('created'),
     ps.Column.text('last_update'),
   ],
   indexes: [
     ps.Index('category', [ps.IndexedColumn('category_id')]),
-    ps.Index('variation', [ps.IndexedColumn('variation_id')]),
+    ps.Index('variation', [ps.IndexedColumn('variation_group')]),
   ],
 );
 
