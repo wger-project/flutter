@@ -17,7 +17,6 @@
  */
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +30,13 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
   List<gallery.Image> images = [];
 
-  GalleryProvider(super.auth, List<gallery.Image> entries, [super.client]) : images = entries;
+  GalleryProvider({
+    super.serverUrl,
+    super.token,
+    super.applicationVersion,
+    List<gallery.Image> entries = const [],
+    super.client,
+  }) : images = List.of(entries);
 
   /// Clears all lists
   void clear() {
@@ -56,10 +61,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
   Future<void> addImage(gallery.Image image, XFile imageFile) async {
     // create multipart request
     final request = http.MultipartRequest('POST', makeUrl(_galleryUrlPath));
-    request.headers.addAll({
-      HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-      HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
-    });
+    request.headers.addAll(getDefaultHeaders(includeAuth: true));
     request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
     request.fields['date'] = dateToYYYYMMDD(image.date)!;
     request.fields['description'] = image.description;
@@ -75,10 +77,7 @@ class GalleryProvider extends WgerBaseProvider with ChangeNotifier {
 
   Future<void> editImage(gallery.Image image, XFile? imageFile) async {
     final request = http.MultipartRequest('PATCH', makeUrl(_galleryUrlPath, id: image.id));
-    request.headers.addAll({
-      HttpHeaders.authorizationHeader: 'Token ${auth.token}',
-      HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
-    });
+    request.headers.addAll(getDefaultHeaders(includeAuth: true));
 
     // Only send the image if a new one was selected
     if (imageFile != null) {

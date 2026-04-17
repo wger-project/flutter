@@ -18,11 +18,13 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/auth_state.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/update_server_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -31,8 +33,6 @@ import 'package:wger/widgets/auth/email_field.dart';
 import 'package:wger/widgets/auth/password_field.dart';
 import 'package:wger/widgets/auth/server_field.dart';
 import 'package:wger/widgets/auth/username_field.dart';
-
-import '../providers/auth.dart';
 
 enum AuthMode {
   Register,
@@ -100,14 +100,14 @@ class AuthScreen extends StatelessWidget {
   }
 }
 
-class AuthCard extends StatefulWidget {
+class AuthCard extends ConsumerStatefulWidget {
   const AuthCard();
 
   @override
   _AuthCardState createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> {
+class _AuthCardState extends ConsumerState<AuthCard> {
   bool isObscure = true;
   bool confirmIsObscure = true;
   Widget errorMessage = const SizedBox.shrink();
@@ -147,8 +147,10 @@ class _AuthCardState extends State<AuthCard> {
   @override
   void initState() {
     super.initState();
-    context.read<AuthProvider>().getServerUrlFromPrefs().then((value) {
-      _serverUrlController.text = value;
+    AuthNotifier.getServerUrlFromPrefs().then((value) {
+      if (mounted) {
+        _serverUrlController.text = value;
+      }
     });
 
     _preFillTextfields();
@@ -179,10 +181,11 @@ class _AuthCardState extends State<AuthCard> {
     });
 
     try {
+      final authNotifier = ref.read(authProvider.notifier);
       // Login existing user
       late LoginActions res;
       if (_authMode == AuthMode.Login) {
-        res = await context.read<AuthProvider>().login(
+        res = await authNotifier.login(
           _authData['username']!,
           _authData['password']!,
           _authData['serverUrl']!,
@@ -191,7 +194,7 @@ class _AuthCardState extends State<AuthCard> {
 
         // Register new user
       } else {
-        res = await Provider.of<AuthProvider>(context, listen: false).register(
+        res = await authNotifier.register(
           username: _authData['username']!,
           password: _authData['password']!,
           email: _authData['email']!,
@@ -202,13 +205,13 @@ class _AuthCardState extends State<AuthCard> {
 
       // Navigate to the appropriate "update required" screen.
       if (res == LoginActions.update && mounted) {
-        final authState = context.read<AuthProvider>().state;
-        if (authState == AuthState.updateRequired) {
+        final status = ref.read(authProvider).value?.status;
+        if (status == AuthStatus.updateRequired) {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
           );
           return;
-        } else if (authState == AuthState.serverUpdateRequired) {
+        } else if (status == AuthStatus.serverUpdateRequired) {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const UpdateServerScreen()),
           );

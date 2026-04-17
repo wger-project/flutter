@@ -24,7 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -114,10 +114,11 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
   /// Load initial data from the server
   Future<void> _loadEntries() async {
     final languageCode = Localizations.localeOf(context).languageCode;
-    final authProvider = context.read<AuthProvider>();
+    final authNotifier = ref.read(authProvider.notifier);
+    final authState = ref.read(authProvider).value;
     final trophyNotifier = ref.read(trophyStateProvider.notifier);
 
-    if (!authProvider.dataInit) {
+    if (authState != null && !authState.dataInit) {
       final nutritionPlansProvider = context.read<NutritionPlansProvider>();
       final galleryProvider = context.read<GalleryProvider>();
       final userProvider = context.read<UserProvider>();
@@ -133,7 +134,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       // Base data
       widget._logger.info('Loading base data');
       await Future.wait([
-        authProvider.setServerVersion(),
+        authNotifier.setServerVersion(),
         userProvider.fetchAndSetProfile(),
         nutritionPlansProvider.fetchIngredientsFromCache(),
       ]);
@@ -178,7 +179,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       }
     }
 
-    authProvider.dataInit = true;
+    authNotifier.setDataInit(true);
   }
 
   @override

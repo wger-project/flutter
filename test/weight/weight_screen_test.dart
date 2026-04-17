@@ -23,7 +23,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
@@ -71,9 +70,6 @@ void main() {
           ),
           ChangeNotifierProvider<UserProvider>(
             create: (context) => mockUserProvider,
-          ),
-          ChangeNotifierProvider<AuthProvider>(
-            create: (context) => AuthProvider(),
           ),
         ],
         child: MaterialApp(

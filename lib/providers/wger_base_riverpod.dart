@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2025 - 2025 wger Team
+ * Copyright (c) 2025 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,15 +17,20 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/base_provider.dart';
 
-/// Central provider that maps an existing [AuthProvider] (from the provider package)
-/// to a [WgerBaseProvider] used by repositories.
+/// Central provider that builds a [WgerBaseProvider] from the current
+/// [AuthNotifier] state. Consumers read this to make authenticated HTTP
+/// requests. Rebuilds whenever the auth state changes.
 ///
-/// Usage: ref.watch(wgerBaseProvider(authProvider))
+/// Note: not using riverpod_generator here because the generated provider
+/// class name would collide with [WgerBaseProvider] from base_provider.dart.
 final wgerBaseProvider = Provider<WgerBaseProvider>((ref) {
-  throw UnimplementedError(
-    'Override wgerBaseProvider in a ProviderScope with your existing WgerBaseProvider instance',
+  final auth = ref.watch(authProvider).value;
+  return WgerBaseProvider(
+    serverUrl: auth?.serverUrl,
+    token: auth?.token,
+    applicationVersion: auth?.applicationVersion,
   );
 });

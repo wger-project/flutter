@@ -19,18 +19,18 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/screens/auth_screen.dart';
 
 import 'auth_screen_test.mocks.dart';
@@ -40,7 +40,6 @@ void main() {
   /// Replacement for SharedPreferences.setMockInitialValues()
   SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
-  late AuthProvider authProvider;
   late MockClient mockClient;
 
   final Uri tRegistration = Uri(
@@ -66,24 +65,22 @@ void main() {
     'token': '1234567890abcdef1234567890abcdef12345678',
   };
 
-  MultiProvider getWidget() {
-    return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (ctx) => authProvider)],
-      child: Consumer<AuthProvider>(
-        builder: (ctx, auth, _) => const MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: Locale('en'),
-          home: AuthScreen(),
-        ),
+  Widget getWidget() {
+    return ProviderScope(
+      overrides: [
+        authHttpClientProvider.overrideWithValue(mockClient),
+      ],
+      child: const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: Locale('en'),
+        home: AuthScreen(),
       ),
     );
   }
 
   setUp(() {
     mockClient = MockClient();
-    authProvider = AuthProvider(mockClient);
-    authProvider.serverUrl = 'https://wger.de';
 
     SharedPreferences.setMockInitialValues({});
     PackageInfo.setMockInitialValues(
@@ -120,6 +117,7 @@ void main() {
     testWidgets('Login smoke test', (WidgetTester tester) async {
       // Act
       await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
 
       // Assert
       expect(find.text('wger'), findsOneWidget);
@@ -141,6 +139,7 @@ void main() {
     testWidgets('Login - with username & password - happy path', (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
 
       // Act
       await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
@@ -177,6 +176,7 @@ void main() {
       ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
 
       await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
 
       // Act
       await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
@@ -199,6 +199,7 @@ void main() {
     testWidgets('Login - with API token - happy path', (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
 
       // Act
       await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
@@ -252,6 +253,7 @@ void main() {
         mockClient.get(tProfileCheck, headers: anyNamed('headers')),
       ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
       await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
 
       // Act
       await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
@@ -297,6 +299,7 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
       await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
 
       // Act
       await tester.tap(find.byKey(const Key('toggleActionButton')));
@@ -325,6 +328,7 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
       await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
 
       // Act
       await tester.tap(find.byKey(const Key('toggleActionButton')));
@@ -365,6 +369,7 @@ void main() {
         ),
       ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
       await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
 
       // Act
       await tester.tap(find.byKey(const Key('toggleActionButton')));

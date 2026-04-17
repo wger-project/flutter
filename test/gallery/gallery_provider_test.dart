@@ -23,7 +23,6 @@ import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery.dart';
 
 import '../other/base_provider_test.mocks.dart';
-import '../utils.dart';
 
 void main() {
   group('test gallery provider', () {
@@ -47,7 +46,11 @@ void main() {
         ),
       );
 
-      final galleryProvider = GalleryProvider(testAuthProvider, [], client);
+      final galleryProvider = GalleryProvider(
+        serverUrl: 'https://localhost',
+        token: 'FooBar',
+        client: client,
+      );
 
       await galleryProvider.fetchAndSetGallery();
 
@@ -74,7 +77,11 @@ void main() {
         ),
       );
 
-      final galleryProvider = GalleryProvider(testAuthProvider, [], client);
+      final galleryProvider = GalleryProvider(
+        serverUrl: 'https://localhost',
+        token: 'FooBar',
+        client: client,
+      );
 
       final image = gallery.Image(
         id: 58,

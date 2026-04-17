@@ -39,7 +39,7 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   await db.initialize();
 
   final baseProvider = ref.read(wgerBaseProvider);
-  final currentConnector = DjangoConnector(baseUrl: baseProvider.auth.serverUrl!);
+  final currentConnector = DjangoConnector(baseUrl: baseProvider.serverUrl!);
 
   db.connect(connector: currentConnector);
   ref.onDispose(db.close);

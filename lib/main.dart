@@ -18,7 +18,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer, Provider;
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
@@ -27,6 +27,8 @@ import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
+import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -65,7 +67,6 @@ import 'package:wger/widgets/core/log_overview.dart';
 import 'package:wger/widgets/core/settings.dart';
 
 import 'helpers/logs.dart';
-import 'providers/auth.dart';
 
 void _setupLogging() {
   Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
@@ -137,124 +138,102 @@ void main() async {
   };
 
   // Application
-  runApp(const MainApp());
+  runApp(const ProviderScope(child: MainApp()));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp();
 
-  Widget _getHomeScreen(AuthProvider auth) {
-    switch (auth.state) {
-      case AuthState.loggedIn:
+  Widget _getHomeScreen(AuthState auth) {
+    switch (auth.status) {
+      case AuthStatus.loggedIn:
         return const EagerInitialization();
-      // return HomeTabsScreen();
-      case AuthState.updateRequired:
+      case AuthStatus.updateRequired:
         return const UpdateAppScreen();
-      case AuthState.serverUpdateRequired:
+      case AuthStatus.serverUpdateRequired:
         return const UpdateServerScreen();
-      default:
-        return FutureBuilder(
-          future: auth.tryAutoLogin(),
-          builder: (ctx, authResultSnapshot) =>
-              authResultSnapshot.connectionState == ConnectionState.waiting
-              ? const SplashScreen()
-              : const AuthScreen(),
-        );
+      case AuthStatus.loggedOut:
+        return const AuthScreen();
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (ctx) => AuthProvider()),
-        ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-            [],
-          ),
-          update: (context, auth, previous) =>
-              previous ?? NutritionPlansProvider(WgerBaseProvider(auth), []),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
-          create: (context) => UserProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
-          update: (context, base, previous) => previous ?? UserProvider(WgerBaseProvider(base)),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, GalleryProvider>(
-          create: (context) => GalleryProvider(
-            Provider.of(context, listen: false),
-            [],
-          ),
-          update: (context, auth, previous) => previous ?? GalleryProvider(auth, []),
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, AddExerciseProvider>(
-          create: (context) => AddExerciseProvider(
-            WgerBaseProvider(Provider.of(context, listen: false)),
-          ),
-          update: (context, base, previous) =>
-              previous ?? AddExerciseProvider(WgerBaseProvider(base)),
-        ),
-      ],
-      child: Consumer<AuthProvider>(
-        builder: (ctx, auth, _) {
-          final baseInstance = WgerBaseProvider(Provider.of(ctx, listen: false));
-          return Consumer<UserProvider>(
-            builder: (ctx, user, _) => riverpod.ProviderScope(
-              overrides: [
-                wgerBaseProvider.overrideWithValue(baseInstance),
-              ],
-              child: riverpod.Consumer(
-                builder: (rpCtx, ref, _) {
-                  return MaterialApp(
-                    title: 'wger',
-                    navigatorKey: navigatorKey,
-                    theme: wgerLightTheme,
-                    darkTheme: wgerDarkTheme,
-                    highContrastTheme: wgerLightThemeHc,
-                    highContrastDarkTheme: wgerDarkThemeHc,
-                    themeMode: user.themeMode,
-                    home: _getHomeScreen(auth),
-                    routes: {
-                      DashboardScreen.routeName: (ctx) => const DashboardScreen(),
-                      FormScreen.routeName: (ctx) => const FormScreen(),
-                      GalleryScreen.routeName: (ctx) => const GalleryScreen(),
-                      GymModeScreen.routeName: (ctx) => const GymModeScreen(),
-                      HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
-                      MeasurementCategoriesScreen.routeName: (ctx) =>
-                          const MeasurementCategoriesScreen(),
-                      MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
-                      NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
-                      NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
-                      NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-                      LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
-                      LogMealScreen.routeName: (ctx) => const LogMealScreen(),
-                      WeightScreen.routeName: (ctx) => const WeightScreen(),
-                      RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-                      RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
-                      WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
-                      RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
-                      ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
-                      ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
-                      AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
-                      AboutPage.routeName: (ctx) => const AboutPage(),
-                      SettingsPage.routeName: (ctx) => const SettingsPage(),
-                      LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
-                      ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
-                      ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
-                          const ConfigureDashboardWidgetsScreen(),
-                      TrophyScreen.routeName: (ctx) => const TrophyScreen(),
-                    },
-                    localizationsDelegates: AppLocalizations.localizationsDelegates,
-                    supportedLocales: AppLocalizations.supportedLocales,
-                  );
-                },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authAsync = ref.watch(authProvider);
+
+    return authAsync.when(
+      loading: () => const MaterialApp(home: SplashScreen()),
+      error: (error, stack) => MaterialApp(
+        home: Scaffold(body: Center(child: Text('$error'))),
+      ),
+      data: (authState) {
+        final base = ref.watch(wgerBaseProvider);
+
+        return MultiProvider(
+          providers: [
+            Provider<WgerBaseProvider>.value(value: base),
+            ChangeNotifierProvider<NutritionPlansProvider>(
+              create: (_) => NutritionPlansProvider(base, []),
+            ),
+            ChangeNotifierProvider<UserProvider>(
+              create: (_) => UserProvider(base),
+            ),
+            ChangeNotifierProvider<GalleryProvider>(
+              create: (_) => GalleryProvider(
+                serverUrl: base.serverUrl,
+                token: base.token,
+                applicationVersion: base.applicationVersion,
               ),
             ),
-          );
-        },
-      ),
+            ChangeNotifierProvider<AddExerciseProvider>(
+              create: (_) => AddExerciseProvider(base),
+            ),
+          ],
+          child: Consumer<UserProvider>(
+            builder: (ctx, user, _) => MaterialApp(
+              title: 'wger',
+              navigatorKey: navigatorKey,
+              theme: wgerLightTheme,
+              darkTheme: wgerDarkTheme,
+              highContrastTheme: wgerLightThemeHc,
+              highContrastDarkTheme: wgerDarkThemeHc,
+              themeMode: user.themeMode,
+              home: _getHomeScreen(authState),
+              routes: {
+                DashboardScreen.routeName: (ctx) => const DashboardScreen(),
+                FormScreen.routeName: (ctx) => const FormScreen(),
+                GalleryScreen.routeName: (ctx) => const GalleryScreen(),
+                GymModeScreen.routeName: (ctx) => const GymModeScreen(),
+                HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
+                MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
+                MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
+                NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
+                NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
+                NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+                LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
+                LogMealScreen.routeName: (ctx) => const LogMealScreen(),
+                WeightScreen.routeName: (ctx) => const WeightScreen(),
+                RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+                RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
+                WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
+                RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
+                ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
+                ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
+                AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
+                AboutPage.routeName: (ctx) => const AboutPage(),
+                SettingsPage.routeName: (ctx) => const SettingsPage(),
+                LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
+                ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
+                ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
+                    const ConfigureDashboardWidgetsScreen(),
+                TrophyScreen.routeName: (ctx) => const TrophyScreen(),
+              },
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+            ),
+          ),
+        );
+      },
     );
   }
 }

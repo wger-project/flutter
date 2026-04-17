@@ -19,18 +19,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import 'log_overview.dart';
 
-class AboutPage extends StatelessWidget {
+class AboutPage extends ConsumerWidget {
   static String routeName = '/AboutPage';
 
   const AboutPage({super.key});
@@ -49,8 +49,8 @@ class AboutPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authProvider).value;
     final i18n = AppLocalizations.of(context);
     final today = DateTime.now();
 
@@ -83,8 +83,8 @@ class AboutPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'App: ${authProvider.applicationVersion?.version ?? 'N/A'}\n'
-                        'Server: ${authProvider.serverVersion ?? 'N/A'}',
+                        'App: ${authState?.applicationVersion?.version ?? 'N/A'}\n'
+                        'Server: ${authState?.serverVersion ?? 'N/A'}',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       Padding(
@@ -208,8 +208,8 @@ class AboutPage extends StatelessWidget {
                     context: context,
                     applicationName: 'wger',
                     applicationVersion:
-                        'App: ${authProvider.applicationVersion?.version ?? 'N/A'} '
-                        'Server: ${authProvider.serverVersion ?? 'N/A'}',
+                        'App: ${authState?.applicationVersion?.version ?? 'N/A'} '
+                        'Server: ${authState?.serverVersion ?? 'N/A'}',
                     applicationLegalese: '\u{a9} ${today.year} wger contributors',
                     applicationIcon: Padding(
                       padding: const EdgeInsets.only(top: 10),

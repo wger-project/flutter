@@ -3,15 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
+import 'dart:async' as _i5;
 import 'dart:ui' as _i8;
 
-import 'package:http/http.dart' as _i3;
-import 'package:image_picker/image_picker.dart' as _i7;
+import 'package:http/http.dart' as _i2;
+import 'package:image_picker/image_picker.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/gallery/image.dart' as _i5;
-import 'package:wger/providers/auth.dart' as _i2;
-import 'package:wger/providers/gallery.dart' as _i4;
+import 'package:mockito/src/dummies.dart' as _i7;
+import 'package:wger/models/gallery/image.dart' as _i4;
+import 'package:wger/providers/gallery.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -28,68 +28,50 @@ import 'package:wger/providers/gallery.dart' as _i4;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeClient_0 extends _i1.SmartFake implements _i2.Client {
+  _FakeClient_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeUri_1 extends _i1.SmartFake implements Uri {
+  _FakeUri_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeResponse_2 extends _i1.SmartFake implements _i2.Response {
+  _FakeResponse_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [GalleryProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
+class MockGalleryProvider extends _i1.Mock implements _i3.GalleryProvider {
   MockGalleryProvider() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  List<_i5.Image> get images =>
+  List<_i4.Image> get images =>
       (super.noSuchMethod(
             Invocation.getter(#images),
-            returnValue: <_i5.Image>[],
+            returnValue: <_i4.Image>[],
           )
-          as List<_i5.Image>);
+          as List<_i4.Image>);
 
   @override
-  set images(List<_i5.Image>? value) => super.noSuchMethod(
+  set images(List<_i4.Image>? value) => super.noSuchMethod(
     Invocation.setter(#images, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  _i2.AuthProvider get auth =>
-      (super.noSuchMethod(
-            Invocation.getter(#auth),
-            returnValue: _FakeAuthProvider_0(this, Invocation.getter(#auth)),
-          )
-          as _i2.AuthProvider);
-
-  @override
-  _i3.Client get client =>
+  _i2.Client get client =>
       (super.noSuchMethod(
             Invocation.getter(#client),
-            returnValue: _FakeClient_1(this, Invocation.getter(#client)),
+            returnValue: _FakeClient_0(this, Invocation.getter(#client)),
           )
-          as _i3.Client);
+          as _i2.Client);
 
   @override
-  set auth(_i2.AuthProvider? value) => super.noSuchMethod(
-    Invocation.setter(#auth, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set client(_i3.Client? value) => super.noSuchMethod(
+  set client(_i2.Client? value) => super.noSuchMethod(
     Invocation.setter(#client, value),
     returnValueForMissingStub: null,
   );
@@ -105,40 +87,51 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
   );
 
   @override
-  _i6.Future<void> fetchAndSetGallery() =>
+  _i5.Future<void> fetchAndSetGallery() =>
       (super.noSuchMethod(
             Invocation.method(#fetchAndSetGallery, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> addImage(_i5.Image? image, _i7.XFile? imageFile) =>
+  _i5.Future<void> addImage(_i4.Image? image, _i6.XFile? imageFile) =>
       (super.noSuchMethod(
             Invocation.method(#addImage, [image, imageFile]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> editImage(_i5.Image? image, _i7.XFile? imageFile) =>
+  _i5.Future<void> editImage(_i4.Image? image, _i6.XFile? imageFile) =>
       (super.noSuchMethod(
             Invocation.method(#editImage, [image, imageFile]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> deleteImage(_i5.Image? image) =>
+  _i5.Future<void> deleteImage(_i4.Image? image) =>
       (super.noSuchMethod(
             Invocation.method(#deleteImage, [image]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
+
+  @override
+  String getAppNameHeaderValue() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAppNameHeaderValue, []),
+            returnValue: _i7.dummyValue<String>(
+              this,
+              Invocation.method(#getAppNameHeaderValue, []),
+            ),
+          )
+          as String);
 
   @override
   Map<String, String> getDefaultHeaders({
@@ -167,7 +160,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
               [path],
               {#id: id, #objectMethod: objectMethod, #query: query},
             ),
-            returnValue: _FakeUri_2(
+            returnValue: _FakeUri_1(
               this,
               Invocation.method(
                 #makeUrl,
@@ -179,7 +172,7 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
           as Uri);
 
   @override
-  _i6.Future<dynamic> fetch(
+  _i5.Future<dynamic> fetch(
     Uri? uri, {
     int? maxRetries = 3,
     Duration? initialDelay = const Duration(milliseconds: 250),
@@ -197,12 +190,12 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
                 #language: language,
               },
             ),
-            returnValue: _i6.Future<dynamic>.value(),
+            returnValue: _i5.Future<dynamic>.value(),
           )
-          as _i6.Future<dynamic>);
+          as _i5.Future<dynamic>);
 
   @override
-  _i6.Future<List<dynamic>> fetchPaginated(
+  _i5.Future<List<dynamic>> fetchPaginated(
     Uri? uri, {
     String? language,
     Duration? timeout = const Duration(seconds: 15),
@@ -213,45 +206,45 @@ class MockGalleryProvider extends _i1.Mock implements _i4.GalleryProvider {
               [uri],
               {#language: language, #timeout: timeout},
             ),
-            returnValue: _i6.Future<List<dynamic>>.value(<dynamic>[]),
+            returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
           )
-          as _i6.Future<List<dynamic>>);
+          as _i5.Future<List<dynamic>>);
 
   @override
-  _i6.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
+  _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(
             Invocation.method(#post, [data, uri]),
-            returnValue: _i6.Future<Map<String, dynamic>>.value(
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
           )
-          as _i6.Future<Map<String, dynamic>>);
+          as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i6.Future<Map<String, dynamic>> patch(
+  _i5.Future<Map<String, dynamic>> patch(
     Map<String, dynamic>? data,
     Uri? uri,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#patch, [data, uri]),
-            returnValue: _i6.Future<Map<String, dynamic>>.value(
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
           )
-          as _i6.Future<Map<String, dynamic>>);
+          as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i6.Future<_i3.Response> deleteRequest(String? url, int? id) =>
+  _i5.Future<_i2.Response> deleteRequest(String? url, int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteRequest, [url, id]),
-            returnValue: _i6.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            returnValue: _i5.Future<_i2.Response>.value(
+              _FakeResponse_2(
                 this,
                 Invocation.method(#deleteRequest, [url, id]),
               ),
             ),
           )
-          as _i6.Future<_i3.Response>);
+          as _i5.Future<_i2.Response>);
 
   @override
   void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(

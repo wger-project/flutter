@@ -22,7 +22,7 @@ import 'package:powersync/powersync.dart' as ps;
 import 'package:provider/provider.dart';
 import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
@@ -104,11 +104,11 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class MainSettingsDialog extends StatelessWidget {
+class MainSettingsDialog extends ConsumerWidget {
   const MainSettingsDialog({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
       title: Text(AppLocalizations.of(context).optionsLabel),
       actions: [
@@ -154,7 +154,7 @@ class MainSettingsDialog extends StatelessWidget {
             leading: const Icon(Icons.exit_to_app),
             title: Text(AppLocalizations.of(context).logout),
             onTap: () {
-              context.read<AuthProvider>().logout();
+              ref.read(authProvider.notifier).logout();
               // context.read<RoutinesProvider>().clear();
               context.read<NutritionPlansProvider>().clear();
               // context.read<BodyWeightProvider>().clear();

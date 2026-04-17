@@ -30,7 +30,6 @@ import 'package:provider/provider.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -40,7 +39,7 @@ import '../../test_data/body_weight.dart';
 import '../../test_data/nutritional_plans.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider, AuthProvider, http.Client, BodyWeightRepository])
+@GenerateMocks([WgerBaseProvider, http.Client, BodyWeightRepository])
 void main() {
   late IngredientDatabase database;
   late BodyWeightRepository mockRepository;
@@ -72,9 +71,6 @@ void main() {
               [],
               database: database,
             ),
-          ),
-          ChangeNotifierProvider<AuthProvider>(
-            create: (context) => AuthProvider(),
           ),
         ],
         child: MaterialApp(

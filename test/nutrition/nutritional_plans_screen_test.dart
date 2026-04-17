@@ -28,7 +28,6 @@ import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/user/profile.dart';
-import 'package:wger/providers/auth.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -39,9 +38,8 @@ import 'package:wger/widgets/nutrition/forms.dart';
 
 import 'nutritional_plans_screen_test.mocks.dart';
 
-@GenerateMocks([AuthProvider, WgerBaseProvider, http.Client, BodyWeightRepository])
+@GenerateMocks([WgerBaseProvider, http.Client, BodyWeightRepository])
 void main() {
-  final mockAuthProvider = MockAuthProvider();
   final mockBaseProvider = MockWgerBaseProvider();
   final client = MockClient();
   late IngredientDatabase database;
@@ -63,9 +61,8 @@ void main() {
       (_) async => http.Response('', 200),
     );
 
-    when(mockAuthProvider.token).thenReturn('1234');
-    when(mockAuthProvider.serverUrl).thenReturn('http://localhost');
-    when(mockAuthProvider.getAppNameHeader()).thenReturn('wger app');
+    when(mockBaseProvider.token).thenReturn('1234');
+    when(mockBaseProvider.serverUrl).thenReturn('http://localhost');
 
     return riverpod.ProviderScope(
       overrides: [bodyWeightRepositoryProvider.overrideWithValue(MockBodyWeightRepository())],
@@ -90,9 +87,6 @@ void main() {
               ],
               database: database,
             ),
-          ),
-          ChangeNotifierProvider<AuthProvider>(
-            create: (context) => AuthProvider(),
           ),
           ChangeNotifierProvider<UserProvider>(
             create: (context) =>

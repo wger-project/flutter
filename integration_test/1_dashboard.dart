@@ -22,7 +22,8 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/gallery.dart';
 import 'package:wger/providers/measurement_repository.dart';
@@ -44,14 +45,19 @@ import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
 import '../test_data/routines.dart';
 
+class _FakeAuthNotifier extends AuthNotifier {
+  _FakeAuthNotifier(this._state);
+
+  final AuthState _state;
+
+  @override
+  Future<AuthState> build() async => _state;
+}
+
 Widget createDashboardScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
   final mockGalleryProvider = MockGalleryProvider();
-
-  final mockAuthProvider = MockAuthProvider();
-  when(mockAuthProvider.setServerVersion()).thenAnswer((_) async {});
-  when(mockAuthProvider.dataInit).thenReturn(true);
 
   final mockNutritionProvider = weight.MockNutritionPlansProvider();
 
@@ -73,10 +79,16 @@ Widget createDashboardScreen({Locale? locale}) {
   final mockUserProvider = MockUserProvider();
   when(mockUserProvider.profile).thenReturn(tProfile1);
 
+  final loggedInAuth = const AuthState(
+    status: AuthStatus.loggedIn,
+    token: 'test-token',
+    serverUrl: 'http://localhost',
+  );
   final container = riverpod.ProviderContainer.test(
     overrides: [
       bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+      authProvider.overrideWith(() => _FakeAuthNotifier(loggedInAuth)),
     ],
   );
   container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
@@ -99,9 +111,6 @@ Widget createDashboardScreen({Locale? locale}) {
 
           ChangeNotifierProvider<GalleryProvider>(
             create: (context) => mockGalleryProvider,
-          ),
-          ChangeNotifierProvider<AuthProvider>(
-            create: (context) => mockAuthProvider,
           ),
 
           ChangeNotifierProvider<NutritionPlansProvider>(

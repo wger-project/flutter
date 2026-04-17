@@ -16,11 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:wger/providers/auth.dart';
+import 'package:http/http.dart' as http;
+import 'package:wger/providers/base_provider.dart';
 
-import 'other/base_provider_test.mocks.dart';
-
-// Test Auth provider
-final AuthProvider testAuthProvider = AuthProvider(MockClient())
-  ..token = 'FooBar'
-  ..serverUrl = 'https://localhost';
+/// Builds a [WgerBaseProvider] pre-configured for tests with a fixed server
+/// URL and API token. Pass a mocked [http.Client] to intercept requests.
+WgerBaseProvider buildTestBaseProvider({
+  http.Client? client,
+  String serverUrl = 'https://localhost',
+  String token = 'FooBar',
+}) {
+  return WgerBaseProvider(
+    serverUrl: serverUrl,
+    token: token,
+    client: client,
+  );
+}

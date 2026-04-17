@@ -5,10 +5,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i5;
 
-import 'package:http/http.dart' as _i3;
+import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/providers/auth.dart' as _i2;
-import 'package:wger/providers/base_provider.dart' as _i4;
+import 'package:mockito/src/dummies.dart' as _i4;
+import 'package:wger/providers/base_provider.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,57 +25,50 @@ import 'package:wger/providers/base_provider.dart' as _i4;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeClient_0 extends _i1.SmartFake implements _i2.Client {
+  _FakeClient_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeUri_1 extends _i1.SmartFake implements Uri {
+  _FakeUri_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeResponse_2 extends _i1.SmartFake implements _i2.Response {
+  _FakeResponse_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [WgerBaseProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
+class MockWgerBaseProvider extends _i1.Mock implements _i3.WgerBaseProvider {
   MockWgerBaseProvider() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.AuthProvider get auth =>
-      (super.noSuchMethod(
-            Invocation.getter(#auth),
-            returnValue: _FakeAuthProvider_0(this, Invocation.getter(#auth)),
-          )
-          as _i2.AuthProvider);
-
-  @override
-  _i3.Client get client =>
+  _i2.Client get client =>
       (super.noSuchMethod(
             Invocation.getter(#client),
-            returnValue: _FakeClient_1(this, Invocation.getter(#client)),
+            returnValue: _FakeClient_0(this, Invocation.getter(#client)),
           )
-          as _i3.Client);
+          as _i2.Client);
 
   @override
-  set auth(_i2.AuthProvider? value) => super.noSuchMethod(
-    Invocation.setter(#auth, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set client(_i3.Client? value) => super.noSuchMethod(
+  set client(_i2.Client? value) => super.noSuchMethod(
     Invocation.setter(#client, value),
     returnValueForMissingStub: null,
   );
+
+  @override
+  String getAppNameHeaderValue() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAppNameHeaderValue, []),
+            returnValue: _i4.dummyValue<String>(
+              this,
+              Invocation.method(#getAppNameHeaderValue, []),
+            ),
+          )
+          as String);
 
   @override
   Map<String, String> getDefaultHeaders({
@@ -104,7 +97,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
               [path],
               {#id: id, #objectMethod: objectMethod, #query: query},
             ),
-            returnValue: _FakeUri_2(
+            returnValue: _FakeUri_1(
               this,
               Invocation.method(
                 #makeUrl,
@@ -178,15 +171,15 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<_i3.Response> deleteRequest(String? url, int? id) =>
+  _i5.Future<_i2.Response> deleteRequest(String? url, int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteRequest, [url, id]),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            returnValue: _i5.Future<_i2.Response>.value(
+              _FakeResponse_2(
                 this,
                 Invocation.method(#deleteRequest, [url, id]),
               ),
             ),
           )
-          as _i5.Future<_i3.Response>);
+          as _i5.Future<_i2.Response>);
 }

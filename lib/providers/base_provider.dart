@@ -23,8 +23,9 @@ import 'dart:math' as math;
 
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/auth_notifier.dart' show getAppNameHeader;
 import 'package:wger/providers/helpers.dart';
 
 /// default timeout for GET requests
@@ -33,25 +34,36 @@ const DEFAULT_TIMEOUT = Duration(seconds: 15);
 /// Base provider class.
 ///
 /// Provides a couple of comfort functions so we avoid a bit of boilerplate.
+/// Holds a snapshot of the auth-relevant fields (serverUrl, token, app version)
+/// so it can build authenticated requests without depending on a specific
+/// state-management library.
 class WgerBaseProvider {
   final _logger = Logger('WgerBaseProvider');
 
-  AuthProvider auth;
+  final String? serverUrl;
+  final String? token;
+  final PackageInfo? applicationVersion;
   late http.Client client;
 
-  WgerBaseProvider(this.auth, [http.Client? client]) {
-    auth = auth;
+  WgerBaseProvider({
+    this.serverUrl,
+    this.token,
+    this.applicationVersion,
+    http.Client? client,
+  }) {
     this.client = client ?? http.Client();
   }
+
+  String getAppNameHeaderValue() => getAppNameHeader(applicationVersion);
 
   Map<String, String> getDefaultHeaders({bool includeAuth = false, String? language}) {
     final out = {
       HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-      HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
+      HttpHeaders.userAgentHeader: getAppNameHeaderValue(),
     };
 
     if (includeAuth) {
-      out[HttpHeaders.authorizationHeader] = 'Token ${auth.token}';
+      out[HttpHeaders.authorizationHeader] = 'Token $token';
     }
 
     if (language != null) {
@@ -63,7 +75,7 @@ class WgerBaseProvider {
 
   /// Helper function to make a URL.
   Uri makeUrl(String path, {int? id, String? objectMethod, Map<String, dynamic>? query}) {
-    return makeUri(auth.serverUrl!, path, id, objectMethod, query);
+    return makeUri(serverUrl!, path, id, objectMethod, query);
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
