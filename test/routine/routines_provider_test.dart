@@ -51,8 +51,14 @@ void main() {
         overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
       );
 
-      // Act
+      // Drain the microtask queue so the build()-time auto-fetch lands
+      // *before* we exercise the explicit call below. Then clear interactions
+      // so the assertion only counts the call we're testing.
       final notifier = container.read(routinesRiverpodProvider.notifier);
+      await Future<void>.delayed(Duration.zero);
+      clearInteractions(mockRepo);
+
+      // Act
       await notifier.fetchAllRoutinesSparse();
 
       // Assert

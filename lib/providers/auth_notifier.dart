@@ -313,11 +313,6 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(current.copyWith(serverVersion: v));
   }
 
-  /// Marks that the initial eager data-load has completed.
-  void setDataInit(bool value) {
-    state = AsyncData(_currentOrBlank().copyWith(dataInit: value));
-  }
-
   Future<String> _fetchServerVersion(String serverUrl) async {
     final response = await _client.get(makeUri(serverUrl, SERVER_VERSION_URL));
     return json.decode(response.body);

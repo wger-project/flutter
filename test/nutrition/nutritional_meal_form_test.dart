@@ -51,6 +51,9 @@ void main() {
 
     when(mockRepo.updateMeal(any, any)).thenAnswer((_) async => Meal(id: 1, plan: 1).toJson());
     when(mockRepo.createMeal(any)).thenAnswer((_) async => Meal(id: 99, plan: 1).toJson());
+    // NutritionNotifier.build() auto-fetches plans on first read; the
+    // explicit state seed below replaces this empty value.
+    when(mockRepo.fetchAllPlans()).thenAnswer((_) async => []);
 
     container = ProviderContainer(
       overrides: [

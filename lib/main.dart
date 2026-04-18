@@ -137,7 +137,7 @@ class MainApp extends ConsumerWidget {
   Widget _getHomeScreen(AuthState auth) {
     switch (auth.status) {
       case AuthStatus.loggedIn:
-        return const EagerInitialization();
+        return const HomeTabsScreen();
       case AuthStatus.updateRequired:
         return const UpdateAppScreen();
       case AuthStatus.serverUpdateRequired:
@@ -175,7 +175,7 @@ class MainApp extends ConsumerWidget {
             FormScreen.routeName: (ctx) => const FormScreen(),
             GalleryScreen.routeName: (ctx) => const GalleryScreen(),
             GymModeScreen.routeName: (ctx) => const GymModeScreen(),
-            HomeTabsScreen.routeName: (ctx) => HomeTabsScreen(),
+            HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
             MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
             MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
             NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),

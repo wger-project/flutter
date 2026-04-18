@@ -41,7 +41,6 @@ sealed class AuthState with _$AuthState {
     String? serverUrl,
     String? serverVersion,
     PackageInfo? applicationVersion,
-    @Default(false) bool dataInit,
   }) = _AuthState;
 
   const AuthState._();

@@ -64,6 +64,8 @@ void main() {
     mockIngredientRepo = MockIngredientRepository();
 
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
+    // NutritionNotifier.build() auto-fetches plans on first read.
+    when(mockNutritionRepo.fetchAllPlans()).thenAnswer((_) async => []);
 
     nutritionalPlanInfoResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_info_detail_response.json'),

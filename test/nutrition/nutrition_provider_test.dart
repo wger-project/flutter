@@ -67,6 +67,12 @@ void main() {
 
     // By default the local ingredient repo has no data - fall back to HTTP.
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
+
+    // NutritionNotifier.build() auto-fetches all plans on first read.
+    // Default to an empty list so tests that don't care about the plan list
+    // don't have to stub it; tests that need real plans override via
+    // [containerWithPlans].
+    when(mockRepo.fetchAllPlans()).thenAnswer((_) async => []);
   });
 
   group('fetchAndSetPlanFull', () {

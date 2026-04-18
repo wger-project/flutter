@@ -83,6 +83,8 @@ void main() {
     when(mockNutritionRepo.deletePlan(any)).thenAnswer(
       (_) async => http.Response('', 200),
     );
+    // NutritionNotifier.build() auto-fetches plans on first read.
+    when(mockNutritionRepo.fetchAllPlans()).thenAnswer((_) async => []);
 
     container = ProviderContainer(
       overrides: [

@@ -51,6 +51,8 @@ void main() {
 
     when(mockRepo.updatePlan(any, any)).thenAnswer((_) async {});
     when(mockRepo.createPlan(any)).thenAnswer((_) async => plan1.toJson());
+    // NutritionNotifier.build() auto-fetches plans on first read.
+    when(mockRepo.fetchAllPlans()).thenAnswer((_) async => []);
   });
 
   Widget createHomeScreen(NutritionalPlan plan, {locale = 'en'}) {

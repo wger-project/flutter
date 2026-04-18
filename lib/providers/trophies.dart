@@ -132,6 +132,16 @@ final class TrophyStateNotifier extends _$TrophyStateNotifier {
 
   @override
   TrophyState build() {
+    // Kick off the initial trophy load. Sync notifier, so we can't await
+    // here — UI consumers rebuild via state mutation when data arrives.
+    Future.microtask(() async {
+      try {
+        await fetchAll();
+      } catch (e, s) {
+        _logger.warning('initial trophy fetch failed', e, s);
+      }
+    });
+
     return TrophyState();
   }
 

@@ -80,16 +80,6 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadEvents();
     });
-
-    // React to changes in the providers so the calendar updates automatically
-    // TODO: refine this
-    ref.listen<riverpod.AsyncValue<List<WeightEntry>>>(weightEntryProvider, (prev, next) {
-      loadEvents();
-    });
-
-    ref.listen<riverpod.AsyncValue<List<MeasurementCategory>>>(measurementProvider, (prev, next) {
-      loadEvents();
-    });
   }
 
   /// Loads and organizes all events from various providers into the calendar.
@@ -257,6 +247,21 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
 
   @override
   Widget build(BuildContext context) {
+    // React to changes in the providers so the calendar updates automatically.
+    // ref.listen must be invoked from build(), not initState().
+    // TODO: also listen to routinesRiverpodProvider once it has been migrated
+    //       to an AsyncNotifier, so workout sessions refresh without a
+    //       manual reload.
+    ref.listen<riverpod.AsyncValue<List<WeightEntry>>>(weightEntryProvider, (prev, next) {
+      loadEvents();
+    });
+    ref.listen<riverpod.AsyncValue<List<MeasurementCategory>>>(measurementProvider, (prev, next) {
+      loadEvents();
+    });
+    ref.listen(nutritionProvider, (prev, next) {
+      loadEvents();
+    });
+
     return Card(
       child: Column(
         children: [

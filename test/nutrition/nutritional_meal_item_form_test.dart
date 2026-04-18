@@ -126,6 +126,8 @@ void main() {
     when(mockRepo.fetchIngredient(any)).thenAnswer((_) async => ingredient);
     when(mockRepo.fetchWeightUnits(1)).thenAnswer((_) => Future.value([]));
     when(mockRepo.fetchWeightUnits(2)).thenAnswer((_) => Future.value([]));
+    // NutritionNotifier.build() auto-fetches plans on first read.
+    when(mockRepo.fetchAllPlans()).thenAnswer((_) async => []);
 
     container = ProviderContainer(
       overrides: [

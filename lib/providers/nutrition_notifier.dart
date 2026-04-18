@@ -44,7 +44,13 @@ class NutritionNotifier extends _$NutritionNotifier {
   Future<List<NutritionalPlan>> build() async {
     _nutritionRepo = ref.read(nutritionRepositoryProvider);
     _ingredientRepo = ref.read(ingredientRepositoryProvider);
-    return [];
+
+    // Auto-fetch the sparse plan list on first read. Consumers that need
+    // a forced refresh (e.g. RefreshIndicator) can still call
+    // [fetchAndSetAllPlansSparse] explicitly.
+    final data = await _nutritionRepo.fetchAllPlans();
+    return data.map((e) => NutritionalPlan.fromJson(e)).toList()
+      ..sort((a, b) => b.creationDate.compareTo(a.creationDate));
   }
 
   List<NutritionalPlan> get _plans => state.asData?.value ?? [];

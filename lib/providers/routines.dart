@@ -96,6 +96,18 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   @override
   RoutinesState build() {
     _logger.fine('Building Routines Riverpod notifier');
+
+    // Kick off the initial sparse load. UI consumers `watch`ing this
+    // provider rebuild automatically once `state` is updated. Errors are
+    // logged but don't crash the build.
+    Future.microtask(() async {
+      try {
+        await fetchAllRoutinesSparse();
+      } catch (e, s) {
+        _logger.warning('initial routine fetch failed', e, s);
+      }
+    });
+
     return const RoutinesState();
   }
 

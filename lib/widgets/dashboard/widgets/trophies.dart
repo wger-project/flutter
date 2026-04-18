@@ -28,7 +28,7 @@ class DashboardTrophiesWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final trophiesState = ref.read(trophyStateProvider);
+    final trophiesState = ref.watch(trophyStateProvider);
     final i18n = AppLocalizations.of(context);
 
     return Card(
