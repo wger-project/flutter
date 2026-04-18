@@ -849,5 +849,6 @@
         "description": "Error message when the user tries to input a API key with forbidden characters"
     },
     "useUsernameAndPassword": "使用使用者名稱和密碼",
-    "useApiToken": "使用 API 金鑰"
+    "useApiToken": "使用 API 金鑰",
+    "preview": "預覽"
 }
