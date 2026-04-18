@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +26,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise_notifier.dart';
 import 'package:wger/providers/exercise_state_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/add_exercise/steps/step_1_basics.dart';
@@ -47,8 +48,33 @@ class AddExerciseScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(userProfileProvider).value;
+    final isOnline = ref.watch(networkStatusProvider);
     if (profile == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (!isOnline) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).contributeExercise),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.cloud_off, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  AppLocalizations.of(context).youAreOffline,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
     return profile.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
   }

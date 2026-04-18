@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/user/profile.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -53,6 +54,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
 
   @override
   Widget build(BuildContext context) {
+    final isOnline = ref.watch(networkStatusProvider);
     return Form(
       key: _form,
       child: Column(
@@ -101,42 +103,48 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
           ),
           if (!widget._profile.emailVerified)
             OutlinedButton(
-              onPressed: () async {
-                // Email is already verified
-                if (widget._profile.emailVerified) {
-                  return;
-                }
+              onPressed: isOnline
+                  ? () async {
+                      // Email is already verified
+                      if (widget._profile.emailVerified) {
+                        return;
+                      }
 
-                // Verify
-                await ref.read(userProfileProvider.notifier).verifyEmail();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(context).verifiedEmailInfo(widget._profile.email),
-                    ),
-                  ),
-                );
-              },
+                      // Verify
+                      await ref.read(userProfileProvider.notifier).verifyEmail();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(
+                              context,
+                            ).verifiedEmailInfo(widget._profile.email),
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
               child: Text(AppLocalizations.of(context).verify),
             ),
           ElevatedButton(
-            onPressed: () async {
-              // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
+            onPressed: isOnline
+                ? () async {
+                    // Validate and save the current values to the weightEntry
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _form.currentState!.save();
 
-              // Update profile
-              ref.read(userProfileProvider.notifier).saveProfile();
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(AppLocalizations.of(context).successfullySaved),
-                ),
-              );
-            },
+                    // Update profile
+                    ref.read(userProfileProvider.notifier).saveProfile();
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context).successfullySaved),
+                      ),
+                    );
+                  }
+                : null,
             child: Text(AppLocalizations.of(context).save),
           ),
         ],

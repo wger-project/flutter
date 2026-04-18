@@ -149,8 +149,11 @@ void main() {
     });
   });
 
-  testWidgets('Handle offline status', (WidgetTester tester) async {
-    // If the user is offline, the delete button is deactivated and no dialog is shown
+  testWidgets('Log deletion is available offline (PowerSync queues writes)', (
+    WidgetTester tester,
+  ) async {
+    // Log deletion is backed by PowerSync, so it must work even when offline:
+    // the delete is queued locally and synced once the network is back.
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget(isOnline: false));
@@ -161,9 +164,14 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('delete-log-1')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('delete-button')), findsNothing);
-      expect(find.byKey(const ValueKey('cancel-button')), findsNothing);
-      verifyNever(mockWorkoutLogRepository.deleteLocalDrift(any));
+      // The confirmation dialog opens regardless of network status …
+      expect(find.byKey(const ValueKey('delete-button')), findsOneWidget);
+      expect(find.byKey(const ValueKey('cancel-button')), findsOneWidget);
+
+      // … and confirming triggers the local delete.
+      await tester.tap(find.byKey(const ValueKey('delete-button')));
+      await tester.pumpAndSettle();
+      verify(mockWorkoutLogRepository.deleteLocalDrift(any)).called(1);
     });
   });
 }

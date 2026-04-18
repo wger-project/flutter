@@ -24,6 +24,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
@@ -69,6 +70,7 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+    final isOnline = ref.watch(networkStatusProvider);
 
     final children = [
       errorMessage,
@@ -219,7 +221,7 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
       const SizedBox(height: 5),
       ElevatedButton(
         key: const Key(SUBMIT_BUTTON_KEY_NAME),
-        onPressed: isSaving
+        onPressed: isSaving || !isOnline
             ? null
             : () async {
                 // Validate and save

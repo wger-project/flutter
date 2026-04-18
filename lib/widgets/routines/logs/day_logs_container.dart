@@ -22,7 +22,6 @@ import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/trophies.dart';
 
 import '../gym_mode/summary.dart';
@@ -41,7 +40,6 @@ class DayLogWidget extends ConsumerWidget {
     final i18n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final trophyState = ref.read(trophyStateProvider);
-    final isOnline = ref.watch(networkStatusProvider);
 
     final session = _routine.sessions.firstWhere(
       (s) => s.date.isSameDayAs(_date),
@@ -103,11 +101,9 @@ class DayLogWidget extends ConsumerWidget {
                                 IconButton(
                                   icon: const Icon(Icons.delete),
                                   key: ValueKey('delete-log-${log.id}'),
-                                  onPressed: isOnline
-                                      ? () {
-                                          showDeleteLogDialog(context, translation.name, log);
-                                        }
-                                      : null,
+                                  onPressed: () {
+                                    showDeleteLogDialog(context, translation.name, log);
+                                  },
                                 ),
                               ],
                             ),

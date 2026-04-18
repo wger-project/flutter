@@ -5,6 +5,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/slot.dart';
@@ -64,6 +65,7 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final provider = ref.read(routinesRiverpodProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Column(
       children: [
@@ -84,10 +86,12 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
                 tileColor: isDaySelected ? Theme.of(context).highlightColor : null,
                 key: ValueKey(day),
                 title: Text(day.isRest ? i18n.restDay : day.name),
-                leading: ReorderableDragStartListener(
-                  index: index,
-                  child: const Icon(Icons.drag_handle),
-                ),
+                leading: isOnline
+                    ? ReorderableDragStartListener(
+                        index: index,
+                        child: const Icon(Icons.drag_handle),
+                      )
+                    : const Icon(Icons.drag_handle, color: Colors.grey),
                 subtitle: Text(
                   day.description,
                   style: const TextStyle(overflow: TextOverflow.ellipsis),
@@ -102,7 +106,9 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () => _showDeleteConfirmationDialog(context, day),
+                      onPressed: isOnline
+                          ? () => _showDeleteConfirmationDialog(context, day)
+                          : null,
                     ),
                   ],
                 ),
@@ -140,21 +146,24 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
           child: ListTile(
             key: const ValueKey('add-day'),
             // tileColor: Theme.of(context).focusColor,
+            enabled: isOnline,
             leading: const Icon(Icons.add),
             title: Text(
               AppLocalizations.of(context).newDay,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            onTap: () async {
-              final day = Day(
-                routineId: widget.routineId,
-                name: '${i18n.newDay} ${widget.days.length + 1}',
-                order: widget.days.length + 1,
-              );
-              final newDay = await provider.addDay(day);
+            onTap: isOnline
+                ? () async {
+                    final day = Day(
+                      routineId: widget.routineId,
+                      name: '${i18n.newDay} ${widget.days.length + 1}',
+                      order: widget.days.length + 1,
+                    );
+                    final newDay = await provider.addDay(day);
 
-              widget.onDaySelected(newDay.id!);
-            },
+                    widget.onDaySelected(newDay.id!);
+                  }
+                : null,
           ),
         ),
       ],
@@ -199,6 +208,7 @@ class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Form(
       key: _form,
@@ -311,7 +321,7 @@ class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
           const SizedBox(height: 5),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            onPressed: isSaving
+            onPressed: isSaving || !isOnline
                 ? null
                 : () async {
                     if (!_form.currentState!.validate()) {

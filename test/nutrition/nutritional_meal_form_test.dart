@@ -27,6 +27,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -163,5 +164,44 @@ void main() {
 
     // Detail page
     // ...
+  });
+
+  testWidgets('Submit is disabled when offline and updateMeal is not called', (
+    WidgetTester tester,
+  ) async {
+    // Build a fresh container that overrides the network status to offline.
+    final offlineContainer = ProviderContainer(
+      overrides: [
+        nutritionRepositoryProvider.overrideWithValue(mockRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+        networkStatusProvider.overrideWithValue(false),
+      ],
+    );
+    addTearDown(offlineContainer.dispose);
+    await offlineContainer.read(nutritionProvider.future);
+    offlineContainer.read(nutritionProvider.notifier).state = AsyncData([plan1]);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: offlineContainer,
+        child: MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: MealForm(1, meal1)),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final button = tester.widget<ElevatedButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(button.onPressed, isNull);
+
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
+    await tester.pump();
+    verifyNever(mockRepo.updateMeal(any, any));
+    verifyNever(mockRepo.createMeal(any));
   });
 }

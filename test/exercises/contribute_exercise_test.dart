@@ -30,6 +30,7 @@ import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise_repository.dart';
 import 'package:wger/providers/core_data.dart';
 import 'package:wger/providers/exercise_data.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
@@ -51,7 +52,7 @@ void main() {
     when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => tProfile1);
   });
 
-  Widget createExerciseScreen({locale = 'en'}) {
+  Widget createExerciseScreen({locale = 'en', bool isOnline = true}) {
     return ProviderScope(
       overrides: [
         languagesProvider.overrideWith((ref) => Stream<List<Language>>.value(<Language>[])),
@@ -65,6 +66,7 @@ void main() {
         ),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
         addExerciseRepositoryProvider.overrideWithValue(mockAddExerciseRepository),
+        networkStatusProvider.overrideWithValue(isOnline),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -293,6 +295,28 @@ void main() {
       final expectedText = AppLocalizations.of(context).userProfile;
       final profileButton = find.widgetWithText(TextButton, expectedText);
       expect(profileButton, findsOneWidget);
+    });
+  });
+
+  group('Offline gating', () {
+    testWidgets('Offline placeholder is shown instead of the wizard', (tester) async {
+      tProfile1.isTrustworthy = true;
+      await tester.pumpWidget(createExerciseScreen(isOnline: false));
+      await tester.pumpAndSettle();
+
+      // The cloud-off icon is the give-away that the placeholder is shown
+      // (the wizard would render a Stepper instead).
+      expect(find.byIcon(Icons.cloud_off), findsOneWidget);
+      expect(find.byType(Stepper), findsNothing);
+    });
+
+    testWidgets('Wizard is shown when online', (tester) async {
+      tProfile1.isTrustworthy = true;
+      await tester.pumpWidget(createExerciseScreen(isOnline: true));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.cloud_off), findsNothing);
+      expect(find.byType(Stepper), findsOneWidget);
     });
   });
 }

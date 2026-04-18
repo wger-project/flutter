@@ -25,6 +25,7 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -60,12 +61,13 @@ void main() {
     ).thenAnswer((_) async => existingRoutine);
   });
 
-  Widget renderWidget(Routine routine, {locale = 'en'}) {
+  Widget renderWidget(Routine routine, {locale = 'en', bool isOnline = true}) {
     final key = GlobalKey<NavigatorState>();
 
     return ProviderScope(
       overrides: [
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
+        networkStatusProvider.overrideWithValue(isOnline),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -205,5 +207,20 @@ void main() {
 
     // Assert
     expect(find.text('The name is not valid'), findsOneWidget, reason: 'Error message is shown');
+  });
+
+  testWidgets('Submit button is disabled when offline', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget(existingRoutine, isOnline: false));
+    await tester.pumpAndSettle();
+
+    final button = tester.widget<ElevatedButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(button.onPressed, isNull);
+
+    // And tapping it must not trigger the edit request.
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
+    await tester.pump();
+    verifyNever(mockRoutinesRepository.editRoutineServer(any));
   });
 }

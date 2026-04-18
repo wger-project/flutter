@@ -24,6 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/forms/day.dart';
 
@@ -42,10 +43,11 @@ void main() {
     ).thenAnswer((_) => Future.value(getTestRoutine()));
   });
 
-  Widget renderWidget() {
+  Widget renderWidget({bool isOnline = true}) {
     return ProviderScope(
       overrides: [
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
+        networkStatusProvider.overrideWithValue(isOnline),
       ],
       child: MaterialApp(
         locale: const Locale('en'),
@@ -110,6 +112,22 @@ void main() {
           ),
         ),
       );
+    });
+
+    testWidgets('Submit is disabled and editDay is not called when offline', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(renderWidget(isOnline: false));
+      await tester.pumpAndSettle();
+
+      final button = tester.widget<ElevatedButton>(
+        find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+      );
+      expect(button.onPressed, isNull);
+
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
+      await tester.pump();
+      verifyNever(mockRoutinesRepository.editDayServer(any));
     });
   });
 }

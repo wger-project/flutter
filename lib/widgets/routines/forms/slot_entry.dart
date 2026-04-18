@@ -26,6 +26,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
@@ -125,6 +126,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     final provider = ref.read(routinesRiverpodProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Form(
       key: _form,
@@ -150,7 +152,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete, size: iconSize),
-                  onPressed: isDeleting
+                  onPressed: isDeleting || !isOnline
                       ? null
                       : () async {
                           setState(() => isDeleting = true);
@@ -340,7 +342,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
           const SizedBox(height: 5),
           OutlinedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            onPressed: isSaving
+            onPressed: isSaving || !isOnline
                 ? null
                 : () async {
                     if (!_form.currentState!.validate()) {

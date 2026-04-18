@@ -23,6 +23,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meal_screen.dart';
@@ -86,6 +87,7 @@ class _MealWidgetState extends ConsumerState<MealWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isOnline = ref.watch(networkStatusProvider);
     return Container(
       padding: const EdgeInsets.all(3),
       child: Card(
@@ -110,47 +112,53 @@ class _MealWidgetState extends ConsumerState<MealWidget> {
                     TextButton.icon(
                       icon: const Icon(Icons.add),
                       label: Text(AppLocalizations.of(context).addIngredient),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).addIngredient,
-                            getMealItemForm(widget._meal, widget._recentMealItems),
-                            hasListView: true,
-                          ),
-                        );
-                      },
+                      onPressed: isOnline
+                          ? () {
+                              Navigator.pushNamed(
+                                context,
+                                FormScreen.routeName,
+                                arguments: FormScreenArguments(
+                                  AppLocalizations.of(context).addIngredient,
+                                  getMealItemForm(widget._meal, widget._recentMealItems),
+                                  hasListView: true,
+                                ),
+                              );
+                            }
+                          : null,
                     ),
                     TextButton.icon(
                       label: Text(AppLocalizations.of(context).edit),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).edit,
-                            MealForm(widget._meal.planId, widget._meal),
-                          ),
-                        );
-                      },
+                      onPressed: isOnline
+                          ? () {
+                              Navigator.pushNamed(
+                                context,
+                                FormScreen.routeName,
+                                arguments: FormScreenArguments(
+                                  AppLocalizations.of(context).edit,
+                                  MealForm(widget._meal.planId, widget._meal),
+                                ),
+                              );
+                            }
+                          : null,
                       icon: const Icon(Icons.timer),
                     ),
                     TextButton.icon(
-                      onPressed: () {
-                        // Delete the meal
-                        ref.read(nutritionProvider.notifier).deleteMeal(widget._meal);
+                      onPressed: isOnline
+                          ? () {
+                              // Delete the meal
+                              ref.read(nutritionProvider.notifier).deleteMeal(widget._meal);
 
-                        // and inform the user
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              AppLocalizations.of(context).successfullyDeleted,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
-                      },
+                              // and inform the user
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    AppLocalizations.of(context).successfullyDeleted,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            }
+                          : null,
                       label: Text(AppLocalizations.of(context).delete),
                       icon: const Icon(Icons.delete),
                     ),
@@ -228,6 +236,7 @@ class MealItemEditableFullTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final values = _item.nutritionalValues;
     final i18n = AppLocalizations.of(context);
+    final isOnline = ref.watch(networkStatusProvider);
 
     final String amountText = _item.weightUnitObj != null
         ? '${_item.amount.toStringAsFixed(0)} × ${_item.weightUnitObj!.name}'
@@ -248,20 +257,22 @@ class MealItemEditableFullTile extends ConsumerWidget {
               icon: const Icon(Icons.delete, size: ICON_SIZE_SMALL),
               tooltip: i18n.delete,
               iconSize: ICON_SIZE_SMALL,
-              onPressed: () {
-                // Delete the meal item
-                ref.read(nutritionProvider.notifier).deleteMealItem(_item);
+              onPressed: isOnline
+                  ? () {
+                      // Delete the meal item
+                      ref.read(nutritionProvider.notifier).deleteMealItem(_item);
 
-                // and inform the user
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      i18n.successfullyDeleted,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                );
-              },
+                      // and inform the user
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            i18n.successfullyDeleted,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
             )
           : null,
     );

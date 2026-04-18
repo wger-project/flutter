@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -98,6 +99,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final plans = ref.watch(nutritionProvider).value ?? const [];
     final notifier = ref.read(nutritionProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return RefreshIndicator(
       onRefresh: () => notifier.fetchAndSetAllPlansSparse(),
@@ -146,9 +148,10 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
                         IconButton(
                           icon: const Icon(Icons.delete),
                           tooltip: AppLocalizations.of(context).delete,
-                          onPressed: () async {
-                            // Delete the plan from DB
-                            await showDialog(
+                          onPressed: isOnline
+                              ? () async {
+                                  // Delete the plan from DB
+                                  await showDialog(
                               context: context,
                               builder: (BuildContext contextDialog) {
                                 return AlertDialog(
@@ -193,7 +196,8 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
                                 );
                               },
                             );
-                          },
+                          }
+                              : null,
                         ),
                       ],
                     ),

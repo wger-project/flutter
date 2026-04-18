@@ -24,6 +24,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
@@ -82,6 +83,7 @@ class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final provider = ref.read(routinesRiverpodProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Column(
       children: [
@@ -92,7 +94,7 @@ class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
               : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode),
         ),
         const SizedBox(height: 10),
-        if (_showExerciseSearchBox || widget.slot.entries.isEmpty)
+        if (isOnline && (_showExerciseSearchBox || widget.slot.entries.isEmpty))
           ExerciseAutocompleter(
             onExerciseSelected: (exercise) async {
               setState(() => _showExerciseSearchBox = false);
@@ -119,9 +121,11 @@ class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
           ),
         if (widget.slot.entries.isNotEmpty)
           FilledButton(
-            onPressed: () {
-              setState(() => _showExerciseSearchBox = !_showExerciseSearchBox);
-            },
+            onPressed: isOnline
+                ? () {
+                    setState(() => _showExerciseSearchBox = !_showExerciseSearchBox);
+                  }
+                : null,
             child: Text(i18n.addSuperset),
           ),
         const SizedBox(height: 5),
@@ -205,6 +209,7 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final provider = ref.read(routinesRiverpodProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
     final groupInfo = computeSlotGroups(widget.slots, languageCode);
 
@@ -285,12 +290,15 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
                 ListTile(
                   title: Text(titleText),
                   tileColor: isCurrentSlotSelected ? Theme.of(context).highlightColor : null,
-                  leading: selectedSlotId == null
+                  leading: selectedSlotId == null && isOnline
                       ? ReorderableDragStartListener(
                           index: index,
                           child: const Icon(Icons.drag_handle),
                         )
-                      : const Icon(Icons.block),
+                      : Icon(
+                          selectedSlotId == null ? Icons.drag_handle : Icons.block,
+                          color: isOnline ? null : Colors.grey,
+                        ),
                   subtitle: subtitleWidget,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -305,7 +313,9 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Icon(Icons.content_copy),
-                          onPressed: isAddingSlot ? null : () => _handleAddSet(slot, index),
+                          onPressed: isAddingSlot || !isOnline
+                              ? null
+                              : () => _handleAddSet(slot, index),
                         ),
                       IconButton(
                         onPressed: () {
@@ -323,7 +333,7 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete),
-                        onPressed: isDeletingSlot == index
+                        onPressed: isDeletingSlot == index || !isOnline
                             ? null
                             : () async {
                                 selectedSlotId = null;
@@ -382,12 +392,13 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
         if (!widget.day.isRest)
           Card(
             child: ListTile(
+              enabled: isOnline,
               leading: isAddingSlot ? const FormProgressIndicator() : const Icon(Icons.add),
               title: Text(
                 i18n.addExercise,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              onTap: isAddingSlot
+              onTap: isAddingSlot || !isOnline
                   ? null
                   : () async {
                       setState(() => isAddingSlot = true);

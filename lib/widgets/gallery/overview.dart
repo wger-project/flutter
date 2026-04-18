@@ -24,6 +24,7 @@ import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/gallery_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/image.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
@@ -90,6 +91,7 @@ class ImageDetail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isOnline = ref.watch(networkStatusProvider);
     return Container(
       key: Key('image-${image.id!}-detail'),
       padding: const EdgeInsets.all(10),
@@ -120,25 +122,29 @@ class ImageDetail extends ConsumerWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.delete),
-                onPressed: () {
-                  ref.read(galleryProvider.notifier).deleteImage(image);
-                  Navigator.of(context).pop();
-                },
+                onPressed: isOnline
+                    ? () {
+                        ref.read(galleryProvider.notifier).deleteImage(image);
+                        Navigator.of(context).pop();
+                      }
+                    : null,
               ),
               if (!isDesktop)
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        AppLocalizations.of(context).edit,
-                        ImageForm(image),
-                        hasListView: true,
-                      ),
-                    );
-                  },
+                  onPressed: isOnline
+                      ? () {
+                          Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).edit,
+                              ImageForm(image),
+                              hasListView: true,
+                            ),
+                          );
+                        }
+                      : null,
                 ),
             ],
           ),

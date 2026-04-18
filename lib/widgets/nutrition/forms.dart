@@ -28,6 +28,7 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -50,6 +51,7 @@ class MealForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isOnline = ref.watch(networkStatusProvider);
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -89,17 +91,21 @@ class MealForm extends ConsumerWidget {
             ElevatedButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
-              onPressed: () {
-                if (!_form.currentState!.validate()) {
-                  return;
-                }
-                _form.currentState!.save();
+              onPressed: isOnline
+                  ? () {
+                      if (!_form.currentState!.validate()) {
+                        return;
+                      }
+                      _form.currentState!.save();
 
-                final notifier = ref.read(nutritionProvider.notifier);
-                _meal.id == null ? notifier.addMeal(_meal, _planId) : notifier.editMeal(_meal);
+                      final notifier = ref.read(nutritionProvider.notifier);
+                      _meal.id == null
+                          ? notifier.addMeal(_meal, _planId)
+                          : notifier.editMeal(_meal);
 
-                Navigator.of(context).pop();
-              },
+                      Navigator.of(context).pop();
+                    }
+                  : null,
             ),
           ],
         ),
@@ -575,6 +581,7 @@ class _PlanFormState extends ConsumerState<PlanForm> {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Form(
       key: _form,
@@ -786,31 +793,33 @@ class _PlanFormState extends ConsumerState<PlanForm> {
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
-            onPressed: () async {
-              // Validate and save the current values to the plan
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
+            onPressed: isOnline
+                ? () async {
+                    // Validate and save the current values to the plan
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _form.currentState!.save();
 
-              // Save to DB
-              final notifier = ref.read(nutritionProvider.notifier);
-              if (widget._plan.id != null) {
-                await notifier.editPlan(widget._plan);
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              } else {
-                widget._plan = await notifier.addPlan(widget._plan);
-                if (context.mounted) {
-                  Navigator.of(context).pushReplacementNamed(
-                    NutritionalPlanScreen.routeName,
-                    arguments: widget._plan,
-                  );
-                }
-              }
-            },
+                    // Save to DB
+                    final notifier = ref.read(nutritionProvider.notifier);
+                    if (widget._plan.id != null) {
+                      await notifier.editPlan(widget._plan);
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    } else {
+                      widget._plan = await notifier.addPlan(widget._plan);
+                      if (context.mounted) {
+                        Navigator.of(context).pushReplacementNamed(
+                          NutritionalPlanScreen.routeName,
+                          arguments: widget._plan,
+                        );
+                      }
+                    }
+                  }
+                : null,
           ),
         ],
       ),
