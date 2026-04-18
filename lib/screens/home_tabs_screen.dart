@@ -19,73 +19,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:logging/logging.dart';
-import 'package:rive/rive.dart';
 import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth_notifier.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
-import 'package:wger/providers/gallery_notifier.dart';
-import 'package:wger/providers/nutrition_notifier.dart';
-import 'package:wger/providers/routines.dart';
-import 'package:wger/providers/trophies.dart';
-import 'package:wger/providers/user_profile_notifier.dart';
-import 'package:wger/providers/workout_logs.dart';
-import 'package:wger/providers/workout_session.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 
-class EagerInitialization extends ConsumerWidget {
-  const EagerInitialization();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: do we need all of these here?
-    ref.watch(exerciseStateProvider);
-    ref.watch(workoutSessionProvider);
-    ref.watch(routineRepetitionUnitProvider);
-    ref.watch(routineWeightUnitProvider);
-    ref.watch(workoutLogProvider);
-    // ref.watch(workoutLogProvider);
-    // ref.watch(routinesChangeProvider);
-    return HomeTabsScreen();
-  }
-}
-
 class HomeTabsScreen extends ConsumerStatefulWidget {
-  final _logger = Logger('HomeTabsScreen');
-
-  HomeTabsScreen();
+  const HomeTabsScreen({super.key});
 
   static const routeName = '/dashboard2';
 
   @override
-  _HomeTabsScreenState createState() => _HomeTabsScreenState();
+  ConsumerState<HomeTabsScreen> createState() => _HomeTabsScreenState();
 }
 
 class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     with SingleTickerProviderStateMixin {
-  Future<void>? _initialData;
-  bool _errorHandled = false;
   int _selectedIndex = 0;
   bool _isWideScreen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Start loading initial data after the first frame so that
-    // InheritedWidgets (Localizations, MediaQuery, Providers) are
-    // available. We still keep didChangeDependencies() as a
-    // fallback in case dependencies change later.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _initialData ??= _loadEntries();
-      }
-    });
-  }
 
   @override
   void didChangeDependencies() {
@@ -93,7 +47,6 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
 
     final size = MediaQuery.sizeOf(context);
     _isWideScreen = size.width > MATERIAL_XS_BREAKPOINT;
-    _initialData ??= _loadEntries();
   }
 
   void _onItemTapped(int index) {
@@ -109,74 +62,6 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     const WeightScreen(),
     const GalleryScreen(),
   ];
-
-  /// Load initial data from the server
-  Future<void> _loadEntries() async {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    final authNotifier = ref.read(authProvider.notifier);
-    final authState = ref.read(authProvider).value;
-    final trophyNotifier = ref.read(trophyStateProvider.notifier);
-
-    if (authState != null && !authState.dataInit) {
-      final nutritionNotifier = ref.read(nutritionProvider.notifier);
-
-      // ref.watch(routinesRiverpodProvider);
-      // ref.read(exerciseStateProvider);
-      await ref.read(exerciseStateReadyProvider.future);
-
-      // await ref.read(routineStateReadyProvider.future);
-      // widget._logger.info('Routine state is ready.');
-
-      //
-      // Base data
-      widget._logger.info('Loading base data');
-      await Future.wait([
-        authNotifier.setServerVersion(),
-        ref.read(userProfileProvider.future),
-      ]);
-      // await ref.read(routineWeightUnitProvider.future);
-      // await ref.read(exerciseStateReadyProvider.future);
-      // await ref.read(routineStateReadyProvider.future);
-      // await ref.read(sessionStateReadyProvider.future);
-      // ref.watch(workoutLogProvider);
-      // ref.read(weightEntryProvider);
-
-      // await ref.watch(workoutLogProvider.future);
-      await ref.read(workoutLogProvider.future);
-
-      final routinesProvider = ref.read(routinesRiverpodProvider.notifier);
-      final routines = ref.read(routinesRiverpodProvider);
-
-      //
-      // Plans, weight and gallery
-      widget._logger.info('Loading routines, weight, measurements and gallery');
-      await Future.wait([
-        ref.read(galleryProvider.future),
-        nutritionNotifier.fetchAndSetAllPlansSparse(),
-        routinesProvider.fetchAllRoutinesSparse(),
-        trophyNotifier.fetchAll(language: languageCode),
-      ]);
-
-      //
-      // Current nutritional plan
-      widget._logger.info('Loading current nutritional plan');
-      if (nutritionNotifier.currentPlan != null) {
-        final plan = nutritionNotifier.currentPlan!;
-        await nutritionNotifier.fetchAndSetPlanFull(plan.id!);
-      }
-
-      //
-      // Current routine
-      // widget._logger.info('Loading current routine');
-      if (routines.currentRoutine != null) {
-        final routineId = routines.currentRoutine!.id!;
-        widget._logger.finer('Current routine ID: $routineId');
-        await routinesProvider.fetchAndSetRoutineFull(routines.currentRoutine!.id!);
-      }
-    }
-
-    authNotifier.setDataInit(true);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,77 +116,14 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       );
     }
 
-    return FutureBuilder<void>(
-      future: _initialData,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          // Throw the original error with the original stack trace, otherwise
-          // the error will only point to these lines here
-          if (!_errorHandled) {
-            _errorHandled = true;
-            final error = snapshot.error;
-            final stackTrace = snapshot.stackTrace;
-
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                if (error != null && stackTrace != null) {
-                  throw Error.throwWithStackTrace(error, stackTrace);
-                }
-                throw error!;
-              }
-            });
-          }
-
-          // Note that we continue to show the app, even if there was an error.
-          // return const Scaffold(body: LoadingWidget());
-        }
-
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Scaffold(
-            body: LoadingWidget(),
-          );
-        }
-
-        return Scaffold(
-          body: Row(
-            children: [
-              if (_isWideScreen) getNavigationRail(),
-              Expanded(child: _screenList.elementAt(_selectedIndex)),
-            ],
-          ),
-          bottomNavigationBar: _isWideScreen ? null : getNavigationBar(),
-        );
-      },
-    );
-  }
-}
-
-class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      body: Row(
         children: [
-          const Center(
-            child: SizedBox(
-              height: 70,
-              child: RiveAnimation.asset(
-                'assets/animations/wger_logo.riv',
-                animations: ['idle_loop2'],
-              ),
-            ),
-          ),
-          Text(
-            AppLocalizations.of(context).loadingText,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
+          if (_isWideScreen) getNavigationRail(),
+          Expanded(child: _screenList.elementAt(_selectedIndex)),
         ],
       ),
+      bottomNavigationBar: _isWideScreen ? null : getNavigationBar(),
     );
   }
 }

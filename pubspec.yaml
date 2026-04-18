@@ -57,7 +57,6 @@ dependencies:
   package_info_plus: ^10.0.0
   path: ^1.9.0
   path_provider: ^2.1.5
-  rive: ^0.13.20
   sqlite3_flutter_libs: ^0.5.41
   shared_preferences: ^2.5.5
   table_calendar: ^3.0.8
