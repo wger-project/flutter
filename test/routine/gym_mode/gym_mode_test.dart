@@ -45,6 +45,7 @@ import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 import '../../../test_data/exercises.dart';
 import '../../../test_data/routines.dart';
+import '../../fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
 @GenerateMocks([WorkoutSessionRepository])
@@ -61,6 +62,8 @@ class _FakeRoutinesRiverpod extends RoutinesRiverpod {
 }
 
 void main() {
+  installFakeConnectivity();
+
   final key = GlobalKey<NavigatorState>();
 
   final testRoutine = getTestRoutine();

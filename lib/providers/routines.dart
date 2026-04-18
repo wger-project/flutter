@@ -30,6 +30,7 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercise_data.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 import 'package:wger/providers/workout_session.dart';
 
@@ -93,6 +94,14 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   @override
   Future<RoutinesState> build() async {
     _logger.fine('Building Routines Riverpod notifier');
+
+    // Auto-retry once the network comes back
+    ref.listen<bool>(networkStatusProvider, (prev, next) {
+      if (prev == false && next == true) {
+        _logger.fine('Network restored, re-fetching routines');
+        ref.invalidateSelf();
+      }
+    });
 
     // Auto-fetch the sparse routine list on first read. Consumers that need
     // a forced refresh can still call [fetchAllRoutinesSparse] explicitly.

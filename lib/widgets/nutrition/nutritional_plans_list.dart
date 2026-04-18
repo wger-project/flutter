@@ -21,11 +21,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
@@ -97,114 +99,121 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
 
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
-    final plans = ref.watch(nutritionProvider).value ?? const [];
+    final plansAsync = ref.watch(nutritionProvider);
     final notifier = ref.read(nutritionProvider.notifier);
     final isOnline = ref.watch(networkStatusProvider);
 
     return RefreshIndicator(
       onRefresh: () => notifier.fetchAndSetAllPlansSparse(),
-      child: plans.isEmpty
-          ? const TextPrompt()
-          : ListView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: plans.length,
-              itemBuilder: (context, index) {
-                final currentPlan = plans[index];
-                return Card(
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(
-                        NutritionalPlanScreen.routeName,
-                        arguments: currentPlan,
-                      );
-                    },
-                    title: Text(currentPlan.getLabel(context)),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          currentPlan.endDate != null
-                              ? 'from ${DateFormat.yMd(
-                                  Localizations.localeOf(context).languageCode,
-                                ).format(currentPlan.startDate)} to ${DateFormat.yMd(
-                                  Localizations.localeOf(context).languageCode,
-                                ).format(currentPlan.endDate!)}'
-                              : 'from ${DateFormat.yMd(
-                                  Localizations.localeOf(context).languageCode,
-                                ).format(currentPlan.startDate)} (open ended)',
-                        ),
-                        _buildWeightChangeInfo(
-                          context,
-                          ref,
-                          currentPlan.startDate,
-                          currentPlan.endDate,
-                        ),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const VerticalDivider(),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          tooltip: AppLocalizations.of(context).delete,
-                          onPressed: isOnline
-                              ? () async {
-                                  // Delete the plan from DB
-                                  await showDialog(
-                              context: context,
-                              builder: (BuildContext contextDialog) {
-                                return AlertDialog(
-                                  content: Text(
-                                    AppLocalizations.of(
-                                      context,
-                                    ).confirmDelete(currentPlan.description),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      child: Text(
-                                        MaterialLocalizations.of(context).cancelButtonLabel,
+      child: AsyncValueWidget<List<NutritionalPlan>>(
+        value: plansAsync,
+        loggerName: 'NutritionalPlansList',
+        data: (plans) {
+          if (plans.isEmpty) {
+            return const TextPrompt();
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.all(10.0),
+            itemCount: plans.length,
+            itemBuilder: (context, index) {
+              final currentPlan = plans[index];
+              return Card(
+                child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(
+                      NutritionalPlanScreen.routeName,
+                      arguments: currentPlan,
+                    );
+                  },
+                  title: Text(currentPlan.getLabel(context)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        currentPlan.endDate != null
+                            ? 'from ${DateFormat.yMd(
+                                Localizations.localeOf(context).languageCode,
+                              ).format(currentPlan.startDate)} to ${DateFormat.yMd(
+                                Localizations.localeOf(context).languageCode,
+                              ).format(currentPlan.endDate!)}'
+                            : 'from ${DateFormat.yMd(
+                                Localizations.localeOf(context).languageCode,
+                              ).format(currentPlan.startDate)} (open ended)',
+                      ),
+                      _buildWeightChangeInfo(
+                        context,
+                        ref,
+                        currentPlan.startDate,
+                        currentPlan.endDate,
+                      ),
+                    ],
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const VerticalDivider(),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        tooltip: AppLocalizations.of(context).delete,
+                        onPressed: isOnline
+                            ? () async {
+                                // Delete the plan from DB
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext contextDialog) {
+                                    return AlertDialog(
+                                      content: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        ).confirmDelete(currentPlan.description),
                                       ),
-                                      onPressed: () => Navigator.of(contextDialog).pop(),
-                                    ),
-                                    TextButton(
-                                      child: Text(
-                                        AppLocalizations.of(context).delete,
-                                        style: TextStyle(
-                                          color: Theme.of(context).colorScheme.error,
+                                      actions: [
+                                        TextButton(
+                                          child: Text(
+                                            MaterialLocalizations.of(context).cancelButtonLabel,
+                                          ),
+                                          onPressed: () => Navigator.of(contextDialog).pop(),
                                         ),
-                                      ),
-                                      onPressed: () {
-                                        // Confirmed, delete the plan
-                                        notifier.deletePlan(currentPlan.id!);
-
-                                        // Close the popup
-                                        Navigator.of(contextDialog).pop();
-
-                                        // and inform the user
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              AppLocalizations.of(context).successfullyDeleted,
-                                              textAlign: TextAlign.center,
+                                        TextButton(
+                                          child: Text(
+                                            AppLocalizations.of(context).delete,
+                                            style: TextStyle(
+                                              color: Theme.of(context).colorScheme.error,
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  ],
+                                          onPressed: () {
+                                            // Confirmed, delete the plan
+                                            notifier.deletePlan(currentPlan.id!);
+
+                                            // Close the popup
+                                            Navigator.of(contextDialog).pop();
+
+                                            // and inform the user
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  AppLocalizations.of(context).successfullyDeleted,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          }
-                              : null,
-                        ),
-                      ],
-                    ),
+                              }
+                            : null,
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

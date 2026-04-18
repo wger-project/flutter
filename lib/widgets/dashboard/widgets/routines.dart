@@ -27,6 +27,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
@@ -40,70 +41,119 @@ class DashboardRoutineWidget extends ConsumerStatefulWidget {
 
 class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget> {
   var _showDetail = false;
-  bool _hasContent = false;
 
-  @override
-  Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    final routine = ref.watch(routinesRiverpodProvider).value?.currentRoutine;
-    _hasContent = routine != null;
-
+  /// Renders the dashboard card shell so loading / error / empty / data
+  /// states all share the same outline (icon + title) instead of the card
+  /// hopping around. The trailing widget changes per state.
+  Widget _shell(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required Widget trailing,
+    Widget? child,
+  }) {
     return Card(
       child: Column(
         children: [
           ListTile(
-            title: Text(
-              _hasContent ? routine!.name : AppLocalizations.of(context).labelWorkoutPlan,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            subtitle: Text(
-              _hasContent
-                  ? '${dateFormat.format(routine!.start)} - ${dateFormat.format(routine.end)}'
-                  : '',
-            ),
+            title: Text(title, style: Theme.of(context).textTheme.headlineSmall),
+            subtitle: Text(subtitle),
             leading: Icon(
               Icons.fitness_center,
               color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
-            trailing: _hasContent
-                ? Tooltip(
-                    message: AppLocalizations.of(context).toggleDetails,
-                    child: _showDetail ? const Icon(Icons.info) : const Icon(Icons.info_outline),
-                  )
-                : const SizedBox(),
-            onTap: () {
-              setState(() {
-                _showDetail = !_showDetail;
-              });
-            },
+            trailing: trailing,
           ),
-          if (_hasContent) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: DetailContentWidget(routine!.dayDataCurrentIterationFiltered, _showDetail),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      RoutineScreen.routeName,
-                      arguments: routine.id,
-                    );
-                  },
-                ),
-              ],
-            ),
-          ] else
-            NothingFound(
-              AppLocalizations.of(context).noRoutines,
-              AppLocalizations.of(context).newRoutine,
-              RoutineForm(Routine.empty()),
-            ),
+          ?child,
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final i18n = AppLocalizations.of(context);
+
+    return AsyncValueWidget<RoutinesState>(
+      value: ref.watch(routinesRiverpodProvider),
+      loggerName: 'DashboardRoutineWidget',
+      loading: _shell(
+        context,
+        title: i18n.labelWorkoutPlan,
+        subtitle: '',
+        trailing: const SizedBox(
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      ),
+      errorBuilder: (e, _) => _shell(
+        context,
+        title: i18n.labelWorkoutPlan,
+        subtitle: '$e',
+        trailing: const Icon(Icons.error_outline, color: Colors.red),
+      ),
+      data: (state) {
+        final routine = state.currentRoutine;
+        if (routine == null) {
+          return _shell(
+            context,
+            title: i18n.labelWorkoutPlan,
+            subtitle: '',
+            trailing: const SizedBox(),
+            child: NothingFound(
+              i18n.noRoutines,
+              i18n.newRoutine,
+              RoutineForm(Routine.empty()),
+            ),
+          );
+        }
+
+        return Card(
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(routine.name, style: Theme.of(context).textTheme.headlineSmall),
+                subtitle: Text(
+                  '${dateFormat.format(routine.start)} - ${dateFormat.format(routine.end)}',
+                ),
+                leading: Icon(
+                  Icons.fitness_center,
+                  color: Theme.of(context).textTheme.headlineSmall!.color,
+                ),
+                trailing: Tooltip(
+                  message: i18n.toggleDetails,
+                  child: _showDetail ? const Icon(Icons.info) : const Icon(Icons.info_outline),
+                ),
+                onTap: () {
+                  setState(() {
+                    _showDetail = !_showDetail;
+                  });
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: DetailContentWidget(routine.dayDataCurrentIterationFiltered, _showDetail),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  TextButton(
+                    child: Text(i18n.goToDetailPage),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        RoutineScreen.routeName,
+                        arguments: routine.id,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

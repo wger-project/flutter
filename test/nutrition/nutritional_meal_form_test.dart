@@ -34,9 +34,12 @@ import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
 import '../../test_data/nutritional_plans.dart';
+import '../fake_connectivity.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
 void main() {
+  installFakeConnectivity();
+
   late MockNutritionRepository mockRepo;
   late MockIngredientRepository mockIngredientRepo;
   late ProviderContainer container;

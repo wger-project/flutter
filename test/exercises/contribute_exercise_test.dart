@@ -35,6 +35,7 @@ import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import '../../test_data/profile.dart';
+import '../fake_connectivity.dart';
 import 'contribute_exercise_test.mocks.dart';
 
 /// Test suite for the exercise-contribution screen.
@@ -43,6 +44,8 @@ import 'contribute_exercise_test.mocks.dart';
 /// repository. The notifier builds with an empty default form state.
 @GenerateMocks([AddExerciseRepository, UserProfileRepository])
 void main() {
+  installFakeConnectivity();
+
   late MockAddExerciseRepository mockAddExerciseRepository;
   late MockUserProfileRepository mockUserProfileRepository;
 

@@ -34,6 +34,7 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
+import '../fake_connectivity.dart';
 import 'nutritional_plans_screen_test.mocks.dart';
 
 @GenerateMocks([
@@ -44,6 +45,8 @@ import 'nutritional_plans_screen_test.mocks.dart';
   UserProfileRepository,
 ])
 void main() {
+  installFakeConnectivity();
+
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
   late MockUserProfileRepository mockUserProfileRepository;

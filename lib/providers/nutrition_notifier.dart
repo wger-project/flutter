@@ -29,6 +29,7 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 
 part 'nutrition_notifier.g.dart';
@@ -44,6 +45,14 @@ class NutritionNotifier extends _$NutritionNotifier {
   Future<List<NutritionalPlan>> build() async {
     _nutritionRepo = ref.read(nutritionRepositoryProvider);
     _ingredientRepo = ref.read(ingredientRepositoryProvider);
+
+    // Auto-retry once the network comes back
+    ref.listen<bool>(networkStatusProvider, (prev, next) {
+      if (prev == false && next == true) {
+        _logger.fine('Network restored, re-fetching nutritional plans');
+        ref.invalidateSelf();
+      }
+    });
 
     // Auto-fetch the sparse plan list on first read. Consumers that need
     // a forced refresh (e.g. RefreshIndicator) can still call

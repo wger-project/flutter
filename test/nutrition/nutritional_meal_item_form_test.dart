@@ -41,11 +41,14 @@ import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
 import '../../test_data/nutritional_plans.dart';
+import '../fake_connectivity.dart';
 import '../fixtures/fixture_reader.dart';
 import '../other/base_provider_test.mocks.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
 void main() {
+  installFakeConnectivity();
+
   final ingredient = Ingredient(
     remoteId: '1',
     sourceName: 'Built-in testdata',

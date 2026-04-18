@@ -11,11 +11,17 @@ import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 
+import '../fake_connectivity.dart';
 import '../fixtures/fixture_reader.dart';
 import 'nutrition_provider_test.mocks.dart';
 
 @GenerateMocks([NutritionRepository, IngredientRepository])
 void main() {
+  // NutritionNotifier watches networkStatusProvider, which calls through to
+  // connectivity_plus. Swap in a fake platform so the plugin's channel call
+  // doesn't throw under the test runner.
+  installFakeConnectivity();
+
   final now = DateTime.now();
   late MockNutritionRepository mockRepo;
   late MockIngredientRepository mockIngredientRepo;

@@ -28,8 +28,11 @@ import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 import '../../test_data/exercises.dart';
+import '../fake_connectivity.dart';
 
 void main() {
+  installFakeConnectivity();
+
   Widget createHomeScreen({locale = 'en'}) {
     return ProviderScope(
       overrides: [

@@ -32,10 +32,13 @@ import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
 import '../../test_data/routines.dart';
+import '../fake_connectivity.dart';
 import './routine_form_test.mocks.dart';
 
 @GenerateMocks([RoutinesRepository])
 void main() {
+  installFakeConnectivity();
+
   late MockRoutinesRepository mockRoutinesRepository;
   late Routine existingRoutine;
   late Routine newRoutine;

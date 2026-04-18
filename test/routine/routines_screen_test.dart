@@ -58,6 +58,12 @@ void main() {
   setUp(() {
     mockRoutinesRepository = MockRoutinesRepository();
     when(mockRoutinesRepository.editDayServer(any)).thenAnswer((_) async => {});
+    // build() on RoutinesRiverpod auto-fetches on first read. Stub it so the
+    // background fetch doesn't blow up the widget state we set explicitly
+    // below.
+    when(
+      mockRoutinesRepository.fetchAllRoutinesSparseServer(),
+    ).thenAnswer((_) async => [routine1, routine2]);
   });
 
   Widget renderWidget({locale = 'en', isOnline = true}) {

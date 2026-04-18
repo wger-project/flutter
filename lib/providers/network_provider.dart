@@ -50,8 +50,7 @@ class NetworkStatus extends _$NetworkStatus {
     check();
 
     _sub = Connectivity().onConnectivityChanged.listen((conn) async {
-      final ok = await _hasConnectionAndInternet(conn);
-      state = ok;
+      state = await _hasConnectionAndInternet(conn);
     });
 
     ref.onDispose(() {
@@ -62,6 +61,14 @@ class NetworkStatus extends _$NetworkStatus {
   Future<bool> check({Duration timeout = const Duration(seconds: 1)}) async {
     final conn = await Connectivity().checkConnectivity();
     final ok = await _hasConnectionAndInternet(conn, timeout: timeout);
+
+    // _hasConnectionAndInternet does a real DNS lookup that can take up to
+    // [timeout]. Tests routinely tear down the container before that returns,
+    // so guard against writing to a disposed notifier.
+    if (!ref.mounted) {
+      return ok;
+    }
+
     state = ok;
     return ok;
   }

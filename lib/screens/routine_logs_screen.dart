@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/routines/logs/log_overview_routine.dart';
 
 class WorkoutLogsScreen extends ConsumerWidget {
@@ -31,9 +32,12 @@ class WorkoutLogsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final routineId = ModalRoute.of(context)!.settings.arguments as int;
-    final routinesState = ref.watch(routinesRiverpodProvider);
 
-    return routinesState.when(
+    return AsyncValueWidget<RoutinesState>(
+      value: ref.watch(routinesRiverpodProvider),
+      loggerName: 'WorkoutLogsScreen',
+      loading: const Scaffold(body: Center(child: CircularProgressIndicator())),
+      errorBuilder: (e, _) => Scaffold(body: Center(child: Text('$e'))),
       data: (state) {
         final routine = state.findById(routineId);
         return Scaffold(
@@ -41,8 +45,6 @@ class WorkoutLogsScreen extends ConsumerWidget {
           body: WidescreenWrapper(child: WorkoutLogs(routine)),
         );
       },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, st) => Scaffold(body: Center(child: Text('$e'))),
     );
   }
 }
