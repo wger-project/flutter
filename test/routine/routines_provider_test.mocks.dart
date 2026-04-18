@@ -280,12 +280,12 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
           as List<_i6.Exercise>);
 
   @override
-  Map<int, List<_i6.Exercise>> get exerciseByVariation =>
+  Map<String, List<_i6.Exercise>> get exerciseByVariation =>
       (super.noSuchMethod(
             Invocation.getter(#exerciseByVariation),
-            returnValue: <int, List<_i6.Exercise>>{},
+            returnValue: <String, List<_i6.Exercise>>{},
           )
-          as Map<int, List<_i6.Exercise>>);
+          as Map<String, List<_i6.Exercise>>);
 
   @override
   List<_i7.ExerciseCategory> get categories =>
@@ -389,14 +389,14 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
           as _i6.Exercise);
 
   @override
-  List<_i6.Exercise> findExercisesByVariationId(
-    int? variationId, {
+  List<_i6.Exercise> findExercisesByVariationGroup(
+    String? variationGroup, {
     int? exerciseIdToExclude,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
-              #findExercisesByVariationId,
-              [variationId],
+              #findExercisesByVariationGroup,
+              [variationGroup],
               {#exerciseIdToExclude: exerciseIdToExclude},
             ),
             returnValue: <_i6.Exercise>[],

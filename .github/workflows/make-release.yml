@@ -1,4 +1,4 @@
-name: Build release artefacts
+name: Make release
 on:
   workflow_dispatch:
     inputs:
@@ -74,7 +74,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.4
+          ruby-version: 4.0
 
       - name: Decrypt config files
         run: |
@@ -137,7 +137,7 @@ jobs:
         uses: actions/download-artifact@v8
 
       - name: Make Github release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
           tag_name: ${{ inputs.version }}
@@ -148,6 +148,6 @@ jobs:
             builds-ios/Runner.app.zip
             builds-ipa/Runner.xcarchive.zip
             builds-macos/wger.app.zip
-            builds-windows/wger.exe
+            builds-windows/windows-x64.zip
 
 

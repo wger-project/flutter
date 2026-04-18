@@ -108,6 +108,8 @@ void main() {
     );
 
     when(mockNutrition.addMealItem(any, meal1)).thenAnswer((_) => Future.value(mealItem));
+    when(mockNutrition.fetchWeightUnits(1)).thenAnswer((_) => Future.value([]));
+    when(mockNutrition.fetchWeightUnits(2)).thenAnswer((_) => Future.value([]));
   });
 
   Widget createMealItemFormScreen(Meal meal, String code, bool test, {locale = 'en'}) {

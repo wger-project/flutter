@@ -48,7 +48,7 @@ void main() {
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
-  const String searchExerciseUrl = 'exercise/search';
+  const String exerciseSearchUrl = 'exerciseinfo';
 
   final Uri tCategoryEntriesUri = Uri(
     scheme: 'http',
@@ -83,7 +83,7 @@ void main() {
   final Uri tSearchByNameUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$searchExerciseUrl/',
+    path: 'api/v2/$exerciseSearchUrl/',
   );
 
   const category1 = ExerciseCategory(id: 1, name: 'Arms');
@@ -364,22 +364,52 @@ void main() {
         setUp(() {
           const String tSearchTerm = 'press';
           const String tSearchLanguage = 'en';
-          final Map<String, dynamic> query = {'term': tSearchTerm, 'language': tSearchLanguage};
+          final Map<String, dynamic> query = {
+            'name__search': tSearchTerm,
+            'language__code': tSearchLanguage,
+            'limit': '100',
+          };
           tSearchByNameUri = Uri(
             scheme: 'http',
             host: 'localhost',
-            path: 'api/v2/$searchExerciseUrl/',
+            path: 'api/v2/$exerciseSearchUrl/',
             queryParameters: query,
           );
-          final Map<String, dynamic> tSearchResponse = jsonDecode(
-            fixture('exercises/exercise_search_entries.json'),
-          );
+
+          final exerciseInfoEntry = jsonDecode(
+            fixture('exercises/exerciseinfo_response.json'),
+          ) as Map<String, dynamic>;
+
+          // Build a paginated exerciseinfo response with two results that
+          // have the categories used by the test exercises so that the
+          // category filter test below works correctly.
+          final Map<String, dynamic> tSearchResponse = {
+            'count': 2,
+            'next': null,
+            'previous': null,
+            'results': [
+              {
+                ...exerciseInfoEntry,
+                'id': 1,
+                'category': {'id': 1, 'name': 'Arms'},
+              },
+              {
+                ...exerciseInfoEntry,
+                'id': 2,
+                'category': {'id': 2, 'name': 'Legs'},
+              },
+            ],
+          };
 
           // Mock exercise search
           when(
             mockBaseProvider.makeUrl(
-              searchExerciseUrl,
-              query: {'term': tSearchTerm, 'language': tSearchLanguage},
+              exerciseSearchUrl,
+              query: {
+                'name__search': tSearchTerm,
+                'language__code': tSearchLanguage,
+                'limit': '100',
+              },
             ),
           ).thenReturn(tSearchByNameUri);
           when(mockBaseProvider.fetch(tSearchByNameUri)).thenAnswer((_) async => tSearchResponse);
@@ -394,10 +424,8 @@ void main() {
 
           // assert
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
-          expect(
-            provider.filteredExercises,
-            [data.getTestExercises()[0], data.getTestExercises()[1]],
-          );
+          expect(provider.filteredExercises.length, 2);
+          expect(provider.filteredExercises.map((e) => e.id).toList(), [1, 2]);
         });
         test('Should find items from selection but should filter them by search term', () async {
           // arrange
