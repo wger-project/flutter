@@ -54,9 +54,14 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     // Format the weight change text and determine color
     final String weightChangeText;
     final Color weightChangeColor;
-    final profile = ref.read(userProfileProvider).value;
+    final profile = ref.watch(userProfileProvider).value;
+    if (profile == null) {
+      // Profile not yet loaded — skip the weight-change row entirely. The
+      // widget will rebuild with the value once available.
+      return const SizedBox.shrink();
+    }
 
-    final unit = weightUnit(profile!.isMetric, context);
+    final unit = weightUnit(profile.isMetric, context);
 
     if (weightDifference > 0) {
       weightChangeText = '+${weightDifference.toStringAsFixed(1)} $unit';

@@ -233,6 +233,9 @@ class EmailNotVerified extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProfileProvider).value;
+    if (user == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).unVerifiedEmail),
@@ -263,7 +266,7 @@ class EmailNotVerified extends ConsumerWidget {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).userProfile,
-                            UserProfileForm(user!),
+                            UserProfileForm(user),
                           ),
                         );
                       },

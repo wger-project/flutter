@@ -126,16 +126,22 @@ class MainSettingsDialog extends ConsumerWidget {
             //dense: true,
             leading: const Icon(Icons.person),
             title: Text(AppLocalizations.of(context).userProfile),
-            onTap: () => Navigator.pushNamed(
-              context,
-              FormScreen.routeName,
-              arguments: FormScreenArguments(
-                AppLocalizations.of(context).userProfile,
-                UserProfileForm(
-                  ref.read(userProfileProvider).value!,
+            onTap: () {
+              // Only navigate once the profile is loaded; otherwise the form
+              // would crash on a null user.
+              final profile = ref.read(userProfileProvider).value;
+              if (profile == null) {
+                return;
+              }
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  AppLocalizations.of(context).userProfile,
+                  UserProfileForm(profile),
                 ),
-              ),
-            ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.settings),

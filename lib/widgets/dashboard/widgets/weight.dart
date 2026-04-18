@@ -35,8 +35,8 @@ class DashboardWeightWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.read(userProfileProvider).value;
-    final entriesList = ref.watch(weightEntryProvider);
+    final profileAsync = ref.watch(userProfileProvider);
+    final entriesAsync = ref.watch(weightEntryProvider);
 
     return Card(
       child: Column(
@@ -52,8 +52,13 @@ class DashboardWeightWidget extends ConsumerWidget {
               color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
           ),
-          entriesList.when(
+          entriesAsync.when(
             data: (entriesList) {
+              final profile = profileAsync.value;
+              if (profile == null) {
+                return const BoxedProgressIndicator();
+              }
+
               final (entriesAll, entries7dAvg) = sensibleRange(
                 entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
               );
@@ -67,7 +72,7 @@ class DashboardWeightWidget extends ConsumerWidget {
                           height: 200,
                           child: MeasurementChartWidgetFl(
                             entriesAll,
-                            weightUnit(profile!.isMetric, context),
+                            weightUnit(profile.isMetric, context),
                             avgs: entries7dAvg,
                           ),
                         ),

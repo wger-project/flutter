@@ -35,17 +35,24 @@ class WeightOverview extends riverpod.ConsumerWidget {
 
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
-    final profile = ref.read(userProfileProvider).value;
+    final profileAsync = ref.watch(userProfileProvider);
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final plans = ref.watch(nutritionProvider).value ?? const [];
 
     final entries = ref.watch(weightEntryProvider);
     return entries.when(
       data: (entriesList) {
+        // Profile drives the unit display; show a spinner while it loads
+        // instead of bang-ing on a null value.
+        final profile = profileAsync.value;
+        if (profile == null) {
+          return const BoxedProgressIndicator();
+        }
+
         final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
         final entries7dAvg = moving7dAverage(entriesAll);
 
-        final unit = weightUnit(profile!.isMetric, context);
+        final unit = weightUnit(profile.isMetric, context);
 
         return Column(
           children: [
