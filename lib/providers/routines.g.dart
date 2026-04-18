@@ -90,7 +90,8 @@ String _$routineRepetitionUnitHash() => r'7754a0197c3fed27feea2c6d33d5e5a5e1deab
 @ProviderFor(RoutinesRiverpod)
 final routinesRiverpodProvider = RoutinesRiverpodProvider._();
 
-final class RoutinesRiverpodProvider extends $NotifierProvider<RoutinesRiverpod, RoutinesState> {
+final class RoutinesRiverpodProvider
+    extends $AsyncNotifierProvider<RoutinesRiverpod, RoutinesState> {
   RoutinesRiverpodProvider._()
     : super(
         from: null,
@@ -108,29 +109,21 @@ final class RoutinesRiverpodProvider extends $NotifierProvider<RoutinesRiverpod,
   @$internal
   @override
   RoutinesRiverpod create() => RoutinesRiverpod();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(RoutinesState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<RoutinesState>(value),
-    );
-  }
 }
 
-String _$routinesRiverpodHash() => r'83e7e418dcd7adc36e8897598927c6a7b47a33c9';
+String _$routinesRiverpodHash() => r'c10fb6498ffd50152051a625089c53fc9fdd6be8';
 
-abstract class _$RoutinesRiverpod extends $Notifier<RoutinesState> {
-  RoutinesState build();
+abstract class _$RoutinesRiverpod extends $AsyncNotifier<RoutinesState> {
+  FutureOr<RoutinesState> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<RoutinesState, RoutinesState>;
+    final ref = this.ref as $Ref<AsyncValue<RoutinesState>, RoutinesState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<RoutinesState, RoutinesState>,
-              RoutinesState,
+              AnyNotifier<AsyncValue<RoutinesState>, RoutinesState>,
+              AsyncValue<RoutinesState>,
               Object?,
               Object?
             >;

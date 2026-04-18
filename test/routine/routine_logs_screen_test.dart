@@ -38,6 +38,14 @@ import '../../test_data/routines.dart';
 import '../test_data/trophies.dart';
 import 'routine_logs_screen_test.mocks.dart';
 
+class _StubRoutinesRiverpod extends RoutinesRiverpod {
+  _StubRoutinesRiverpod(this._routines);
+  final List<Routine> _routines;
+
+  @override
+  Future<RoutinesState> build() async => RoutinesState(routines: _routines);
+}
+
 @GenerateMocks([TrophyRepository, WorkoutLogRepository])
 void main() {
   late Routine routine;
@@ -66,10 +74,11 @@ void main() {
         networkStatusProvider.overrideWithValue(isOnline),
         workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepository),
         trophyRepositoryProvider.overrideWithValue(mockRepository),
+        routinesRiverpodProvider.overrideWith(
+          () => _StubRoutinesRiverpod([routine]),
+        ),
       ],
     );
-
-    container.read(routinesRiverpodProvider.notifier).state = RoutinesState(routines: [routine]);
 
     return UncontrolledProviderScope(
       container: container,

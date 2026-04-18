@@ -20,19 +20,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 
 import '../../test_data/routines.dart';
 
+class _StubRoutinesRiverpod extends RoutinesRiverpod {
+  _StubRoutinesRiverpod(this._routines);
+  final List<Routine> _routines;
+
+  @override
+  Future<RoutinesState> build() async => RoutinesState(routines: _routines);
+}
+
 void main() {
   final key = GlobalKey<NavigatorState>();
 
   testWidgets('RoutineEditScreen smoke test', (WidgetTester tester) async {
-    final container = ProviderContainer.test();
-
-    container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
-      routines: [getTestRoutine()],
+    final container = ProviderContainer.test(
+      overrides: [
+        routinesRiverpodProvider.overrideWith(
+          () => _StubRoutinesRiverpod([getTestRoutine()]),
+        ),
+      ],
     );
 
     await tester.pumpWidget(

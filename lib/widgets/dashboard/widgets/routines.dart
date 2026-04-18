@@ -45,7 +45,7 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    final routine = ref.watch(routinesRiverpodProvider).currentRoutine;
+    final routine = ref.watch(routinesRiverpodProvider).value?.currentRoutine;
     _hasContent = routine != null;
 
     return Card(

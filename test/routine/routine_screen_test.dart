@@ -22,21 +22,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 
 import '../../test_data/routines.dart';
 
+class _StubRoutinesRiverpod extends RoutinesRiverpod {
+  _StubRoutinesRiverpod(this._routines);
+  final List<Routine> _routines;
+
+  @override
+  Future<RoutinesState> build() async => RoutinesState(routines: _routines);
+}
+
 void main() {
   Widget renderWidget({locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
     final container = ProviderContainer.test(
-      overrides: [networkStatusProvider.overrideWithValue(true)],
-    );
-    container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
-      routines: [getTestRoutine()],
+      overrides: [
+        networkStatusProvider.overrideWithValue(true),
+        routinesRiverpodProvider.overrideWith(
+          () => _StubRoutinesRiverpod([getTestRoutine()]),
+        ),
+      ],
     );
 
     return UncontrolledProviderScope(

@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:async';
-
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
@@ -94,22 +92,19 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   final _logger = Logger('RoutinesRiverpod');
 
   @override
-  RoutinesState build() {
+  Future<RoutinesState> build() async {
     _logger.fine('Building Routines Riverpod notifier');
 
-    // Kick off the initial sparse load. UI consumers `watch`ing this
-    // provider rebuild automatically once `state` is updated. Errors are
-    // logged but don't crash the build.
-    Future.microtask(() async {
-      try {
-        await fetchAllRoutinesSparse();
-      } catch (e, s) {
-        _logger.warning('initial routine fetch failed', e, s);
-      }
-    });
-
-    return const RoutinesState();
+    // Auto-fetch the sparse routine list on first read. Consumers that need
+    // a forced refresh can still call [fetchAllRoutinesSparse] explicitly.
+    final repo = ref.read(routinesRepositoryProvider);
+    final routines = await repo.fetchAllRoutinesSparseServer();
+    return RoutinesState(routines: routines);
   }
+
+  /// Returns the current state value or a blank default. Callers that
+  /// mutate state should always compose on top of this.
+  RoutinesState _currentOrEmpty() => state.asData?.value ?? const RoutinesState();
 
   /*
    * Routines
@@ -117,13 +112,14 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   Future<void> fetchAllRoutinesSparse() async {
     final repo = ref.read(routinesRepositoryProvider);
     final routines = await repo.fetchAllRoutinesSparseServer();
-    state = state.copyWith(routines: routines);
+    state = AsyncData(_currentOrEmpty().copyWith(routines: routines));
   }
 
   Future<Routine> addRoutine(Routine routine) async {
     final repo = ref.read(routinesRepositoryProvider);
     final created = await repo.addRoutineServer(routine);
-    state = state.copyWith(routines: [created, ...state.routines]);
+    final current = _currentOrEmpty();
+    state = AsyncData(current.copyWith(routines: [created, ...current.routines]));
     return created;
   }
 
@@ -157,14 +153,15 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     setExercisesAndUnits(routine.dayData);
 
     // Update state
-    final updatedRoutines = [...state.routines];
+    final current = _currentOrEmpty();
+    final updatedRoutines = [...current.routines];
     final index = updatedRoutines.indexWhere((r) => r.id == routineId);
     if (index != -1) {
       updatedRoutines[index] = routine;
     } else {
       updatedRoutines.add(routine);
     }
-    state = state.copyWith(routines: updatedRoutines);
+    state = AsyncData(current.copyWith(routines: updatedRoutines));
 
     return routine;
   }
@@ -173,19 +170,22 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     final repo = ref.read(routinesRepositoryProvider);
     await repo.deleteRoutineServer(routineId);
 
-    final routineIndex = state.routines.indexWhere((element) => element.id == routineId);
-    state.routines.removeAt(routineIndex);
+    final current = _currentOrEmpty();
+    final updatedRoutines = [...current.routines]
+      ..removeWhere((element) => element.id == routineId);
+    state = AsyncData(current.copyWith(routines: updatedRoutines));
   }
 
   Future<void> editRoutine(Routine routine) async {
     final repo = ref.read(routinesRepositoryProvider);
     final updatedRoutine = await repo.editRoutineServer(routine);
 
-    final updatedRoutines = [...state.routines];
+    final current = _currentOrEmpty();
+    final updatedRoutines = [...current.routines];
     final index = updatedRoutines.indexWhere((r) => r.id == routine.id);
     if (index != -1) {
       updatedRoutines[index] = updatedRoutine;
-      state = state.copyWith(routines: updatedRoutines);
+      state = AsyncData(current.copyWith(routines: updatedRoutines));
     }
   }
 
@@ -300,7 +300,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 RoutinesRepository routinesRepository(Ref ref) {
   final baseProvider = ref.watch(wgerBaseProvider);
   return RoutinesRepository(baseProvider);

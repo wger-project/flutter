@@ -26,6 +26,7 @@ import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
@@ -149,8 +150,8 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     }
 
     // Process workout sessions
-    final routinesProvider = ref.read(routinesRiverpodProvider);
-    for (final session in routinesProvider.sessions) {
+    final routinesState = ref.read(routinesRiverpodProvider).value;
+    for (final session in routinesState?.sessions ?? const <WorkoutSession>[]) {
       final date = DateFormatLists.format(session.date);
       if (!newEvents.containsKey(date)) {
         newEvents[date] = [];
@@ -249,9 +250,6 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   Widget build(BuildContext context) {
     // React to changes in the providers so the calendar updates automatically.
     // ref.listen must be invoked from build(), not initState().
-    // TODO: also listen to routinesRiverpodProvider once it has been migrated
-    //       to an AsyncNotifier, so workout sessions refresh without a
-    //       manual reload.
     ref.listen<riverpod.AsyncValue<List<WeightEntry>>>(weightEntryProvider, (prev, next) {
       loadEvents();
     });
@@ -259,6 +257,9 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       loadEvents();
     });
     ref.listen(nutritionProvider, (prev, next) {
+      loadEvents();
+    });
+    ref.listen(routinesRiverpodProvider, (prev, next) {
       loadEvents();
     });
 

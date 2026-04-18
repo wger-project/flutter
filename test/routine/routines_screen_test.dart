@@ -67,8 +67,10 @@ void main() {
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
       ],
     );
-    container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
-      routines: [routine1, routine2],
+    container.read(routinesRiverpodProvider.notifier).state = AsyncData(
+      RoutinesState(
+        routines: [routine1, routine2],
+      ),
     );
 
     return UncontrolledProviderScope(

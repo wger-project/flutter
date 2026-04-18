@@ -64,8 +64,8 @@ void main() {
       // Assert
       verify(mockRepo.fetchAllRoutinesSparseServer()).called(1);
       final state = container.read(routinesRiverpodProvider);
-      expect(state.routines.length, 1);
-      expect(state.routines.first.id, testRoutine.id);
+      expect(state.value!.routines.length, 1);
+      expect(state.value!.routines.first.id, testRoutine.id);
     });
 
     test('addRoutine calls repository and prepends created routine to state', () async {
@@ -85,8 +85,8 @@ void main() {
       verify(mockRepo.addRoutineServer(toAdd)).called(1);
       expect(result, created);
       final state = container.read(routinesRiverpodProvider);
-      expect(state.routines.isNotEmpty, true);
-      expect(state.routines.first, created);
+      expect(state.value!.routines.isNotEmpty, true);
+      expect(state.value!.routines.first, created);
     });
 
     test('editRoutine calls repository and replaces routine in state', () async {
@@ -97,7 +97,9 @@ void main() {
       final container = ProviderContainer.test(
         overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
       );
-      container.read(routinesRiverpodProvider.notifier).state = RoutinesState(routines: [routine]);
+      container.read(routinesRiverpodProvider.notifier).state = AsyncData(
+        RoutinesState(routines: [routine]),
+      );
 
       // Act
       final notifier = container.read(routinesRiverpodProvider.notifier);
@@ -105,8 +107,8 @@ void main() {
 
       verify(mockRepo.editRoutineServer(routine)).called(1);
       final state = container.read(routinesRiverpodProvider);
-      expect(state.routines.length, 1);
-      expect(state.routines.first, routine);
+      expect(state.value!.routines.length, 1);
+      expect(state.value!.routines.first, routine);
     });
 
     test('deleteRoutine calls repository and removes routine from state', () async {
@@ -117,8 +119,10 @@ void main() {
       final container = ProviderContainer.test(
         overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
       );
-      container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
-        routines: [getTestRoutine()],
+      container.read(routinesRiverpodProvider.notifier).state = AsyncData(
+        RoutinesState(
+          routines: [getTestRoutine()],
+        ),
       );
 
       // Act
@@ -128,7 +132,7 @@ void main() {
       // Assert
       verify(mockRepo.deleteRoutineServer(routineId)).called(1);
       final state = container.read(routinesRiverpodProvider);
-      expect(state.routines.length, 0);
+      expect(state.value!.routines.length, 0);
     });
   });
 

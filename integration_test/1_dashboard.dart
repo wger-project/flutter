@@ -94,8 +94,10 @@ Widget createDashboardScreen({Locale? locale}) {
       galleryRepositoryProvider.overrideWithValue(mockGalleryRepo),
     ],
   );
-  container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
-    routines: [getTestRoutine(exercises: getScreenshotExercises())],
+  container.read(routinesRiverpodProvider.notifier).state = AsyncData(
+    RoutinesState(
+      routines: [getTestRoutine(exercises: getScreenshotExercises())],
+    ),
   );
 
   // Seed the nutrition notifier with the screenshot plan so the dashboard can

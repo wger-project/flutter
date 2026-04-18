@@ -31,11 +31,18 @@ class WorkoutLogsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final routineId = ModalRoute.of(context)!.settings.arguments as int;
-    final routine = ref.read(routinesRiverpodProvider).findById(routineId);
+    final routinesState = ref.watch(routinesRiverpodProvider);
 
-    return Scaffold(
-      appBar: EmptyAppBar(routine.name),
-      body: WidescreenWrapper(child: WorkoutLogs(routine)),
+    return routinesState.when(
+      data: (state) {
+        final routine = state.findById(routineId);
+        return Scaffold(
+          appBar: EmptyAppBar(routine.name),
+          body: WidescreenWrapper(child: WorkoutLogs(routine)),
+        );
+      },
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, st) => Scaffold(body: Center(child: Text('$e'))),
     );
   }
 }

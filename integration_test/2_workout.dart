@@ -32,8 +32,10 @@ Widget createWorkoutDetailScreen({Locale? locale}) {
 
   final routine = getTestRoutine(exercises: getScreenshotExercises());
   final container = riverpod.ProviderContainer.test();
-  container.read(routinesRiverpodProvider.notifier).state = RoutinesState(
-    routines: [getTestRoutine(exercises: getScreenshotExercises())],
+  container.read(routinesRiverpodProvider.notifier).state = riverpod.AsyncData(
+    RoutinesState(
+      routines: [getTestRoutine(exercises: getScreenshotExercises())],
+    ),
   );
 
   return MediaQuery(
