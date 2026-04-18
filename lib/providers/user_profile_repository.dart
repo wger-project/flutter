@@ -20,7 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/wger_base.dart';
 
 const _PROFILE_URL = 'userprofile';
 const _VERIFY_EMAIL = 'verify-email';

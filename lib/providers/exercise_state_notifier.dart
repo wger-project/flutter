@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,7 +26,7 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/providers/exercise_state.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/wger_base.dart';
 
 part 'exercise_state_notifier.g.dart';
 

@@ -22,7 +22,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/trophies/trophy.dart';
 import 'package:wger/models/trophies/user_trophy.dart';
 import 'package:wger/models/trophies/user_trophy_progression.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/wger_base.dart';
 
 import 'base_provider.dart';
 

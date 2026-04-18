@@ -30,7 +30,7 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercise_data.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/wger_base.dart';
 import 'package:wger/providers/workout_session.dart';
 
 part 'routines.g.dart';

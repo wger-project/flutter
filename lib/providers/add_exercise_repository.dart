@@ -23,7 +23,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise_submission.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/wger_base.dart';
 
 final addExerciseRepositoryProvider = Provider<AddExerciseRepository>((ref) {
   final base = ref.read(wgerBaseProvider);

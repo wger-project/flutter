@@ -25,7 +25,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:wger/powersync/connector.dart';
 import 'package:wger/powersync/schema.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/wger_base.dart';
 
 part 'powersync.g.dart';
 

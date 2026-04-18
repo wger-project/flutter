@@ -23,9 +23,6 @@ import 'package:wger/providers/base_provider.dart';
 /// Central provider that builds a [WgerBaseProvider] from the current
 /// [AuthNotifier] state. Consumers read this to make authenticated HTTP
 /// requests. Rebuilds whenever the auth state changes.
-///
-/// Note: not using riverpod_generator here because the generated provider
-/// class name would collide with [WgerBaseProvider] from base_provider.dart.
 final wgerBaseProvider = Provider<WgerBaseProvider>((ref) {
   final auth = ref.watch(authProvider).value;
   return WgerBaseProvider(

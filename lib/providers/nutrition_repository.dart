@@ -23,7 +23,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/wger_base.dart';
 
 enum IngredientSearchLanguage {
   current,

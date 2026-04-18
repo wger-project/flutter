@@ -25,7 +25,7 @@ import 'package:logging/logging.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/gallery/image.dart' as gallery;
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base_riverpod.dart';
+import 'package:wger/providers/wger_base.dart';
 
 final galleryRepositoryProvider = Provider<GalleryRepository>((ref) {
   final base = ref.read(wgerBaseProvider);
