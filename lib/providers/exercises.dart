@@ -31,6 +31,7 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -67,9 +68,19 @@ class ExercisesProvider with ChangeNotifier {
 
   Filters? get filters => _filters;
 
-  Future<void> setFilters(Filters? newFilters) async {
+  // Future<void> setFilters(Filters? newFilters) async {
+  //   _filters = newFilters;
+  //   await findByFilters();
+  // }
+  Future<void> setFilters(
+    Filters? newFilters, {
+    required ExerciseFilters exerciseFilters,
+    required String languageCode,
+  }) async {
     _filters = newFilters;
-    await findByFilters();
+    // Pass these down to the fetching logic
+    await findByFilters(exerciseFilters: exerciseFilters, languageCode: languageCode);
+    notifyListeners();
   }
 
   List<Exercise> _filteredExercises = [];
@@ -128,17 +139,20 @@ class ExercisesProvider with ChangeNotifier {
           ),
         ),
       ),
+      exerciseFilters: const ExerciseFilters(),
+      languageCode: LANGUAGE_SHORT_ENGLISH,
     );
   }
 
-  Future<void> findByFilters() async {
-    // Filters not initialized
+  Future<void> findByFilters({
+    ExerciseFilters exerciseFilters = const ExerciseFilters(),
+    String languageCode = LANGUAGE_SHORT_ENGLISH,
+  }) async {
     if (filters == null) {
       filteredExercises = [];
       return;
     }
 
-    // Filters are initialized and nothing is marked
     if (filters!.isNothingMarked && filters!.searchTerm.length <= 1) {
       filteredExercises = exercises;
       return;
@@ -148,15 +162,20 @@ class ExercisesProvider with ChangeNotifier {
 
     List<Exercise> filteredItems = exercises;
     if (filters!.searchTerm.length > 1) {
-      filteredItems = await searchExercise(filters!.searchTerm);
-    }
-    filteredExercises = filteredItems.where((exercise) {
-      final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
-
-      final bool doesContainAnyEquipment = filters!.equipment.selected.any(
-        (selectedEquipment) => exercise.equipment.contains(selectedEquipment),
+      filteredItems = await searchExercise(
+        filters!.searchTerm,
+        languageCode: languageCode,
+        searchLanguage: exerciseFilters.searchLanguage,
+        searchMode: exerciseFilters.searchMode,
+        category: exerciseFilters.selectedCategory,
       );
+    }
 
+    filteredExercises = filteredItems.where((exercise) {
+      final isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
+      final doesContainAnyEquipment = filters!.equipment.selected.any(
+        (e) => exercise.equipment.contains(e),
+      );
       return (isInAnyCategory || filters!.exerciseCategories.selected.isEmpty) &&
           (doesContainAnyEquipment || filters!.equipment.selected.isEmpty);
     }).toList();
@@ -679,38 +698,57 @@ class ExercisesProvider with ChangeNotifier {
   Future<List<Exercise>> searchExercise(
     String name, {
     String languageCode = LANGUAGE_SHORT_ENGLISH,
-    bool searchEnglish = false,
+    ExerciseSearchLanguage searchLanguage = ExerciseSearchLanguage.currentAndEnglish,
+    ExerciseSearchMode searchMode = ExerciseSearchMode.fulltext,
+    ExerciseCategory? category,
   }) async {
     if (name.length <= 1) {
       return [];
     }
 
-    final languages = [languageCode];
-    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
-      languages.add(LANGUAGE_SHORT_ENGLISH);
+    // Build language code string for the API
+    final languageCodes = <String>[languageCode];
+    if (searchLanguage == ExerciseSearchLanguage.currentAndEnglish &&
+        languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languageCodes.add(LANGUAGE_SHORT_ENGLISH);
+    } else if (searchLanguage == ExerciseSearchLanguage.all) {
+      languageCodes.clear(); // no language filter = search all
     }
 
-    // Send the request
-    final result = await baseProvider.fetch(
-      baseProvider.makeUrl(
-        exerciseSearchPath,
-        query: {'term': name, 'language': languages.join(',')},
-      ),
+    // Build query parameters
+    final query = <String, String>{};
+
+    // Use name__search for fulltext, or name for exact match
+    if (searchMode == ExerciseSearchMode.fulltext) {
+      query['name__search'] = name;
+    } else {
+      query['name'] = name;
+    }
+
+    // Add language filter only if we have specific languages
+    if (languageCodes.isNotEmpty) {
+      query['language__code'] = languageCodes.join(',');
+    }
+
+    // Add category filter if selected
+    if (category != null) {
+      query['category'] = category.id.toString();
+    }
+
+    query['limit'] = API_MAX_PAGE_SIZE;
+    query['format'] = 'json';
+
+    final result = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(exerciseInfoUrlPath, query: query),
     );
 
-    // Load the exercises
-    final results = ExerciseApiSearch.fromJson(result);
-
+    // Parse the paginated results into Exercise objects
     final List<Exercise> out = [];
-    for (final result in results.suggestions) {
-      final exercise = await fetchAndSetExercise(result.data.exerciseId);
-      if (exercise != null) {
-        out.add(exercise);
-      }
+    for (final exerciseData in result) {
+      final exercise = Exercise.fromApiDataJson(exerciseData, _languages);
+      print(" --- pbc=print ----------------- exercise $exercise -------------------- ");
+      out.add(exercise);
     }
-    // return Future.wait(
-    //   results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
-    // );
 
     return out;
   }
