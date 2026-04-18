@@ -8,18 +8,20 @@ import 'dart:ui' as _i15;
 
 import 'package:flutter/material.dart' as _i17;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i12;
-import 'package:shared_preferences/shared_preferences.dart' as _i3;
-import 'package:wger/database/exercises/exercise_database.dart' as _i4;
-import 'package:wger/models/exercises/category.dart' as _i6;
-import 'package:wger/models/exercises/equipment.dart' as _i7;
-import 'package:wger/models/exercises/exercise.dart' as _i5;
-import 'package:wger/models/exercises/exercise_submission.dart' as _i13;
-import 'package:wger/models/exercises/exercise_submission_images.dart' as _i11;
-import 'package:wger/models/exercises/language.dart' as _i9;
-import 'package:wger/models/exercises/muscle.dart' as _i8;
-import 'package:wger/models/user/profile.dart' as _i18;
-import 'package:wger/providers/add_exercise.dart' as _i10;
+import 'package:mockito/src/dummies.dart' as _i13;
+import 'package:shared_preferences/shared_preferences.dart' as _i4;
+import 'package:wger/database/exercises/exercise_database.dart' as _i5;
+import 'package:wger/models/exercises/category.dart' as _i7;
+import 'package:wger/models/exercises/equipment.dart' as _i8;
+import 'package:wger/models/exercises/exercise.dart' as _i6;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i21;
+import 'package:wger/models/exercises/exercise_submission.dart' as _i14;
+import 'package:wger/models/exercises/exercise_submission_images.dart' as _i12;
+import 'package:wger/models/exercises/language.dart' as _i10;
+import 'package:wger/models/exercises/muscle.dart' as _i9;
+import 'package:wger/models/exercises/variation.dart' as _i3;
+import 'package:wger/models/user/profile.dart' as _i19;
+import 'package:wger/providers/add_exercise.dart' as _i11;
 import 'package:wger/providers/base_provider.dart' as _i2;
 import 'package:wger/providers/exercises.dart' as _i19;
 import 'package:wger/providers/user.dart' as _i16;
@@ -622,11 +624,19 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
-  _i14.Future<void> setFilters(_i19.Filters? newFilters) =>
+  _i15.Future<void> setFilters(
+    _i20.Filters? newFilters, {
+    required _i21.ExerciseFilters? exerciseFilters,
+    required String? languageCode,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#setFilters, [newFilters]),
-            returnValue: _i14.Future<void>.value(),
-            returnValueForMissingStub: _i14.Future<void>.value(),
+            Invocation.method(
+              #setFilters,
+              [newFilters],
+              {#exerciseFilters: exerciseFilters, #languageCode: languageCode},
+            ),
+            returnValue: _i15.Future<void>.value(),
+            returnValueForMissingStub: _i15.Future<void>.value(),
           )
           as _i14.Future<void>);
 
@@ -637,11 +647,17 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
   );
 
   @override
-  _i14.Future<void> findByFilters() =>
+  _i15.Future<void> findByFilters({
+    _i21.ExerciseFilters? exerciseFilters = const _i21.ExerciseFilters(),
+    String? languageCode = 'en',
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#findByFilters, []),
-            returnValue: _i14.Future<void>.value(),
-            returnValueForMissingStub: _i14.Future<void>.value(),
+            Invocation.method(#findByFilters, [], {
+              #exerciseFilters: exerciseFilters,
+              #languageCode: languageCode,
+            }),
+            returnValue: _i15.Future<void>.value(),
+            returnValueForMissingStub: _i15.Future<void>.value(),
           )
           as _i14.Future<void>);
 
@@ -890,13 +906,20 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
   _i14.Future<List<_i5.Exercise>> searchExercise(
     String? name, {
     String? languageCode = 'en',
-    bool? searchEnglish = false,
+    _i21.ExerciseSearchLanguage? searchLanguage = _i21.ExerciseSearchLanguage.currentAndEnglish,
+    _i21.ExerciseSearchMode? searchMode = _i21.ExerciseSearchMode.fulltext,
+    _i7.ExerciseCategory? category,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
               #searchExercise,
               [name],
-              {#languageCode: languageCode, #searchEnglish: searchEnglish},
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #category: category,
+              },
             ),
             returnValue: _i14.Future<List<_i5.Exercise>>.value(
               <_i5.Exercise>[],

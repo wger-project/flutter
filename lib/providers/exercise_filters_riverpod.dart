@@ -14,6 +14,7 @@ class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
     final searchLanguage = await prefs.getExerciseSearchLanguage();
     final searchMode = await prefs.getExerciseSearchMode();
     // Note: we don't persist selectedCategory — it resets on app restart.
+    // Category is a session-only filter, not a global preference.
     return ExerciseFilters(
       searchLanguage: searchLanguage,
       searchMode: searchMode,
@@ -41,6 +42,7 @@ class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
     } else {
       state = AsyncData(_current().copyWith(selectedCategory: category));
     }
+    // No SharedPreferences save — category is session-only
   }
 }
 

@@ -54,18 +54,6 @@ class _FilterRowState extends ConsumerState<FilterRow> {
           );
         }
       });
-
-    // Run ONCE after first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final languageCode = Localizations.localeOf(context).languageCode;
-      final isEnglish = languageCode == 'en';
-      if (isEnglish) {
-        final current = ref.read(exerciseFiltersSyncProvider);
-        if (current.searchLanguage == ExerciseSearchLanguage.currentAndEnglish) {
-          ref.read(exerciseFiltersProvider.notifier).chooseLanguage(ExerciseSearchLanguage.current);
-        }
-      }
-    });
   }
 
   @override
@@ -88,6 +76,7 @@ class _FilterRowState extends ConsumerState<FilterRow> {
               ),
             ),
           ),
+          // The new filter icon button (shows/hides search options)
           _filterButton(context),
           IconButton(
             onPressed: () async {
@@ -127,11 +116,20 @@ class _FilterRowState extends ConsumerState<FilterRow> {
   }
 
   /// The filter icon button — opens dialog with language, category, and search mode options.
+  /// Mirrors the filterButton() in IngredientTypeahead.
   Widget _filterButton(BuildContext context) {
+    final filters = ref.watch(exerciseFiltersSyncProvider);
     final i18n = AppLocalizations.of(context);
     final exerciseProvider = pr.Provider.of<ExercisesProvider>(context, listen: false);
     final languageCode = Localizations.localeOf(context).languageCode;
     final isEnglish = languageCode == 'en';
+
+    // If the device is in English and currentAndEnglish is set, switch to current
+    if (isEnglish && filters.searchLanguage == ExerciseSearchLanguage.currentAndEnglish) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(exerciseFiltersProvider.notifier).chooseLanguage(ExerciseSearchLanguage.current);
+      });
+    }
 
     return IconButton(
       icon: const Icon(Icons.tune),
@@ -226,7 +224,7 @@ class _FilterRowState extends ConsumerState<FilterRow> {
                                 },
                               ),
                             ),
-                            // Search mode toggle
+                            // Search mode toggle — new for exercises
                             SwitchListTile(
                               title: const Text('Exact name match'),
                               subtitle: const Text(
