@@ -3737,11 +3737,11 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
     'sessionId',
   );
   @override
-  late final GeneratedColumn<int> sessionId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
     'session_id',
     aliasedName,
     true,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
   static const VerificationMeta _iterationMeta = const VerificationMeta(
@@ -4078,7 +4078,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   final Value<String> id;
   final Value<int> exerciseId;
   final Value<int> routineId;
-  final Value<int?> sessionId;
+  final Value<String?> sessionId;
   final Value<int?> iteration;
   final Value<int?> slotEntryId;
   final Value<double?> rir;
@@ -4133,7 +4133,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     Expression<String>? id,
     Expression<int>? exerciseId,
     Expression<int>? routineId,
-    Expression<int>? sessionId,
+    Expression<String>? sessionId,
     Expression<int>? iteration,
     Expression<int>? slotEntryId,
     Expression<double>? rir,
@@ -4171,7 +4171,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     Value<String>? id,
     Value<int>? exerciseId,
     Value<int>? routineId,
-    Value<int?>? sessionId,
+    Value<String?>? sessionId,
     Value<int?>? iteration,
     Value<int?>? slotEntryId,
     Value<double?>? rir,
@@ -4218,7 +4218,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
       map['routine_id'] = Variable<int>(routineId.value);
     }
     if (sessionId.present) {
-      map['session_id'] = Variable<int>(sessionId.value);
+      map['session_id'] = Variable<String>(sessionId.value);
     }
     if (iteration.present) {
       map['iteration'] = Variable<int>(iteration.value);
@@ -11690,7 +11690,7 @@ typedef $$WorkoutLogTableTableCreateCompanionBuilder =
       Value<String> id,
       required int exerciseId,
       required int routineId,
-      Value<int?> sessionId,
+      Value<String?> sessionId,
       Value<int?> iteration,
       Value<int?> slotEntryId,
       Value<double?> rir,
@@ -11709,7 +11709,7 @@ typedef $$WorkoutLogTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<int> exerciseId,
       Value<int> routineId,
-      Value<int?> sessionId,
+      Value<String?> sessionId,
       Value<int?> iteration,
       Value<int?> slotEntryId,
       Value<double?> rir,
@@ -11748,7 +11748,7 @@ class $$WorkoutLogTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get sessionId => $composableBuilder(
+  ColumnFilters<String> get sessionId => $composableBuilder(
     column: $table.sessionId,
     builder: (column) => ColumnFilters(column),
   );
@@ -11833,7 +11833,7 @@ class $$WorkoutLogTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get sessionId => $composableBuilder(
+  ColumnOrderings<String> get sessionId => $composableBuilder(
     column: $table.sessionId,
     builder: (column) => ColumnOrderings(column),
   );
@@ -11914,7 +11914,7 @@ class $$WorkoutLogTableTableAnnotationComposer
   GeneratedColumn<int> get routineId =>
       $composableBuilder(column: $table.routineId, builder: (column) => column);
 
-  GeneratedColumn<int> get sessionId =>
+  GeneratedColumn<String> get sessionId =>
       $composableBuilder(column: $table.sessionId, builder: (column) => column);
 
   GeneratedColumn<int> get iteration =>
@@ -11999,7 +11999,7 @@ class $$WorkoutLogTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<int> exerciseId = const Value.absent(),
                 Value<int> routineId = const Value.absent(),
-                Value<int?> sessionId = const Value.absent(),
+                Value<String?> sessionId = const Value.absent(),
                 Value<int?> iteration = const Value.absent(),
                 Value<int?> slotEntryId = const Value.absent(),
                 Value<double?> rir = const Value.absent(),
@@ -12035,7 +12035,7 @@ class $$WorkoutLogTableTableTableManager
                 Value<String> id = const Value.absent(),
                 required int exerciseId,
                 required int routineId,
-                Value<int?> sessionId = const Value.absent(),
+                Value<String?> sessionId = const Value.absent(),
                 Value<int?> iteration = const Value.absent(),
                 Value<int?> slotEntryId = const Value.absent(),
                 Value<double?> rir = const Value.absent(),

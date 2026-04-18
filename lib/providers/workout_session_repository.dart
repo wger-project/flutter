@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
  */
 
 /*
- * Repository for body weight network operations.
+ * Repository for workout session local storage.
  */
 
 import 'package:drift/drift.dart';
@@ -38,17 +38,55 @@ class WorkoutSessionRepository {
 
   WorkoutSessionRepository(this._db);
 
+  /// Streams all workout sessions with their logs attached.
   Stream<List<WorkoutSession>> watchAllDrift() {
     _logger.finer('Watching all local workout session entries');
 
-    // Note that we can't join to the log table because we don't have access to the
-    // "real" IDs used by the postgres backend here, only the local UUIDs.
-    final query = _db.select(_db.workoutSessionTable)
-      ..orderBy(
-        [(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)],
-      );
+    final query = _db.select(_db.workoutSessionTable).join([
+      leftOuterJoin(
+        _db.workoutLogTable,
+        _db.workoutLogTable.sessionId.equalsExp(_db.workoutSessionTable.id),
+      ),
+      leftOuterJoin(
+        _db.routineRepetitionUnitTable,
+        _db.routineRepetitionUnitTable.id.equalsExp(_db.workoutLogTable.repetitionsUnitId),
+      ),
+      leftOuterJoin(
+        _db.routineWeightUnitTable,
+        _db.routineWeightUnitTable.id.equalsExp(_db.workoutLogTable.weightUnitId),
+      ),
+    ])..orderBy([OrderingTerm(expression: _db.workoutSessionTable.date, mode: OrderingMode.desc)]);
 
-    return query.watch();
+    return query.watch().map((rows) {
+      final sessions = <String, WorkoutSession>{};
+      final seenLogs = <String>{};
+
+      for (final row in rows) {
+        final session = row.readTable(_db.workoutSessionTable);
+        final entry = sessions.putIfAbsent(session.id, () {
+          session.logs = [];
+          return session;
+        });
+
+        final log = row.readTableOrNull(_db.workoutLogTable);
+        if (log == null || seenLogs.contains(log.id)) {
+          continue;
+        }
+        seenLogs.add(log.id);
+
+        final repetitionUnit = row.readTableOrNull(_db.routineRepetitionUnitTable);
+        if (repetitionUnit != null) {
+          log.repetitionUnit = repetitionUnit;
+        }
+        final weightUnit = row.readTableOrNull(_db.routineWeightUnitTable);
+        if (weightUnit != null) {
+          log.weightUnit = weightUnit;
+        }
+        entry.logs.add(log);
+      }
+
+      return sessions.values.toList();
+    });
   }
 
   Future<void> deleteLocalDrift(String id) async {
@@ -58,7 +96,7 @@ class WorkoutSessionRepository {
 
   Future<void> editLocalDrift(WorkoutSession session) async {
     _logger.finer('Updating local workout session entry ${session.id}');
-    final stmt = _db.update(_db.workoutSessionTable)..where((t) => t.id.equals(session.id!));
+    final stmt = _db.update(_db.workoutSessionTable)..where((t) => t.id.equals(session.id));
     await stmt.write(session.toCompanion());
   }
 

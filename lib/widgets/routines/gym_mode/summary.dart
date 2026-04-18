@@ -103,7 +103,7 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
                   (s) => s.date.isSameDayAs(clock.now()),
                 );
                 final userTrophies = trophyState.prTrophies
-                    .where((t) => t.contextData?.sessionId.toString() == session?.id)
+                    .where((t) => t.contextData?.sessionId == session?.id)
                     .toList();
 
                 return WorkoutSessionStats(session, userTrophies);

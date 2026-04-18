@@ -16,34 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:logging/logging.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/providers/workout_logs_repository.dart';
 
-import 'workout_logs_repository.dart';
+final workoutLogProvider = Provider<WorkoutLogMutations>((ref) {
+  return WorkoutLogMutations(ref.read(workoutLogRepositoryProvider));
+});
 
-part 'workout_logs.g.dart';
+class WorkoutLogMutations {
+  final WorkoutLogRepository _repo;
 
-@riverpod
-final class WorkoutLogNotifier extends _$WorkoutLogNotifier {
-  final _logger = Logger('WorkoutLogNotifier');
-  late WorkoutLogRepository _repo;
+  WorkoutLogMutations(this._repo);
 
-  @override
-  Stream<List<Log>> build() {
-    _repo = ref.read(workoutLogRepositoryProvider);
-    return _repo.watchAllDrift();
-  }
+  Future<void> addEntry(Log log) => _repo.addLocalDrift(log);
 
-  Future<void> deleteEntry(String id) async {
-    await _repo.deleteLocalDrift(id);
-  }
+  Future<void> updateEntry(Log log) => _repo.updateLocalDrift(log);
 
-  Future<void> updateEntry(Log log) async {
-    await _repo.updateLocalDrift(log);
-  }
-
-  Future<void> addEntry(Log log) async {
-    await _repo.addLocalDrift(log);
-  }
+  Future<void> deleteEntry(String id) => _repo.deleteLocalDrift(id);
 }

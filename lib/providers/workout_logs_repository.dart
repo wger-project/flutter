@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,79 +20,25 @@
  * Repository for body weight network operations.
  */
 
-import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
 
 import '../database/powersync/database.dart';
 
 final workoutLogRepositoryProvider = Provider<WorkoutLogRepository>((ref) {
   final db = ref.read(driftPowerSyncDatabase);
-  return WorkoutLogRepository(db, ref);
+  return WorkoutLogRepository(db);
 });
 
+/// Write-side access to the local `workout_log` table. Reading logs happens
+/// through [WorkoutSessionRepository.watchAllDrift], which joins logs onto
+/// their parent session.
 class WorkoutLogRepository {
   final _logger = Logger('WorkoutLogRepository');
   final DriftPowersyncDatabase _db;
-  final Ref _ref;
 
-  WorkoutLogRepository(this._db, this._ref);
-
-  Stream<List<Log>> watchAllDrift() {
-    _logger.finer('Watching all local workout log entries');
-    final exercisesProvider = _ref.read(exerciseStateProvider.notifier);
-
-    final query = _db.select(_db.workoutLogTable)
-      ..orderBy(
-        [(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)],
-      );
-
-    final joined = query.join([
-      leftOuterJoin(
-        _db.routineRepetitionUnitTable,
-        _db.routineRepetitionUnitTable.id.equalsExp(_db.workoutLogTable.repetitionsUnitId),
-      ),
-      leftOuterJoin(
-        _db.routineWeightUnitTable,
-        _db.routineWeightUnitTable.id.equalsExp(_db.workoutLogTable.weightUnitId),
-      ),
-    ]);
-
-    return joined.watch().map((rows) {
-      final Map<String, Log> map = {};
-
-      for (final row in rows) {
-        final log = row.readTable(_db.workoutLogTable);
-        final repetitionUnit = row.readTableOrNull(_db.routineRepetitionUnitTable);
-        final weightUnit = row.readTableOrNull(_db.routineWeightUnitTable);
-
-        final entry = map.putIfAbsent(
-          log.id!,
-          () => log,
-        );
-
-        if (repetitionUnit != null) {
-          entry.repetitionUnit = repetitionUnit;
-        }
-
-        if (weightUnit != null) {
-          entry.weightUnit = weightUnit;
-        }
-
-        // try {
-        //   log.exercise = exercisesProvider.getById(log.exerciseId);
-        // } catch (e) {
-        //   _logger.warning(
-        //     'Could not find exercise for log entry ${log.id} with exercise ID ${log.exerciseId}',
-        //   );
-        // }
-      }
-
-      return map.values.toList();
-    });
-  }
+  WorkoutLogRepository(this._db);
 
   Future<void> deleteLocalDrift(String id) async {
     _logger.finer('Deleting local workout log entry $id');

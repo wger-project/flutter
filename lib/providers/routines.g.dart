@@ -111,7 +111,7 @@ final class RoutinesRiverpodProvider
   RoutinesRiverpod create() => RoutinesRiverpod();
 }
 
-String _$routinesRiverpodHash() => r'c10fb6498ffd50152051a625089c53fc9fdd6be8';
+String _$routinesRiverpodHash() => r'f6f92cff3c549ae5c7117e82d59c2d7c90182ee6';
 
 abstract class _$RoutinesRiverpod extends $AsyncNotifier<RoutinesState> {
   FutureOr<RoutinesState> build();
@@ -143,7 +143,7 @@ final class RoutinesRepositoryProvider
         argument: null,
         retry: null,
         name: r'routinesRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -171,4 +171,4 @@ final class RoutinesRepositoryProvider
   }
 }
 
-String _$routinesRepositoryHash() => r'866fede3b610fa71c3204c57ad004465f3e5e3fc';
+String _$routinesRepositoryHash() => r'0cdeb7e33ac45c9a1e4cdf541bf57b565033cc38';

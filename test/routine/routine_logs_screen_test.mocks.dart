@@ -145,14 +145,6 @@ class MockWorkoutLogRepository extends _i1.Mock implements _i9.WorkoutLogReposit
   }
 
   @override
-  _i5.Stream<List<_i10.Log>> watchAllDrift() =>
-      (super.noSuchMethod(
-            Invocation.method(#watchAllDrift, []),
-            returnValue: _i5.Stream<List<_i10.Log>>.empty(),
-          )
-          as _i5.Stream<List<_i10.Log>>);
-
-  @override
   _i5.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),

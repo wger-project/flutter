@@ -49,7 +49,7 @@ class DayLogWidget extends ConsumerWidget {
     final exercises = session.exercises;
 
     final prTrophies = trophyState.prTrophies
-        .where((t) => t.contextData?.sessionId.toString() == session.id)
+        .where((t) => t.contextData?.sessionId == session.id)
         .toList();
 
     return Column(

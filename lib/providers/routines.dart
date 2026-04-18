@@ -31,7 +31,6 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercise_data.dart';
 import 'package:wger/providers/wger_base_riverpod.dart';
-import 'package:wger/providers/workout_logs.dart';
 import 'package:wger/providers/workout_session.dart';
 
 part 'routines.g.dart';
@@ -128,12 +127,13 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     final exercises = await ref.read(exercisesProvider.future);
     final repetitionUnits = await ref.read(routineRepetitionUnitProvider.future);
     final weightUnits = await ref.read(routineWeightUnitProvider.future);
+    // Sessions arrive pre-joined with their logs from
+    // [WorkoutSessionRepository.watchAllDrift].
     final sessions = await ref.read(workoutSessionProvider.future);
-    final logs = await ref.read(workoutLogProvider.future);
 
     final routine = await repo.fetchAndSetRoutineFullServer(routineId);
 
-    // Hydrate data
+    // Hydrate exercises + units on every set config
     Future<void> setExercisesAndUnits(List<DayData> entries) async {
       for (final entry in entries) {
         for (final slot in entry.slots) {
@@ -151,6 +151,10 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
 
     setExercisesAndUnits(routine.dayDataGym);
     setExercisesAndUnits(routine.dayData);
+
+    // Attach sessions (already joined with their logs) that belong to this
+    // routine.
+    routine.sessions = sessions.where((s) => s.routineId == routineId).toList();
 
     // Update state
     final current = _currentOrEmpty();

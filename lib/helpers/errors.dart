@@ -332,7 +332,7 @@ void showDeleteLogDialog(BuildContext context, String confirmDeleteName, Log log
             onPressed: () async {
               await ProviderScope.containerOf(
                 context,
-              ).read(workoutLogProvider.notifier).deleteEntry(log.id.toString());
+              ).read(workoutLogProvider).deleteEntry(log.id.toString());
 
               Navigator.of(contextDialog).pop();
 

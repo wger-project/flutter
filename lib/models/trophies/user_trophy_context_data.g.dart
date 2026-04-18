@@ -23,9 +23,9 @@ ContextData _$ContextDataFromJson(Map<String, dynamic> json) {
     ],
   );
   return ContextData(
-    logId: (json['log_id'] as num).toInt(),
+    logId: json['log_id'] as String,
     date: utcIso8601ToLocalDate(json['date'] as String),
-    sessionId: (json['session_id'] as num).toInt(),
+    sessionId: json['session_id'] as String,
     exerciseId: (json['exercise_id'] as num).toInt(),
     repetitionsUnitId: (json['repetitions_unit_id'] as num).toInt(),
     repetitions: json['repetitions'] as num,

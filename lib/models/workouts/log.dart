@@ -42,7 +42,7 @@ class Log {
   late Exercise exerciseObj;
 
   late int routineId;
-  int? sessionId;
+  String? sessionId;
   int? iteration;
   int? slotEntryId;
   num? rir;
@@ -110,7 +110,7 @@ class Log {
     String? id,
     int? exerciseId,
     int? routineId,
-    int? sessionId,
+    String? sessionId,
     int? iteration,
     int? slotEntryId,
     num? rir,

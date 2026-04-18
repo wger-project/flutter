@@ -274,7 +274,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final logProvider = ref.watch(workoutLogProvider.notifier);
+    final logProvider = ref.read(workoutLogProvider);
     final log = ref.watch(gymLogProvider);
 
     return Form(
