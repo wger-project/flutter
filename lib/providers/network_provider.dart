@@ -20,10 +20,29 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'network_provider.g.dart';
+
+/// Returns whether the device can actually reach the public internet (vs.
+/// just being attached to a network adapter — think captive portals).
+///
+/// Defaults to a DNS lookup against `google.com`. Tests can swap this for a
+/// deterministic stub via `installFakeConnectivity()` so the test runner
+/// doesn't make real network calls.
+@visibleForTesting
+Future<bool> Function(Duration timeout) reachabilityCheck = _defaultReachabilityCheck;
+
+Future<bool> _defaultReachabilityCheck(Duration timeout) async {
+  try {
+    final result = await InternetAddress.lookup('google.com').timeout(timeout);
+    return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
+  } catch (_) {
+    return false;
+  }
+}
 
 @Riverpod(keepAlive: true)
 class NetworkStatus extends _$NetworkStatus {
@@ -61,14 +80,6 @@ class NetworkStatus extends _$NetworkStatus {
   Future<bool> check({Duration timeout = const Duration(seconds: 1)}) async {
     final conn = await Connectivity().checkConnectivity();
     final ok = await _hasConnectionAndInternet(conn, timeout: timeout);
-
-    // _hasConnectionAndInternet does a real DNS lookup that can take up to
-    // [timeout]. Tests routinely tear down the container before that returns,
-    // so guard against writing to a disposed notifier.
-    if (!ref.mounted) {
-      return ok;
-    }
-
     state = ok;
     return ok;
   }
@@ -80,12 +91,6 @@ class NetworkStatus extends _$NetworkStatus {
     if (!conn.any((c) => allowed.contains(c))) {
       return false;
     }
-
-    try {
-      final result = await InternetAddress.lookup('google.com').timeout(timeout);
-      return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
-    } catch (_) {
-      return false;
-    }
+    return reachabilityCheck(timeout);
   }
 }
