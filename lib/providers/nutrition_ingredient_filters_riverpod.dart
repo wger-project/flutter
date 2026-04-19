@@ -19,6 +19,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_filters.dart';
 import 'package:wger/providers/nutrition.dart';
 
@@ -33,10 +34,14 @@ class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {
     final isVegan = await preferenceHelper.getIngredientVeganFilter();
     final isVegetarian = await preferenceHelper.getIngredientVegetarianFilter();
     final searchLanguage = await preferenceHelper.getIngredientSearchLanguage();
+    final filterNutriscore = await preferenceHelper.getIngredientFilterNutriscore();
+    final nutriscoreMax = await preferenceHelper.getIngredientNutriscoreMax();
     return IngredientFilters(
       isVegan: isVegan,
       isVegetarian: isVegetarian,
       searchLanguage: searchLanguage,
+      filterNutriscore: filterNutriscore,
+      nutriscoreMax: nutriscoreMax,
     );
   }
 
@@ -66,6 +71,18 @@ class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {
     final current = _current();
     state = AsyncData(current.copyWith(searchLanguage: value));
     await PreferenceHelper.instance.saveIngredientSearchLanguage(value);
+  }
+
+  Future<void> toggleNutriscore(bool value) async {
+    final current = _current();
+    state = AsyncData(current.copyWith(filterNutriscore: value));
+    await PreferenceHelper.instance.saveIngredientFilterNutriscore(value);
+  }
+
+  Future<void> chooseNutriscoreMax(NutriScore value) async {
+    final current = _current();
+    state = AsyncData(current.copyWith(nutriscoreMax: value));
+    await PreferenceHelper.instance.saveIngredientNutriscoreMax(value);
   }
 }
 

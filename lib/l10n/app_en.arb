@@ -1199,5 +1199,13 @@
     }
   },
   "searchLanguageAll": "All languages",
-  "@searchLanguageAll": {}
+  "@searchLanguageAll": {},
+  "filterNutriscore": "Filter by Nutri-Score",
+  "@filterNutriscore": {
+    "description": "Label for the toggle that enables Nutri-Score filtering in the ingredient search"
+  },
+  "filterNutriscoreMax": "Worst acceptable grade",
+  "@filterNutriscoreMax": {
+    "description": "Label describing the Nutri-Score slider (the worst grade the user will accept, A is best and E is worst)"
+  }
 }

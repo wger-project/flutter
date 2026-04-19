@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/util/legacy_to_async_migration_util.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 
 /// A helper class that manages preferences using SharedPreferencesAsync
@@ -67,5 +68,30 @@ class PreferenceHelper {
         orElse: () => IngredientSearchLanguage.currentAndEnglish,
       );
     }
+  }
+
+  //4.nutri-score filter toggle
+  Future<void> saveIngredientFilterNutriscore(bool value) async {
+    await PreferenceHelper.asyncPref.setBool('ingredientFilterNutriscore', value);
+  }
+
+  Future<bool> getIngredientFilterNutriscore() async {
+    return await PreferenceHelper.asyncPref.getBool('ingredientFilterNutriscore') ?? false;
+  }
+
+  //5.nutri-score worst acceptable grade
+  Future<void> saveIngredientNutriscoreMax(NutriScore value) async {
+    await PreferenceHelper.asyncPref.setString('ingredientNutriscoreMax', value.name);
+  }
+
+  Future<NutriScore> getIngredientNutriscoreMax() async {
+    final value = await PreferenceHelper.asyncPref.getString('ingredientNutriscoreMax');
+    if (value == null) {
+      return NutriScore.c;
+    }
+    return NutriScore.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => NutriScore.c,
+    );
   }
 }

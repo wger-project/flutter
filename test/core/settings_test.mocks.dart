@@ -830,6 +830,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i20.NutritionPlans
     _i20.IngredientSearchLanguage? searchLanguage = _i20.IngredientSearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
+    _i13.NutriScore? nutriscoreMax,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -840,6 +841,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i20.NutritionPlans
                 #searchLanguage: searchLanguage,
                 #isVegan: isVegan,
                 #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
               },
             ),
             returnValue: _i18.Future<List<_i13.Ingredient>>.value(

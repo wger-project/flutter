@@ -49,6 +49,7 @@ void main() {
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer(
       (invocation) => Future.value([
@@ -135,6 +136,7 @@ void main() {
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer((_) => Future.value([ingredient1]));
 
@@ -158,6 +160,7 @@ void main() {
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer((_) => Future.value([milk]));
 
@@ -179,6 +182,7 @@ void main() {
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer((_) => Future.value([ingredient2]));
 
@@ -222,6 +226,82 @@ void main() {
         searchLanguage: IngredientSearchLanguage.current,
         isVegan: true,
         isVegetarian: false,
+        nutriscoreMax: null,
+      ),
+    ).called(1);
+  });
+
+  testWidgets('Nutri-Score slider is hidden until the switch is enabled', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    await tester.tap(find.byIcon(Icons.tune));
+    await tester.pumpAndSettle();
+
+    // Slider is not rendered initially
+    expect(find.byType(Slider), findsNothing);
+
+    // Turn the switch on
+    final nutriswitch = find.widgetWithText(SwitchListTile, 'Filter by Nutri-Score');
+    expect(nutriswitch, findsOneWidget);
+    expect(tester.widget<SwitchListTile>(nutriswitch).value, isFalse);
+    await tester.tap(nutriswitch);
+    await tester.pumpAndSettle();
+
+    // Slider now appears
+    expect(find.byType(Slider), findsOneWidget);
+    expect(tester.widget<SwitchListTile>(nutriswitch).value, isTrue);
+  });
+
+  testWidgets('Search sends nutriscoreMax when the filter is enabled', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    await tester.tap(find.byIcon(Icons.tune));
+    await tester.pumpAndSettle();
+
+    // Enable Nutri-Score filter — the default worst-acceptable grade is C
+    await tester.tap(find.widgetWithText(SwitchListTile, 'Filter by Nutri-Score'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+
+    // Act
+    await tester.enterText(find.byType(TextFormField), 'Apple');
+    await tester.pump(const Duration(milliseconds: 600));
+
+    // Assert — with the switch on, the default max grade C flows through
+    verify(
+      mockNutrition.searchIngredient(
+        'Apple',
+        languageCode: 'en',
+        searchLanguage: IngredientSearchLanguage.current,
+        isVegan: false,
+        isVegetarian: false,
+        nutriscoreMax: NutriScore.c,
+      ),
+    ).called(1);
+  });
+
+  testWidgets('Search omits nutriscoreMax when the filter switch is off', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    await tester.enterText(find.byType(TextFormField), 'Apple');
+    await tester.pump(const Duration(milliseconds: 600));
+
+    verify(
+      mockNutrition.searchIngredient(
+        'Apple',
+        languageCode: 'en',
+        searchLanguage: IngredientSearchLanguage.current,
+        isVegan: false,
+        isVegetarian: false,
+        nutriscoreMax: null,
       ),
     ).called(1);
   });

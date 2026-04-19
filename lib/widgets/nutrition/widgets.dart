@@ -163,6 +163,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
               searchLanguage: filters.searchLanguage,
               isVegan: filters.isVegan,
               isVegetarian: filters.isVegetarian,
+              nutriscoreMax: filters.filterNutriscore ? filters.nutriscoreMax : null,
             );
           },
           itemBuilder: (context, ingredient) {
@@ -375,6 +376,27 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                               });
                             },
                           ),
+                          SwitchListTile(
+                            title: Text(i18n.filterNutriscore),
+                            value: filters.filterNutriscore,
+                            contentPadding: EdgeInsets.zero,
+                            onChanged: (val) {
+                              setDialogState(() {
+                                ref.read(ingredientFiltersProvider.notifier).toggleNutriscore(val);
+                              });
+                            },
+                          ),
+                          if (filters.filterNutriscore)
+                            _NutriscoreSlider(
+                              value: filters.nutriscoreMax,
+                              onChanged: (grade) {
+                                setDialogState(() {
+                                  ref
+                                      .read(ingredientFiltersProvider.notifier)
+                                      .chooseNutriscoreMax(grade);
+                                });
+                              },
+                            ),
                         ],
                       ),
                       actions: [
@@ -391,6 +413,56 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
           },
         );
       },
+    );
+  }
+}
+
+/// Discrete slider that lets the user pick the worst acceptable [NutriScore]
+/// grade (A..E). Sits inside the filter dialog directly below the
+/// "Filter by Nutri-Score" switch.
+class _NutriscoreSlider extends StatelessWidget {
+  final NutriScore value;
+  final ValueChanged<NutriScore> onChanged;
+
+  const _NutriscoreSlider({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final index = NutriScore.values.indexOf(value);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            i18n.filterNutriscoreMax,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          Slider(
+            value: index.toDouble(),
+            min: 0,
+            max: (NutriScore.values.length - 1).toDouble(),
+            divisions: NutriScore.values.length - 1,
+            label: value.name.toUpperCase(),
+            onChanged: (v) => onChanged(NutriScore.values[v.round()]),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: NutriScore.values
+                  .map(
+                    (score) => Text(
+                      score.name.toUpperCase(),
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
