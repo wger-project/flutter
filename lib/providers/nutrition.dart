@@ -403,12 +403,18 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
+  ///
+  /// [nutriscoreMax] — if non-null, the worst acceptable Nutri-Score grade,
+  /// sent to the backend as `nutriscore__lte`. The Django filterset
+  /// compares lexicographically on the `a`..`e` choices, so passing
+  /// [NutriScore.b] yields "only A or B".
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',
     IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
     bool isVegan = false,
     bool isVegetarian = false,
+    NutriScore? nutriscoreMax,
   }) async {
     if (name.length <= 1) {
       return [];
@@ -445,6 +451,10 @@ class NutritionPlansProvider with ChangeNotifier {
 
     if (isVegetarian) {
       query['is_vegetarian'] = 'true';
+    }
+
+    if (nutriscoreMax != null) {
+      query['nutriscore__lte'] = nutriscoreMax.name;
     }
 
     // Send the request
