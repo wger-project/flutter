@@ -33,7 +33,6 @@ class WeightEntryTable extends Table {
 const PowersyncWeightEntryTable = ps.Table(
   'weight_weightentry',
   [
-    ps.Column.text('uuid'),
     ps.Column.real('weight'),
     ps.Column.text('date'),
   ],
