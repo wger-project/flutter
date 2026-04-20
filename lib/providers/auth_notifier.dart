@@ -31,7 +31,12 @@ import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/providers/auth_state.dart';
+import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/helpers.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/trophies.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 
 part 'auth_notifier.g.dart';
 
@@ -254,7 +259,22 @@ class AuthNotifier extends _$AuthNotifier {
     // If PowerSync was already running from a previous session, swap its
     // connector so it picks up the new user's credentials.
     await _reconnectPowerSyncIfBuilt(serverUrl);
+
+    // Force the data providers to rebuild with the new auth context
+    _invalidatePostLoginProviders();
     return LoginActions.proceed;
+  }
+
+  /// Invalidates every notifier that depends on the authenticated HTTP base
+  /// provider. Call this after a successful login so the providers refetch
+  /// with the new token instead of replaying their pre-login error state.
+  void _invalidatePostLoginProviders() {
+    _logger.fine('Invalidating data providers after login');
+    ref.invalidate(userProfileProvider);
+    ref.invalidate(routinesRiverpodProvider);
+    ref.invalidate(nutritionProvider);
+    ref.invalidate(trophyStateProvider);
+    ref.invalidate(galleryProvider);
   }
 
   Future<void> logout() async {

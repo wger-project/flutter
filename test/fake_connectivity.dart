@@ -40,11 +40,9 @@ void installFakeConnectivity() {
   reachabilityCheck = (_) async => true;
 }
 
-class _FakeConnectivityPlatform extends ConnectivityPlatform
-    with MockPlatformInterfaceMixin {
+class _FakeConnectivityPlatform extends ConnectivityPlatform with MockPlatformInterfaceMixin {
   @override
-  Future<List<ConnectivityResult>> checkConnectivity() async =>
-      const [ConnectivityResult.wifi];
+  Future<List<ConnectivityResult>> checkConnectivity() async => const [ConnectivityResult.wifi];
 
   @override
   Stream<List<ConnectivityResult>> get onConnectivityChanged =>

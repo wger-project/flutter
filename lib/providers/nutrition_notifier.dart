@@ -46,10 +46,13 @@ class NutritionNotifier extends _$NutritionNotifier {
     _nutritionRepo = ref.read(nutritionRepositoryProvider);
     _ingredientRepo = ref.read(ingredientRepositoryProvider);
 
-    // Auto-retry once the network comes back
+    // Auto-retry once the network comes back, but only if we actually failed.
+    // Without the [hasError] guard we'd refetch on every offline → online
+    // flicker, including the cosmetic one that happens during app start when
+    // the connectivity probe briefly reports offline.
     ref.listen<bool>(networkStatusProvider, (prev, next) {
-      if (prev == false && next == true) {
-        _logger.fine('Network restored, re-fetching nutritional plans');
+      if (prev == false && next == true && state.hasError) {
+        _logger.fine('Network restored after error, re-fetching nutritional plans');
         ref.invalidateSelf();
       }
     });

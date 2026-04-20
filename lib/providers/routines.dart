@@ -95,10 +95,13 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   Future<RoutinesState> build() async {
     _logger.fine('Building Routines Riverpod notifier');
 
-    // Auto-retry once the network comes back
+    // Auto-retry once the network comes back, but only if we actually failed.
+    // Without the [hasError] guard we'd refetch on every offline → online
+    // flicker, including the cosmetic one that happens during app start when
+    // the connectivity probe briefly reports offline.
     ref.listen<bool>(networkStatusProvider, (prev, next) {
-      if (prev == false && next == true) {
-        _logger.fine('Network restored, re-fetching routines');
+      if (prev == false && next == true && state.hasError) {
+        _logger.fine('Network restored after error, re-fetching routines');
         ref.invalidateSelf();
       }
     });

@@ -33,7 +33,7 @@ final class NutritionNotifierProvider
   NutritionNotifier create() => NutritionNotifier();
 }
 
-String _$nutritionNotifierHash() => r'958bf02bc0aa8dc739be26a04b4efbb1004bfd72';
+String _$nutritionNotifierHash() => r'092063876b947ef5c22501739a20d48236d15aac';
 
 abstract class _$NutritionNotifier extends $AsyncNotifier<List<NutritionalPlan>> {
   FutureOr<List<NutritionalPlan>> build();
