@@ -70,24 +70,19 @@ class PreferenceHelper {
     }
   }
 
-  //4.nutri-score filter toggle
-  Future<void> saveIngredientFilterNutriscore(bool value) async {
-    await PreferenceHelper.asyncPref.setBool('ingredientFilterNutriscore', value);
+  //4.nutri-score worst acceptable grade (null means the filter is off)
+  Future<void> saveIngredientNutriscoreMax(NutriScore? value) async {
+    if (value == null) {
+      await PreferenceHelper.asyncPref.remove('ingredientNutriscoreMax');
+    } else {
+      await PreferenceHelper.asyncPref.setString('ingredientNutriscoreMax', value.name);
+    }
   }
 
-  Future<bool> getIngredientFilterNutriscore() async {
-    return await PreferenceHelper.asyncPref.getBool('ingredientFilterNutriscore') ?? false;
-  }
-
-  //5.nutri-score worst acceptable grade
-  Future<void> saveIngredientNutriscoreMax(NutriScore value) async {
-    await PreferenceHelper.asyncPref.setString('ingredientNutriscoreMax', value.name);
-  }
-
-  Future<NutriScore> getIngredientNutriscoreMax() async {
+  Future<NutriScore?> getIngredientNutriscoreMax() async {
     final value = await PreferenceHelper.asyncPref.getString('ingredientNutriscoreMax');
     if (value == null) {
-      return NutriScore.c;
+      return null;
     }
     return NutriScore.values.firstWhere(
       (e) => e.name == value,

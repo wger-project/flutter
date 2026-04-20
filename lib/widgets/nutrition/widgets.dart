@@ -163,7 +163,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
               searchLanguage: filters.searchLanguage,
               isVegan: filters.isVegan,
               isVegetarian: filters.isVegetarian,
-              nutriscoreMax: filters.filterNutriscore ? filters.nutriscoreMax : null,
+              nutriscoreMax: filters.nutriscoreMax,
             );
           },
           itemBuilder: (context, ingredient) {
@@ -376,27 +376,16 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                               });
                             },
                           ),
-                          SwitchListTile(
-                            title: Text(i18n.filterNutriscore),
-                            value: filters.filterNutriscore,
-                            contentPadding: EdgeInsets.zero,
-                            onChanged: (val) {
+                          _NutriscoreSlider(
+                            value: filters.nutriscoreMax,
+                            onChanged: (grade) {
                               setDialogState(() {
-                                ref.read(ingredientFiltersProvider.notifier).toggleNutriscore(val);
+                                ref
+                                    .read(ingredientFiltersProvider.notifier)
+                                    .chooseNutriscoreMax(grade);
                               });
                             },
                           ),
-                          if (filters.filterNutriscore)
-                            _NutriscoreSlider(
-                              value: filters.nutriscoreMax,
-                              onChanged: (grade) {
-                                setDialogState(() {
-                                  ref
-                                      .read(ingredientFiltersProvider.notifier)
-                                      .chooseNutriscoreMax(grade);
-                                });
-                              },
-                            ),
                         ],
                       ),
                       actions: [
@@ -418,47 +407,65 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
 }
 
 /// Discrete slider that lets the user pick the worst acceptable [NutriScore]
-/// grade (A..E). Sits inside the filter dialog directly below the
-/// "Filter by Nutri-Score" switch.
+/// grade. Index 0 is the "Off" position (no filter, `null` value) and
+/// indices 1..N map to [NutriScore.values].
 class _NutriscoreSlider extends StatelessWidget {
-  final NutriScore value;
-  final ValueChanged<NutriScore> onChanged;
+  final NutriScore? value;
+  final ValueChanged<NutriScore?> onChanged;
 
   const _NutriscoreSlider({required this.value, required this.onChanged});
+
+  static const int _offIndex = 0;
+
+  int _valueToIndex(NutriScore? v) => v == null ? _offIndex : NutriScore.values.indexOf(v) + 1;
+
+  NutriScore? _indexToValue(int i) => i == _offIndex ? null : NutriScore.values[i - 1];
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final index = NutriScore.values.indexOf(value);
+    final index = _valueToIndex(value);
+    final maxIndex = NutriScore.values.length; // 0=Off, then A..E
+    final helperText = value == null
+        ? i18n.filterNutriscoreNoFilter
+        : i18n.filterNutriscoreOrBetter(value!.name.toUpperCase());
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            i18n.filterNutriscoreMax,
+            i18n.filterNutriscore,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          Text(
+            helperText,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           Slider(
             value: index.toDouble(),
             min: 0,
-            max: (NutriScore.values.length - 1).toDouble(),
-            divisions: NutriScore.values.length - 1,
-            label: value.name.toUpperCase(),
-            onChanged: (v) => onChanged(NutriScore.values[v.round()]),
+            max: maxIndex.toDouble(),
+            divisions: maxIndex,
+            label: value == null ? i18n.filterNutriscoreOff : value!.name.toUpperCase(),
+            onChanged: (v) => onChanged(_indexToValue(v.round())),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: NutriScore.values
-                  .map(
-                    (score) => Text(
-                      score.name.toUpperCase(),
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                  )
-                  .toList(),
+              children: [
+                Text(
+                  i18n.filterNutriscoreOff,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+                ...NutriScore.values.map(
+                  (score) => Text(
+                    score.name.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

@@ -7,35 +7,30 @@ class IngredientFilters {
   final bool isVegetarian;
   final IngredientSearchLanguage searchLanguage;
 
-  /// When true, [nutriscoreMax] is applied as `nutriscore__lte` on the search.
-  final bool filterNutriscore;
-
-  /// Worst acceptable Nutri-Score grade (lexicographically sent as
-  /// `nutriscore__lte` to the backend). Ignored when [filterNutriscore] is
-  /// false.
-  final NutriScore nutriscoreMax;
+  /// Worst acceptable Nutri-Score grade, sent to the backend as
+  /// `nutriscore__lte`. `null` means the filter is off (slider at the
+  /// "No filter" position).
+  final NutriScore? nutriscoreMax;
 
   IngredientFilters({
     required this.isVegan,
     required this.isVegetarian,
     required this.searchLanguage,
-    this.filterNutriscore = false,
-    this.nutriscoreMax = NutriScore.c,
+    this.nutriscoreMax,
   });
 
   IngredientFilters copyWith({
     bool? isVegan,
     bool? isVegetarian,
     IngredientSearchLanguage? searchLanguage,
-    bool? filterNutriscore,
     NutriScore? nutriscoreMax,
+    bool clearNutriscoreMax = false,
   }) {
     return IngredientFilters(
       isVegan: isVegan ?? this.isVegan,
       isVegetarian: isVegetarian ?? this.isVegetarian,
       searchLanguage: searchLanguage ?? this.searchLanguage,
-      filterNutriscore: filterNutriscore ?? this.filterNutriscore,
-      nutriscoreMax: nutriscoreMax ?? this.nutriscoreMax,
+      nutriscoreMax: clearNutriscoreMax ? null : (nutriscoreMax ?? this.nutriscoreMax),
     );
   }
 }

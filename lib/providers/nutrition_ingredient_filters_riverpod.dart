@@ -34,13 +34,11 @@ class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {
     final isVegan = await preferenceHelper.getIngredientVeganFilter();
     final isVegetarian = await preferenceHelper.getIngredientVegetarianFilter();
     final searchLanguage = await preferenceHelper.getIngredientSearchLanguage();
-    final filterNutriscore = await preferenceHelper.getIngredientFilterNutriscore();
     final nutriscoreMax = await preferenceHelper.getIngredientNutriscoreMax();
     return IngredientFilters(
       isVegan: isVegan,
       isVegetarian: isVegetarian,
       searchLanguage: searchLanguage,
-      filterNutriscore: filterNutriscore,
       nutriscoreMax: nutriscoreMax,
     );
   }
@@ -73,15 +71,13 @@ class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {
     await PreferenceHelper.instance.saveIngredientSearchLanguage(value);
   }
 
-  Future<void> toggleNutriscore(bool value) async {
+  Future<void> chooseNutriscoreMax(NutriScore? value) async {
     final current = _current();
-    state = AsyncData(current.copyWith(filterNutriscore: value));
-    await PreferenceHelper.instance.saveIngredientFilterNutriscore(value);
-  }
-
-  Future<void> chooseNutriscoreMax(NutriScore value) async {
-    final current = _current();
-    state = AsyncData(current.copyWith(nutriscoreMax: value));
+    state = AsyncData(
+      value == null
+          ? current.copyWith(clearNutriscoreMax: true)
+          : current.copyWith(nutriscoreMax: value),
+    );
     await PreferenceHelper.instance.saveIngredientNutriscoreMax(value);
   }
 }

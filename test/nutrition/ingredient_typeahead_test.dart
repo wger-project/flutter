@@ -231,7 +231,7 @@ void main() {
     ).called(1);
   });
 
-  testWidgets('Nutri-Score slider is hidden until the switch is enabled', (
+  testWidgets('Nutri-Score slider is always visible and defaults to Off', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(createWidgetUnderTest());
@@ -239,22 +239,16 @@ void main() {
     await tester.tap(find.byIcon(Icons.tune));
     await tester.pumpAndSettle();
 
-    // Slider is not rendered initially
-    expect(find.byType(Slider), findsNothing);
+    // Slider is rendered by default, at the Off position (value == 0)
+    final sliderFinder = find.byType(Slider);
+    expect(sliderFinder, findsOneWidget);
+    expect(tester.widget<Slider>(sliderFinder).value, 0.0);
 
-    // Turn the switch on
-    final nutriswitch = find.widgetWithText(SwitchListTile, 'Filter by Nutri-Score');
-    expect(nutriswitch, findsOneWidget);
-    expect(tester.widget<SwitchListTile>(nutriswitch).value, isFalse);
-    await tester.tap(nutriswitch);
-    await tester.pumpAndSettle();
-
-    // Slider now appears
-    expect(find.byType(Slider), findsOneWidget);
-    expect(tester.widget<SwitchListTile>(nutriswitch).value, isTrue);
+    // The "No filter" helper text is shown
+    expect(find.text('No filter'), findsOneWidget);
   });
 
-  testWidgets('Search sends nutriscoreMax when the filter is enabled', (
+  testWidgets('Moving the slider sends nutriscoreMax on subsequent search', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(createWidgetUnderTest());
@@ -262,8 +256,10 @@ void main() {
     await tester.tap(find.byIcon(Icons.tune));
     await tester.pumpAndSettle();
 
-    // Enable Nutri-Score filter — the default worst-acceptable grade is C
-    await tester.tap(find.widgetWithText(SwitchListTile, 'Filter by Nutri-Score'));
+    // Move the slider off the Off position — index 1 is the first grade, A
+    final sliderFinder = find.byType(Slider);
+    final Slider slider = tester.widget<Slider>(sliderFinder);
+    slider.onChanged!(1.0);
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Close'));
@@ -273,7 +269,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField), 'Apple');
     await tester.pump(const Duration(milliseconds: 600));
 
-    // Assert — with the switch on, the default max grade C flows through
+    // Assert — index 1 maps to NutriScore.a
     verify(
       mockNutrition.searchIngredient(
         'Apple',
@@ -281,12 +277,12 @@ void main() {
         searchLanguage: IngredientSearchLanguage.current,
         isVegan: false,
         isVegetarian: false,
-        nutriscoreMax: NutriScore.c,
+        nutriscoreMax: NutriScore.a,
       ),
     ).called(1);
   });
 
-  testWidgets('Search omits nutriscoreMax when the filter switch is off', (
+  testWidgets('Search omits nutriscoreMax when the slider is at Off', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(createWidgetUnderTest());
