@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2020- wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,8 @@
  */
 
 // This file performs setup of the PowerSync database
+import 'dart:convert';
+
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
 import 'package:wger/powersync/api_client.dart';
@@ -49,12 +51,39 @@ class DjangoConnector extends PowerSyncBackendConnector {
     // Somewhat contrived to illustrate usage, see auth docs here:
     // https://docs.powersync.com/usage/installation/authentication-setup/custom
     final session = await apiClient.getPowersyncToken();
+    final token = session['token'] as String;
 
-    // note: we don't set userId and expires property here. not sure if needed
+    final payload = _decodeJwtPayload(token);
     return PowerSyncCredentials(
       endpoint: session['powersync_url'],
-      token: session['token'],
+      token: token,
+      userId: payload?['sub']?.toString(),
+      expiresAt: _jwtExp(payload),
     );
+  }
+
+  /// Decodes the JWT payload (middle segment). Returns null on malformed input.
+  static Map<String, dynamic>? _decodeJwtPayload(String jwt) {
+    try {
+      final parts = jwt.split('.');
+      if (parts.length != 3) {
+        return null;
+      }
+      return json.decode(utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))))
+          as Map<String, dynamic>;
+    } catch (e) {
+      logger.warning('Could not decode PowerSync JWT payload', e);
+      return null;
+    }
+  }
+
+  /// Extracts the `exp` claim (unix seconds) as a UTC DateTime.
+  static DateTime? _jwtExp(Map<String, dynamic>? payload) {
+    final exp = payload?['exp'];
+    if (exp is! num) {
+      return null;
+    }
+    return DateTime.fromMillisecondsSinceEpoch(exp.toInt() * 1000, isUtc: true);
   }
 
   /// Transform a record before sending it to the backend.

@@ -75,6 +75,7 @@ bool didCompleteSync(Ref ref, [StreamPriority? priority]) {
 
 Future<String> _getDatabasePath() async {
   const dbFilename = 'powersync-wger.db';
+
   // getApplicationSupportDirectory is not supported on Web
   if (kIsWeb) {
     return dbFilename;
