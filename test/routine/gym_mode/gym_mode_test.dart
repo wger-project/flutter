@@ -101,7 +101,7 @@ void main() {
       when(mockExerciseProvider.findExerciseById(1)).thenReturn(testExercises[0]);
       when(mockExerciseProvider.findExerciseById(6)).thenReturn(testExercises[5]);
       when(
-        mockExerciseProvider.findExercisesByVariationId(
+        mockExerciseProvider.findExercisesByVariationGroup(
           null,
           exerciseIdToExclude: anyNamed('exerciseIdToExclude'),
         ),

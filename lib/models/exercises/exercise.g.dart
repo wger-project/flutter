@@ -12,7 +12,7 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
     requiredKeys: const [
       'id',
       'uuid',
-      'variations',
+      'variation_group',
       'created',
       'last_update',
       'last_update_global',
@@ -32,7 +32,7 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
       lastUpdateGlobal: json['last_update_global'] == null
           ? null
           : DateTime.parse(json['last_update_global'] as String),
-      variationId: (json['variations'] as num?)?.toInt(),
+      variationGroup: json['variation_group'] as String?,
       translations: (json['translations'] as List<dynamic>?)
           ?.map((e) => Translation.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -53,7 +53,7 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ExerciseToJson(Exercise instance) => <String, dynamic>{
   'id': instance.id,
   'uuid': instance.uuid,
-  'variations': instance.variationId,
+  'variation_group': instance.variationGroup,
   'created': instance.created?.toIso8601String(),
   'last_update': instance.lastUpdate?.toIso8601String(),
   'last_update_global': instance.lastUpdateGlobal?.toIso8601String(),

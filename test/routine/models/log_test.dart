@@ -18,7 +18,9 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/set_config_data.dart';
 
 void main() {
   group('Log.volume', () {
@@ -123,6 +125,72 @@ void main() {
       );
 
       expect(log.volume(metric: true), closeTo(31.5, 0.0001));
+    });
+  });
+
+  group('Log.fromSetConfigData', () {
+    late Exercise exercise;
+
+    setUp(() {
+      exercise = Exercise(id: 1);
+    });
+
+    test('uses default unit IDs when unit objects are not loaded', () {
+      // Reproduces: "Repetitions unit must be present if repetitions have a value"
+      //
+      // When the user taps "+" in gym mode to add an extra exercise,
+      // addExerciseAfterPage() creates a SetConfigData with only exerciseId and
+      // slotEntryId — no unit objects. The default constructor sets
+      // weightUnitId=WEIGHT_UNIT_KG and repetitionsUnitId=REP_UNIT_REPETITIONS_ID,
+      // but Log.fromSetConfigData was using the object setters which overwrite
+      // those IDs with null when the objects are null, causing the server to
+      // reject the request with a 400 ValidationError.
+      final setConfig = SetConfigData(
+        exerciseId: 1,
+        slotEntryId: 1,
+        exercise: exercise,
+        // no weightUnit or repetitionsUnit objects — mirrors addExerciseAfterPage()
+      );
+
+      final log = Log.fromSetConfigData(setConfig);
+
+      expect(log.weightUnitId, WEIGHT_UNIT_KG);
+      expect(log.repetitionsUnitId, REP_UNIT_REPETITIONS_ID);
+    });
+
+    test('uses custom unit IDs from SetConfigData when set', () {
+      final setConfig = SetConfigData(
+        exerciseId: 1,
+        slotEntryId: 1,
+        exercise: exercise,
+        weightUnitId: WEIGHT_UNIT_LB,
+        repetitionsUnitId: REP_UNIT_TILL_FAILURE_ID,
+      );
+
+      final log = Log.fromSetConfigData(setConfig);
+
+      expect(log.weightUnitId, WEIGHT_UNIT_LB);
+      expect(log.repetitionsUnitId, REP_UNIT_TILL_FAILURE_ID);
+    });
+
+    test('copies weight and repetitions values', () {
+      final setConfig = SetConfigData(
+        exerciseId: 1,
+        slotEntryId: 1,
+        exercise: exercise,
+        weight: 80,
+        repetitions: 12,
+        rir: 2,
+      );
+
+      final log = Log.fromSetConfigData(setConfig);
+
+      expect(log.weight, 80);
+      expect(log.weightTarget, 80);
+      expect(log.repetitions, 12);
+      expect(log.repetitionsTarget, 12);
+      expect(log.rir, 2);
+      expect(log.rirTarget, 2);
     });
   });
 }

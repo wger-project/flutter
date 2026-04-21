@@ -102,12 +102,17 @@ void main() {
         any,
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
+        isVegan: anyNamed('isVegan'),
+        isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer(
       (_) => Future.value([ingredient1, ingredient2]),
     );
 
     when(mockNutrition.addMealItem(any, meal1)).thenAnswer((_) => Future.value(mealItem));
+    when(mockNutrition.fetchWeightUnits(1)).thenAnswer((_) => Future.value([]));
+    when(mockNutrition.fetchWeightUnits(2)).thenAnswer((_) => Future.value([]));
   });
 
   Widget createMealItemFormScreen(Meal meal, String code, bool test, {locale = 'en'}) {

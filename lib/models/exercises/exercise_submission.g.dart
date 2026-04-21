@@ -26,7 +26,7 @@ _ExerciseTranslationSubmissionApi _$ExerciseTranslationSubmissionApiFromJson(
   Map<String, dynamic> json,
 ) => _ExerciseTranslationSubmissionApi(
   name: json['name'] as String,
-  description: json['description'] as String,
+  descriptionSource: json['description_source'] as String,
   language: (json['language'] as num).toInt(),
   author: json['license_author'] as String,
   aliases:
@@ -51,7 +51,7 @@ Map<String, dynamic> _$ExerciseTranslationSubmissionApiToJson(
   _ExerciseTranslationSubmissionApi instance,
 ) => <String, dynamic>{
   'name': instance.name,
-  'description': instance.description,
+  'description_source': instance.descriptionSource,
   'language': instance.language,
   'license_author': instance.author,
   'aliases': instance.aliases,
@@ -68,7 +68,7 @@ _ExerciseSubmissionApi _$ExerciseSubmissionApiFromJson(
       .toList(),
   equipment: (json['equipment'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
   author: json['license_author'] as String,
-  variation: (json['variation'] as num?)?.toInt(),
+  variationGroup: json['variation_group'] as String?,
   variationConnectTo: (json['variations_connect_to'] as num?)?.toInt(),
   translations: (json['translations'] as List<dynamic>)
       .map(
@@ -87,7 +87,7 @@ Map<String, dynamic> _$ExerciseSubmissionApiToJson(
   'muscles_secondary': instance.musclesSecondary,
   'equipment': instance.equipment,
   'license_author': instance.author,
-  'variation': instance.variation,
+  'variation_group': instance.variationGroup,
   'variations_connect_to': instance.variationConnectTo,
   'translations': instance.translations,
 };

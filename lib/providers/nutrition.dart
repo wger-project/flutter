@@ -28,6 +28,7 @@ import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -49,6 +50,7 @@ class NutritionPlansProvider with ChangeNotifier {
   static const _mealItemPath = 'mealitem';
   static const _ingredientInfoPath = 'ingredientinfo';
   static const _nutritionDiaryPath = 'nutritiondiary';
+  static const _ingredientWeightUnitPath = 'ingredientweightunit';
 
   final WgerBaseProvider baseProvider;
   late IngredientDatabase database;
@@ -380,6 +382,17 @@ class NutritionPlansProvider with ChangeNotifier {
     return ingredient;
   }
 
+  /// Fetch the available weight units for an ingredient
+  Future<List<IngredientWeightUnit>> fetchWeightUnits(int ingredientId) async {
+    final data = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        _ingredientWeightUnitPath,
+        query: {'ingredient': ingredientId.toString()},
+      ),
+    );
+    return data.map((e) => IngredientWeightUnit.fromJson(e)).toList();
+  }
+
   /// Loads the available ingredients from the local cache
   Future<void> fetchIngredientsFromCache() async {
     final ingredientDb = await database.select(database.ingredients).get();
@@ -390,18 +403,22 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
+  ///
+  /// [nutriscoreMax] — if non-null, the worst acceptable Nutri-Score grade,
+  /// sent to the backend as `nutriscore__lte`. The Django filterset
+  /// compares lexicographically on the `a`..`e` choices, so passing
+  /// [NutriScore.b] yields "only A or B".
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',
     IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
     bool isVegan = false,
     bool isVegetarian = false,
+    NutriScore? nutriscoreMax,
   }) async {
     if (name.length <= 1) {
       return [];
     }
-    print("isVegan in search result is $isVegan");
-    print("isVegetarian in search result is $isVegetarian");
     final List<String> languages = [];
 
     switch (searchLanguage) {
@@ -435,7 +452,11 @@ class NutritionPlansProvider with ChangeNotifier {
     if (isVegetarian) {
       query['is_vegetarian'] = 'true';
     }
-    print("query is $query");
+
+    if (nutriscoreMax != null) {
+      query['nutriscore__lte'] = nutriscoreMax.name;
+    }
+
     // Send the request
     _logger.info('Fetching ingredients from server');
     final response = await baseProvider.fetch(

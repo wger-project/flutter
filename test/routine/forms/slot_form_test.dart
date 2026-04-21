@@ -28,7 +28,7 @@ import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/forms/slot.dart';
 
 import '../../../test_data/routines.dart';
-import '../slot_entry_form_test.mocks.dart';
+import 'slot_form_test.mocks.dart';
 
 @GenerateMocks([RoutinesProvider])
 void main() {

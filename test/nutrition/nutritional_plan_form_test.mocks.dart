@@ -4,11 +4,12 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i9;
-import 'dart:ui' as _i10;
+import 'dart:ui' as _i11;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/database/ingredients/ingredients_database.dart' as _i3;
 import 'package:wger/models/nutrition/ingredient.dart' as _i7;
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart' as _i10;
 import 'package:wger/models/nutrition/meal.dart' as _i5;
 import 'package:wger/models/nutrition/meal_item.dart' as _i6;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i4;
@@ -319,6 +320,18 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
           as _i9.Future<_i7.Ingredient>);
 
   @override
+  _i9.Future<List<_i10.IngredientWeightUnit>> fetchWeightUnits(
+    int? ingredientId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchWeightUnits, [ingredientId]),
+            returnValue: _i9.Future<List<_i10.IngredientWeightUnit>>.value(
+              <_i10.IngredientWeightUnit>[],
+            ),
+          )
+          as _i9.Future<List<_i10.IngredientWeightUnit>>);
+
+  @override
   _i9.Future<void> fetchIngredientsFromCache() =>
       (super.noSuchMethod(
             Invocation.method(#fetchIngredientsFromCache, []),
@@ -334,6 +347,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
     _i8.IngredientSearchLanguage? searchLanguage = _i8.IngredientSearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
+    _i7.NutriScore? nutriscoreMax,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -344,6 +358,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
                 #searchLanguage: searchLanguage,
                 #isVegan: isVegan,
                 #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
               },
             ),
             returnValue: _i9.Future<List<_i7.Ingredient>>.value(
@@ -405,13 +420,13 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
           as _i9.Future<void>);
 
   @override
-  void addListener(_i10.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i11.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeListener(_i10.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i11.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );

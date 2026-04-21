@@ -1,5 +1,11 @@
 name: Build Apple
 on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch/Tag to build'
+        required: true
+        default: 'master'
   workflow_call:
     inputs:
       ref:
@@ -45,13 +51,6 @@ jobs:
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
-
-      # This seems to be related to https://github.com/actions/runner-images/issues/12758
-      # Select appropriate Xcode version from
-      # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md#xcode
-      - name: Xcode setup
-        run: |
-          sudo xcode-select --switch /Applications/Xcode_16.4.app
 
       - name: Build .xcarchive
         run: |

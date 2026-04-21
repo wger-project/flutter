@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,13 +27,15 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 part 'slot_entry.g.dart';
 
-enum SlotEntryType { normal, dropset, myo, partial, forced, tut, iso, jump }
+enum SlotEntryType { normal, warmup, dropset, myo, partial, forced, tut, iso, jump }
 
 extension SlotEntryTypeExtension on SlotEntryType {
   String i18Label(AppLocalizations i18n) {
     switch (this) {
       case SlotEntryType.normal:
         return i18n.slotEntryTypeNormal;
+      case SlotEntryType.warmup:
+        return i18n.slotEntryTypeWarmup;
       case SlotEntryType.dropset:
         return i18n.slotEntryTypeDropset;
       case SlotEntryType.myo:

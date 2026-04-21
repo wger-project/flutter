@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart' as _i4;
 import 'package:wger/database/ingredients/ingredients_database.dart' as _i5;
 import 'package:wger/models/body_weight/weight_entry.dart' as _i3;
 import 'package:wger/models/nutrition/ingredient.dart' as _i9;
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart' as _i17;
 import 'package:wger/models/nutrition/meal.dart' as _i7;
 import 'package:wger/models/nutrition/meal_item.dart' as _i8;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i6;
@@ -624,6 +625,18 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
           as _i11.Future<_i9.Ingredient>);
 
   @override
+  _i11.Future<List<_i17.IngredientWeightUnit>> fetchWeightUnits(
+    int? ingredientId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchWeightUnits, [ingredientId]),
+            returnValue: _i11.Future<List<_i17.IngredientWeightUnit>>.value(
+              <_i17.IngredientWeightUnit>[],
+            ),
+          )
+          as _i11.Future<List<_i17.IngredientWeightUnit>>);
+
+  @override
   _i11.Future<void> fetchIngredientsFromCache() =>
       (super.noSuchMethod(
             Invocation.method(#fetchIngredientsFromCache, []),
@@ -639,6 +652,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
     _i16.IngredientSearchLanguage? searchLanguage = _i16.IngredientSearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
+    _i9.NutriScore? nutriscoreMax,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -649,6 +663,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
                 #searchLanguage: searchLanguage,
                 #isVegan: isVegan,
                 #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
               },
             ),
             returnValue: _i11.Future<List<_i9.Ingredient>>.value(

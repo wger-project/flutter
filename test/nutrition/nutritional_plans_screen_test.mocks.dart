@@ -178,6 +178,14 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
           as _i5.Future<bool>);
 
   @override
+  bool serverUpdateRequired([String? version]) =>
+      (super.noSuchMethod(
+            Invocation.method(#serverUpdateRequired, [version]),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
   _i5.Future<_i3.LoginActions> register({
     required String? username,
     required String? password,

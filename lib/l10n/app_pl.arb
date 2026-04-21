@@ -751,7 +751,7 @@
     "@sets": {
         "description": "The number of sets to be done for one exercise"
     },
-    "supersetNr": "Superset {nr}",
+    "supersetNr": "Superseria {nr}",
     "@supersetNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
         "type": "text",
@@ -833,5 +833,61 @@
     "darkMode": "Zawsze używaj trybu ciemnego",
     "lightMode": "Zawsze używaj trybu jasnego",
     "systemMode": "Ustawienia systemu",
-    "fitInWeek": "Dopasuj w tygodniu"
+    "fitInWeek": "Dopasuj w tygodniu",
+    "dayTypeAmrap": "Tak dużo rund jak to możliwe",
+    "trophies": "Trofea",
+    "dashboardWidgets": "Kokpit widgetów",
+    "dayTypeCustom": "Niestandardowy",
+    "dayTypeEnom": "Każda minuta w minutę",
+    "dayTypeHiit": "Trening interwałowy, wysoka intensywność",
+    "dayTypeTabata": "Tabata",
+    "dayTypeRft": "Rundy na czas",
+    "dayTypeAfap": "Tak szybko jak to możliwe",
+    "slotEntryTypeNormal": "Normalny",
+    "slotEntryTypeMyo": "Myo",
+    "slotEntryTypeForced": "Wymuszony",
+    "slotEntryTypeTut": "Czas napięcia",
+    "slotEntryTypeIso": "Chwyt izometryczny",
+    "slotEntryTypeJump": "Skok",
+    "topSet": "Najcięższa seria: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "impressionGood": "Dobrze",
+    "impressionNeutral": "Średnio",
+    "impressionBad": "Źle",
+    "personalRecords": "Rekordy osobiste",
+    "gymModeShowExercises": "Pokaż przegląd ćwiczeń",
+    "gymModeShowTimer": "Pokaż timer pomiędzy seriami",
+    "gymModeTimerType": "Rodzaj timera",
+    "gymModeTimerTypeHelText": "Jeśli seria ma przerwę, czas jest odliczany.",
+    "countdown": "Odliczanie",
+    "stopwatch": "Stoper",
+    "gymModeDefaultCountdownTime": "Domyślny czas timera, w sekundach",
+    "gymModeNotifyOnCountdownFinish": "Powiadom na koniec odliczania",
+    "duration": "Czas trwania",
+    "durationHoursMinutes": "{hours}h {minutes}m",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Pojemność",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Trening skończony"
 }

@@ -171,6 +171,7 @@
   "slotEntryTypeNormal": "Normal",
   "slotEntryTypeDropset": "Dropset",
   "slotEntryTypeMyo": "Myo",
+  "slotEntryTypeWarmup": "Warmup",
   "slotEntryTypePartial": "Partial",
   "slotEntryTypeForced": "Forced",
   "slotEntryTypeTut": "Time under Tension",
@@ -628,6 +629,7 @@
   },
   "edit": "Edit",
   "@edit": {},
+  "preview": "Preview",
   "loadingText": "Loading...",
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
@@ -935,6 +937,13 @@
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
   },
+  "useBasicMarkdown": "You can use basic Markdown to format the text",
+  "editorBold": "Bold",
+  "@editorBold": {
+    "description": "Label for bold formatting"
+  },
+  "editorItalic": "Italic",
+  "editorList": "List",
   "enterTextInLanguage": "Please enter the text in the correct language!",
   "settingsTitle": "Settings",
   "settingsCacheTitle": "Cache",
@@ -1190,5 +1199,27 @@
     }
   },
   "searchLanguageAll": "All languages",
-  "@searchLanguageAll": {}
+  "@searchLanguageAll": {},
+  "filterNutriscore": "Nutri-Score filter",
+  "@filterNutriscore": {
+    "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+  },
+  "filterNutriscoreOff": "Off",
+  "@filterNutriscoreOff": {
+    "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+  },
+  "filterNutriscoreNoFilter": "No filter",
+  "@filterNutriscoreNoFilter": {
+    "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+  },
+  "filterNutriscoreOrBetter": "{grade} or better",
+  "@filterNutriscoreOrBetter": {
+    "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+    "placeholders": {
+      "grade": {
+        "type": "String",
+        "example": "C"
+      }
+    }
+  }
 }
