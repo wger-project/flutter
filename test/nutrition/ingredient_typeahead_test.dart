@@ -49,6 +49,7 @@ void main() {
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer(
       (invocation) => Future.value([
@@ -135,6 +136,7 @@ void main() {
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer((_) => Future.value([ingredient1]));
 
@@ -158,6 +160,7 @@ void main() {
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer((_) => Future.value([milk]));
 
@@ -179,6 +182,7 @@ void main() {
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer((_) => Future.value([ingredient2]));
 
@@ -222,6 +226,78 @@ void main() {
         searchLanguage: IngredientSearchLanguage.current,
         isVegan: true,
         isVegetarian: false,
+        nutriscoreMax: null,
+      ),
+    ).called(1);
+  });
+
+  testWidgets('Nutri-Score slider is always visible and defaults to Off', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    await tester.tap(find.byIcon(Icons.tune));
+    await tester.pumpAndSettle();
+
+    // Slider is rendered by default, at the Off position (value == 0)
+    final sliderFinder = find.byType(Slider);
+    expect(sliderFinder, findsOneWidget);
+    expect(tester.widget<Slider>(sliderFinder).value, 0.0);
+
+    // The "No filter" helper text is shown
+    expect(find.text('No filter'), findsOneWidget);
+  });
+
+  testWidgets('Moving the slider sends nutriscoreMax on subsequent search', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    await tester.tap(find.byIcon(Icons.tune));
+    await tester.pumpAndSettle();
+
+    // Move the slider off the Off position — index 1 is the first grade, A
+    final sliderFinder = find.byType(Slider);
+    final Slider slider = tester.widget<Slider>(sliderFinder);
+    slider.onChanged!(1.0);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+
+    // Act
+    await tester.enterText(find.byType(TextFormField), 'Apple');
+    await tester.pump(const Duration(milliseconds: 600));
+
+    // Assert — index 1 maps to NutriScore.a
+    verify(
+      mockNutrition.searchIngredient(
+        'Apple',
+        languageCode: 'en',
+        searchLanguage: IngredientSearchLanguage.current,
+        isVegan: false,
+        isVegetarian: false,
+        nutriscoreMax: NutriScore.a,
+      ),
+    ).called(1);
+  });
+
+  testWidgets('Search omits nutriscoreMax when the slider is at Off', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    await tester.enterText(find.byType(TextFormField), 'Apple');
+    await tester.pump(const Duration(milliseconds: 600));
+
+    verify(
+      mockNutrition.searchIngredient(
+        'Apple',
+        languageCode: 'en',
+        searchLanguage: IngredientSearchLanguage.current,
+        isVegan: false,
+        isVegetarian: false,
+        nutriscoreMax: null,
       ),
     ).called(1);
   });
