@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -276,7 +276,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                   errorMessage,
                   if (_useUsernameAndPassword)
                     UsernameField(
-                      controller: _apiTokenController,
+                      controller: _usernameController,
                       onSaved: (value) => _authData['username'] = value!,
                     ),
                   if (_authMode == AuthMode.Register)
