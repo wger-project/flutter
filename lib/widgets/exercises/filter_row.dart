@@ -17,21 +17,25 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
+import 'package:provider/provider.dart' hide Consumer;
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
+import 'package:wger/providers/exercise_filters_riverpod.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import 'filter_modal.dart';
 
-class FilterRow extends StatefulWidget {
+class FilterRow extends ConsumerStatefulWidget {
   const FilterRow({super.key});
 
   @override
-  _FilterRowState createState() => _FilterRowState();
+  ConsumerState<FilterRow> createState() => _FilterRowState();
 }
 
-class _FilterRowState extends State<FilterRow> {
+class _FilterRowState extends ConsumerState<FilterRow> {
   late final TextEditingController _exerciseNameController;
 
   @override
@@ -40,9 +44,19 @@ class _FilterRowState extends State<FilterRow> {
 
     _exerciseNameController = TextEditingController()
       ..addListener(() {
-        final provider = Provider.of<ExercisesProvider>(context, listen: false);
-        if (provider.filters!.searchTerm != _exerciseNameController.text) {
-          provider.setFilters(provider.filters!.copyWith(searchTerm: _exerciseNameController.text));
+        if (!mounted) return;
+
+        final exerciseProvider = Provider.of<ExercisesProvider>(context, listen: false);
+        final filters = exerciseProvider.filters;
+
+        if (filters != null && filters.searchTerm != _exerciseNameController.text) {
+          final exerciseFilters = ref.read(exerciseFiltersSyncProvider);
+          final languageCode = Localizations.localeOf(context).languageCode;
+          exerciseProvider.setFilters(
+            exerciseProvider.filters!.copyWith(searchTerm: _exerciseNameController.text),
+            exerciseFilters: exerciseFilters,
+            languageCode: languageCode,
+          );
         }
       });
   }
@@ -63,10 +77,12 @@ class _FilterRowState extends State<FilterRow> {
                   borderSide: BorderSide(color: Colors.black),
                 ),
               ),
+              
             ),
           ),
           Row(
             children: [
+              _filterButton(context),
               IconButton(
                 onPressed: () async {
                   showModalBottomSheet(
@@ -107,6 +123,123 @@ class _FilterRowState extends State<FilterRow> {
           ),
         ],
       ),
+    );
+  }
+
+  /// The filter icon button — opens dialog with language, category, and search mode options.
+  /// Mirrors the filterButton() in IngredientTypeahead.
+  Widget _filterButton(BuildContext context) {
+    final filters = ref.watch(exerciseFiltersSyncProvider);
+    final i18n = AppLocalizations.of(context);
+    final languageCode = Localizations.localeOf(context).languageCode;
+    final isEnglish = languageCode == LANGUAGE_SHORT_ENGLISH;
+
+    // If the device is in English and currentAndEnglish is set, switch to current
+    if (isEnglish && filters.searchLanguage == ExerciseSearchLanguage.currentAndEnglish) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(exerciseFiltersProvider.notifier).chooseLanguage(ExerciseSearchLanguage.current);
+      });
+    }
+
+    return IconButton(
+      icon: const Icon(Icons.tune),
+      color: Colors.blueGrey,
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (context, setDialogState) {
+                return Consumer(
+                  builder: (context, ref, _) {
+                    final filters = ref.watch(exerciseFiltersSyncProvider);
+
+                    return AlertDialog(
+                      title: Text(i18n.filter),
+                      content: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Language option — same as ingredient filter
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(i18n.language),
+                              subtitle: Builder(
+                                builder: (context) {
+                                  final items = <DropdownMenuItem<ExerciseSearchLanguage>>[
+                                    DropdownMenuItem(
+                                      value: ExerciseSearchLanguage.current,
+                                      child: Text(languageCode),
+                                    ),
+                                    if (!isEnglish)
+                                      DropdownMenuItem(
+                                        value: ExerciseSearchLanguage.currentAndEnglish,
+                                        child: Text('$languageCode + EN'),
+                                      ),
+                                    const DropdownMenuItem(
+                                      value: ExerciseSearchLanguage.all,
+                                      child: Text('All languages'),
+                                    ),
+                                  ];
+
+                                  ExerciseSearchLanguage? selected = filters.searchLanguage;
+                                  final containsSelected = items.any((it) => it.value == selected);
+                                  if (!containsSelected) selected = null;
+
+                                  return DropdownButton<ExerciseSearchLanguage>(
+                                    value: selected,
+                                    isExpanded: true,
+                                    onChanged: (val) {
+                                      setDialogState(() {
+                                        if (val != null) {
+                                          ref
+                                              .read(exerciseFiltersProvider.notifier)
+                                              .chooseLanguage(val);
+                                        }
+                                      });
+                                    },
+                                    items: items,
+                                  );
+                                },
+                              ),
+                            ),
+                            // Search mode toggle — new for exercises
+                            SwitchListTile(
+                              title: const Text('Exact name match'),
+                              subtitle: const Text(
+                                'Off: fuzzy search. On: exact name only.',
+                              ),
+                              value: filters.searchMode == ExerciseSearchMode.exact,
+                              contentPadding: EdgeInsets.zero,
+                              onChanged: (val) {
+                                setDialogState(() {
+                                  ref
+                                      .read(exerciseFiltersProvider.notifier)
+                                      .chooseSearchMode(
+                                        val
+                                            ? ExerciseSearchMode.exact
+                                            : ExerciseSearchMode.fulltext,
+                                      );
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
