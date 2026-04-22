@@ -31,6 +31,7 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -66,9 +67,13 @@ class ExercisesProvider with ChangeNotifier {
 
   Filters? get filters => _filters;
 
-  Future<void> setFilters(Filters? newFilters) async {
+  Future<void> setFilters(
+    Filters? newFilters, {
+    required ExerciseFilters exerciseFilters,
+    required String languageCode,
+  }) async {
     _filters = newFilters;
-    await findByFilters();
+    await findByFilters(exerciseFilters: exerciseFilters, languageCode: languageCode);
   }
 
   List<Exercise> _filteredExercises = [];
@@ -107,7 +112,7 @@ class ExercisesProvider with ChangeNotifier {
   }
 
   // Initialize filters for exercises search in exercises list
-  void initFilters() {
+  void initFilters({String languageCode = LANGUAGE_SHORT_ENGLISH}) {
     if (_muscles.isEmpty || _equipment.isEmpty || _filters != null) {
       return;
     }
@@ -127,10 +132,15 @@ class ExercisesProvider with ChangeNotifier {
           ),
         ),
       ),
+      exerciseFilters: const ExerciseFilters(),
+      languageCode: languageCode,
     );
   }
 
-  Future<void> findByFilters() async {
+  Future<void> findByFilters({
+    ExerciseFilters exerciseFilters = const ExerciseFilters(),
+    String languageCode = LANGUAGE_SHORT_ENGLISH,
+  }) async {
     // Filters not initialized
     if (filters == null) {
       filteredExercises = [];
@@ -147,7 +157,13 @@ class ExercisesProvider with ChangeNotifier {
 
     List<Exercise> filteredItems = exercises;
     if (filters!.searchTerm.length > 1) {
-      filteredItems = await searchExercise(filters!.searchTerm);
+      filteredItems = await searchExercise(
+        filters!.searchTerm,
+        languageCode: languageCode,
+        searchLanguage: exerciseFilters.searchLanguage,
+        searchMode: exerciseFilters.searchMode,
+        category: exerciseFilters.selectedCategory,
+      );
     }
     filteredExercises = filteredItems.where((exercise) {
       final bool isInAnyCategory = filters!.exerciseCategories.selected.contains(exercise.category);
@@ -678,26 +694,47 @@ class ExercisesProvider with ChangeNotifier {
   Future<List<Exercise>> searchExercise(
     String name, {
     String languageCode = LANGUAGE_SHORT_ENGLISH,
-    bool searchEnglish = false,
+    ExerciseSearchLanguage searchLanguage = ExerciseSearchLanguage.currentAndEnglish,
+    ExerciseSearchMode searchMode = ExerciseSearchMode.fulltext,
+    ExerciseCategory? category,
   }) async {
     if (name.length <= 1) {
       return [];
     }
 
-    final languages = [languageCode];
-    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
-      languages.add(LANGUAGE_SHORT_ENGLISH);
+    final languageCodes = [languageCode];
+    if (searchLanguage == ExerciseSearchLanguage.currentAndEnglish &&
+        languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languageCodes.add(LANGUAGE_SHORT_ENGLISH);
+    } else if (searchLanguage == ExerciseSearchLanguage.all) {
+      languageCodes.clear(); // no language filter
     }
+
+    // Build query parameters: ?name__search=Squat  &  language__code=de,en  & ...
+    final query = <String, String>{};
+
+    if (searchMode == ExerciseSearchMode.fulltext) {
+      query['name__search'] = name;
+    } else {
+      query['name__exact'] = name;
+    }
+
+    if (languageCodes.isNotEmpty) {
+      query['language__code'] = languageCodes.join(',');
+    }
+
+    if (category != null) {
+      query['category'] = category.id.toString();
+    }
+
+    query['limit'] = API_RESULTS_PAGE_SIZE;
+    query['format'] = 'json';
 
     // Send the request
     final result = await baseProvider.fetch(
       baseProvider.makeUrl(
         exerciseInfoUrlPath,
-        query: {
-          'name__search': name,
-          'language__code': languages.join(','),
-          'limit': API_RESULTS_PAGE_SIZE,
-        },
+        query: query,
       ),
     );
 
