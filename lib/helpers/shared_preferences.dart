@@ -90,7 +90,6 @@ class PreferenceHelper {
       orElse: () => NutriScore.c,
     );
   }
-}
 
   // --- Exercise search filters ---
 
@@ -127,4 +126,9 @@ class PreferenceHelper {
     return ExerciseSearchMode.values.firstWhere(
       (e) => e.name == value,
       orElse: () => ExerciseSearchMode.fulltext,
+      );
+  }
+}
+
   
+
