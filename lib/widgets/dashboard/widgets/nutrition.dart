@@ -27,6 +27,7 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -80,11 +81,12 @@ class DashboardNutritionWidget extends ConsumerWidget {
           child: CircularProgressIndicator(strokeWidth: 2),
         ),
       ),
-      errorBuilder: (e, _) => _shell(
+      errorBuilder: (e, st) => _shell(
         context,
         title: i18n.nutritionalPlan,
-        subtitle: '$e',
+        subtitle: i18n.anErrorOccurred,
         trailing: const Icon(Icons.error_outline, color: Colors.red),
+        child: StreamErrorIndicator(e, stacktrace: st),
       ),
       data: (_) {
         // currentPlan is derived from the notifier (it filters by date), so we

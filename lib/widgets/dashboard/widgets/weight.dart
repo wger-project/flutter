@@ -73,19 +73,13 @@ class DashboardWeightWidget extends ConsumerWidget {
     if (entriesAsync.hasError) {
       return _shell(
         context,
-        StreamErrorIndicator(
-          entriesAsync.error.toString(),
-          stacktrace: entriesAsync.stackTrace,
-        ),
+        StreamErrorIndicator(entriesAsync.error!, stacktrace: entriesAsync.stackTrace),
       );
     }
     if (profileAsync.hasError) {
       return _shell(
         context,
-        StreamErrorIndicator(
-          profileAsync.error.toString(),
-          stacktrace: profileAsync.stackTrace,
-        ),
+        StreamErrorIndicator(profileAsync.error!, stacktrace: profileAsync.stackTrace),
       );
     }
     final profile = profileAsync.value;

@@ -29,6 +29,7 @@ import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
@@ -88,11 +89,12 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
           child: CircularProgressIndicator(strokeWidth: 2),
         ),
       ),
-      errorBuilder: (e, _) => _shell(
+      errorBuilder: (e, st) => _shell(
         context,
         title: i18n.labelWorkoutPlan,
-        subtitle: '$e',
+        subtitle: i18n.anErrorOccurred,
         trailing: const Icon(Icons.error_outline, color: Colors.red),
+        child: StreamErrorIndicator(e, stacktrace: st),
       ),
       data: (state) {
         final routine = state.currentRoutine;

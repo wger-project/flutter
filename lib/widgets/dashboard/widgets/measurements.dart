@@ -134,10 +134,7 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
           ),
         );
       },
-      error: (err, st) => StreamErrorIndicator(
-        err.toString(),
-        stacktrace: st,
-      ),
+      error: (err, st) => StreamErrorIndicator(err, stacktrace: st),
       loading: () => const BoxedProgressIndicator(),
     );
   }

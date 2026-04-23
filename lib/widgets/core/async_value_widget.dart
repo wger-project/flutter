@@ -71,7 +71,7 @@ class AsyncValueWidget<T> extends StatelessWidget {
       loading: () => loading ?? const BoxedProgressIndicator(),
       error: (e, st) {
         _logger.warning(loggerName == null ? 'Async error' : 'Async error in $loggerName', e, st);
-        return errorBuilder?.call(e, st) ?? StreamErrorIndicator(e.toString(), stacktrace: st);
+        return errorBuilder?.call(e, st) ?? StreamErrorIndicator(e, stacktrace: st);
       },
     );
   }

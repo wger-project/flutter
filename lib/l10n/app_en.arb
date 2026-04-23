@@ -399,6 +399,10 @@
   "goalFat": "Fat goal",
   "goalFiber": "Fiber goal",
   "anErrorOccurred": "An Error Occurred!",
+  "errorRawSource": "Raw",
+  "@errorRawSource": {
+    "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
+  },
   "errorInfoDescription": "We're sorry, but something went wrong. You can help us fix this by reporting the issue on GitHub.",
   "errorInfoDescription2": "You can continue using the app, but some features may not work.",
   "errorViewDetails": "Technical details",
