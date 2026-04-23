@@ -60,6 +60,119 @@ class AuthNotifier extends _$AuthNotifier {
     return _tryAutoLogin();
   }
 
+  /// Registers a new user and logs in.
+  Future<LoginActions> register({
+    required String username,
+    required String password,
+    required String email,
+    required String serverUrl,
+    String locale = 'en',
+  }) async {
+    final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
+    final data = <String, String>{
+      'username': username,
+      'password': password,
+    };
+    if (email.isNotEmpty) {
+      data['email'] = email;
+    }
+    final response = await _client.post(
+      makeUri(serverUrl, REGISTRATION_URL),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
+        HttpHeaders.acceptLanguageHeader: locale,
+      },
+      body: json.encode(data),
+    );
+
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response);
+    }
+
+    return login(username, password, serverUrl, null);
+  }
+
+  /// Authenticates a user (by password or API token).
+  Future<LoginActions> login(
+    String username,
+    String password,
+    String serverUrl,
+    String? apiToken,
+  ) async {
+    final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
+    final String token;
+
+    if (apiToken != null && apiToken.isNotEmpty) {
+      final response = await _client.get(
+        makeUri(serverUrl, USERPROFILE_URL),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
+          HttpHeaders.authorizationHeader: 'Token $apiToken',
+        },
+      );
+
+      if (response.statusCode >= 400) {
+        throw WgerHttpException(response);
+      }
+      token = apiToken;
+    } else {
+      final response = await _client.post(
+        makeUri(serverUrl, LOGIN_URL),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+          HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
+        },
+        body: json.encode({'username': username, 'password': password}),
+      );
+
+      if (response.statusCode >= 400) {
+        throw WgerHttpException(response);
+      }
+
+      token = json.decode(response.body)['token'];
+    }
+
+    // Persist login before the update-gate checks, matching legacy behavior.
+    final prefs = PreferenceHelper.asyncPref;
+    await prefs.setString(
+      PREFS_USER,
+      json.encode({'token': token, 'serverUrl': serverUrl}),
+    );
+    await prefs.setString(
+      PREFS_LAST_SERVER,
+      json.encode({'serverUrl': serverUrl}),
+    );
+
+    final newState = await _resolveAuthState(
+      token: token,
+      serverUrl: serverUrl,
+      appVersion: appVersion,
+    );
+    state = AsyncData(newState);
+
+    if (newState.status == AuthStatus.loggedIn) {
+      // If PowerSync was already running from a previous session, swap its
+      // connector so it picks up the new user's credentials.
+      await _reconnectPowerSyncIfBuilt(serverUrl);
+      _invalidatePostLoginProviders();
+    }
+
+    return switch (newState.status) {
+      AuthStatus.serverUpdateRequired || AuthStatus.updateRequired => LoginActions.update,
+      _ => LoginActions.proceed,
+    };
+  }
+
+  /// Re-runs the auto-login flow. Used by the recovery screens
+  /// ([ServerUnreachableScreen], [PowerSyncUnreachableScreen]) so the user
+  /// can retry without restarting the app.
+  Future<void> retryAutoLogin() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(_tryAutoLogin);
+  }
+
   Future<AuthState> _tryAutoLogin() async {
     final prefs = PreferenceHelper.asyncPref;
     final appVersion = await PackageInfo.fromPlatform();
@@ -102,6 +215,26 @@ class AuthNotifier extends _$AuthNotifier {
       return AuthState(applicationVersion: appVersion);
     }
 
+    final newState = await _resolveAuthState(
+      token: token,
+      serverUrl: serverUrl,
+      appVersion: appVersion,
+    );
+    if (newState.status == AuthStatus.loggedIn) {
+      _logger.info('autologin successful');
+    }
+    return newState;
+  }
+
+  /// Runs the post-credentials gating chain (server version, min app
+  /// version, PowerSync reachability) and returns the resulting
+  /// [AuthState]. Shared by [_tryAutoLogin] and [login] so the routing
+  /// rules live in exactly one place.
+  Future<AuthState> _resolveAuthState({
+    required String token,
+    required String serverUrl,
+    required PackageInfo appVersion,
+  }) async {
     final serverVersion = await _fetchServerVersion(serverUrl);
     if (serverUpdateRequired(serverVersion)) {
       return AuthState(
@@ -113,8 +246,7 @@ class AuthNotifier extends _$AuthNotifier {
       );
     }
 
-    final needsAppUpdate = await _applicationUpdateRequired(serverUrl, appVersion.version);
-    if (needsAppUpdate) {
+    if (await _applicationUpdateRequired(serverUrl, appVersion.version)) {
       return AuthState(
         status: AuthStatus.updateRequired,
         token: token,
@@ -134,7 +266,6 @@ class AuthNotifier extends _$AuthNotifier {
       );
     }
 
-    _logger.info('autologin successful');
     return AuthState(
       status: AuthStatus.loggedIn,
       token: token,
@@ -142,14 +273,6 @@ class AuthNotifier extends _$AuthNotifier {
       serverVersion: serverVersion,
       applicationVersion: appVersion,
     );
-  }
-
-  /// Re-runs the auto-login flow. Used by the recovery screens
-  /// ([ServerUnreachableScreen], [PowerSyncUnreachableScreen]) so the user
-  /// can retry without restarting the app.
-  Future<void> retryAutoLogin() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(_tryAutoLogin);
   }
 
   /// Probes the wger backend
@@ -207,7 +330,9 @@ class AuthNotifier extends _$AuthNotifier {
         return false;
       }
 
-      final probeUri = Uri.parse('$powerSyncUrl/probes/liveness');
+      final probeUri = Uri.parse(
+        '$powerSyncUrl${powerSyncUrl.endsWith('/') ? '' : '/'}probes/liveness',
+      );
       final probeResponse = await _client.get(probeUri);
       if (probeResponse.statusCode == 200) {
         // A status 200 is enough for us right now
@@ -227,151 +352,6 @@ class AuthNotifier extends _$AuthNotifier {
   /// Returns the current state value or a blank default. Callers that
   /// mutate state should always compose on top of this.
   AuthState _currentOrBlank() => state.asData?.value ?? const AuthState();
-
-  /// Registers a new user and logs in.
-  Future<LoginActions> register({
-    required String username,
-    required String password,
-    required String email,
-    required String serverUrl,
-    String locale = 'en',
-  }) async {
-    final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
-    final data = <String, String>{
-      'username': username,
-      'password': password,
-    };
-    if (email.isNotEmpty) {
-      data['email'] = email;
-    }
-    final response = await _client.post(
-      makeUri(serverUrl, REGISTRATION_URL),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-        HttpHeaders.acceptLanguageHeader: locale,
-      },
-      body: json.encode(data),
-    );
-
-    if (response.statusCode >= 400) {
-      throw WgerHttpException(response);
-    }
-
-    return login(username, password, serverUrl, null);
-  }
-
-  /// Authenticates a user (by password or API token).
-  Future<LoginActions> login(
-    String username,
-    String password,
-    String serverUrl,
-    String? apiToken,
-  ) async {
-    final current = _currentOrBlank();
-    final appVersion = current.applicationVersion ?? await PackageInfo.fromPlatform();
-    final String token;
-
-    if (apiToken != null && apiToken.isNotEmpty) {
-      final response = await _client.get(
-        makeUri(serverUrl, USERPROFILE_URL),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-          HttpHeaders.authorizationHeader: 'Token $apiToken',
-        },
-      );
-
-      if (response.statusCode >= 400) {
-        throw WgerHttpException(response);
-      }
-      token = apiToken;
-    } else {
-      final response = await _client.post(
-        makeUri(serverUrl, LOGIN_URL),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
-          HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-        },
-        body: json.encode({'username': username, 'password': password}),
-      );
-
-      if (response.statusCode >= 400) {
-        throw WgerHttpException(response);
-      }
-
-      token = json.decode(response.body)['token'];
-    }
-
-    final serverVersion = await _fetchServerVersion(serverUrl);
-
-    // Persist login before the update-gate checks, matching legacy behavior.
-    final prefs = PreferenceHelper.asyncPref;
-    await prefs.setString(
-      PREFS_USER,
-      json.encode({'token': token, 'serverUrl': serverUrl}),
-    );
-    await prefs.setString(
-      PREFS_LAST_SERVER,
-      json.encode({'serverUrl': serverUrl}),
-    );
-
-    if (serverUpdateRequired(serverVersion)) {
-      state = AsyncData(
-        current.copyWith(
-          status: AuthStatus.serverUpdateRequired,
-          token: token,
-          serverUrl: serverUrl,
-          serverVersion: serverVersion,
-          applicationVersion: appVersion,
-        ),
-      );
-      return LoginActions.update;
-    }
-
-    if (await _applicationUpdateRequired(serverUrl, appVersion.version)) {
-      state = AsyncData(
-        current.copyWith(
-          status: AuthStatus.updateRequired,
-          token: token,
-          serverUrl: serverUrl,
-          serverVersion: serverVersion,
-          applicationVersion: appVersion,
-        ),
-      );
-      return LoginActions.update;
-    }
-
-    if (!await _isPowerSyncReachable(serverUrl, token)) {
-      state = AsyncData(
-        current.copyWith(
-          status: AuthStatus.powerSyncUnreachable,
-          token: token,
-          serverUrl: serverUrl,
-          serverVersion: serverVersion,
-          applicationVersion: appVersion,
-        ),
-      );
-      return LoginActions.proceed;
-    }
-
-    state = AsyncData(
-      current.copyWith(
-        status: AuthStatus.loggedIn,
-        token: token,
-        serverUrl: serverUrl,
-        serverVersion: serverVersion,
-        applicationVersion: appVersion,
-      ),
-    );
-    // If PowerSync was already running from a previous session, swap its
-    // connector so it picks up the new user's credentials.
-    await _reconnectPowerSyncIfBuilt(serverUrl);
-
-    // Force the data providers to rebuild with the new auth context
-    _invalidatePostLoginProviders();
-    return LoginActions.proceed;
-  }
 
   /// Invalidates every notifier that depends on the authenticated HTTP base
   /// provider. Call this after a successful login so the providers refetch
