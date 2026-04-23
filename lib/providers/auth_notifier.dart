@@ -82,15 +82,20 @@ class AuthNotifier extends _$AuthNotifier {
       return AuthState(applicationVersion: appVersion);
     }
 
-    // Probe a URL using the token, if this doesn't work, log out
-    final response = await _client.head(
-      makeUri(serverUrl, 'routine'),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-        HttpHeaders.authorizationHeader: 'Token $token',
-      },
-    );
+    final response = await _probeWgerServer(serverUrl, token, appVersion);
+    // Network error before any HTTP response. Keep the saved session so the
+    // user can retry from the recovery screen.
+    if (response == null) {
+      return AuthState(
+        status: AuthStatus.serverUnreachable,
+        token: token,
+        serverUrl: serverUrl,
+        applicationVersion: appVersion,
+      );
+    }
+
+    // Got a response but the server didn't like our token (typically 401/403),
+    // wipe credentials and route to login.
     if (response.statusCode != 200) {
       _logger.info('autologin failed, statusCode: ${response.statusCode}');
       await prefs.remove(PREFS_USER);
@@ -98,7 +103,6 @@ class AuthNotifier extends _$AuthNotifier {
     }
 
     final serverVersion = await _fetchServerVersion(serverUrl);
-
     if (serverUpdateRequired(serverVersion)) {
       return AuthState(
         status: AuthStatus.serverUpdateRequired,
@@ -109,9 +113,20 @@ class AuthNotifier extends _$AuthNotifier {
       );
     }
 
-    if (await _applicationUpdateRequired(serverUrl, appVersion.version)) {
+    final needsAppUpdate = await _applicationUpdateRequired(serverUrl, appVersion.version);
+    if (needsAppUpdate) {
       return AuthState(
         status: AuthStatus.updateRequired,
+        token: token,
+        serverUrl: serverUrl,
+        serverVersion: serverVersion,
+        applicationVersion: appVersion,
+      );
+    }
+
+    if (!await _isPowerSyncReachable(serverUrl, token)) {
+      return AuthState(
+        status: AuthStatus.powerSyncUnreachable,
         token: token,
         serverUrl: serverUrl,
         serverVersion: serverVersion,
@@ -127,6 +142,86 @@ class AuthNotifier extends _$AuthNotifier {
       serverVersion: serverVersion,
       applicationVersion: appVersion,
     );
+  }
+
+  /// Re-runs the auto-login flow. Used by the recovery screens
+  /// ([ServerUnreachableScreen], [PowerSyncUnreachableScreen]) so the user
+  /// can retry without restarting the app.
+  Future<void> retryAutoLogin() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(_tryAutoLogin);
+  }
+
+  /// Probes the wger backend
+  Future<http.Response?> _probeWgerServer(
+    String serverUrl,
+    String token,
+    PackageInfo appVersion,
+  ) async {
+    try {
+      return await _client.head(
+        makeUri(serverUrl, 'routine'),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
+          HttpHeaders.authorizationHeader: 'Token $token',
+        },
+      );
+    } on Exception catch (e, s) {
+      if (_isNetworkError(e)) {
+        _logger.warning('wger probe: server unreachable: $e', e, s);
+        return null;
+      }
+      rethrow;
+    }
+  }
+
+  /// Tries to reach the PowerSync service and returns true if it looks alive,
+  /// but only the first time a user logs in (this is checked by reading the
+  /// [PREFS_HAS_EVER_SYNCED] flag from shared preferences).
+  Future<bool> _isPowerSyncReachable(String serverUrl, String token) async {
+    final prefs = PreferenceHelper.asyncPref;
+    final everSynced = (await prefs.getBool(PREFS_HAS_EVER_SYNCED)) ?? false;
+    if (everSynced) {
+      return true;
+    }
+
+    try {
+      final tokenResponse = await _client.get(
+        makeUri(serverUrl, 'powersync-token', trailingSlash: false),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader: 'Token $token',
+        },
+      );
+      if (tokenResponse.statusCode != 200) {
+        _logger.warning(
+          'PowerSync probe: token endpoint returned ${tokenResponse.statusCode}',
+        );
+        return false;
+      }
+      final body = json.decode(tokenResponse.body) as Map<String, dynamic>;
+      final powerSyncUrl = body['powersync_url'] as String?;
+      if (powerSyncUrl == null || powerSyncUrl.isEmpty) {
+        _logger.warning('PowerSync probe: empty powersync_url in token response');
+        return false;
+      }
+
+      final probeUri = Uri.parse('$powerSyncUrl/probes/liveness');
+      final probeResponse = await _client.get(probeUri);
+      if (probeResponse.statusCode == 200) {
+        // A status 200 is enough for us right now
+        await prefs.setBool(PREFS_HAS_EVER_SYNCED, true);
+        return true;
+      }
+      _logger.warning(
+        'PowerSync probe: liveness returned ${probeResponse.statusCode}',
+      );
+      return false;
+    } on Exception catch (e, s) {
+      _logger.warning('PowerSync probe failed: $e', e, s);
+      return false;
+    }
   }
 
   /// Returns the current state value or a blank default. Callers that
@@ -247,6 +342,19 @@ class AuthNotifier extends _$AuthNotifier {
       return LoginActions.update;
     }
 
+    if (!await _isPowerSyncReachable(serverUrl, token)) {
+      state = AsyncData(
+        current.copyWith(
+          status: AuthStatus.powerSyncUnreachable,
+          token: token,
+          serverUrl: serverUrl,
+          serverVersion: serverVersion,
+          applicationVersion: appVersion,
+        ),
+      );
+      return LoginActions.proceed;
+    }
+
     state = AsyncData(
       current.copyWith(
         status: AuthStatus.loggedIn,
@@ -290,7 +398,9 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(
       AuthState(applicationVersion: _currentOrBlank().applicationVersion),
     );
-    await PreferenceHelper.asyncPref.remove(PREFS_USER);
+    final prefs = PreferenceHelper.asyncPref;
+    await prefs.remove(PREFS_USER);
+    await prefs.remove(PREFS_HAS_EVER_SYNCED);
   }
 
   /// Wipes the local PowerSync database if it has already been built.
@@ -396,6 +506,20 @@ bool serverUpdateRequired(String? rawVersion) {
     logger.fine('Server update required: server $current < minimum $required');
   }
   return needUpdate;
+}
+
+/// True if [e] is the kind of error we want to treat as "the server can't be
+/// reached right now" as opposed to an HTTP response we got but didn't like
+/// (e.g. 401 means the token is invalid and the user should be logged out).
+///
+/// We catch `http.ClientException` (which wraps `SocketException` etc. on most
+/// platforms) and the dart:io / dart:async exceptions directly for cases where
+/// the http package surfaces them unwrapped.
+bool _isNetworkError(Object e) {
+  return e is http.ClientException ||
+      e is SocketException ||
+      e is HandshakeException ||
+      e is TimeoutException;
 }
 
 /// User-agent header string identifying the app/version/platform.

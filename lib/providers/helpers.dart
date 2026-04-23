@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,11 +19,12 @@
 /// Helper function to make a URL.
 Uri makeUri(
   String serverUrl,
-  String path, [
+  String path, {
   int? id,
   String? objectMethod,
   Map<String, dynamic>? query,
-]) {
+  bool trailingSlash = true,
+}) {
   final Uri uriServer = Uri.parse(serverUrl);
 
   final pathList = [uriServer.path, 'api', 'v2', path];
@@ -38,7 +39,7 @@ Uri makeUri(
     scheme: uriServer.scheme,
     host: uriServer.host,
     port: uriServer.port,
-    path: '${pathList.join('/')}/',
+    path: '${pathList.join('/')}${trailingSlash ? '/' : ''}',
     queryParameters: query,
   );
 

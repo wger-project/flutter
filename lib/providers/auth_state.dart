@@ -24,8 +24,20 @@ part 'auth_state.freezed.dart';
 enum AuthStatus {
   loggedOut,
   loggedIn,
+
+  // The app used to connect to a wger instance is too old and must be updated
   updateRequired,
+
+  // The wger server the app is configured to connect to is too old and must be updated
   serverUpdateRequired,
+
+  /// The wger instance can't be reached at the moment
+  serverUnreachable,
+
+  /// The wger server is reachable, but the PowerSync service it points us
+  /// at is not, and the user has never completed a full sync, so we have
+  /// no local data to show.
+  powerSyncUnreachable,
 }
 
 enum LoginActions {

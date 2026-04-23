@@ -201,26 +201,33 @@ class AboutPage extends ConsumerWidget {
               ListTile(
                 leading: const Icon(Icons.article),
                 trailing: const Icon(Icons.chevron_right),
-                title: const Text('View Licenses'),
+                title: Text(i18n.aboutViewLicensesTitle),
                 contentPadding: EdgeInsets.zero,
                 onTap: () {
                   showLicensePage(
                     context: context,
                     applicationName: 'wger',
                     applicationVersion:
-                        'App: ${authState?.applicationVersion?.version ?? 'N/A'} '
+                        'App: ${authState?.applicationVersion?.version ?? 'N/A'} / '
                         'Server: ${authState?.serverVersion ?? 'N/A'}',
                     applicationLegalese: '\u{a9} ${today.year} wger contributors',
-                    applicationIcon: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        width: 60,
-                        semanticLabel: 'wger logo',
-                      ),
-                    ),
+                    // applicationIcon: Padding(
+                    //   padding: const EdgeInsets.only(top: 10),
+                    //   child: Image.asset(
+                    //     'assets/images/logo.png',
+                    //     width: 60,
+                    //     semanticLabel: 'wger logo',
+                    //   ),
+                    // ),
                   );
                 },
+              ),
+              ListTile(
+                leading: const Icon(Icons.article),
+                trailing: const Icon(Icons.chevron_right),
+                title: Text(i18n.aboutViewDocsTitle),
+                contentPadding: EdgeInsets.zero,
+                onTap: () => launchURL(READTHEDOCS_URL, context),
               ),
             ],
           ),

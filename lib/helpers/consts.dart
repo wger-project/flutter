@@ -61,6 +61,10 @@ const PREFS_USER = 'userData';
 const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_LAST_SERVER = 'lastServer';
 
+/// True once PowerSync has been reachable for this user at least once
+/// (i.e. its liveness probe returned 200).
+const PREFS_HAS_EVER_SYNCED = 'hasEverSynced';
+
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);
 const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;
 
@@ -123,6 +127,7 @@ const GITHUB_ISSUES_BUG_URL = '$GITHUB_REPO_URL/issues/new?template=1_bug.yml';
 const GITHUB_SPONSORS_URL = 'https://github.com/sponsors/wger-project';
 const DISCORD_URL = 'https://discord.gg/rPWFv6W';
 const MASTODON_URL = 'https://fosstodon.org/@wger';
+const READTHEDOCS_URL = 'https://wger.readthedocs.io';
 const WEBLATE_URL = 'https://hosted.weblate.org/engage/wger';
 const BUY_ME_A_COFFEE_URL = 'https://buymeacoffee.com/wger';
 const LIBERAPAY_URL = 'https://liberapay.com/wger';

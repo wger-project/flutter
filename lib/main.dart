@@ -43,10 +43,12 @@ import 'package:wger/screens/measurement_entries_screen.dart';
 import 'package:wger/screens/nutritional_diary_screen.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
+import 'package:wger/screens/powersync_unreachable_screen.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/screens/server_unreachable_screen.dart';
 import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/screens/splash_screen.dart';
@@ -142,6 +144,10 @@ class MainApp extends ConsumerWidget {
         return const UpdateAppScreen();
       case AuthStatus.serverUpdateRequired:
         return const UpdateServerScreen();
+      case AuthStatus.serverUnreachable:
+        return const ServerUnreachableScreen();
+      case AuthStatus.powerSyncUnreachable:
+        return const PowerSyncUnreachableScreen();
       case AuthStatus.loggedOut:
         return const AuthScreen();
     }

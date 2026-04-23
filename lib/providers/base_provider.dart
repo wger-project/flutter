@@ -75,7 +75,7 @@ class WgerBaseProvider {
 
   /// Helper function to make a URL.
   Uri makeUrl(String path, {int? id, String? objectMethod, Map<String, dynamic>? query}) {
-    return makeUri(serverUrl!, path, id, objectMethod, query);
+    return makeUri(serverUrl!, path, id: id, objectMethod: objectMethod, query: query);
   }
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response

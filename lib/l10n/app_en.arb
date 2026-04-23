@@ -670,6 +670,8 @@
   "aboutJoinCommunityTitle": "Join the community",
   "aboutMastodonTitle": "Mastodon",
   "aboutDiscordTitle": "Discord",
+  "aboutViewDocsTitle": "Open documentation",
+  "aboutViewLicensesTitle": "View licenses",
   "others": "Others",
   "calendar": "Calendar",
   "@calendar": {},
@@ -785,6 +787,12 @@
         "type": "String"
       }
     }
+  },
+  "powerSyncUnreachableTitle": "Sync service unreachable",
+  "powerSyncUnreachableContent": "Your wger server is reachable, but the (separate) service that handles offline sync is not responding. If you self-host wger, check your configuration and make sure the PowerSync service is running correctly.",
+  "serverUnreachableRetry": "Try again",
+  "@serverUnreachableRetry": {
+    "description": "Button that re-runs the auto-login attempt against the saved server."
   },
   "productFound": "Product found",
   "@productFound": {
