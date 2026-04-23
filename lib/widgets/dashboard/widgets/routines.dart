@@ -43,6 +43,17 @@ class DashboardRoutineWidget extends ConsumerStatefulWidget {
 class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget> {
   var _showDetail = false;
 
+  /// Routine ID we've already requested a full fetch for. The sparse list
+  /// landing first only carries `name`/`start`/`end`; `dayData` (which
+  /// the detail rendering below depends on) is only populated by
+  /// [RoutinesRiverpod.fetchAndSetRoutineFull]. We track which routine we
+  /// already triggered to avoid re-firing on every rebuild.
+  int? _hydratedRoutineId;
+
+  /// True while the auto-hydration call is in flight, so we can render a
+  /// spinner instead of the (still-empty) detail block.
+  bool _isHydrating = false;
+
   /// Renders the dashboard card shell so loading / error / empty / data
   /// states all share the same outline (icon + title) instead of the card
   /// hopping around. The trailing widget changes per state.
@@ -76,8 +87,29 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final i18n = AppLocalizations.of(context);
 
+    final asyncState = ref.watch(routinesRiverpodProvider);
+
+    // Auto-hydrate the current routine once it appears in the sparse list
+    final currentId = asyncState.value?.currentRoutine?.id;
+    if (currentId != null && currentId != _hydratedRoutineId) {
+      _hydratedRoutineId = currentId;
+      Future.microtask(() async {
+        if (!mounted) {
+          return;
+        }
+        setState(() => _isHydrating = true);
+        try {
+          await ref.read(routinesRiverpodProvider.notifier).fetchAndSetRoutineFull(currentId);
+        } finally {
+          if (mounted) {
+            setState(() => _isHydrating = false);
+          }
+        }
+      });
+    }
+
     return AsyncValueWidget<RoutinesState>(
-      value: ref.watch(routinesRiverpodProvider),
+      value: asyncState,
       loggerName: 'DashboardRoutineWidget',
       loading: _shell(
         context,
@@ -124,20 +156,41 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                   Icons.fitness_center,
                   color: Theme.of(context).textTheme.headlineSmall!.color,
                 ),
-                trailing: Tooltip(
-                  message: i18n.toggleDetails,
-                  child: _showDetail ? const Icon(Icons.info) : const Icon(Icons.info_outline),
+                trailing: _isHydrating
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Tooltip(
+                        message: i18n.toggleDetails,
+                        child: _showDetail
+                            ? const Icon(Icons.info)
+                            : const Icon(Icons.info_outline),
+                      ),
+                // Toggle is meaningless while the day data is still
+                // loading — disable the tap until hydration finishes.
+                onTap: _isHydrating
+                    ? null
+                    : () {
+                        setState(() {
+                          _showDetail = !_showDetail;
+                        });
+                      },
+              ),
+              if (_isHydrating)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: DetailContentWidget(
+                    routine.dayDataCurrentIterationFiltered,
+                    _showDetail,
+                  ),
                 ),
-                onTap: () {
-                  setState(() {
-                    _showDetail = !_showDetail;
-                  });
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: DetailContentWidget(routine.dayDataCurrentIterationFiltered, _showDetail),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

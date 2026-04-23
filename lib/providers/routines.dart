@@ -30,19 +30,24 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercise_data.dart';
+import 'package:wger/providers/helpers.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 import 'package:wger/providers/workout_session.dart';
 
 part 'routines.g.dart';
 
-@riverpod
+// Reference-data streams: kept alive across the app's lifetime so that
+// callers using `ref.read(...future)` (notably [fetchAndSetRoutineFull])
+// don't race the auto-dispose scheduler and crash with "provider was
+// disposed during loading state".
+@Riverpod(keepAlive: true)
 Stream<List<WeightUnit>> routineWeightUnit(Ref ref) {
   final db = ref.read(driftPowerSyncDatabase);
   return db.select(db.routineWeightUnitTable).watch();
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<List<RepetitionUnit>> routineRepetitionUnit(Ref ref) {
   final db = ref.read(driftPowerSyncDatabase);
   return db.select(db.routineRepetitionUnitTable).watch();
@@ -59,9 +64,7 @@ class RoutinesState {
     List<Routine>? routines,
     Routine? activeRoutine,
   }) {
-    return RoutinesState(
-      routines: routines ?? this.routines,
-    );
+    return RoutinesState(routines: routines ?? this.routines);
   }
 
   /// Returns the current active routine. At the moment this is just
@@ -136,13 +139,11 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
 
   Future<Routine> fetchAndSetRoutineFull(int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
-    final exercises = await ref.read(exercisesProvider.future);
-    final repetitionUnits = await ref.read(routineRepetitionUnitProvider.future);
-    final weightUnits = await ref.read(routineWeightUnitProvider.future);
-    // Sessions arrive pre-joined with their logs from
-    // [WorkoutSessionRepository.watchAllDrift].
-    final sessions = await ref.read(workoutSessionProvider.future);
 
+    final exercises = await ref.awaitFirstValue(exercisesProvider);
+    final repetitionUnits = await ref.awaitFirstValue(routineRepetitionUnitProvider);
+    final weightUnits = await ref.awaitFirstValue(routineWeightUnitProvider);
+    final sessions = await ref.awaitFirstValue(workoutSessionProvider);
     final routine = await repo.fetchAndSetRoutineFullServer(routineId);
 
     // Hydrate exercises + units on every set config

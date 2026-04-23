@@ -16,6 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show ProviderListenable;
+
+/// Awaits the first value of [provider] by explicitly subscribing via
+/// [Ref.listen]. Use this in notifier methods (outside of `build()`)
+/// instead of `ref.read(streamProvider.future)`, which can hang
+/// indefinitely if no other consumer is `ref.watch`-ing the provider —
+/// Riverpod's internal subscription for `.future` doesn't always trigger
+/// the underlying stream's first emission in that scenario.
+///
+/// Completes with the first non-loading value, or rejects with the first
+/// error. Closes the subscription as soon as the future resolves.
+extension AwaitFirstValue on Ref {
+  Future<T> awaitFirstValue<T>(ProviderListenable<AsyncValue<T>> provider) {
+    final completer = Completer<T>();
+    // Nullable (not `late`) on purpose: with `fireImmediately: true` the
+    // listener can fire synchronously during the `listen(...)` call
+    // itself, before the assignment to `sub` runs.
+    ProviderSubscription<AsyncValue<T>>? sub;
+    sub = listen<AsyncValue<T>>(provider, (_, next) {
+      if (completer.isCompleted) {
+        return;
+      }
+      if (next.hasValue) {
+        completer.complete(next.value as T);
+        sub?.close();
+      } else if (next.hasError) {
+        completer.completeError(next.error!, next.stackTrace);
+        sub?.close();
+      }
+    }, fireImmediately: true);
+    if (completer.isCompleted) {
+      // Listener fired synchronously; close now that we have the handle.
+      sub.close();
+    }
+    return completer.future;
+  }
+}
+
 /// Helper function to make a URL.
 Uri makeUri(
   String serverUrl,

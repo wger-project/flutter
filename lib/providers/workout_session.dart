@@ -30,7 +30,7 @@ Future<void> sessionStateReady(Ref ref) {
   ]);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 final class WorkoutSessionNotifier extends _$WorkoutSessionNotifier {
   final _logger = Logger('WorkoutSessionNotifier');
   late WorkoutSessionRepository _repo;

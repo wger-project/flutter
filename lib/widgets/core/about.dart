@@ -224,7 +224,7 @@ class AboutPage extends ConsumerWidget {
               ),
               ListTile(
                 leading: const Icon(Icons.article),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(Icons.arrow_outward),
                 title: Text(i18n.aboutViewDocsTitle),
                 contentPadding: EdgeInsets.zero,
                 onTap: () => launchURL(READTHEDOCS_URL, context),

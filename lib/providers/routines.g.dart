@@ -26,7 +26,7 @@ final class RoutineWeightUnitProvider
         argument: null,
         retry: null,
         name: r'routineWeightUnitProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -46,7 +46,7 @@ final class RoutineWeightUnitProvider
   }
 }
 
-String _$routineWeightUnitHash() => r'4e2e7b9903338756f5196eaa1081696a59869e86';
+String _$routineWeightUnitHash() => r'816e41348c3b3179084182f1cb13cd6b948ffaaa';
 
 @ProviderFor(routineRepetitionUnit)
 final routineRepetitionUnitProvider = RoutineRepetitionUnitProvider._();
@@ -58,14 +58,16 @@ final class RoutineRepetitionUnitProvider
           List<RepetitionUnit>,
           Stream<List<RepetitionUnit>>
         >
-    with $FutureModifier<List<RepetitionUnit>>, $StreamProvider<List<RepetitionUnit>> {
+    with
+        $FutureModifier<List<RepetitionUnit>>,
+        $StreamProvider<List<RepetitionUnit>> {
   RoutineRepetitionUnitProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'routineRepetitionUnitProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -85,7 +87,8 @@ final class RoutineRepetitionUnitProvider
   }
 }
 
-String _$routineRepetitionUnitHash() => r'7754a0197c3fed27feea2c6d33d5e5a5e1deab45';
+String _$routineRepetitionUnitHash() =>
+    r'ab09c8c70c4e2f6fc36cc9d1aae901aee165684a';
 
 @ProviderFor(RoutinesRiverpod)
 final routinesRiverpodProvider = RoutinesRiverpodProvider._();
@@ -135,7 +138,12 @@ abstract class _$RoutinesRiverpod extends $AsyncNotifier<RoutinesState> {
 final routinesRepositoryProvider = RoutinesRepositoryProvider._();
 
 final class RoutinesRepositoryProvider
-    extends $FunctionalProvider<RoutinesRepository, RoutinesRepository, RoutinesRepository>
+    extends
+        $FunctionalProvider<
+          RoutinesRepository,
+          RoutinesRepository,
+          RoutinesRepository
+        >
     with $Provider<RoutinesRepository> {
   RoutinesRepositoryProvider._()
     : super(
@@ -171,4 +179,5 @@ final class RoutinesRepositoryProvider
   }
 }
 
-String _$routinesRepositoryHash() => r'0cdeb7e33ac45c9a1e4cdf541bf57b565033cc38';
+String _$routinesRepositoryHash() =>
+    r'0cdeb7e33ac45c9a1e4cdf541bf57b565033cc38';
