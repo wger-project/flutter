@@ -165,9 +165,14 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     setExercisesAndUnits(routine.dayDataGym);
     setExercisesAndUnits(routine.dayData);
 
-    // Attach sessions (already joined with their logs) that belong to this
-    // routine.
+    // Attach sessions (already joined with their logs) that belong to this routine
+    // and set the appropriate exercises
     routine.sessions = sessions.where((s) => s.routineId == routineId).toList();
+    for (final session in routine.sessions) {
+      for (final log in session.logs) {
+        log.exercise = exercises.firstWhere((e) => e.id == log.exerciseId);
+      }
+    }
 
     // Update state
     final current = _currentOrEmpty();
