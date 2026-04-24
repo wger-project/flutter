@@ -53,7 +53,7 @@ class MeasurementEntry with _$MeasurementEntry {
     return MeasurementEntryTableCompanion(
       id: Value(id),
       categoryId: Value(categoryId),
-      date: Value(date),
+      date: Value(date.toUtc()),
       value: Value(value.toDouble()),
       notes: Value(notes),
     );

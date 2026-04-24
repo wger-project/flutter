@@ -61,7 +61,11 @@ class WorkoutSession {
       id: drift.Value(id),
       routineId: routineId != null ? drift.Value(routineId) : const drift.Value.absent(),
       dayId: dayId != null ? drift.Value(dayId) : const drift.Value.absent(),
-      date: drift.Value(date.toUtc()),
+      // Server-side `date` is a `DateField` (no time, no TZ). We  send here the
+      // calendar day the user picked, packaged as midnight-UTC so it round-trips
+      // through PowerSync's ISO8601 wire format and lands on the right day on
+      // the server.
+      date: drift.Value(DateTime.utc(date.year, date.month, date.day)),
       notes: drift.Value(notes),
       impression: drift.Value(impression),
       timeStart: timeStart != null ? drift.Value(timeStart) : const drift.Value.absent(),

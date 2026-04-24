@@ -87,6 +87,14 @@ class DjangoConnector extends PowerSyncBackendConnector {
   }
 
   /// Transform a record before sending it to the backend.
+  ///
+  /// Note that PowerSync hands us [op.opData] as native SQLite primitives only
+  /// (`null`, `int`, `double`, `String`, `Uint8List`).
+  ///
+  ///   * inject the row [id] (PowerSync stores it separately from the
+  ///     payload),
+  ///   * strip the `_id` suffix from foreign-key column names so the
+  ///     Django serializers see `category` / `routine` / etc.
   Map<String, dynamic> _genericTransform(Map<String, dynamic>? src, String id) {
     final out = <String, dynamic>{'id': id};
     if (src == null) {
@@ -98,12 +106,6 @@ class DjangoConnector extends PowerSyncBackendConnector {
         return;
       }
       final key = k.endsWith('_id') ? k.substring(0, k.length - 3) : k;
-
-      if (v is DateTime) {
-        out[key] = v.toUtc().toIso8601String();
-        return;
-      }
-
       out[key] = v;
     });
     return out;

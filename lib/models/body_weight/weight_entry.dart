@@ -43,7 +43,7 @@ class WeightEntry {
   WeightEntryTableCompanion toCompanion({bool includeId = false}) {
     return WeightEntryTableCompanion(
       id: includeId && id != null ? Value(id!) : const Value.absent(),
-      date: Value(date),
+      date: Value(date.toUtc()),
       weight: Value(weight as double),
     );
   }
