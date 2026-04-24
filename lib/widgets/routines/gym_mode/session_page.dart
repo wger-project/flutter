@@ -25,6 +25,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/workout_session.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/routines/forms/session.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
@@ -42,15 +43,14 @@ class _SessionPageState extends ConsumerState<SessionPage> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final gymState = ref.read(gymStateProvider);
-    final sessionsAsync = ref.watch(workoutSessionProvider);
 
     return Column(
       children: [
         NavigationHeader(i18n.workoutSession, widget._controller),
         Expanded(
-          child: sessionsAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Center(child: Text('Error: $error')),
+          child: AsyncValueWidget<List<WorkoutSession>>(
+            value: ref.watch(workoutSessionProvider),
+            loggerName: 'SessionPage',
             data: (sessions) {
               final session = sessions.firstWhere(
                 (s) => s.date.isSameDayAs(clock.now()) && s.routineId == gymState.routine.id,

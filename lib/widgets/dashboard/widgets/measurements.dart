@@ -21,10 +21,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
-import 'package:wger/widgets/core/error.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/widgets/measurements/categories_card.dart';
 import 'package:wger/widgets/measurements/forms.dart';
@@ -42,9 +42,9 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
 
   @override
   Widget build(BuildContext context) {
-    final categories = ref.watch(measurementProvider);
-
-    return categories.when(
+    return AsyncValueWidget<List<MeasurementCategory>>(
+      value: ref.watch(measurementProvider),
+      loggerName: 'DashboardMeasurementWidget',
       data: (categoriesList) {
         if (categoriesList.isEmpty) {
           return NothingFound(
@@ -134,8 +134,6 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
           ),
         );
       },
-      error: (err, st) => StreamErrorIndicator(err, stacktrace: st),
-      loading: () => const BoxedProgressIndicator(),
     );
   }
 }

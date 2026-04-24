@@ -18,9 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement_notifier.dart';
-import 'package:wger/widgets/core/error.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
 
 import 'categories_card.dart';
 
@@ -28,16 +28,14 @@ class CategoriesList extends ConsumerWidget {
   const CategoriesList();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categories = ref.watch(measurementProvider);
-
-    return categories.when(
+    return AsyncValueWidget<List<MeasurementCategory>>(
+      value: ref.watch(measurementProvider),
+      loggerName: 'CategoriesList',
       data: (categoriesList) => ListView.builder(
         padding: const EdgeInsets.all(10.0),
         itemCount: categoriesList.length,
         itemBuilder: (context, index) => CategoriesCard(categoriesList[index]),
       ),
-      loading: () => const BoxedProgressIndicator(),
-      error: (err, st) => StreamErrorIndicator(err.toString(), stacktrace: st),
     );
   }
 }

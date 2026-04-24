@@ -20,11 +20,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/error.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
@@ -39,8 +40,9 @@ class WeightOverview extends riverpod.ConsumerWidget {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final plans = ref.watch(nutritionProvider).value ?? const [];
 
-    final entries = ref.watch(weightEntryProvider);
-    return entries.when(
+    return AsyncValueWidget<List<WeightEntry>>(
+      value: ref.watch(weightEntryProvider),
+      loggerName: 'WeightOverview',
       data: (entriesList) {
         // Profile drives the unit display; show a spinner while it loads
         // instead of bang-ing on a null value.
@@ -139,8 +141,6 @@ class WeightOverview extends riverpod.ConsumerWidget {
           ],
         );
       },
-      loading: () => const BoxedProgressIndicator(),
-      error: (err, st) => StreamErrorIndicator(err.toString(), stacktrace: st),
     );
   }
 }
