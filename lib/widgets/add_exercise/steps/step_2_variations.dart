@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise_notifier.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
+import 'package:wger/providers/exercises.dart';
 
 class Step2Variations extends ConsumerWidget {
   final GlobalKey<FormState> formkey;
@@ -11,7 +11,10 @@ class Step2Variations extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final exerciseProvider = ref.read(exerciseStateProvider.notifier);
+    // Reactive: rebuilds when the exercise catalogue changes. Falls back to
+    // an empty state while the stream hasn't emitted yet.
+    final exerciseState = ref.watch(exercisesProvider).value ?? const ExerciseState([]);
+    final byVariation = exerciseState.getByVariation();
 
     return Form(
       key: formkey,
@@ -28,7 +31,7 @@ class Step2Variations extends ConsumerWidget {
               child: Column(
                 children: [
                   // Exercise bases with variations
-                  ...exerciseProvider.exerciseByVariation.keys.map(
+                  ...byVariation.keys.map(
                     (key) => Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -37,7 +40,7 @@ class Step2Variations extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             //mainAxisSize: MainAxisSize.max,
                             children: [
-                              ...exerciseProvider.exerciseByVariation[key]!.map(
+                              ...byVariation[key]!.map(
                                 (base) => Text(
                                   base
                                       .getTranslation(Localizations.localeOf(context).languageCode)
@@ -64,7 +67,7 @@ class Step2Variations extends ConsumerWidget {
                     ),
                   ),
                   // Exercise bases without variations
-                  ...exerciseProvider.allExercises
+                  ...exerciseState.exercises
                       .where((b) => b.variationGroup == null)
                       .map(
                         (base) => Row(

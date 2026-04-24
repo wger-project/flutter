@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
+import 'package:wger/providers/exercise_filters_notifier.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/filter_row.dart';
@@ -16,7 +16,7 @@ class ExercisesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final exerciseState = ref.watch(exerciseStateProvider);
+    final exerciseState = ref.watch(exerciseFiltersProvider);
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).exercises),

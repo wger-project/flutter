@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/i18n.dart';
-import 'package:wger/providers/exercise_state.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
+import 'package:wger/providers/exercise_filter_state.dart';
+import 'package:wger/providers/exercise_filters_notifier.dart';
 
 class ExerciseFilterModalBody extends ConsumerStatefulWidget {
   const ExerciseFilterModalBody({super.key});
@@ -35,7 +35,7 @@ class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBod
   @override
   void initState() {
     super.initState();
-    filters = ref.read(exerciseStateProvider).filters;
+    filters = ref.read(exerciseFiltersProvider).filters;
   }
 
   @override
@@ -72,7 +72,7 @@ class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBod
                       setState(() {
                         filterCategory.items.update(currentEntry.key, (value) => !value);
                         ref
-                            .read(exerciseStateProvider.notifier)
+                            .read(exerciseFiltersProvider.notifier)
                             .setFilters(
                               filters,
                               Localizations.localeOf(context).languageCode,

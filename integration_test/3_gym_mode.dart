@@ -21,8 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/exercise_state.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
+import 'package:wger/providers/exercise_filter_state.dart';
+import 'package:wger/providers/exercise_filters_notifier.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -48,7 +48,9 @@ Widget createGymModeScreen({Locale? locale}) {
   final routine = getTestRoutine(exercises: getScreenshotExercises());
   final container = riverpod.ProviderContainer.test(
     overrides: [
-      exerciseStateProvider.overrideWithValue(ExerciseState(exercises: getTestExercises())),
+      exerciseFiltersProvider.overrideWithValue(
+        ExerciseFilterState(exercises: getTestExercises()),
+      ),
     ],
   );
   container.read(routinesRiverpodProvider.notifier).state = riverpod.AsyncData(

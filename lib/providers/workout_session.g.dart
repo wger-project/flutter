@@ -46,8 +46,7 @@ String _$sessionStateReadyHash() => r'18a6a7239149a753760d90c35cfcb739aec8a631';
 final workoutSessionProvider = WorkoutSessionNotifierProvider._();
 
 final class WorkoutSessionNotifierProvider
-    extends
-        $StreamNotifierProvider<WorkoutSessionNotifier, List<WorkoutSession>> {
+    extends $StreamNotifierProvider<WorkoutSessionNotifier, List<WorkoutSession>> {
   WorkoutSessionNotifierProvider._()
     : super(
         from: null,
@@ -67,25 +66,18 @@ final class WorkoutSessionNotifierProvider
   WorkoutSessionNotifier create() => WorkoutSessionNotifier();
 }
 
-String _$workoutSessionNotifierHash() =>
-    r'4ca757bd63400433d86d3d597ee6cf1718246dcb';
+String _$workoutSessionNotifierHash() => r'4ca757bd63400433d86d3d597ee6cf1718246dcb';
 
-abstract class _$WorkoutSessionNotifier
-    extends $StreamNotifier<List<WorkoutSession>> {
+abstract class _$WorkoutSessionNotifier extends $StreamNotifier<List<WorkoutSession>> {
   Stream<List<WorkoutSession>> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref =
-        this.ref
-            as $Ref<AsyncValue<List<WorkoutSession>>, List<WorkoutSession>>;
+    final ref = this.ref as $Ref<AsyncValue<List<WorkoutSession>>, List<WorkoutSession>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<List<WorkoutSession>>,
-                List<WorkoutSession>
-              >,
+              AnyNotifier<AsyncValue<List<WorkoutSession>>, List<WorkoutSession>>,
               AsyncValue<List<WorkoutSession>>,
               Object?,
               Object?

@@ -29,7 +29,7 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/exercises/list_tile.dart';
@@ -37,8 +37,11 @@ import 'package:wger/widgets/exercises/videos.dart';
 
 class ExerciseDetail extends ConsumerWidget {
   final Exercise _exercise;
-  late final Translation _translation;
-  late final ExerciseStateNotifier _exerciseStateNotifier;
+  // Reassigned on every build (which can fire repeatedly now that
+  // [_exerciseState] subscribes to the catalogue stream via
+  // `ref.watch`). `late final` would throw on the second assignment.
+  late Translation _translation;
+  late ExerciseState _exerciseState;
   static const PADDING = 9.0;
   final CarouselController carouselController = CarouselController();
 
@@ -46,7 +49,9 @@ class ExerciseDetail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _exerciseStateNotifier = ref.read(exerciseStateProvider.notifier);
+    // Reactive: rebuild when the catalogue updates. Empty fallback while
+    // the stream hasn't emitted yet.
+    _exerciseState = ref.watch(exercisesProvider).value ?? const ExerciseState([]);
     _translation = _exercise.getTranslation(Localizations.localeOf(context).languageCode);
 
     return SingleChildScrollView(
@@ -83,7 +88,7 @@ class ExerciseDetail extends ConsumerWidget {
   }
 
   List<Widget> getVariations(BuildContext context) {
-    final variations = _exerciseStateNotifier.findExercisesByVariationGroup(
+    final variations = _exerciseState.findByVariationGroup(
       _exercise.variationGroup,
       exerciseIdToExclude: _exercise.id,
     );

@@ -25,7 +25,7 @@ import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise_notifier.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/exercise_screen.dart';
@@ -132,7 +132,7 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
                         Exercise? exercise;
                         try {
                           final exerciseId = await addExerciseNotifier.postExerciseToServer();
-                          exercise = ref.read(exerciseStateProvider.notifier).getById(exerciseId);
+                          exercise = ref.read(exercisesProvider).requireValue.getById(exerciseId);
                         } on WgerHttpException catch (error) {
                           if (context.mounted) {
                             setState(() {

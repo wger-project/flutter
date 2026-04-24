@@ -24,11 +24,16 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/providers/exercise_data.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 import '../../test_data/exercises.dart';
 import '../fake_connectivity.dart';
+
+class _FakeExercises extends Exercises {
+  @override
+  Stream<ExerciseState> build() => Stream.value(const ExerciseState(<Exercise>[]));
+}
 
 void main() {
   installFakeConnectivity();
@@ -36,7 +41,7 @@ void main() {
   Widget createHomeScreen({locale = 'en'}) {
     return ProviderScope(
       overrides: [
-        exercisesProvider.overrideWith((ref) => Stream<List<Exercise>>.value(<Exercise>[])),
+        exercisesProvider.overrideWith(() => _FakeExercises()),
         exerciseMusclesProvider.overrideWith((ref) => Stream<List<Muscle>>.value(<Muscle>[])),
         exerciseCategoriesProvider.overrideWith(
           (ref) => Stream<List<ExerciseCategory>>.value(<ExerciseCategory>[]),

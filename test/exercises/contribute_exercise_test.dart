@@ -29,7 +29,7 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise_repository.dart';
 import 'package:wger/providers/core_data.dart';
-import 'package:wger/providers/exercise_data.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
@@ -42,6 +42,11 @@ import 'contribute_exercise_test.mocks.dart';
 ///
 /// Exercises the widget tree with the real `AddExerciseNotifier` + a mocked
 /// repository. The notifier builds with an empty default form state.
+class _FakeExercises extends Exercises {
+  @override
+  Stream<ExerciseState> build() => Stream.value(const ExerciseState(<Exercise>[]));
+}
+
 @GenerateMocks([AddExerciseRepository, UserProfileRepository])
 void main() {
   installFakeConnectivity();
@@ -59,7 +64,7 @@ void main() {
     return ProviderScope(
       overrides: [
         languagesProvider.overrideWith((ref) => Stream<List<Language>>.value(<Language>[])),
-        exercisesProvider.overrideWith((ref) => Stream<List<Exercise>>.value(<Exercise>[])),
+        exercisesProvider.overrideWith(() => _FakeExercises()),
         exerciseMusclesProvider.overrideWith((ref) => Stream<List<Muscle>>.value(<Muscle>[])),
         exerciseCategoriesProvider.overrideWith(
           (ref) => Stream<List<ExerciseCategory>>.value(<ExerciseCategory>[]),

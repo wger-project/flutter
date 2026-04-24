@@ -29,7 +29,7 @@ import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercise_data.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/helpers.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/wger_base.dart';
@@ -140,7 +140,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   Future<Routine> fetchAndSetRoutineFull(int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
 
-    final exercises = await ref.awaitFirstValue(exercisesProvider);
+    final exerciseState = await ref.awaitFirstValue(exercisesProvider);
     final repetitionUnits = await ref.awaitFirstValue(routineRepetitionUnitProvider);
     final weightUnits = await ref.awaitFirstValue(routineWeightUnitProvider);
     final sessions = await ref.awaitFirstValue(workoutSessionProvider);
@@ -151,8 +151,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
       for (final entry in entries) {
         for (final slot in entry.slots) {
           for (final setConfig in slot.setConfigs) {
-            final exerciseId = setConfig.exerciseId;
-            setConfig.exercise = exercises.firstWhere((e) => e.id == exerciseId);
+            setConfig.exercise = exerciseState.getById(setConfig.exerciseId);
             setConfig.repetitionsUnit = repetitionUnits.firstWhere(
               (e) => e.id == setConfig.repetitionsUnitId,
             );
@@ -170,7 +169,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     routine.sessions = sessions.where((s) => s.routineId == routineId).toList();
     for (final session in routine.sessions) {
       for (final log in session.logs) {
-        log.exercise = exercises.firstWhere((e) => e.id == log.exerciseId);
+        log.exercise = exerciseState.getById(log.exerciseId);
       }
     }
 

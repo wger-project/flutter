@@ -28,7 +28,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/exercise_data.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
@@ -61,6 +61,11 @@ class _FakeRoutinesRiverpod extends RoutinesRiverpod {
   Future<Routine> fetchAndSetRoutineFull(int routineId) async => _routine;
 }
 
+class _FakeExercises extends Exercises {
+  @override
+  Stream<ExerciseState> build() => Stream.value(const ExerciseState(<Exercise>[]));
+}
+
 void main() {
   installFakeConnectivity();
 
@@ -84,7 +89,7 @@ void main() {
     return riverpod.ProviderScope(
       overrides: [
         routinesRiverpodProvider.overrideWith(() => _FakeRoutinesRiverpod(testRoutine)),
-        exercisesProvider.overrideWith((ref) => Stream<List<Exercise>>.value(<Exercise>[])),
+        exercisesProvider.overrideWith(() => _FakeExercises()),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
       ],
       child: MaterialApp(

@@ -4,7 +4,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -89,7 +89,7 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
             }
 
             return ref
-                .read(exerciseStateProvider.notifier)
+                .read(exercisesProvider.notifier)
                 .searchExercise(
                   pattern,
                   languageCode: languageCode,

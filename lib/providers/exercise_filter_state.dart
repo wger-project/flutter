@@ -20,37 +20,34 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 
-class ExerciseState {
+/// UI state for the exercise list screen: the current filter
+/// configuration plus the resulting [filteredExercises]. The raw
+/// equipment / categories lists are not kept here — consumers that
+/// need them should watch [exerciseEquipmentProvider] /
+/// [exerciseCategoriesProvider] directly.
+class ExerciseFilterState {
   final List<Exercise> exercises;
   final List<Exercise> filteredExercises;
-  final List<Equipment> equipment;
-  final List<ExerciseCategory> categories;
   final Filters filters;
   final bool isLoading;
 
-  ExerciseState({
+  ExerciseFilterState({
     this.exercises = const [],
     this.filteredExercises = const [],
-    this.equipment = const [],
-    this.categories = const [],
     this.isLoading = false,
     Filters? filters,
   }) : filters = filters ?? Filters();
 
-  ExerciseState copyWith({
+  ExerciseFilterState copyWith({
     List<Exercise>? exercises,
     List<Exercise>? filteredExercises,
-    List<Equipment>? equipment,
-    List<ExerciseCategory>? categories,
     Filters? filters,
     bool? isLoading,
   }) {
-    return ExerciseState(
+    return ExerciseFilterState(
       exercises: exercises ?? this.exercises,
       filteredExercises: filteredExercises ?? this.filteredExercises,
       filters: filters ?? this.filters,
-      equipment: equipment ?? this.equipment,
-      categories: categories ?? this.categories,
       isLoading: isLoading ?? this.isLoading,
     );
   }

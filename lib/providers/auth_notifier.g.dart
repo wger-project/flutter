@@ -32,7 +32,7 @@ final class AuthNotifierProvider extends $AsyncNotifierProvider<AuthNotifier, Au
   AuthNotifier create() => AuthNotifier();
 }
 
-String _$authNotifierHash() => r'4f7bdf98da303bed0761dc7054e2d05008c0f31e';
+String _$authNotifierHash() => r'eef3fc4a7d671627ff12cfc5fd543f7b6a76f206';
 
 abstract class _$AuthNotifier extends $AsyncNotifier<AuthState> {
   FutureOr<AuthState> build();

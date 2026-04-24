@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/exercise_state_notifier.dart';
+import 'package:wger/providers/exercise_filters_notifier.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import 'filter_modal.dart';
@@ -38,15 +38,15 @@ class _FilterRowState extends ConsumerState<FilterRow> {
   void initState() {
     super.initState();
 
-    final initialSearch = ref.read(exerciseStateProvider).filters.searchTerm;
+    final initialSearch = ref.read(exerciseFiltersProvider).filters.searchTerm;
 
     _exerciseNameController = TextEditingController(text: initialSearch)
       ..addListener(() {
         final text = _exerciseNameController.text;
-        final currentFilters = ref.read(exerciseStateProvider).filters;
+        final currentFilters = ref.read(exerciseFiltersProvider).filters;
         if (currentFilters.searchTerm != text) {
           ref
-              .read(exerciseStateProvider.notifier)
+              .read(exerciseFiltersProvider.notifier)
               .setFilters(
                 currentFilters.copyWith(searchTerm: text),
                 Localizations.localeOf(context).languageCode,

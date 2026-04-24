@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'exercise_data.dart';
+part of 'exercises.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -8,13 +8,23 @@ part of 'exercise_data.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Exposes the full exercise catalogue as a stream. Search methods
+/// (online + local + the chooser between them) live on the notifier
+/// because they take a search term as input and `searchExerciseOnline`
+/// in particular needs `ref` for the HTTP call.
 
-@ProviderFor(exercises)
+@ProviderFor(Exercises)
 final exercisesProvider = ExercisesProvider._();
 
-final class ExercisesProvider
-    extends $FunctionalProvider<AsyncValue<List<Exercise>>, List<Exercise>, Stream<List<Exercise>>>
-    with $FutureModifier<List<Exercise>>, $StreamProvider<List<Exercise>> {
+/// Exposes the full exercise catalogue as a stream. Search methods
+/// (online + local + the chooser between them) live on the notifier
+/// because they take a search term as input and `searchExerciseOnline`
+/// in particular needs `ref` for the HTTP call.
+final class ExercisesProvider extends $StreamNotifierProvider<Exercises, ExerciseState> {
+  /// Exposes the full exercise catalogue as a stream. Search methods
+  /// (online + local + the chooser between them) live on the notifier
+  /// because they take a search term as input and `searchExerciseOnline`
+  /// in particular needs `ref` for the HTTP call.
   ExercisesProvider._()
     : super(
         from: null,
@@ -31,17 +41,33 @@ final class ExercisesProvider
 
   @$internal
   @override
-  $StreamProviderElement<List<Exercise>> $createElement(
-    $ProviderPointer pointer,
-  ) => $StreamProviderElement(pointer);
-
-  @override
-  Stream<List<Exercise>> create(Ref ref) {
-    return exercises(ref);
-  }
+  Exercises create() => Exercises();
 }
 
-String _$exercisesHash() => r'3c3bf6b9c2d5d5e9ff2c7fa3776165724f006151';
+String _$exercisesHash() => r'45635541935c391b39a3ac8614b699f5a2ea1da3';
+
+/// Exposes the full exercise catalogue as a stream. Search methods
+/// (online + local + the chooser between them) live on the notifier
+/// because they take a search term as input and `searchExerciseOnline`
+/// in particular needs `ref` for the HTTP call.
+
+abstract class _$Exercises extends $StreamNotifier<ExerciseState> {
+  Stream<ExerciseState> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<ExerciseState>, ExerciseState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<ExerciseState>, ExerciseState>,
+              AsyncValue<ExerciseState>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
 @ProviderFor(exerciseCategories)
 final exerciseCategoriesProvider = ExerciseCategoriesProvider._();
