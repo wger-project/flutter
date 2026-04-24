@@ -1214,5 +1214,29 @@
     }
   },
   "searchLanguageAll": "All languages",
-  "@searchLanguageAll": {}
+  "@searchLanguageAll": {},
+  "syncStatusConnected": "Connected",
+  "@syncStatusConnected": {
+    "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+  },
+  "syncStatusConnecting": "Connecting",
+  "@syncStatusConnecting": {
+    "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+  },
+  "syncStatusDisconnected": "Not connected",
+  "@syncStatusDisconnected": {
+    "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+  },
+  "syncStatusUploading": "Uploading",
+  "@syncStatusUploading": {
+    "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+  },
+  "syncStatusDownloading": "Downloading",
+  "@syncStatusDownloading": {
+    "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+  },
+  "syncStatusSyncing": "Synchronizing",
+  "@syncStatusSyncing": {
+    "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+  }
 }
