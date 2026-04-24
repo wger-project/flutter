@@ -19,6 +19,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
@@ -34,12 +35,17 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
 import '../fixtures/fixture_reader.dart';
 import 'routines_provider_test.mocks.dart';
+
+class PlateNotifierMock extends Notifier<PlateCalculatorState>
+    with Mock
+    implements PlateCalculatorNotifier {}
 
 @GenerateMocks([WgerBaseProvider, ExercisesProvider])
 void main() {
@@ -74,7 +80,12 @@ void main() {
       );
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        exercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       final plan = await provider.fetchAndSetRoutineSparse(325397);
       final plans = provider.getPlans();
 
@@ -102,7 +113,12 @@ void main() {
       );
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        exercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
 
       await provider.fetchAndSetRoutineSparse(325397);
       await provider.deleteRoutine(325397);
@@ -121,7 +137,12 @@ void main() {
       ).thenAnswer((_) => Future.value(tRepetitionUnits['results']));
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        exercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       await provider.fetchAndSetRepetitionUnits();
       final repetitionUnits = provider.repetitionUnits;
 
@@ -139,7 +160,12 @@ void main() {
       final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, testExercisesProvider, []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        testExercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       await provider.fetchAndSetWeightUnits();
       final weightUnits = provider.weightUnits;
 
@@ -168,7 +194,12 @@ void main() {
       final prefs = PreferenceHelper.asyncPref;
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        exercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       await provider.fetchAndSetUnits();
       final prefsJson = jsonDecode((await prefs.getString(PREFS_WORKOUT_UNITS))!);
 
@@ -229,7 +260,12 @@ void main() {
         (_) async => Future.value(testCrunches),
       );
 
-      final provider = RoutinesProvider(mockBaseProvider, mockExercisesProvider, []);
+      final provider = RoutinesProvider(
+        mockBaseProvider,
+        mockExercisesProvider,
+        PlateNotifierMock(),
+        [],
+      );
       provider.repetitionUnits = testRepetitionUnits;
       provider.weightUnits = testWeightUnits;
 

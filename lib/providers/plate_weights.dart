@@ -169,6 +169,10 @@ class PlateCalculatorNotifier extends Notifier<PlateCalculatorState> {
     }
   }
 
+  bool isMetricSelected() {
+    return state.isMetric;
+  }
+
   Future<void> toggleSelection(num x) async {
     final newSelectedPlates = List.of(state.selectedPlates);
     if (newSelectedPlates.contains(x)) {
