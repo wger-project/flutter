@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
@@ -29,42 +28,8 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
+import 'package:wger/widgets/core/sync_status_dialog.dart';
 import 'package:wger/widgets/user/forms.dart';
-
-Widget _makeIcon(String text, IconData icon) {
-  return Tooltip(
-    message: text,
-    child: SizedBox(width: 40, child: Icon(icon, size: 24)),
-  );
-}
-
-Widget _getStatusIcon(ps.SyncStatus status, AppLocalizations i18n) {
-  if (status.anyError != null) {
-    // TODO: The error message might be verbose, could be replaced with something
-    // more user-friendly
-    if (!status.connected) {
-      return _makeIcon(status.anyError!.toString(), Icons.cloud_off);
-    } else {
-      return _makeIcon(status.anyError!.toString(), Icons.sync_problem);
-    }
-  } else if (status.connecting) {
-    // Distinct from the active-sync icon below: "queue" reads as
-    // "trying to establish a connection", not "transferring data".
-    return _makeIcon(i18n.syncStatusConnecting, Icons.cloud_queue);
-  } else if (!status.connected) {
-    return _makeIcon(i18n.syncStatusDisconnected, Icons.cloud_off);
-  } else if (status.uploading && status.downloading) {
-    // The status changes often between downloading, uploading and both,
-    // so we use the same icon for all three
-    return _makeIcon(i18n.syncStatusSyncing, Icons.cloud_sync_outlined);
-  } else if (status.uploading) {
-    return _makeIcon(i18n.syncStatusUploading, Icons.cloud_upload_outlined);
-  } else if (status.downloading) {
-    return _makeIcon(i18n.syncStatusDownloading, Icons.cloud_download_outlined);
-  } else {
-    return _makeIcon(i18n.syncStatusConnected, Icons.cloud_done_outlined);
-  }
-}
 
 class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String _title;
@@ -74,7 +39,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final syncState = ref.watch(syncStatus);
-    final statusIcon = _getStatusIcon(syncState, AppLocalizations.of(context));
+    final status = syncStatusIconAndLabel(syncState, AppLocalizations.of(context));
 
     return AppBar(
       title: Text(_title),
@@ -85,7 +50,13 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
             Navigator.of(context).pushNamed(ConfigureDashboardWidgetsScreen.routeName);
           },
         ),
-        statusIcon,
+        IconButton(
+          icon: Icon(status.icon),
+          onPressed: () => showDialog<void>(
+            context: context,
+            builder: (_) => SyncStatusDialog(syncState),
+          ),
+        ),
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: () async {

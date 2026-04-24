@@ -1238,5 +1238,21 @@
   "syncStatusSyncing": "Synchronizing",
   "@syncStatusSyncing": {
     "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+  },
+  "syncStatusError": "Sync error",
+  "@syncStatusError": {
+    "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+  },
+  "syncStatusDialogTitle": "Sync status",
+  "@syncStatusDialogTitle": {
+    "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+  },
+  "syncStatusLastSynced": "Last synchronisation",
+  "@syncStatusLastSynced": {
+    "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+  },
+  "syncStatusErrorDetails": "Error details",
+  "@syncStatusErrorDetails": {
+    "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
   }
 }
