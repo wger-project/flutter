@@ -1126,5 +1126,36 @@
                 "type": "String"
             }
         }
+    },
+    "preview": "Pré-visualização",
+    "slotEntryTypeWarmup": "Aquecimento",
+    "useBasicMarkdown": "Você pode usar Markdown básico para formatar o texto",
+    "editorBold": "Audacioso",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Itálico",
+    "editorList": "Lista",
+    "filterNutriscore": "Filtro Nutri-Score",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreOff": "Desligado",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "filterNutriscoreNoFilter": "Sem filtro",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} ou melhor",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
     }
 }
