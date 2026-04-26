@@ -850,5 +850,13 @@
     },
     "useUsernameAndPassword": "使用使用者名稱和密碼",
     "useApiToken": "使用 API 金鑰",
-    "preview": "預覽"
+    "preview": "預覽",
+    "startDate": "開始日期",
+    "@startDate": {
+        "description": "The start date of a nutritional plan or routine"
+    },
+    "dayTypeAmrap": "盡可能越多次越好",
+    "slotEntryTypeWarmup": "暖身",
+    "restTime": "休息時間",
+    "slotEntryTypeJump": "跳躍"
 }
