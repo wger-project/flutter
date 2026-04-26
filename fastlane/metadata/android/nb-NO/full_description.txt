@@ -1,6 +1,38 @@
-wger (ˈvɛɡɐ) er gemenhetslig fri programvare som hjelper din helse.
+Fra treningsentusiaster til treningsentusiaster – få helsen din organisert med WGER, din treningsmanager!
 
-- Planlegg treningsøkter og ernæring
-- Lagre øvelser og kommenter dem
-- Helsestudio-modus
-- Dagbok og utviklingssporing
+Har du allerede funnet din favoritt treningsapp og elsker du å lage dine egne treningsrutiner? Uansett hvilken type treningsgal du er – vi har alle noe til felles: Vi elsker å holde oversikt over helsedata <3
+
+Så vi dømmer deg ikke for at du fortsatt styrer treningsreisen din med den lille treningsdagboken din, men velkommen til 2025!
+
+Vi har utviklet en 100% gratis digital helse- og treningssporer-app for deg, trimmet ned til de mest relevante funksjonene for å gjøre livet ditt enklere. Kom i gang, fortsett å trene og feir fremgangen din!
+
+wger er et Open Source-prosjekt og handler om:
+* Kroppen din
+* Treningene dine
+* Fremgangen din
+* Dataene dine
+
+Kroppen din: Ikke noe behov for å google ingrediensene i favorittmatene dine – velg dine daglige måltider fra mer enn 78 000 produkter og se næringsverdiene. Legg til måltider i ernæringsplanen og hold oversikt over kostholdet ditt i kalenderen.
+
+Treningene dine:
+Du vet hva som er best for kroppen din. Lag dine egne treningsøkter fra et voksende utvalg på 200 forskjellige øvelser. Bruk deretter Gym-modus for å guide deg gjennom treningen mens du logger vektene dine med ett trykk.
+
+Fremgangen din:
+Mist aldri målet av syne. Spor vekten din og hold statistikken din.
+
+Dataene dine:
+Wger er din personlige treningsdagbok – men du eier dataene dine. Bruk REST API-et for å få tilgang til dem og gjøre fantastiske ting med dem.
+
+Vær oppmerksom på: Denne gratis appen er ikke basert på ekstern finansiering, og vi ber deg ikke om å donere penger. Den er et fellesskapsprosjekt som vokser konstant. Så vær forberedt på nye funksjoner når som helst!
+
+#OpenSource – hva betyr det?
+
+Open Source betyr at hele kildekoden for denne appen og serveren den kommuniserer med er gratis og tilgjengelig for alle:
+* Vil du kjøre wger på din egen server for deg selv eller det lokale treningssenteret ditt? Bare gjør det!
+* Savner du en funksjon og vil implementere den? Start nå!
+* Vil du sjekke at ingenting sendes noe sted? Det kan du!
+
+Bli med i fellesskapet vårt og bli en del av treningsentusiaster og IT-nerder fra hele verden. Vi jobber kontinuerlig med å tilpasse og optimalisere appen etter våre behov. Vi elsker dine innspill, så hopp gjerne inn når som helst og bidra med ønsker og ideer!
+
+-> finn kildekoden på https://github.com/wger-project
+-> still spørsmål eller si hei på vår Discord-server https://discord.gg/rPWFv6W
