@@ -858,5 +858,48 @@
     "dayTypeAmrap": "盡可能越多次越好",
     "slotEntryTypeWarmup": "暖身",
     "restTime": "休息時間",
-    "slotEntryTypeJump": "跳躍"
+    "slotEntryTypeJump": "跳躍",
+    "editorBold": "粗體",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "斜體",
+    "editorList": "清單",
+    "enterTextInLanguage": "請輸入正確的語言!",
+    "simpleMode": "簡單模式",
+    "imageDetailsImageType": "相片格式",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "author": "作者",
+    "imageDetailsAuthorLink": "作者的網站或個人頁面",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "add": "新增",
+    "@add": {
+        "description": "Add button text"
+    },
+    "imageDetailsSourceLink": "來源網址",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "imageDetailsLicenseTitleHint": "輸入相片標題",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "authorHint": "輸入作者名稱",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "aboutSourceListTitle": "檢視原始碼",
+    "aboutJoinCommunityTitle": "加入社群",
+    "aboutContributeTitle": "貢獻",
+    "aboutDiscordTitle": "Discord",
+    "endDate": "結束日期",
+    "@endDate": {
+        "description": "The End date of a nutritional plan or routine"
+    },
+    "min": "最小",
+    "max": "最大"
 }
