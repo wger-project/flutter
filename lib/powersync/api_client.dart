@@ -67,27 +67,21 @@ class ApiClient {
     throw Exception('Failed to fetch token');
   }
 
-  Future<void> upsert(Map<String, dynamic> record) async {
-    await http.put(
-      uri,
-      headers: getHeaders(),
-      body: json.encode(record),
-    );
+  // The methods below return the raw [http.Response] so the connector
+  // can inspect the status code and the JSON body. The backend always
+  // answers 200 (PowerSync-recommended pattern: non-2xx triggers an
+  // infinite retry loop on the SDK side, which is wrong for permanent
+  // rejections like validation failures), but encodes any rejection
+  // as `{'error': '...', 'details': ...}` in the body.
+  Future<http.Response> upsert(Map<String, dynamic> record) {
+    return http.put(uri, headers: getHeaders(), body: json.encode(record));
   }
 
-  Future<void> update(Map<String, dynamic> record) async {
-    await http.patch(
-      uri,
-      headers: getHeaders(),
-      body: json.encode(record),
-    );
+  Future<http.Response> update(Map<String, dynamic> record) {
+    return http.patch(uri, headers: getHeaders(), body: json.encode(record));
   }
 
-  Future<void> delete(Map<String, dynamic> record) async {
-    await http.delete(
-      uri,
-      headers: getHeaders(),
-      body: json.encode(record),
-    );
+  Future<http.Response> delete(Map<String, dynamic> record) {
+    return http.delete(uri, headers: getHeaders(), body: json.encode(record));
   }
 }

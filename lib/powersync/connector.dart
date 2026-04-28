@@ -19,8 +19,10 @@
 // This file performs setup of the PowerSync database
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/powersync/api_client.dart';
 
 final logger = Logger('powersync-django');
@@ -39,9 +41,42 @@ final List<RegExp> fatalResponseCodes = [
   RegExp(r'^42501$'),
 ];
 
+/// Exception thrown when the wger backend returned a 200 response whose
+/// body indicates that the operation was rejected (validation failure,
+/// missing object, ownership violation, unknown table…). Carries the
+/// raw error map so the global error dialog can display the detail.
+class BackendUploadException implements Exception {
+  final String table;
+  final UpdateType op;
+  final String error;
+  final Object? details;
+
+  BackendUploadException({
+    required this.table,
+    required this.op,
+    required this.error,
+    required this.details,
+  });
+
+  @override
+  String toString() {
+    final detailsStr = details == null ? '' : '\n$details';
+    return 'Backend rejected $op on $table: $error$detailsStr';
+  }
+}
+
 class DjangoConnector extends PowerSyncBackendConnector {
   final String baseUrl;
   final ApiClient apiClient;
+
+  /// IDs of CRUD operations that already triggered a user-facing
+  /// rejection dialog this session. Without this gate the same
+  /// permanent-failure op would re-pop the dialog on every sync tick
+  /// (PowerSync keeps re-driving `uploadData` until the transaction
+  /// is completed, and our `transaction.complete()` only fires once
+  /// the loop finishes — so we'd see the dialog at every iteration).
+  /// Resets on app restart.
+  final Set<String> _reportedFailedOps = {};
 
   DjangoConnector({required this.baseUrl}) : apiClient = ApiClient(baseUrl);
 
@@ -132,17 +167,20 @@ class DjangoConnector extends PowerSyncBackendConnector {
 
         logger.finer('Uploading record $record to server with operation ${op.op}');
 
+        final http.Response response;
         switch (op.op) {
           case UpdateType.put:
-            await apiClient.upsert(record);
+            response = await apiClient.upsert(record);
             break;
           case UpdateType.patch:
-            await apiClient.update(record);
+            response = await apiClient.update(record);
             break;
           case UpdateType.delete:
-            await apiClient.delete(record);
+            response = await apiClient.delete(record);
             break;
         }
+
+        _handleUploadResponse(op, response);
       }
       await transaction.complete();
     } on Exception catch (e) {
@@ -151,5 +189,39 @@ class DjangoConnector extends PowerSyncBackendConnector {
       // Throwing an error here causes this call to be retried after a delay.
       rethrow;
     }
+  }
+
+  /// Inspects the backend response for a given CRUD op. If the body reports a
+  /// logical / validation rejection we surface it via the global error dialog
+  /// but do **not** rethrow, otherwise that would trigger a PowerSync retry loop.
+  void _handleUploadResponse(CrudEntry op, http.Response response) {
+    if (response.statusCode != 200 || response.body.isEmpty) {
+      return;
+    }
+
+    final Object? decoded;
+    try {
+      decoded = json.decode(response.body);
+    } on FormatException {
+      // Non-JSON response on a 200 — uncommon but harmless to ignore.
+      return;
+    }
+    if (decoded is! Map<String, dynamic> || !decoded.containsKey('error')) {
+      return;
+    }
+
+    if (!_reportedFailedOps.add(op.id)) {
+      // Already shown for this operation in the current session.
+      return;
+    }
+
+    final exception = BackendUploadException(
+      table: op.table,
+      op: op.op,
+      error: decoded['error']?.toString() ?? 'Unknown error',
+      details: decoded['details'],
+    );
+    logger.warning('Backend rejected upload', exception);
+    showGeneralErrorDialog(exception, StackTrace.current);
   }
 }
