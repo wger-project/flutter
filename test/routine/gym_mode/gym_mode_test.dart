@@ -35,9 +35,7 @@ import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
-import 'package:wger/widgets/routines/forms/repetitions.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
-import 'package:wger/widgets/routines/forms/weight.dart';
 import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
@@ -173,20 +171,23 @@ void main() {
         expect(find.byIcon(Icons.chevron_left), findsOneWidget);
         expect(find.byIcon(Icons.chevron_right), findsOneWidget);
 
-        // Form shows only weight and reps
-        expect(find.byType(SwitchListTile), findsOneWidget);
+        // The form shows reps and weight — each with its own unit
+        // picker (PopupMenuButton<int>) — plus the RiR slider, all at
+        // once. Scope the popup-menu lookup to the LogPage so other
+        // popup menus elsewhere in the app shell don't interfere.
         expect(find.byType(TextFormField), findsNWidgets(2));
-        expect(find.byType(RepetitionUnitInputWidget), findsNothing);
-        expect(find.byType(WeightUnitInputWidget), findsNothing);
-        expect(find.byType(RiRInputWidget), findsNothing);
-
-        // Form shows unit and rir after tapping the toggle button
-        await tester.tap(find.byType(SwitchListTile));
-        await tester.pump();
-        expect(find.byType(RepetitionUnitInputWidget), findsOneWidget);
-        expect(find.byType(WeightUnitInputWidget), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byType(LogPage),
+            matching: find.byType(PopupMenuButton<int>),
+          ),
+          findsNWidgets(2),
+        );
         expect(find.byType(RiRInputWidget), findsOneWidget);
-        await tester.drag(find.byType(LogPage), const Offset(-500.0, 0.0));
+        // Advance to the next page via the chevron — the RiR slider
+        // would otherwise eat a horizontal-drag gesture started over
+        // its track.
+        await tester.tap(find.byIcon(Icons.chevron_right));
         await tester.pumpAndSettle();
 
         //

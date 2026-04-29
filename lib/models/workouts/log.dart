@@ -66,6 +66,7 @@ class Log {
     this.iteration,
     this.slotEntryId,
     required this.routineId,
+    this.sessionId,
     this.repetitions,
     this.repetitionsTarget,
     this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
@@ -131,6 +132,7 @@ class Log {
       iteration: iteration ?? this.iteration,
       slotEntryId: slotEntryId ?? this.slotEntryId,
       routineId: routineId ?? this.routineId,
+      sessionId: sessionId ?? this.sessionId,
       repetitions: repetitions ?? this.repetitions,
       repetitionsTarget: repetitionsTarget ?? this.repetitionsTarget,
       repetitionsUnitId: repetitionsUnitId ?? this.repetitionsUnitId,
@@ -143,10 +145,6 @@ class Log {
       weightUnitObj: weightUnitObj ?? this.weightUnitObj,
       date: date ?? this.date,
     );
-
-    if (sessionId != null) {
-      out.sessionId = sessionId;
-    }
 
     if (repetitionsUnitObj != null) {
       out.repetitionsUnitObj = repetitionsUnitObj;

@@ -21,10 +21,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/i18n.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/providers/gym_log_state.dart';
-import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
 
 /// Input widget for workout weight units
@@ -71,12 +70,26 @@ class _WeightUnitInputWidgetState extends ConsumerState<WeightUnitInputWidget> {
   }
 }
 
+/// Controlled numeric input for weight
+///
+/// If both [unit] and [onUnitChanged] are provided, a compact dropdown listing
+/// the values of [routineRepetitionUnitProvider] is rendered as the suffix of
+/// the text field. If [onUnitChanged] is null, the dropdown is hidden and the
+/// widget behaves as a pure numeric input.
 class WeightInputWidget extends ConsumerStatefulWidget {
+  final num? value;
+  final ValueChanged<num?> onChanged;
+  final WeightUnit? unit;
+  final ValueChanged<WeightUnit?>? onUnitChanged;
   final num valueChange;
   final TextEditingController? controller;
 
   const WeightInputWidget({
     super.key,
+    required this.value,
+    required this.onChanged,
+    this.unit,
+    this.onUnitChanged,
     this.controller,
     num? valueChange,
   }) : valueChange = valueChange ?? 1.25;
@@ -88,12 +101,45 @@ class WeightInputWidget extends ConsumerStatefulWidget {
 class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
   final _logger = Logger('WeightInputWidget');
   late TextEditingController _controller;
-  num? _lastWeight;
+  late NumberFormat _numberFormat;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
+    // _numberFormat is finalised in didChangeDependencies once the locale
+    // is available; the placeholder here keeps the field non-late-uninit.
+    _numberFormat = NumberFormat.decimalPattern();
+    if (widget.value != null) {
+      _controller.text = _numberFormat.format(widget.value);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+  }
+
+  @override
+  void didUpdateWidget(covariant WeightInputWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value == oldWidget.value) {
+      return;
+    }
+    // Setting `controller.text` notifies its listeners synchronously,
+    // which in turn calls `setState` on the surrounding Form/TextField
+    // state — and `didUpdateWidget` runs *during* the build cycle, so
+    // that's illegal. Defer the assignment to after the current frame.
+    final text = widget.value == null ? '' : _numberFormat.format(widget.value);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      if (_controller.text != text) {
+        _controller.text = text;
+      }
+    });
   }
 
   @override
@@ -106,39 +152,49 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final i18n = AppLocalizations.of(context);
 
-    final plateProvider = ref.read(plateCalculatorProvider.notifier);
-    final logProvider = ref.read(gymLogProvider.notifier);
-    final log = ref.watch(gymLogProvider);
-    final currentWeight = log?.weight;
-
-    // Only update when provider value changed
-    if (currentWeight != _lastWeight) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) {
-          return;
-        }
-        if (currentWeight != null) {
-          _controller.text = numberFormat.format(currentWeight);
-        } else {
-          _controller.clear();
-        }
-        _lastWeight = currentWeight;
-      });
+    String labelText = i18n.weight;
+    Widget? suffixIcon;
+    final onUnitChanged = widget.onUnitChanged;
+    if (onUnitChanged != null) {
+      final units = ref.watch(routineWeightUnitProvider).asData?.value ?? <WeightUnit>[];
+      if (units.isNotEmpty) {
+        labelText = widget.unit == null
+            ? i18n.weight
+            : getServerStringTranslation(widget.unit!.name, context);
+        suffixIcon = PopupMenuButton<int>(
+          icon: const Icon(Icons.arrow_drop_down),
+          tooltip: i18n.weightUnit,
+          onSelected: (id) {
+            onUnitChanged(units.firstWhere((u) => u.id == id));
+          },
+          itemBuilder: (context) => units
+              .map(
+                (u) => PopupMenuItem<int>(
+                  value: u.id,
+                  child: Text(getServerStringTranslation(u.name, context)),
+                ),
+              )
+              .toList(),
+        );
+      }
     }
 
     return Row(
       children: [
+        // "Quick-remove" button
         IconButton(
-          // "Quick-remove" button
           icon: const Icon(Icons.remove, color: Colors.black),
+          iconSize: 25,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          visualDensity: VisualDensity.compact,
           onPressed: () {
-            final base = currentWeight ?? 0;
+            final base = widget.value ?? 0;
             final newValue = base - widget.valueChange;
-            if (newValue >= 0 && log != null) {
-              logProvider.setWeight(newValue);
+            if (newValue >= 0) {
+              widget.onChanged(newValue);
             }
           },
         ),
@@ -147,25 +203,32 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
         Expanded(
           child: TextFormField(
             controller: _controller,
-            decoration: InputDecoration(labelText: i18n.weight),
+            decoration: InputDecoration(
+              labelText: labelText,
+              suffixIcon: suffixIcon,
+              suffixIconConstraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+              isDense: true,
+            ),
             keyboardType: textInputTypeDecimal,
-            onChanged: (value) {
+            onChanged: (text) {
+              if (text.isEmpty) {
+                widget.onChanged(null);
+                return;
+              }
               try {
-                final newValue = numberFormat.parse(value);
-                plateProvider.setWeight(newValue);
-                logProvider.setWeight(newValue);
+                widget.onChanged(_numberFormat.parse(text));
               } on FormatException catch (error) {
                 _logger.finer('Error parsing weight: $error');
               }
             },
-            onSaved: (newValue) {
-              if (newValue == null || log == null) {
+            onSaved: (text) {
+              if (text == null || text.isEmpty) {
                 return;
               }
-              logProvider.setWeight(numberFormat.parse(newValue));
+              widget.onChanged(_numberFormat.parse(text));
             },
-            validator: (value) {
-              if (numberFormat.tryParse(value ?? '') == null) {
+            validator: (text) {
+              if (_numberFormat.tryParse(text ?? '') == null) {
                 return i18n.enterValidNumber;
               }
               return null;
@@ -176,12 +239,14 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
         // "Quick-add" button
         IconButton(
           icon: const Icon(Icons.add, color: Colors.black),
+          iconSize: 25,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          visualDensity: VisualDensity.compact,
           onPressed: () {
-            final base = currentWeight ?? 0;
+            final base = widget.value ?? 0;
             final newValue = base + widget.valueChange;
-            if (log != null) {
-              logProvider.setWeight(newValue);
-            }
+            widget.onChanged(newValue);
           },
         ),
       ],

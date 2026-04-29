@@ -268,7 +268,6 @@ class LogFormWidget extends ConsumerStatefulWidget {
 
 class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   final _form = GlobalKey<FormState>();
-  var _detailed = false;
   bool _isSaving = false;
 
   @override
@@ -287,83 +286,52 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
             style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
-          if (!_detailed)
-            Row(
-              children: [
-                Flexible(
-                  child: RepetitionInputWidget(
-                    key: const ValueKey('logs-reps-widget'),
-                    valueChange: widget.configData.repetitionsRounding,
-                  ),
+          Row(
+            children: [
+              Flexible(
+                child: RepetitionInputWidget(
+                  key: const ValueKey('logs-reps-widget'),
+                  value: log?.repetitions,
+                  valueChange: widget.configData.repetitionsRounding,
+                  unit: log?.repetitionsUnitObj,
+                  onChanged: (v) {
+                    if (v != null) {
+                      ref.read(gymLogProvider.notifier).setRepetitions(v);
+                    }
+                  },
+                  onUnitChanged: (v) {
+                    if (v != null) {
+                      ref.read(gymLogProvider.notifier).setRepetitionUnit(v);
+                    }
+                  },
                 ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: WeightInputWidget(
-                    key: const ValueKey('logs-weight-widget'),
-                    valueChange: widget.configData.weightRounding,
-                  ),
+              ),
+              Flexible(
+                child: WeightInputWidget(
+                  key: const ValueKey('logs-weight-widget'),
+                  value: log?.weight,
+                  valueChange: widget.configData.weightRounding,
+                  unit: log?.weightUnitObj,
+                  onChanged: (v) {
+                    if (v != null) {
+                      ref.read(gymLogProvider.notifier).setWeight(v);
+                      ref.read(plateCalculatorProvider.notifier).setWeight(v);
+                    }
+                  },
+                  onUnitChanged: (v) {
+                    if (v != null) {
+                      ref.read(gymLogProvider.notifier).setWeightUnit(v);
+                    }
+                  },
                 ),
-              ],
-            ),
-          if (_detailed)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: RepetitionInputWidget(
-                    key: const ValueKey('logs-reps-widget'),
-                    valueChange: widget.configData.repetitionsRounding,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: RepetitionUnitInputWidget(
-                    key: const ValueKey('repetition-unit-input-widget'),
-                    log!.repetitionsUnitObj,
-                    onChanged: (v) => {},
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-            ),
-          if (_detailed)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: WeightInputWidget(
-                    key: const ValueKey('logs-weight-widget'),
-                    valueChange: widget.configData.weightRounding,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: WeightUnitInputWidget(
-                    log!.weightUnitObj,
-                    onChanged: (v) => {},
-                    key: const ValueKey('weight-unit-input-widget'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-            ),
-          if (_detailed)
-            RiRInputWidget(
-              key: const ValueKey('rir-input-widget'),
-              log!.rir,
-              onChanged: (value) {
-                log.rir = value == '' ? null : num.parse(value);
-              },
-            ),
-          SwitchListTile(
-            key: const ValueKey('units-switch'),
-            dense: true,
-            title: Text(i18n.setUnitsAndRir),
-            value: _detailed,
+              ),
+            ],
+          ),
+          RiRInputWidget(
+            key: const ValueKey('rir-input-widget'),
+            log!.rir,
             onChanged: (value) {
-              setState(() {
-                _detailed = !_detailed;
-              });
+              log.rir = value == '' ? null : num.parse(value);
             },
           ),
           FilledButton(

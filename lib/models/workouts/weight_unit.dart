@@ -21,4 +21,11 @@ class WeightUnit {
   final String name;
 
   const WeightUnit({required this.id, required this.name});
+
+  // Equality is based on `id`, needed e.g. for DropdownButton
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is WeightUnit && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

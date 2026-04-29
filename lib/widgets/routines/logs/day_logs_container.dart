@@ -26,6 +26,7 @@ import 'package:wger/providers/trophies.dart';
 
 import '../gym_mode/summary.dart';
 import 'exercise_log_chart.dart';
+import 'log_edit_dialog.dart';
 import 'muscle_groups.dart';
 import 'session_info.dart';
 
@@ -98,12 +99,22 @@ class DayLogWidget extends ConsumerWidget {
                                     Text(log.repTextNoNl(context)),
                                   ],
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  key: ValueKey('delete-log-${log.id}'),
-                                  onPressed: () {
-                                    showDeleteLogDialog(context, translation.name, log);
-                                  },
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      key: ValueKey('edit-log-${log.id}'),
+                                      onPressed: () => showLogEditDialog(context, log),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      key: ValueKey('delete-log-${log.id}'),
+                                      onPressed: () {
+                                        showDeleteLogDialog(context, translation.name, log);
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
