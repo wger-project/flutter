@@ -111,7 +111,7 @@ final class RoutinesRiverpodProvider
   RoutinesRiverpod create() => RoutinesRiverpod();
 }
 
-String _$routinesRiverpodHash() => r'd98b72296e7fcf0134123452c5838991d4d80a27';
+String _$routinesRiverpodHash() => r'9574d6cbb8701111e8ec1c8c60081bed56aadc3c';
 
 abstract class _$RoutinesRiverpod extends $StreamNotifier<RoutinesState> {
   Stream<RoutinesState> build();
@@ -130,45 +130,3 @@ abstract class _$RoutinesRiverpod extends $StreamNotifier<RoutinesState> {
     element.handleCreate(ref, build);
   }
 }
-
-@ProviderFor(routinesRepository)
-final routinesRepositoryProvider = RoutinesRepositoryProvider._();
-
-final class RoutinesRepositoryProvider
-    extends $FunctionalProvider<RoutinesRepository, RoutinesRepository, RoutinesRepository>
-    with $Provider<RoutinesRepository> {
-  RoutinesRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'routinesRepositoryProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$routinesRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<RoutinesRepository> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  RoutinesRepository create(Ref ref) {
-    return routinesRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(RoutinesRepository value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<RoutinesRepository>(value),
-    );
-  }
-}
-
-String _$routinesRepositoryHash() => r'249951c94887d0ff4882d7a88bd9dcfb25282f4e';

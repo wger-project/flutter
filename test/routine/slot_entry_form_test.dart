@@ -25,6 +25,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/slot_entry.dart';

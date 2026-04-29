@@ -11,7 +11,7 @@ import 'package:wger/models/workouts/day.dart' as _i3;
 import 'package:wger/models/workouts/routine.dart' as _i2;
 import 'package:wger/models/workouts/slot.dart' as _i4;
 import 'package:wger/models/workouts/slot_entry.dart' as _i5;
-import 'package:wger/providers/routines.dart' as _i7;
+import 'package:wger/providers/routines_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -55,14 +55,6 @@ class MockRoutinesRepository extends _i1.Mock implements _i7.RoutinesRepository 
   MockRoutinesRepository() {
     _i1.throwOnMissingStub(this);
   }
-
-  @override
-  _i8.Future<List<_i2.Routine>> fetchAllRoutinesSparseServer() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAllRoutinesSparseServer, []),
-            returnValue: _i8.Future<List<_i2.Routine>>.value(<_i2.Routine>[]),
-          )
-          as _i8.Future<List<_i2.Routine>>);
 
   @override
   _i8.Future<_i2.Routine> fetchAndSetRoutineFullServer(int? routineId) =>

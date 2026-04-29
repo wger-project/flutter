@@ -24,7 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/routine_screen.dart';

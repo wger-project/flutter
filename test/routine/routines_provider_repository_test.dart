@@ -25,7 +25,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_repository.dart';
 
 import '../fixtures/fixture_reader.dart';
 import 'routines_provider_repository_test.mocks.dart';

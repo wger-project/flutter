@@ -23,6 +23,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_repository.dart';
 
 import '../../test_data/routines.dart';
 import '../fake_connectivity.dart';
