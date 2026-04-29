@@ -20,9 +20,11 @@
  * Repository for body weight network operations.
  */
 
+import 'package:drift/drift.dart' show BooleanExpressionOperators;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/session.dart';
 
 import '../database/powersync/database.dart';
 
@@ -47,12 +49,47 @@ class WorkoutLogRepository {
 
   Future<void> updateLocalDrift(Log log) async {
     _logger.finer('Updating local workout log entry ${log.id}');
-    final stmt = _db.update(_db.workoutLogTable)..where((t) => t.id.equals(log.id!));
+    final stmt = _db.update(_db.workoutLogTable)..where((t) => t.id.equals(log.id));
     await stmt.write(log.toCompanion());
   }
 
+  /// Persist a new workout log locally.
+  ///
+  /// If the log was created without a [Log.sessionId], the matching session is
+  /// reused or, if none exists yet, a fresh one is created.
+  ///
+  /// Wrapping both writes in a Drift transaction guarantees atomicity: a
+  /// partial failure either commits both rows or neither, so we never end
+  /// up with an orphan session locally.
   Future<void> addLocalDrift(Log log) async {
     _logger.finer('Adding local workout log entry ${log.date}');
-    await _db.into(_db.workoutLogTable).insert(log.toCompanion());
+
+    await _db.transaction(() async {
+      if (log.sessionId == null) {
+        final dayMidnightUtc = DateTime.utc(log.date.year, log.date.month, log.date.day);
+
+        final existing =
+            await (_db.select(_db.workoutSessionTable)
+                  ..where(
+                    (t) => t.routineId.equals(log.routineId) & t.date.equals(dayMidnightUtc),
+                  )
+                  ..limit(1))
+                .getSingleOrNull();
+
+        if (existing != null) {
+          log.sessionId = existing.id;
+        } else {
+          final newSession = WorkoutSession(
+            routineId: log.routineId,
+            date: dayMidnightUtc,
+          );
+          await _db.into(_db.workoutSessionTable).insert(newSession.toCompanion());
+          log.sessionId = newSession.id;
+          _logger.finer('Created lazy session ${newSession.id} for log ${log.id}');
+        }
+      }
+
+      await _db.into(_db.workoutLogTable).insert(log.toCompanion());
+    });
   }
 }
