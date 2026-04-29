@@ -10,6 +10,8 @@ import 'package:wger/models/exercises/exercise_submission.dart' as _i5;
 import 'package:wger/models/exercises/exercise_submission_images.dart' as _i6;
 import 'package:wger/models/user/profile.dart' as _i2;
 import 'package:wger/providers/add_exercise_repository.dart' as _i3;
+import 'package:wger/providers/exercise_repository.dart' as _i8;
+import 'package:wger/providers/exercises.dart' as _i9;
 import 'package:wger/providers/user_profile_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
@@ -108,4 +110,21 @@ class MockUserProfileRepository extends _i1.Mock implements _i7.UserProfileRepos
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
+}
+
+/// A class which mocks [ExerciseRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockExerciseRepository extends _i1.Mock implements _i8.ExerciseRepository {
+  MockExerciseRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Stream<_i9.ExerciseState> watchAllDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i4.Stream<_i9.ExerciseState>.empty(),
+          )
+          as _i4.Stream<_i9.ExerciseState>);
 }

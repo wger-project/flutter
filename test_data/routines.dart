@@ -149,7 +149,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     slotId: 2,
     type: SlotEntryType.normal,
     order: 1,
-    exerciseId: 8,
+    exerciseId: testExercises[4].id!,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
     weightUnitId: 1,
@@ -171,7 +171,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     slotId: 2,
     type: SlotEntryType.normal,
     order: 1,
-    exerciseId: 8,
+    exerciseId: testExercises[5].id!,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
     weightUnitId: 1,
@@ -325,7 +325,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
           exerciseIds: [testExercises[4].id!],
           setConfigs: [
             SetConfigData(
-              exerciseId: 8,
+              exerciseId: testExercises[4].id!,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -432,10 +432,10 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         SlotData(
           comment: 'Make sure to go deep. Slow down, and push through your heels',
           isSuperset: false,
-          exerciseIds: [8],
+          exerciseIds: [testExercises[4].id!],
           setConfigs: [
             SetConfigData(
-              exerciseId: 8,
+              exerciseId: testExercises[4].id!,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 4,

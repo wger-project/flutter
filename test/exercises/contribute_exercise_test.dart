@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -29,6 +29,7 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise_repository.dart';
 import 'package:wger/providers/core_data.dart';
+import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/user_profile_repository.dart';
@@ -40,31 +41,29 @@ import 'contribute_exercise_test.mocks.dart';
 
 /// Test suite for the exercise-contribution screen.
 ///
-/// Exercises the widget tree with the real `AddExerciseNotifier` + a mocked
-/// repository. The notifier builds with an empty default form state.
-class _FakeExercises extends Exercises {
-  @override
-  Stream<ExerciseState> build() => Stream.value(const ExerciseState(<Exercise>[]));
-}
-
-@GenerateMocks([AddExerciseRepository, UserProfileRepository])
+@GenerateMocks([AddExerciseRepository, UserProfileRepository, ExerciseRepository])
 void main() {
   installFakeConnectivity();
 
   late MockAddExerciseRepository mockAddExerciseRepository;
   late MockUserProfileRepository mockUserProfileRepository;
+  late MockExerciseRepository mockExerciseRepository;
 
   setUp(() {
     mockAddExerciseRepository = MockAddExerciseRepository();
     mockUserProfileRepository = MockUserProfileRepository();
+    mockExerciseRepository = MockExerciseRepository();
     when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => tProfile1);
+    when(
+      mockExerciseRepository.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(const ExerciseState(<Exercise>[])));
   });
 
   Widget createExerciseScreen({locale = 'en', bool isOnline = true}) {
     return ProviderScope(
       overrides: [
         languagesProvider.overrideWith((ref) => Stream<List<Language>>.value(<Language>[])),
-        exercisesProvider.overrideWith(() => _FakeExercises()),
+        exerciseRepositoryProvider.overrideWithValue(mockExerciseRepository),
         exerciseMusclesProvider.overrideWith((ref) => Stream<List<Muscle>>.value(<Muscle>[])),
         exerciseCategoriesProvider.overrideWith(
           (ref) => Stream<List<ExerciseCategory>>.value(<ExerciseCategory>[]),

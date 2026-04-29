@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
@@ -25,6 +24,7 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/wger_base.dart';
 
 part 'exercises.g.dart';
@@ -68,119 +68,9 @@ class Exercises extends _$Exercises {
   @override
   Stream<ExerciseState> build() {
     ref.keepAlive();
-    final db = ref.read(driftPowerSyncDatabase);
     _logger.finer('Building exercise stream');
-
-    final primaryMuscleTable = db.alias(db.muscleTable, 'pm');
-    final secondaryMuscleTable = db.alias(db.muscleTable, 'sm');
-
-    final joined = db.select(db.exerciseTable).join([
-      // Translations
-      leftOuterJoin(
-        db.exerciseTranslationTable,
-        db.exerciseTranslationTable.exerciseId.equalsExp(db.exerciseTable.id),
-      ),
-
-      // Language
-      leftOuterJoin(
-        db.languageTable,
-        db.languageTable.id.equalsExp(db.exerciseTranslationTable.languageId),
-      ),
-
-      // Exercise <-> Muscle
-      leftOuterJoin(
-        db.exerciseMuscleM2N,
-        db.exerciseMuscleM2N.exerciseId.equalsExp(db.exerciseTable.id),
-      ),
-      leftOuterJoin(
-        primaryMuscleTable,
-        primaryMuscleTable.id.equalsExp(db.exerciseMuscleM2N.muscleId),
-      ),
-
-      // Exercise <-> Secondary Muscle
-      leftOuterJoin(
-        db.exerciseSecondaryMuscleM2N,
-        db.exerciseSecondaryMuscleM2N.exerciseId.equalsExp(db.exerciseTable.id),
-      ),
-      leftOuterJoin(
-        secondaryMuscleTable,
-        secondaryMuscleTable.id.equalsExp(db.exerciseSecondaryMuscleM2N.muscleId),
-      ),
-
-      // Exercise <-> Equipment
-      leftOuterJoin(
-        db.exerciseEquipmentM2N,
-        db.exerciseEquipmentM2N.exerciseId.equalsExp(db.exerciseTable.id),
-      ),
-      leftOuterJoin(
-        db.equipmentTable,
-        db.equipmentTable.id.equalsExp(db.exerciseEquipmentM2N.equipmentId),
-      ),
-
-      // Category
-      leftOuterJoin(
-        db.exerciseCategoryTable,
-        db.exerciseCategoryTable.id.equalsExp(db.exerciseTable.categoryId),
-      ),
-
-      // Images
-      leftOuterJoin(
-        db.exerciseImageTable,
-        db.exerciseImageTable.exerciseId.equalsExp(db.exerciseTable.id),
-      ),
-    ]);
-
-    return joined.watch().map((rows) {
-      final Map<int, Exercise> map = {};
-
-      for (final row in rows) {
-        final exercise = row.readTable(db.exerciseTable);
-        final primaryMuscle = row.readTableOrNull(primaryMuscleTable);
-        final secondaryMuscle = row.readTableOrNull(secondaryMuscleTable);
-        final equipment = row.readTableOrNull(db.equipmentTable);
-        final image = row.readTableOrNull(db.exerciseImageTable);
-        final video = row.readTableOrNull(db.exerciseVideoTable);
-        final translation = row.readTableOrNull(db.exerciseTranslationTable);
-        final category = row.readTableOrNull(db.exerciseCategoryTable);
-
-        final entry = map.putIfAbsent(
-          exercise.id,
-          () => exercise,
-        );
-
-        if (category != null) {
-          entry.category = category;
-        }
-
-        if (translation != null && !entry.translations.any((t) => t.id == translation.id)) {
-          translation.language = row.readTable(db.languageTable);
-          entry.translations.add(translation);
-        }
-
-        if (image != null && !entry.images.any((t) => t.id == image.id)) {
-          entry.images.add(image);
-        }
-
-        if (video != null && !entry.videos.any((t) => t.id == video.id)) {
-          entry.videos.add(video);
-        }
-
-        if (equipment != null && !entry.equipment.any((e) => e.id == equipment.id)) {
-          entry.equipment.add(equipment);
-        }
-
-        if (primaryMuscle != null && !entry.muscles.any((m) => m.id == primaryMuscle.id)) {
-          entry.muscles.add(primaryMuscle);
-        }
-
-        if (secondaryMuscle != null &&
-            !entry.musclesSecondary.any((m) => m.id == secondaryMuscle.id)) {
-          entry.musclesSecondary.add(secondaryMuscle);
-        }
-      }
-
-      return ExerciseState(map.values.toList());
-    });
+    final repo = ref.read(exerciseRepositoryProvider);
+    return repo.watchAllDrift();
   }
 
   /*

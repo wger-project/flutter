@@ -26,9 +26,14 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/exercise_repository.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
@@ -37,11 +42,13 @@ import '../../test_data/routines.dart';
 import '../fake_connectivity.dart';
 import './routine_form_test.mocks.dart';
 
-@GenerateMocks([RoutinesRepository])
+@GenerateMocks([RoutinesRepository, WorkoutSessionRepository, ExerciseRepository])
 void main() {
   installFakeConnectivity();
 
   late MockRoutinesRepository mockRoutinesRepository;
+  late MockWorkoutSessionRepository mockSessionRepo;
+  late MockExerciseRepository mockExerciseRepo;
   late StreamController<List<Routine>> routineStream;
   late Routine existingRoutine;
   late Routine newRoutine;
@@ -68,6 +75,19 @@ void main() {
     // Edit + delete now go through Drift instead of REST.
     when(mockRoutinesRepository.editLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRoutinesRepository.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
+
+    // RoutinesRiverpod.build() listens to workoutSessionProvider and
+    // exercisesProvider for session/exercise hydration; stub the
+    // repositories that back them so we don't fall through to the real
+    // PowerSync DB.
+    mockSessionRepo = MockWorkoutSessionRepository();
+    when(
+      mockSessionRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(const <WorkoutSession>[]));
+    mockExerciseRepo = MockExerciseRepository();
+    when(
+      mockExerciseRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(const ExerciseState(<Exercise>[])));
   });
 
   tearDown(() {
@@ -80,6 +100,8 @@ void main() {
     return ProviderScope(
       overrides: [
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
+        workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
+        exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         networkStatusProvider.overrideWithValue(isOnline),
       ],
       child: MaterialApp(

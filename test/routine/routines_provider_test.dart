@@ -17,21 +17,29 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/exercise_repository.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/workout_session_repository.dart';
 
 import '../../test_data/routines.dart';
 import '../fake_connectivity.dart';
 import 'routines_provider_test.mocks.dart';
 
-@GenerateMocks([RoutinesRepository])
+@GenerateMocks([RoutinesRepository, WorkoutSessionRepository, ExerciseRepository])
 void main() {
   late MockRoutinesRepository mockRepo;
+  late MockWorkoutSessionRepository mockSessionRepo;
+  late MockExerciseRepository mockExerciseRepo;
   late Day testDay;
 
   installFakeConnectivity();
@@ -39,6 +47,18 @@ void main() {
   setUp(() {
     mockRepo = MockRoutinesRepository();
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const <Routine>[]));
+    // RoutinesRiverpod.build() listens to workoutSessionProvider and
+    // exercisesProvider for session/exercise hydration; stub the
+    // repositories that back them so we don't fall through to the real
+    // PowerSync DB.
+    mockSessionRepo = MockWorkoutSessionRepository();
+    when(
+      mockSessionRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(const <WorkoutSession>[]));
+    mockExerciseRepo = MockExerciseRepository();
+    when(
+      mockExerciseRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(const ExerciseState(<Exercise>[])));
     testDay = Day(
       id: 15,
       routineId: 101,
@@ -47,6 +67,13 @@ void main() {
     );
   });
 
+  /// Overrides for the providers `RoutinesRiverpod.build()` listens to so
+  /// they don't reach for the real PowerSync DB.
+  List<Override> ambientOverrides() => [
+    workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
+    exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
+  ];
+
   group('test routine methods', () {
     test('addRoutine calls repository (creation still goes via REST)', () async {
       // Arrange
@@ -54,7 +81,10 @@ void main() {
       final created = getTestRoutine();
       when(mockRepo.addRoutineServer(any)).thenAnswer((_) async => created);
       final container = ProviderContainer.test(
-        overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
       );
 
       // Act
@@ -73,7 +103,10 @@ void main() {
       when(mockRepo.addDayServer(any)).thenAnswer((_) async => testDay);
       when(mockRepo.fetchAndSetRoutineFullServer(any)).thenAnswer((_) async => getTestRoutine());
       final container = ProviderContainer.test(
-        overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
       );
 
       // Act
@@ -94,7 +127,10 @@ void main() {
       ).thenAnswer((_) async => getTestRoutine());
 
       final container = ProviderContainer.test(
-        overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
       );
 
       // Act
@@ -123,7 +159,10 @@ void main() {
       when(mockRepo.editDayServer(any)).thenAnswer((_) async => Future.value());
 
       final container = ProviderContainer.test(
-        overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
       );
 
       // Act
@@ -148,7 +187,10 @@ void main() {
         ).thenAnswer((_) async => getTestRoutine());
 
         final container = ProviderContainer.test(
-          overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
+          overrides: [
+            routinesRepositoryProvider.overrideWithValue(mockRepo),
+            ...ambientOverrides(),
+          ],
         );
 
         // Act

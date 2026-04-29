@@ -19,29 +19,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 import '../../test_data/exercises.dart';
 import '../fake_connectivity.dart';
+import 'exercises_detail_widget_test.mocks.dart';
 
-class _FakeExercises extends Exercises {
-  @override
-  Stream<ExerciseState> build() => Stream.value(const ExerciseState(<Exercise>[]));
-}
-
+@GenerateMocks([ExerciseRepository])
 void main() {
   installFakeConnectivity();
+
+  late MockExerciseRepository mockExerciseRepo;
+
+  setUp(() {
+    mockExerciseRepo = MockExerciseRepository();
+    when(
+      mockExerciseRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(const ExerciseState(<Exercise>[])));
+  });
 
   Widget createHomeScreen({locale = 'en'}) {
     return ProviderScope(
       overrides: [
-        exercisesProvider.overrideWith(() => _FakeExercises()),
+        exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         exerciseMusclesProvider.overrideWith((ref) => Stream<List<Muscle>>.value(<Muscle>[])),
         exerciseCategoriesProvider.overrideWith(
           (ref) => Stream<List<ExerciseCategory>>.value(<ExerciseCategory>[]),

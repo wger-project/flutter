@@ -98,14 +98,19 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     _logger.fine('Building Routines Riverpod notifier');
     ref.keepAlive();
 
-    // Top-level routine list comes from PowerSync (Drift stream over
-    // the synced `manager_routine` table). The sub-hierarchy (days,
-    // slots, …) still lives behind REST and is layered on top by
-    // callers via [fetchAndSetRoutineFull]. To prevent those sub-data
-    // from being wiped out every time the stream re-emits the routines
-    // (e.g. after a remote edit), we re-attach them from the previous
-    // state below.
+    // Top-level routine list comes from PowerSync. Two kinds of sub-data are
+    // layered on top:
+    //
+    //   * Plan structure (days, slots, set configs) — fetched via REST by
+    //     [fetchAndSetRoutineFull]; we carry it forward from the previous
+    //     state on every stream emission so a remote edit doesn't wipe it.
+    //   * Sessions + their logs (with `log.exerciseObj` hydrated) — pulled
+    //     in from [workoutSessionProvider] / [exercisesProvider] below.
     final repo = ref.read(routinesRepositoryProvider);
+
+    ref.listen(workoutSessionProvider, (_, _) => _reattachSessions());
+    ref.listen(exercisesProvider, (_, _) => _reattachSessions());
+
     return repo.watchAllDrift().map((freshRoutines) {
       final existing = state.value?.routines ?? const <Routine>[];
       for (final fresh in freshRoutines) {
@@ -114,11 +119,49 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
           fresh.days = old.days;
           fresh.dayData = old.dayData;
           fresh.dayDataGym = old.dayDataGym;
-          fresh.sessions = old.sessions;
         }
       }
+      _hydrateSessions(freshRoutines);
       return RoutinesState(routines: freshRoutines);
     });
+  }
+
+  /// Attaches the latest sessions to each routine and hydrates
+  /// `log.exerciseObj` from the exercise catalogue. No-op if the upstream
+  /// providers haven't produced their first value yet — the listener will
+  /// re-attach as soon as they do.
+  void _hydrateSessions(List<Routine> routines) {
+    final sessions = ref.read(workoutSessionProvider).value ?? const <WorkoutSession>[];
+    final exerciseState = ref.read(exercisesProvider).value;
+    for (final routine in routines) {
+      routine.sessions = sessions.where((s) => s.routineId == routine.id).toList();
+      if (exerciseState == null) {
+        continue;
+      }
+      for (final session in routine.sessions) {
+        for (final log in session.logs) {
+          // Fall back gracefully if the referenced exercise hasn't been
+          // synced yet (rare but possible on a cold start).
+          final exercise = exerciseState.exercises.firstWhereOrNull(
+            (e) => e.id == log.exerciseId,
+          );
+          if (exercise != null) {
+            log.exerciseObj = exercise;
+          }
+        }
+      }
+    }
+  }
+
+  /// Re-runs hydration on the current state and re-emits it. Triggered by
+  /// [ref.listen] on the upstream session/exercise providers.
+  void _reattachSessions() {
+    final current = state.value;
+    if (current == null) {
+      return;
+    }
+    _hydrateSessions(current.routines);
+    state = AsyncData(RoutinesState(routines: List.of(current.routines)));
   }
 
   /*
@@ -134,6 +177,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     final repo = ref.read(routinesRepositoryProvider);
     final created = await repo.addRoutineServer(routine);
     final current = state.value ?? const RoutinesState();
+
     // Re-sort to match Django's `Meta.ordering = ['-start', '-created']` so
     // a freshly-created routine with an older start date doesn't briefly
     // jump to the front before the next stream emission corrects it.

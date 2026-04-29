@@ -25,11 +25,13 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
+import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -48,24 +50,7 @@ import '../../../test_data/routines.dart';
 import '../../fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
-@GenerateMocks([WorkoutSessionRepository])
-class _FakeRoutinesRiverpod extends RoutinesRiverpod {
-  _FakeRoutinesRiverpod(this._routine);
-
-  final Routine _routine;
-
-  @override
-  Stream<RoutinesState> build() => Stream.value(RoutinesState(routines: [_routine]));
-
-  @override
-  Future<Routine> fetchAndSetRoutineFull(int routineId) async => _routine;
-}
-
-class _FakeExercises extends Exercises {
-  @override
-  Stream<ExerciseState> build() => Stream.value(const ExerciseState(<Exercise>[]));
-}
-
+@GenerateMocks([WorkoutSessionRepository, ExerciseRepository, RoutinesRepository])
 void main() {
   installFakeConnectivity();
 
@@ -75,6 +60,8 @@ void main() {
   final testExercises = getTestExercises();
 
   final mockSessionRepo = MockWorkoutSessionRepository();
+  final mockExerciseRepo = MockExerciseRepository();
+  final mockRoutinesRepo = MockRoutinesRepository();
 
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
@@ -83,14 +70,38 @@ void main() {
         controller.add(testRoutine.sessions);
       }),
     );
+    when(
+      mockExerciseRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(ExerciseState(testExercises)));
+
+    // Drift the test routine in via the routines repository — the real
+    // [RoutinesRiverpod] picks it up and exposes it through state.
+    when(
+      mockRoutinesRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value([testRoutine]));
+    // [fetchAndSetRoutineFull] (called by [GymMode._loadGymState] before the
+    // page tree is built) goes back to the server in production; here we
+    // just hand back the same test routine.
+    when(
+      mockRoutinesRepo.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) async => testRoutine);
   });
 
   Widget renderGymMode({locale = 'en'}) {
     return riverpod.ProviderScope(
       overrides: [
-        routinesRiverpodProvider.overrideWith(() => _FakeRoutinesRiverpod(testRoutine)),
-        exercisesProvider.overrideWith(() => _FakeExercises()),
+        routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
+        exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
+        // The repetition + weight unit catalogues are tiny direct-Drift
+        // stream providers — overriding them inline is the established
+        // pattern (see also [exerciseCategoriesProvider] etc.).
+        routineRepetitionUnitProvider.overrideWith(
+          (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),
+        ),
+        routineWeightUnitProvider.overrideWith(
+          (ref) => Stream<List<WeightUnit>>.value(testWeightUnits),
+        ),
       ],
       child: MaterialApp(
         locale: Locale(locale),
