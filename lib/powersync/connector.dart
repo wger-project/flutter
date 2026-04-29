@@ -19,6 +19,7 @@
 // This file performs setup of the PowerSync database
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
@@ -121,6 +122,21 @@ class DjangoConnector extends PowerSyncBackendConnector {
     return DateTime.fromMillisecondsSinceEpoch(exp.toInt() * 1000, isUtc: true);
   }
 
+  /// Date-only fields per table.
+  ///
+  /// PowerSync serialises every SQLite `DateTime` column as an ISO-8601 timestamp
+  /// (e.g. `2024-11-01T00:00:00.000Z`), but Django's `DateField` only accepts
+  /// `YYYY-MM-DD`. For these columns we strip the time component before uploading.
+  ///
+  /// Keep in sync with `models.DateField` columns in the Django side.
+  /// `auto_now_add=True` fields (e.g. `nutrition_nutritionplan.creation_date`)
+  /// are read-only on the serializer and therefore safe to leave out.
+  static const Map<String, Set<String>> _dateOnlyFields = {
+    'manager_routine': {'start', 'end'},
+    'manager_workoutsession': {'date'},
+    'nutrition_nutritionplan': {'start', 'end'},
+  };
+
   /// Transform a record before sending it to the backend.
   ///
   /// Note that PowerSync hands us [op.opData] as native SQLite primitives only
@@ -129,19 +145,36 @@ class DjangoConnector extends PowerSyncBackendConnector {
   ///   * inject the row [id] (PowerSync stores it separately from the
   ///     payload),
   ///   * strip the `_id` suffix from foreign-key column names so the
-  ///     Django serializers see `category` / `routine` / etc.
-  Map<String, dynamic> _genericTransform(Map<String, dynamic>? src, String id) {
+  ///     Django serializers see `category` / `routine` / etc,
+  ///   * trim the time component from date-only fields (see
+  ///     [_dateOnlyFields]).
+  @visibleForTesting
+  Map<String, dynamic> genericTransform(
+    String table,
+    Map<String, dynamic>? src,
+    String id,
+  ) => _genericTransform(table, src, id);
+
+  Map<String, dynamic> _genericTransform(
+    String table,
+    Map<String, dynamic>? src,
+    String id,
+  ) {
     final out = <String, dynamic>{'id': id};
     if (src == null) {
       return out;
     }
+
+    final dateFields = _dateOnlyFields[table] ?? const <String>{};
 
     src.forEach((k, v) {
       if (k == 'id') {
         return;
       }
       final key = k.endsWith('_id') ? k.substring(0, k.length - 3) : k;
-      out[key] = v;
+      out[key] = (dateFields.contains(key) && v is String && v.length >= 10)
+          ? v.substring(0, 10)
+          : v;
     });
     return out;
   }
@@ -161,7 +194,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
       for (final op in transaction.crud) {
         final record = {
           'table': op.table,
-          'data': _genericTransform(op.opData, op.id),
+          'data': _genericTransform(op.table, op.opData, op.id),
           // 'data': {'id': op.id, ...?op.opData},
         };
 
