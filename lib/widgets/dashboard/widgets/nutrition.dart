@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
@@ -68,7 +67,7 @@ class DashboardNutritionWidget extends ConsumerWidget {
     final i18n = AppLocalizations.of(context);
     final notifier = ref.read(nutritionProvider.notifier);
 
-    return AsyncValueWidget<List<NutritionalPlan>>(
+    return AsyncValueWidget<NutritionState>(
       value: ref.watch(nutritionProvider),
       loggerName: 'DashboardNutritionWidget',
       loading: _shell(

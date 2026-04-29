@@ -113,6 +113,32 @@ class MockRoutinesRepository extends _i1.Mock implements _i7.RoutinesRepository 
           as _i8.Future<void>);
 
   @override
+  _i8.Stream<List<_i2.Routine>> watchAllDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i8.Stream<List<_i2.Routine>>.empty(),
+          )
+          as _i8.Stream<List<_i2.Routine>>);
+
+  @override
+  _i8.Future<void> editLocalDrift(_i2.Routine? routine) =>
+      (super.noSuchMethod(
+            Invocation.method(#editLocalDrift, [routine]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> deleteLocalDrift(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDrift, [id]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
   _i8.Future<_i3.Day> addDayServer(_i3.Day? day) =>
       (super.noSuchMethod(
             Invocation.method(#addDayServer, [day]),

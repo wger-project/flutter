@@ -36,7 +36,7 @@ class EntriesList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final plans = ref.watch(nutritionProvider).value ?? const [];
+    final plans = ref.watch(nutritionProvider).value?.plans ?? const [];
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final provider = ref.read(measurementProvider.notifier);
 

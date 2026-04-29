@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/body_weight.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
@@ -103,117 +102,115 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     final notifier = ref.read(nutritionProvider.notifier);
     final isOnline = ref.watch(networkStatusProvider);
 
-    return RefreshIndicator(
-      onRefresh: () => notifier.fetchAndSetAllPlansSparse(),
-      child: AsyncValueWidget<List<NutritionalPlan>>(
-        value: plansAsync,
-        loggerName: 'NutritionalPlansList',
-        data: (plans) {
-          if (plans.isEmpty) {
-            return const TextPrompt();
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.all(10.0),
-            itemCount: plans.length,
-            itemBuilder: (context, index) {
-              final currentPlan = plans[index];
-              return Card(
-                child: ListTile(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(
-                      NutritionalPlanScreen.routeName,
-                      arguments: currentPlan,
-                    );
-                  },
-                  title: Text(currentPlan.getLabel(context)),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        currentPlan.endDate != null
-                            ? 'from ${DateFormat.yMd(
-                                Localizations.localeOf(context).languageCode,
-                              ).format(currentPlan.startDate)} to ${DateFormat.yMd(
-                                Localizations.localeOf(context).languageCode,
-                              ).format(currentPlan.endDate!)}'
-                            : 'from ${DateFormat.yMd(
-                                Localizations.localeOf(context).languageCode,
-                              ).format(currentPlan.startDate)} (open ended)',
-                      ),
-                      _buildWeightChangeInfo(
-                        context,
-                        ref,
-                        currentPlan.startDate,
-                        currentPlan.endDate,
-                      ),
-                    ],
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const VerticalDivider(),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        tooltip: AppLocalizations.of(context).delete,
-                        onPressed: isOnline
-                            ? () async {
-                                // Delete the plan from DB
-                                await showDialog(
-                                  context: context,
-                                  builder: (BuildContext contextDialog) {
-                                    return AlertDialog(
-                                      content: Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        ).confirmDelete(currentPlan.description),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          child: Text(
-                                            MaterialLocalizations.of(context).cancelButtonLabel,
-                                          ),
-                                          onPressed: () => Navigator.of(contextDialog).pop(),
-                                        ),
-                                        TextButton(
-                                          child: Text(
-                                            AppLocalizations.of(context).delete,
-                                            style: TextStyle(
-                                              color: Theme.of(context).colorScheme.error,
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            // Confirmed, delete the plan
-                                            notifier.deletePlan(currentPlan.id!);
-
-                                            // Close the popup
-                                            Navigator.of(contextDialog).pop();
-
-                                            // and inform the user
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  AppLocalizations.of(context).successfullyDeleted,
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            : null,
-                      ),
-                    ],
-                  ),
+    return AsyncValueWidget<NutritionState>(
+      value: plansAsync,
+      loggerName: 'NutritionalPlansList',
+      data: (nutritionState) {
+        final plans = nutritionState.plans;
+        if (plans.isEmpty) {
+          return const TextPrompt();
+        }
+        return ListView.builder(
+          padding: const EdgeInsets.all(10.0),
+          itemCount: plans.length,
+          itemBuilder: (context, index) {
+            final currentPlan = plans[index];
+            return Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    NutritionalPlanScreen.routeName,
+                    arguments: currentPlan,
+                  );
+                },
+                title: Text(currentPlan.getLabel(context)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      currentPlan.endDate != null
+                          ? 'from ${DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode,
+                            ).format(currentPlan.startDate)} to ${DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode,
+                            ).format(currentPlan.endDate!)}'
+                          : 'from ${DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode,
+                            ).format(currentPlan.startDate)} (open ended)',
+                    ),
+                    _buildWeightChangeInfo(
+                      context,
+                      ref,
+                      currentPlan.startDate,
+                      currentPlan.endDate,
+                    ),
+                  ],
                 ),
-              );
-            },
-          );
-        },
-      ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const VerticalDivider(),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      tooltip: AppLocalizations.of(context).delete,
+                      onPressed: isOnline
+                          ? () async {
+                              // Delete the plan from DB
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext contextDialog) {
+                                  return AlertDialog(
+                                    content: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      ).confirmDelete(currentPlan.description),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: Text(
+                                          MaterialLocalizations.of(context).cancelButtonLabel,
+                                        ),
+                                        onPressed: () => Navigator.of(contextDialog).pop(),
+                                      ),
+                                      TextButton(
+                                        child: Text(
+                                          AppLocalizations.of(context).delete,
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.error,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          // Confirmed, delete the plan
+                                          notifier.deletePlan(currentPlan.id!);
+
+                                          // Close the popup
+                                          Navigator.of(contextDialog).pop();
+
+                                          // and inform the user
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                AppLocalizations.of(context).successfullyDeleted,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          : null,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

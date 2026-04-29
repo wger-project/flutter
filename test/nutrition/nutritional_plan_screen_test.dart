@@ -63,9 +63,7 @@ void main() {
     mockNutritionRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
 
-    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
-    // NutritionNotifier.build() auto-fetches plans on first read.
-    when(mockNutritionRepo.fetchAllPlans()).thenAnswer((_) async => []);
+    when(mockNutritionRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const []));
 
     nutritionalPlanInfoResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_info_detail_response.json'),
@@ -85,7 +83,8 @@ void main() {
     ).thenAnswer((_) async => nutritionalPlanDetailResponse);
     when(mockNutritionRepo.fetchPlanFull(any)).thenAnswer((_) async => nutritionalPlanInfoResponse);
     when(mockNutritionRepo.fetchLogsForPlan(any)).thenAnswer((_) async => nutritionDiaryResponse);
-    when(mockNutritionRepo.fetchIngredient(any)).thenAnswer((_) async => fetchedIngredient);
+    // Ingredient lookups now go through PowerSync — stub the local repo.
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => fetchedIngredient);
   });
 
   ProviderContainer makeContainer() {

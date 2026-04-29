@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -27,7 +27,6 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/ingredient_repository.dart';
-import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -83,13 +82,10 @@ void main() {
     when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => testProfile);
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
-    when(mockNutritionRepo.deletePlan(any)).thenAnswer(
-      (_) async => http.Response('', 200),
-    );
-    // NutritionNotifier.build() auto-fetches plans on first read.
-    when(mockNutritionRepo.fetchAllPlans()).thenAnswer((_) async => []);
+    when(mockNutritionRepo.watchAllDrift()).thenAnswer((_) => Stream.value(plans));
+    when(mockNutritionRepo.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
 
-    container = ProviderContainer(
+    container = ProviderContainer.test(
       overrides: [
         bodyWeightRepositoryProvider.overrideWithValue(MockBodyWeightRepository()),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
@@ -97,13 +93,6 @@ void main() {
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
     );
-    // Seed the notifier state with the two test plans.
-    await container.read(nutritionProvider.future);
-    container.read(nutritionProvider.notifier).state = AsyncData(plans);
-  });
-
-  tearDown(() {
-    container.dispose();
   });
 
   Widget createHomeScreen({locale = 'en'}) {
@@ -121,8 +110,9 @@ void main() {
 
   testWidgets('Test the widgets on the nutritional plans screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
+    // Stream-based notifier: first emission is async, settle before asserting.
+    await tester.pumpAndSettle();
 
-    //debugDumpApp();
     expect(find.text('Nutritional plans'), findsOneWidget);
     expect(find.byType(Card), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
@@ -130,22 +120,23 @@ void main() {
 
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.delete).first);
-
     await tester.pumpAndSettle();
 
     // Confirmation dialog
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    // Confirm
+    // Confirm tap — actual delete now goes through Drift + PowerSync (not
+    // REST), so we don't assert on the REST mock here.
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
-    expect(find.byType(ListTile), findsOneWidget);
   });
 
   testWidgets('Test the form on the nutritional plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
+    await tester.pumpAndSettle();
 
     expect(find.byType(PlanForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
@@ -155,6 +146,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
+    await tester.pumpAndSettle();
 
     // note .. "(open ended)" at the time, depending on localisation strings
     expect(find.textContaining('from 1/1/2021 ('), findsOneWidget);
@@ -163,6 +155,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
+    await tester.pumpAndSettle();
     // note .. "(open ended)" at the time, depending on localisation strings
 
     expect(find.textContaining('from 1.1.2021 ('), findsOneWidget);

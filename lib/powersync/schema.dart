@@ -22,6 +22,7 @@ import 'package:wger/database/powersync/tables/ingredient.dart';
 import 'package:wger/database/powersync/tables/language.dart';
 import 'package:wger/database/powersync/tables/license.dart';
 import 'package:wger/database/powersync/tables/measurements.dart';
+import 'package:wger/database/powersync/tables/nutrition.dart';
 import 'package:wger/database/powersync/tables/routines.dart';
 import 'package:wger/database/powersync/tables/weight.dart';
 
@@ -45,6 +46,7 @@ Schema schema = const Schema([
   // Nutrition
   PowersyncIngredientTable,
   PowersyncIngredientImageTable,
+  PowersyncNutritionalPlanTable,
 
   // Body weight
   PowersyncWeightEntryTable,
@@ -54,6 +56,7 @@ Schema schema = const Schema([
   PowersyncMeasurementEntryTable,
 
   // Routines
+  PowersyncRoutineTable,
   PowersyncWorkoutLogTable,
   PowersyncWorkoutSessionTable,
   PowersyncRoutineRepetitionUnitTable,

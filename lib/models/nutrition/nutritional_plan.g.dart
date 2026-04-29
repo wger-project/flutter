@@ -30,6 +30,7 @@ NutritionalPlan _$NutritionalPlanFromJson(Map<String, dynamic> json) {
     startDate: DateTime.parse(json['start'] as String),
     endDate: json['end'] == null ? null : DateTime.parse(json['end'] as String),
     onlyLogging: json['only_logging'] as bool? ?? false,
+    hasGoalCalories: json['has_goal_calories'] as bool? ?? false,
     goalEnergy: json['goal_energy'] as num?,
     goalProtein: json['goal_protein'] as num?,
     goalCarbohydrates: json['goal_carbohydrates'] as num?,
@@ -50,4 +51,5 @@ Map<String, dynamic> _$NutritionalPlanToJson(NutritionalPlan instance) => <Strin
   'goal_carbohydrates': instance.goalCarbohydrates,
   'goal_fat': instance.goalFat,
   'goal_fiber': instance.goalFiber,
+  'has_goal_calories': instance.hasGoalCalories,
 };

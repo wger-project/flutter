@@ -22,6 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/routines.dart';
@@ -29,14 +30,18 @@ import 'package:wger/providers/routines.dart';
 import '../fixtures/fixture_reader.dart';
 import 'routines_provider_repository_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
+@GenerateMocks([WgerBaseProvider, DriftPowersyncDatabase])
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
+  // The repository now takes a Drift database in its constructor, but
+  // none of the REST methods exercised in this file touch it — a plain
+  // mock instance is enough.
+  final mockDb = MockDriftPowersyncDatabase();
 
   group('test the routine provider repository', () {
     test('Test creating a new routine', () async {
       // Arrange
-      final repo = RoutinesRepository(mockBaseProvider);
+      final repo = RoutinesRepository(mockBaseProvider, mockDb);
       final uri = Uri.https('localhost', 'api/v2/routine/');
       when(
         mockBaseProvider.makeUrl('routine'),
@@ -75,7 +80,7 @@ void main() {
       );
 
       // Act
-      final repo = RoutinesRepository(mockBaseProvider);
+      final repo = RoutinesRepository(mockBaseProvider, mockDb);
       await repo.deleteRoutineServer(325397);
       verify(mockBaseProvider.deleteRequest('routine', 325397)).called(1);
     });
@@ -115,7 +120,7 @@ void main() {
         ),
       );
 
-      final repo = RoutinesRepository(mockBaseProvider);
+      final repo = RoutinesRepository(mockBaseProvider, mockDb);
 
       // Act
       final result = await repo.fetchAndSetRoutineFullServer(101);

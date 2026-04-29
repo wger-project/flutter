@@ -102,9 +102,9 @@ Widget createDashboardScreen({Locale? locale}) {
 
   // Seed the nutrition notifier with the screenshot plan so the dashboard can
   // show it without going through the server.
-  container.read(nutritionProvider.notifier).state = AsyncData([
-    getNutritionalPlanScreenshot(),
-  ]);
+  container.read(nutritionProvider.notifier).state = AsyncData(
+    NutritionState(plans: [getNutritionalPlanScreenshot()]),
+  );
 
   return MediaQuery(
     data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(

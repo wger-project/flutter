@@ -1652,6 +1652,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get errorRawSource =>
+      (super.noSuchMethod(
+            Invocation.getter(#errorRawSource),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#errorRawSource),
+            ),
+          )
+          as String);
+
+  @override
   String get errorInfoDescription =>
       (super.noSuchMethod(
             Invocation.getter(#errorInfoDescription),
@@ -2480,6 +2491,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get aboutViewDocsTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#aboutViewDocsTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#aboutViewDocsTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get aboutViewLicensesTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#aboutViewLicensesTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#aboutViewLicensesTitle),
+            ),
+          )
+          as String);
+
+  @override
   String get others =>
       (super.noSuchMethod(
             Invocation.getter(#others),
@@ -2706,6 +2739,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#serverUpdateTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get powerSyncUnreachableTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#powerSyncUnreachableTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#powerSyncUnreachableTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get powerSyncUnreachableContent =>
+      (super.noSuchMethod(
+            Invocation.getter(#powerSyncUnreachableContent),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#powerSyncUnreachableContent),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverUnreachableRetry =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverUnreachableRetry),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverUnreachableRetry),
             ),
           )
           as String);
@@ -4004,6 +4070,116 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#searchLanguageAll),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusConnected =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusConnected),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusConnected),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusConnecting =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusConnecting),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusConnecting),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusDisconnected =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusDisconnected),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusDisconnected),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusUploading =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusUploading),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusUploading),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusDownloading =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusDownloading),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusDownloading),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusSyncing =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusSyncing),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusSyncing),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusError =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusError),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusError),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusDialogTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusDialogTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusDialogTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusLastSynced =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusLastSynced),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusLastSynced),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusErrorDetails =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusErrorDetails),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusErrorDetails),
             ),
           )
           as String);

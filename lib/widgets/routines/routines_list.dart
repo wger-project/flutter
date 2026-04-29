@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,122 +43,119 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
     final routineProvider = ref.read(routinesRiverpodProvider.notifier);
     final routinesAsync = ref.watch(routinesRiverpodProvider);
 
-    return RefreshIndicator(
-      onRefresh: isOnline ? () => routineProvider.fetchAllRoutinesSparse() : () async {},
-      child: AsyncValueWidget<RoutinesState>(
-        value: routinesAsync,
-        loggerName: 'RoutinesList',
-        data: (state) {
-          final routines = state.routines;
-          if (routines.isEmpty) {
-            return const TextPrompt();
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.all(10.0),
-            itemCount: routines.length,
-            itemBuilder: (context, index) {
-              final currentRoutine = routines[index];
+    return AsyncValueWidget<RoutinesState>(
+      value: routinesAsync,
+      loggerName: 'RoutinesList',
+      data: (state) {
+        final routines = state.routines;
+        if (routines.isEmpty) {
+          return const TextPrompt();
+        }
+        return ListView.builder(
+          padding: const EdgeInsets.all(10.0),
+          itemCount: routines.length,
+          itemBuilder: (context, index) {
+            final currentRoutine = routines[index];
 
-              return Card(
-                child: ListTile(
-                  onTap: () async {
-                    setState(() {
-                      _loadingRoutine = currentRoutine.id;
-                    });
-                    try {
-                      await routineProvider.fetchAndSetRoutineFull(currentRoutine.id!);
-                    } finally {
-                      if (mounted) {
-                        setState(() => _loadingRoutine = null);
-                      }
+            return Card(
+              child: ListTile(
+                onTap: () async {
+                  setState(() {
+                    _loadingRoutine = currentRoutine.id;
+                  });
+                  try {
+                    await routineProvider.fetchAndSetRoutineFull(currentRoutine.id!);
+                  } finally {
+                    if (mounted) {
+                      setState(() => _loadingRoutine = null);
                     }
+                  }
 
-                    if (context.mounted) {
-                      Navigator.of(context).pushNamed(
-                        RoutineScreen.routeName,
-                        arguments: currentRoutine.id,
-                      );
-                    }
-                  },
-                  title: Text(currentRoutine.name),
-                  subtitle: Text(
-                    '${dateFormat.format(currentRoutine.start)}'
-                    ' - ${dateFormat.format(currentRoutine.end)}',
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const VerticalDivider(),
-                      if (_loadingRoutine == currentRoutine.id)
-                        const IconButton(
-                          icon: CircularProgressIndicator(),
-                          onPressed: null,
-                        )
-                      else
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          tooltip: AppLocalizations.of(context).delete,
-                          onPressed: isOnline
-                              ? () async {
-                                  // Delete workout from DB
-                                  await showDialog(
-                                    context: context,
-                                    builder: (BuildContext contextDialog) {
-                                      return AlertDialog(
-                                        content: Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          ).confirmDelete(currentRoutine.name),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            child: Text(
-                                              MaterialLocalizations.of(context).cancelButtonLabel,
-                                            ),
-                                            onPressed: () => Navigator.of(contextDialog).pop(),
-                                          ),
-                                          TextButton(
-                                            child: Text(
-                                              AppLocalizations.of(context).delete,
-                                              style: TextStyle(
-                                                color: Theme.of(context).colorScheme.error,
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              // Confirmed, delete the workout
-                                              routineProvider.deleteRoutine(currentRoutine.id!);
-
-                                              // Close the popup
-                                              Navigator.of(contextDialog).pop();
-
-                                              // and inform the user
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    AppLocalizations.of(
-                                                      context,
-                                                    ).successfullyDeleted,
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                }
-                              : null,
-                        ),
-                    ],
-                  ),
+                  if (context.mounted) {
+                    Navigator.of(context).pushNamed(
+                      RoutineScreen.routeName,
+                      arguments: currentRoutine.id,
+                    );
+                  }
+                },
+                title: Text(currentRoutine.name),
+                subtitle: Text(
+                  '${dateFormat.format(currentRoutine.start)}'
+                  ' - ${dateFormat.format(currentRoutine.end)}',
                 ),
-              );
-            },
-          );
-        },
-      ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const VerticalDivider(),
+                    if (_loadingRoutine == currentRoutine.id)
+                      const IconButton(
+                        icon: CircularProgressIndicator(),
+                        onPressed: null,
+                      )
+                    else
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        tooltip: AppLocalizations.of(context).delete,
+                        onPressed: isOnline
+                            ? () async {
+                                // Delete workout from DB
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext contextDialog) {
+                                    return AlertDialog(
+                                      content: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        ).confirmDelete(currentRoutine.name),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          child: Text(
+                                            MaterialLocalizations.of(context).cancelButtonLabel,
+                                          ),
+                                          onPressed: () => Navigator.of(contextDialog).pop(),
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                            AppLocalizations.of(context).delete,
+                                            style: TextStyle(
+                                              color: Theme.of(context).colorScheme.error,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            // Confirmed, delete the workout
+                                            routineProvider.deleteRoutine(currentRoutine.id!);
+
+                                            // Close the popup
+                                            Navigator.of(contextDialog).pop();
+
+                                            // and inform the user
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  AppLocalizations.of(
+                                                    context,
+                                                  ).successfullyDeleted,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            : null,
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -106,8 +106,6 @@ void main() {
     mockRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
 
-    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
-
     when(
       mockRepo.searchIngredientWithBarcode('123'),
     ).thenAnswer((_) => Future.value(ingredient));
@@ -126,11 +124,13 @@ void main() {
     );
 
     when(mockRepo.createMealItem(any)).thenAnswer((_) async => mealItem.toJson());
-    when(mockRepo.fetchIngredient(any)).thenAnswer((_) async => ingredient);
+    // Ingredient lookups now go through PowerSync — stub the local repo.
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => ingredient);
     when(mockRepo.fetchWeightUnits(1)).thenAnswer((_) => Future.value([]));
     when(mockRepo.fetchWeightUnits(2)).thenAnswer((_) => Future.value([]));
-    // NutritionNotifier.build() auto-fetches plans on first read.
-    when(mockRepo.fetchAllPlans()).thenAnswer((_) async => []);
+    // NutritionNotifier.build() now subscribes to a Drift stream — emit the
+    // seed plan directly so addMealItem can look up the meal/plan.
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value([plan1]));
 
     container = ProviderContainer(
       overrides: [
@@ -138,10 +138,11 @@ void main() {
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
     );
-    // Initialize the nutrition notifier and seed with plan1 so that
-    // addMealItem can look up the meal/plan.
-    await container.read(nutritionProvider.future);
-    container.read(nutritionProvider.notifier).state = AsyncData([plan1]);
+    // Explicit listener keeps the provider element alive while we wait for
+    // the Drift-stream emission ([plan1]) to land in state. Required so that
+    // any addMealItem call in the test can resolve the plan via findById.
+    container.listen(nutritionProvider, (_, _) {});
+    await pumpEventQueue();
   });
 
   tearDown(() {
@@ -335,7 +336,7 @@ void main() {
         await tester.enterText(find.byKey(const Key('field-weight')), '2');
 
         // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
-        when(mockRepo.fetchIngredient(1)).thenAnswer(
+        when(mockIngredientRepo.getById(1)).thenAnswer(
           (_) => Future.value(
             Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),
           ),

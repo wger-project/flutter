@@ -1,8 +1,25 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -17,9 +34,8 @@ import 'nutrition_provider_test.mocks.dart';
 
 @GenerateMocks([NutritionRepository, IngredientRepository])
 void main() {
-  // NutritionNotifier watches networkStatusProvider, which calls through to
-  // connectivity_plus. Swap in a fake platform so the plugin's channel call
-  // doesn't throw under the test runner.
+  // The notifier transitively touches the network status provider; keep the
+  // connectivity-plus channel happy.
   installFakeConnectivity();
 
   final now = DateTime.now();
@@ -32,31 +48,40 @@ void main() {
   late Map<String, dynamic> ingredient10065Response;
 
   ProviderContainer makeContainer() {
-    final container = ProviderContainer(
+    return ProviderContainer.test(
       overrides: [
         nutritionRepositoryProvider.overrideWithValue(mockRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
     );
-    addTearDown(container.dispose);
-    return container;
   }
 
-  /// Creates a container whose [nutritionProvider] is seeded with [plans].
+  /// Stubs the Drift stream with a single emission of [plans] and waits for
+  /// the value to land in state
   Future<ProviderContainer> containerWithPlans(List<NutritionalPlan> plans) async {
-    when(mockRepo.fetchAllPlans()).thenAnswer(
-      (_) async => plans.map((p) => p.toJson()).toList(),
-    );
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(plans));
     final container = makeContainer();
-    // Ensure the async build() has run so state is AsyncData(...)
-    await container.read(nutritionProvider.future);
-    await container.read(nutritionProvider.notifier).fetchAndSetAllPlansSparse();
+    // Explicit listener keeps the provider element alive while we wait for
+    // the Drift-stream emission to propagate — in unit tests there is no
+    // widget pump that would do this for us.
+    container.listen(nutritionProvider, (_, _) {});
+    await pumpEventQueue();
     return container;
   }
 
   setUp(() {
     mockRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
+
+    // Default stub: empty stream that never emits. Tests opt-in to seeded
+    // plans via [containerWithPlans]; tests that exercise notifier methods
+    // (addPlan / editPlan / deletePlan) keep this default so that a
+    // concurrent stream emission can't overwrite their optimistic state.
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => const Stream.empty());
+
+    // Edit + delete now go through Drift instead of REST.
+    when(mockRepo.editLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRepo.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
 
     nutritionalPlanInfoResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_info_detail_response.json'),
@@ -71,14 +96,7 @@ void main() {
       fixture('nutrition/ingredientinfo_10065.json'),
     );
 
-    // By default the local ingredient repo has no data - fall back to HTTP.
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
-
-    // NutritionNotifier.build() auto-fetches all plans on first read.
-    // Default to an empty list so tests that don't care about the plan list
-    // don't have to stub it; tests that need real plans override via
-    // [containerWithPlans].
-    when(mockRepo.fetchAllPlans()).thenAnswer((_) async => []);
   });
 
   group('fetchAndSetPlanFull', () {
@@ -93,18 +111,18 @@ void main() {
       when(mockRepo.fetchLogsForPlan(any)).thenAnswer(
         (_) async => nutritionDiaryResponse,
       );
-      when(mockRepo.fetchIngredient(any)).thenAnswer(
+      // Ingredient lookups now go through PowerSync — stub the local repo.
+      when(mockIngredientRepo.getById(any)).thenAnswer(
         (_) async => Ingredient.fromJson(ingredient10065Response),
       );
 
       final container = makeContainer();
-      await container.read(nutritionProvider.future);
 
       // act
       await container.read(nutritionProvider.notifier).fetchAndSetPlanFull(1);
 
       // assert
-      final plans = container.read(nutritionProvider).value ?? const [];
+      final plans = container.read(nutritionProvider).value?.plans ?? const [];
       expect(plans.isEmpty, false);
     });
   });
@@ -230,24 +248,56 @@ void main() {
     });
   });
 
-  group('deletePlan', () {
-    test('removes the plan locally on success', () async {
-      final plan = NutritionalPlan(
-        id: 1,
-        description: 'to delete',
+  group('plan write operations', () {
+    test('addPlan calls repository (creation still goes via REST)', () async {
+      final toAdd = NutritionalPlan(
+        id: null,
+        description: 'New plan',
         startDate: now,
         creationDate: now,
       );
-      final container = await containerWithPlans([plan]);
-
-      when(mockRepo.deletePlan(1)).thenAnswer(
-        (_) async => http.Response('', 204),
+      final created = NutritionalPlan(
+        id: 99,
+        description: 'New plan',
+        startDate: now,
+        creationDate: now,
       );
+      when(mockRepo.createPlan(any)).thenAnswer((_) async => created.toJson());
+
+      // Default `Stream.empty()` from setUp leaves state in AsyncLoading,
+      // which addPlan promotes to AsyncData via its optimistic update.
+      final container = makeContainer();
+      final result = await container.read(nutritionProvider.notifier).addPlan(toAdd);
+
+      verify(mockRepo.createPlan(any)).called(1);
+      expect(result.id, created.id);
+      // Optimistic state injection: the new plan is visible right away.
+      final plans = container.read(nutritionProvider).value?.plans ?? const [];
+      expect(plans.map((p) => p.id), contains(99));
+    });
+
+    test('editPlan delegates to editLocalDrift (PowerSync), not REST', () async {
+      final plan = NutritionalPlan(
+        id: 1,
+        description: 'edit me',
+        startDate: now,
+        creationDate: now,
+      );
+      final container = makeContainer();
+
+      await container.read(nutritionProvider.notifier).editPlan(plan);
+
+      verify(mockRepo.editLocalDrift(plan)).called(1);
+      verifyNever(mockRepo.updatePlan(any, any));
+    });
+
+    test('deletePlan delegates to deleteLocalDrift (PowerSync), not REST', () async {
+      final container = makeContainer();
 
       await container.read(nutritionProvider.notifier).deletePlan(1);
 
-      final plans = container.read(nutritionProvider).value ?? const [];
-      expect(plans, isEmpty);
+      verify(mockRepo.deleteLocalDrift(1)).called(1);
+      verifyNever(mockRepo.deletePlan(any));
     });
   });
 }

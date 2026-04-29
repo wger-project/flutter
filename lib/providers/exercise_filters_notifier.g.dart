@@ -10,31 +10,19 @@ part of 'exercise_filters_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
-/// [filteredExercises] list. Reads the raw data from
-/// [exercisesProvider], [exerciseEquipmentProvider] and
-/// [exerciseCategoriesProvider] but does not mirror them in its own
-/// state — consumers that need those lists should watch those
-/// providers directly.
+/// [filteredExercises] list.
 
 @ProviderFor(ExerciseFiltersNotifier)
 final exerciseFiltersProvider = ExerciseFiltersNotifierProvider._();
 
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
-/// [filteredExercises] list. Reads the raw data from
-/// [exercisesProvider], [exerciseEquipmentProvider] and
-/// [exerciseCategoriesProvider] but does not mirror them in its own
-/// state — consumers that need those lists should watch those
-/// providers directly.
+/// [filteredExercises] list.
 final class ExerciseFiltersNotifierProvider
     extends $NotifierProvider<ExerciseFiltersNotifier, ExerciseFilterState> {
   /// Holds the *UI-side* state for the exercises catalogue screen:
   /// search term, selected categories/equipment, and the resulting
-  /// [filteredExercises] list. Reads the raw data from
-  /// [exercisesProvider], [exerciseEquipmentProvider] and
-  /// [exerciseCategoriesProvider] but does not mirror them in its own
-  /// state — consumers that need those lists should watch those
-  /// providers directly.
+  /// [filteredExercises] list.
   ExerciseFiltersNotifierProvider._()
     : super(
         from: null,
@@ -66,11 +54,7 @@ String _$exerciseFiltersNotifierHash() => r'5fed07a5c73dee7669b32a41f16a8c6439eb
 
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
-/// [filteredExercises] list. Reads the raw data from
-/// [exercisesProvider], [exerciseEquipmentProvider] and
-/// [exerciseCategoriesProvider] but does not mirror them in its own
-/// state — consumers that need those lists should watch those
-/// providers directly.
+/// [filteredExercises] list.
 
 abstract class _$ExerciseFiltersNotifier extends $Notifier<ExerciseFilterState> {
   ExerciseFilterState build();

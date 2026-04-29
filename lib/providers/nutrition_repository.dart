@@ -16,12 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' show OrderingTerm;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
@@ -33,15 +36,22 @@ enum IngredientSearchLanguage {
 
 final nutritionRepositoryProvider = Provider<NutritionRepository>((ref) {
   final base = ref.read(wgerBaseProvider);
-  return NutritionRepository(base);
+  final db = ref.read(driftPowerSyncDatabase);
+  return NutritionRepository(base, db);
 });
 
-/// HTTP-only data access for nutrition-related API endpoints.
+/// Data access for nutrition-related entities.
+///
+/// HTTP for everything that hasn't been migrated to PowerSync yet (creation,
+/// meals, meal items, diary). Top-level [NutritionalPlan] reads as well as
+/// edit/delete go through the local PowerSync-backed Drift table — see
+/// [watchAllDrift], [editLocalDrift], [deleteLocalDrift].
 ///
 /// Local ingredient lookups are handled by [IngredientRepository] (PowerSync).
 class NutritionRepository {
   final _logger = Logger('NutritionRepository');
   final WgerBaseProvider _base;
+  final DriftPowersyncDatabase _db;
 
   static const plansPath = 'nutritionplan';
   static const plansInfoPath = 'nutritionplaninfo';
@@ -51,7 +61,7 @@ class NutritionRepository {
   static const nutritionDiaryPath = 'nutritiondiary';
   static const ingredientWeightUnitPath = 'ingredientweightunit';
 
-  NutritionRepository(this._base);
+  NutritionRepository(this._base, this._db);
 
   // --- Plans ---
 
@@ -86,6 +96,38 @@ class NutritionRepository {
     return _base.deleteRequest(plansPath, id);
   }
 
+  /// Streams all nutritional plans from the local PowerSync-backed Drift table.
+  ///
+  /// Sort matches Django's `NutritionalPlan.Meta.ordering = ['-start']` so
+  /// that REST responses and PowerSync emissions agree on the row order.
+  Stream<List<NutritionalPlan>> watchAllDrift() {
+    _logger.finer('Watching all local nutritional plans');
+    return (_db.select(
+      _db.nutritionalPlanTable,
+    )..orderBy([(t) => OrderingTerm.desc(t.startDate)])).watch();
+  }
+
+  /// Updates a nutritional plan via the local Drift table. PowerSync's CRUD
+  /// queue picks the change up and pushes it to the backend.
+  Future<void> editLocalDrift(NutritionalPlan plan) async {
+    final id = plan.id;
+    if (id == null) {
+      throw StateError('Cannot edit a nutritional plan without id');
+    }
+    _logger.finer('Updating local nutritional plan $id');
+    await (_db.update(
+      _db.nutritionalPlanTable,
+    )..where((t) => t.id.equals(id))).write(plan.toCompanion());
+  }
+
+  /// Deletes a nutritional plan via the local Drift table. Deletion of children
+  /// entities (meals, meal items, diary entries) is handled by the backend via
+  /// FK CASCADE, so we don't have to worry about that here.
+  Future<void> deleteLocalDrift(int id) async {
+    _logger.finer('Deleting local nutritional plan $id');
+    await (_db.delete(_db.nutritionalPlanTable)..where((t) => t.id.equals(id))).go();
+  }
+
   // --- Meals ---
 
   Future<Map<String, dynamic>> createMeal(Map<String, dynamic> data) async {
@@ -112,12 +154,7 @@ class NutritionRepository {
 
   // --- Ingredients ---
 
-  Future<Ingredient> fetchIngredient(int id) async {
-    _logger.info('Fetching ingredient $id from server');
-    final data = await _base.fetch(_base.makeUrl(ingredientInfoPath, id: id));
-    return Ingredient.fromJson(data);
-  }
-
+  // Single-id lookups go through [IngredientRepository]
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',

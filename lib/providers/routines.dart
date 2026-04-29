@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
+import 'package:drift/drift.dart' show OrderingTerm;
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
@@ -31,7 +33,6 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/helpers.dart';
-import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 import 'package:wger/providers/workout_session.dart';
 
@@ -95,45 +96,55 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   final _logger = Logger('RoutinesRiverpod');
 
   @override
-  Future<RoutinesState> build() async {
+  Stream<RoutinesState> build() {
     _logger.fine('Building Routines Riverpod notifier');
+    ref.keepAlive();
 
-    // Auto-retry once the network comes back, but only if we actually failed.
-    // Without the [hasError] guard we'd refetch on every offline → online
-    // flicker, including the cosmetic one that happens during app start when
-    // the connectivity probe briefly reports offline.
-    ref.listen<bool>(networkStatusProvider, (prev, next) {
-      if (prev == false && next == true && state.hasError) {
-        _logger.fine('Network restored after error, re-fetching routines');
-        ref.invalidateSelf();
-      }
-    });
-
-    // Auto-fetch the sparse routine list on first read. Consumers that need
-    // a forced refresh can still call [fetchAllRoutinesSparse] explicitly.
+    // Top-level routine list comes from PowerSync (Drift stream over
+    // the synced `manager_routine` table). The sub-hierarchy (days,
+    // slots, …) still lives behind REST and is layered on top by
+    // callers via [fetchAndSetRoutineFull]. To prevent those sub-data
+    // from being wiped out every time the stream re-emits the routines
+    // (e.g. after a remote edit), we re-attach them from the previous
+    // state below.
     final repo = ref.read(routinesRepositoryProvider);
-    final routines = await repo.fetchAllRoutinesSparseServer();
-    return RoutinesState(routines: routines);
+    return repo.watchAllDrift().map((freshRoutines) {
+      final existing = state.value?.routines ?? const <Routine>[];
+      for (final fresh in freshRoutines) {
+        final old = existing.firstWhereOrNull((r) => r.id == fresh.id);
+        if (old != null) {
+          fresh.days = old.days;
+          fresh.dayData = old.dayData;
+          fresh.dayDataGym = old.dayDataGym;
+          fresh.sessions = old.sessions;
+        }
+      }
+      return RoutinesState(routines: freshRoutines);
+    });
   }
-
-  /// Returns the current state value or a blank default. Callers that
-  /// mutate state should always compose on top of this.
-  RoutinesState _currentOrEmpty() => state.asData?.value ?? const RoutinesState();
 
   /*
    * Routines
    */
-  Future<void> fetchAllRoutinesSparse() async {
-    final repo = ref.read(routinesRepositoryProvider);
-    final routines = await repo.fetchAllRoutinesSparseServer();
-    state = AsyncData(_currentOrEmpty().copyWith(routines: routines));
-  }
-
   Future<Routine> addRoutine(Routine routine) async {
+    // Creation still goes through REST: the backend assigns the integer
+    // PK and any auto-fields (created etc.). PowerSync will eventually
+    // replicate the new row down via the stream, but to avoid a
+    // perceptible UI lag we also inject the freshly-created routine
+    // into state right away. When the stream later re-emits the same
+    // row, build()'s sub-data preservation logic keeps things stable.
     final repo = ref.read(routinesRepositoryProvider);
     final created = await repo.addRoutineServer(routine);
-    final current = _currentOrEmpty();
-    state = AsyncData(current.copyWith(routines: [created, ...current.routines]));
+    final current = state.value ?? const RoutinesState();
+    // Re-sort to match Django's `Meta.ordering = ['-start', '-created']` so
+    // a freshly-created routine with an older start date doesn't briefly
+    // jump to the front before the next stream emission corrects it.
+    final routines = [created, ...current.routines]
+      ..sort((a, b) {
+        final byStart = b.start.compareTo(a.start);
+        return byStart != 0 ? byStart : b.created.compareTo(a.created);
+      });
+    state = AsyncData(current.copyWith(routines: routines));
     return created;
   }
 
@@ -173,8 +184,11 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
       }
     }
 
-    // Update state
-    final current = _currentOrEmpty();
+    // Inject the hydrated routine into the current state. Note: this is
+    // a transient overlay — the next PowerSync stream tick re-emits the
+    // top-level routine (without sub-data), but `build()` re-attaches
+    // sub-data from the previous state, so the hydration survives.
+    final current = state.value ?? const RoutinesState();
     final updatedRoutines = [...current.routines];
     final index = updatedRoutines.indexWhere((r) => r.id == routineId);
     if (index != -1) {
@@ -188,26 +202,17 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   }
 
   Future<void> deleteRoutine(int routineId) async {
+    // Goes through PowerSync (Drift delete → CRUD queue → backend).
+    // Local state picks up the removal on the next stream emission.
     final repo = ref.read(routinesRepositoryProvider);
-    await repo.deleteRoutineServer(routineId);
-
-    final current = _currentOrEmpty();
-    final updatedRoutines = [...current.routines]
-      ..removeWhere((element) => element.id == routineId);
-    state = AsyncData(current.copyWith(routines: updatedRoutines));
+    await repo.deleteLocalDrift(routineId);
   }
 
   Future<void> editRoutine(Routine routine) async {
+    // Goes through PowerSync (Drift update → CRUD queue → backend).
+    // Local state picks up the change on the next stream emission.
     final repo = ref.read(routinesRepositoryProvider);
-    final updatedRoutine = await repo.editRoutineServer(routine);
-
-    final current = _currentOrEmpty();
-    final updatedRoutines = [...current.routines];
-    final index = updatedRoutines.indexWhere((r) => r.id == routine.id);
-    if (index != -1) {
-      updatedRoutines[index] = updatedRoutine;
-      state = AsyncData(current.copyWith(routines: updatedRoutines));
-    }
+    await repo.editLocalDrift(routine);
   }
 
   /*
@@ -324,13 +329,16 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
 @Riverpod(keepAlive: true)
 RoutinesRepository routinesRepository(Ref ref) {
   final baseProvider = ref.watch(wgerBaseProvider);
-  return RoutinesRepository(baseProvider);
+  final db = ref.read(driftPowerSyncDatabase);
+  return RoutinesRepository(baseProvider, db);
 }
 
 class RoutinesRepository {
-  RoutinesRepository(this._baseProvider);
+  RoutinesRepository(this._baseProvider, this._db);
 
+  final _logger = Logger('RoutinesRepository');
   final WgerBaseProvider _baseProvider;
+  final DriftPowersyncDatabase _db;
   static const _routinesUrlPath = 'routine';
   static const _routinesStructureSubpath = 'structure';
   static const _routinesDateSequenceDisplaySubpath = 'date-sequence-display';
@@ -352,17 +360,6 @@ class RoutinesRepository {
   /*
    * Routines
    */
-  Future<List<Routine>> fetchAllRoutinesSparseServer() async {
-    final data = await _baseProvider.fetch(
-      _baseProvider.makeUrl(
-        _routinesUrlPath,
-        query: {'limit': '1000', 'is_template': 'false'},
-      ),
-    );
-    final results = data['results'] as List;
-    return results.map((json) => Routine.fromJson(json)).toList();
-  }
-
   Future<Routine> fetchAndSetRoutineFullServer(int routineId) async {
     // Fetch structure and computed data
     final results = await Future.wait([
@@ -417,6 +414,39 @@ class RoutinesRepository {
 
   Future<void> deleteRoutineServer(int id) async {
     await _baseProvider.deleteRequest(_routinesUrlPath, id);
+  }
+
+  /// Streams all routines from the local PowerSync-backed Drift table.
+  ///
+  /// Sort matches Django's `Routine.Meta.ordering = ['-start', '-created']` so
+  /// that REST responses and PowerSync emissions agree on the row order. The
+  /// UI takes the first row as the active routine ([RoutinesState.currentRoutine])
+  /// and [addRoutine]'s optimistic insertion assumes newest-first.
+  Stream<List<Routine>> watchAllDrift() {
+    _logger.finer('Watching all local routines');
+    return (_db.select(_db.routineTable)..orderBy([
+          (t) => OrderingTerm.desc(t.start),
+          (t) => OrderingTerm.desc(t.created),
+        ]))
+        .watch();
+  }
+
+  /// Updates a routine via the local Drift table
+  Future<void> editLocalDrift(Routine routine) async {
+    final id = routine.id;
+    if (id == null) {
+      throw StateError('Cannot edit a routine without id');
+    }
+    _logger.finer('Updating local routine $id');
+    await (_db.update(
+      _db.routineTable,
+    )..where((t) => t.id.equals(id))).write(routine.toCompanion());
+  }
+
+  /// Deletes a routine via the local Drift table
+  Future<void> deleteLocalDrift(int id) async {
+    _logger.finer('Deleting local routine $id');
+    await (_db.delete(_db.routineTable)..where((t) => t.id.equals(id))).go();
   }
 
   /*

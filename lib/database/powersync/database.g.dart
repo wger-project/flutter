@@ -3696,6 +3696,410 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
   }
 }
 
+class $RoutineTableTable extends RoutineTable with TableInfo<$RoutineTableTable, Routine> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoutineTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdMeta = const VerificationMeta(
+    'created',
+  );
+  @override
+  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
+    'created',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startMeta = const VerificationMeta('start');
+  @override
+  late final GeneratedColumn<DateTime> start = GeneratedColumn<DateTime>(
+    'start',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endMeta = const VerificationMeta('end');
+  @override
+  late final GeneratedColumn<DateTime> end = GeneratedColumn<DateTime>(
+    'end',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isTemplateMeta = const VerificationMeta(
+    'isTemplate',
+  );
+  @override
+  late final GeneratedColumn<bool> isTemplate = GeneratedColumn<bool>(
+    'is_template',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_template" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _isPublicMeta = const VerificationMeta(
+    'isPublic',
+  );
+  @override
+  late final GeneratedColumn<bool> isPublic = GeneratedColumn<bool>(
+    'is_public',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_public" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _fitInWeekMeta = const VerificationMeta(
+    'fitInWeek',
+  );
+  @override
+  late final GeneratedColumn<bool> fitInWeek = GeneratedColumn<bool>(
+    'fit_in_week',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("fit_in_week" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    description,
+    created,
+    start,
+    end,
+    isTemplate,
+    isPublic,
+    fitInWeek,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'manager_routine';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Routine> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('created')) {
+      context.handle(
+        _createdMeta,
+        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdMeta);
+    }
+    if (data.containsKey('start')) {
+      context.handle(
+        _startMeta,
+        start.isAcceptableOrUnknown(data['start']!, _startMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startMeta);
+    }
+    if (data.containsKey('end')) {
+      context.handle(
+        _endMeta,
+        end.isAcceptableOrUnknown(data['end']!, _endMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_endMeta);
+    }
+    if (data.containsKey('is_template')) {
+      context.handle(
+        _isTemplateMeta,
+        isTemplate.isAcceptableOrUnknown(data['is_template']!, _isTemplateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isTemplateMeta);
+    }
+    if (data.containsKey('is_public')) {
+      context.handle(
+        _isPublicMeta,
+        isPublic.isAcceptableOrUnknown(data['is_public']!, _isPublicMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isPublicMeta);
+    }
+    if (data.containsKey('fit_in_week')) {
+      context.handle(
+        _fitInWeekMeta,
+        fitInWeek.isAcceptableOrUnknown(data['fit_in_week']!, _fitInWeekMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fitInWeekMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  Routine map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Routine(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      start: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start'],
+      )!,
+      end: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end'],
+      )!,
+      fitInWeek: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}fit_in_week'],
+      )!,
+      isTemplate: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_template'],
+      )!,
+      isPublic: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_public'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+    );
+  }
+
+  @override
+  $RoutineTableTable createAlias(String alias) {
+    return $RoutineTableTable(attachedDatabase, alias);
+  }
+}
+
+class RoutineTableCompanion extends UpdateCompanion<Routine> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<DateTime> created;
+  final Value<DateTime> start;
+  final Value<DateTime> end;
+  final Value<bool> isTemplate;
+  final Value<bool> isPublic;
+  final Value<bool> fitInWeek;
+  final Value<int> rowid;
+  const RoutineTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.created = const Value.absent(),
+    this.start = const Value.absent(),
+    this.end = const Value.absent(),
+    this.isTemplate = const Value.absent(),
+    this.isPublic = const Value.absent(),
+    this.fitInWeek = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RoutineTableCompanion.insert({
+    required int id,
+    required String name,
+    required String description,
+    required DateTime created,
+    required DateTime start,
+    required DateTime end,
+    required bool isTemplate,
+    required bool isPublic,
+    required bool fitInWeek,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       description = Value(description),
+       created = Value(created),
+       start = Value(start),
+       end = Value(end),
+       isTemplate = Value(isTemplate),
+       isPublic = Value(isPublic),
+       fitInWeek = Value(fitInWeek);
+  static Insertable<Routine> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<DateTime>? created,
+    Expression<DateTime>? start,
+    Expression<DateTime>? end,
+    Expression<bool>? isTemplate,
+    Expression<bool>? isPublic,
+    Expression<bool>? fitInWeek,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (created != null) 'created': created,
+      if (start != null) 'start': start,
+      if (end != null) 'end': end,
+      if (isTemplate != null) 'is_template': isTemplate,
+      if (isPublic != null) 'is_public': isPublic,
+      if (fitInWeek != null) 'fit_in_week': fitInWeek,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RoutineTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String>? description,
+    Value<DateTime>? created,
+    Value<DateTime>? start,
+    Value<DateTime>? end,
+    Value<bool>? isTemplate,
+    Value<bool>? isPublic,
+    Value<bool>? fitInWeek,
+    Value<int>? rowid,
+  }) {
+    return RoutineTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      created: created ?? this.created,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      isTemplate: isTemplate ?? this.isTemplate,
+      isPublic: isPublic ?? this.isPublic,
+      fitInWeek: fitInWeek ?? this.fitInWeek,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (created.present) {
+      map['created'] = Variable<DateTime>(created.value);
+    }
+    if (start.present) {
+      map['start'] = Variable<DateTime>(start.value);
+    }
+    if (end.present) {
+      map['end'] = Variable<DateTime>(end.value);
+    }
+    if (isTemplate.present) {
+      map['is_template'] = Variable<bool>(isTemplate.value);
+    }
+    if (isPublic.present) {
+      map['is_public'] = Variable<bool>(isPublic.value);
+    }
+    if (fitInWeek.present) {
+      map['fit_in_week'] = Variable<bool>(fitInWeek.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoutineTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('created: $created, ')
+          ..write('start: $start, ')
+          ..write('end: $end, ')
+          ..write('isTemplate: $isTemplate, ')
+          ..write('isPublic: $isPublic, ')
+          ..write('fitInWeek: $fitInWeek, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTableTable, Log> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -4897,6 +5301,519 @@ class RoutineWeightUnitTableCompanion extends UpdateCompanion<WeightUnit> {
     return (StringBuffer('RoutineWeightUnitTableCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $NutritionalPlanTableTable extends NutritionalPlanTable
+    with TableInfo<$NutritionalPlanTableTable, NutritionalPlan> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NutritionalPlanTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _creationDateMeta = const VerificationMeta(
+    'creationDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> creationDate = GeneratedColumn<DateTime>(
+    'creation_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startDateMeta = const VerificationMeta(
+    'startDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
+    'start',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endDateMeta = const VerificationMeta(
+    'endDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
+    'end',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _onlyLoggingMeta = const VerificationMeta(
+    'onlyLogging',
+  );
+  @override
+  late final GeneratedColumn<bool> onlyLogging = GeneratedColumn<bool>(
+    'only_logging',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("only_logging" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _goalEnergyMeta = const VerificationMeta(
+    'goalEnergy',
+  );
+  @override
+  late final GeneratedColumn<int> goalEnergy = GeneratedColumn<int>(
+    'goal_energy',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _goalProteinMeta = const VerificationMeta(
+    'goalProtein',
+  );
+  @override
+  late final GeneratedColumn<int> goalProtein = GeneratedColumn<int>(
+    'goal_protein',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _goalCarbohydratesMeta = const VerificationMeta(
+    'goalCarbohydrates',
+  );
+  @override
+  late final GeneratedColumn<int> goalCarbohydrates = GeneratedColumn<int>(
+    'goal_carbohydrates',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _goalFiberMeta = const VerificationMeta(
+    'goalFiber',
+  );
+  @override
+  late final GeneratedColumn<int> goalFiber = GeneratedColumn<int>(
+    'goal_fiber',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _goalFatMeta = const VerificationMeta(
+    'goalFat',
+  );
+  @override
+  late final GeneratedColumn<int> goalFat = GeneratedColumn<int>(
+    'goal_fat',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hasGoalCaloriesMeta = const VerificationMeta(
+    'hasGoalCalories',
+  );
+  @override
+  late final GeneratedColumn<bool> hasGoalCalories = GeneratedColumn<bool>(
+    'has_goal_calories',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("has_goal_calories" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    description,
+    creationDate,
+    startDate,
+    endDate,
+    onlyLogging,
+    goalEnergy,
+    goalProtein,
+    goalCarbohydrates,
+    goalFiber,
+    goalFat,
+    hasGoalCalories,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'nutrition_nutritionplan';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NutritionalPlan> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('creation_date')) {
+      context.handle(
+        _creationDateMeta,
+        creationDate.isAcceptableOrUnknown(
+          data['creation_date']!,
+          _creationDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_creationDateMeta);
+    }
+    if (data.containsKey('start')) {
+      context.handle(
+        _startDateMeta,
+        startDate.isAcceptableOrUnknown(data['start']!, _startDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startDateMeta);
+    }
+    if (data.containsKey('end')) {
+      context.handle(
+        _endDateMeta,
+        endDate.isAcceptableOrUnknown(data['end']!, _endDateMeta),
+      );
+    }
+    if (data.containsKey('only_logging')) {
+      context.handle(
+        _onlyLoggingMeta,
+        onlyLogging.isAcceptableOrUnknown(
+          data['only_logging']!,
+          _onlyLoggingMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_onlyLoggingMeta);
+    }
+    if (data.containsKey('goal_energy')) {
+      context.handle(
+        _goalEnergyMeta,
+        goalEnergy.isAcceptableOrUnknown(data['goal_energy']!, _goalEnergyMeta),
+      );
+    }
+    if (data.containsKey('goal_protein')) {
+      context.handle(
+        _goalProteinMeta,
+        goalProtein.isAcceptableOrUnknown(
+          data['goal_protein']!,
+          _goalProteinMeta,
+        ),
+      );
+    }
+    if (data.containsKey('goal_carbohydrates')) {
+      context.handle(
+        _goalCarbohydratesMeta,
+        goalCarbohydrates.isAcceptableOrUnknown(
+          data['goal_carbohydrates']!,
+          _goalCarbohydratesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('goal_fiber')) {
+      context.handle(
+        _goalFiberMeta,
+        goalFiber.isAcceptableOrUnknown(data['goal_fiber']!, _goalFiberMeta),
+      );
+    }
+    if (data.containsKey('goal_fat')) {
+      context.handle(
+        _goalFatMeta,
+        goalFat.isAcceptableOrUnknown(data['goal_fat']!, _goalFatMeta),
+      );
+    }
+    if (data.containsKey('has_goal_calories')) {
+      context.handle(
+        _hasGoalCaloriesMeta,
+        hasGoalCalories.isAcceptableOrUnknown(
+          data['has_goal_calories']!,
+          _hasGoalCaloriesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_hasGoalCaloriesMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  NutritionalPlan map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NutritionalPlan(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      creationDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}creation_date'],
+      )!,
+      startDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start'],
+      )!,
+      endDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end'],
+      ),
+      onlyLogging: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}only_logging'],
+      )!,
+      hasGoalCalories: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}has_goal_calories'],
+      )!,
+      goalEnergy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}goal_energy'],
+      ),
+      goalProtein: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}goal_protein'],
+      ),
+      goalCarbohydrates: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}goal_carbohydrates'],
+      ),
+      goalFat: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}goal_fat'],
+      ),
+      goalFiber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}goal_fiber'],
+      ),
+    );
+  }
+
+  @override
+  $NutritionalPlanTableTable createAlias(String alias) {
+    return $NutritionalPlanTableTable(attachedDatabase, alias);
+  }
+}
+
+class NutritionalPlanTableCompanion extends UpdateCompanion<NutritionalPlan> {
+  final Value<int> id;
+  final Value<String> description;
+  final Value<DateTime> creationDate;
+  final Value<DateTime> startDate;
+  final Value<DateTime?> endDate;
+  final Value<bool> onlyLogging;
+  final Value<int?> goalEnergy;
+  final Value<int?> goalProtein;
+  final Value<int?> goalCarbohydrates;
+  final Value<int?> goalFiber;
+  final Value<int?> goalFat;
+  final Value<bool> hasGoalCalories;
+  final Value<int> rowid;
+  const NutritionalPlanTableCompanion({
+    this.id = const Value.absent(),
+    this.description = const Value.absent(),
+    this.creationDate = const Value.absent(),
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
+    this.onlyLogging = const Value.absent(),
+    this.goalEnergy = const Value.absent(),
+    this.goalProtein = const Value.absent(),
+    this.goalCarbohydrates = const Value.absent(),
+    this.goalFiber = const Value.absent(),
+    this.goalFat = const Value.absent(),
+    this.hasGoalCalories = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  NutritionalPlanTableCompanion.insert({
+    required int id,
+    required String description,
+    required DateTime creationDate,
+    required DateTime startDate,
+    this.endDate = const Value.absent(),
+    required bool onlyLogging,
+    this.goalEnergy = const Value.absent(),
+    this.goalProtein = const Value.absent(),
+    this.goalCarbohydrates = const Value.absent(),
+    this.goalFiber = const Value.absent(),
+    this.goalFat = const Value.absent(),
+    required bool hasGoalCalories,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       description = Value(description),
+       creationDate = Value(creationDate),
+       startDate = Value(startDate),
+       onlyLogging = Value(onlyLogging),
+       hasGoalCalories = Value(hasGoalCalories);
+  static Insertable<NutritionalPlan> custom({
+    Expression<int>? id,
+    Expression<String>? description,
+    Expression<DateTime>? creationDate,
+    Expression<DateTime>? startDate,
+    Expression<DateTime>? endDate,
+    Expression<bool>? onlyLogging,
+    Expression<int>? goalEnergy,
+    Expression<int>? goalProtein,
+    Expression<int>? goalCarbohydrates,
+    Expression<int>? goalFiber,
+    Expression<int>? goalFat,
+    Expression<bool>? hasGoalCalories,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (description != null) 'description': description,
+      if (creationDate != null) 'creation_date': creationDate,
+      if (startDate != null) 'start': startDate,
+      if (endDate != null) 'end': endDate,
+      if (onlyLogging != null) 'only_logging': onlyLogging,
+      if (goalEnergy != null) 'goal_energy': goalEnergy,
+      if (goalProtein != null) 'goal_protein': goalProtein,
+      if (goalCarbohydrates != null) 'goal_carbohydrates': goalCarbohydrates,
+      if (goalFiber != null) 'goal_fiber': goalFiber,
+      if (goalFat != null) 'goal_fat': goalFat,
+      if (hasGoalCalories != null) 'has_goal_calories': hasGoalCalories,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  NutritionalPlanTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? description,
+    Value<DateTime>? creationDate,
+    Value<DateTime>? startDate,
+    Value<DateTime?>? endDate,
+    Value<bool>? onlyLogging,
+    Value<int?>? goalEnergy,
+    Value<int?>? goalProtein,
+    Value<int?>? goalCarbohydrates,
+    Value<int?>? goalFiber,
+    Value<int?>? goalFat,
+    Value<bool>? hasGoalCalories,
+    Value<int>? rowid,
+  }) {
+    return NutritionalPlanTableCompanion(
+      id: id ?? this.id,
+      description: description ?? this.description,
+      creationDate: creationDate ?? this.creationDate,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      onlyLogging: onlyLogging ?? this.onlyLogging,
+      goalEnergy: goalEnergy ?? this.goalEnergy,
+      goalProtein: goalProtein ?? this.goalProtein,
+      goalCarbohydrates: goalCarbohydrates ?? this.goalCarbohydrates,
+      goalFiber: goalFiber ?? this.goalFiber,
+      goalFat: goalFat ?? this.goalFat,
+      hasGoalCalories: hasGoalCalories ?? this.hasGoalCalories,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (creationDate.present) {
+      map['creation_date'] = Variable<DateTime>(creationDate.value);
+    }
+    if (startDate.present) {
+      map['start'] = Variable<DateTime>(startDate.value);
+    }
+    if (endDate.present) {
+      map['end'] = Variable<DateTime>(endDate.value);
+    }
+    if (onlyLogging.present) {
+      map['only_logging'] = Variable<bool>(onlyLogging.value);
+    }
+    if (goalEnergy.present) {
+      map['goal_energy'] = Variable<int>(goalEnergy.value);
+    }
+    if (goalProtein.present) {
+      map['goal_protein'] = Variable<int>(goalProtein.value);
+    }
+    if (goalCarbohydrates.present) {
+      map['goal_carbohydrates'] = Variable<int>(goalCarbohydrates.value);
+    }
+    if (goalFiber.present) {
+      map['goal_fiber'] = Variable<int>(goalFiber.value);
+    }
+    if (goalFat.present) {
+      map['goal_fat'] = Variable<int>(goalFat.value);
+    }
+    if (hasGoalCalories.present) {
+      map['has_goal_calories'] = Variable<bool>(hasGoalCalories.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NutritionalPlanTableCompanion(')
+          ..write('id: $id, ')
+          ..write('description: $description, ')
+          ..write('creationDate: $creationDate, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate, ')
+          ..write('onlyLogging: $onlyLogging, ')
+          ..write('goalEnergy: $goalEnergy, ')
+          ..write('goalProtein: $goalProtein, ')
+          ..write('goalCarbohydrates: $goalCarbohydrates, ')
+          ..write('goalFiber: $goalFiber, ')
+          ..write('goalFat: $goalFat, ')
+          ..write('hasGoalCalories: $hasGoalCalories, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6181,6 +7098,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   late final $MeasurementCategoryTableTable measurementCategoryTable =
       $MeasurementCategoryTableTable(this);
   late final $MeasurementEntryTableTable measurementEntryTable = $MeasurementEntryTableTable(this);
+  late final $RoutineTableTable routineTable = $RoutineTableTable(this);
   late final $WorkoutLogTableTable workoutLogTable = $WorkoutLogTableTable(
     this,
   );
@@ -6190,6 +7108,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   late final $RoutineWeightUnitTableTable routineWeightUnitTable = $RoutineWeightUnitTableTable(
     this,
   );
+  late final $NutritionalPlanTableTable nutritionalPlanTable = $NutritionalPlanTableTable(this);
   late final $IngredientTableTable ingredientTable = $IngredientTableTable(
     this,
   );
@@ -6214,10 +7133,12 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     weightEntryTable,
     measurementCategoryTable,
     measurementEntryTable,
+    routineTable,
     workoutLogTable,
     workoutSessionTable,
     routineRepetitionUnitTable,
     routineWeightUnitTable,
+    nutritionalPlanTable,
     ingredientTable,
     ingredientImageTable,
   ];
@@ -11685,6 +12606,284 @@ typedef $$MeasurementEntryTableTableProcessedTableManager =
       MeasurementEntry,
       PrefetchHooks Function({bool categoryId})
     >;
+typedef $$RoutineTableTableCreateCompanionBuilder =
+    RoutineTableCompanion Function({
+      required int id,
+      required String name,
+      required String description,
+      required DateTime created,
+      required DateTime start,
+      required DateTime end,
+      required bool isTemplate,
+      required bool isPublic,
+      required bool fitInWeek,
+      Value<int> rowid,
+    });
+typedef $$RoutineTableTableUpdateCompanionBuilder =
+    RoutineTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String> description,
+      Value<DateTime> created,
+      Value<DateTime> start,
+      Value<DateTime> end,
+      Value<bool> isTemplate,
+      Value<bool> isPublic,
+      Value<bool> fitInWeek,
+      Value<int> rowid,
+    });
+
+class $$RoutineTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $RoutineTableTable> {
+  $$RoutineTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get start => $composableBuilder(
+    column: $table.start,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get end => $composableBuilder(
+    column: $table.end,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isTemplate => $composableBuilder(
+    column: $table.isTemplate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPublic => $composableBuilder(
+    column: $table.isPublic,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get fitInWeek => $composableBuilder(
+    column: $table.fitInWeek,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RoutineTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $RoutineTableTable> {
+  $$RoutineTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get start => $composableBuilder(
+    column: $table.start,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get end => $composableBuilder(
+    column: $table.end,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isTemplate => $composableBuilder(
+    column: $table.isTemplate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPublic => $composableBuilder(
+    column: $table.isPublic,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get fitInWeek => $composableBuilder(
+    column: $table.fitInWeek,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RoutineTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $RoutineTableTable> {
+  $$RoutineTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get created =>
+      $composableBuilder(column: $table.created, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get start =>
+      $composableBuilder(column: $table.start, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get end =>
+      $composableBuilder(column: $table.end, builder: (column) => column);
+
+  GeneratedColumn<bool> get isTemplate => $composableBuilder(
+    column: $table.isTemplate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isPublic =>
+      $composableBuilder(column: $table.isPublic, builder: (column) => column);
+
+  GeneratedColumn<bool> get fitInWeek =>
+      $composableBuilder(column: $table.fitInWeek, builder: (column) => column);
+}
+
+class $$RoutineTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $RoutineTableTable,
+          Routine,
+          $$RoutineTableTableFilterComposer,
+          $$RoutineTableTableOrderingComposer,
+          $$RoutineTableTableAnnotationComposer,
+          $$RoutineTableTableCreateCompanionBuilder,
+          $$RoutineTableTableUpdateCompanionBuilder,
+          (
+            Routine,
+            BaseReferences<_$DriftPowersyncDatabase, $RoutineTableTable, Routine>,
+          ),
+          Routine,
+          PrefetchHooks Function()
+        > {
+  $$RoutineTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $RoutineTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$RoutineTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$RoutineTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoutineTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<DateTime> created = const Value.absent(),
+                Value<DateTime> start = const Value.absent(),
+                Value<DateTime> end = const Value.absent(),
+                Value<bool> isTemplate = const Value.absent(),
+                Value<bool> isPublic = const Value.absent(),
+                Value<bool> fitInWeek = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RoutineTableCompanion(
+                id: id,
+                name: name,
+                description: description,
+                created: created,
+                start: start,
+                end: end,
+                isTemplate: isTemplate,
+                isPublic: isPublic,
+                fitInWeek: fitInWeek,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String name,
+                required String description,
+                required DateTime created,
+                required DateTime start,
+                required DateTime end,
+                required bool isTemplate,
+                required bool isPublic,
+                required bool fitInWeek,
+                Value<int> rowid = const Value.absent(),
+              }) => RoutineTableCompanion.insert(
+                id: id,
+                name: name,
+                description: description,
+                created: created,
+                start: start,
+                end: end,
+                isTemplate: isTemplate,
+                isPublic: isPublic,
+                fitInWeek: fitInWeek,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RoutineTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $RoutineTableTable,
+      Routine,
+      $$RoutineTableTableFilterComposer,
+      $$RoutineTableTableOrderingComposer,
+      $$RoutineTableTableAnnotationComposer,
+      $$RoutineTableTableCreateCompanionBuilder,
+      $$RoutineTableTableUpdateCompanionBuilder,
+      (
+        Routine,
+        BaseReferences<_$DriftPowersyncDatabase, $RoutineTableTable, Routine>,
+      ),
+      Routine,
+      PrefetchHooks Function()
+    >;
 typedef $$WorkoutLogTableTableCreateCompanionBuilder =
     WorkoutLogTableCompanion Function({
       Value<String> id,
@@ -12654,6 +13853,357 @@ typedef $$RoutineWeightUnitTableTableProcessedTableManager =
         BaseReferences<_$DriftPowersyncDatabase, $RoutineWeightUnitTableTable, WeightUnit>,
       ),
       WeightUnit,
+      PrefetchHooks Function()
+    >;
+typedef $$NutritionalPlanTableTableCreateCompanionBuilder =
+    NutritionalPlanTableCompanion Function({
+      required int id,
+      required String description,
+      required DateTime creationDate,
+      required DateTime startDate,
+      Value<DateTime?> endDate,
+      required bool onlyLogging,
+      Value<int?> goalEnergy,
+      Value<int?> goalProtein,
+      Value<int?> goalCarbohydrates,
+      Value<int?> goalFiber,
+      Value<int?> goalFat,
+      required bool hasGoalCalories,
+      Value<int> rowid,
+    });
+typedef $$NutritionalPlanTableTableUpdateCompanionBuilder =
+    NutritionalPlanTableCompanion Function({
+      Value<int> id,
+      Value<String> description,
+      Value<DateTime> creationDate,
+      Value<DateTime> startDate,
+      Value<DateTime?> endDate,
+      Value<bool> onlyLogging,
+      Value<int?> goalEnergy,
+      Value<int?> goalProtein,
+      Value<int?> goalCarbohydrates,
+      Value<int?> goalFiber,
+      Value<int?> goalFat,
+      Value<bool> hasGoalCalories,
+      Value<int> rowid,
+    });
+
+class $$NutritionalPlanTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $NutritionalPlanTableTable> {
+  $$NutritionalPlanTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get creationDate => $composableBuilder(
+    column: $table.creationDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endDate => $composableBuilder(
+    column: $table.endDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get onlyLogging => $composableBuilder(
+    column: $table.onlyLogging,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get goalEnergy => $composableBuilder(
+    column: $table.goalEnergy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get goalProtein => $composableBuilder(
+    column: $table.goalProtein,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get goalCarbohydrates => $composableBuilder(
+    column: $table.goalCarbohydrates,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get goalFiber => $composableBuilder(
+    column: $table.goalFiber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get goalFat => $composableBuilder(
+    column: $table.goalFat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hasGoalCalories => $composableBuilder(
+    column: $table.hasGoalCalories,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NutritionalPlanTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $NutritionalPlanTableTable> {
+  $$NutritionalPlanTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get creationDate => $composableBuilder(
+    column: $table.creationDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endDate => $composableBuilder(
+    column: $table.endDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get onlyLogging => $composableBuilder(
+    column: $table.onlyLogging,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get goalEnergy => $composableBuilder(
+    column: $table.goalEnergy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get goalProtein => $composableBuilder(
+    column: $table.goalProtein,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get goalCarbohydrates => $composableBuilder(
+    column: $table.goalCarbohydrates,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get goalFiber => $composableBuilder(
+    column: $table.goalFiber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get goalFat => $composableBuilder(
+    column: $table.goalFat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get hasGoalCalories => $composableBuilder(
+    column: $table.hasGoalCalories,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NutritionalPlanTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $NutritionalPlanTableTable> {
+  $$NutritionalPlanTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get creationDate => $composableBuilder(
+    column: $table.creationDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endDate =>
+      $composableBuilder(column: $table.endDate, builder: (column) => column);
+
+  GeneratedColumn<bool> get onlyLogging => $composableBuilder(
+    column: $table.onlyLogging,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get goalEnergy => $composableBuilder(
+    column: $table.goalEnergy,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get goalProtein => $composableBuilder(
+    column: $table.goalProtein,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get goalCarbohydrates => $composableBuilder(
+    column: $table.goalCarbohydrates,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get goalFiber =>
+      $composableBuilder(column: $table.goalFiber, builder: (column) => column);
+
+  GeneratedColumn<int> get goalFat =>
+      $composableBuilder(column: $table.goalFat, builder: (column) => column);
+
+  GeneratedColumn<bool> get hasGoalCalories => $composableBuilder(
+    column: $table.hasGoalCalories,
+    builder: (column) => column,
+  );
+}
+
+class $$NutritionalPlanTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $NutritionalPlanTableTable,
+          NutritionalPlan,
+          $$NutritionalPlanTableTableFilterComposer,
+          $$NutritionalPlanTableTableOrderingComposer,
+          $$NutritionalPlanTableTableAnnotationComposer,
+          $$NutritionalPlanTableTableCreateCompanionBuilder,
+          $$NutritionalPlanTableTableUpdateCompanionBuilder,
+          (
+            NutritionalPlan,
+            BaseReferences<_$DriftPowersyncDatabase, $NutritionalPlanTableTable, NutritionalPlan>,
+          ),
+          NutritionalPlan,
+          PrefetchHooks Function()
+        > {
+  $$NutritionalPlanTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $NutritionalPlanTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NutritionalPlanTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$NutritionalPlanTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$NutritionalPlanTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<DateTime> creationDate = const Value.absent(),
+                Value<DateTime> startDate = const Value.absent(),
+                Value<DateTime?> endDate = const Value.absent(),
+                Value<bool> onlyLogging = const Value.absent(),
+                Value<int?> goalEnergy = const Value.absent(),
+                Value<int?> goalProtein = const Value.absent(),
+                Value<int?> goalCarbohydrates = const Value.absent(),
+                Value<int?> goalFiber = const Value.absent(),
+                Value<int?> goalFat = const Value.absent(),
+                Value<bool> hasGoalCalories = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => NutritionalPlanTableCompanion(
+                id: id,
+                description: description,
+                creationDate: creationDate,
+                startDate: startDate,
+                endDate: endDate,
+                onlyLogging: onlyLogging,
+                goalEnergy: goalEnergy,
+                goalProtein: goalProtein,
+                goalCarbohydrates: goalCarbohydrates,
+                goalFiber: goalFiber,
+                goalFat: goalFat,
+                hasGoalCalories: hasGoalCalories,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String description,
+                required DateTime creationDate,
+                required DateTime startDate,
+                Value<DateTime?> endDate = const Value.absent(),
+                required bool onlyLogging,
+                Value<int?> goalEnergy = const Value.absent(),
+                Value<int?> goalProtein = const Value.absent(),
+                Value<int?> goalCarbohydrates = const Value.absent(),
+                Value<int?> goalFiber = const Value.absent(),
+                Value<int?> goalFat = const Value.absent(),
+                required bool hasGoalCalories,
+                Value<int> rowid = const Value.absent(),
+              }) => NutritionalPlanTableCompanion.insert(
+                id: id,
+                description: description,
+                creationDate: creationDate,
+                startDate: startDate,
+                endDate: endDate,
+                onlyLogging: onlyLogging,
+                goalEnergy: goalEnergy,
+                goalProtein: goalProtein,
+                goalCarbohydrates: goalCarbohydrates,
+                goalFiber: goalFiber,
+                goalFat: goalFat,
+                hasGoalCalories: hasGoalCalories,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NutritionalPlanTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $NutritionalPlanTableTable,
+      NutritionalPlan,
+      $$NutritionalPlanTableTableFilterComposer,
+      $$NutritionalPlanTableTableOrderingComposer,
+      $$NutritionalPlanTableTableAnnotationComposer,
+      $$NutritionalPlanTableTableCreateCompanionBuilder,
+      $$NutritionalPlanTableTableUpdateCompanionBuilder,
+      (
+        NutritionalPlan,
+        BaseReferences<_$DriftPowersyncDatabase, $NutritionalPlanTableTable, NutritionalPlan>,
+      ),
+      NutritionalPlan,
       PrefetchHooks Function()
     >;
 typedef $$IngredientTableTableCreateCompanionBuilder =
@@ -13751,6 +15301,8 @@ class $DriftPowersyncDatabaseManager {
       );
   $$MeasurementEntryTableTableTableManager get measurementEntryTable =>
       $$MeasurementEntryTableTableTableManager(_db, _db.measurementEntryTable);
+  $$RoutineTableTableTableManager get routineTable =>
+      $$RoutineTableTableTableManager(_db, _db.routineTable);
   $$WorkoutLogTableTableTableManager get workoutLogTable =>
       $$WorkoutLogTableTableTableManager(_db, _db.workoutLogTable);
   $$WorkoutSessionTableTableTableManager get workoutSessionTable =>
@@ -13765,6 +15317,8 @@ class $DriftPowersyncDatabaseManager {
         _db,
         _db.routineWeightUnitTable,
       );
+  $$NutritionalPlanTableTableTableManager get nutritionalPlanTable =>
+      $$NutritionalPlanTableTableTableManager(_db, _db.nutritionalPlanTable);
   $$IngredientTableTableTableManager get ingredientTable =>
       $$IngredientTableTableTableManager(_db, _db.ingredientTable);
   $$IngredientImageTableTableTableManager get ingredientImageTable =>

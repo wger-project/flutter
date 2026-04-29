@@ -49,10 +49,11 @@ void main() {
     mockRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
 
-    when(mockRepo.updatePlan(any, any)).thenAnswer((_) async {});
     when(mockRepo.createPlan(any)).thenAnswer((_) async => plan1.toJson());
-    // NutritionNotifier.build() auto-fetches plans on first read.
-    when(mockRepo.fetchAllPlans()).thenAnswer((_) async => []);
+    // Edit now goes through Drift (PowerSync) instead of REST.
+    when(mockRepo.editLocalDrift(any)).thenAnswer((_) async => Future.value());
+    // NutritionNotifier.build() subscribes to a Drift stream.
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const []));
   });
 
   Widget createHomeScreen(NutritionalPlan plan, {locale = 'en'}) {
@@ -97,7 +98,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verify(mockRepo.updatePlan(any, any));
+    verify(mockRepo.editLocalDrift(any));
     verifyNever(mockRepo.createPlan(any));
   });
 
@@ -115,7 +116,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verifyNever(mockRepo.updatePlan(any, any));
+    verifyNever(mockRepo.editLocalDrift(any));
     verify(mockRepo.createPlan(any));
   });
 }

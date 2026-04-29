@@ -91,7 +91,7 @@ String _$routineRepetitionUnitHash() => r'ab09c8c70c4e2f6fc36cc9d1aae901aee16568
 final routinesRiverpodProvider = RoutinesRiverpodProvider._();
 
 final class RoutinesRiverpodProvider
-    extends $AsyncNotifierProvider<RoutinesRiverpod, RoutinesState> {
+    extends $StreamNotifierProvider<RoutinesRiverpod, RoutinesState> {
   RoutinesRiverpodProvider._()
     : super(
         from: null,
@@ -111,10 +111,10 @@ final class RoutinesRiverpodProvider
   RoutinesRiverpod create() => RoutinesRiverpod();
 }
 
-String _$routinesRiverpodHash() => r'2f357a1d1b4c9e5f182d8df7b312aeed422e668b';
+String _$routinesRiverpodHash() => r'd98b72296e7fcf0134123452c5838991d4d80a27';
 
-abstract class _$RoutinesRiverpod extends $AsyncNotifier<RoutinesState> {
-  FutureOr<RoutinesState> build();
+abstract class _$RoutinesRiverpod extends $StreamNotifier<RoutinesState> {
+  Stream<RoutinesState> build();
   @$mustCallSuper
   @override
   void runBuild() {
@@ -171,4 +171,4 @@ final class RoutinesRepositoryProvider
   }
 }
 
-String _$routinesRepositoryHash() => r'0cdeb7e33ac45c9a1e4cdf541bf57b565033cc38';
+String _$routinesRepositoryHash() => r'249951c94887d0ff4882d7a88bd9dcfb25282f4e';

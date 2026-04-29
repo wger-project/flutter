@@ -29,53 +29,20 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/ingredient_repository.dart';
-import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 
 part 'nutrition_notifier.g.dart';
 
-@Riverpod(keepAlive: true)
-class NutritionNotifier extends _$NutritionNotifier {
-  final _logger = Logger('NutritionNotifier');
+/// Snapshot exposed by [NutritionNotifier].
+class NutritionState {
+  const NutritionState({
+    this.plans = const [],
+  });
 
-  late IngredientRepository _ingredientRepo;
-  late NutritionRepository _nutritionRepo;
+  final List<NutritionalPlan> plans;
 
-  @override
-  Future<List<NutritionalPlan>> build() async {
-    _nutritionRepo = ref.read(nutritionRepositoryProvider);
-    _ingredientRepo = ref.read(ingredientRepositoryProvider);
-
-    // Auto-retry once the network comes back, but only if we actually failed.
-    // Without the [hasError] guard we'd refetch on every offline → online
-    // flicker, including the cosmetic one that happens during app start when
-    // the connectivity probe briefly reports offline.
-    ref.listen<bool>(networkStatusProvider, (prev, next) {
-      if (prev == false && next == true && state.hasError) {
-        _logger.fine('Network restored after error, re-fetching nutritional plans');
-        ref.invalidateSelf();
-      }
-    });
-
-    // Auto-fetch the sparse plan list on first read. Consumers that need
-    // a forced refresh (e.g. RefreshIndicator) can still call
-    // [fetchAndSetAllPlansSparse] explicitly.
-    final data = await _nutritionRepo.fetchAllPlans();
-    return data.map((e) => NutritionalPlan.fromJson(e)).toList()
-      ..sort((a, b) => b.creationDate.compareTo(a.creationDate));
-  }
-
-  List<NutritionalPlan> get _plans => state.asData?.value ?? [];
-
-  void _setPlans(List<NutritionalPlan> plans) {
-    state = AsyncData(List.of(plans));
-  }
-
-  /// Notifies listeners after in-place mutation on the plans list (e.g. when
-  /// meals or logs on a plan are mutated via object references). Equivalent to
-  /// the old `notifyListeners()`.
-  void _notifyAfterInPlaceMutation() {
-    _setPlans(_plans);
+  NutritionState copyWith({List<NutritionalPlan>? plans}) {
+    return NutritionState(plans: plans ?? this.plans);
   }
 
   /// Returns the current active nutritional plan.
@@ -85,7 +52,7 @@ class NutritionNotifier extends _$NutritionNotifier {
   /// created plan wins.
   NutritionalPlan? get currentPlan {
     final now = DateTime.now();
-    return _plans
+    return plans
         .where(
           (plan) =>
               plan.startDate.isBefore(now) && (plan.endDate == null || plan.endDate!.isAfter(now)),
@@ -95,15 +62,16 @@ class NutritionNotifier extends _$NutritionNotifier {
         .firstOrNull;
   }
 
+  /// Throws [NoSuchEntryException] if no plan with the given id exists.
   NutritionalPlan findById(int id) {
-    return _plans.firstWhere(
+    return plans.firstWhere(
       (plan) => plan.id == id,
       orElse: () => throw const NoSuchEntryException(),
     );
   }
 
   Meal? findMealById(int id) {
-    for (final plan in _plans) {
+    for (final plan in plans) {
       final meal = plan.meals.firstWhereOrNull((m) => m.id == id);
       if (meal != null) {
         return meal;
@@ -111,32 +79,70 @@ class NutritionNotifier extends _$NutritionNotifier {
     }
     return null;
   }
+}
 
-  /// Clears all plans. Called on logout.
-  void clear() {
-    _setPlans([]);
+@Riverpod(keepAlive: true)
+class NutritionNotifier extends _$NutritionNotifier {
+  final _logger = Logger('NutritionNotifier');
+
+  @override
+  Stream<NutritionState> build() {
+    _logger.fine('Building NutritionNotifier');
+    ref.keepAlive();
+
+    // Top-level plan list comes from PowerSync (Drift stream over the synced
+    // `nutrition_nutritionplan` table). The sub-hierarchy (meals, meal items,
+    // diary entries) still lives behind REST and is layered on top by callers
+    // via [fetchAndSetPlanFull]. To prevent that sub-data from being wiped
+    // every time the stream re-emits the top-level row (e.g. after a remote
+    // edit), we re-attach it from the previous state below.
+    final repo = ref.read(nutritionRepositoryProvider);
+    return repo.watchAllDrift().map((freshPlans) {
+      final existing = state.value?.plans ?? const <NutritionalPlan>[];
+      for (final fresh in freshPlans) {
+        final old = existing.firstWhereOrNull((p) => p.id == fresh.id);
+        if (old != null) {
+          fresh.meals = old.meals;
+          fresh.diaryEntries = old.diaryEntries;
+        }
+      }
+      return NutritionState(plans: freshPlans);
+    });
+  }
+
+  // --- Convenience accessors (delegate to state) ---
+
+  List<NutritionalPlan> get _plans => state.value?.plans ?? const [];
+
+  /// Throws [NoSuchEntryException] if no plan with the given id exists.
+  NutritionalPlan findById(int id) => (state.value ?? const NutritionState()).findById(id);
+
+  Meal? findMealById(int id) => (state.value ?? const NutritionState()).findMealById(id);
+
+  NutritionalPlan? get currentPlan => (state.value ?? const NutritionState()).currentPlan;
+
+  /// Notifies listeners after in-place mutation on the plans list (e.g. when
+  /// meals or logs on a plan are mutated via object references). Equivalent to
+  /// the old `notifyListeners()`.
+  void _notifyAfterInPlaceMutation() {
+    state = AsyncData(NutritionState(plans: List.of(_plans)));
+  }
+
+  /// Replaces the in-memory plan list. Used to apply optimistic updates that
+  /// are eventually overwritten by the next stream emission.
+  void _setPlans(List<NutritionalPlan> plans) {
+    state = AsyncData(NutritionState(plans: List.of(plans)));
   }
 
   // --- Plans ---
 
-  /// Fetches all plans sparsely (no meals, items or logs).
-  Future<void> fetchAndSetAllPlansSparse() async {
-    final data = await _nutritionRepo.fetchAllPlans();
-    final plans = data.map((e) => NutritionalPlan.fromJson(e)).toList()
-      ..sort((a, b) => b.creationDate.compareTo(a.creationDate));
-    _setPlans(plans);
-  }
-
-  Future<void> fetchAndSetAllPlansFull() async {
-    final data = await _nutritionRepo.fetchAllPlans();
-    await Future.wait(data.map((e) => fetchAndSetPlanFull(e['id'])).toList());
-  }
-
   Future<NutritionalPlan> fetchAndSetPlanSparse(int planId) async {
-    final data = await _nutritionRepo.fetchPlanSparse(planId);
+    final repo = ref.read(nutritionRepositoryProvider);
+    final data = await repo.fetchPlanSparse(planId);
     final plan = NutritionalPlan.fromJson(data);
     final plans = List<NutritionalPlan>.of(_plans)..add(plan);
-    plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+    // Match Django's `Meta.ordering = ['-start']`.
+    plans.sort((a, b) => b.startDate.compareTo(a.startDate));
     _setPlans(plans);
     return plan;
   }
@@ -145,6 +151,8 @@ class NutritionNotifier extends _$NutritionNotifier {
   Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
     _logger.fine('Fetching full nutritional plan $planId');
 
+    final repo = ref.read(nutritionRepositoryProvider);
+
     NutritionalPlan plan;
     try {
       plan = findById(planId);
@@ -152,7 +160,7 @@ class NutritionNotifier extends _$NutritionNotifier {
       plan = await fetchAndSetPlanSparse(planId);
     }
 
-    final fullPlanData = await _nutritionRepo.fetchPlanFull(planId);
+    final fullPlanData = await repo.fetchPlanFull(planId);
 
     // Meals
     final List<Meal> meals = [];
@@ -185,42 +193,44 @@ class NutritionNotifier extends _$NutritionNotifier {
     return plan;
   }
 
+  /// Creation still goes through REST: the backend assigns the integer PK.
+  /// PowerSync will eventually replicate the new row down via the stream, but
+  /// to avoid a perceptible UI lag we also inject the freshly-created plan
+  /// into state right away. When the stream later re-emits the same row,
+  /// build()'s sub-data preservation logic keeps things stable.
   Future<NutritionalPlan> addPlan(NutritionalPlan planData) async {
-    final data = await _nutritionRepo.createPlan(planData.toJson());
+    final repo = ref.read(nutritionRepositoryProvider);
+    final data = await repo.createPlan(planData.toJson());
     final plan = NutritionalPlan.fromJson(data);
     final plans = List<NutritionalPlan>.of(_plans)..add(plan);
-    plans.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+    // Match Django's `Meta.ordering = ['-start']`.
+    plans.sort((a, b) => b.startDate.compareTo(a.startDate));
     _setPlans(plans);
     return plan;
   }
 
+  /// Goes through PowerSync (Drift update → CRUD queue → backend).
+  /// Local state picks up the change on the next stream emission.
   Future<void> editPlan(NutritionalPlan plan) async {
-    await _nutritionRepo.updatePlan(plan.id!, plan.toJson());
-    _notifyAfterInPlaceMutation();
+    final repo = ref.read(nutritionRepositoryProvider);
+    await repo.editLocalDrift(plan);
   }
 
+  /// Goes through PowerSync (Drift delete → CRUD queue → backend), where
+  /// Django's FK CASCADE removes any dependent meals/items/diary entries.
+  /// Local state picks up the removal on the next stream emission.
   Future<void> deletePlan(int id) async {
-    final plans = List<NutritionalPlan>.of(_plans);
-    final index = plans.indexWhere((element) => element.id == id);
-    final existing = plans[index];
-    plans.removeAt(index);
-    _setPlans(plans);
-
-    final response = await _nutritionRepo.deletePlan(id);
-
-    if (response.statusCode >= 400) {
-      plans.insert(index, existing);
-      _setPlans(plans);
-      throw WgerHttpException(response);
-    }
+    final repo = ref.read(nutritionRepositoryProvider);
+    await repo.deleteLocalDrift(id);
   }
 
   // --- Meals ---
 
   Future<Meal> addMeal(Meal meal, int planId) async {
+    final repo = ref.read(nutritionRepositoryProvider);
     final plan = findById(planId);
     meal.planId = planId;
-    final data = await _nutritionRepo.createMeal(meal.toJson());
+    final data = await repo.createMeal(meal.toJson());
     final saved = Meal.fromJson(data);
     plan.meals.add(saved);
     _notifyAfterInPlaceMutation();
@@ -228,20 +238,22 @@ class NutritionNotifier extends _$NutritionNotifier {
   }
 
   Future<Meal> editMeal(Meal meal) async {
-    final data = await _nutritionRepo.updateMeal(meal.id!, meal.toJson());
+    final repo = ref.read(nutritionRepositoryProvider);
+    final data = await repo.updateMeal(meal.id!, meal.toJson());
     final updated = Meal.fromJson(data);
     _notifyAfterInPlaceMutation();
     return updated;
   }
 
   Future<void> deleteMeal(Meal meal) async {
+    final repo = ref.read(nutritionRepositoryProvider);
     final plan = findById(meal.planId);
     final mealIndex = plan.meals.indexWhere((e) => e.id == meal.id);
     final existing = plan.meals[mealIndex];
     plan.meals.removeAt(mealIndex);
     _notifyAfterInPlaceMutation();
 
-    final response = await _nutritionRepo.deleteMeal(meal.id!);
+    final response = await repo.deleteMeal(meal.id!);
     if (response.statusCode >= 400) {
       plan.meals.insert(mealIndex, existing);
       _notifyAfterInPlaceMutation();
@@ -252,7 +264,8 @@ class NutritionNotifier extends _$NutritionNotifier {
   // --- Meal items ---
 
   Future<MealItem> addMealItem(MealItem mealItem, Meal meal) async {
-    final data = await _nutritionRepo.createMealItem(mealItem.toJson());
+    final repo = ref.read(nutritionRepositoryProvider);
+    final data = await repo.createMealItem(mealItem.toJson());
     final saved = MealItem.fromJson(data);
     saved.ingredient = await fetchIngredient(saved.ingredientId);
     meal.mealItems.add(saved);
@@ -261,13 +274,14 @@ class NutritionNotifier extends _$NutritionNotifier {
   }
 
   Future<void> deleteMealItem(MealItem mealItem) async {
+    final repo = ref.read(nutritionRepositoryProvider);
     final meal = findMealById(mealItem.mealId)!;
     final mealItemIndex = meal.mealItems.indexWhere((e) => e.id == mealItem.id);
     final existing = meal.mealItems[mealItemIndex];
     meal.mealItems.removeAt(mealItemIndex);
     _notifyAfterInPlaceMutation();
 
-    final response = await _nutritionRepo.deleteMealItem(mealItem.id!);
+    final response = await repo.deleteMealItem(mealItem.id!);
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existing);
       _notifyAfterInPlaceMutation();
@@ -277,17 +291,15 @@ class NutritionNotifier extends _$NutritionNotifier {
 
   // --- Ingredients ---
 
-  /// Looks up an ingredient by id.
-  ///
-  /// Tries PowerSync-backed local storage first and only hits the server if the
-  /// ingredient has not been synced yet.
+  /// Looks up an ingredient by id from the local PowerSync-backed Drift table.
   Future<Ingredient> fetchIngredient(int ingredientId) async {
-    final local = await _ingredientRepo.getById(ingredientId);
-    if (local != null) {
-      _logger.finer("Loaded ingredient '${local.name}' from PowerSync");
-      return local;
+    final ingredientRepo = ref.read(ingredientRepositoryProvider);
+    final local = await ingredientRepo.getById(ingredientId);
+    if (local == null) {
+      throw NoSuchEntryException();
     }
-    return _nutritionRepo.fetchIngredient(ingredientId);
+    _logger.finer("Loaded ingredient '${local.name}' from PowerSync");
+    return local;
   }
 
   Future<List<Ingredient>> searchIngredient(
@@ -297,7 +309,8 @@ class NutritionNotifier extends _$NutritionNotifier {
     bool isVegan = false,
     bool isVegetarian = false,
   }) {
-    return _nutritionRepo.searchIngredient(
+    final repo = ref.read(nutritionRepositoryProvider);
+    return repo.searchIngredient(
       name,
       languageCode: languageCode,
       searchLanguage: searchLanguage,
@@ -307,20 +320,23 @@ class NutritionNotifier extends _$NutritionNotifier {
   }
 
   Future<Ingredient?> searchIngredientWithBarcode(String barcode) {
-    return _nutritionRepo.searchIngredientWithBarcode(barcode);
+    final repo = ref.read(nutritionRepositoryProvider);
+    return repo.searchIngredientWithBarcode(barcode);
   }
 
   Future<List<IngredientWeightUnit>> fetchWeightUnits(int ingredientId) {
-    return _nutritionRepo.fetchWeightUnits(ingredientId);
+    final repo = ref.read(nutritionRepositoryProvider);
+    return repo.fetchWeightUnits(ingredientId);
   }
 
   // --- Logs (nutrition diary) ---
 
   Future<void> logMealToDiary(Meal meal, DateTime mealDateTime) async {
+    final repo = ref.read(nutritionRepositoryProvider);
     final plan = findById(meal.planId);
     for (final item in meal.mealItems) {
       final log = Log.fromMealItem(item, plan.id!, meal.id, mealDateTime);
-      final data = await _nutritionRepo.createLog(log.toJson());
+      final data = await repo.createLog(log.toJson());
       log.id = data['id'];
       plan.diaryEntries.add(log);
     }
@@ -332,18 +348,20 @@ class NutritionNotifier extends _$NutritionNotifier {
     int planId, [
     DateTime? dateTime,
   ]) async {
+    final repo = ref.read(nutritionRepositoryProvider);
     final plan = findById(planId);
     mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
     final log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
 
-    final data = await _nutritionRepo.createLog(log.toJson());
+    final data = await repo.createLog(log.toJson());
     log.id = data['id'];
     plan.diaryEntries.add(log);
     _notifyAfterInPlaceMutation();
   }
 
   Future<void> deleteLog(int logId, int planId) async {
-    await _nutritionRepo.deleteLog(logId);
+    final repo = ref.read(nutritionRepositoryProvider);
+    await repo.deleteLog(logId);
     final plan = findById(planId);
     plan.diaryEntries.removeWhere((element) => element.id == logId);
     _notifyAfterInPlaceMutation();
@@ -352,7 +370,8 @@ class NutritionNotifier extends _$NutritionNotifier {
   /// Loads nutrition diary entries for the given plan and resolves ingredient
   /// references.
   Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
-    final data = await _nutritionRepo.fetchLogsForPlan(plan.id!);
+    final repo = ref.read(nutritionRepositoryProvider);
+    final data = await repo.fetchLogsForPlan(plan.id!);
 
     plan.diaryEntries = [];
     for (final logData in data) {

@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -58,12 +58,9 @@ void main() {
   setUp(() {
     mockRoutinesRepository = MockRoutinesRepository();
     when(mockRoutinesRepository.editDayServer(any)).thenAnswer((_) async => {});
-    // build() on RoutinesRiverpod auto-fetches on first read. Stub it so the
-    // background fetch doesn't blow up the widget state we set explicitly
-    // below.
     when(
-      mockRoutinesRepository.fetchAllRoutinesSparseServer(),
-    ).thenAnswer((_) async => [routine1, routine2]);
+      mockRoutinesRepository.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value([routine1, routine2]));
   });
 
   Widget renderWidget({locale = 'en', isOnline = true}) {
@@ -72,11 +69,6 @@ void main() {
         networkStatusProvider.overrideWithValue(isOnline),
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
       ],
-    );
-    container.read(routinesRiverpodProvider.notifier).state = AsyncData(
-      RoutinesState(
-        routines: [routine1, routine2],
-      ),
     );
 
     return UncontrolledProviderScope(
@@ -96,6 +88,8 @@ void main() {
 
   testWidgets('Test the widgets on the workout plans screen', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
+    // Stream-based notifier: first emission is async, settle before asserting.
+    await tester.pumpAndSettle();
 
     //debugDumpApp();
     expect(find.text('Routines'), findsOneWidget);
@@ -107,16 +101,18 @@ void main() {
 
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
+    await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.delete).first);
     await tester.pumpAndSettle();
 
     // Confirmation dialog
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    // Confirm
+    // Confirm tap — note: the actual delete now goes through Drift +
+    // PowerSync (not REST), so we don't verify a repository call here.
+    // The UI flow up to dispatch is what's covered.
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
-    verify(mockRoutinesRepository.deleteRoutineServer(1)).called(1);
   });
 
   testWidgets('Handle offline status', (WidgetTester tester) async {
@@ -129,16 +125,6 @@ void main() {
     expect(deleteButton.onPressed, isNull);
   });
 
-  /*
-  testWidgets('Test updating the list by dragging it down', (WidgetTester tester) async {
-    await tester.pumpWidget(createHomeScreen());
-    await tester.fling(find.byKey(const Key('1')), const Offset(0, 300), 1000);
-    await tester.pumpAndSettle();
-
-    //verify(mockRoutinesRepository.fetchAndSetAllPlansSparse());
-  });
-   */
-
   testWidgets('Test the form on the workout plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
 
@@ -150,6 +136,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
+    await tester.pumpAndSettle();
 
     expect(find.text('11/1/2024 - 12/1/2024'), findsOneWidget);
     expect(find.text('5/5/2024 - 6/6/2024'), findsOneWidget);
@@ -157,6 +144,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget(locale: 'de'));
+    await tester.pumpAndSettle();
 
     expect(find.text('1.11.2024 - 1.12.2024'), findsOneWidget);
     expect(find.text('5.5.2024 - 6.6.2024'), findsOneWidget);

@@ -55,9 +55,9 @@ void main() {
 
     when(mockRepo.updateMeal(any, any)).thenAnswer((_) async => Meal(id: 1, plan: 1).toJson());
     when(mockRepo.createMeal(any)).thenAnswer((_) async => Meal(id: 99, plan: 1).toJson());
-    // NutritionNotifier.build() auto-fetches plans on first read; the
-    // explicit state seed below replaces this empty value.
-    when(mockRepo.fetchAllPlans()).thenAnswer((_) async => []);
+    // NutritionNotifier.build() subscribes to a Drift stream — emit the seed
+    // plan directly through that channel.
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value([plan1]));
 
     container = ProviderContainer(
       overrides: [
@@ -65,9 +65,11 @@ void main() {
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
     );
-    // Initialize the notifier so build() runs, then seed plans.
-    await container.read(nutritionProvider.future);
-    container.read(nutritionProvider.notifier).state = AsyncData([plan1]);
+    // Explicit listener keeps the provider element alive while we wait for
+    // the Drift-stream emission ([plan1]) to land in state. Required so that
+    // any addMeal call in the test can resolve the plan via findById.
+    container.listen(nutritionProvider, (_, _) {});
+    await pumpEventQueue();
   });
 
   tearDown(() {
@@ -181,8 +183,8 @@ void main() {
       ],
     );
     addTearDown(offlineContainer.dispose);
-    await offlineContainer.read(nutritionProvider.future);
-    offlineContainer.read(nutritionProvider.notifier).state = AsyncData([plan1]);
+    // The button is disabled offline — submit never fires, so we don't
+    // need to wait for the Drift-stream emission to populate the plan.
 
     await tester.pumpWidget(
       UncontrolledProviderScope(

@@ -22,8 +22,39 @@ import 'package:wger/database/converters/int_to_string_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
+
+@UseRowClass(Routine)
+class RoutineTable extends Table {
+  @override
+  String get tableName => 'manager_routine';
+
+  IntColumn get id => integer()();
+  TextColumn get name => text()();
+  TextColumn get description => text()();
+  DateTimeColumn get created => dateTime()();
+  DateTimeColumn get start => dateTime()();
+  DateTimeColumn get end => dateTime()();
+  BoolColumn get isTemplate => boolean().named('is_template')();
+  BoolColumn get isPublic => boolean().named('is_public')();
+  BoolColumn get fitInWeek => boolean().named('fit_in_week')();
+}
+
+const PowersyncRoutineTable = ps.Table(
+  'manager_routine',
+  [
+    ps.Column.text('name'),
+    ps.Column.text('description'),
+    ps.Column.text('created'),
+    ps.Column.text('start'),
+    ps.Column.text('end'),
+    ps.Column.integer('is_template'),
+    ps.Column.integer('is_public'),
+    ps.Column.integer('fit_in_week'),
+  ],
+);
 
 @UseRowClass(Log)
 class WorkoutLogTable extends Table {

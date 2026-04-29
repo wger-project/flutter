@@ -37,8 +37,10 @@ import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
@@ -48,6 +50,7 @@ import 'tables/ingredient.dart';
 import 'tables/language.dart';
 import 'tables/license.dart';
 import 'tables/measurements.dart';
+import 'tables/nutrition.dart';
 import 'tables/routines.dart';
 import 'tables/weight.dart';
 
@@ -79,12 +82,14 @@ part 'database.g.dart';
     MeasurementEntryTable,
 
     // Routines
+    RoutineTable,
     WorkoutLogTable,
     WorkoutSessionTable,
     RoutineRepetitionUnitTable,
     RoutineWeightUnitTable,
 
     // Nutrition
+    NutritionalPlanTable,
     IngredientTable,
     IngredientImageTable,
   ],

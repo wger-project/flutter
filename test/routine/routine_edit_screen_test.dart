@@ -31,7 +31,7 @@ class _StubRoutinesRiverpod extends RoutinesRiverpod {
   final List<Routine> _routines;
 
   @override
-  Future<RoutinesState> build() async => RoutinesState(routines: _routines);
+  Stream<RoutinesState> build() => Stream.value(RoutinesState(routines: _routines));
 }
 
 void main() {

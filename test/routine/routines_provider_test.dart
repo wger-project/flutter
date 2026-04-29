@@ -21,6 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/routines.dart';
 
 import '../../test_data/routines.dart';
@@ -36,6 +37,7 @@ void main() {
 
   setUp(() {
     mockRepo = MockRoutinesRepository();
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const <Routine>[]));
     testDay = Day(
       id: 15,
       routineId: 101,
@@ -45,33 +47,7 @@ void main() {
   });
 
   group('test routine methods', () {
-    test('fetchAllRoutinesSparse calls repository and updates state', () async {
-      // Arrange
-      final testRoutine = getTestRoutine();
-      when(mockRepo.fetchAllRoutinesSparseServer()).thenAnswer((_) async => [testRoutine]);
-
-      final container = ProviderContainer.test(
-        overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
-      );
-
-      // Drain the microtask queue so the build()-time auto-fetch lands
-      // *before* we exercise the explicit call below. Then clear interactions
-      // so the assertion only counts the call we're testing.
-      final notifier = container.read(routinesRiverpodProvider.notifier);
-      await Future<void>.delayed(Duration.zero);
-      clearInteractions(mockRepo);
-
-      // Act
-      await notifier.fetchAllRoutinesSparse();
-
-      // Assert
-      verify(mockRepo.fetchAllRoutinesSparseServer()).called(1);
-      final state = container.read(routinesRiverpodProvider);
-      expect(state.value!.routines.length, 1);
-      expect(state.value!.routines.first.id, testRoutine.id);
-    });
-
-    test('addRoutine calls repository and prepends created routine to state', () async {
+    test('addRoutine calls repository (creation still goes via REST)', () async {
       // Arrange
       final toAdd = getTestRoutine();
       final created = getTestRoutine();
@@ -87,55 +63,6 @@ void main() {
       // Assert
       verify(mockRepo.addRoutineServer(toAdd)).called(1);
       expect(result, created);
-      final state = container.read(routinesRiverpodProvider);
-      expect(state.value!.routines.isNotEmpty, true);
-      expect(state.value!.routines.first, created);
-    });
-
-    test('editRoutine calls repository and replaces routine in state', () async {
-      // Arrange
-      final routine = getTestRoutine();
-      when(mockRepo.editRoutineServer(routine)).thenAnswer((_) async => routine);
-
-      final container = ProviderContainer.test(
-        overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
-      );
-      container.read(routinesRiverpodProvider.notifier).state = AsyncData(
-        RoutinesState(routines: [routine]),
-      );
-
-      // Act
-      final notifier = container.read(routinesRiverpodProvider.notifier);
-      await notifier.editRoutine(routine);
-
-      verify(mockRepo.editRoutineServer(routine)).called(1);
-      final state = container.read(routinesRiverpodProvider);
-      expect(state.value!.routines.length, 1);
-      expect(state.value!.routines.first, routine);
-    });
-
-    test('deleteRoutine calls repository and removes routine from state', () async {
-      // Arrange
-      const routineId = 1;
-      when(mockRepo.deleteRoutineServer(routineId)).thenAnswer((_) async => Future.value());
-
-      final container = ProviderContainer.test(
-        overrides: [routinesRepositoryProvider.overrideWithValue(mockRepo)],
-      );
-      container.read(routinesRiverpodProvider.notifier).state = AsyncData(
-        RoutinesState(
-          routines: [getTestRoutine()],
-        ),
-      );
-
-      // Act
-      final notifier = container.read(routinesRiverpodProvider.notifier);
-      await notifier.deleteRoutine(routineId);
-
-      // Assert
-      verify(mockRepo.deleteRoutineServer(routineId)).called(1);
-      final state = container.read(routinesRiverpodProvider);
-      expect(state.value!.routines.length, 0);
     });
   });
 

@@ -38,7 +38,7 @@ class WeightOverview extends riverpod.ConsumerWidget {
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final profileAsync = ref.watch(userProfileProvider);
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-    final plans = ref.watch(nutritionProvider).value ?? const [];
+    final plans = ref.watch(nutritionProvider).value?.plans ?? const [];
 
     return AsyncValueWidget<List<WeightEntry>>(
       value: ref.watch(weightEntryProvider),

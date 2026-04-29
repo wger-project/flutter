@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +42,7 @@ void main() {
   installFakeConnectivity();
 
   late MockRoutinesRepository mockRoutinesRepository;
+  late StreamController<List<Routine>> routineStream;
   late Routine existingRoutine;
   late Routine newRoutine;
 
@@ -59,9 +62,16 @@ void main() {
     when(
       mockRoutinesRepository.fetchAndSetRoutineFullServer(any),
     ).thenAnswer((_) async => getTestRoutine());
-    when(
-      mockRoutinesRepository.editRoutineServer(any),
-    ).thenAnswer((_) async => existingRoutine);
+    routineStream = StreamController<List<Routine>>.broadcast();
+    when(mockRoutinesRepository.watchAllDrift()).thenAnswer((_) => routineStream.stream);
+
+    // Edit + delete now go through Drift instead of REST.
+    when(mockRoutinesRepository.editLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRoutinesRepository.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
+  });
+
+  tearDown(() {
+    routineStream.close();
   });
 
   Widget renderWidget(Routine routine, {locale = 'en', bool isOnline = true}) {
@@ -112,7 +122,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verify(mockRoutinesRepository.editRoutineServer(any));
+    verify(mockRoutinesRepository.editLocalDrift(any));
     verifyNever(mockRoutinesRepository.addRoutineServer(any));
 
     // TODO(x): edit calls Navigator.pop(), since the form can only be reached from the
@@ -126,7 +136,7 @@ void main() {
 
   testWidgets('Test editing an existing routine - server error', (WidgetTester tester) async {
     // Arrange
-    when(mockRoutinesRepository.editRoutineServer(any)).thenThrow(
+    when(mockRoutinesRepository.editLocalDrift(any)).thenThrow(
       WgerHttpException.fromMap({
         'name': ['The name is not valid'],
       }),
@@ -159,7 +169,7 @@ void main() {
     await tester.enterText(find.byKey(const Key('field-name')), editRoutine.name);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockRoutinesRepository.editRoutineServer(any));
+    verifyNever(mockRoutinesRepository.editLocalDrift(any));
     verify(mockRoutinesRepository.addRoutineServer(any));
 
     // Detail page
@@ -186,7 +196,7 @@ void main() {
     await tester.enterText(find.byKey(const Key('field-description')), editRoutine.description);
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockRoutinesRepository.editRoutineServer(any));
+    verifyNever(mockRoutinesRepository.editLocalDrift(any));
     verify(mockRoutinesRepository.addRoutineServer(any));
 
     // Detail page
@@ -224,6 +234,6 @@ void main() {
     // And tapping it must not trigger the edit request.
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
     await tester.pump();
-    verifyNever(mockRoutinesRepository.editRoutineServer(any));
+    verifyNever(mockRoutinesRepository.editLocalDrift(any));
   });
 }

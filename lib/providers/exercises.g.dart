@@ -8,23 +8,11 @@ part of 'exercises.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Exposes the full exercise catalogue as a stream. Search methods
-/// (online + local + the chooser between them) live on the notifier
-/// because they take a search term as input and `searchExerciseOnline`
-/// in particular needs `ref` for the HTTP call.
 
 @ProviderFor(Exercises)
 final exercisesProvider = ExercisesProvider._();
 
-/// Exposes the full exercise catalogue as a stream. Search methods
-/// (online + local + the chooser between them) live on the notifier
-/// because they take a search term as input and `searchExerciseOnline`
-/// in particular needs `ref` for the HTTP call.
 final class ExercisesProvider extends $StreamNotifierProvider<Exercises, ExerciseState> {
-  /// Exposes the full exercise catalogue as a stream. Search methods
-  /// (online + local + the chooser between them) live on the notifier
-  /// because they take a search term as input and `searchExerciseOnline`
-  /// in particular needs `ref` for the HTTP call.
   ExercisesProvider._()
     : super(
         from: null,
@@ -45,11 +33,6 @@ final class ExercisesProvider extends $StreamNotifierProvider<Exercises, Exercis
 }
 
 String _$exercisesHash() => r'45635541935c391b39a3ac8614b699f5a2ea1da3';
-
-/// Exposes the full exercise catalogue as a stream. Search methods
-/// (online + local + the chooser between them) live on the notifier
-/// because they take a search term as input and `searchExerciseOnline`
-/// in particular needs `ref` for the HTTP call.
 
 abstract class _$Exercises extends $StreamNotifier<ExerciseState> {
   Stream<ExerciseState> build();

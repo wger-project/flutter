@@ -55,7 +55,7 @@ class _FakeRoutinesRiverpod extends RoutinesRiverpod {
   final Routine _routine;
 
   @override
-  Future<RoutinesState> build() async => RoutinesState(routines: [_routine]);
+  Stream<RoutinesState> build() => Stream.value(RoutinesState(routines: [_routine]));
 
   @override
   Future<Routine> fetchAndSetRoutineFull(int routineId) async => _routine;

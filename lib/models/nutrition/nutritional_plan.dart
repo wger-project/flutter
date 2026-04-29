@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,9 +17,11 @@
  */
 
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -73,6 +75,9 @@ class NutritionalPlan {
   @JsonKey(required: true, name: 'goal_fiber')
   late num? goalFiber;
 
+  @JsonKey(name: 'has_goal_calories', defaultValue: false)
+  late bool hasGoalCalories;
+
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Meal> meals = [];
 
@@ -86,6 +91,7 @@ class NutritionalPlan {
     required this.startDate,
     this.endDate,
     this.onlyLogging = false,
+    this.hasGoalCalories = false,
     this.goalEnergy,
     this.goalProtein,
     this.goalCarbohydrates,
@@ -112,6 +118,7 @@ class NutritionalPlan {
     endDate = null;
     description = '';
     onlyLogging = false;
+    hasGoalCalories = false;
     goalEnergy = null;
     goalProtein = null;
     goalCarbohydrates = null;
@@ -123,6 +130,36 @@ class NutritionalPlan {
   factory NutritionalPlan.fromJson(Map<String, dynamic> json) => _$NutritionalPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
+
+  NutritionalPlanTableCompanion toCompanion() {
+    final planId = id;
+    if (planId == null) {
+      throw StateError('Cannot persist nutritional plan without id (creation goes via REST)');
+    }
+    return NutritionalPlanTableCompanion(
+      id: drift.Value(planId),
+      description: drift.Value(description),
+      creationDate: drift.Value(creationDate.toUtc()),
+      // `start`/`end` are `DateField` server-side
+      startDate: drift.Value(DateTime.utc(startDate.year, startDate.month, startDate.day)),
+      endDate: endDate == null
+          ? const drift.Value.absent()
+          : drift.Value(DateTime.utc(endDate!.year, endDate!.month, endDate!.day)),
+      onlyLogging: drift.Value(onlyLogging),
+      hasGoalCalories: drift.Value(hasGoalCalories),
+      goalEnergy: goalEnergy == null
+          ? const drift.Value.absent()
+          : drift.Value(goalEnergy!.toInt()),
+      goalProtein: goalProtein == null
+          ? const drift.Value.absent()
+          : drift.Value(goalProtein!.toInt()),
+      goalCarbohydrates: goalCarbohydrates == null
+          ? const drift.Value.absent()
+          : drift.Value(goalCarbohydrates!.toInt()),
+      goalFiber: goalFiber == null ? const drift.Value.absent() : drift.Value(goalFiber!.toInt()),
+      goalFat: goalFat == null ? const drift.Value.absent() : drift.Value(goalFat!.toInt()),
+    );
+  }
 
   String getLabel(BuildContext context) {
     return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;

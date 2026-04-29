@@ -57,7 +57,9 @@ Widget createWeightScreen({Locale? locale}) {
     ],
   );
   // Seed the nutrition notifier with a plan so the weight overview can show it.
-  container.read(nutritionProvider.notifier).state = AsyncData([getNutritionalPlan()]);
+  container.read(nutritionProvider.notifier).state = AsyncData(
+    NutritionState(plans: [getNutritionalPlan()]),
+  );
 
   return MediaQuery(
     data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(

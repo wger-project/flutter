@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -55,6 +57,16 @@ class Routine {
   @JsonKey(required: true, name: 'fit_in_week')
   late bool fitInWeek;
 
+  // The two template flags are server-managed and the Flutter app does not
+  // expose UI to toggle them, but PowerSync syncs them so the in-memory
+  // state stays consistent with the backend (and round-trips correctly
+  // on PATCH writes via [toCompanion]).
+  @JsonKey(name: 'is_template', defaultValue: false)
+  late bool isTemplate;
+
+  @JsonKey(name: 'is_public', defaultValue: false)
+  late bool isPublic;
+
   @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime start;
 
@@ -80,6 +92,8 @@ class Routine {
     DateTime? start,
     DateTime? end,
     this.fitInWeek = false,
+    this.isTemplate = false,
+    this.isPublic = false,
     String? description,
     this.days = const [],
     this.dayData = const [],
@@ -99,12 +113,33 @@ class Routine {
     start = DateTime.now();
     end = DateTime.now().add(const Duration(days: DEFAULT_DURATION * 7));
     fitInWeek = true;
+    isTemplate = false;
+    isPublic = false;
   }
 
   // Boilerplate
   factory Routine.fromJson(Map<String, dynamic> json) => _$RoutineFromJson(json);
 
   Map<String, dynamic> toJson() => _$RoutineToJson(this);
+
+  RoutineTableCompanion toCompanion() {
+    final routineId = id;
+    if (routineId == null) {
+      throw StateError('Cannot persist routine without id (creation goes via REST)');
+    }
+    return RoutineTableCompanion(
+      id: drift.Value(routineId),
+      name: drift.Value(name),
+      description: drift.Value(description),
+      created: drift.Value(created.toUtc()),
+      // `start`/`end` are `DateField` server-side
+      start: drift.Value(DateTime.utc(start.year, start.month, start.day)),
+      end: drift.Value(DateTime.utc(end.year, end.month, end.day)),
+      isTemplate: drift.Value(isTemplate),
+      isPublic: drift.Value(isPublic),
+      fitInWeek: drift.Value(fitInWeek),
+    );
+  }
 
   List<Log> get logs {
     final out = <Log>[];

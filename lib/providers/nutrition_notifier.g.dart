@@ -13,7 +13,7 @@ part of 'nutrition_notifier.dart';
 final nutritionProvider = NutritionNotifierProvider._();
 
 final class NutritionNotifierProvider
-    extends $AsyncNotifierProvider<NutritionNotifier, List<NutritionalPlan>> {
+    extends $StreamNotifierProvider<NutritionNotifier, NutritionState> {
   NutritionNotifierProvider._()
     : super(
         from: null,
@@ -33,19 +33,19 @@ final class NutritionNotifierProvider
   NutritionNotifier create() => NutritionNotifier();
 }
 
-String _$nutritionNotifierHash() => r'092063876b947ef5c22501739a20d48236d15aac';
+String _$nutritionNotifierHash() => r'cddf4167586ddc55c031d097be7af02e7e1dec33';
 
-abstract class _$NutritionNotifier extends $AsyncNotifier<List<NutritionalPlan>> {
-  FutureOr<List<NutritionalPlan>> build();
+abstract class _$NutritionNotifier extends $StreamNotifier<NutritionState> {
+  Stream<NutritionState> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<NutritionalPlan>>, List<NutritionalPlan>>;
+    final ref = this.ref as $Ref<AsyncValue<NutritionState>, NutritionState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<NutritionalPlan>>, List<NutritionalPlan>>,
-              AsyncValue<List<NutritionalPlan>>,
+              AnyNotifier<AsyncValue<NutritionState>, NutritionState>,
+              AsyncValue<NutritionState>,
               Object?,
               Object?
             >;

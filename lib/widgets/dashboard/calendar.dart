@@ -190,11 +190,11 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     final entries = ref.watch(weightEntryProvider).value;
     final categories = ref.watch(measurementProvider).value;
     final routinesState = ref.watch(routinesRiverpodProvider).value;
-    final plans = ref.watch(nutritionProvider).value;
+    final nutritionState = ref.watch(nutritionProvider).value;
 
     // Show a spinner until every source has produced at least one value. Same
     // pattern as the other dashboard widgets via [AsyncValueWidget].
-    if (entries == null || categories == null || routinesState == null || plans == null) {
+    if (entries == null || categories == null || routinesState == null || nutritionState == null) {
       return _shell(context, const BoxedProgressIndicator());
     }
 
@@ -203,7 +203,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       entries: entries,
       categories: categories,
       sessions: routinesState.sessions,
-      plans: plans,
+      plans: nutritionState.plans,
     );
 
     final selectedEvents = _selectedDay != null
