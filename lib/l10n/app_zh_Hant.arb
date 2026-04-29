@@ -835,7 +835,7 @@
     "noIngredientsDefined": "尚未定義食材",
     "ingredientLogged": "食材已紀錄到日記",
     "selectMealToLog": "選擇要紀錄到日記的餐點",
-    "errorCouldNotConnectToServerDetails": "無法連接到伺服器",
+    "errorCouldNotConnectToServerDetails": "無法連線至伺服器。請檢查您的網路連線或伺服器網址，然後再試一次。如果問題仍未解決，請聯絡伺服器管理員。",
     "copyToClipboard": "複製到剪貼簿",
     "aboutWhySupportTitle": "開源且免費使用❤️",
     "barWeight": "槓鈴重量",
@@ -901,5 +901,175 @@
         "description": "The End date of a nutritional plan or routine"
     },
     "min": "最小",
-    "max": "最大"
+    "max": "最大",
+    "exerciseNr": "動作 {nr}",
+    "@exerciseNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "supersetNr": "超級組 {nr}",
+    "@supersetNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "restDay": "休息日",
+    "useColors": "使用顏色",
+    "searchLanguageAll": "所有語言",
+    "errorCouldNotConnectToServer": "無法連線至伺服器",
+    "openEnded": "未設定結束日期",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "overview": "總覽",
+    "aboutBugsListTitle": "回報問題或建議新功能",
+    "aboutTranslationListTitle": "協助翻譯此應用程式",
+    "others": "其他",
+    "formMinMaxValues": "請輸入介於 {min} 到 {max} 之間的數值",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "serverUpdateTitle": "伺服器需要更新",
+    "serverUpdateContent": "目前連線的伺服器版本過舊，無法支援此版本的應用程式。請聯絡伺服器管理員，將伺服器更新至 {minVersion} 版以上。",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "identicalExercisePleaseDiscard": "如果你發現有訓練動作與你正在新增的動作相同，請捨棄目前的草稿，改為編輯該訓練動作。",
+    "checkInformationBeforeSubmitting": "提交訓練動作前，請確認你輸入的資訊正確無誤。",
+    "imageDetailsTitle": "圖片資訊",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseNotice": "送出此圖片即表示您同意將其以 CC-BY-SA-4.0 授權條款釋出。此圖片必須為您自己的作品，或原作者已依相容的授權條款釋出。",
+    "imageFormatNotSupported": "不支援 {imageFormat} 格式",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "目前尚不支援 {imageFormat} 格式的圖片。",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "fitInWeekHelp": "啟用後，訓練日會以每週為週期循環；若未啟用，訓練日會依序進行，不受每週起始日影響。",
+    "addSuperset": "新增超級組",
+    "superset": "超級組",
+    "setHasNoExercises": "此組尚未加入任何動作！",
+    "useBasicMarkdown": "您可以使用基本的 Markdown 語法來格式化文字",
+    "simpleModeHelp": "編輯動作時，隱藏部分進階設定",
+    "resistance_band": "彈力帶",
+    "@resistance_band": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "endWorkout": "結束訓練",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "productNotFoundOpenFoodFacts": "您可以將此產品新增至 Open Food Facts，為社群貢獻一份心力！",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "新增至 Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "純素",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "素食",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "篩選",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "只顯示目前語言（{lang}）",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "只顯示目前語言（{lang}）與英文",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "filterNutriscore": "Nutri-Score 篩選",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreOff": "關閉",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "filterNutriscoreNoFilter": "不套用篩選",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} 或更佳",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "sets": "組",
+    "@sets": {
+        "description": "The number of sets to be done for one exercise"
+    },
+    "isRestDayHelp": "請注意，將某天標記為休息日後，當天所有的組數與動作都會被刪除。",
+    "gymModeShowExercises": "顯示動作總覽頁面",
+    "gymModeShowTimer": "顯示組間計時器",
+    "gymModeTimerType": "計時方式",
+    "gymModeTimerTypeHelText": "若組間設定了休息時間，將一律使用倒數計時。",
+    "countdown": "倒數計時",
+    "stopwatch": "正向計時",
+    "gymModeDefaultCountdownTime": "預設倒數時間（秒）",
+    "gymModeNotifyOnCountdownFinish": "倒數結束時通知"
 }
