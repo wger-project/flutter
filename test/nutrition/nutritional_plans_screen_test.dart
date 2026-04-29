@@ -27,6 +27,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -49,7 +50,6 @@ void main() {
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
   late MockUserProfileRepository mockUserProfileRepository;
-  late ProviderContainer container;
 
   final testProfile = Profile(
     username: 'test',
@@ -84,18 +84,19 @@ void main() {
 
     when(mockNutritionRepo.watchAllDrift()).thenAnswer((_) => Stream.value(plans));
     when(mockNutritionRepo.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
+  });
 
-    container = ProviderContainer.test(
+  Widget createHomeScreen({locale = 'en', bool isOnline = true}) {
+    final container = ProviderContainer.test(
       overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
         bodyWeightRepositoryProvider.overrideWithValue(MockBodyWeightRepository()),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
     );
-  });
 
-  Widget createHomeScreen({locale = 'en'}) {
     return UncontrolledProviderScope(
       container: container,
       child: MaterialApp(
@@ -142,6 +143,21 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
     expect(find.byType(PlanForm), findsOneWidget);
+  });
+
+  testWidgets('Add-plan FAB is disabled when offline', (WidgetTester tester) async {
+    // Plan creation still goes through REST, so the FAB must not let users
+    // navigate into a form they can't submit.
+    await tester.pumpWidget(createHomeScreen(isOnline: false));
+    await tester.pumpAndSettle();
+
+    final fab = tester.widget<FloatingActionButton>(find.byType(FloatingActionButton));
+    expect(fab.onPressed, isNull);
+
+    // Tapping must not push the form route.
+    await tester.tap(find.byType(FloatingActionButton), warnIfMissed: false);
+    await tester.pumpAndSettle();
+    expect(find.byType(PlanForm), findsNothing);
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
