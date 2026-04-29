@@ -95,7 +95,7 @@ const PowersyncIngredientTable = ps.Table(
 @UseRowClass(IngredientImage)
 class IngredientImageTable extends Table {
   @override
-  String get tableName => 'nutrition_ingredientimage';
+  String get tableName => 'nutrition_image';
 
   IntColumn get id => integer()();
   TextColumn get uuid => text()();
@@ -113,7 +113,7 @@ class IngredientImageTable extends Table {
 }
 
 const PowersyncIngredientImageTable = ps.Table(
-  'nutrition_ingredientimage',
+  'nutrition_image',
   [
     ps.Column.text('uuid'),
     ps.Column.integer('ingredient_id'),

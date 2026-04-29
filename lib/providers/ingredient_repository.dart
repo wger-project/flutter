@@ -20,6 +20,7 @@
  * Repository for measurement entries (local Drift operations).
  */
 
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -37,10 +38,26 @@ class IngredientRepository {
 
   IngredientRepository(this._db);
 
+  /// Watches a single ingredient by [id], with its `image` field hydrated.
+  /// Emits `null` if no ingredient with that id exists, and re-emits whenever
+  /// either the ingredient row or its image change.
   Stream<Ingredient?> watchById(int id) {
     _logger.finer('Watching ingredient $id');
-    final query = (_db.select(_db.ingredientTable)..where((t) => t.id.equals(id)));
-    return query.watchSingleOrNull();
+    final joined = (_db.select(_db.ingredientTable)..where((t) => t.id.equals(id))).join([
+      leftOuterJoin(
+        _db.ingredientImageTable,
+        _db.ingredientImageTable.ingredientId.equalsExp(_db.ingredientTable.id),
+      ),
+    ]);
+
+    return joined.watchSingleOrNull().map((row) {
+      if (row == null) {
+        return null;
+      }
+      final ingredient = row.readTable(_db.ingredientTable);
+      ingredient.image = row.readTableOrNull(_db.ingredientImageTable);
+      return ingredient;
+    });
   }
 
   /// Read a single ingredient by [id] once from the DB

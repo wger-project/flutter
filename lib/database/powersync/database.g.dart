@@ -4433,6 +4433,10 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
         DriftSqlType.int,
         data['${effectivePrefix}routine_id'],
       )!,
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}session_id'],
+      ),
       repetitions: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}repetitions'],
@@ -6733,7 +6737,7 @@ class $IngredientImageTableTable extends IngredientImageTable
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'nutrition_ingredientimage';
+  static const String $name = 'nutrition_image';
   @override
   VerificationContext validateIntegrity(
     Insertable<IngredientImage> instance, {
