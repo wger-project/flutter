@@ -24,11 +24,11 @@ import 'package:logging/logging.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/trophies/user_trophy.dart';
-import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gym_state.dart';
-import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/trophies.dart';
+import 'package:wger/providers/workout_session.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
@@ -46,39 +46,26 @@ class WorkoutSummary extends ConsumerStatefulWidget {
 }
 
 class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
-  late Future<void> _initData;
-  late Routine _routine;
+  late Future<void> _trophyFuture;
   bool _didInit = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_didInit) {
       final languageCode = Localizations.localeOf(context).languageCode;
-      _initData = _reloadRoutineData(languageCode);
+      _trophyFuture = ref
+          .read(trophyStateProvider.notifier)
+          .fetchUserTrophies(language: languageCode);
       _didInit = true;
     }
   }
 
-  Future<void> _reloadRoutineData(String languageCode) async {
-    widget._logger.fine('Loading routine data');
-    final gymState = ref.read(gymStateProvider);
-
-    _routine = await ref
-        .read(routinesRiverpodProvider.notifier)
-        .fetchAndSetRoutineFull(gymState.routine.id!);
-
-    final trophyNotifier = ref.read(trophyStateProvider.notifier);
-    await trophyNotifier.fetchUserTrophies(language: languageCode);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final routineId = ref.read(gymStateProvider).routine.id!;
+    final sessions = ref.watch(workoutSessionProvider).value;
+    final exerciseState = ref.watch(exercisesProvider).value;
     final trophyState = ref.watch(trophyStateProvider);
 
     return Column(
@@ -90,26 +77,41 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
         ),
         Expanded(
           child: FutureBuilder<void>(
-            future: _initData,
+            future: _trophyFuture,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const BoxedProgressIndicator();
-              } else if (snapshot.hasError) {
+              if (snapshot.hasError) {
                 widget._logger.warning(snapshot.error);
                 widget._logger.warning(snapshot.stackTrace);
                 return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (snapshot.connectionState == ConnectionState.done) {
-                final session = _routine.sessions.firstWhereOrNull(
-                  (s) => s.date.isSameDayAs(clock.now()),
-                );
-                final userTrophies = trophyState.prTrophies
-                    .where((t) => t.contextData?.sessionId == session?.id)
-                    .toList();
-
-                return WorkoutSessionStats(session, userTrophies);
               }
 
-              return const Center(child: Text('Unexpected state!'));
+              // Wait for trophies + the PowerSync streams to have produced
+              // at least one value. In practice these are loaded long before
+              // we reach the summary screen, but the null check keeps us
+              // safe on a cold start.
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  sessions == null ||
+                  exerciseState == null) {
+                return const BoxedProgressIndicator();
+              }
+
+              final session = sessions.firstWhereOrNull(
+                (s) => s.routineId == routineId && s.date.isSameDayAs(clock.now()),
+              );
+              if (session != null) {
+                // The session repository joins logs but doesn't hydrate the
+                // exercise relation; do it here so [MuscleGroupsCard] and
+                // [ExercisesCard] can read `log.exerciseObj`.
+                for (final log in session.logs) {
+                  log.exerciseObj = exerciseState.getById(log.exerciseId);
+                }
+              }
+
+              final userTrophies = trophyState.prTrophies
+                  .where((t) => t.contextData?.sessionId == session?.id)
+                  .toList();
+
+              return WorkoutSessionStats(session, userTrophies);
             },
           ),
         ),
