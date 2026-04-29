@@ -23,14 +23,20 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 
+import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
 import '../fake_connectivity.dart';
 import 'routines_provider_test.mocks.dart';
@@ -72,6 +78,12 @@ void main() {
   List<Override> ambientOverrides() => [
     workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
     exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
+    routineRepetitionUnitProvider.overrideWith(
+      (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),
+    ),
+    routineWeightUnitProvider.overrideWith(
+      (ref) => Stream<List<WeightUnit>>.value(testWeightUnits),
+    ),
   ];
 
   group('test routine methods', () {
@@ -202,5 +214,132 @@ void main() {
         verify(mockRepo.fetchAndSetRoutineFullServer(routineId)).called(1);
       },
     );
+  });
+
+  group('hydration via fetchAndSetRoutineFull', () {
+    // The provider's `_hydrateRoutine` walks four data paths to attach
+    // exercise + unit references to objects.
+
+    /// Builds a barebones SlotEntry
+    SlotEntry barebonesEntry({
+      int exerciseId = 1,
+      int repetitionUnitId = 1,
+      int weightUnitId = 1,
+    }) => SlotEntry(
+      id: 1,
+      slotId: 1,
+      exerciseId: exerciseId,
+      repetitionUnitId: repetitionUnitId,
+      repetitionRounding: 1,
+      weightUnitId: weightUnitId,
+      weightRounding: 1.25,
+    );
+
+    Routine routineWithEntry(SlotEntry entry) {
+      final slot = Slot.withData(id: 1, day: 1, order: 1, comment: '');
+      slot.entries.add(entry);
+      final day = Day(id: 1, routineId: 101, name: 'Test', order: 1)..slots = [slot];
+      return Routine(id: 101, name: 'Test routine')..days = [day];
+    }
+
+    void overrideStreams(MockExerciseRepository exerciseRepo) {
+      when(exerciseRepo.watchAllDrift()).thenAnswer(
+        (_) => Stream.value(ExerciseState(getTestExercises())),
+      );
+    }
+
+    test('attaches exerciseObj + unit objs on slot entries', () async {
+      // Arrange
+      overrideStreams(mockExerciseRepo);
+      final entry = barebonesEntry();
+      final routine = routineWithEntry(entry);
+      when(mockRepo.fetchAndSetRoutineFullServer(101)).thenAnswer((_) async => routine);
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
+      );
+
+      // Act
+      final notifier = container.read(routinesRiverpodProvider.notifier);
+      final result = await notifier.fetchAndSetRoutineFull(101);
+
+      // Assert
+      final hydrated = result.days[0].slots[0].entries[0];
+      expect(hydrated.exerciseObj.id, getTestExercises()[0].id);
+      expect(hydrated.repetitionUnitObj, testRepetitionUnit1);
+      expect(hydrated.weightUnitObj, testWeightUnit1);
+    });
+
+    test('leaves entry.repetitionUnitObj null when the unit is not in the cache', () async {
+      // Arrange
+      overrideStreams(mockExerciseRepo);
+      // Use a unit id that doesn't exist in `testRepetitionUnits`.
+      final entry = barebonesEntry(repetitionUnitId: 9999);
+      final routine = routineWithEntry(entry);
+      when(mockRepo.fetchAndSetRoutineFullServer(101)).thenAnswer((_) async => routine);
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
+      );
+
+      // Act
+      final notifier = container.read(routinesRiverpodProvider.notifier);
+      final result = await notifier.fetchAndSetRoutineFull(101);
+
+      // Assert: the missing unit doesn't crash hydration; the field
+      // ends up as null (graceful fallback).
+      final hydrated = result.days[0].slots[0].entries[0];
+      expect(hydrated.repetitionUnitObj, isNull);
+      // The other refs stay intact.
+      expect(hydrated.weightUnitObj, testWeightUnit1);
+    });
+
+    test('attaches sessions and hydrates log.exerciseObj', () async {
+      // Arrange
+      overrideStreams(mockExerciseRepo);
+      // Stub the session repo to emit one session whose log references
+      // exercise id 1.
+      final log = Log(
+        id: 'log-1',
+        exerciseId: 1,
+        routineId: 101,
+        sessionId: 'session-1',
+        repetitions: 10,
+        weight: 50,
+      );
+      final session = WorkoutSession(
+        id: 'session-1',
+        routineId: 101,
+        date: DateTime(2025, 1, 1),
+        logs: [log],
+      );
+      when(
+        mockSessionRepo.watchAllDrift(),
+      ).thenAnswer((_) => Stream.value([session]));
+
+      final routine = Routine(id: 101, name: 'Test routine');
+      when(mockRepo.fetchAndSetRoutineFullServer(101)).thenAnswer((_) async => routine);
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
+      );
+
+      // Act
+      final notifier = container.read(routinesRiverpodProvider.notifier);
+      final result = await notifier.fetchAndSetRoutineFull(101);
+
+      // Assert
+      expect(result.sessions, hasLength(1));
+      expect(result.sessions[0].logs[0].exerciseObj.id, getTestExercises()[0].id);
+    });
   });
 }

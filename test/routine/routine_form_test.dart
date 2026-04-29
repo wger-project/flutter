@@ -27,11 +27,14 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
@@ -103,6 +106,12 @@ void main() {
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         networkStatusProvider.overrideWithValue(isOnline),
+        routineRepetitionUnitProvider.overrideWith(
+          (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),
+        ),
+        routineWeightUnitProvider.overrideWith(
+          (ref) => Stream<List<WeightUnit>>.value(testWeightUnits),
+        ),
       ],
       child: MaterialApp(
         locale: Locale(locale),

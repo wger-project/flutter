@@ -108,8 +108,10 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     //     in from [workoutSessionProvider] / [exercisesProvider] below.
     final repo = ref.read(routinesRepositoryProvider);
 
-    ref.listen(workoutSessionProvider, (_, _) => _reattachSessions());
-    ref.listen(exercisesProvider, (_, _) => _reattachSessions());
+    ref.listen(workoutSessionProvider, (_, _) => _rehydrate());
+    ref.listen(exercisesProvider, (_, _) => _rehydrate());
+    ref.listen(routineRepetitionUnitProvider, (_, _) => _rehydrate());
+    ref.listen(routineWeightUnitProvider, (_, _) => _rehydrate());
 
     return repo.watchAllDrift().map((freshRoutines) {
       final existing = state.value?.routines ?? const <Routine>[];
@@ -121,24 +123,27 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
           fresh.dayDataGym = old.dayDataGym;
         }
       }
-      _hydrateSessions(freshRoutines);
+      freshRoutines.forEach(_hydrateRoutine);
       return RoutinesState(routines: freshRoutines);
     });
   }
 
-  /// Attaches the latest sessions to each routine and hydrates
-  /// `log.exerciseObj` (sessions → logs) and `entry.exerciseObj`
-  /// (days → slots → entries) from the exercise catalogue. No-op if
-  /// the upstream providers haven't produced their first value yet —
-  /// the listener will re-attach as soon as they do.
-  void _hydrateSessions(List<Routine> routines) {
+  /// Hydrates a routine and its sub-objects (sessions, logs, slot entries) with
+  /// the needed objects (exercises, units, etc)
+  ///
+  /// All steps are best-effort: if a reference-data stream hasn't produced
+  /// its first value yet, the corresponding hydration step is silently skipped.
+  /// The listeners in [build] re-run hydration once the upstream data arrives.
+  void _hydrateRoutine(Routine routine) {
     final sessions = ref.read(workoutSessionProvider).value ?? const <WorkoutSession>[];
     final exerciseState = ref.read(exercisesProvider).value;
-    for (final routine in routines) {
-      routine.sessions = sessions.where((s) => s.routineId == routine.id).toList();
-      if (exerciseState == null) {
-        continue;
-      }
+    final repetitionUnits =
+        ref.read(routineRepetitionUnitProvider).value ?? const <RepetitionUnit>[];
+    final weightUnits = ref.read(routineWeightUnitProvider).value ?? const <WeightUnit>[];
+
+    routine.sessions = sessions.where((s) => s.routineId == routine.id).toList();
+
+    if (exerciseState != null) {
       for (final session in routine.sessions) {
         for (final log in session.logs) {
           // Fall back gracefully if the referenced exercise hasn't been
@@ -151,10 +156,12 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
           }
         }
       }
+    }
 
-      for (final day in routine.days) {
-        for (final slot in day.slots) {
-          for (final entry in slot.entries) {
+    for (final day in routine.days) {
+      for (final slot in day.slots) {
+        for (final entry in slot.entries) {
+          if (exerciseState != null) {
             final exercise = exerciseState.exercises.firstWhereOrNull(
               (e) => e.id == entry.exerciseId,
             );
@@ -162,19 +169,53 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
               entry.exerciseObj = exercise;
             }
           }
+          entry.repetitionUnitObj = repetitionUnits.firstWhereOrNull(
+            (u) => u.id == entry.repetitionUnitId,
+          );
+          entry.weightUnitObj = weightUnits.firstWhereOrNull(
+            (u) => u.id == entry.weightUnitId,
+          );
         }
       }
     }
+
+    // Set configs on the REST-only `dayData` / `dayDataGym` views.
+    void hydrateSetConfigs(List<DayData> entries) {
+      for (final entry in entries) {
+        for (final slot in entry.slots) {
+          for (final setConfig in slot.setConfigs) {
+            if (exerciseState != null) {
+              final exercise = exerciseState.exercises.firstWhereOrNull(
+                (e) => e.id == setConfig.exerciseId,
+              );
+              if (exercise != null) {
+                setConfig.exercise = exercise;
+              }
+            }
+            setConfig.repetitionsUnit = repetitionUnits.firstWhereOrNull(
+              (u) => u.id == setConfig.repetitionsUnitId,
+            );
+            setConfig.weightUnit = weightUnits.firstWhereOrNull(
+              (u) => u.id == setConfig.weightUnitId,
+            );
+          }
+        }
+      }
+    }
+
+    hydrateSetConfigs(routine.dayData);
+    hydrateSetConfigs(routine.dayDataGym);
   }
 
   /// Re-runs hydration on the current state and re-emits it. Triggered by
-  /// [ref.listen] on the upstream session/exercise providers.
-  void _reattachSessions() {
+  /// [ref.listen] on the upstream reference-data providers (sessions,
+  /// exercises, repetition/weight units).
+  void _rehydrate() {
     final current = state.value;
     if (current == null) {
       return;
     }
-    _hydrateSessions(current.routines);
+    current.routines.forEach(_hydrateRoutine);
     state = AsyncData(RoutinesState(routines: List.of(current.routines)));
   }
 
@@ -207,54 +248,16 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   Future<Routine> fetchAndSetRoutineFull(int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
 
-    final exerciseState = await ref.awaitFirstValue(exercisesProvider);
-    final repetitionUnits = await ref.awaitFirstValue(routineRepetitionUnitProvider);
-    final weightUnits = await ref.awaitFirstValue(routineWeightUnitProvider);
-    final sessions = await ref.awaitFirstValue(workoutSessionProvider);
+    // Wait for every reference-data stream to produce its first value before
+    // hydrating, so [_hydrateRoutine] doesn't silently skip steps just because
+    // a stream hasn't emitted yet.
+    await ref.awaitFirstValue(exercisesProvider);
+    await ref.awaitFirstValue(routineRepetitionUnitProvider);
+    await ref.awaitFirstValue(routineWeightUnitProvider);
+    await ref.awaitFirstValue(workoutSessionProvider);
+
     final routine = await repo.fetchAndSetRoutineFullServer(routineId);
-
-    // Hydrate exercises + units on every set config
-    Future<void> setExercisesAndUnits(List<DayData> entries) async {
-      for (final entry in entries) {
-        for (final slot in entry.slots) {
-          for (final setConfig in slot.setConfigs) {
-            setConfig.exercise = exerciseState.getById(setConfig.exerciseId);
-            setConfig.repetitionsUnit = repetitionUnits.firstWhere(
-              (e) => e.id == setConfig.repetitionsUnitId,
-            );
-            setConfig.weightUnit = weightUnits.firstWhere((e) => e.id == setConfig.weightUnitId);
-          }
-        }
-      }
-    }
-
-    setExercisesAndUnits(routine.dayDataGym);
-    setExercisesAndUnits(routine.dayData);
-
-    // Hydrate `exerciseObj` / `repetitionUnitObj` / `weightUnitObj` on
-    // the structure side (days → slots → entries)
-    for (final day in routine.days) {
-      for (final slot in day.slots) {
-        for (final entry in slot.entries) {
-          entry.exerciseObj = exerciseState.getById(entry.exerciseId);
-          entry.repetitionUnitObj = repetitionUnits.firstWhereOrNull(
-            (u) => u.id == entry.repetitionUnitId,
-          );
-          entry.weightUnitObj = weightUnits.firstWhereOrNull(
-            (u) => u.id == entry.weightUnitId,
-          );
-        }
-      }
-    }
-
-    // Attach sessions (already joined with their logs) that belong to this routine
-    // and set the appropriate exercises
-    routine.sessions = sessions.where((s) => s.routineId == routineId).toList();
-    for (final session in routine.sessions) {
-      for (final log in session.logs) {
-        log.exercise = exerciseState.getById(log.exerciseId);
-      }
-    }
+    _hydrateRoutine(routine);
 
     // Inject the hydrated routine into the current state. Note: this is
     // a transient overlay — the next PowerSync stream tick re-emits the
