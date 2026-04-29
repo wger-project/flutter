@@ -279,6 +279,12 @@ class MainApp extends StatelessWidget {
                           const ConfigureDashboardWidgetsScreen(),
                       TrophyScreen.routeName: (ctx) => const TrophyScreen(),
                     },
+                    localeListResolutionCallback: (locales, supportedLocales) {
+                      if (locales != null && locales.isNotEmpty) {
+                        return locales.first;
+                      }
+                      return null;
+                    },
                     localizationsDelegates: AppLocalizations.localizationsDelegates,
                     supportedLocales: AppLocalizations.supportedLocales,
                   );
