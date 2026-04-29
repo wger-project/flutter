@@ -101,7 +101,7 @@ class SlotEntry {
   late int? repetitionUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late RepetitionUnit? repetitionUnitObj;
+  RepetitionUnit? repetitionUnitObj;
 
   @JsonKey(required: true, name: 'repetition_rounding', fromJson: stringToNumNull)
   late num? repetitionRounding;
@@ -116,7 +116,7 @@ class SlotEntry {
   late int? weightUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late WeightUnit? weightUnitObj;
+  WeightUnit? weightUnitObj;
 
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNumNull)
   late num? weightRounding;

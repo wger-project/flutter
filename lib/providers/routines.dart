@@ -127,9 +127,10 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   }
 
   /// Attaches the latest sessions to each routine and hydrates
-  /// `log.exerciseObj` from the exercise catalogue. No-op if the upstream
-  /// providers haven't produced their first value yet — the listener will
-  /// re-attach as soon as they do.
+  /// `log.exerciseObj` (sessions → logs) and `entry.exerciseObj`
+  /// (days → slots → entries) from the exercise catalogue. No-op if
+  /// the upstream providers haven't produced their first value yet —
+  /// the listener will re-attach as soon as they do.
   void _hydrateSessions(List<Routine> routines) {
     final sessions = ref.read(workoutSessionProvider).value ?? const <WorkoutSession>[];
     final exerciseState = ref.read(exercisesProvider).value;
@@ -147,6 +148,19 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
           );
           if (exercise != null) {
             log.exerciseObj = exercise;
+          }
+        }
+      }
+
+      for (final day in routine.days) {
+        for (final slot in day.slots) {
+          for (final entry in slot.entries) {
+            final exercise = exerciseState.exercises.firstWhereOrNull(
+              (e) => e.id == entry.exerciseId,
+            );
+            if (exercise != null) {
+              entry.exerciseObj = exercise;
+            }
           }
         }
       }
@@ -216,6 +230,22 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
 
     setExercisesAndUnits(routine.dayDataGym);
     setExercisesAndUnits(routine.dayData);
+
+    // Hydrate `exerciseObj` / `repetitionUnitObj` / `weightUnitObj` on
+    // the structure side (days → slots → entries)
+    for (final day in routine.days) {
+      for (final slot in day.slots) {
+        for (final entry in slot.entries) {
+          entry.exerciseObj = exerciseState.getById(entry.exerciseId);
+          entry.repetitionUnitObj = repetitionUnits.firstWhereOrNull(
+            (u) => u.id == entry.repetitionUnitId,
+          );
+          entry.weightUnitObj = weightUnits.firstWhereOrNull(
+            (u) => u.id == entry.weightUnitId,
+          );
+        }
+      }
+    }
 
     // Attach sessions (already joined with their logs) that belong to this routine
     // and set the appropriate exercises
