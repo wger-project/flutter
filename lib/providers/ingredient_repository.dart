@@ -16,10 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * Repository for measurement entries (local Drift operations).
- */
-
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
@@ -45,7 +41,53 @@ class IngredientRepository {
   /// weight units change.
   Stream<Ingredient?> watchById(int id) {
     _logger.finer('Watching ingredient $id');
-    final query = (_db.select(_db.ingredientTable)..where((t) => t.id.equals(id))).join([
+    final query = _baseJoinedQuery()..where(_db.ingredientTable.id.equals(id));
+    return query.watch().map((rows) {
+      final hydrated = _hydrate(rows);
+      return hydrated.isEmpty ? null : hydrated.first;
+    });
+  }
+
+  /// Read a single ingredient by [id] once from the DB
+  Future<Ingredient?> getById(int id) async {
+    _logger.finer('Reading ingredient $id');
+    return watchById(id).first;
+  }
+
+  /// Substring-search by name against the locally-synced ingredients,
+  /// with optional diet-flag filters. Used for offline-mode ingredient
+  /// pickers — PowerSync's sync_rules only pull ingredients down when
+  /// they're referenced by one of the user's plans or logs, so the
+  /// effective search corpus is the user's previously-used ingredients.
+  ///
+  /// Hydrates `image` and `weightUnits` on the returned rows so the
+  /// result is shape-compatible with the REST search.
+  Future<List<Ingredient>> searchByName(
+    String term, {
+    bool isVegan = false,
+    bool isVegetarian = false,
+    int limit = 100,
+  }) async {
+    _logger.finer('Local ingredient search: "$term"');
+    final query = _baseJoinedQuery()
+      ..where(_db.ingredientTable.name.lower().like('%${term.toLowerCase()}%'));
+
+    if (isVegan) {
+      query.where(_db.ingredientTable.isVegan.equals(true));
+    }
+    if (isVegetarian) {
+      query.where(_db.ingredientTable.isVegetarian.equals(true));
+    }
+    query
+      ..orderBy([OrderingTerm(expression: _db.ingredientTable.name)])
+      ..limit(limit);
+
+    return _hydrate(await query.get());
+  }
+
+  /// Builds the standard joined query used by every ingredient lookup
+  JoinedSelectStatement<HasResultSet, dynamic> _baseJoinedQuery() {
+    return _db.select(_db.ingredientTable).join([
       leftOuterJoin(
         _db.ingredientImageTable,
         _db.ingredientImageTable.ingredientId.equalsExp(_db.ingredientTable.id),
@@ -55,24 +97,34 @@ class IngredientRepository {
         _db.ingredientWeightUnitTable.ingredientId.equalsExp(_db.ingredientTable.id),
       ),
     ]);
-
-    return query.watch().map((rows) {
-      if (rows.isEmpty) {
-        return null;
-      }
-      final ingredient = rows.first.readTable(_db.ingredientTable);
-      ingredient.image = rows.first.readTableOrNull(_db.ingredientImageTable);
-      ingredient.weightUnits = rows
-          .map((r) => r.readTableOrNull(_db.ingredientWeightUnitTable))
-          .whereType<IngredientWeightUnit>()
-          .toList();
-      return ingredient;
-    });
   }
 
-  /// Read a single ingredient by [id] once from the DB
-  Future<Ingredient?> getById(int id) async {
-    _logger.finer('Reading ingredient $id');
-    return watchById(id).first;
+  /// Collapses cross-joined rows into a deduped list of hydrated ingredients
+  List<Ingredient> _hydrate(Iterable<TypedResult> rows) {
+    final Map<int, Ingredient> ingredients = {};
+    final Map<int, List<IngredientWeightUnit>> weightUnits = {};
+
+    for (final row in rows) {
+      final ingredient = row.readTable(_db.ingredientTable);
+      final image = row.readTableOrNull(_db.ingredientImageTable);
+      final weightUnit = row.readTableOrNull(_db.ingredientWeightUnitTable);
+
+      final entry = ingredients.putIfAbsent(ingredient.id, () => ingredient);
+      if (image != null) {
+        entry.image = image;
+      }
+      if (weightUnit != null) {
+        final list = weightUnits.putIfAbsent(ingredient.id, () => []);
+        if (!list.any((w) => w.id == weightUnit.id)) {
+          list.add(weightUnit);
+        }
+      }
+    }
+
+    for (final entry in ingredients.values) {
+      entry.weightUnits = weightUnits[entry.id] ?? const [];
+    }
+
+    return ingredients.values.toList();
   }
 }

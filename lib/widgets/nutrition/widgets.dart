@@ -28,6 +28,8 @@ import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
@@ -155,12 +157,23 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             widget.onUpdateSearchQuery(pattern);
             widget.onDeselectIngredient();
 
+            // Online: REST search across all ingredients in the wger DB.
+            // Offline: SQL substring search against the local snapshot
+            if (ref.read(networkStatusProvider)) {
+              return ref
+                  .read(nutritionProvider.notifier)
+                  .searchIngredient(
+                    pattern,
+                    languageCode: Localizations.localeOf(context).languageCode,
+                    searchLanguage: filters.searchLanguage,
+                    isVegan: filters.isVegan,
+                    isVegetarian: filters.isVegetarian,
+                  );
+            }
             return ref
-                .read(nutritionProvider.notifier)
-                .searchIngredient(
+                .read(ingredientRepositoryProvider)
+                .searchByName(
                   pattern,
-                  languageCode: Localizations.localeOf(context).languageCode,
-                  searchLanguage: filters.searchLanguage,
                   isVegan: filters.isVegan,
                   isVegetarian: filters.isVegetarian,
                 );

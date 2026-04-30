@@ -270,6 +270,25 @@ class MockIngredientRepository extends _i1.Mock implements _i7.IngredientReposit
             returnValue: _i4.Future<_i6.Ingredient?>.value(),
           )
           as _i4.Future<_i6.Ingredient?>);
+
+  @override
+  _i4.Future<List<_i6.Ingredient>> searchByName(
+    String? term, {
+    bool? isVegan = false,
+    bool? isVegetarian = false,
+    int? limit = 100,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchByName,
+              [term],
+              {#isVegan: isVegan, #isVegetarian: isVegetarian, #limit: limit},
+            ),
+            returnValue: _i4.Future<List<_i6.Ingredient>>.value(
+              <_i6.Ingredient>[],
+            ),
+          )
+          as _i4.Future<List<_i6.Ingredient>>);
 }
 
 /// A class which mocks [Client].
