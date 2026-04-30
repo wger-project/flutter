@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -128,6 +131,16 @@ void main() async {
     // Return true to indicate that the error has been handled.
     return true;
   };
+
+  // Sweep image-cache entries older than ~3 months. Fire-and-forget so we
+  // don't delay startup; failures are non-fatal. extended_image otherwise
+  // never evicts on its own, without this the cache only shrinks under
+  // OS storage pressure or via manual clearing in Settings.
+  unawaited(
+    clearDiskCachedImages(duration: const Duration(days: 90))
+        .then((_) => logger.fine('Image cache sweep done'))
+        .catchError((Object e) => logger.warning('Image cache sweep failed: $e')),
+  );
 
   // Application
   runApp(const ProviderScope(child: MainApp()));

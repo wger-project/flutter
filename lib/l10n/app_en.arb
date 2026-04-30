@@ -961,6 +961,7 @@
   "settingsCacheTitle": "Cache",
   "settingsExerciseCacheDescription": "Exercise cache",
   "settingsIngredientCacheDescription": "Ingredient cache",
+  "settingsImageCacheDescription": "Image cache",
   "settingsCacheDeletedSnackbar": "Cache successfully cleared",
   "aboutPageTitle": "About us & Support",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
