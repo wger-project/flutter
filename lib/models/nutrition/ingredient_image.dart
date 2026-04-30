@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,9 +32,9 @@ class IngredientImage {
   @JsonKey(required: true, name: 'ingredient_id')
   final int ingredientId;
 
-  /// URL of the image on the server
-  @JsonKey(required: true, name: 'image')
-  final String url;
+  /// Relative path of the image on the server (Django `ImageField`)
+  @JsonKey(required: true)
+  final String image;
 
   /// Size in bytes
   @JsonKey(required: true)
@@ -70,7 +70,7 @@ class IngredientImage {
     required this.id,
     required this.uuid,
     required this.ingredientId,
-    required this.url,
+    required this.image,
     required this.size,
     required this.licenseId,
     required this.author,

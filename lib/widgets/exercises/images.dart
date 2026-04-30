@@ -17,38 +17,35 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
-import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/image.dart';
-import 'package:wger/widgets/core/image.dart';
+import 'package:wger/widgets/core/wger_image.dart';
 
+/// Renders an exercise image with disk + memory caching, falling back to
+/// a tinted asset placeholder when [image] is null or the network load
+/// fails. Optional [height] constrains the rendered box; width is always
+/// derived from the parent.
 class ExerciseImageWidget extends StatelessWidget {
-  ExerciseImageWidget({this.image, this.height});
+  const ExerciseImageWidget({super.key, this.image, this.height});
 
-  final _logger = Logger('ExerciseImageWidget');
   final ExerciseImage? image;
   final double? height;
 
+  static const _placeholder = Image(
+    image: AssetImage('assets/images/placeholder.png'),
+    color: Color.fromRGBO(255, 255, 255, 0.3),
+    colorBlendMode: BlendMode.modulate,
+    semanticLabel: 'Placeholder',
+  );
+
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context);
-
-    return image != null
-        ? Image.network(
-            image!.url,
-            semanticLabel: 'Exercise image',
-            errorBuilder: (context, error, stackTrace) => handleImageError(
-              context,
-              error,
-              stackTrace,
-              image!.url,
-            ),
-          )
-        : const Image(
-            image: AssetImage('assets/images/placeholder.png'),
-            color: Color.fromRGBO(255, 255, 255, 0.3),
-            colorBlendMode: BlendMode.modulate,
-            semanticLabel: 'Placeholder',
-          );
+    return WgerImage(
+      mediaPath: image?.image,
+      height: height,
+      // No width — let the parent decide, matching the previous Image.network
+      // behaviour where the natural aspect ratio drove sizing.
+      fit: BoxFit.contain,
+      errorWidget: _placeholder,
+    );
   }
 }

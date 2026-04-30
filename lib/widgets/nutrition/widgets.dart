@@ -32,6 +32,7 @@ import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/wger_image.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 import 'package:wger/widgets/nutrition/nutri_score_badge.dart';
@@ -201,13 +202,16 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             }
 
             return ListTile(
-              leading: ingredient.image != null
-                  ? CircleAvatar(
-                      backgroundImage: NetworkImage(ingredient.thumbnails!.medium),
-                    )
-                  : const CircleIconAvatar(
-                      Icon(Icons.image, color: Colors.grey),
-                    ),
+              leading: WgerImage(
+                mediaPath: ingredient.image?.image,
+                width: 40,
+                height: 40,
+                cacheWidth: 120,
+                borderRadius: BorderRadius.circular(20),
+                errorWidget: const CircleIconAvatar(
+                  Icon(Icons.image, color: Colors.grey),
+                ),
+              ),
               title: Text(
                 ingredient.name,
                 maxLines: 2,
@@ -393,17 +397,27 @@ class IngredientAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ingredient.image != null
-        ? GestureDetector(
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(ingredient.image!.url),
-            ),
-            onTap: () async {
-              if (ingredient.image!.objectUrl != '') {
-                return launchURL(ingredient.image!.objectUrl, context);
-              }
-            },
-          )
-        : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey));
+    final image = WgerImage(
+      mediaPath: ingredient.image?.image,
+      width: 40,
+      height: 40,
+      cacheWidth: 120,
+      borderRadius: BorderRadius.circular(20),
+      errorWidget: const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
+    );
+
+    // No image to launch a license URL for — render the fallback as-is.
+    if (ingredient.image == null) {
+      return image;
+    }
+
+    return GestureDetector(
+      onTap: () async {
+        if (ingredient.image!.objectUrl != '') {
+          return launchURL(ingredient.image!.objectUrl, context);
+        }
+      },
+      child: image,
+    );
   }
 }

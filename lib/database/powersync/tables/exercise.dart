@@ -212,7 +212,8 @@ class ExerciseImageTable extends Table {
   IntColumn get id => integer()();
   TextColumn get uuid => text()();
   IntColumn get exerciseId => integer().named('exercise_id').references(ExerciseTable, #id)();
-  TextColumn get url => text()();
+  // Relative path under MEDIA_ROOT (Django's ImageField stores this)
+  TextColumn get image => text()();
   BoolColumn get isMain => boolean().named('is_main')();
 }
 
@@ -221,7 +222,7 @@ const PowersyncExerciseImageTable = ps.Table(
   [
     ps.Column.text('uuid'),
     ps.Column.integer('exercise_id'),
-    ps.Column.text('url'),
+    ps.Column.text('image'),
     ps.Column.integer('is_main'),
   ],
   indexes: [

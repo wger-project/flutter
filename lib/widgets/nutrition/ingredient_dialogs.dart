@@ -23,10 +23,11 @@ import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
+import 'package:wger/widgets/core/wger_image.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
 import 'package:wger/widgets/nutrition/nutri_score_badge.dart';
 
-Widget ingredientImage(String url, BuildContext context) {
+Widget ingredientImage(String? mediaPath, BuildContext context) {
   var radius = 100.0;
   final height = MediaQuery.sizeOf(context).height;
   final width = MediaQuery.sizeOf(context).width;
@@ -34,8 +35,6 @@ Widget ingredientImage(String url, BuildContext context) {
   if (smallest > 400) {
     radius = smallest / 2.5;
   }
-
-  final imageProvider = NetworkImage(url);
 
   return Padding(
     padding: const EdgeInsets.only(bottom: 12),
@@ -49,8 +48,8 @@ Widget ingredientImage(String url, BuildContext context) {
         ),
         child: Stack(
           children: [
-            Image(
-              image: imageProvider,
+            WgerImage(
+              mediaPath: mediaPath,
               height: radius,
               width: width,
               fit: BoxFit.cover,
@@ -72,8 +71,8 @@ Widget ingredientImage(String url, BuildContext context) {
                 child: Container(
                   clipBehavior: Clip.hardEdge,
                   decoration: const BoxDecoration(shape: BoxShape.circle),
-                  child: Image(
-                    image: imageProvider,
+                  child: WgerImage(
+                    mediaPath: mediaPath,
                     height: radius,
                     width: width,
                     fit: BoxFit.contain,
@@ -86,7 +85,6 @@ Widget ingredientImage(String url, BuildContext context) {
       ),
     ),
   );
-  // CircleAvatar(backgroundImage: NetworkImage(url), radius: radius)
 }
 
 class IngredientDetails extends StatelessWidget {
@@ -120,7 +118,8 @@ class IngredientDetails extends StatelessWidget {
                   'Ingredient lookup error: ${snapshot.error ?? 'unknown error'}',
                   style: const TextStyle(color: Colors.red),
                 ),
-              if (ingredient?.image?.url != null) ingredientImage(ingredient!.image!.url, context),
+              if (ingredient?.image?.image != null)
+                ingredientImage(ingredient!.image!.image, context),
               if (!snapshot.hasData && !snapshot.hasError) const CircularProgressIndicator(),
               if (snapshot.hasData)
                 ConstrainedBox(
@@ -237,7 +236,8 @@ class IngredientScanResultDialog extends StatelessWidget {
                     i18n.productFoundDescription(ingredient.name),
                   ),
                 ),
-              if (ingredient?.image?.url != null) ingredientImage(ingredient!.image!.url, context),
+              if (ingredient?.image?.image != null)
+                ingredientImage(ingredient!.image!.image, context),
               if (snapshot.connectionState != ConnectionState.done && !snapshot.hasError)
                 const CircularProgressIndicator(),
               if (goals != null)

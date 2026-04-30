@@ -100,7 +100,8 @@ class IngredientImageTable extends Table {
   IntColumn get id => integer()();
   TextColumn get uuid => text()();
   IntColumn get ingredientId => integer().named('ingredient_id').references(IngredientTable, #id)();
-  TextColumn get url => text().named('image')();
+  // Relative path under MEDIA_ROOT (Django's ImageField stores this)
+  TextColumn get image => text()();
   IntColumn get size => integer()();
 
   // License information

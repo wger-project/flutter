@@ -2397,10 +2397,10 @@ class $ExerciseImageTableTable extends ExerciseImageTable
       'REFERENCES exercises_exercise (id)',
     ),
   );
-  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  static const VerificationMeta _imageMeta = const VerificationMeta('image');
   @override
-  late final GeneratedColumn<String> url = GeneratedColumn<String>(
-    'url',
+  late final GeneratedColumn<String> image = GeneratedColumn<String>(
+    'image',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -2419,7 +2419,7 @@ class $ExerciseImageTableTable extends ExerciseImageTable
     ),
   );
   @override
-  List<GeneratedColumn> get $columns => [id, uuid, exerciseId, url, isMain];
+  List<GeneratedColumn> get $columns => [id, uuid, exerciseId, image, isMain];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2453,13 +2453,13 @@ class $ExerciseImageTableTable extends ExerciseImageTable
     } else if (isInserting) {
       context.missing(_exerciseIdMeta);
     }
-    if (data.containsKey('url')) {
+    if (data.containsKey('image')) {
       context.handle(
-        _urlMeta,
-        url.isAcceptableOrUnknown(data['url']!, _urlMeta),
+        _imageMeta,
+        image.isAcceptableOrUnknown(data['image']!, _imageMeta),
       );
     } else if (isInserting) {
-      context.missing(_urlMeta);
+      context.missing(_imageMeta);
     }
     if (data.containsKey('is_main')) {
       context.handle(
@@ -2490,9 +2490,9 @@ class $ExerciseImageTableTable extends ExerciseImageTable
         DriftSqlType.int,
         data['${effectivePrefix}exercise_id'],
       )!,
-      url: attachedDatabase.typeMapping.read(
+      image: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}url'],
+        data['${effectivePrefix}image'],
       )!,
       isMain: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
@@ -2511,14 +2511,14 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
   final Value<int> id;
   final Value<String> uuid;
   final Value<int> exerciseId;
-  final Value<String> url;
+  final Value<String> image;
   final Value<bool> isMain;
   final Value<int> rowid;
   const ExerciseImageTableCompanion({
     this.id = const Value.absent(),
     this.uuid = const Value.absent(),
     this.exerciseId = const Value.absent(),
-    this.url = const Value.absent(),
+    this.image = const Value.absent(),
     this.isMain = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2526,19 +2526,19 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     required int id,
     required String uuid,
     required int exerciseId,
-    required String url,
+    required String image,
     required bool isMain,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        uuid = Value(uuid),
        exerciseId = Value(exerciseId),
-       url = Value(url),
+       image = Value(image),
        isMain = Value(isMain);
   static Insertable<ExerciseImage> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<int>? exerciseId,
-    Expression<String>? url,
+    Expression<String>? image,
     Expression<bool>? isMain,
     Expression<int>? rowid,
   }) {
@@ -2546,7 +2546,7 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
       if (id != null) 'id': id,
       if (uuid != null) 'uuid': uuid,
       if (exerciseId != null) 'exercise_id': exerciseId,
-      if (url != null) 'url': url,
+      if (image != null) 'image': image,
       if (isMain != null) 'is_main': isMain,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2556,7 +2556,7 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     Value<int>? id,
     Value<String>? uuid,
     Value<int>? exerciseId,
-    Value<String>? url,
+    Value<String>? image,
     Value<bool>? isMain,
     Value<int>? rowid,
   }) {
@@ -2564,7 +2564,7 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
       id: id ?? this.id,
       uuid: uuid ?? this.uuid,
       exerciseId: exerciseId ?? this.exerciseId,
-      url: url ?? this.url,
+      image: image ?? this.image,
       isMain: isMain ?? this.isMain,
       rowid: rowid ?? this.rowid,
     );
@@ -2582,8 +2582,8 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     if (exerciseId.present) {
       map['exercise_id'] = Variable<int>(exerciseId.value);
     }
-    if (url.present) {
-      map['url'] = Variable<String>(url.value);
+    if (image.present) {
+      map['image'] = Variable<String>(image.value);
     }
     if (isMain.present) {
       map['is_main'] = Variable<bool>(isMain.value);
@@ -2600,7 +2600,7 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
           ..write('id: $id, ')
           ..write('uuid: $uuid, ')
           ..write('exerciseId: $exerciseId, ')
-          ..write('url: $url, ')
+          ..write('image: $image, ')
           ..write('isMain: $isMain, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -6639,9 +6639,9 @@ class $IngredientImageTableTable extends IngredientImageTable
       'REFERENCES nutrition_ingredient (id)',
     ),
   );
-  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  static const VerificationMeta _imageMeta = const VerificationMeta('image');
   @override
-  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+  late final GeneratedColumn<String> image = GeneratedColumn<String>(
     'image',
     aliasedName,
     false,
@@ -6724,7 +6724,7 @@ class $IngredientImageTableTable extends IngredientImageTable
     id,
     uuid,
     ingredientId,
-    url,
+    image,
     size,
     licenseId,
     author,
@@ -6771,11 +6771,11 @@ class $IngredientImageTableTable extends IngredientImageTable
     }
     if (data.containsKey('image')) {
       context.handle(
-        _urlMeta,
-        url.isAcceptableOrUnknown(data['image']!, _urlMeta),
+        _imageMeta,
+        image.isAcceptableOrUnknown(data['image']!, _imageMeta),
       );
     } else if (isInserting) {
-      context.missing(_urlMeta);
+      context.missing(_imageMeta);
     }
     if (data.containsKey('size')) {
       context.handle(
@@ -6863,7 +6863,7 @@ class $IngredientImageTableTable extends IngredientImageTable
         DriftSqlType.int,
         data['${effectivePrefix}ingredient_id'],
       )!,
-      url: attachedDatabase.typeMapping.read(
+      image: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}image'],
       )!,
@@ -6908,7 +6908,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
   final Value<int> id;
   final Value<String> uuid;
   final Value<int> ingredientId;
-  final Value<String> url;
+  final Value<String> image;
   final Value<int> size;
   final Value<int> licenseId;
   final Value<String> author;
@@ -6921,7 +6921,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     this.id = const Value.absent(),
     this.uuid = const Value.absent(),
     this.ingredientId = const Value.absent(),
-    this.url = const Value.absent(),
+    this.image = const Value.absent(),
     this.size = const Value.absent(),
     this.licenseId = const Value.absent(),
     this.author = const Value.absent(),
@@ -6935,7 +6935,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     required int id,
     required String uuid,
     required int ingredientId,
-    required String url,
+    required String image,
     required int size,
     required int licenseId,
     required String author,
@@ -6947,7 +6947,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
   }) : id = Value(id),
        uuid = Value(uuid),
        ingredientId = Value(ingredientId),
-       url = Value(url),
+       image = Value(image),
        size = Value(size),
        licenseId = Value(licenseId),
        author = Value(author),
@@ -6959,7 +6959,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<int>? ingredientId,
-    Expression<String>? url,
+    Expression<String>? image,
     Expression<int>? size,
     Expression<int>? licenseId,
     Expression<String>? author,
@@ -6973,7 +6973,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
       if (id != null) 'id': id,
       if (uuid != null) 'uuid': uuid,
       if (ingredientId != null) 'ingredient_id': ingredientId,
-      if (url != null) 'image': url,
+      if (image != null) 'image': image,
       if (size != null) 'size': size,
       if (licenseId != null) 'license_id': licenseId,
       if (author != null) 'license_author': author,
@@ -6989,7 +6989,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     Value<int>? id,
     Value<String>? uuid,
     Value<int>? ingredientId,
-    Value<String>? url,
+    Value<String>? image,
     Value<int>? size,
     Value<int>? licenseId,
     Value<String>? author,
@@ -7003,7 +7003,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
       id: id ?? this.id,
       uuid: uuid ?? this.uuid,
       ingredientId: ingredientId ?? this.ingredientId,
-      url: url ?? this.url,
+      image: image ?? this.image,
       size: size ?? this.size,
       licenseId: licenseId ?? this.licenseId,
       author: author ?? this.author,
@@ -7027,8 +7027,8 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     if (ingredientId.present) {
       map['ingredient_id'] = Variable<int>(ingredientId.value);
     }
-    if (url.present) {
-      map['image'] = Variable<String>(url.value);
+    if (image.present) {
+      map['image'] = Variable<String>(image.value);
     }
     if (size.present) {
       map['size'] = Variable<int>(size.value);
@@ -7065,7 +7065,7 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
           ..write('id: $id, ')
           ..write('uuid: $uuid, ')
           ..write('ingredientId: $ingredientId, ')
-          ..write('url: $url, ')
+          ..write('image: $image, ')
           ..write('size: $size, ')
           ..write('licenseId: $licenseId, ')
           ..write('author: $author, ')
@@ -11048,7 +11048,7 @@ typedef $$ExerciseImageTableTableCreateCompanionBuilder =
       required int id,
       required String uuid,
       required int exerciseId,
-      required String url,
+      required String image,
       required bool isMain,
       Value<int> rowid,
     });
@@ -11057,7 +11057,7 @@ typedef $$ExerciseImageTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> uuid,
       Value<int> exerciseId,
-      Value<String> url,
+      Value<String> image,
       Value<bool> isMain,
       Value<int> rowid,
     });
@@ -11112,8 +11112,8 @@ class $$ExerciseImageTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get url => $composableBuilder(
-    column: $table.url,
+  ColumnFilters<String> get image => $composableBuilder(
+    column: $table.image,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11164,8 +11164,8 @@ class $$ExerciseImageTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get url => $composableBuilder(
-    column: $table.url,
+  ColumnOrderings<String> get image => $composableBuilder(
+    column: $table.image,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -11211,8 +11211,8 @@ class $$ExerciseImageTableTableAnnotationComposer
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
 
-  GeneratedColumn<String> get url =>
-      $composableBuilder(column: $table.url, builder: (column) => column);
+  GeneratedColumn<String> get image =>
+      $composableBuilder(column: $table.image, builder: (column) => column);
 
   GeneratedColumn<bool> get isMain =>
       $composableBuilder(column: $table.isMain, builder: (column) => column);
@@ -11275,14 +11275,14 @@ class $$ExerciseImageTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> uuid = const Value.absent(),
                 Value<int> exerciseId = const Value.absent(),
-                Value<String> url = const Value.absent(),
+                Value<String> image = const Value.absent(),
                 Value<bool> isMain = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseImageTableCompanion(
                 id: id,
                 uuid: uuid,
                 exerciseId: exerciseId,
-                url: url,
+                image: image,
                 isMain: isMain,
                 rowid: rowid,
               ),
@@ -11291,14 +11291,14 @@ class $$ExerciseImageTableTableTableManager
                 required int id,
                 required String uuid,
                 required int exerciseId,
-                required String url,
+                required String image,
                 required bool isMain,
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseImageTableCompanion.insert(
                 id: id,
                 uuid: uuid,
                 exerciseId: exerciseId,
-                url: url,
+                image: image,
                 isMain: isMain,
                 rowid: rowid,
               ),
@@ -14822,7 +14822,7 @@ typedef $$IngredientImageTableTableCreateCompanionBuilder =
       required int id,
       required String uuid,
       required int ingredientId,
-      required String url,
+      required String image,
       required int size,
       required int licenseId,
       required String author,
@@ -14837,7 +14837,7 @@ typedef $$IngredientImageTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> uuid,
       Value<int> ingredientId,
-      Value<String> url,
+      Value<String> image,
       Value<int> size,
       Value<int> licenseId,
       Value<String> author,
@@ -14899,8 +14899,8 @@ class $$IngredientImageTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get url => $composableBuilder(
-    column: $table.url,
+  ColumnFilters<String> get image => $composableBuilder(
+    column: $table.image,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -14981,8 +14981,8 @@ class $$IngredientImageTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get url => $composableBuilder(
-    column: $table.url,
+  ColumnOrderings<String> get image => $composableBuilder(
+    column: $table.image,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -15058,8 +15058,8 @@ class $$IngredientImageTableTableAnnotationComposer
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
 
-  GeneratedColumn<String> get url =>
-      $composableBuilder(column: $table.url, builder: (column) => column);
+  GeneratedColumn<String> get image =>
+      $composableBuilder(column: $table.image, builder: (column) => column);
 
   GeneratedColumn<int> get size =>
       $composableBuilder(column: $table.size, builder: (column) => column);
@@ -15144,7 +15144,7 @@ class $$IngredientImageTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> uuid = const Value.absent(),
                 Value<int> ingredientId = const Value.absent(),
-                Value<String> url = const Value.absent(),
+                Value<String> image = const Value.absent(),
                 Value<int> size = const Value.absent(),
                 Value<int> licenseId = const Value.absent(),
                 Value<String> author = const Value.absent(),
@@ -15157,7 +15157,7 @@ class $$IngredientImageTableTableTableManager
                 id: id,
                 uuid: uuid,
                 ingredientId: ingredientId,
-                url: url,
+                image: image,
                 size: size,
                 licenseId: licenseId,
                 author: author,
@@ -15172,7 +15172,7 @@ class $$IngredientImageTableTableTableManager
                 required int id,
                 required String uuid,
                 required int ingredientId,
-                required String url,
+                required String image,
                 required int size,
                 required int licenseId,
                 required String author,
@@ -15185,7 +15185,7 @@ class $$IngredientImageTableTableTableManager
                 id: id,
                 uuid: uuid,
                 ingredientId: ingredientId,
-                url: url,
+                image: image,
                 size: size,
                 licenseId: licenseId,
                 author: author,

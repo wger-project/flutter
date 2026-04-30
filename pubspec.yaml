@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.9
   drift: ^2.31.0
   equatable: ^2.0.8
+  extended_image: ^10.0.1
   fl_chart: ^1.2.0
   flex_color_scheme: ^8.3.1
   flutter_html: ^3.0.0

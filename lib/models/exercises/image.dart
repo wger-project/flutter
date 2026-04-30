@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,19 +20,23 @@ class ExerciseImage {
   final int id;
   final String uuid;
   final int exerciseId;
-  final String url;
+
+  /// Relative path of the image on the server (Django `ImageField`),
+  /// e.g. `exercise-images/91/foo.png`
+  final String image;
+
   final bool isMain;
 
   const ExerciseImage({
     required this.id,
     required this.uuid,
     required this.exerciseId,
-    required this.url,
+    required this.image,
     required this.isMain,
   });
 
   @override
   String toString() {
-    return 'Image $id: $url';
+    return 'Image $id: $image';
   }
 }
