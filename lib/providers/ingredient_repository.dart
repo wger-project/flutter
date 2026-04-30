@@ -55,10 +55,8 @@ class IngredientRepository {
   }
 
   /// Substring-search by name against the locally-synced ingredients,
-  /// with optional diet-flag filters. Used for offline-mode ingredient
-  /// pickers — PowerSync's sync_rules only pull ingredients down when
-  /// they're referenced by one of the user's plans or logs, so the
-  /// effective search corpus is the user's previously-used ingredients.
+  /// with optional diet-flag and Nutri-Score filters. Used for offline-mode
+  /// ingredient pickers
   ///
   /// Hydrates `image` and `weightUnits` on the returned rows so the
   /// result is shape-compatible with the REST search.
@@ -66,6 +64,7 @@ class IngredientRepository {
     String term, {
     bool isVegan = false,
     bool isVegetarian = false,
+    NutriScore? nutriscoreMax,
     int limit = 100,
   }) async {
     _logger.finer('Local ingredient search: "$term"');
@@ -77,6 +76,9 @@ class IngredientRepository {
     }
     if (isVegetarian) {
       query.where(_db.ingredientTable.isVegetarian.equals(true));
+    }
+    if (nutriscoreMax != null) {
+      query.where(_db.ingredientTable.nutriscore.isSmallerOrEqualValue(nutriscoreMax.name));
     }
     query
       ..orderBy([OrderingTerm(expression: _db.ingredientTable.name)])

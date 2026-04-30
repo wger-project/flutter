@@ -313,6 +313,7 @@ class NutritionNotifier extends _$NutritionNotifier {
     IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
     bool isVegan = false,
     bool isVegetarian = false,
+    NutriScore? nutriscoreMax,
   }) {
     final repo = ref.read(nutritionRepositoryProvider);
     return repo.searchIngredient(
@@ -321,6 +322,7 @@ class NutritionNotifier extends _$NutritionNotifier {
       searchLanguage: searchLanguage,
       isVegan: isVegan,
       isVegetarian: isVegetarian,
+      nutriscoreMax: nutriscoreMax,
     );
   }
 

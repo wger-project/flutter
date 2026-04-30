@@ -191,6 +191,7 @@ class MockNutritionRepository extends _i1.Mock implements _i4.NutritionRepositor
     _i4.IngredientSearchLanguage? searchLanguage = _i4.IngredientSearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
+    _i7.NutriScore? nutriscoreMax,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -201,6 +202,7 @@ class MockNutritionRepository extends _i1.Mock implements _i4.NutritionRepositor
                 #searchLanguage: searchLanguage,
                 #isVegan: isVegan,
                 #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
               },
             ),
             returnValue: _i5.Future<List<_i7.Ingredient>>.value(
@@ -273,13 +275,19 @@ class MockIngredientRepository extends _i1.Mock implements _i9.IngredientReposit
     String? term, {
     bool? isVegan = false,
     bool? isVegetarian = false,
+    _i7.NutriScore? nutriscoreMax,
     int? limit = 100,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
               #searchByName,
               [term],
-              {#isVegan: isVegan, #isVegetarian: isVegetarian, #limit: limit},
+              {
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
+                #limit: limit,
+              },
             ),
             returnValue: _i5.Future<List<_i7.Ingredient>>.value(
               <_i7.Ingredient>[],

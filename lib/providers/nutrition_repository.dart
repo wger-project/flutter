@@ -155,12 +155,19 @@ class NutritionRepository {
 
   // --- Ingredients ---
 
+  /// Searches for an ingredient via the REST API.
+  ///
+  /// [nutriscoreMax] — if non-null, the worst acceptable Nutri-Score grade,
+  /// sent to the backend as `nutriscore__lte`. The Django filterset
+  /// compares lexicographically on the `a`..`e` choices, so passing
+  /// [NutriScore.b] yields "only A or B".
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',
     IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
     bool isVegan = false,
     bool isVegetarian = false,
+    NutriScore? nutriscoreMax,
   }) async {
     if (name.length <= 1) {
       return [];
@@ -192,6 +199,9 @@ class NutritionRepository {
     }
     if (isVegetarian) {
       query['is_vegetarian'] = 'true';
+    }
+    if (nutriscoreMax != null) {
+      query['nutriscore__lte'] = nutriscoreMax.name;
     }
 
     _logger.info('Searching ingredients from server');

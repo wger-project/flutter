@@ -118,6 +118,7 @@ void main() {
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
         isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
       ),
     ).thenAnswer(
       (_) => Future.value([ingredient1, ingredient2]),
