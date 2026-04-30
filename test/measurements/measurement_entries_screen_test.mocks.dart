@@ -10,9 +10,8 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/models/measurements/measurement_category.dart' as _i5;
 import 'package:wger/models/measurements/measurement_entry.dart' as _i6;
 import 'package:wger/models/nutrition/ingredient.dart' as _i9;
-import 'package:wger/models/nutrition/ingredient_weight_unit.dart' as _i10;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i8;
-import 'package:wger/providers/ingredient_repository.dart' as _i11;
+import 'package:wger/providers/ingredient_repository.dart' as _i10;
 import 'package:wger/providers/measurement_repository.dart' as _i3;
 import 'package:wger/providers/nutrition_repository.dart' as _i7;
 
@@ -296,18 +295,6 @@ class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepositor
           as _i4.Future<_i9.Ingredient?>);
 
   @override
-  _i4.Future<List<_i10.IngredientWeightUnit>> fetchWeightUnits(
-    int? ingredientId,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchWeightUnits, [ingredientId]),
-            returnValue: _i4.Future<List<_i10.IngredientWeightUnit>>.value(
-              <_i10.IngredientWeightUnit>[],
-            ),
-          )
-          as _i4.Future<List<_i10.IngredientWeightUnit>>);
-
-  @override
   _i4.Future<List<dynamic>> fetchLogsForPlan(int? planId) =>
       (super.noSuchMethod(
             Invocation.method(#fetchLogsForPlan, [planId]),
@@ -339,7 +326,7 @@ class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepositor
 /// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIngredientRepository extends _i1.Mock implements _i11.IngredientRepository {
+class MockIngredientRepository extends _i1.Mock implements _i10.IngredientRepository {
   MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -359,16 +346,4 @@ class MockIngredientRepository extends _i1.Mock implements _i11.IngredientReposi
             returnValue: _i4.Future<_i9.Ingredient?>.value(),
           )
           as _i4.Future<_i9.Ingredient?>);
-
-  @override
-  _i4.Future<List<_i10.IngredientWeightUnit>> getWeightUnits(
-    int? ingredientId,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getWeightUnits, [ingredientId]),
-            returnValue: _i4.Future<List<_i10.IngredientWeightUnit>>.value(
-              <_i10.IngredientWeightUnit>[],
-            ),
-          )
-          as _i4.Future<List<_i10.IngredientWeightUnit>>);
 }

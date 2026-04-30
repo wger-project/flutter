@@ -23,7 +23,6 @@ import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
@@ -59,7 +58,6 @@ class NutritionRepository {
   static const mealItemPath = 'mealitem';
   static const ingredientInfoPath = 'ingredientinfo';
   static const nutritionDiaryPath = 'nutritiondiary';
-  static const ingredientWeightUnitPath = 'ingredientweightunit';
 
   NutritionRepository(this._base, this._db);
 
@@ -215,16 +213,6 @@ class NutritionRepository {
       return null;
     }
     return Ingredient.fromJson(data['results'][0]);
-  }
-
-  Future<List<IngredientWeightUnit>> fetchWeightUnits(int ingredientId) async {
-    final data = await _base.fetchPaginated(
-      _base.makeUrl(
-        ingredientWeightUnitPath,
-        query: {'ingredient': ingredientId.toString()},
-      ),
-    );
-    return data.map((e) => IngredientWeightUnit.fromJson(e)).toList();
   }
 
   // --- Nutrition diary (logs) ---

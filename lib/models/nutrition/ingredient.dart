@@ -18,6 +18,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'ingredient.g.dart';
@@ -38,7 +39,7 @@ enum NutriScore {
 @JsonSerializable()
 class Ingredient {
   // fields returned by django api that we ignore here:
-  // uuid, last_updated, last_imported, weight_units, language
+  // uuid, last_updated, last_imported, language
   // most license fields
 
   @JsonKey(required: true)
@@ -124,6 +125,9 @@ class Ingredient {
 
   IngredientImage? image;
 
+  @JsonKey(name: 'weight_units', defaultValue: <IngredientWeightUnit>[])
+  List<IngredientWeightUnit> weightUnits;
+
   Ingredient({
     required this.remoteId,
     required this.sourceName,
@@ -146,6 +150,7 @@ class Ingredient {
     this.isVegetarian,
     this.nutriscore,
     this.image,
+    this.weightUnits = const [],
   });
 
   // Boilerplate

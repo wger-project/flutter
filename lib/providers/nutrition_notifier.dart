@@ -22,7 +22,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -320,25 +319,6 @@ class NutritionNotifier extends _$NutritionNotifier {
   Future<Ingredient?> searchIngredientWithBarcode(String barcode) {
     final repo = ref.read(nutritionRepositoryProvider);
     return repo.searchIngredientWithBarcode(barcode);
-  }
-
-  /// Looks up the weight units for [ingredientId], preferring the local
-  /// PowerSync-backed Drift table and falling back to REST for ingredients
-  /// that aren't synced locally (i.e. picked from the typeahead but not yet
-  /// referenced by any of the user's plans/logs).
-  Future<List<IngredientWeightUnit>> fetchWeightUnits(int ingredientId) async {
-    final ingredientRepo = ref.read(ingredientRepositoryProvider);
-
-    final local = await ingredientRepo.getById(ingredientId);
-    if (local != null) {
-      return ingredientRepo.getWeightUnits(ingredientId);
-    }
-
-    _logger.fine(
-      'Ingredient $ingredientId not in PowerSync, fetching weight units from REST',
-    );
-    final repo = ref.read(nutritionRepositoryProvider);
-    return repo.fetchWeightUnits(ingredientId);
   }
 
   // --- Logs (nutrition diary) ---

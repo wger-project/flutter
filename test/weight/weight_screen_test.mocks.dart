@@ -7,15 +7,14 @@ import 'dart:async' as _i5;
 
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/body_weight/weight_entry.dart' as _i11;
+import 'package:wger/models/body_weight/weight_entry.dart' as _i10;
 import 'package:wger/models/nutrition/ingredient.dart' as _i7;
-import 'package:wger/models/nutrition/ingredient_weight_unit.dart' as _i8;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i6;
 import 'package:wger/models/user/profile.dart' as _i3;
-import 'package:wger/providers/body_weight_repository.dart' as _i10;
-import 'package:wger/providers/ingredient_repository.dart' as _i9;
+import 'package:wger/providers/body_weight_repository.dart' as _i9;
+import 'package:wger/providers/ingredient_repository.dart' as _i8;
 import 'package:wger/providers/nutrition_repository.dart' as _i4;
-import 'package:wger/providers/user_profile_repository.dart' as _i12;
+import 'package:wger/providers/user_profile_repository.dart' as _i11;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -218,18 +217,6 @@ class MockNutritionRepository extends _i1.Mock implements _i4.NutritionRepositor
           as _i5.Future<_i7.Ingredient?>);
 
   @override
-  _i5.Future<List<_i8.IngredientWeightUnit>> fetchWeightUnits(
-    int? ingredientId,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchWeightUnits, [ingredientId]),
-            returnValue: _i5.Future<List<_i8.IngredientWeightUnit>>.value(
-              <_i8.IngredientWeightUnit>[],
-            ),
-          )
-          as _i5.Future<List<_i8.IngredientWeightUnit>>);
-
-  @override
   _i5.Future<List<dynamic>> fetchLogsForPlan(int? planId) =>
       (super.noSuchMethod(
             Invocation.method(#fetchLogsForPlan, [planId]),
@@ -261,7 +248,7 @@ class MockNutritionRepository extends _i1.Mock implements _i4.NutritionRepositor
 /// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIngredientRepository extends _i1.Mock implements _i9.IngredientRepository {
+class MockIngredientRepository extends _i1.Mock implements _i8.IngredientRepository {
   MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -281,35 +268,23 @@ class MockIngredientRepository extends _i1.Mock implements _i9.IngredientReposit
             returnValue: _i5.Future<_i7.Ingredient?>.value(),
           )
           as _i5.Future<_i7.Ingredient?>);
-
-  @override
-  _i5.Future<List<_i8.IngredientWeightUnit>> getWeightUnits(
-    int? ingredientId,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getWeightUnits, [ingredientId]),
-            returnValue: _i5.Future<List<_i8.IngredientWeightUnit>>.value(
-              <_i8.IngredientWeightUnit>[],
-            ),
-          )
-          as _i5.Future<List<_i8.IngredientWeightUnit>>);
 }
 
 /// A class which mocks [BodyWeightRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightRepository extends _i1.Mock implements _i10.BodyWeightRepository {
+class MockBodyWeightRepository extends _i1.Mock implements _i9.BodyWeightRepository {
   MockBodyWeightRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Stream<List<_i11.WeightEntry>> watchAllDrift() =>
+  _i5.Stream<List<_i10.WeightEntry>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i5.Stream<List<_i11.WeightEntry>>.empty(),
+            returnValue: _i5.Stream<List<_i10.WeightEntry>>.empty(),
           )
-          as _i5.Stream<List<_i11.WeightEntry>>);
+          as _i5.Stream<List<_i10.WeightEntry>>);
 
   @override
   _i5.Future<void> deleteLocalDrift(String? id) =>
@@ -321,7 +296,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i10.BodyWeightReposi
           as _i5.Future<void>);
 
   @override
-  _i5.Future<void> updateLocalDrift(_i11.WeightEntry? entry) =>
+  _i5.Future<void> updateLocalDrift(_i10.WeightEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDrift, [entry]),
             returnValue: _i5.Future<void>.value(),
@@ -330,7 +305,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i10.BodyWeightReposi
           as _i5.Future<void>);
 
   @override
-  _i5.Future<void> addLocalDrift(_i11.WeightEntry? entry) =>
+  _i5.Future<void> addLocalDrift(_i10.WeightEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
             returnValue: _i5.Future<void>.value(),
@@ -342,7 +317,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i10.BodyWeightReposi
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i12.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock implements _i11.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }

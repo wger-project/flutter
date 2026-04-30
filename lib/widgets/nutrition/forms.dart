@@ -211,13 +211,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
       _selectedWeightUnit = null;
       _mealItem.weightUnitId = null;
       _mealItem.weightUnitObj = null;
-    });
-
-    // Load weight units for this ingredient
-    ref.read(nutritionProvider.notifier).fetchWeightUnits(ingredient.id).then((units) {
-      setState(() {
-        _weightUnits = units;
-      });
+      _weightUnits = ingredient.weightUnits;
     });
   }
 

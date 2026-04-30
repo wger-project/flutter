@@ -52,6 +52,13 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     image: json['image'] == null
         ? null
         : IngredientImage.fromJson(json['image'] as Map<String, dynamic>),
+    weightUnits:
+        (json['weight_units'] as List<dynamic>?)
+            ?.map(
+              (e) => IngredientWeightUnit.fromJson(e as Map<String, dynamic>),
+            )
+            .toList() ??
+        [],
   );
 }
 
@@ -77,6 +84,7 @@ Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic
   'is_vegetarian': instance.isVegetarian,
   'nutriscore': _$NutriScoreEnumMap[instance.nutriscore],
   'image': instance.image,
+  'weight_units': instance.weightUnits,
 };
 
 const _$NutriScoreEnumMap = {

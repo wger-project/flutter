@@ -39,24 +39,33 @@ class IngredientRepository {
 
   IngredientRepository(this._db);
 
-  /// Watches a single ingredient by [id], with its `image` field hydrated.
-  /// Emits `null` if no ingredient with that id exists, and re-emits whenever
-  /// either the ingredient row or its image change.
+  /// Watches a single ingredient by [id] with its `image` and `weightUnits`
+  /// fields fully hydrated. Emits `null` if no ingredient with that id exists,
+  /// and re-emits whenever the ingredient row, its image, or any of its
+  /// weight units change.
   Stream<Ingredient?> watchById(int id) {
     _logger.finer('Watching ingredient $id');
-    final joined = (_db.select(_db.ingredientTable)..where((t) => t.id.equals(id))).join([
+    final query = (_db.select(_db.ingredientTable)..where((t) => t.id.equals(id))).join([
       leftOuterJoin(
         _db.ingredientImageTable,
         _db.ingredientImageTable.ingredientId.equalsExp(_db.ingredientTable.id),
       ),
+      leftOuterJoin(
+        _db.ingredientWeightUnitTable,
+        _db.ingredientWeightUnitTable.ingredientId.equalsExp(_db.ingredientTable.id),
+      ),
     ]);
 
-    return joined.watchSingleOrNull().map((row) {
-      if (row == null) {
+    return query.watch().map((rows) {
+      if (rows.isEmpty) {
         return null;
       }
-      final ingredient = row.readTable(_db.ingredientTable);
-      ingredient.image = row.readTableOrNull(_db.ingredientImageTable);
+      final ingredient = rows.first.readTable(_db.ingredientTable);
+      ingredient.image = rows.first.readTableOrNull(_db.ingredientImageTable);
+      ingredient.weightUnits = rows
+          .map((r) => r.readTableOrNull(_db.ingredientWeightUnitTable))
+          .whereType<IngredientWeightUnit>()
+          .toList();
       return ingredient;
     });
   }
@@ -65,23 +74,5 @@ class IngredientRepository {
   Future<Ingredient?> getById(int id) async {
     _logger.finer('Reading ingredient $id');
     return watchById(id).first;
-  }
-
-  /// Reads the weight units for [ingredientId] from the local Drift table.
-  ///
-  /// Joined with the ingredient table so that an empty result reliably means
-  /// "ingredient is synced and has no extra units" rather than "we don't have
-  /// the ingredient at all".
-  Future<List<IngredientWeightUnit>> getWeightUnits(int ingredientId) async {
-    _logger.finer('Reading weight units for ingredient $ingredientId');
-    final query = _db.select(_db.ingredientWeightUnitTable).join([
-      innerJoin(
-        _db.ingredientTable,
-        _db.ingredientTable.id.equalsExp(_db.ingredientWeightUnitTable.ingredientId),
-      ),
-    ])..where(_db.ingredientWeightUnitTable.ingredientId.equals(ingredientId));
-
-    final rows = await query.get();
-    return rows.map((row) => row.readTable(_db.ingredientWeightUnitTable)).toList();
   }
 }
