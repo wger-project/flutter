@@ -71,6 +71,16 @@ void _setupLogging() {
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
     print('${record.level.name}: ${record.time} [${record.loggerName}] ${record.message}');
+
+    // The Logger API has dedicated error / stackTrace fields that can be populated
+    if (record.error != null) {
+      // ignore: avoid_print
+      print('  error: ${record.error}');
+    }
+    if (record.stackTrace != null) {
+      // ignore: avoid_print
+      print(record.stackTrace);
+    }
     InMemoryLogStore().add(record);
   });
 }
