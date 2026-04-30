@@ -19,7 +19,7 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/ingredient_image.dart';
+import 'package:wger/models/nutrition/ingredient_image.dart' show IngredientImage;
 
 @UseRowClass(Ingredient)
 class IngredientTable extends Table {
@@ -51,17 +51,18 @@ class IngredientTable extends Table {
   // Energy and macronutrients
   IntColumn get energy => integer()();
   RealColumn get carbohydrates => real()();
-  RealColumn get carbohydratesSugar => real().named('carbohydrates_sugar')();
+  RealColumn get carbohydratesSugar => real().nullable().named('carbohydrates_sugar')();
   RealColumn get protein => real()();
   RealColumn get fat => real()();
-  RealColumn get fatSaturated => real().named('fat_saturated')();
-  RealColumn get fiber => real()();
-  RealColumn get sodium => real()();
+  RealColumn get fatSaturated => real().nullable().named('fat_saturated')();
+  RealColumn get fiber => real().nullable()();
+  RealColumn get sodium => real().nullable()();
 
-  // Flags
-  BoolColumn get isVegan => boolean().withDefault(const Constant(false)).named('is_vegan')();
-  BoolColumn get isVegetarian =>
-      boolean().withDefault(const Constant(false)).named('is_vegetarian')();
+  BoolColumn get isVegan => boolean().nullable().named('is_vegan')();
+  BoolColumn get isVegetarian => boolean().nullable().named('is_vegetarian')();
+
+  // Stored as a single character ('a'–'e') matching `NutriScore.<x>.name`.
+  Column<String> get nutriscore => textEnum<NutriScore>().nullable()();
 }
 
 const PowersyncIngredientTable = ps.Table(
@@ -86,6 +87,7 @@ const PowersyncIngredientTable = ps.Table(
     ps.Column.real('sodium'),
     ps.Column.integer('is_vegan'),
     ps.Column.integer('is_vegetarian'),
+    ps.Column.text('nutriscore'),
   ],
   indexes: [
     ps.Index('language_idx', [ps.IndexedColumn('language_id')]),

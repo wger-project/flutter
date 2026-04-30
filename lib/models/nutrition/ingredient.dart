@@ -18,7 +18,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
-import 'package:wger/models/nutrition/ingredient_image_thumbnails.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
 part 'ingredient.g.dart';
@@ -80,9 +79,14 @@ class Ingredient {
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num carbohydrates;
 
-  /// g per 100g of product
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'carbohydrates_sugar')
-  final num carbohydratesSugar;
+  /// g per 100g of product. Nullable per Django (`null=True`).
+  @JsonKey(
+    required: true,
+    fromJson: stringToNumNull,
+    toJson: numToString,
+    name: 'carbohydrates_sugar',
+  )
+  final num? carbohydratesSugar;
 
   /// g per 100g of product
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
@@ -92,17 +96,22 @@ class Ingredient {
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num fat;
 
-  /// g per 100g of product
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString, name: 'fat_saturated')
-  final num fatSaturated;
+  /// g per 100g of product. Nullable per Django (`null=True`).
+  @JsonKey(
+    required: true,
+    fromJson: stringToNumNull,
+    toJson: numToString,
+    name: 'fat_saturated',
+  )
+  final num? fatSaturated;
 
-  /// g per 100g of product
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
-  final num fiber;
+  /// g per 100g of product. Nullable per Django (`null=True`).
+  @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString)
+  final num? fiber;
 
-  /// g per 100g of product
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
-  final num sodium;
+  /// g per 100g of product. Nullable per Django (`null=True`).
+  @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString)
+  final num? sodium;
 
   @JsonKey(name: 'is_vegan')
   final bool? isVegan;
@@ -114,8 +123,6 @@ class Ingredient {
   final NutriScore? nutriscore;
 
   IngredientImage? image;
-
-  IngredientImageThumbnails? thumbnails;
 
   Ingredient({
     required this.remoteId,
@@ -129,17 +136,16 @@ class Ingredient {
     required this.created,
     required this.energy,
     required this.carbohydrates,
-    required this.carbohydratesSugar,
+    this.carbohydratesSugar,
     required this.protein,
     required this.fat,
-    required this.fatSaturated,
-    required this.fiber,
-    required this.sodium,
+    this.fatSaturated,
+    this.fiber,
+    this.sodium,
     this.isVegan,
     this.isVegetarian,
     this.nutriscore,
     this.image,
-    this.thumbnails,
   });
 
   // Boilerplate
@@ -148,15 +154,17 @@ class Ingredient {
   Map<String, dynamic> toJson() => _$IngredientToJson(this);
 
   NutritionalValues get nutritionalValues {
+    // Treat missing macronutrient data as zero — better to show "0 g
+    // fiber" than to omit/explode for ingredients with sparse data.
     return NutritionalValues.values(
       energy * 1,
       protein * 1,
       carbohydrates * 1,
-      carbohydratesSugar * 1,
+      (carbohydratesSugar ?? 0) * 1,
       fat * 1,
-      fatSaturated * 1,
-      fiber * 1,
-      sodium * 1,
+      (fatSaturated ?? 0) * 1,
+      (fiber ?? 0) * 1,
+      (sodium ?? 0) * 1,
     );
   }
 }

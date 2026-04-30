@@ -5960,9 +5960,9 @@ class $IngredientTableTable extends IngredientTable
   late final GeneratedColumn<double> carbohydratesSugar = GeneratedColumn<double>(
     'carbohydrates_sugar',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.double,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _proteinMeta = const VerificationMeta(
     'protein',
@@ -5991,27 +5991,27 @@ class $IngredientTableTable extends IngredientTable
   late final GeneratedColumn<double> fatSaturated = GeneratedColumn<double>(
     'fat_saturated',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.double,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _fiberMeta = const VerificationMeta('fiber');
   @override
   late final GeneratedColumn<double> fiber = GeneratedColumn<double>(
     'fiber',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.double,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _sodiumMeta = const VerificationMeta('sodium');
   @override
   late final GeneratedColumn<double> sodium = GeneratedColumn<double>(
     'sodium',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.double,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _isVeganMeta = const VerificationMeta(
     'isVegan',
@@ -6020,13 +6020,12 @@ class $IngredientTableTable extends IngredientTable
   late final GeneratedColumn<bool> isVegan = GeneratedColumn<bool>(
     'is_vegan',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'CHECK ("is_vegan" IN (0, 1))',
     ),
-    defaultValue: const Constant(false),
   );
   static const VerificationMeta _isVegetarianMeta = const VerificationMeta(
     'isVegetarian',
@@ -6035,14 +6034,22 @@ class $IngredientTableTable extends IngredientTable
   late final GeneratedColumn<bool> isVegetarian = GeneratedColumn<bool>(
     'is_vegetarian',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'CHECK ("is_vegetarian" IN (0, 1))',
     ),
-    defaultValue: const Constant(false),
   );
+  @override
+  late final GeneratedColumnWithTypeConverter<NutriScore?, String> nutriscore =
+      GeneratedColumn<String>(
+        'nutriscore',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<NutriScore?>($IngredientTableTable.$converternutriscoren);
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6065,6 +6072,7 @@ class $IngredientTableTable extends IngredientTable
     sodium,
     isVegan,
     isVegetarian,
+    nutriscore,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6173,8 +6181,6 @@ class $IngredientTableTable extends IngredientTable
           _carbohydratesSugarMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_carbohydratesSugarMeta);
     }
     if (data.containsKey('protein')) {
       context.handle(
@@ -6200,24 +6206,18 @@ class $IngredientTableTable extends IngredientTable
           _fatSaturatedMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_fatSaturatedMeta);
     }
     if (data.containsKey('fiber')) {
       context.handle(
         _fiberMeta,
         fiber.isAcceptableOrUnknown(data['fiber']!, _fiberMeta),
       );
-    } else if (isInserting) {
-      context.missing(_fiberMeta);
     }
     if (data.containsKey('sodium')) {
       context.handle(
         _sodiumMeta,
         sodium.isAcceptableOrUnknown(data['sodium']!, _sodiumMeta),
       );
-    } else if (isInserting) {
-      context.missing(_sodiumMeta);
     }
     if (data.containsKey('is_vegan')) {
       context.handle(
@@ -6290,7 +6290,7 @@ class $IngredientTableTable extends IngredientTable
       carbohydratesSugar: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}carbohydrates_sugar'],
-      )!,
+      ),
       protein: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}protein'],
@@ -6302,23 +6302,29 @@ class $IngredientTableTable extends IngredientTable
       fatSaturated: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}fat_saturated'],
-      )!,
+      ),
       fiber: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}fiber'],
-      )!,
+      ),
       sodium: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}sodium'],
-      )!,
+      ),
       isVegan: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_vegan'],
-      )!,
+      ),
       isVegetarian: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_vegetarian'],
-      )!,
+      ),
+      nutriscore: $IngredientTableTable.$converternutriscoren.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}nutriscore'],
+        ),
+      ),
     );
   }
 
@@ -6326,6 +6332,11 @@ class $IngredientTableTable extends IngredientTable
   $IngredientTableTable createAlias(String alias) {
     return $IngredientTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<NutriScore, String, String> $converternutriscore =
+      const EnumNameConverter<NutriScore>(NutriScore.values);
+  static JsonTypeConverter2<NutriScore?, String?, String?> $converternutriscoren =
+      JsonTypeConverter2.asNullable($converternutriscore);
 }
 
 class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
@@ -6341,14 +6352,15 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
   final Value<DateTime> created;
   final Value<int> energy;
   final Value<double> carbohydrates;
-  final Value<double> carbohydratesSugar;
+  final Value<double?> carbohydratesSugar;
   final Value<double> protein;
   final Value<double> fat;
-  final Value<double> fatSaturated;
-  final Value<double> fiber;
-  final Value<double> sodium;
-  final Value<bool> isVegan;
-  final Value<bool> isVegetarian;
+  final Value<double?> fatSaturated;
+  final Value<double?> fiber;
+  final Value<double?> sodium;
+  final Value<bool?> isVegan;
+  final Value<bool?> isVegetarian;
+  final Value<NutriScore?> nutriscore;
   final Value<int> rowid;
   const IngredientTableCompanion({
     this.id = const Value.absent(),
@@ -6371,6 +6383,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     this.sodium = const Value.absent(),
     this.isVegan = const Value.absent(),
     this.isVegetarian = const Value.absent(),
+    this.nutriscore = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   IngredientTableCompanion.insert({
@@ -6386,14 +6399,15 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     required DateTime created,
     required int energy,
     required double carbohydrates,
-    required double carbohydratesSugar,
+    this.carbohydratesSugar = const Value.absent(),
     required double protein,
     required double fat,
-    required double fatSaturated,
-    required double fiber,
-    required double sodium,
+    this.fatSaturated = const Value.absent(),
+    this.fiber = const Value.absent(),
+    this.sodium = const Value.absent(),
     this.isVegan = const Value.absent(),
     this.isVegetarian = const Value.absent(),
+    this.nutriscore = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        languageId = Value(languageId),
@@ -6401,12 +6415,8 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
        created = Value(created),
        energy = Value(energy),
        carbohydrates = Value(carbohydrates),
-       carbohydratesSugar = Value(carbohydratesSugar),
        protein = Value(protein),
-       fat = Value(fat),
-       fatSaturated = Value(fatSaturated),
-       fiber = Value(fiber),
-       sodium = Value(sodium);
+       fat = Value(fat);
   static Insertable<Ingredient> custom({
     Expression<int>? id,
     Expression<String>? uuid,
@@ -6428,6 +6438,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     Expression<double>? sodium,
     Expression<bool>? isVegan,
     Expression<bool>? isVegetarian,
+    Expression<String>? nutriscore,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -6451,6 +6462,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
       if (sodium != null) 'sodium': sodium,
       if (isVegan != null) 'is_vegan': isVegan,
       if (isVegetarian != null) 'is_vegetarian': isVegetarian,
+      if (nutriscore != null) 'nutriscore': nutriscore,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -6468,14 +6480,15 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     Value<DateTime>? created,
     Value<int>? energy,
     Value<double>? carbohydrates,
-    Value<double>? carbohydratesSugar,
+    Value<double?>? carbohydratesSugar,
     Value<double>? protein,
     Value<double>? fat,
-    Value<double>? fatSaturated,
-    Value<double>? fiber,
-    Value<double>? sodium,
-    Value<bool>? isVegan,
-    Value<bool>? isVegetarian,
+    Value<double?>? fatSaturated,
+    Value<double?>? fiber,
+    Value<double?>? sodium,
+    Value<bool?>? isVegan,
+    Value<bool?>? isVegetarian,
+    Value<NutriScore?>? nutriscore,
     Value<int>? rowid,
   }) {
     return IngredientTableCompanion(
@@ -6499,6 +6512,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
       sodium: sodium ?? this.sodium,
       isVegan: isVegan ?? this.isVegan,
       isVegetarian: isVegetarian ?? this.isVegetarian,
+      nutriscore: nutriscore ?? this.nutriscore,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -6566,6 +6580,11 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     if (isVegetarian.present) {
       map['is_vegetarian'] = Variable<bool>(isVegetarian.value);
     }
+    if (nutriscore.present) {
+      map['nutriscore'] = Variable<String>(
+        $IngredientTableTable.$converternutriscoren.toSql(nutriscore.value),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -6595,6 +6614,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
           ..write('sodium: $sodium, ')
           ..write('isVegan: $isVegan, ')
           ..write('isVegetarian: $isVegetarian, ')
+          ..write('nutriscore: $nutriscore, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -14224,14 +14244,15 @@ typedef $$IngredientTableTableCreateCompanionBuilder =
       required DateTime created,
       required int energy,
       required double carbohydrates,
-      required double carbohydratesSugar,
+      Value<double?> carbohydratesSugar,
       required double protein,
       required double fat,
-      required double fatSaturated,
-      required double fiber,
-      required double sodium,
-      Value<bool> isVegan,
-      Value<bool> isVegetarian,
+      Value<double?> fatSaturated,
+      Value<double?> fiber,
+      Value<double?> sodium,
+      Value<bool?> isVegan,
+      Value<bool?> isVegetarian,
+      Value<NutriScore?> nutriscore,
       Value<int> rowid,
     });
 typedef $$IngredientTableTableUpdateCompanionBuilder =
@@ -14248,14 +14269,15 @@ typedef $$IngredientTableTableUpdateCompanionBuilder =
       Value<DateTime> created,
       Value<int> energy,
       Value<double> carbohydrates,
-      Value<double> carbohydratesSugar,
+      Value<double?> carbohydratesSugar,
       Value<double> protein,
       Value<double> fat,
-      Value<double> fatSaturated,
-      Value<double> fiber,
-      Value<double> sodium,
-      Value<bool> isVegan,
-      Value<bool> isVegetarian,
+      Value<double?> fatSaturated,
+      Value<double?> fiber,
+      Value<double?> sodium,
+      Value<bool?> isVegan,
+      Value<bool?> isVegetarian,
+      Value<NutriScore?> nutriscore,
       Value<int> rowid,
     });
 
@@ -14400,6 +14422,12 @@ class $$IngredientTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnWithTypeConverterFilters<NutriScore?, NutriScore, String> get nutriscore =>
+      $composableBuilder(
+        column: $table.nutriscore,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
   Expression<bool> ingredientImageTableRefs(
     Expression<bool> Function($$IngredientImageTableTableFilterComposer f) f,
   ) {
@@ -14533,6 +14561,11 @@ class $$IngredientTableTableOrderingComposer
     column: $table.isVegetarian,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get nutriscore => $composableBuilder(
+    column: $table.nutriscore,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$IngredientTableTableAnnotationComposer
@@ -14617,6 +14650,11 @@ class $$IngredientTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumnWithTypeConverter<NutriScore?, String> get nutriscore => $composableBuilder(
+    column: $table.nutriscore,
+    builder: (column) => column,
+  );
+
   Expression<T> ingredientImageTableRefs<T extends Object>(
     Expression<T> Function($$IngredientImageTableTableAnnotationComposer a) f,
   ) {
@@ -14684,14 +14722,15 @@ class $$IngredientTableTableTableManager
                 Value<DateTime> created = const Value.absent(),
                 Value<int> energy = const Value.absent(),
                 Value<double> carbohydrates = const Value.absent(),
-                Value<double> carbohydratesSugar = const Value.absent(),
+                Value<double?> carbohydratesSugar = const Value.absent(),
                 Value<double> protein = const Value.absent(),
                 Value<double> fat = const Value.absent(),
-                Value<double> fatSaturated = const Value.absent(),
-                Value<double> fiber = const Value.absent(),
-                Value<double> sodium = const Value.absent(),
-                Value<bool> isVegan = const Value.absent(),
-                Value<bool> isVegetarian = const Value.absent(),
+                Value<double?> fatSaturated = const Value.absent(),
+                Value<double?> fiber = const Value.absent(),
+                Value<double?> sodium = const Value.absent(),
+                Value<bool?> isVegan = const Value.absent(),
+                Value<bool?> isVegetarian = const Value.absent(),
+                Value<NutriScore?> nutriscore = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => IngredientTableCompanion(
                 id: id,
@@ -14714,6 +14753,7 @@ class $$IngredientTableTableTableManager
                 sodium: sodium,
                 isVegan: isVegan,
                 isVegetarian: isVegetarian,
+                nutriscore: nutriscore,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -14730,14 +14770,15 @@ class $$IngredientTableTableTableManager
                 required DateTime created,
                 required int energy,
                 required double carbohydrates,
-                required double carbohydratesSugar,
+                Value<double?> carbohydratesSugar = const Value.absent(),
                 required double protein,
                 required double fat,
-                required double fatSaturated,
-                required double fiber,
-                required double sodium,
-                Value<bool> isVegan = const Value.absent(),
-                Value<bool> isVegetarian = const Value.absent(),
+                Value<double?> fatSaturated = const Value.absent(),
+                Value<double?> fiber = const Value.absent(),
+                Value<double?> sodium = const Value.absent(),
+                Value<bool?> isVegan = const Value.absent(),
+                Value<bool?> isVegetarian = const Value.absent(),
+                Value<NutriScore?> nutriscore = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => IngredientTableCompanion.insert(
                 id: id,
@@ -14760,6 +14801,7 @@ class $$IngredientTableTableTableManager
                 sodium: sodium,
                 isVegan: isVegan,
                 isVegetarian: isVegetarian,
+                nutriscore: nutriscore,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
