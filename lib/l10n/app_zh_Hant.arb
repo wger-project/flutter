@@ -844,7 +844,7 @@
     "@invalidApiToken": {
         "description": "Error message when the user enters an invalid API key"
     },
-    "apiTokenValidChars": "API 金鑰只能包含字母 a-f、數字 0-9，且長度必須恰好為 40 個字元",
+    "apiTokenValidChars": "API 金鑰只能包含字母 a-f、數字 0-9，且長度必須剛好為 40 個字元",
     "@apiTokenValidChars": {
         "description": "Error message when the user tries to input a API key with forbidden characters"
     },
@@ -930,7 +930,7 @@
     "@openEnded": {
         "description": "When a nutrition plan has no pre-defined end date"
     },
-    "overview": "總覽",
+    "overview": "概述",
     "aboutBugsListTitle": "回報問題或建議新功能",
     "aboutTranslationListTitle": "協助翻譯此應用程式",
     "others": "其他",
@@ -1007,11 +1007,11 @@
     "@addToOpenFoodFacts": {
         "description": "Label shown as the clickable link to go on Open Food Facts"
     },
-    "isVegan": "純素",
+    "isVegan": "素食",
     "@isVegan": {
         "description": "Label for vegan toggle"
     },
-    "isVegetarian": "素食",
+    "isVegetarian": "素食者",
     "@isVegetarian": {
         "description": "Label for vegetarian toggle"
     },
@@ -1028,7 +1028,7 @@
             }
         }
     },
-    "searchLanguageEnglish": "只顯示目前語言（{lang}）與英文",
+    "searchLanguageEnglish": "只顯示目前語言 ({lang}) 與英文",
     "@searchLanguageEnglish": {
         "type": "text",
         "placeholders": {
@@ -1069,7 +1069,14 @@
     "gymModeTimerType": "計時方式",
     "gymModeTimerTypeHelText": "若組間設定了休息時間，將一律使用倒數計時。",
     "countdown": "倒數計時",
-    "stopwatch": "正向計時",
+    "stopwatch": "碼表",
     "gymModeDefaultCountdownTime": "預設倒數時間（秒）",
-    "gymModeNotifyOnCountdownFinish": "倒數結束時通知"
+    "gymModeNotifyOnCountdownFinish": "倒數結束時通知",
+    "personalRecords": "個人紀錄",
+    "errorViewDetails": "技術細節",
+    "errorInfoDescription": "抱歉，出了點問題。你可以前往 GitHub 提交問題以幫助我們修復此問題。",
+    "errorInfoDescription2": "你可以繼續使用此應用程式，但有一些功能無法運作。",
+    "dayTypeTabata": "Tabata",
+    "duration": "持續時間",
+    "aboutContributeText": "我們鼓勵各種形式的貢獻。無論您是開發者、翻譯者，還是僅僅熱愛健身，您的每項支持都彌足珍貴！"
 }
