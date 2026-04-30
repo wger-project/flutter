@@ -54,7 +54,6 @@ void main() {
 
   late Map<String, dynamic> nutritionalPlanInfoResponse;
   late Map<String, dynamic> nutritionalPlanDetailResponse;
-  late List<dynamic> nutritionDiaryResponse;
   late Ingredient fetchedIngredient;
 
   setUp(() {
@@ -74,9 +73,6 @@ void main() {
     nutritionalPlanDetailResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_detail_response.json'),
     );
-    nutritionDiaryResponse = jsonDecode(
-      fixture('nutrition/nutrition_diary_response.json'),
-    )['results'];
     fetchedIngredient = Ingredient.fromJson(
       jsonDecode(fixture('nutrition/ingredientinfo_10065.json')),
     );
@@ -85,7 +81,11 @@ void main() {
       mockNutritionRepo.fetchPlanSparse(any),
     ).thenAnswer((_) async => nutritionalPlanDetailResponse);
     when(mockNutritionRepo.fetchPlanFull(any)).thenAnswer((_) async => nutritionalPlanInfoResponse);
-    when(mockNutritionRepo.fetchLogsForPlan(any)).thenAnswer((_) async => nutritionDiaryResponse);
+
+    when(
+      mockNutritionRepo.watchAllLogsHydrated(),
+    ).thenAnswer((_) => Stream.value(getTestNutritionLogs()));
+
     // Ingredient lookups now go through PowerSync — stub the local repo.
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => fetchedIngredient);
     when(mockIngredientRepo.watchById(any)).thenAnswer((_) => Stream.value(fetchedIngredient));

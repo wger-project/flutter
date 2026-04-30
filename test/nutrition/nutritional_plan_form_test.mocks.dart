@@ -8,8 +8,9 @@ import 'dart:async' as _i4;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/models/nutrition/ingredient.dart' as _i6;
+import 'package:wger/models/nutrition/log.dart' as _i7;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i5;
-import 'package:wger/providers/ingredient_repository.dart' as _i7;
+import 'package:wger/providers/ingredient_repository.dart' as _i8;
 import 'package:wger/providers/nutrition_repository.dart' as _i3;
 
 // ignore_for_file: type=lint
@@ -209,38 +210,36 @@ class MockNutritionRepository extends _i1.Mock implements _i3.NutritionRepositor
           as _i4.Future<_i6.Ingredient?>);
 
   @override
-  _i4.Future<List<dynamic>> fetchLogsForPlan(int? planId) =>
+  _i4.Stream<List<_i7.LogItem>> watchAllLogsHydrated() =>
       (super.noSuchMethod(
-            Invocation.method(#fetchLogsForPlan, [planId]),
-            returnValue: _i4.Future<List<dynamic>>.value(<dynamic>[]),
+            Invocation.method(#watchAllLogsHydrated, []),
+            returnValue: _i4.Stream<List<_i7.LogItem>>.empty(),
           )
-          as _i4.Future<List<dynamic>>);
+          as _i4.Stream<List<_i7.LogItem>>);
 
   @override
-  _i4.Future<Map<String, dynamic>> createLog(Map<String, dynamic>? data) =>
+  _i4.Future<void> addLogLocalDrift(_i7.LogItem? log) =>
       (super.noSuchMethod(
-            Invocation.method(#createLog, [data]),
-            returnValue: _i4.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
+            Invocation.method(#addLogLocalDrift, [log]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i4.Future<Map<String, dynamic>>);
+          as _i4.Future<void>);
 
   @override
-  _i4.Future<_i2.Response> deleteLog(int? id) =>
+  _i4.Future<void> deleteLogLocalDrift(String? id) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteLog, [id]),
-            returnValue: _i4.Future<_i2.Response>.value(
-              _FakeResponse_0(this, Invocation.method(#deleteLog, [id])),
-            ),
+            Invocation.method(#deleteLogLocalDrift, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i4.Future<_i2.Response>);
+          as _i4.Future<void>);
 }
 
 /// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIngredientRepository extends _i1.Mock implements _i7.IngredientRepository {
+class MockIngredientRepository extends _i1.Mock implements _i8.IngredientRepository {
   MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }

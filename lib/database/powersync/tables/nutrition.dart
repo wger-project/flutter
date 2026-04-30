@@ -18,6 +18,8 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/powersync/tables/ingredient.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 
 @UseRowClass(NutritionalPlan)
@@ -53,5 +55,42 @@ const PowersyncNutritionalPlanTable = ps.Table(
     ps.Column.integer('goal_fiber'),
     ps.Column.integer('goal_fat'),
     ps.Column.integer('has_goal_calories'),
+  ],
+);
+
+/// Diary log entries (`nutrition_logitem`).
+///
+/// The client identifies rows by uuid; the sync rules emit
+/// `SELECT uuid AS id` so locally we just see a TEXT primary key. The
+/// integer `LogItem.id` from the backend stays server-side.
+@UseRowClass(LogItem)
+class LogItemTable extends Table {
+  @override
+  String get tableName => 'nutrition_logitem';
+
+  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  IntColumn get planId => integer().named('plan_id').references(NutritionalPlanTable, #id)();
+  IntColumn get mealId => integer().nullable().named('meal_id')();
+  IntColumn get ingredientId => integer().named('ingredient_id').references(IngredientTable, #id)();
+  IntColumn get weightUnitId => integer().nullable().named('weight_unit_id')();
+  DateTimeColumn get datetime => dateTime()();
+  RealColumn get amount => real()();
+  TextColumn get comment => text().nullable()();
+}
+
+const PowersyncLogItemTable = ps.Table(
+  'nutrition_logitem',
+  [
+    ps.Column.integer('plan_id'),
+    ps.Column.integer('meal_id'),
+    ps.Column.integer('ingredient_id'),
+    ps.Column.integer('weight_unit_id'),
+    ps.Column.text('datetime'),
+    ps.Column.real('amount'),
+    ps.Column.text('comment'),
+  ],
+  indexes: [
+    ps.Index('plan_idx', [ps.IndexedColumn('plan_id')]),
+    ps.Index('ingredient_idx', [ps.IndexedColumn('ingredient_id')]),
   ],
 );

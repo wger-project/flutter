@@ -128,9 +128,11 @@ void main() {
     // the Ingredient (inlined by REST or JOINed by the repository), so no
     // separate stub is needed.
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => ingredient);
-    // NutritionNotifier.build() now subscribes to a Drift stream — emit the
-    // seed plan directly so addMealItem can look up the meal/plan.
+    // NutritionNotifier.build() now subscribes to two Drift streams (plans
+    // + diary entries) — emit the seed plan and an empty diary so the
+    // combined stream produces a value.
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value([plan1]));
+    when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
 
     container = ProviderContainer(
       overrides: [

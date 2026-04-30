@@ -55,9 +55,11 @@ void main() {
 
     when(mockRepo.updateMeal(any, any)).thenAnswer((_) async => Meal(id: 1, plan: 1).toJson());
     when(mockRepo.createMeal(any)).thenAnswer((_) async => Meal(id: 99, plan: 1).toJson());
-    // NutritionNotifier.build() subscribes to a Drift stream — emit the seed
-    // plan directly through that channel.
+    // NutritionNotifier.build() subscribes to two Drift streams (plans +
+    // diary entries) — emit the seed plan and an empty diary so the
+    // combined stream produces a value.
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value([plan1]));
+    when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
 
     container = ProviderContainer(
       overrides: [

@@ -16,13 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart' show OrderingTerm;
+import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
+import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
@@ -41,10 +44,11 @@ final nutritionRepositoryProvider = Provider<NutritionRepository>((ref) {
 
 /// Data access for nutrition-related entities.
 ///
-/// HTTP for everything that hasn't been migrated to PowerSync yet (creation,
-/// meals, meal items, diary). Top-level [NutritionalPlan] reads as well as
-/// edit/delete go through the local PowerSync-backed Drift table — see
-/// [watchAllDrift], [editLocalDrift], [deleteLocalDrift].
+/// HTTP only for what hasn't migrated to PowerSync yet (plan creation, meals
+/// and meal items). Reads/edits/deletes for the top-level [NutritionalPlan]
+/// and the diary [LogItem] table go through the local PowerSync-backed Drift
+/// database — see [watchAllDrift], [editLocalDrift], [deleteLocalDrift],
+/// [watchAllLogsHydrated], [addLogLocalDrift], [deleteLogLocalDrift].
 ///
 /// Local ingredient lookups are handled by [IngredientRepository] (PowerSync).
 class NutritionRepository {
@@ -57,7 +61,6 @@ class NutritionRepository {
   static const mealPath = 'meal';
   static const mealItemPath = 'mealitem';
   static const ingredientInfoPath = 'ingredientinfo';
-  static const nutritionDiaryPath = 'nutritiondiary';
 
   NutritionRepository(this._base, this._db);
 
@@ -217,24 +220,79 @@ class NutritionRepository {
 
   // --- Nutrition diary (logs) ---
 
-  Future<List<dynamic>> fetchLogsForPlan(int planId) async {
-    return _base.fetchPaginated(
-      _base.makeUrl(
-        nutritionDiaryPath,
-        query: {
-          'plan': planId.toString(),
-          'limit': API_MAX_PAGE_SIZE,
-          'ordering': 'datetime',
-        },
+  /// Streams all of the user's diary entries with their related [Ingredient]
+  /// (incl. its image and weight units) hydrated from the same Drift database
+  /// in one query. Re-emits whenever any of the joined tables changes.
+  Stream<List<LogItem>> watchAllLogsHydrated() {
+    _logger.finer('Watching all local diary entries');
+    final query = _db.select(_db.logItemTable).join([
+      innerJoin(
+        _db.ingredientTable,
+        _db.ingredientTable.id.equalsExp(_db.logItemTable.ingredientId),
       ),
-    );
+      leftOuterJoin(
+        _db.ingredientImageTable,
+        _db.ingredientImageTable.ingredientId.equalsExp(_db.ingredientTable.id),
+      ),
+      leftOuterJoin(
+        _db.ingredientWeightUnitTable,
+        _db.ingredientWeightUnitTable.ingredientId.equalsExp(_db.ingredientTable.id),
+      ),
+    ])..orderBy([OrderingTerm(expression: _db.logItemTable.datetime)]);
+
+    return query.watch().map(_hydrateLogs);
   }
 
-  Future<Map<String, dynamic>> createLog(Map<String, dynamic> data) async {
-    return _base.post(data, _base.makeUrl(nutritionDiaryPath));
+  /// Collapses the cross-joined rows into hydrated [LogItem]s.
+  List<LogItem> _hydrateLogs(Iterable<TypedResult> rows) {
+    final logs = <String, LogItem>{};
+    final ingredients = <int, Ingredient>{};
+    final weightUnitsByIngredient = <int, List<IngredientWeightUnit>>{};
+
+    for (final row in rows) {
+      final log = row.readTable(_db.logItemTable);
+      final ingredient = row.readTable(_db.ingredientTable);
+      final image = row.readTableOrNull(_db.ingredientImageTable);
+      final wu = row.readTableOrNull(_db.ingredientWeightUnitTable);
+
+      final ingEntry = ingredients.putIfAbsent(ingredient.id, () => ingredient);
+      if (image != null) {
+        ingEntry.image = image;
+      }
+      if (wu != null) {
+        final list = weightUnitsByIngredient.putIfAbsent(ingredient.id, () => []);
+        if (!list.any((w) => w.id == wu.id)) {
+          list.add(wu);
+        }
+      }
+
+      logs.putIfAbsent(log.id!, () => log);
+    }
+
+    for (final ing in ingredients.values) {
+      ing.weightUnits = weightUnitsByIngredient[ing.id] ?? const [];
+    }
+    for (final log in logs.values) {
+      log.ingredient = ingredients[log.ingredientId]!;
+      if (log.weightUnitId != null) {
+        log.weightUnitObj = log.ingredient.weightUnits.firstWhereOrNull(
+          (w) => w.id == log.weightUnitId,
+        );
+      }
+    }
+
+    return logs.values.toList();
   }
 
-  Future<http.Response> deleteLog(int id) async {
-    return _base.deleteRequest(nutritionDiaryPath, id);
+  /// Inserts a new diary entry
+  Future<void> addLogLocalDrift(LogItem log) async {
+    _logger.finer('Adding local diary entry for ingredient ${log.ingredientId}');
+    await _db.into(_db.logItemTable).insert(log.toCompanion());
+  }
+
+  /// Deletes a diary entry by its UUID
+  Future<void> deleteLogLocalDrift(String id) async {
+    _logger.finer('Deleting local diary entry $id');
+    await (_db.delete(_db.logItemTable)..where((t) => t.id.equals(id))).go();
   }
 }

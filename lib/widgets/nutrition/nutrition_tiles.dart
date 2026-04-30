@@ -59,7 +59,7 @@ class DiaryEntryTile extends ConsumerWidget {
     this.nutritionalPlan,
   });
 
-  final Log diaryEntry;
+  final LogItem diaryEntry;
   final NutritionalPlan? nutritionalPlan;
 
   @override
@@ -84,9 +84,7 @@ class DiaryEntryTile extends ConsumerWidget {
           : IconButton(
               tooltip: AppLocalizations.of(context).delete,
               onPressed: () {
-                ref
-                    .read(nutritionProvider.notifier)
-                    .deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
+                ref.read(nutritionProvider.notifier).deleteLog(diaryEntry.id!);
               },
               icon: const Icon(Icons.delete_outline),
               iconSize: ICON_SIZE_SMALL,

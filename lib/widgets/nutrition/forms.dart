@@ -122,7 +122,7 @@ Widget getMealItemForm(
 ]) {
   return IngredientForm(
     // TODO we use planId 0 here cause we don't have one and we don't need it I think?
-    recent: recent.map((e) => Log.fromMealItem(e, 0, e.mealId)).toList(),
+    recent: recent.map((e) => LogItem.fromMealItem(e, 0, e.mealId)).toList(),
     onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) {
       mealItem.mealId = meal.id!;
       ref.read(nutritionProvider.notifier).addMealItem(mealItem, meal);
@@ -155,7 +155,7 @@ Widget getIngredientLogForm(NutritionalPlan plan) {
 /// log to the diary or to add to a meal.
 class IngredientForm extends ConsumerStatefulWidget {
   final Function(BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) onSave;
-  final List<Log> recent;
+  final List<LogItem> recent;
   final bool withDate;
   final String barcode;
   final bool test;

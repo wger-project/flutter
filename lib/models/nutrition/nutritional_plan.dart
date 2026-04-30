@@ -82,7 +82,7 @@ class NutritionalPlan {
   List<Meal> meals = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
-  List<Log> diaryEntries = [];
+  List<LogItem> diaryEntries = [];
 
   NutritionalPlan({
     this.id,
@@ -98,7 +98,7 @@ class NutritionalPlan {
     this.goalFat,
     this.goalFiber,
     List<Meal>? meals,
-    List<Log>? diaryEntries,
+    List<LogItem>? diaryEntries,
   }) : creationDate = creationDate ?? DateTime.now() {
     this.meals = meals ?? [];
     this.diaryEntries = diaryEntries ?? [];
@@ -254,8 +254,8 @@ class NutritionalPlan {
   }
 
   /// Returns the nutritional logs for the given date
-  List<Log> getLogsForDate(DateTime date) {
-    final List<Log> out = [];
+  List<LogItem> getLogsForDate(DateTime date) {
+    final List<LogItem> out = [];
     for (final log in diaryEntries) {
       final dateKey = DateTime(date.year, date.month, date.day);
       final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
@@ -288,8 +288,8 @@ class NutritionalPlan {
 
   /// returns diary entries
   /// deduped by the combination of amount and ingredient ID
-  List<Log> get dedupDiaryEntries {
-    final out = <Log>[];
+  List<LogItem> get dedupDiaryEntries {
+    final out = <LogItem>[];
     for (final log in diaryEntries) {
       final found = out.firstWhereOrNull(
         (e) => e.amount == log.amount && e.ingredientId == log.ingredientId,

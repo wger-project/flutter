@@ -44,7 +44,6 @@ void main() {
 
   late Map<String, dynamic> nutritionalPlanInfoResponse;
   late Map<String, dynamic> nutritionalPlanDetailResponse;
-  late List<dynamic> nutritionDiaryResponse;
   late Map<String, dynamic> ingredient10065Response;
 
   ProviderContainer makeContainer() {
@@ -79,6 +78,8 @@ void main() {
     // concurrent stream emission can't overwrite their optimistic state.
     when(mockRepo.watchAllDrift()).thenAnswer((_) => const Stream.empty());
 
+    when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
+
     // Edit + delete now go through Drift instead of REST.
     when(mockRepo.editLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
@@ -89,9 +90,6 @@ void main() {
     nutritionalPlanDetailResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_detail_response.json'),
     );
-    nutritionDiaryResponse = jsonDecode(
-      fixture('nutrition/nutrition_diary_response.json'),
-    )['results'];
     ingredient10065Response = jsonDecode(
       fixture('nutrition/ingredientinfo_10065.json'),
     );
@@ -108,9 +106,7 @@ void main() {
       when(mockRepo.fetchPlanFull(1)).thenAnswer(
         (_) async => nutritionalPlanInfoResponse,
       );
-      when(mockRepo.fetchLogsForPlan(any)).thenAnswer(
-        (_) async => nutritionDiaryResponse,
-      );
+      when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
       // Ingredient lookups now go through PowerSync — stub the local repo.
       final ingredient = Ingredient.fromJson(ingredient10065Response);
       when(mockIngredientRepo.getById(any)).thenAnswer((_) async => ingredient);

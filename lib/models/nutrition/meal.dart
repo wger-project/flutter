@@ -45,9 +45,9 @@ class Meal {
   List<MealItem> mealItems = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
-  List<Log> diaryEntries = [];
+  List<LogItem> diaryEntries = [];
 
-  List<Log> get diaryEntriesToday =>
+  List<LogItem> get diaryEntriesToday =>
       diaryEntries.where((element) => element.datetime.isSameDayAs(DateTime.now())).toList();
 
   Meal({
@@ -56,7 +56,7 @@ class Meal {
     this.time,
     String? name,
     List<MealItem>? mealItems,
-    List<Log>? diaryEntries,
+    List<LogItem>? diaryEntries,
   }) {
     if (plan != null) {
       planId = plan;
@@ -95,7 +95,7 @@ class Meal {
     TimeOfDay? time,
     String? name,
     List<MealItem>? mealItems,
-    List<Log>? diaryEntries,
+    List<LogItem>? diaryEntries,
   }) {
     return Meal(
       id: id ?? this.id,

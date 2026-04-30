@@ -19,6 +19,7 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:stream_transform/stream_transform.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -88,20 +89,26 @@ class NutritionNotifier extends _$NutritionNotifier {
     _logger.fine('Building NutritionNotifier');
     ref.keepAlive();
 
-    // Top-level plan list comes from PowerSync (Drift stream over the synced
-    // `nutrition_nutritionplan` table). The sub-hierarchy (meals, meal items,
-    // diary entries) still lives behind REST and is layered on top by callers
-    // via [fetchAndSetPlanFull]. To prevent that sub-data from being wiped
-    // every time the stream re-emits the top-level row (e.g. after a remote
-    // edit), we re-attach it from the previous state below.
+    // Top-level plans and diary entries both come from synced tables. The
+    // hierarchy in between meals and meal items still lives behind REST and
+    // is layered on top by callers via [fetchAndSetPlanFull]; we re-attach
+    // it from the previous state on every emission so a remote edit doesn't
+    // wipe locally-hydrated meals.
+    //
+    // [combineLatest] holds back the first emission until both streams have
+    // produced a value, so the resulting plans always carry coherent diary
+    // data
     final repo = ref.read(nutritionRepositoryProvider);
-    return repo.watchAllDrift().map((freshPlans) {
+    return repo.watchAllDrift().combineLatest(repo.watchAllLogsHydrated(), (freshPlans, allLogs) {
       final existing = state.value?.plans ?? const <NutritionalPlan>[];
       for (final fresh in freshPlans) {
         final old = existing.firstWhereOrNull((p) => p.id == fresh.id);
         if (old != null) {
           fresh.meals = old.meals;
-          fresh.diaryEntries = old.diaryEntries;
+        }
+        fresh.diaryEntries = allLogs.where((l) => l.planId == fresh.id).toList();
+        for (final meal in fresh.meals) {
+          meal.diaryEntries = fresh.diaryEntries.where((l) => l.mealId == meal.id).toList();
         }
       }
       return NutritionState(plans: freshPlans);
@@ -191,8 +198,9 @@ class NutritionNotifier extends _$NutritionNotifier {
     }
     plan.meals = meals;
 
-    // Logs
-    await fetchAndSetLogs(plan);
+    // Diary entries are streamed in by build() from PowerSync. Distribute
+    // the logs we already have onto the freshly-loaded meals so the UI sees
+    // them immediately, before the next stream tick.
     for (final meal in meals) {
       meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
     }
@@ -327,12 +335,9 @@ class NutritionNotifier extends _$NutritionNotifier {
     final repo = ref.read(nutritionRepositoryProvider);
     final plan = findById(meal.planId);
     for (final item in meal.mealItems) {
-      final log = Log.fromMealItem(item, plan.id!, meal.id, mealDateTime);
-      final data = await repo.createLog(log.toJson());
-      log.id = data['id'];
-      plan.diaryEntries.add(log);
+      final log = LogItem.fromMealItem(item, plan.id!, meal.id, mealDateTime);
+      await repo.addLogLocalDrift(log);
     }
-    _notifyAfterInPlaceMutation();
   }
 
   Future<void> logIngredientToDiary(
@@ -342,43 +347,12 @@ class NutritionNotifier extends _$NutritionNotifier {
   ]) async {
     final repo = ref.read(nutritionRepositoryProvider);
     final plan = findById(planId);
-    final log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
-
-    final data = await repo.createLog(log.toJson());
-    log.id = data['id'];
-    plan.diaryEntries.add(log);
-    _notifyAfterInPlaceMutation();
+    final log = LogItem.fromMealItem(mealItem, plan.id!, null, dateTime);
+    await repo.addLogLocalDrift(log);
   }
 
-  Future<void> deleteLog(int logId, int planId) async {
+  Future<void> deleteLog(String logId) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    await repo.deleteLog(logId);
-    final plan = findById(planId);
-    plan.diaryEntries.removeWhere((element) => element.id == logId);
-    _notifyAfterInPlaceMutation();
-  }
-
-  /// Loads nutrition diary entries for the given plan and resolves ingredient
-  /// references against the local PowerSync-backed Drift table. Logs whose
-  /// ingredient is not present locally are skipped with a warning.
-  Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
-    final repo = ref.read(nutritionRepositoryProvider);
-    final ingredientRepo = ref.read(ingredientRepositoryProvider);
-    final data = await repo.fetchLogsForPlan(plan.id!);
-
-    plan.diaryEntries = [];
-    for (final logData in data) {
-      final log = Log.fromJson(logData);
-      final ingredient = await ingredientRepo.getById(log.ingredientId);
-      if (ingredient == null) {
-        _logger.warning(
-          'Ingredient ${log.ingredientId} for log ${log.id} not in local DB, skipping',
-        );
-        continue;
-      }
-      log.ingredient = ingredient;
-      plan.diaryEntries.add(log);
-    }
-    _notifyAfterInPlaceMutation();
+    await repo.deleteLogLocalDrift(logId);
   }
 }

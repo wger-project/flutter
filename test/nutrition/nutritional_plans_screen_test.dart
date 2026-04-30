@@ -83,6 +83,8 @@ void main() {
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
     when(mockNutritionRepo.watchAllDrift()).thenAnswer((_) => Stream.value(plans));
+    // build() now combines plans + diary entries; default to an empty diary.
+    when(mockNutritionRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
     when(mockNutritionRepo.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
   });
 
