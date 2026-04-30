@@ -24,6 +24,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 
 import '../database/powersync/database.dart';
 
@@ -64,5 +65,23 @@ class IngredientRepository {
   Future<Ingredient?> getById(int id) async {
     _logger.finer('Reading ingredient $id');
     return watchById(id).first;
+  }
+
+  /// Reads the weight units for [ingredientId] from the local Drift table.
+  ///
+  /// Joined with the ingredient table so that an empty result reliably means
+  /// "ingredient is synced and has no extra units" rather than "we don't have
+  /// the ingredient at all".
+  Future<List<IngredientWeightUnit>> getWeightUnits(int ingredientId) async {
+    _logger.finer('Reading weight units for ingredient $ingredientId');
+    final query = _db.select(_db.ingredientWeightUnitTable).join([
+      innerJoin(
+        _db.ingredientTable,
+        _db.ingredientTable.id.equalsExp(_db.ingredientWeightUnitTable.ingredientId),
+      ),
+    ])..where(_db.ingredientWeightUnitTable.ingredientId.equals(ingredientId));
+
+    final rows = await query.get();
+    return rows.map((row) => row.readTable(_db.ingredientWeightUnitTable)).toList();
   }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +26,13 @@ class IngredientWeightUnit {
   final int id;
 
   @JsonKey(required: true)
+  final String uuid;
+
+  /// FK to the parent ingredient
+  @JsonKey(required: true, name: 'ingredient')
+  final int ingredientId;
+
+  @JsonKey(required: true)
   final String name;
 
   @JsonKey(required: true, name: 'gram')
@@ -33,6 +40,8 @@ class IngredientWeightUnit {
 
   const IngredientWeightUnit({
     required this.id,
+    required this.uuid,
+    required this.ingredientId,
     required this.name,
     required this.grams,
   });

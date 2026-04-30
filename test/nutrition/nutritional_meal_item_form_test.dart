@@ -124,8 +124,11 @@ void main() {
     );
 
     when(mockRepo.createMealItem(any)).thenAnswer((_) async => mealItem.toJson());
-    // Ingredient lookups now go through PowerSync — stub the local repo.
+    // Ingredient and weight-unit lookups now go through PowerSync — stub the
+    // local repo. fetchWeightUnits only falls back to REST when the
+    // ingredient isn't in the local DB.
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => ingredient);
+    when(mockIngredientRepo.getWeightUnits(any)).thenAnswer((_) async => []);
     when(mockRepo.fetchWeightUnits(1)).thenAnswer((_) => Future.value([]));
     when(mockRepo.fetchWeightUnits(2)).thenAnswer((_) => Future.value([]));
     // NutritionNotifier.build() now subscribes to a Drift stream — emit the

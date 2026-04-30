@@ -322,7 +322,21 @@ class NutritionNotifier extends _$NutritionNotifier {
     return repo.searchIngredientWithBarcode(barcode);
   }
 
-  Future<List<IngredientWeightUnit>> fetchWeightUnits(int ingredientId) {
+  /// Looks up the weight units for [ingredientId], preferring the local
+  /// PowerSync-backed Drift table and falling back to REST for ingredients
+  /// that aren't synced locally (i.e. picked from the typeahead but not yet
+  /// referenced by any of the user's plans/logs).
+  Future<List<IngredientWeightUnit>> fetchWeightUnits(int ingredientId) async {
+    final ingredientRepo = ref.read(ingredientRepositoryProvider);
+
+    final local = await ingredientRepo.getById(ingredientId);
+    if (local != null) {
+      return ingredientRepo.getWeightUnits(ingredientId);
+    }
+
+    _logger.fine(
+      'Ingredient $ingredientId not in PowerSync, fetching weight units from REST',
+    );
     final repo = ref.read(nutritionRepositoryProvider);
     return repo.fetchWeightUnits(ingredientId);
   }

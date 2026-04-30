@@ -7099,6 +7099,255 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
   }
 }
 
+class $IngredientWeightUnitTableTable extends IngredientWeightUnitTable
+    with TableInfo<$IngredientWeightUnitTableTable, IngredientWeightUnit> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $IngredientWeightUnitTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ingredientIdMeta = const VerificationMeta(
+    'ingredientId',
+  );
+  @override
+  late final GeneratedColumn<int> ingredientId = GeneratedColumn<int>(
+    'ingredient_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES nutrition_ingredient (id)',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _gramsMeta = const VerificationMeta('grams');
+  @override
+  late final GeneratedColumn<int> grams = GeneratedColumn<int>(
+    'gram',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, uuid, ingredientId, name, grams];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'nutrition_ingredientweightunit';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<IngredientWeightUnit> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(
+        _uuidMeta,
+        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uuidMeta);
+    }
+    if (data.containsKey('ingredient_id')) {
+      context.handle(
+        _ingredientIdMeta,
+        ingredientId.isAcceptableOrUnknown(
+          data['ingredient_id']!,
+          _ingredientIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_ingredientIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('gram')) {
+      context.handle(
+        _gramsMeta,
+        grams.isAcceptableOrUnknown(data['gram']!, _gramsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_gramsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  IngredientWeightUnit map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return IngredientWeightUnit(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uuid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uuid'],
+      )!,
+      ingredientId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ingredient_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      grams: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}gram'],
+      )!,
+    );
+  }
+
+  @override
+  $IngredientWeightUnitTableTable createAlias(String alias) {
+    return $IngredientWeightUnitTableTable(attachedDatabase, alias);
+  }
+}
+
+class IngredientWeightUnitTableCompanion extends UpdateCompanion<IngredientWeightUnit> {
+  final Value<int> id;
+  final Value<String> uuid;
+  final Value<int> ingredientId;
+  final Value<String> name;
+  final Value<int> grams;
+  final Value<int> rowid;
+  const IngredientWeightUnitTableCompanion({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    this.ingredientId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.grams = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  IngredientWeightUnitTableCompanion.insert({
+    required int id,
+    required String uuid,
+    required int ingredientId,
+    required String name,
+    required int grams,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       uuid = Value(uuid),
+       ingredientId = Value(ingredientId),
+       name = Value(name),
+       grams = Value(grams);
+  static Insertable<IngredientWeightUnit> custom({
+    Expression<int>? id,
+    Expression<String>? uuid,
+    Expression<int>? ingredientId,
+    Expression<String>? name,
+    Expression<int>? grams,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
+      if (ingredientId != null) 'ingredient_id': ingredientId,
+      if (name != null) 'name': name,
+      if (grams != null) 'gram': grams,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  IngredientWeightUnitTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? uuid,
+    Value<int>? ingredientId,
+    Value<String>? name,
+    Value<int>? grams,
+    Value<int>? rowid,
+  }) {
+    return IngredientWeightUnitTableCompanion(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      ingredientId: ingredientId ?? this.ingredientId,
+      name: name ?? this.name,
+      grams: grams ?? this.grams,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
+    }
+    if (ingredientId.present) {
+      map['ingredient_id'] = Variable<int>(ingredientId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (grams.present) {
+      map['gram'] = Variable<int>(grams.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('IngredientWeightUnitTableCompanion(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('ingredientId: $ingredientId, ')
+          ..write('name: $name, ')
+          ..write('grams: $grams, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   _$DriftPowersyncDatabase(QueryExecutor e) : super(e);
   $DriftPowersyncDatabaseManager get managers => $DriftPowersyncDatabaseManager(this);
@@ -7137,6 +7386,8 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     this,
   );
   late final $IngredientImageTableTable ingredientImageTable = $IngredientImageTableTable(this);
+  late final $IngredientWeightUnitTableTable ingredientWeightUnitTable =
+      $IngredientWeightUnitTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7165,6 +7416,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     nutritionalPlanTable,
     ingredientTable,
     ingredientImageTable,
+    ingredientWeightUnitTable,
   ];
   @override
   DriftDatabaseOptions get options => const DriftDatabaseOptions(storeDateTimeAsText: true);
@@ -14311,6 +14563,29 @@ final class $$IngredientTableTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$IngredientWeightUnitTableTable, List<IngredientWeightUnit>>
+  _ingredientWeightUnitTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.ingredientWeightUnitTable,
+    aliasName: $_aliasNameGenerator(
+      db.ingredientTable.id,
+      db.ingredientWeightUnitTable.ingredientId,
+    ),
+  );
+
+  $$IngredientWeightUnitTableTableProcessedTableManager get ingredientWeightUnitTableRefs {
+    final manager = $$IngredientWeightUnitTableTableTableManager(
+      $_db,
+      $_db.ingredientWeightUnitTable,
+    ).filter((f) => f.ingredientId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _ingredientWeightUnitTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$IngredientTableTableFilterComposer
@@ -14444,6 +14719,30 @@ class $$IngredientTableTableFilterComposer
           }) => $$IngredientImageTableTableFilterComposer(
             $db: $db,
             $table: $db.ingredientImageTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> ingredientWeightUnitTableRefs(
+    Expression<bool> Function($$IngredientWeightUnitTableTableFilterComposer f) f,
+  ) {
+    final $$IngredientWeightUnitTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.ingredientWeightUnitTable,
+      getReferencedColumn: (t) => t.ingredientId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientWeightUnitTableTableFilterComposer(
+            $db: $db,
+            $table: $db.ingredientWeightUnitTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
@@ -14678,6 +14977,30 @@ class $$IngredientTableTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> ingredientWeightUnitTableRefs<T extends Object>(
+    Expression<T> Function($$IngredientWeightUnitTableTableAnnotationComposer a) f,
+  ) {
+    final $$IngredientWeightUnitTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.ingredientWeightUnitTable,
+      getReferencedColumn: (t) => t.ingredientId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientWeightUnitTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ingredientWeightUnitTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$IngredientTableTableTableManager
@@ -14693,7 +15016,10 @@ class $$IngredientTableTableTableManager
           $$IngredientTableTableUpdateCompanionBuilder,
           (Ingredient, $$IngredientTableTableReferences),
           Ingredient,
-          PrefetchHooks Function({bool ingredientImageTableRefs})
+          PrefetchHooks Function({
+            bool ingredientImageTableRefs,
+            bool ingredientWeightUnitTableRefs,
+          })
         > {
   $$IngredientTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -14812,35 +15138,64 @@ class $$IngredientTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({ingredientImageTableRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (ingredientImageTableRefs) db.ingredientImageTable,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (ingredientImageTableRefs)
-                    await $_getPrefetchedData<Ingredient, $IngredientTableTable, IngredientImage>(
-                      currentTable: table,
-                      referencedTable: $$IngredientTableTableReferences
-                          ._ingredientImageTableRefsTable(db),
-                      managerFromTypedResult: (p0) => $$IngredientTableTableReferences(
-                        db,
-                        table,
-                        p0,
-                      ).ingredientImageTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.ingredientId == item.id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({
+                ingredientImageTableRefs = false,
+                ingredientWeightUnitTableRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (ingredientImageTableRefs) db.ingredientImageTable,
+                    if (ingredientWeightUnitTableRefs) db.ingredientWeightUnitTable,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (ingredientImageTableRefs)
+                        await $_getPrefetchedData<
+                          Ingredient,
+                          $IngredientTableTable,
+                          IngredientImage
+                        >(
+                          currentTable: table,
+                          referencedTable: $$IngredientTableTableReferences
+                              ._ingredientImageTableRefsTable(db),
+                          managerFromTypedResult: (p0) => $$IngredientTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).ingredientImageTableRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.ingredientId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (ingredientWeightUnitTableRefs)
+                        await $_getPrefetchedData<
+                          Ingredient,
+                          $IngredientTableTable,
+                          IngredientWeightUnit
+                        >(
+                          currentTable: table,
+                          referencedTable: $$IngredientTableTableReferences
+                              ._ingredientWeightUnitTableRefsTable(db),
+                          managerFromTypedResult: (p0) => $$IngredientTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).ingredientWeightUnitTableRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.ingredientId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -14857,7 +15212,10 @@ typedef $$IngredientTableTableProcessedTableManager =
       $$IngredientTableTableUpdateCompanionBuilder,
       (Ingredient, $$IngredientTableTableReferences),
       Ingredient,
-      PrefetchHooks Function({bool ingredientImageTableRefs})
+      PrefetchHooks Function({
+        bool ingredientImageTableRefs,
+        bool ingredientWeightUnitTableRefs,
+      })
     >;
 typedef $$IngredientImageTableTableCreateCompanionBuilder =
     IngredientImageTableCompanion Function({
@@ -15304,6 +15662,342 @@ typedef $$IngredientImageTableTableProcessedTableManager =
       IngredientImage,
       PrefetchHooks Function({bool ingredientId})
     >;
+typedef $$IngredientWeightUnitTableTableCreateCompanionBuilder =
+    IngredientWeightUnitTableCompanion Function({
+      required int id,
+      required String uuid,
+      required int ingredientId,
+      required String name,
+      required int grams,
+      Value<int> rowid,
+    });
+typedef $$IngredientWeightUnitTableTableUpdateCompanionBuilder =
+    IngredientWeightUnitTableCompanion Function({
+      Value<int> id,
+      Value<String> uuid,
+      Value<int> ingredientId,
+      Value<String> name,
+      Value<int> grams,
+      Value<int> rowid,
+    });
+
+final class $$IngredientWeightUnitTableTableReferences
+    extends
+        BaseReferences<
+          _$DriftPowersyncDatabase,
+          $IngredientWeightUnitTableTable,
+          IngredientWeightUnit
+        > {
+  $$IngredientWeightUnitTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $IngredientTableTable _ingredientIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.ingredientTable.createAlias(
+    $_aliasNameGenerator(
+      db.ingredientWeightUnitTable.ingredientId,
+      db.ingredientTable.id,
+    ),
+  );
+
+  $$IngredientTableTableProcessedTableManager get ingredientId {
+    final $_column = $_itemColumn<int>('ingredient_id')!;
+
+    final manager = $$IngredientTableTableTableManager(
+      $_db,
+      $_db.ingredientTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_ingredientIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$IngredientWeightUnitTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $IngredientWeightUnitTableTable> {
+  $$IngredientWeightUnitTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get grams => $composableBuilder(
+    column: $table.grams,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$IngredientTableTableFilterComposer get ingredientId {
+    final $$IngredientTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.ingredientId,
+      referencedTable: $db.ingredientTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientTableTableFilterComposer(
+            $db: $db,
+            $table: $db.ingredientTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IngredientWeightUnitTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $IngredientWeightUnitTableTable> {
+  $$IngredientWeightUnitTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get grams => $composableBuilder(
+    column: $table.grams,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$IngredientTableTableOrderingComposer get ingredientId {
+    final $$IngredientTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.ingredientId,
+      referencedTable: $db.ingredientTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.ingredientTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IngredientWeightUnitTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $IngredientWeightUnitTableTable> {
+  $$IngredientWeightUnitTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get grams =>
+      $composableBuilder(column: $table.grams, builder: (column) => column);
+
+  $$IngredientTableTableAnnotationComposer get ingredientId {
+    final $$IngredientTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.ingredientId,
+      referencedTable: $db.ingredientTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IngredientTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ingredientTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IngredientWeightUnitTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $IngredientWeightUnitTableTable,
+          IngredientWeightUnit,
+          $$IngredientWeightUnitTableTableFilterComposer,
+          $$IngredientWeightUnitTableTableOrderingComposer,
+          $$IngredientWeightUnitTableTableAnnotationComposer,
+          $$IngredientWeightUnitTableTableCreateCompanionBuilder,
+          $$IngredientWeightUnitTableTableUpdateCompanionBuilder,
+          (IngredientWeightUnit, $$IngredientWeightUnitTableTableReferences),
+          IngredientWeightUnit,
+          PrefetchHooks Function({bool ingredientId})
+        > {
+  $$IngredientWeightUnitTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $IngredientWeightUnitTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$IngredientWeightUnitTableTableFilterComposer(
+            $db: db,
+            $table: table,
+          ),
+          createOrderingComposer: () => $$IngredientWeightUnitTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$IngredientWeightUnitTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                Value<int> ingredientId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> grams = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => IngredientWeightUnitTableCompanion(
+                id: id,
+                uuid: uuid,
+                ingredientId: ingredientId,
+                name: name,
+                grams: grams,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String uuid,
+                required int ingredientId,
+                required String name,
+                required int grams,
+                Value<int> rowid = const Value.absent(),
+              }) => IngredientWeightUnitTableCompanion.insert(
+                id: id,
+                uuid: uuid,
+                ingredientId: ingredientId,
+                name: name,
+                grams: grams,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$IngredientWeightUnitTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({ingredientId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (ingredientId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.ingredientId,
+                                referencedTable: $$IngredientWeightUnitTableTableReferences
+                                    ._ingredientIdTable(db),
+                                referencedColumn: $$IngredientWeightUnitTableTableReferences
+                                    ._ingredientIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$IngredientWeightUnitTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $IngredientWeightUnitTableTable,
+      IngredientWeightUnit,
+      $$IngredientWeightUnitTableTableFilterComposer,
+      $$IngredientWeightUnitTableTableOrderingComposer,
+      $$IngredientWeightUnitTableTableAnnotationComposer,
+      $$IngredientWeightUnitTableTableCreateCompanionBuilder,
+      $$IngredientWeightUnitTableTableUpdateCompanionBuilder,
+      (IngredientWeightUnit, $$IngredientWeightUnitTableTableReferences),
+      IngredientWeightUnit,
+      PrefetchHooks Function({bool ingredientId})
+    >;
 
 class $DriftPowersyncDatabaseManager {
   final _$DriftPowersyncDatabase _db;
@@ -15369,4 +16063,9 @@ class $DriftPowersyncDatabaseManager {
       $$IngredientTableTableTableManager(_db, _db.ingredientTable);
   $$IngredientImageTableTableTableManager get ingredientImageTable =>
       $$IngredientImageTableTableTableManager(_db, _db.ingredientImageTable);
+  $$IngredientWeightUnitTableTableTableManager get ingredientWeightUnitTable =>
+      $$IngredientWeightUnitTableTableTableManager(
+        _db,
+        _db.ingredientWeightUnitTable,
+      );
 }

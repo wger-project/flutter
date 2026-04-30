@@ -125,7 +125,13 @@ void main() {
     });
 
     test('MealItem nutritionalValues with weight unit', () {
-      final unit = const IngredientWeightUnit(id: 1, name: 'Serving', grams: 50);
+      final unit = const IngredientWeightUnit(
+        id: 1,
+        uuid: '00000000-0000-0000-0000-000000000001',
+        ingredientId: 1,
+        name: 'Serving',
+        grams: 50,
+      );
       final item = MealItem(ingredientId: 1, amount: 3);
       item.ingredient = ingredient1;
       item.weightUnitObj = unit;
@@ -135,7 +141,13 @@ void main() {
     });
 
     test('MealItem nutritionalValues with weight unit amount 1', () {
-      final unit = const IngredientWeightUnit(id: 2, name: 'Cup', grams: 240);
+      final unit = const IngredientWeightUnit(
+        id: 2,
+        uuid: '00000000-0000-0000-0000-000000000002',
+        ingredientId: 1,
+        name: 'Cup',
+        grams: 240,
+      );
       final item = MealItem(ingredientId: 1, amount: 1);
       item.ingredient = ingredient1;
       item.weightUnitObj = unit;

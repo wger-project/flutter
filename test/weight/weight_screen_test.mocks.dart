@@ -281,6 +281,18 @@ class MockIngredientRepository extends _i1.Mock implements _i9.IngredientReposit
             returnValue: _i5.Future<_i7.Ingredient?>.value(),
           )
           as _i5.Future<_i7.Ingredient?>);
+
+  @override
+  _i5.Future<List<_i8.IngredientWeightUnit>> getWeightUnits(
+    int? ingredientId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getWeightUnits, [ingredientId]),
+            returnValue: _i5.Future<List<_i8.IngredientWeightUnit>>.value(
+              <_i8.IngredientWeightUnit>[],
+            ),
+          )
+          as _i5.Future<List<_i8.IngredientWeightUnit>>);
 }
 
 /// A class which mocks [BodyWeightRepository].

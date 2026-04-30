@@ -20,6 +20,7 @@ import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart' show IngredientImage;
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart' show IngredientWeightUnit;
 
 @UseRowClass(Ingredient)
 class IngredientTable extends Table {
@@ -132,5 +133,30 @@ const PowersyncIngredientImageTable = ps.Table(
   indexes: [
     ps.Index('ingredient_idx', [ps.IndexedColumn('ingredient_id')]),
     ps.Index('license_idx', [ps.IndexedColumn('license_id')]),
+  ],
+);
+
+@UseRowClass(IngredientWeightUnit)
+class IngredientWeightUnitTable extends Table {
+  @override
+  String get tableName => 'nutrition_ingredientweightunit';
+
+  IntColumn get id => integer()();
+  TextColumn get uuid => text()();
+  IntColumn get ingredientId => integer().named('ingredient_id').references(IngredientTable, #id)();
+  TextColumn get name => text()();
+  IntColumn get grams => integer().named('gram')();
+}
+
+const PowersyncIngredientWeightUnitTable = ps.Table(
+  'nutrition_ingredientweightunit',
+  [
+    ps.Column.text('uuid'),
+    ps.Column.integer('ingredient_id'),
+    ps.Column.text('name'),
+    ps.Column.integer('gram'),
+  ],
+  indexes: [
+    ps.Index('ingredient_idx', [ps.IndexedColumn('ingredient_id')]),
   ],
 );
