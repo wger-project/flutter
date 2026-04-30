@@ -1087,5 +1087,6 @@
     "dayTypeRft": "在最短時間內完成指定回合",
     "dayTypeAfap": "越快越好",
     "slotEntryTypeNormal": "正常",
-    "slotEntryTypeDropset": "遞減組"
+    "slotEntryTypeDropset": "遞減組",
+    "dashboardWidgets": "儀表板小工具"
 }
