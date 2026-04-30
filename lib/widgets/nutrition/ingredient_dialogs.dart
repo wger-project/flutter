@@ -22,7 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/nutritional_goals.dart';
+import 'package:wger/widgets/core/error.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/core/wger_image.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
 import 'package:wger/widgets/nutrition/nutri_score_badge.dart';
@@ -88,60 +89,44 @@ Widget ingredientImage(String? mediaPath, BuildContext context) {
 }
 
 class IngredientDetails extends StatelessWidget {
-  final AsyncSnapshot<Ingredient> snapshot;
+  final Ingredient ingredient;
   final void Function()? onSelect;
 
-  const IngredientDetails(this.snapshot, {super.key, this.onSelect});
+  const IngredientDetails(this.ingredient, {super.key, this.onSelect});
 
   @override
   Widget build(BuildContext context) {
-    Ingredient? ingredient;
-    NutritionalGoals? goals;
-    String? source;
-
-    if (snapshot.hasData) {
-      ingredient = snapshot.data;
-      goals = ingredient!.nutritionalValues.toGoals();
-      source = ingredient.sourceName ?? 'unknown';
-    }
+    final goals = ingredient.nutritionalValues.toGoals();
+    final source = ingredient.sourceName ?? 'unknown';
 
     return AlertDialog(
-      title: (snapshot.hasData) ? Text(ingredient!.name) : null,
+      title: Text(ingredient.name),
       content: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (snapshot.hasError)
-                Text(
-                  'Ingredient lookup error: ${snapshot.error ?? 'unknown error'}',
-                  style: const TextStyle(color: Colors.red),
+              if (ingredient.image?.image != null)
+                ingredientImage(ingredient.image!.image, context),
+              ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 400),
+                child: MacronutrientsTable(
+                  nutritionalGoals: goals,
+                  plannedValuesPercentage: goals.energyPercentage(),
+                  showGperKg: false,
                 ),
-              if (ingredient?.image?.image != null)
-                ingredientImage(ingredient!.image!.image, context),
-              if (!snapshot.hasData && !snapshot.hasError) const CircularProgressIndicator(),
-              if (snapshot.hasData)
-                ConstrainedBox(
-                  constraints: const BoxConstraints(minWidth: 400),
-                  child: MacronutrientsTable(
-                    nutritionalGoals: goals!,
-                    plannedValuesPercentage: goals.energyPercentage(),
-                    showGperKg: false,
-                  ),
-                ),
-              if (snapshot.hasData) ...[
-                const SizedBox(height: 12),
-                _DietaryInfoSection(ingredient: ingredient!),
-              ],
-              if (snapshot.hasData && ingredient!.licenseObjectURl == null)
-                Text('Source: ${source!}'),
-              if (snapshot.hasData && ingredient!.licenseObjectURl != null)
+              ),
+              const SizedBox(height: 12),
+              _DietaryInfoSection(ingredient: ingredient),
+              if (ingredient.licenseObjectURl == null)
+                Text('Source: $source')
+              else
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: InkWell(
-                    child: Text('Source: ${source!}'),
-                    onTap: () => launchURL(ingredient!.licenseObjectURl!, context),
+                    child: Text('Source: $source'),
+                    onTap: () => launchURL(ingredient.licenseObjectURl!, context),
                   ),
                 ),
             ],
@@ -149,7 +134,7 @@ class IngredientDetails extends StatelessWidget {
         ),
       ),
       actions: [
-        if (snapshot.hasData && onSelect != null)
+        if (onSelect != null)
           TextButton(
             key: const Key('ingredient-details-continue-button'),
             child: Text(MaterialLocalizations.of(context).continueButtonLabel),
@@ -185,96 +170,44 @@ class IngredientScanResultDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    Ingredient? ingredient;
-    NutritionalGoals? goals;
-    String? title;
-    String? source;
 
-    if (snapshot.connectionState == ConnectionState.done) {
-      ingredient = snapshot.data;
-      title = ingredient != null ? i18n.productFound : i18n.productNotFound;
-      if (ingredient != null) {
-        goals = ingredient.nutritionalValues.toGoals();
-        source = ingredient.sourceName ?? 'unknown';
-      }
+    // Scan still running: show a spinner.
+    if (snapshot.connectionState != ConnectionState.done) {
+      return AlertDialog(
+        key: const Key('ingredient-scan-result-dialog'),
+        content: const BoxedProgressIndicator(),
+        actions: [_closeButton(context)],
+      );
     }
-    return AlertDialog(
-      key: const Key('ingredient-scan-result-dialog'),
-      title: title != null ? Text(title) : null,
-      content: SingleChildScrollView(
-        child: Padding(
+
+    // Scan threw: surface the error with the shared indicator.
+    if (snapshot.hasError) {
+      return AlertDialog(
+        key: const Key('ingredient-scan-result-dialog'),
+        content: StreamErrorIndicator(snapshot.error!, stacktrace: snapshot.stackTrace),
+        actions: [_closeButton(context)],
+      );
+    }
+
+    final ingredient = snapshot.data;
+
+    // No product matched the barcode — offer the user to add it to OFF.
+    if (ingredient == null) {
+      return AlertDialog(
+        key: const Key('ingredient-scan-result-dialog'),
+        title: Text(i18n.productNotFound),
+        content: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (snapshot.hasError)
-                Text(
-                  'Ingredient lookup error: ${snapshot.error ?? 'unknown error'}',
-                  style: const TextStyle(color: Colors.red),
-                ),
-              if (snapshot.connectionState == ConnectionState.done && ingredient == null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        i18n.productNotFoundDescription(barcode),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        i18n.productNotFoundOpenFoodFacts,
-                      ),
-                    ],
-                  ),
-                ),
-
-              if (ingredient != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    i18n.productFoundDescription(ingredient.name),
-                  ),
-                ),
-              if (ingredient?.image?.image != null)
-                ingredientImage(ingredient!.image!.image, context),
-              if (snapshot.connectionState != ConnectionState.done && !snapshot.hasError)
-                const CircularProgressIndicator(),
-              if (goals != null)
-                ConstrainedBox(
-                  constraints: const BoxConstraints(minWidth: 400),
-                  child: MacronutrientsTable(
-                    nutritionalGoals: goals,
-                    plannedValuesPercentage: goals.energyPercentage(),
-                    showGperKg: false,
-                  ),
-                ),
-              if (ingredient != null && ingredient.licenseObjectURl == null)
-                Text('Source: ${source!}'),
-              if (ingredient?.licenseObjectURl != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: InkWell(
-                    child: Text('Source: ${source!}'),
-                    onTap: () => launchURL(ingredient!.licenseObjectURl!, context),
-                  ),
-                ),
+              Text(i18n.productNotFoundDescription(barcode)),
+              const SizedBox(height: 8),
+              Text(i18n.productNotFoundOpenFoodFacts),
             ],
           ),
         ),
-      ),
-      actions: [
-        if (ingredient != null) // if barcode matched
-          TextButton(
-            key: const Key('ingredient-scan-result-dialog-confirm-button'),
-            child: Text(MaterialLocalizations.of(context).continueButtonLabel),
-            onPressed: () {
-              onSelectIngredient(ingredient!, null);
-              Navigator.of(context).pop();
-            },
-          ),
-        // if didn't find a result after scanning
-        if (snapshot.connectionState == ConnectionState.done && ingredient == null)
+        actions: [
           TextButton.icon(
             key: const Key('ingredient-scan-result-dialog-open-food-facts-button'),
             icon: const Icon(Icons.add_circle_outline),
@@ -284,17 +217,70 @@ class IngredientScanResultDialog extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-        // if didn't match, or we're still waiting
+          _closeButton(context),
+        ],
+      );
+    }
+
+    // Product found — render details + confirm button.
+    final goals = ingredient.nutritionalValues.toGoals();
+    final source = ingredient.sourceName ?? 'unknown';
+    return AlertDialog(
+      key: const Key('ingredient-scan-result-dialog'),
+      title: Text(i18n.productFound),
+      content: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(i18n.productFoundDescription(ingredient.name)),
+              ),
+              if (ingredient.image?.image != null)
+                ingredientImage(ingredient.image!.image, context),
+              ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 400),
+                child: MacronutrientsTable(
+                  nutritionalGoals: goals,
+                  plannedValuesPercentage: goals.energyPercentage(),
+                  showGperKg: false,
+                ),
+              ),
+              if (ingredient.licenseObjectURl == null)
+                Text('Source: $source')
+              else
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: InkWell(
+                    child: Text('Source: $source'),
+                    onTap: () => launchURL(ingredient.licenseObjectURl!, context),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
         TextButton(
-          key: const Key('ingredient-scan-result-dialog-close-button'),
-          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+          key: const Key('ingredient-scan-result-dialog-confirm-button'),
+          child: Text(MaterialLocalizations.of(context).continueButtonLabel),
           onPressed: () {
+            onSelectIngredient(ingredient, null);
             Navigator.of(context).pop();
           },
         ),
+        _closeButton(context),
       ],
     );
   }
+
+  Widget _closeButton(BuildContext context) => TextButton(
+    key: const Key('ingredient-scan-result-dialog-close-button'),
+    child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+    onPressed: () => Navigator.of(context).pop(),
+  );
 }
 
 class _DietaryInfoSection extends StatelessWidget {

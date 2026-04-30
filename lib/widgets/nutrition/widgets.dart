@@ -24,7 +24,6 @@ import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -403,13 +402,13 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   }
 }
 
-class IngredientAvatar extends StatelessWidget {
+class IngredientAvatar extends ConsumerWidget {
   final Ingredient ingredient;
 
   const IngredientAvatar({super.key, required this.ingredient});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final image = WgerImage(
       mediaPath: ingredient.image?.image,
       width: 40,
@@ -419,17 +418,8 @@ class IngredientAvatar extends StatelessWidget {
       errorWidget: const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
     );
 
-    // No image to launch a license URL for — render the fallback as-is.
-    if (ingredient.image == null) {
-      return image;
-    }
-
     return GestureDetector(
-      onTap: () async {
-        if (ingredient.image!.objectUrl != '') {
-          return launchURL(ingredient.image!.objectUrl, context);
-        }
-      },
+      onTap: () => showIngredientDetails(context, ref, ingredient),
       child: image,
     );
   }

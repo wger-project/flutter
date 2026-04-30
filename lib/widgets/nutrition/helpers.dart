@@ -110,9 +110,6 @@ void showIngredientDetails(
 }) {
   showDialog(
     context: context,
-    builder: (context) => IngredientDetails(
-      AsyncSnapshot.withData(ConnectionState.done, ingredient),
-      onSelect: select,
-    ),
+    builder: (context) => IngredientDetails(ingredient, onSelect: select),
   );
 }
