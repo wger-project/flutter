@@ -33,6 +33,7 @@ import 'package:flutter_riverpod/misc.dart' show ProviderListenable;
 extension AwaitFirstValue on Ref {
   Future<T> awaitFirstValue<T>(ProviderListenable<AsyncValue<T>> provider) {
     final completer = Completer<T>();
+
     // Nullable (not `late`) on purpose: with `fireImmediately: true` the
     // listener can fire synchronously during the `listen(...)` call
     // itself, before the assignment to `sub` runs.
@@ -85,4 +86,50 @@ Uri makeUri(
   );
 
   return uri;
+}
+
+/// Builds the absolute URL for a server-side media file given its
+/// [relativePath] (the raw value of a Django `ImageField` / `FileField`
+/// as stored in the DB, e.g. `ingredients/42/foo.jpg`).
+///
+/// Returns `null` if [relativePath] is null or empty. If [relativePath]
+/// already contains a scheme it is returned as-is, so values that the
+/// REST API has already absolutised (or that point at an external CDN)
+/// pass through unchanged.
+///
+/// When [absolutePrefix] is provided it is used as-is (e.g. the prefix
+/// detected once via the REST API), so deployments with a non-default
+/// `MEDIA_URL` or a CDN in front of the media files work transparently.
+/// When omitted, the function falls back to the assumption that media
+/// is served from `<serverUrl>/media/` — Django's default.
+Uri? mediaUri(String serverUrl, String? relativePath, {String? absolutePrefix}) {
+  if (relativePath == null || relativePath.isEmpty) {
+    return null;
+  }
+
+  final parsed = Uri.tryParse(relativePath);
+  if (parsed != null && parsed.hasScheme) {
+    return parsed;
+  }
+
+  final cleanRelative = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
+
+  // Prefer the probed prefix (full URL ending in `/`) when available.
+  if (absolutePrefix != null && absolutePrefix.isNotEmpty) {
+    final cleanPrefix = absolutePrefix.endsWith('/') ? absolutePrefix : '$absolutePrefix/';
+    return Uri.parse('$cleanPrefix$cleanRelative');
+  }
+
+  // Fallback: assume Django's default MEDIA_URL of `/media/` on the same host.
+  final server = Uri.parse(serverUrl);
+  final basePath = server.path.endsWith('/')
+      ? server.path.substring(0, server.path.length - 1)
+      : server.path;
+
+  return Uri(
+    scheme: server.scheme,
+    host: server.host,
+    port: server.port,
+    path: '$basePath/media/$cleanRelative',
+  );
 }

@@ -3343,6 +3343,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get settingsImageCacheDescription =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsImageCacheDescription),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsImageCacheDescription),
+            ),
+          )
+          as String);
+
+  @override
   String get settingsCacheDeletedSnackbar =>
       (super.noSuchMethod(
             Invocation.getter(#settingsCacheDeletedSnackbar),

@@ -65,6 +65,9 @@ const PREFS_LAST_SERVER = 'lastServer';
 /// (i.e. its liveness probe returned 200).
 const PREFS_HAS_EVER_SYNCED = 'hasEverSynced';
 
+/// Absolute URL prefix for server-side media files
+const PREFS_MEDIA_URL_PREFIX = 'mediaUrlPrefix';
+
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);
 const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;
 
