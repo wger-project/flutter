@@ -154,7 +154,6 @@ class NutritionRepository {
 
   // --- Ingredients ---
 
-  // Single-id lookups go through [IngredientRepository]
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',

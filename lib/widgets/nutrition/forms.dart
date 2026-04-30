@@ -198,11 +198,12 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
 
   MealItem get mealItem => _mealItem;
 
-  void selectIngredient(int id, String name, num? amount) {
+  void selectIngredient(Ingredient ingredient, num? amount) {
     setState(() {
-      _mealItem.ingredientId = id;
-      _ingredientController.text = name;
-      _ingredientIdController.text = id.toString();
+      _mealItem.ingredient = ingredient;
+      _mealItem.ingredientId = ingredient.id;
+      _ingredientController.text = ingredient.name;
+      _ingredientIdController.text = ingredient.id.toString();
       if (amount != null) {
         _amountController.text = amount.toStringAsFixed(0);
         _mealItem.amount = amount;
@@ -213,7 +214,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
     });
 
     // Load weight units for this ingredient
-    ref.read(nutritionProvider.notifier).fetchWeightUnits(id).then((units) {
+    ref.read(nutritionProvider.notifier).fetchWeightUnits(ingredient.id).then((units) {
       setState(() {
         _weightUnits = units;
       });
@@ -411,36 +412,9 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                       'Macros preview', // TODO fix l10n
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    FutureBuilder<Ingredient>(
-                      future: ref
-                          .read(nutritionProvider.notifier)
-                          .fetchIngredient(_mealItem.ingredientId),
-                      builder:
-                          (
-                            BuildContext context,
-                            AsyncSnapshot<Ingredient> snapshot,
-                          ) {
-                            if (snapshot.hasData) {
-                              _mealItem.ingredient = snapshot.data!;
-                              return MealItemValuesTile(
-                                ingredient: _mealItem.ingredient,
-                                nutritionalValues: _mealItem.nutritionalValues,
-                              );
-                            } else if (snapshot.hasError) {
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 16),
-                                child: Text(
-                                  'Ingredient lookup error: ${snapshot.error}',
-                                  style: const TextStyle(color: Colors.red),
-                                ),
-                              );
-                            }
-                            return const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(),
-                            );
-                          },
+                    MealItemValuesTile(
+                      ingredient: _mealItem.ingredient,
+                      nutritionalValues: _mealItem.nutritionalValues,
                     ),
                   ],
                 ),
@@ -474,10 +448,8 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   void select() {
-                    final ingredient = suggestions[index].ingredient;
                     selectIngredient(
-                      ingredient.id,
-                      ingredient.name,
+                      suggestions[index].ingredient,
                       suggestions[index].amount,
                     );
                   }
@@ -505,7 +477,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                               showIngredientDetails(
                                 context,
                                 ref,
-                                suggestions[index].ingredient.id,
+                                suggestions[index].ingredient,
                                 select: select,
                               );
                             },

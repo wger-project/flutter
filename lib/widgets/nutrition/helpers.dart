@@ -22,7 +22,6 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
-import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
@@ -106,16 +105,14 @@ String getKcalConsumedVsPlanned(Meal meal, BuildContext context) {
 void showIngredientDetails(
   BuildContext context,
   WidgetRef ref,
-  int id, {
+  Ingredient ingredient, {
   void Function()? select,
 }) {
   showDialog(
     context: context,
-    builder: (context) => FutureBuilder<Ingredient>(
-      future: ref.read(nutritionProvider.notifier).fetchIngredient(id),
-      builder: (BuildContext context, AsyncSnapshot<Ingredient> snapshot) {
-        return IngredientDetails(snapshot, onSelect: select);
-      },
+    builder: (context) => IngredientDetails(
+      AsyncSnapshot.withData(ConnectionState.done, ingredient),
+      onSelect: select,
     ),
   );
 }

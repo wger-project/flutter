@@ -67,7 +67,7 @@ class IngredientTypeahead extends ConsumerStatefulWidget {
   final bool test;
   final bool showScanner;
 
-  final Function(int id, String name, num? amount) selectIngredient;
+  final Function(Ingredient ingredient, num? amount) selectIngredient;
   final Function() onDeselectIngredient;
   final Function(String query) onUpdateSearchQuery;
 
@@ -224,9 +224,9 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                   showIngredientDetails(
                     context,
                     ref,
-                    ingredient.id,
+                    ingredient,
                     select: () {
-                      widget.selectIngredient(ingredient.id, ingredient.name, null);
+                      widget.selectIngredient(ingredient, null);
                     },
                   );
                 },
@@ -238,7 +238,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             child: child,
           ),
           onSelected: (suggestion) async {
-            widget.selectIngredient(suggestion.id, suggestion.name, null);
+            widget.selectIngredient(suggestion, null);
           },
         ),
       ],

@@ -22,7 +22,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -161,24 +160,34 @@ class NutritionNotifier extends _$NutritionNotifier {
     }
 
     final fullPlanData = await repo.fetchPlanFull(planId);
+    final ingredientRepo = ref.read(ingredientRepositoryProvider);
 
     // Meals
     final List<Meal> meals = [];
-    for (final mealData in fullPlanData['meals']) {
-      final List<MealItem> mealItems = [];
+    for (final mealData in (fullPlanData['meals'] as List?) ?? const []) {
       final meal = Meal.fromJson(mealData);
+      final List<dynamic> mealItemsData = (mealData['meal_items'] as List?) ?? const [];
 
-      for (final mealItemData in mealData['meal_items']) {
-        final mealItem = MealItem.fromJson(mealItemData);
-
-        final ingredient = Ingredient.fromJson(mealItemData['ingredient_obj']);
-        if (mealItemData['image'] != null) {
-          ingredient.image = IngredientImage.fromJson(mealItemData['image']);
-        }
-        mealItem.ingredient = ingredient;
-        mealItems.add(mealItem);
-      }
-      meal.mealItems = mealItems;
+      // Resolve all ingredients for this meal in parallel
+      final resolved = await Future.wait(
+        mealItemsData.map((data) async {
+          final mealItem = MealItem.fromJson(data);
+          final ingredient = await ingredientRepo
+              .watchById(mealItem.ingredientId)
+              .firstWhere((i) => i != null, orElse: () => null)
+              .timeout(const Duration(seconds: 5), onTimeout: () => null);
+          if (ingredient == null) {
+            _logger.warning(
+              'Ingredient ${mealItem.ingredientId} not in local DB after 5s '
+              'wait, skipping meal item ${mealItem.id}',
+            );
+            return null;
+          }
+          mealItem.ingredient = ingredient;
+          return mealItem;
+        }),
+      );
+      meal.mealItems = resolved.whereType<MealItem>().toList();
       meals.add(meal);
     }
     plan.meals = meals;
@@ -193,11 +202,11 @@ class NutritionNotifier extends _$NutritionNotifier {
     return plan;
   }
 
-  /// Creation still goes through REST: the backend assigns the integer PK.
-  /// PowerSync will eventually replicate the new row down via the stream, but
-  /// to avoid a perceptible UI lag we also inject the freshly-created plan
-  /// into state right away. When the stream later re-emits the same row,
-  /// build()'s sub-data preservation logic keeps things stable.
+  /// Creation still goes through REST. PowerSync will eventually replicate the
+  /// new row via the stream, but to avoid a perceptible UI lag we also inject
+  /// the freshly-created plan into state right away. When the stream later
+  /// re-emits the same row, build()'s sub-data preservation logic keeps things
+  /// stable.
   Future<NutritionalPlan> addPlan(NutritionalPlan planData) async {
     final repo = ref.read(nutritionRepositoryProvider);
     final data = await repo.createPlan(planData.toJson());
@@ -267,7 +276,7 @@ class NutritionNotifier extends _$NutritionNotifier {
     final repo = ref.read(nutritionRepositoryProvider);
     final data = await repo.createMealItem(mealItem.toJson());
     final saved = MealItem.fromJson(data);
-    saved.ingredient = await fetchIngredient(saved.ingredientId);
+    saved.ingredient = mealItem.ingredient;
     meal.mealItems.add(saved);
     _notifyAfterInPlaceMutation();
     return saved;
@@ -290,17 +299,6 @@ class NutritionNotifier extends _$NutritionNotifier {
   }
 
   // --- Ingredients ---
-
-  /// Looks up an ingredient by id from the local PowerSync-backed Drift table.
-  Future<Ingredient> fetchIngredient(int ingredientId) async {
-    final ingredientRepo = ref.read(ingredientRepositoryProvider);
-    final local = await ingredientRepo.getById(ingredientId);
-    if (local == null) {
-      throw NoSuchEntryException();
-    }
-    _logger.finer("Loaded ingredient '${local.name}' from PowerSync");
-    return local;
-  }
 
   Future<List<Ingredient>> searchIngredient(
     String name, {
@@ -350,7 +348,6 @@ class NutritionNotifier extends _$NutritionNotifier {
   ]) async {
     final repo = ref.read(nutritionRepositoryProvider);
     final plan = findById(planId);
-    mealItem.ingredient = await fetchIngredient(mealItem.ingredientId);
     final log = Log.fromMealItem(mealItem, plan.id!, null, dateTime);
 
     final data = await repo.createLog(log.toJson());
@@ -368,15 +365,24 @@ class NutritionNotifier extends _$NutritionNotifier {
   }
 
   /// Loads nutrition diary entries for the given plan and resolves ingredient
-  /// references.
+  /// references against the local PowerSync-backed Drift table. Logs whose
+  /// ingredient is not present locally are skipped with a warning.
   Future<void> fetchAndSetLogs(NutritionalPlan plan) async {
     final repo = ref.read(nutritionRepositoryProvider);
+    final ingredientRepo = ref.read(ingredientRepositoryProvider);
     final data = await repo.fetchLogsForPlan(plan.id!);
 
     plan.diaryEntries = [];
     for (final logData in data) {
       final log = Log.fromJson(logData);
-      log.ingredient = await fetchIngredient(log.ingredientId);
+      final ingredient = await ingredientRepo.getById(log.ingredientId);
+      if (ingredient == null) {
+        _logger.warning(
+          'Ingredient ${log.ingredientId} for log ${log.id} not in local DB, skipping',
+        );
+        continue;
+      }
+      log.ingredient = ingredient;
       plan.diaryEntries.add(log);
     }
     _notifyAfterInPlaceMutation();

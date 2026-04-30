@@ -112,9 +112,9 @@ void main() {
         (_) async => nutritionDiaryResponse,
       );
       // Ingredient lookups now go through PowerSync — stub the local repo.
-      when(mockIngredientRepo.getById(any)).thenAnswer(
-        (_) async => Ingredient.fromJson(ingredient10065Response),
-      );
+      final ingredient = Ingredient.fromJson(ingredient10065Response);
+      when(mockIngredientRepo.getById(any)).thenAnswer((_) async => ingredient);
+      when(mockIngredientRepo.watchById(any)).thenAnswer((_) => Stream.value(ingredient));
 
       final container = makeContainer();
 

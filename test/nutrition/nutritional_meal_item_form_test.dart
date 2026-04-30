@@ -335,7 +335,8 @@ void main() {
 
         await tester.enterText(find.byKey(const Key('field-weight')), '2');
 
-        // once ID and weight are set, it'll fetchIngredient and show macros preview and ingredient image
+        // once ID and weight are set, the macros preview renders directly from
+        // the ingredient that selectIngredient stored on the form's MealItem.
         when(mockIngredientRepo.getById(1)).thenAnswer(
           (_) => Future.value(
             Ingredient.fromJson(jsonDecode(fixture('nutrition/ingredientinfo_59887.json'))),

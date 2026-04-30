@@ -32,7 +32,7 @@ class MealItemValuesTile extends ConsumerWidget {
       trailing: IconButton(
         icon: const Icon(Icons.info_outline),
         onPressed: () {
-          showIngredientDetails(context, ref, ingredient.id);
+          showIngredientDetails(context, ref, ingredient);
         },
       ),
     );

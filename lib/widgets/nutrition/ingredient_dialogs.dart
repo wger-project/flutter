@@ -173,7 +173,7 @@ class IngredientDetails extends StatelessWidget {
 class IngredientScanResultDialog extends StatelessWidget {
   final AsyncSnapshot<Ingredient?> snapshot;
   final String barcode;
-  final Function(int id, String name, num? amount) onSelectIngredient;
+  final Function(Ingredient ingredient, num? amount) onSelectIngredient;
 
   const IngredientScanResultDialog(
     this.snapshot,
@@ -269,7 +269,7 @@ class IngredientScanResultDialog extends StatelessWidget {
             key: const Key('ingredient-scan-result-dialog-confirm-button'),
             child: Text(MaterialLocalizations.of(context).continueButtonLabel),
             onPressed: () {
-              onSelectIngredient(ingredient!.id, ingredient.name, null);
+              onSelectIngredient(ingredient!, null);
               Navigator.of(context).pop();
             },
           ),

@@ -41,7 +41,7 @@ Future<void> pumpIngredientScanDialog(
                 builder: (_) => IngredientScanResultDialog(
                   snapshot,
                   barcode,
-                  (int id, String name, num? amount) {}, // Mock callback
+                  (Ingredient ingredient, num? amount) {}, // Mock callback
                 ),
               );
             },

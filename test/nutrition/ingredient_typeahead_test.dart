@@ -90,7 +90,7 @@ void main() {
           body: IngredientTypeahead(
             TextEditingController(),
             TextEditingController(),
-            selectIngredient: (id, name, amount) {},
+            selectIngredient: (ingredient, amount) {},
             onDeselectIngredient: () {},
             onUpdateSearchQuery: (query) {},
           ),

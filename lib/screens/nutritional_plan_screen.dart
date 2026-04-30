@@ -25,6 +25,7 @@ import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
@@ -186,21 +187,33 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
           ),
           FutureBuilder(
             future: _planFuture,
-            builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
-                snapshot.connectionState == ConnectionState.waiting
-                ? SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        const BoxedProgressIndicator(),
-                      ],
-                    ),
-                  )
-                : Consumer(
-                    builder: (context, ref, child) {
-                      ref.watch(nutritionProvider);
-                      return NutritionalPlanDetailWidget(_nutritionalPlan);
-                    },
+            builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SliverList(
+                  delegate: SliverChildListDelegate(
+                    [const BoxedProgressIndicator()],
                   ),
+                );
+              }
+              if (snapshot.hasError) {
+                return SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      StreamErrorIndicator(
+                        snapshot.error!,
+                        stacktrace: snapshot.stackTrace,
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return Consumer(
+                builder: (context, ref, child) {
+                  ref.watch(nutritionProvider);
+                  return NutritionalPlanDetailWidget(_nutritionalPlan);
+                },
+              );
+            },
           ),
         ],
       ),
