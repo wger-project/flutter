@@ -1078,5 +1078,14 @@
     "errorInfoDescription2": "你可以繼續使用此應用程式，但有一些功能無法運作。",
     "dayTypeTabata": "Tabata",
     "duration": "持續時間",
-    "aboutContributeText": "我們鼓勵各種形式的貢獻。無論您是開發者、翻譯者，還是僅僅熱愛健身，您的每項支持都彌足珍貴！"
+    "aboutContributeText": "我們鼓勵各種形式的貢獻。無論您是開發者、翻譯者，還是僅僅熱愛健身，您的每項支持都彌足珍貴！",
+    "selectAvailablePlates": "選擇可用的槓片",
+    "dayTypeCustom": "自訂",
+    "dayTypeHiit": "高強度間歇訓練",
+    "dayTypeEdt": "逐步增加訓練密度",
+    "dayTypeEnom": "每分鐘一組訓練",
+    "dayTypeRft": "在最短時間內完成指定回合",
+    "dayTypeAfap": "越快越好",
+    "slotEntryTypeNormal": "正常",
+    "slotEntryTypeDropset": "遞減組"
 }
