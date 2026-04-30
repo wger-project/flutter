@@ -35,6 +35,7 @@ import 'package:wger/screens/nutritional_plan_screen.dart';
 
 import '../../test_data/body_weight.dart';
 import '../../test_data/nutritional_plans.dart';
+import '../fake_connectivity.dart';
 import '../fixtures/fixture_reader.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
@@ -45,6 +46,8 @@ import 'nutritional_plan_screen_test.mocks.dart';
   BodyWeightRepository,
 ])
 void main() {
+  installFakeConnectivity();
+
   late BodyWeightRepository mockBodyWeightRepository;
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
