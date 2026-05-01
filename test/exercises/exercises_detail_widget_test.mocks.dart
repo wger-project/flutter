@@ -11,7 +11,7 @@ import 'package:wger/models/exercises/category.dart' as _i5;
 import 'package:wger/models/exercises/equipment.dart' as _i6;
 import 'package:wger/models/exercises/muscle.dart' as _i7;
 import 'package:wger/providers/exercise_repository.dart' as _i2;
-import 'package:wger/providers/exercises.dart' as _i4;
+import 'package:wger/providers/exercises_notifier.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

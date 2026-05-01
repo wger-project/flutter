@@ -12,7 +12,7 @@ import 'package:wger/models/trophies/user_trophy.dart' as _i7;
 import 'package:wger/models/trophies/user_trophy_progression.dart' as _i8;
 import 'package:wger/models/workouts/log.dart' as _i10;
 import 'package:wger/providers/base_provider.dart' as _i2;
-import 'package:wger/providers/trophies.dart' as _i3;
+import 'package:wger/providers/trophy_repository.dart' as _i3;
 import 'package:wger/providers/workout_logs_repository.dart' as _i9;
 
 // ignore_for_file: type=lint

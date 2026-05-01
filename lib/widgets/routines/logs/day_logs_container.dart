@@ -22,7 +22,7 @@ import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/trophies.dart';
+import 'package:wger/providers/trophy_notifier.dart';
 
 import '../gym_mode/summary.dart';
 import 'exercise_log_chart.dart';

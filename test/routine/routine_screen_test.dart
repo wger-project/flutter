@@ -24,7 +24,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/routine_screen.dart';
 
 import '../../test_data/routines.dart';

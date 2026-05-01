@@ -23,7 +23,7 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercise_filter_state.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercises_notifier.dart';
 
 part 'exercise_filters_notifier.g.dart';
 

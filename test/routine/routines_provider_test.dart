@@ -31,8 +31,8 @@ import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/exercise_repository.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/exercises_notifier.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 

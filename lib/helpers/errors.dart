@@ -31,7 +31,7 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/main.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/providers/workout_logs.dart';
+import 'package:wger/providers/workout_logs_notifier.dart';
 
 import 'consts.dart';
 import 'logs.dart';

@@ -27,7 +27,7 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/wger_base.dart';
 
 final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {

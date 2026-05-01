@@ -18,19 +18,14 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/trophies/trophy.dart';
 import 'package:wger/models/trophies/user_trophy.dart';
 import 'package:wger/models/trophies/user_trophy_progression.dart';
-import 'package:wger/providers/wger_base.dart';
+import 'package:wger/providers/trophy_repository.dart';
 
-import 'base_provider.dart';
-
-part 'trophies.g.dart';
+part 'trophy_notifier.g.dart';
 
 class TrophyState {
-  final _logger = Logger('TrophyState');
-
   final List<Trophy> trophies;
   final List<UserTrophy> userTrophies;
   final List<UserTrophyProgression> trophyProgression;
@@ -58,69 +53,6 @@ class TrophyState {
 
   List<UserTrophy> get nonPrTrophies =>
       userTrophies.where((t) => t.trophy.type != TrophyType.pr).toList();
-}
-
-class TrophyRepository {
-  final _logger = Logger('TrophyRepository');
-
-  final WgerBaseProvider base;
-  final trophiesPath = 'trophy';
-  final userTrophiesPath = 'user-trophy';
-  final userTrophyProgressionPath = 'trophy/progress';
-
-  TrophyRepository(this.base);
-
-  Future<List<Trophy>> fetchTrophies({String? language}) async {
-    try {
-      final url = base.makeUrl(trophiesPath, query: {'limit': API_MAX_PAGE_SIZE});
-      final trophyData = await base.fetchPaginated(url, language: language);
-      return trophyData.map((e) => Trophy.fromJson(e)).toList();
-    } catch (e, stk) {
-      _logger.warning('Error fetching trophies:', e, stk);
-      return [];
-    }
-  }
-
-  Future<List<UserTrophy>> fetchUserTrophies({
-    Map<String, String>? filterQuery,
-    String? language,
-  }) async {
-    final query = {'limit': API_MAX_PAGE_SIZE};
-    if (filterQuery != null) {
-      query.addAll(filterQuery);
-    }
-
-    try {
-      final url = base.makeUrl(userTrophiesPath, query: query);
-      final trophyData = await base.fetchPaginated(url, language: language);
-      return trophyData.map((e) => UserTrophy.fromJson(e)).toList();
-    } catch (e, stk) {
-      _logger.warning('Error fetching user trophies:');
-      _logger.warning(e);
-      _logger.warning(stk);
-      return [];
-    }
-  }
-
-  Future<List<UserTrophyProgression>> fetchProgression({
-    Map<String, String>? filterQuery,
-    String? language,
-  }) async {
-    try {
-      final url = base.makeUrl(userTrophyProgressionPath, query: filterQuery);
-      final List<dynamic> data = await base.fetch(url, language: language);
-      return data.map((e) => UserTrophyProgression.fromJson(e)).toList();
-    } catch (e, stk) {
-      _logger.warning('Error fetching user trophy progression:', e, stk);
-      return [];
-    }
-  }
-}
-
-@riverpod
-TrophyRepository trophyRepository(Ref ref) {
-  final base = ref.read(wgerBaseProvider);
-  return TrophyRepository(base);
 }
 
 @Riverpod(keepAlive: true)

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'gym_log_state.dart';
+part of 'gym_log_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator

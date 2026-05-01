@@ -29,7 +29,7 @@ import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/measurement_repository.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/theme/theme.dart';

@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/routines/routine_edit.dart';

@@ -23,7 +23,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/trophies.dart';
+import 'package:wger/providers/trophy_notifier.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/logs/day_logs_container.dart';
 

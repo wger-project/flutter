@@ -15,7 +15,7 @@ import 'package:wger/models/exercises/muscle.dart' as _i12;
 import 'package:wger/models/user/profile.dart' as _i2;
 import 'package:wger/providers/add_exercise_repository.dart' as _i3;
 import 'package:wger/providers/exercise_repository.dart' as _i8;
-import 'package:wger/providers/exercises.dart' as _i9;
+import 'package:wger/providers/exercises_notifier.dart' as _i9;
 import 'package:wger/providers/user_profile_repository.dart' as _i7;
 
 // ignore_for_file: type=lint

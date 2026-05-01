@@ -28,7 +28,7 @@ import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
-import 'package:wger/providers/gym_log_state.dart';
+import 'package:wger/providers/gym_log_notifier.dart';
 
 part 'gym_state.g.dart';
 

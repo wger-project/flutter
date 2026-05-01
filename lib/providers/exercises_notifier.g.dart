@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'exercises.dart';
+part of 'exercises_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator

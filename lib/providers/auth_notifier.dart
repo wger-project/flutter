@@ -34,8 +34,8 @@ import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/helpers.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
-import 'package:wger/providers/routines.dart';
-import 'package:wger/providers/trophies.dart';
+import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/providers/trophy_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 
 part 'auth_notifier.g.dart';

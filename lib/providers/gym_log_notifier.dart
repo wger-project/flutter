@@ -23,7 +23,7 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 
-part 'gym_log_state.g.dart';
+part 'gym_log_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class GymLogNotifier extends _$GymLogNotifier {

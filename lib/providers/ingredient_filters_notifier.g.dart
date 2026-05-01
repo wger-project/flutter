@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'nutrition_ingredient_filters_riverpod.dart';
+part of 'ingredient_filters_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator

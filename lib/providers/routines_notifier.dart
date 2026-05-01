@@ -28,12 +28,12 @@ import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/helpers.dart';
 import 'package:wger/providers/routines_repository.dart';
-import 'package:wger/providers/workout_session.dart';
+import 'package:wger/providers/workout_session_notifier.dart';
 
-part 'routines.g.dart';
+part 'routines_notifier.g.dart';
 
 // Reference-data streams: kept alive across the app's lifetime so that
 // callers using `ref.read(...future)` (notably [fetchAndSetRoutineFull])

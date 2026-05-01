@@ -26,7 +26,7 @@ import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/network_provider.dart';
 
-part 'exercises.g.dart';
+part 'exercises_notifier.g.dart';
 
 class ExerciseState {
   final List<Exercise> exercises;

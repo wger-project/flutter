@@ -23,7 +23,7 @@ import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_filters.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 
-part 'nutrition_ingredient_filters_riverpod.g.dart';
+part 'ingredient_filters_notifier.g.dart';
 
 @riverpod
 class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {

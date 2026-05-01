@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2026 wger Team
+ * Copyright (c) 2020,  wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,22 +18,19 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/workout_session_repository.dart';
 
-import 'body_weight_repository.dart';
+part 'workout_session_notifier.g.dart';
 
-part 'body_weight.g.dart';
-
-@riverpod
-final class WeightEntryNotifier extends _$WeightEntryNotifier {
-  final _logger = Logger('WeightEntryNotifier');
-  late BodyWeightRepository _repo;
+@Riverpod(keepAlive: true)
+final class WorkoutSessionNotifier extends _$WorkoutSessionNotifier {
+  final _logger = Logger('WorkoutSessionNotifier');
+  late WorkoutSessionRepository _repo;
 
   @override
-  Stream<List<WeightEntry>> build() {
-    _repo = ref.read(bodyWeightRepositoryProvider);
-    _logger.finer('Building WeightEntryNotifier');
-
+  Stream<List<WorkoutSession>> build() {
+    _repo = ref.read(workoutSessionRepositoryProvider);
     return _repo.watchAllDrift();
   }
 
@@ -41,11 +38,11 @@ final class WeightEntryNotifier extends _$WeightEntryNotifier {
     await _repo.deleteLocalDrift(id);
   }
 
-  Future<void> updateEntry(WeightEntry entry) async {
-    await _repo.updateLocalDrift(entry);
+  Future<void> updateEntry(WorkoutSession entry) async {
+    await _repo.editLocalDrift(entry);
   }
 
-  Future<void> addEntry(WeightEntry entry) async {
+  Future<void> addEntry(WorkoutSession entry) async {
     await _repo.addLocalDrift(entry);
   }
 }

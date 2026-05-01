@@ -19,7 +19,7 @@ import 'package:wger/models/workouts/slot.dart' as _i4;
 import 'package:wger/models/workouts/slot_entry.dart' as _i5;
 import 'package:wger/models/workouts/weight_unit.dart' as _i9;
 import 'package:wger/providers/exercise_repository.dart' as _i13;
-import 'package:wger/providers/exercises.dart' as _i14;
+import 'package:wger/providers/exercises_notifier.dart' as _i14;
 import 'package:wger/providers/routines_repository.dart' as _i7;
 import 'package:wger/providers/workout_session_repository.dart' as _i11;
 

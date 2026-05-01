@@ -26,7 +26,7 @@ import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/workout_session.dart';
+import 'package:wger/providers/workout_session_notifier.dart';
 
 class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');

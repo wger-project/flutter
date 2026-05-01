@@ -28,10 +28,10 @@ import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/body_weight_notifier.dart';
 import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
