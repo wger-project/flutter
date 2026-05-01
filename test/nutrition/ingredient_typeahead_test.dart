@@ -31,9 +31,13 @@ import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
 import '../../test_data/nutritional_plans.dart';
+import '../fake_connectivity.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
 void main() {
+  // The notifier reads `networkStatusProvider` to route the search.
+  installFakeConnectivity();
+
   late MockIngredientRepository mockIngredientRepo;
 
   setUp(() async {

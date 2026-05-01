@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ingredients.dart';
+part of 'ingredient_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -32,7 +32,7 @@ final class IngredientNotifierProvider extends $AsyncNotifierProvider<Ingredient
   IngredientNotifier create() => IngredientNotifier();
 }
 
-String _$ingredientNotifierHash() => r'746f1f3b19d2df68724a60e51bba69b67121f801';
+String _$ingredientNotifierHash() => r'513cb8f7f040498e16e332422a37ef5114e65368';
 
 abstract class _$IngredientNotifier extends $AsyncNotifier<void> {
   FutureOr<void> build();

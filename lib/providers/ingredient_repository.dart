@@ -40,7 +40,12 @@ final ingredientRepositoryProvider = Provider<IngredientRepository>((ref) {
   return IngredientRepository(base, db);
 });
 
-/// Data access for ingredient lookups and searches
+/// Data access for ingredient lookups and searches.
+///
+/// Exposes both transport paths ([searchIngredientServer], [searchIngredientLocal])
+/// as pure data-access primitives. Connectivity-aware routing between them lives
+/// on [IngredientNotifier.searchIngredient] (lib/providers/ingredient_notifier.dart),
+/// where `ref` is at hand.
 class IngredientRepository {
   final _logger = Logger('IngredientRepository');
   final WgerBaseProvider _base;

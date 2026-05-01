@@ -25,10 +25,11 @@ import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/providers/network_provider.dart';
 
 import 'ingredient_repository.dart';
 
-part 'ingredients.g.dart';
+part 'ingredient_notifier.g.dart';
 
 @riverpod
 final class IngredientNotifier extends _$IngredientNotifier {
@@ -99,5 +100,35 @@ final class IngredientNotifier extends _$IngredientNotifier {
     }
     state = const AsyncData(null);
     return item;
+  }
+
+  /// Searches for ingredients
+  ///
+  /// Routes to the REST API when the device is online, or to the locally-
+  /// synced subset when offline.
+  Future<List<Ingredient>> searchIngredient(
+    String name, {
+    String languageCode = 'en',
+    IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
+    bool isVegan = false,
+    bool isVegetarian = false,
+    NutriScore? nutriscoreMax,
+  }) {
+    if (ref.read(networkStatusProvider)) {
+      return _repo.searchIngredientServer(
+        name,
+        languageCode: languageCode,
+        searchLanguage: searchLanguage,
+        isVegan: isVegan,
+        isVegetarian: isVegetarian,
+        nutriscoreMax: nutriscoreMax,
+      );
+    }
+    return _repo.searchIngredientLocal(
+      name,
+      isVegan: isVegan,
+      isVegetarian: isVegetarian,
+      nutriscoreMax: nutriscoreMax,
+    );
   }
 }
