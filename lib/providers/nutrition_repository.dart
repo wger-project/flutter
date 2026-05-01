@@ -22,7 +22,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/log.dart';
@@ -59,13 +58,6 @@ class NutritionRepository {
 
   // --- Plans ---
 
-  Future<List<dynamic>> fetchAllPlans() async {
-    _logger.fine('Fetching all plans (sparse)');
-    return _base.fetchPaginated(
-      _base.makeUrl(plansPath, query: {'limit': API_MAX_PAGE_SIZE}),
-    );
-  }
-
   Future<Map<String, dynamic>> fetchPlanSparse(int planId) async {
     _logger.fine('Fetching plan $planId (sparse)');
     final data = await _base.fetch(_base.makeUrl(plansPath, id: planId));
@@ -80,14 +72,6 @@ class NutritionRepository {
 
   Future<Map<String, dynamic>> createPlan(Map<String, dynamic> data) async {
     return _base.post(data, _base.makeUrl(plansPath));
-  }
-
-  Future<void> updatePlan(int id, Map<String, dynamic> data) async {
-    await _base.patch(data, _base.makeUrl(plansPath, id: id));
-  }
-
-  Future<http.Response> deletePlan(int id) async {
-    return _base.deleteRequest(plansPath, id);
   }
 
   /// Streams all nutritional plans from the local PowerSync-backed Drift table.

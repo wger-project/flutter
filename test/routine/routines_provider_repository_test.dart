@@ -19,7 +19,6 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/database/powersync/database.dart';
@@ -71,18 +70,6 @@ void main() {
       expect(plan, isA<Routine>());
       expect(plan.id, 325397);
       expect(plan.description, 'Test workout abcd');
-    });
-
-    test('Test deleting a workout plan', () async {
-      // Arrange
-      when(mockBaseProvider.deleteRequest('routine', 325397)).thenAnswer(
-        (_) => Future.value(Response('', 204)),
-      );
-
-      // Act
-      final repo = RoutinesRepository(mockBaseProvider, mockDb);
-      await repo.deleteRoutineServer(325397);
-      verify(mockBaseProvider.deleteRequest('routine', 325397)).called(1);
     });
 
     test('Smoke test fetchAndSetRoutineFullServer', () async {

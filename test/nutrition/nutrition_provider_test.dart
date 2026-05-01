@@ -284,7 +284,6 @@ void main() {
       await container.read(nutritionProvider.notifier).editPlan(plan);
 
       verify(mockRepo.editLocalDrift(plan)).called(1);
-      verifyNever(mockRepo.updatePlan(any, any));
     });
 
     test('deletePlan delegates to deleteLocalDrift (PowerSync), not REST', () async {
@@ -293,7 +292,6 @@ void main() {
       await container.read(nutritionProvider.notifier).deletePlan(1);
 
       verify(mockRepo.deleteLocalDrift(1)).called(1);
-      verifyNever(mockRepo.deletePlan(any));
     });
   });
 }

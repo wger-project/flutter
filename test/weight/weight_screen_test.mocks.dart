@@ -49,14 +49,6 @@ class MockNutritionRepository extends _i1.Mock implements _i4.NutritionRepositor
   }
 
   @override
-  _i5.Future<List<dynamic>> fetchAllPlans() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAllPlans, []),
-            returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
-          )
-          as _i5.Future<List<dynamic>>);
-
-  @override
   _i5.Future<Map<String, dynamic>> fetchPlanSparse(int? planId) =>
       (super.noSuchMethod(
             Invocation.method(#fetchPlanSparse, [planId]),
@@ -85,25 +77,6 @@ class MockNutritionRepository extends _i1.Mock implements _i4.NutritionRepositor
             ),
           )
           as _i5.Future<Map<String, dynamic>>);
-
-  @override
-  _i5.Future<void> updatePlan(int? id, Map<String, dynamic>? data) =>
-      (super.noSuchMethod(
-            Invocation.method(#updatePlan, [id, data]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<_i2.Response> deletePlan(int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deletePlan, [id]),
-            returnValue: _i5.Future<_i2.Response>.value(
-              _FakeResponse_0(this, Invocation.method(#deletePlan, [id])),
-            ),
-          )
-          as _i5.Future<_i2.Response>);
 
   @override
   _i5.Stream<List<_i6.NutritionalPlan>> watchAllDrift() =>

@@ -164,28 +164,6 @@ class MockRoutinesRepository extends _i1.Mock implements _i12.RoutinesRepository
           as _i8.Future<_i2.Routine>);
 
   @override
-  _i8.Future<_i2.Routine> editRoutineServer(_i2.Routine? routine) =>
-      (super.noSuchMethod(
-            Invocation.method(#editRoutineServer, [routine]),
-            returnValue: _i8.Future<_i2.Routine>.value(
-              _FakeRoutine_0(
-                this,
-                Invocation.method(#editRoutineServer, [routine]),
-              ),
-            ),
-          )
-          as _i8.Future<_i2.Routine>);
-
-  @override
-  _i8.Future<void> deleteRoutineServer(int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteRoutineServer, [id]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
-          )
-          as _i8.Future<void>);
-
-  @override
   _i8.Stream<List<_i2.Routine>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),

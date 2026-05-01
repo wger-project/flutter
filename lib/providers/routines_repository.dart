@@ -115,18 +115,6 @@ class RoutinesRepository {
     return Routine.fromJson(data);
   }
 
-  Future<Routine> editRoutineServer(Routine routine) async {
-    await _baseProvider.patch(
-      routine.toJson(),
-      _baseProvider.makeUrl(_routinesUrlPath, id: routine.id),
-    );
-    return fetchAndSetRoutineFullServer(routine.id!);
-  }
-
-  Future<void> deleteRoutineServer(int id) async {
-    await _baseProvider.deleteRequest(_routinesUrlPath, id);
-  }
-
   /// Streams all routines from the local PowerSync-backed Drift table.
   ///
   /// Templates (`is_template = TRUE`, including public ones) are excluded at
