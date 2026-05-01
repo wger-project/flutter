@@ -13,7 +13,7 @@ part of 'gallery_notifier.dart';
 final galleryProvider = GalleryNotifierProvider._();
 
 final class GalleryNotifierProvider
-    extends $AsyncNotifierProvider<GalleryNotifier, List<gallery.Image>> {
+    extends $StreamNotifierProvider<GalleryNotifier, List<GalleryImage>> {
   GalleryNotifierProvider._()
     : super(
         from: null,
@@ -33,19 +33,19 @@ final class GalleryNotifierProvider
   GalleryNotifier create() => GalleryNotifier();
 }
 
-String _$galleryNotifierHash() => r'5d2d8a276165112068621001d674669ff67f4b33';
+String _$galleryNotifierHash() => r'c5012c07b5381f7bea275534b65967d0376611ed';
 
-abstract class _$GalleryNotifier extends $AsyncNotifier<List<gallery.Image>> {
-  FutureOr<List<gallery.Image>> build();
+abstract class _$GalleryNotifier extends $StreamNotifier<List<GalleryImage>> {
+  Stream<List<GalleryImage>> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<gallery.Image>>, List<gallery.Image>>;
+    final ref = this.ref as $Ref<AsyncValue<List<GalleryImage>>, List<GalleryImage>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<gallery.Image>>, List<gallery.Image>>,
-              AsyncValue<List<gallery.Image>>,
+              AnyNotifier<AsyncValue<List<GalleryImage>>, List<GalleryImage>>,
+              AsyncValue<List<GalleryImage>>,
               Object?,
               Object?
             >;

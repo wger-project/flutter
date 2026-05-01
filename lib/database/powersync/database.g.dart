@@ -7705,6 +7705,221 @@ class LogItemTableCompanion extends UpdateCompanion<LogItem> {
   }
 }
 
+class $GalleryImageTableTable extends GalleryImageTable
+    with TableInfo<$GalleryImageTableTable, GalleryImage> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GalleryImageTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _imagePathMeta = const VerificationMeta(
+    'imagePath',
+  );
+  @override
+  late final GeneratedColumn<String> imagePath = GeneratedColumn<String>(
+    'image',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, date, imagePath, description];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'gallery_image';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GalleryImage> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('image')) {
+      context.handle(
+        _imagePathMeta,
+        imagePath.isAcceptableOrUnknown(data['image']!, _imagePathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_imagePathMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  GalleryImage map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GalleryImage(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      imagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+    );
+  }
+
+  @override
+  $GalleryImageTableTable createAlias(String alias) {
+    return $GalleryImageTableTable(attachedDatabase, alias);
+  }
+}
+
+class GalleryImageTableCompanion extends UpdateCompanion<GalleryImage> {
+  final Value<int> id;
+  final Value<DateTime> date;
+  final Value<String> imagePath;
+  final Value<String> description;
+  final Value<int> rowid;
+  const GalleryImageTableCompanion({
+    this.id = const Value.absent(),
+    this.date = const Value.absent(),
+    this.imagePath = const Value.absent(),
+    this.description = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  GalleryImageTableCompanion.insert({
+    required int id,
+    required DateTime date,
+    required String imagePath,
+    required String description,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       date = Value(date),
+       imagePath = Value(imagePath),
+       description = Value(description);
+  static Insertable<GalleryImage> custom({
+    Expression<int>? id,
+    Expression<DateTime>? date,
+    Expression<String>? imagePath,
+    Expression<String>? description,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (date != null) 'date': date,
+      if (imagePath != null) 'image': imagePath,
+      if (description != null) 'description': description,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  GalleryImageTableCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? date,
+    Value<String>? imagePath,
+    Value<String>? description,
+    Value<int>? rowid,
+  }) {
+    return GalleryImageTableCompanion(
+      id: id ?? this.id,
+      date: date ?? this.date,
+      imagePath: imagePath ?? this.imagePath,
+      description: description ?? this.description,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (imagePath.present) {
+      map['image'] = Variable<String>(imagePath.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GalleryImageTableCompanion(')
+          ..write('id: $id, ')
+          ..write('date: $date, ')
+          ..write('imagePath: $imagePath, ')
+          ..write('description: $description, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   _$DriftPowersyncDatabase(QueryExecutor e) : super(e);
   $DriftPowersyncDatabaseManager get managers => $DriftPowersyncDatabaseManager(this);
@@ -7746,6 +7961,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   late final $IngredientWeightUnitTableTable ingredientWeightUnitTable =
       $IngredientWeightUnitTableTable(this);
   late final $LogItemTableTable logItemTable = $LogItemTableTable(this);
+  late final $GalleryImageTableTable galleryImageTable = $GalleryImageTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7776,6 +7992,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     ingredientImageTable,
     ingredientWeightUnitTable,
     logItemTable,
+    galleryImageTable,
   ];
   @override
   DriftDatabaseOptions get options => const DriftDatabaseOptions(storeDateTimeAsText: true);
@@ -17014,6 +17231,191 @@ typedef $$LogItemTableTableProcessedTableManager =
       LogItem,
       PrefetchHooks Function({bool planId, bool ingredientId})
     >;
+typedef $$GalleryImageTableTableCreateCompanionBuilder =
+    GalleryImageTableCompanion Function({
+      required int id,
+      required DateTime date,
+      required String imagePath,
+      required String description,
+      Value<int> rowid,
+    });
+typedef $$GalleryImageTableTableUpdateCompanionBuilder =
+    GalleryImageTableCompanion Function({
+      Value<int> id,
+      Value<DateTime> date,
+      Value<String> imagePath,
+      Value<String> description,
+      Value<int> rowid,
+    });
+
+class $$GalleryImageTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $GalleryImageTableTable> {
+  $$GalleryImageTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$GalleryImageTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $GalleryImageTableTable> {
+  $$GalleryImageTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$GalleryImageTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $GalleryImageTableTable> {
+  $$GalleryImageTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get imagePath =>
+      $composableBuilder(column: $table.imagePath, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+}
+
+class $$GalleryImageTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $GalleryImageTableTable,
+          GalleryImage,
+          $$GalleryImageTableTableFilterComposer,
+          $$GalleryImageTableTableOrderingComposer,
+          $$GalleryImageTableTableAnnotationComposer,
+          $$GalleryImageTableTableCreateCompanionBuilder,
+          $$GalleryImageTableTableUpdateCompanionBuilder,
+          (
+            GalleryImage,
+            BaseReferences<_$DriftPowersyncDatabase, $GalleryImageTableTable, GalleryImage>,
+          ),
+          GalleryImage,
+          PrefetchHooks Function()
+        > {
+  $$GalleryImageTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $GalleryImageTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GalleryImageTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GalleryImageTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$GalleryImageTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<String> imagePath = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => GalleryImageTableCompanion(
+                id: id,
+                date: date,
+                imagePath: imagePath,
+                description: description,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required DateTime date,
+                required String imagePath,
+                required String description,
+                Value<int> rowid = const Value.absent(),
+              }) => GalleryImageTableCompanion.insert(
+                id: id,
+                date: date,
+                imagePath: imagePath,
+                description: description,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$GalleryImageTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $GalleryImageTableTable,
+      GalleryImage,
+      $$GalleryImageTableTableFilterComposer,
+      $$GalleryImageTableTableOrderingComposer,
+      $$GalleryImageTableTableAnnotationComposer,
+      $$GalleryImageTableTableCreateCompanionBuilder,
+      $$GalleryImageTableTableUpdateCompanionBuilder,
+      (
+        GalleryImage,
+        BaseReferences<_$DriftPowersyncDatabase, $GalleryImageTableTable, GalleryImage>,
+      ),
+      GalleryImage,
+      PrefetchHooks Function()
+    >;
 
 class $DriftPowersyncDatabaseManager {
   final _$DriftPowersyncDatabase _db;
@@ -17086,4 +17488,6 @@ class $DriftPowersyncDatabaseManager {
       );
   $$LogItemTableTableTableManager get logItemTable =>
       $$LogItemTableTableTableManager(_db, _db.logItemTable);
+  $$GalleryImageTableTableTableManager get galleryImageTable =>
+      $$GalleryImageTableTableTableManager(_db, _db.galleryImageTable);
 }

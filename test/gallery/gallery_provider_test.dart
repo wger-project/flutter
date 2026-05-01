@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -20,7 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
+import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/gallery_repository.dart';
 
@@ -29,58 +29,67 @@ import 'gallery_provider_test.mocks.dart';
 @GenerateMocks([GalleryRepository])
 void main() {
   late MockGalleryRepository mockRepo;
-  late ProviderContainer container;
 
-  final image1 = gallery.Image(
+  final image1 = GalleryImage(
     id: 58,
     date: DateTime(2022, 01, 09),
-    url: 'https://example.com/1.jpg',
+    imagePath: 'gallery/1/1.jpg',
     description: 'image 1',
   );
-  final image2 = gallery.Image(
+  final image2 = GalleryImage(
     id: 59,
     date: DateTime(2022, 02, 14),
-    url: 'https://example.com/2.jpg',
+    imagePath: 'gallery/1/2.jpg',
     description: 'image 2',
   );
 
-  setUp(() {
-    mockRepo = MockGalleryRepository();
-    when(mockRepo.fetchAll()).thenAnswer((_) async => [image2, image1]);
-
-    container = ProviderContainer(
+  ProviderContainer makeContainer() {
+    return ProviderContainer.test(
       overrides: [galleryRepositoryProvider.overrideWithValue(mockRepo)],
     );
+  }
+
+  Future<ProviderContainer> containerWithImages(List<GalleryImage> images) async {
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(images));
+    final container = makeContainer();
+    container.listen(galleryProvider, (_, _) {});
+    await pumpEventQueue();
+    return container;
+  }
+
+  setUp(() {
+    mockRepo = MockGalleryRepository();
+    // Default: empty stream that never emits. Tests that exercise notifier
+    // methods on a fresh container use [containerWithImages] to seed.
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => const Stream.empty());
+    when(mockRepo.editLocalDrift(any)).thenAnswer((_) async {});
+    when(mockRepo.deleteLocalDrift(any)).thenAnswer((_) async {});
   });
 
-  tearDown(() {
-    container.dispose();
-  });
+  test('build streams the gallery from the repository, sorted newest first', () async {
+    // Drift returns rows in `Meta.ordering = ['-date']` order.
+    final container = await containerWithImages([image2, image1]);
 
-  test('build fetches the gallery from the repository', () async {
-    final images = await container.read(galleryProvider.future);
-
+    final images = container.read(galleryProvider).value!;
     expect(images, hasLength(2));
-    expect(images.first.id, 59); // sorted newest first
-    verify(mockRepo.fetchAll()).called(1);
+    expect(images.first.id, 59);
+    verify(mockRepo.watchAllDrift()).called(1);
   });
 
-  test('deleteImage removes the image from state', () async {
-    await container.read(galleryProvider.future);
-    when(mockRepo.deleteImage(any)).thenAnswer((_) async {});
+  test('deleteImage forwards to the repository', () async {
+    final container = makeContainer();
 
     await container.read(galleryProvider.notifier).deleteImage(image1);
 
-    final images = container.read(galleryProvider).value!;
-    expect(images.map((e) => e.id), [image2.id]);
-    verify(mockRepo.deleteImage(image1.id!)).called(1);
+    verify(mockRepo.deleteLocalDrift(image1.id)).called(1);
   });
 
-  test('clear() resets the state to an empty list', () async {
-    await container.read(galleryProvider.future);
-    expect(container.read(galleryProvider).value, hasLength(2));
+  test('editImage without a file routes through Drift', () async {
+    final container = makeContainer();
 
-    container.read(galleryProvider.notifier).clear();
-    expect(container.read(galleryProvider).value, isEmpty);
+    await container.read(galleryProvider.notifier).editImage(image1, null);
+
+    verify(mockRepo.editLocalDrift(image1)).called(1);
+    verifyNever(mockRepo.editImageServer(any, any));
   });
 }

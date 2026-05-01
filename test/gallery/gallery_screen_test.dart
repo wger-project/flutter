@@ -36,7 +36,9 @@ void main() {
 
   setUp(() {
     mockGalleryRepository = MockGalleryRepository();
-    when(mockGalleryRepository.fetchAll()).thenAnswer((_) async => getTestImages());
+    when(
+      mockGalleryRepository.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(getTestImages()));
   });
 
   Widget renderScreen({locale = 'en'}) {

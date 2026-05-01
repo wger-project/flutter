@@ -18,6 +18,7 @@
 
 import 'package:powersync/powersync.dart';
 import 'package:wger/database/powersync/tables/exercise.dart';
+import 'package:wger/database/powersync/tables/gallery.dart';
 import 'package:wger/database/powersync/tables/ingredient.dart';
 import 'package:wger/database/powersync/tables/language.dart';
 import 'package:wger/database/powersync/tables/license.dart';
@@ -63,4 +64,7 @@ Schema schema = const Schema([
   PowersyncWorkoutSessionTable,
   PowersyncRoutineRepetitionUnitTable,
   PowersyncRoutineWeightUnitTable,
+
+  // Gallery
+  PowersyncGalleryImageTable,
 ]);

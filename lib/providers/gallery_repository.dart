@@ -18,42 +18,49 @@
 
 import 'dart:convert';
 
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
+import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
 final galleryRepositoryProvider = Provider<GalleryRepository>((ref) {
   final base = ref.read(wgerBaseProvider);
-  return GalleryRepository(base);
+  final db = ref.read(driftPowerSyncDatabase);
+  return GalleryRepository(base, db);
 });
 
-/// HTTP-only data access for the user's gallery.
+/// Data access for gallery images.
+///
+/// REST handles anything that involves the binary file (create, edit-with-
+/// new-file). Reads, metadata edits and deletes go through the local
+/// PowerSync-backed Drift table — see [watchAllDrift], [editLocalDrift]
+/// and [deleteLocalDrift].
 class GalleryRepository {
   static const _galleryUrlPath = 'gallery';
 
   final _logger = Logger('GalleryRepository');
   final WgerBaseProvider _base;
+  final DriftPowersyncDatabase _db;
 
-  GalleryRepository(this._base);
+  GalleryRepository(this._base, this._db);
 
-  /// Fetches all gallery images, sorted newest first.
-  Future<List<gallery.Image>> fetchAll() async {
-    _logger.fine('Fetching gallery');
-    final data = await _base.fetch(_base.makeUrl(_galleryUrlPath));
-    final images = (data['results'] as List)
-        .map((e) => gallery.Image.fromJson(e as Map<String, dynamic>))
-        .toList();
-    images.sort((a, b) => b.date.compareTo(a.date));
-    return images;
+  /// Streams all gallery images, sorted newest first to match Django's
+  /// `Image.Meta.ordering = ['-date']`.
+  Stream<List<GalleryImage>> watchAllDrift() {
+    _logger.finer('Watching all local gallery images');
+    return (_db.select(
+      _db.galleryImageTable,
+    )..orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)])).watch();
   }
 
-  /// Uploads a new image with metadata. Returns the saved image.
-  Future<gallery.Image> addImage(gallery.Image image, XFile imageFile) async {
+  /// Uploads a new image with metadata via REST. Returns the saved row.
+  Future<GalleryImage> addImageServer(GalleryImage image, XFile imageFile) async {
     final request = http.MultipartRequest('POST', _base.makeUrl(_galleryUrlPath))
       ..headers.addAll(_base.getDefaultHeaders(includeAuth: true))
       ..files.add(await http.MultipartFile.fromPath('image', imageFile.path))
@@ -62,23 +69,18 @@ class GalleryRepository {
 
     final res = await request.send();
     final respStr = await res.stream.bytesToString();
-    return gallery.Image.fromJson(json.decode(respStr));
+    return GalleryImage.fromJson(json.decode(respStr) as Map<String, dynamic>);
   }
 
-  /// Edits an existing image. [imageFile] is optional — only sent if
-  /// the user picked a new one.
-  Future<String?> editImage(gallery.Image image, XFile? imageFile) async {
+  /// PATCHes an image whose binary file has changed. Returns the new
+  /// relative storage path so the caller can reflect it in local state
+  /// before the next PowerSync emission catches up.
+  Future<String?> editImageServer(GalleryImage image, XFile imageFile) async {
     final request = http.MultipartRequest('PATCH', _base.makeUrl(_galleryUrlPath, id: image.id))
-      ..headers.addAll(_base.getDefaultHeaders(includeAuth: true));
-
-    if (imageFile != null) {
-      request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-    }
-
-    final data = image.toJson();
-    request.fields['id'] = data['id'].toString();
-    request.fields['date'] = data['date'];
-    request.fields['description'] = data['description'];
+      ..headers.addAll(_base.getDefaultHeaders(includeAuth: true))
+      ..files.add(await http.MultipartFile.fromPath('image', imageFile.path))
+      ..fields['date'] = dateToYYYYMMDD(image.date)!
+      ..fields['description'] = image.description;
 
     final res = await request.send();
     final respStr = await res.stream.bytesToString();
@@ -86,7 +88,24 @@ class GalleryRepository {
     return responseData['image'] as String?;
   }
 
-  Future<void> deleteImage(int id) async {
-    await _base.deleteRequest(_galleryUrlPath, id);
+  /// Updates an image's metadata via the local Drift table. The PowerSync
+  /// CRUD queue propagates the change to the backend.
+  Future<void> editLocalDrift(GalleryImage image) async {
+    final id = image.id;
+    if (id == null) {
+      throw StateError('Cannot edit a gallery image without id');
+    }
+    _logger.finer('Updating local gallery image $id');
+    await (_db.update(
+      _db.galleryImageTable,
+    )..where((t) => t.id.equals(id))).write(image.toCompanion());
+  }
+
+  /// Deletes a gallery image via the local Drift table. PowerSync syncs
+  /// the delete to the backend, where Django's `post_delete` signal also
+  /// removes the underlying file from storage.
+  Future<void> deleteLocalDrift(int id) async {
+    _logger.finer('Deleting local gallery image $id');
+    await (_db.delete(_db.galleryImageTable)..where((t) => t.id.equals(id))).go();
   }
 }

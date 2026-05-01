@@ -121,6 +121,22 @@ class MockExerciseRepository extends _i1.Mock implements _i8.ExerciseRepository 
   }
 
   @override
+  _i4.Future<List<int>> searchExerciseServer(
+    String? term, {
+    String? languageCode = 'en',
+    bool? searchEnglish = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseServer,
+              [term],
+              {#languageCode: languageCode, #searchEnglish: searchEnglish},
+            ),
+            returnValue: _i4.Future<List<int>>.value(<int>[]),
+          )
+          as _i4.Future<List<int>>);
+
+  @override
   _i4.Stream<_i9.ExerciseState> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),

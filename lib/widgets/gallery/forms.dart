@@ -24,15 +24,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
+import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/widgets/core/wger_image.dart';
 
 class ImageForm extends ConsumerStatefulWidget {
-  late final gallery.Image _image;
+  late final GalleryImage _image;
 
-  ImageForm([gallery.Image? image]) {
-    _image = image ?? gallery.Image.emtpy();
+  ImageForm([GalleryImage? image]) {
+    _image = image ?? GalleryImage.empty();
   }
 
   @override
@@ -80,8 +81,11 @@ class _ImageFormState extends ConsumerState<ImageForm> {
     }
 
     // We are editing an existing entry
-    if (widget._image.url != null) {
-      return Image.network(widget._image.url!);
+    if (widget._image.imagePath != null) {
+      return WgerImage(
+        mediaPath: widget._image.imagePath,
+        fit: BoxFit.contain,
+      );
     }
 
     // No picture available, show a message to the user

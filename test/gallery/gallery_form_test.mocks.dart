@@ -25,8 +25,8 @@ import 'package:wger/providers/gallery_repository.dart' as _i3;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeImage_0 extends _i1.SmartFake implements _i2.Image {
-  _FakeImage_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeGalleryImage_0 extends _i1.SmartFake implements _i2.GalleryImage {
+  _FakeGalleryImage_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [GalleryRepository].
@@ -38,38 +38,53 @@ class MockGalleryRepository extends _i1.Mock implements _i3.GalleryRepository {
   }
 
   @override
-  _i4.Future<List<_i2.Image>> fetchAll() =>
+  _i4.Stream<List<_i2.GalleryImage>> watchAllDrift() =>
       (super.noSuchMethod(
-            Invocation.method(#fetchAll, []),
-            returnValue: _i4.Future<List<_i2.Image>>.value(<_i2.Image>[]),
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i4.Stream<List<_i2.GalleryImage>>.empty(),
           )
-          as _i4.Future<List<_i2.Image>>);
+          as _i4.Stream<List<_i2.GalleryImage>>);
 
   @override
-  _i4.Future<_i2.Image> addImage(_i2.Image? image, _i5.XFile? imageFile) =>
+  _i4.Future<_i2.GalleryImage> addImageServer(
+    _i2.GalleryImage? image,
+    _i5.XFile? imageFile,
+  ) =>
       (super.noSuchMethod(
-            Invocation.method(#addImage, [image, imageFile]),
-            returnValue: _i4.Future<_i2.Image>.value(
-              _FakeImage_0(
+            Invocation.method(#addImageServer, [image, imageFile]),
+            returnValue: _i4.Future<_i2.GalleryImage>.value(
+              _FakeGalleryImage_0(
                 this,
-                Invocation.method(#addImage, [image, imageFile]),
+                Invocation.method(#addImageServer, [image, imageFile]),
               ),
             ),
           )
-          as _i4.Future<_i2.Image>);
+          as _i4.Future<_i2.GalleryImage>);
 
   @override
-  _i4.Future<String?> editImage(_i2.Image? image, _i5.XFile? imageFile) =>
+  _i4.Future<String?> editImageServer(
+    _i2.GalleryImage? image,
+    _i5.XFile? imageFile,
+  ) =>
       (super.noSuchMethod(
-            Invocation.method(#editImage, [image, imageFile]),
+            Invocation.method(#editImageServer, [image, imageFile]),
             returnValue: _i4.Future<String?>.value(),
           )
           as _i4.Future<String?>);
 
   @override
-  _i4.Future<void> deleteImage(int? id) =>
+  _i4.Future<void> editLocalDrift(_i2.GalleryImage? image) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteImage, [id]),
+            Invocation.method(#editLocalDrift, [image]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> deleteLocalDrift(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDrift, [id]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )

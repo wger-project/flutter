@@ -22,12 +22,12 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
+import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/image.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
+import 'package:wger/widgets/core/wger_image.dart';
 
 import 'forms.dart';
 
@@ -37,46 +37,34 @@ class Gallery extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final images = ref.watch(galleryProvider).value ?? const [];
-    final notifier = ref.read(galleryProvider.notifier);
 
     return Padding(
       padding: const EdgeInsets.all(5),
-      child: RefreshIndicator(
-        onRefresh: () => notifier.refresh(),
-        child: images.isEmpty
-            ? const TextPrompt()
-            : MasonryGridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
-                itemCount: images.length,
-                itemBuilder: (context, index) {
-                  final currentImage = images[index];
+      child: images.isEmpty
+          ? const TextPrompt()
+          : MasonryGridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 5,
+              crossAxisSpacing: 5,
+              itemCount: images.length,
+              itemBuilder: (context, index) {
+                final currentImage = images[index];
 
-                  return GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        builder: (context) => ImageDetail(image: currentImage),
-                        context: context,
-                      );
-                    },
-                    child: FadeInImage(
-                      key: Key('image-${currentImage.id!}'),
-                      placeholder: const AssetImage('assets/images/placeholder.png'),
-                      image: NetworkImage(currentImage.url!),
-                      fit: BoxFit.cover,
-                      imageSemanticLabel: currentImage.description,
-                      imageErrorBuilder: (context, error, stackTrace) => handleImageError(
-                        context,
-                        error,
-                        stackTrace,
-                        currentImage.url!,
-                      ),
-                    ),
-                  );
-                },
-              ),
-      ),
+                return GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      builder: (context) => ImageDetail(image: currentImage),
+                      context: context,
+                    );
+                  },
+                  child: WgerImage(
+                    key: Key('image-${currentImage.id!}'),
+                    mediaPath: currentImage.imagePath,
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
+            ),
     );
   }
 }
@@ -87,7 +75,7 @@ class ImageDetail extends ConsumerWidget {
     required this.image,
   });
 
-  final gallery.Image image;
+  final GalleryImage image;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -102,15 +90,9 @@ class ImageDetail extends ConsumerWidget {
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           Expanded(
-            child: Image.network(
-              image.url!,
-              semanticLabel: image.description,
-              errorBuilder: (context, error, stackTrace) => handleImageError(
-                context,
-                error,
-                stackTrace,
-                image.url!,
-              ),
+            child: WgerImage(
+              mediaPath: image.imagePath,
+              fit: BoxFit.contain,
             ),
           ),
           Padding(

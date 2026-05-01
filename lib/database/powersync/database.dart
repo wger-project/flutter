@@ -33,6 +33,7 @@ import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
+import 'package:wger/models/gallery/image.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
@@ -48,6 +49,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 
 import 'powersync.dart';
 import 'tables/exercise.dart';
+import 'tables/gallery.dart';
 import 'tables/ingredient.dart';
 import 'tables/language.dart';
 import 'tables/license.dart';
@@ -96,6 +98,9 @@ part 'database.g.dart';
     IngredientImageTable,
     IngredientWeightUnitTable,
     LogItemTable,
+
+    // Gallery
+    GalleryImageTable,
   ],
   //include: {'queries.drift'},
 )

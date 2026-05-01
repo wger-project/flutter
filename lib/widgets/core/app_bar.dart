@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
-import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
@@ -134,9 +133,10 @@ class MainSettingsDialog extends ConsumerWidget {
               final navigator = Navigator.of(context);
 
               // Auth logout wipes the local PowerSync DB as part of its
-              // lifecycle. Await it so we don't race the navigation.
+              // lifecycle. Await it so we don't race the navigation. Gallery
+              // state lives in PowerSync now and gets cleared along with the
+              // rest of the synced tables.
               await ref.read(authProvider.notifier).logout();
-              ref.read(galleryProvider.notifier).clear();
               ref.read(userProfileProvider.notifier).clear();
 
               navigator.pop();

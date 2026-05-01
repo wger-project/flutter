@@ -17,53 +17,61 @@
  */
 
 import 'package:image_picker/image_picker.dart';
+import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
+import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_repository.dart';
 
 part 'gallery_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class GalleryNotifier extends _$GalleryNotifier {
+  final _logger = Logger('GalleryNotifier');
   late GalleryRepository _repo;
 
   @override
-  Future<List<gallery.Image>> build() async {
+  Stream<List<GalleryImage>> build() {
+    _logger.finer('Building GalleryNotifier');
     _repo = ref.read(galleryRepositoryProvider);
-    return _repo.fetchAll();
+    return _repo.watchAllDrift();
   }
 
-  List<gallery.Image> get _current => state.asData?.value ?? [];
+  List<GalleryImage> get _current => state.value ?? const [];
 
-  /// Re-fetches the gallery from the server (used by pull-to-refresh).
-  Future<void> refresh() async {
-    state = AsyncData(await _repo.fetchAll());
+  /// Adds a new image. Goes through REST because PowerSync can't carry the
+  /// binary upload, then optimistically inserts the saved row into local
+  /// state so the UI updates without waiting for the next sync tick. The
+  /// stream's next emission carries the synced row through and replaces the
+  /// optimistic copy.
+  Future<void> addImage(GalleryImage image, XFile imageFile) async {
+    final saved = await _repo.addImageServer(image, imageFile);
+    final updated = [saved, ..._current]..sort((a, b) => b.date.compareTo(a.date));
+    state = AsyncData(updated);
   }
 
-  Future<void> addImage(gallery.Image image, XFile imageFile) async {
-    final saved = await _repo.addImage(image, imageFile);
-    final images = List<gallery.Image>.of(_current)..add(saved);
-    images.sort((a, b) => b.date.compareTo(a.date));
-    state = AsyncData(images);
-  }
-
-  Future<void> editImage(gallery.Image image, XFile? imageFile) async {
-    final updatedUrl = await _repo.editImage(image, imageFile);
-    if (updatedUrl != null) {
-      image.url = updatedUrl;
+  /// Edits an image. With a new [imageFile], the change goes through REST
+  /// (file upload). Without one, only metadata changed and the edit goes
+  /// through PowerSync (Drift update → CRUD queue → backend); the stream
+  /// picks up the change on the next tick.
+  Future<void> editImage(GalleryImage image, XFile? imageFile) async {
+    if (imageFile != null) {
+      final newPath = await _repo.editImageServer(image, imageFile);
+      if (newPath != null) {
+        image.imagePath = newPath;
+      }
+      // [image] is a shared reference held by the synced list — the path
+      // mutation above is visible immediately. Notify listeners so widgets
+      // pick up the new image bytes.
+      state = AsyncData(List.of(_current));
+    } else {
+      await _repo.editLocalDrift(image);
     }
-    // [image] is a shared reference held by the list, so the update is already
-    // visible — just notify listeners.
-    state = AsyncData(List.of(_current));
   }
 
-  Future<void> deleteImage(gallery.Image image) async {
-    await _repo.deleteImage(image.id!);
-    state = AsyncData(_current.where((e) => e.id != image.id).toList());
-  }
-
-  /// Clears the gallery (e.g. on logout).
-  void clear() {
-    state = const AsyncData([]);
+  /// Deletes an image. Goes through PowerSync (Drift delete → CRUD queue →
+  /// backend), where the model's `post_delete` signal also removes the
+  /// underlying file from storage.
+  Future<void> deleteImage(GalleryImage image) async {
+    await _repo.deleteLocalDrift(image.id!);
   }
 }

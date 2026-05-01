@@ -112,6 +112,19 @@ void main() {
         expect(out['date'], '2024-11-01T17:30:00.000Z');
       });
 
+      test('strips the time component on `gallery_image.date`', () {
+        final out = connector.genericTransform(
+          'gallery_image',
+          {
+            'date': '2024-11-01T00:00:00.000Z',
+            'description': 'leg day pump',
+          },
+          '3',
+        );
+        expect(out['date'], '2024-11-01');
+        expect(out['description'], 'leg day pump');
+      });
+
       test('passes nulls through (open-ended end date)', () {
         final out = connector.genericTransform(
           'nutrition_nutritionplan',

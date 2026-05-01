@@ -59,7 +59,7 @@ Widget createDashboardScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
   final mockGalleryRepo = MockGalleryRepository();
-  when(mockGalleryRepo.fetchAll()).thenAnswer((_) async => getTestImages());
+  when(mockGalleryRepo.watchAllDrift()).thenAnswer((_) => Stream.value(getTestImages()));
 
   final mockNutritionRepo = weight.MockNutritionRepository();
   final mockIngredientRepo = weight.MockIngredientRepository();

@@ -24,7 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
+import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_repository.dart';
 import 'package:wger/widgets/gallery/forms.dart';
 
@@ -33,14 +33,14 @@ import 'gallery_form_test.mocks.dart';
 
 @GenerateMocks([GalleryRepository])
 void main() {
-  late gallery.Image image;
+  late GalleryImage image;
   late MockGalleryRepository mockGalleryRepository;
 
   setUp(() {
     image = getTestImages()[0];
     mockGalleryRepository = MockGalleryRepository();
-    when(mockGalleryRepository.fetchAll()).thenAnswer((_) async => []);
-    when(mockGalleryRepository.editImage(any, any)).thenAnswer((_) async => null);
+    when(mockGalleryRepository.watchAllDrift()).thenAnswer((_) => Stream.value(const []));
+    when(mockGalleryRepository.editLocalDrift(any)).thenAnswer((_) async {});
   });
 
   Widget createScreen({useImage = true, locale = 'en'}) {
@@ -74,8 +74,8 @@ void main() {
     await tester.pump();
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockGalleryRepository.addImage(any, any));
-    verify(mockGalleryRepository.editImage(any, any));
+    verifyNever(mockGalleryRepository.addImageServer(any, any));
+    verify(mockGalleryRepository.editLocalDrift(any));
   });
 
   testWidgets('Test opening the form for a new image', (WidgetTester tester) async {

@@ -135,6 +135,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
     'manager_routine': {'start', 'end'},
     'manager_workoutsession': {'date'},
     'nutrition_nutritionplan': {'start', 'end'},
+    'gallery_image': {'date'},
   };
 
   /// Transform a record before sending it to the backend.
