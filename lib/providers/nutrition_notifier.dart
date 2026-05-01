@@ -22,7 +22,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
-import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -303,32 +302,6 @@ class NutritionNotifier extends _$NutritionNotifier {
       _notifyAfterInPlaceMutation();
       throw WgerHttpException(response);
     }
-  }
-
-  // --- Ingredients ---
-
-  Future<List<Ingredient>> searchIngredient(
-    String name, {
-    String languageCode = 'en',
-    IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
-    bool isVegan = false,
-    bool isVegetarian = false,
-    NutriScore? nutriscoreMax,
-  }) {
-    final repo = ref.read(nutritionRepositoryProvider);
-    return repo.searchIngredient(
-      name,
-      languageCode: languageCode,
-      searchLanguage: searchLanguage,
-      isVegan: isVegan,
-      isVegetarian: isVegetarian,
-      nutriscoreMax: nutriscoreMax,
-    );
-  }
-
-  Future<Ingredient?> searchIngredientWithBarcode(String barcode) {
-    final repo = ref.read(nutritionRepositoryProvider);
-    return repo.searchIngredientWithBarcode(barcode);
   }
 
   // --- Logs (nutrition diary) ---

@@ -19,21 +19,36 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
+import 'package:wger/providers/base_provider.dart';
+import 'package:wger/providers/wger_base.dart';
 
 import '../database/powersync/database.dart';
 
+/// Which language(s) the server-side ingredient search should consider.
+enum IngredientSearchLanguage {
+  current,
+  currentAndEnglish,
+  all,
+}
+
 final ingredientRepositoryProvider = Provider<IngredientRepository>((ref) {
+  final base = ref.read(wgerBaseProvider);
   final db = ref.read(driftPowerSyncDatabase);
-  return IngredientRepository(db);
+  return IngredientRepository(base, db);
 });
 
+/// Data access for ingredient lookups and searches
 class IngredientRepository {
   final _logger = Logger('IngredientRepository');
+  final WgerBaseProvider _base;
   final DriftPowersyncDatabase _db;
 
-  IngredientRepository(this._db);
+  static const ingredientInfoPath = 'ingredientinfo';
+
+  IngredientRepository(this._base, this._db);
 
   /// Watches a single ingredient by [id] with its `image` and `weightUnits`
   /// fields fully hydrated. Emits `null` if no ingredient with that id exists,
@@ -60,7 +75,7 @@ class IngredientRepository {
   ///
   /// Hydrates `image` and `weightUnits` on the returned rows so the
   /// result is shape-compatible with the REST search.
-  Future<List<Ingredient>> searchByName(
+  Future<List<Ingredient>> searchIngredientLocal(
     String term, {
     bool isVegan = false,
     bool isVegetarian = false,
@@ -85,6 +100,76 @@ class IngredientRepository {
       ..limit(limit);
 
     return _hydrate(await query.get());
+  }
+
+  /// Searches for ingredients via the wger REST API.
+  Future<List<Ingredient>> searchIngredientServer(
+    String name, {
+    String languageCode = 'en',
+    IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
+    bool isVegan = false,
+    bool isVegetarian = false,
+    NutriScore? nutriscoreMax,
+  }) async {
+    if (name.length <= 1) {
+      return [];
+    }
+    final List<String> languages = [];
+
+    switch (searchLanguage) {
+      case IngredientSearchLanguage.current:
+        languages.add(languageCode);
+      case IngredientSearchLanguage.currentAndEnglish:
+        languages.add(languageCode);
+        if (languageCode != LANGUAGE_SHORT_ENGLISH) {
+          languages.add(LANGUAGE_SHORT_ENGLISH);
+        }
+      case IngredientSearchLanguage.all:
+        // Don't add any language code to search in all languages
+        break;
+    }
+
+    final query = {
+      'name__search': name,
+      'limit': API_RESULTS_PAGE_SIZE,
+    };
+    if (languages.isNotEmpty) {
+      query['language__code'] = languages.join(',');
+    }
+    if (isVegan) {
+      query['is_vegan'] = 'true';
+    }
+    if (isVegetarian) {
+      query['is_vegetarian'] = 'true';
+    }
+    if (nutriscoreMax != null) {
+      query['nutriscore__lte'] = nutriscoreMax.name;
+    }
+
+    _logger.info('Searching ingredients from server');
+    final response = await _base.fetch(
+      _base.makeUrl(ingredientInfoPath, query: query),
+      timeout: const Duration(seconds: 20),
+    );
+
+    return (response['results'] as List)
+        .map((data) => Ingredient.fromJson(data as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Looks up an ingredient by its product barcode via the REST API.
+  /// Returns `null` if no matching product is found.
+  Future<Ingredient?> searchIngredientByBarcode(String barcode) async {
+    if (barcode.isEmpty) {
+      return null;
+    }
+    final data = await _base.fetch(
+      _base.makeUrl(ingredientInfoPath, query: {'code': barcode}),
+    );
+    if (data['count'] == 0) {
+      return null;
+    }
+    return Ingredient.fromJson(data['results'][0]);
   }
 
   /// Builds the standard joined query used by every ingredient lookup

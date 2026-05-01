@@ -1,6 +1,6 @@
 //model is used to store ingredient filters values
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/providers/nutrition_repository.dart';
+import 'package:wger/providers/ingredient_repository.dart';
 
 class IngredientFilters {
   final bool isVegan;

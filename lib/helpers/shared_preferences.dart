@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/util/legacy_to_async_migration_util.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/providers/nutrition_repository.dart';
+import 'package:wger/providers/ingredient_repository.dart';
 
 /// A helper class that manages preferences using SharedPreferencesAsync
 /// and handles migration from the legacy SharedPreferences to

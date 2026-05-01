@@ -11,12 +11,12 @@ import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i11;
 import 'package:wger/models/body_weight/weight_entry.dart' as _i14;
-import 'package:wger/models/nutrition/ingredient.dart' as _i7;
-import 'package:wger/models/nutrition/log.dart' as _i8;
+import 'package:wger/models/nutrition/ingredient.dart' as _i9;
+import 'package:wger/models/nutrition/log.dart' as _i7;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i6;
 import 'package:wger/models/user/profile.dart' as _i3;
 import 'package:wger/providers/body_weight_repository.dart' as _i13;
-import 'package:wger/providers/ingredient_repository.dart' as _i9;
+import 'package:wger/providers/ingredient_repository.dart' as _i8;
 import 'package:wger/providers/nutrition_repository.dart' as _i4;
 import 'package:wger/providers/user_profile_repository.dart' as _i15;
 
@@ -193,50 +193,15 @@ class MockNutritionRepository extends _i1.Mock implements _i4.NutritionRepositor
           as _i5.Future<_i2.Response>);
 
   @override
-  _i5.Future<List<_i7.Ingredient>> searchIngredient(
-    String? name, {
-    String? languageCode = 'en',
-    _i4.IngredientSearchLanguage? searchLanguage = _i4.IngredientSearchLanguage.current,
-    bool? isVegan = false,
-    bool? isVegetarian = false,
-    _i7.NutriScore? nutriscoreMax,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #searchIngredient,
-              [name],
-              {
-                #languageCode: languageCode,
-                #searchLanguage: searchLanguage,
-                #isVegan: isVegan,
-                #isVegetarian: isVegetarian,
-                #nutriscoreMax: nutriscoreMax,
-              },
-            ),
-            returnValue: _i5.Future<List<_i7.Ingredient>>.value(
-              <_i7.Ingredient>[],
-            ),
-          )
-          as _i5.Future<List<_i7.Ingredient>>);
-
-  @override
-  _i5.Future<_i7.Ingredient?> searchIngredientWithBarcode(String? barcode) =>
-      (super.noSuchMethod(
-            Invocation.method(#searchIngredientWithBarcode, [barcode]),
-            returnValue: _i5.Future<_i7.Ingredient?>.value(),
-          )
-          as _i5.Future<_i7.Ingredient?>);
-
-  @override
-  _i5.Stream<List<_i8.LogItem>> watchAllLogsHydrated() =>
+  _i5.Stream<List<_i7.LogItem>> watchAllLogsHydrated() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllLogsHydrated, []),
-            returnValue: _i5.Stream<List<_i8.LogItem>>.empty(),
+            returnValue: _i5.Stream<List<_i7.LogItem>>.empty(),
           )
-          as _i5.Stream<List<_i8.LogItem>>);
+          as _i5.Stream<List<_i7.LogItem>>);
 
   @override
-  _i5.Future<void> addLogLocalDrift(_i8.LogItem? log) =>
+  _i5.Future<void> addLogLocalDrift(_i7.LogItem? log) =>
       (super.noSuchMethod(
             Invocation.method(#addLogLocalDrift, [log]),
             returnValue: _i5.Future<void>.value(),
@@ -257,38 +222,38 @@ class MockNutritionRepository extends _i1.Mock implements _i4.NutritionRepositor
 /// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIngredientRepository extends _i1.Mock implements _i9.IngredientRepository {
+class MockIngredientRepository extends _i1.Mock implements _i8.IngredientRepository {
   MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Stream<_i7.Ingredient?> watchById(int? id) =>
+  _i5.Stream<_i9.Ingredient?> watchById(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#watchById, [id]),
-            returnValue: _i5.Stream<_i7.Ingredient?>.empty(),
+            returnValue: _i5.Stream<_i9.Ingredient?>.empty(),
           )
-          as _i5.Stream<_i7.Ingredient?>);
+          as _i5.Stream<_i9.Ingredient?>);
 
   @override
-  _i5.Future<_i7.Ingredient?> getById(int? id) =>
+  _i5.Future<_i9.Ingredient?> getById(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getById, [id]),
-            returnValue: _i5.Future<_i7.Ingredient?>.value(),
+            returnValue: _i5.Future<_i9.Ingredient?>.value(),
           )
-          as _i5.Future<_i7.Ingredient?>);
+          as _i5.Future<_i9.Ingredient?>);
 
   @override
-  _i5.Future<List<_i7.Ingredient>> searchByName(
+  _i5.Future<List<_i9.Ingredient>> searchIngredientLocal(
     String? term, {
     bool? isVegan = false,
     bool? isVegetarian = false,
-    _i7.NutriScore? nutriscoreMax,
+    _i9.NutriScore? nutriscoreMax,
     int? limit = 100,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
-              #searchByName,
+              #searchIngredientLocal,
               [term],
               {
                 #isVegan: isVegan,
@@ -297,11 +262,46 @@ class MockIngredientRepository extends _i1.Mock implements _i9.IngredientReposit
                 #limit: limit,
               },
             ),
-            returnValue: _i5.Future<List<_i7.Ingredient>>.value(
-              <_i7.Ingredient>[],
+            returnValue: _i5.Future<List<_i9.Ingredient>>.value(
+              <_i9.Ingredient>[],
             ),
           )
-          as _i5.Future<List<_i7.Ingredient>>);
+          as _i5.Future<List<_i9.Ingredient>>);
+
+  @override
+  _i5.Future<List<_i9.Ingredient>> searchIngredientServer(
+    String? name, {
+    String? languageCode = 'en',
+    _i8.IngredientSearchLanguage? searchLanguage = _i8.IngredientSearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
+    _i9.NutriScore? nutriscoreMax,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchIngredientServer,
+              [name],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
+              },
+            ),
+            returnValue: _i5.Future<List<_i9.Ingredient>>.value(
+              <_i9.Ingredient>[],
+            ),
+          )
+          as _i5.Future<List<_i9.Ingredient>>);
+
+  @override
+  _i5.Future<_i9.Ingredient?> searchIngredientByBarcode(String? barcode) =>
+      (super.noSuchMethod(
+            Invocation.method(#searchIngredientByBarcode, [barcode]),
+            returnValue: _i5.Future<_i9.Ingredient?>.value(),
+          )
+          as _i5.Future<_i9.Ingredient?>);
 }
 
 /// A class which mocks [Client].

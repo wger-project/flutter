@@ -30,12 +30,6 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
-enum IngredientSearchLanguage {
-  current,
-  currentAndEnglish,
-  all,
-}
-
 final nutritionRepositoryProvider = Provider<NutritionRepository>((ref) {
   final base = ref.read(wgerBaseProvider);
   final db = ref.read(driftPowerSyncDatabase);
@@ -50,7 +44,7 @@ final nutritionRepositoryProvider = Provider<NutritionRepository>((ref) {
 /// database — see [watchAllDrift], [editLocalDrift], [deleteLocalDrift],
 /// [watchAllLogsHydrated], [addLogLocalDrift], [deleteLogLocalDrift].
 ///
-/// Local ingredient lookups are handled by [IngredientRepository] (PowerSync).
+/// Ingredient searches (local + REST) live on [IngredientRepository].
 class NutritionRepository {
   final _logger = Logger('NutritionRepository');
   final WgerBaseProvider _base;
@@ -60,7 +54,6 @@ class NutritionRepository {
   static const plansInfoPath = 'nutritionplaninfo';
   static const mealPath = 'meal';
   static const mealItemPath = 'mealitem';
-  static const ingredientInfoPath = 'ingredientinfo';
 
   NutritionRepository(this._base, this._db);
 
@@ -151,81 +144,6 @@ class NutritionRepository {
 
   Future<http.Response> deleteMealItem(int id) async {
     return _base.deleteRequest(mealItemPath, id);
-  }
-
-  // --- Ingredients ---
-
-  /// Searches for an ingredient via the REST API.
-  ///
-  /// [nutriscoreMax] — if non-null, the worst acceptable Nutri-Score grade,
-  /// sent to the backend as `nutriscore__lte`. The Django filterset
-  /// compares lexicographically on the `a`..`e` choices, so passing
-  /// [NutriScore.b] yields "only A or B".
-  Future<List<Ingredient>> searchIngredient(
-    String name, {
-    String languageCode = 'en',
-    IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
-    bool isVegan = false,
-    bool isVegetarian = false,
-    NutriScore? nutriscoreMax,
-  }) async {
-    if (name.length <= 1) {
-      return [];
-    }
-    final List<String> languages = [];
-
-    switch (searchLanguage) {
-      case IngredientSearchLanguage.current:
-        languages.add(languageCode);
-      case IngredientSearchLanguage.currentAndEnglish:
-        languages.add(languageCode);
-        if (languageCode != LANGUAGE_SHORT_ENGLISH) {
-          languages.add(LANGUAGE_SHORT_ENGLISH);
-        }
-      case IngredientSearchLanguage.all:
-        // Don't add any language code to search in all languages
-        break;
-    }
-
-    final query = {
-      'name__search': name,
-      'limit': API_RESULTS_PAGE_SIZE,
-    };
-    if (languages.isNotEmpty) {
-      query['language__code'] = languages.join(',');
-    }
-    if (isVegan) {
-      query['is_vegan'] = 'true';
-    }
-    if (isVegetarian) {
-      query['is_vegetarian'] = 'true';
-    }
-    if (nutriscoreMax != null) {
-      query['nutriscore__lte'] = nutriscoreMax.name;
-    }
-
-    _logger.info('Searching ingredients from server');
-    final response = await _base.fetch(
-      _base.makeUrl(ingredientInfoPath, query: query),
-      timeout: const Duration(seconds: 20),
-    );
-
-    return (response['results'] as List)
-        .map((data) => Ingredient.fromJson(data as Map<String, dynamic>))
-        .toList();
-  }
-
-  Future<Ingredient?> searchIngredientWithBarcode(String barcode) async {
-    if (barcode.isEmpty) {
-      return null;
-    }
-    final data = await _base.fetch(
-      _base.makeUrl(ingredientInfoPath, query: {'code': barcode}),
-    );
-    if (data['count'] == 0) {
-      return null;
-    }
-    return Ingredient.fromJson(data['results'][0]);
   }
 
   // --- Nutrition diary (logs) ---

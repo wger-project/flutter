@@ -30,8 +30,6 @@ import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
-import 'package:wger/providers/nutrition_notifier.dart';
-import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/wger_image.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -159,26 +157,23 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             // Online: REST search across all ingredients in the wger DB.
             // Offline: SQL substring search against the local snapshot.
             // Both honour the diet flags and the Nutri-Score filter.
+            final ingredientRepo = ref.read(ingredientRepositoryProvider);
             if (ref.read(networkStatusProvider)) {
-              return ref
-                  .read(nutritionProvider.notifier)
-                  .searchIngredient(
-                    pattern,
-                    languageCode: Localizations.localeOf(context).languageCode,
-                    searchLanguage: filters.searchLanguage,
-                    isVegan: filters.isVegan,
-                    isVegetarian: filters.isVegetarian,
-                    nutriscoreMax: filters.nutriscoreMax,
-                  );
+              return ingredientRepo.searchIngredientServer(
+                pattern,
+                languageCode: Localizations.localeOf(context).languageCode,
+                searchLanguage: filters.searchLanguage,
+                isVegan: filters.isVegan,
+                isVegetarian: filters.isVegetarian,
+                nutriscoreMax: filters.nutriscoreMax,
+              );
             }
-            return ref
-                .read(ingredientRepositoryProvider)
-                .searchByName(
-                  pattern,
-                  isVegan: filters.isVegan,
-                  isVegetarian: filters.isVegetarian,
-                  nutriscoreMax: filters.nutriscoreMax,
-                );
+            return ingredientRepo.searchIngredientLocal(
+              pattern,
+              isVegan: filters.isVegan,
+              isVegetarian: filters.isVegetarian,
+              nutriscoreMax: filters.nutriscoreMax,
+            );
           },
           itemBuilder: (context, ingredient) {
             final i18n = AppLocalizations.of(context);
@@ -275,7 +270,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
         showDialog(
           context: context,
           builder: (context) => FutureBuilder<Ingredient?>(
-            future: ref.read(nutritionProvider.notifier).searchIngredientWithBarcode(barcode),
+            future: ref.read(ingredientRepositoryProvider).searchIngredientByBarcode(barcode),
             builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
               return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
             },

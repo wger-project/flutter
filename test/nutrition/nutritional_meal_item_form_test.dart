@@ -107,12 +107,16 @@ void main() {
     mockIngredientRepo = MockIngredientRepository();
 
     when(
-      mockRepo.searchIngredientWithBarcode('123'),
+      mockIngredientRepo.searchIngredientByBarcode('123'),
     ).thenAnswer((_) => Future.value(ingredient));
-    when(mockRepo.searchIngredientWithBarcode('')).thenAnswer((_) => Future.value(null));
-    when(mockRepo.searchIngredientWithBarcode('222')).thenAnswer((_) => Future.value(null));
     when(
-      mockRepo.searchIngredient(
+      mockIngredientRepo.searchIngredientByBarcode(''),
+    ).thenAnswer((_) => Future.value(null));
+    when(
+      mockIngredientRepo.searchIngredientByBarcode('222'),
+    ).thenAnswer((_) => Future.value(null));
+    when(
+      mockIngredientRepo.searchIngredientServer(
         any,
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
