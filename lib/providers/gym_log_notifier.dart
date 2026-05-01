@@ -18,6 +18,7 @@
 
 import 'package:clock/clock.dart';
 import 'package:logging/logging.dart';
+import 'package:powersync/powersync.dart' show uuid;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -36,7 +37,8 @@ class GymLogNotifier extends _$GymLogNotifier {
   }
 
   void setLog(Log log) {
-    final newLog = log.copyWith(id: null, date: clock.now());
+    // Mint a fresh uuid explicitly
+    final newLog = log.copyWith(id: uuid.v7(), date: clock.now());
     state = newLog;
   }
 
