@@ -53,7 +53,7 @@ void main() {
     mockRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
 
-    when(mockRepo.updateMeal(any, any)).thenAnswer((_) async => Meal(id: 1, plan: 1).toJson());
+    when(mockRepo.editMealLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.createMeal(any)).thenAnswer((_) async => Meal(id: 99, plan: 1).toJson());
     // NutritionNotifier.build() subscribes to two Drift streams (plans +
     // diary entries) — emit the seed plan and an empty diary so the
@@ -126,7 +126,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verify(mockRepo.updateMeal(any, any));
+    verify(mockRepo.editMealLocalDrift(any));
     verifyNever(mockRepo.createMeal(any));
   });
 
@@ -165,7 +165,7 @@ void main() {
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
       // Correct method was called
-      verifyNever(mockRepo.updateMeal(any, any));
+      verifyNever(mockRepo.editMealLocalDrift(any));
       verify(mockRepo.createMeal(any));
     });
 
@@ -173,7 +173,7 @@ void main() {
     // ...
   });
 
-  testWidgets('Submit is disabled when offline and updateMeal is not called', (
+  testWidgets('Submit is disabled offline only when creating a new meal', (
     WidgetTester tester,
   ) async {
     // Build a fresh container that overrides the network status to offline.
@@ -185,9 +185,33 @@ void main() {
       ],
     );
     addTearDown(offlineContainer.dispose);
-    // The button is disabled offline — submit never fires, so we don't
-    // need to wait for the Drift-stream emission to populate the plan.
 
+    // 1) Creating a new meal offline: button must be disabled (REST POST).
+    final newMeal = Meal(time: const TimeOfDay(hour: 8, minute: 0));
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: offlineContainer,
+        child: MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: MealForm(1, newMeal)),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final createButton = tester.widget<ElevatedButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(createButton.onPressed, isNull);
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
+    await tester.pump();
+    verifyNever(mockRepo.createMeal(any));
+    verifyNever(mockRepo.editMealLocalDrift(any));
+
+    // 2) Editing an existing meal offline: PowerSync handles it locally,
+    //    so the button must remain enabled.
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: offlineContainer,
@@ -200,15 +224,13 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-
-    final button = tester.widget<ElevatedButton>(
+    final editButton = tester.widget<ElevatedButton>(
       find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
     );
-    expect(button.onPressed, isNull);
+    expect(editButton.onPressed, isNotNull);
 
-    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
     await tester.pump();
-    verifyNever(mockRepo.updateMeal(any, any));
-    verifyNever(mockRepo.createMeal(any));
+    verify(mockRepo.editMealLocalDrift(any)).called(1);
   });
 }

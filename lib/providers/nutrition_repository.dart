@@ -19,12 +19,13 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/log.dart';
+import 'package:wger/models/nutrition/meal.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
@@ -37,11 +38,13 @@ final nutritionRepositoryProvider = Provider<NutritionRepository>((ref) {
 
 /// Data access for nutrition-related entities.
 ///
-/// HTTP only for what hasn't migrated to PowerSync yet (plan creation, meals
-/// and meal items). Reads/edits/deletes for the top-level [NutritionalPlan]
-/// and the diary [LogItem] table go through the local PowerSync-backed Drift
-/// database — see [watchAllDrift], [editLocalDrift], [deleteLocalDrift],
-/// [watchAllLogsHydrated], [addLogLocalDrift], [deleteLogLocalDrift].
+/// Creation paths still use HTTP (plans, meals, meal items — the server picks
+/// the integer PK and the `order`). Edits and deletes for [NutritionalPlan],
+/// [Meal], [MealItem] and the diary [LogItem] table all flow through the
+/// local PowerSync-backed Drift database; see [editLocalDrift] /
+/// [deleteLocalDrift] (plans), [editMealLocalDrift] / [deleteMealLocalDrift],
+/// [editMealItemLocalDrift] / [deleteMealItemLocalDrift], and the log
+/// methods.
 ///
 /// Ingredient searches (local + REST) live on [IngredientRepository].
 class NutritionRepository {
@@ -108,26 +111,54 @@ class NutritionRepository {
 
   // --- Meals ---
 
+  /// Creation still goes through REST: the server assigns the integer PK and
+  /// the `order` field, then PowerSync replicates the row down so subsequent
+  /// edits and deletes can target the local Drift row.
   Future<Map<String, dynamic>> createMeal(Map<String, dynamic> data) async {
     return _base.post(data, _base.makeUrl(mealPath));
   }
 
-  Future<Map<String, dynamic>> updateMeal(int id, Map<String, dynamic> data) async {
-    return _base.patch(data, _base.makeUrl(mealPath, id: id));
+  /// Updates a meal via the local Drift table. PowerSync's CRUD queue picks
+  /// the change up and PATCHes it to the backend.
+  Future<void> editMealLocalDrift(Meal meal) async {
+    final id = meal.id;
+    if (id == null) {
+      throw StateError('Cannot edit a meal without id');
+    }
+    _logger.finer('Updating local meal $id');
+    await (_db.update(_db.mealTable)..where((t) => t.id.equals(id))).write(meal.toCompanion());
   }
 
-  Future<http.Response> deleteMeal(int id) async {
-    return _base.deleteRequest(mealPath, id);
+  /// Deletes a meal via the local Drift table. The backend cascades through
+  /// to the dependent meal items.
+  Future<void> deleteMealLocalDrift(int id) async {
+    _logger.finer('Deleting local meal $id');
+    await (_db.delete(_db.mealTable)..where((t) => t.id.equals(id))).go();
   }
 
   // --- Meal items ---
 
+  /// Creation still goes through REST (server-assigned PK and `order`);
+  /// PowerSync replicates the row down for subsequent local edits/deletes.
   Future<Map<String, dynamic>> createMealItem(Map<String, dynamic> data) async {
     return _base.post(data, _base.makeUrl(mealItemPath));
   }
 
-  Future<http.Response> deleteMealItem(int id) async {
-    return _base.deleteRequest(mealItemPath, id);
+  /// Updates a meal item via the local Drift table. PowerSync picks the
+  /// change up and PATCHes it to the backend.
+  Future<void> editMealItemLocalDrift(MealItem item) async {
+    final id = item.id;
+    if (id == null) {
+      throw StateError('Cannot edit a meal item without id');
+    }
+    _logger.finer('Updating local meal item $id');
+    await (_db.update(_db.mealItemTable)..where((t) => t.id.equals(id))).write(item.toCompanion());
+  }
+
+  /// Deletes a meal item via the local Drift table.
+  Future<void> deleteMealItemLocalDrift(int id) async {
+    _logger.finer('Deleting local meal item $id');
+    await (_db.delete(_db.mealItemTable)..where((t) => t.id.equals(id))).go();
   }
 
   // --- Nutrition diary (logs) ---

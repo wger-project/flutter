@@ -51,7 +51,11 @@ class MealForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Creation still goes through REST (server-assigned PK + order); editing
+    // flows through PowerSync and is therefore offline-capable.
+    final isCreating = _meal.id == null;
     final isOnline = ref.watch(networkStatusProvider);
+    final canSubmit = !isCreating || isOnline;
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -91,7 +95,7 @@ class MealForm extends ConsumerWidget {
             ElevatedButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
-              onPressed: isOnline
+              onPressed: canSubmit
                   ? () {
                       if (!_form.currentState!.validate()) {
                         return;
@@ -99,9 +103,7 @@ class MealForm extends ConsumerWidget {
                       _form.currentState!.save();
 
                       final notifier = ref.read(nutritionProvider.notifier);
-                      _meal.id == null
-                          ? notifier.addMeal(_meal, _planId)
-                          : notifier.editMeal(_meal);
+                      isCreating ? notifier.addMeal(_meal, _planId) : notifier.editMeal(_meal);
 
                       Navigator.of(context).pop();
                     }
@@ -547,7 +549,11 @@ class _PlanFormState extends ConsumerState<PlanForm> {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    // Creation still goes through REST (server-assigned PK + creation_date);
+    // editing flows through PowerSync and is therefore offline-capable.
+    final isCreating = widget._plan.id == null;
     final isOnline = ref.watch(networkStatusProvider);
+    final canSubmit = !isCreating || isOnline;
 
     return Form(
       key: _form,
@@ -759,7 +765,7 @@ class _PlanFormState extends ConsumerState<PlanForm> {
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
-            onPressed: isOnline
+            onPressed: canSubmit
                 ? () async {
                     // Validate and save the current values to the plan
                     final isValid = _form.currentState!.validate();
@@ -770,7 +776,7 @@ class _PlanFormState extends ConsumerState<PlanForm> {
 
                     // Save to DB
                     final notifier = ref.read(nutritionProvider.notifier);
-                    if (widget._plan.id != null) {
+                    if (!isCreating) {
                       await notifier.editPlan(widget._plan);
                       if (context.mounted) {
                         Navigator.of(context).pop();

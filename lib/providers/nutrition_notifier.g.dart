@@ -33,7 +33,7 @@ final class NutritionNotifierProvider
   NutritionNotifier create() => NutritionNotifier();
 }
 
-String _$nutritionNotifierHash() => r'ac4b649e3622f55c01486efa4538038f68dba113';
+String _$nutritionNotifierHash() => r'c38f221bd9b074fb5b59f2a6d3421f460a8c37dc';
 
 abstract class _$NutritionNotifier extends $StreamNotifier<NutritionState> {
   Stream<NutritionState> build();

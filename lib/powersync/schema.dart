@@ -49,6 +49,8 @@ Schema schema = const Schema([
   PowersyncIngredientImageTable,
   PowersyncIngredientWeightUnitTable,
   PowersyncNutritionalPlanTable,
+  PowersyncMealTable,
+  PowersyncMealItemTable,
   PowersyncLogItemTable,
 
   // Body weight

@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
@@ -40,6 +42,11 @@ class Meal {
 
   @JsonKey(name: 'name')
   late String name;
+
+  /// Server-assigned ordering inside the plan. Not user-editable; we sync it
+  /// down so PowerSync can replicate the row, but never push changes back.
+  @JsonKey(includeToJson: false, defaultValue: 1)
+  int order = 1;
 
   @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<MealItem> mealItems = [];
@@ -67,6 +74,25 @@ class Meal {
     this.name = name ?? '';
   }
 
+  /// Constructor used by Drift's generated row factory.
+  ///
+  /// The column names declared on `MealTable` map onto the named parameters
+  /// here; `mealItems`/`diaryEntries` aren't synced and are filled in later
+  /// by the repository hydration step.
+  Meal.fromDrift({
+    this.id,
+    required int planId,
+    required int order,
+    this.time,
+    required String name,
+  }) {
+    this.planId = planId;
+    this.order = order;
+    this.name = name;
+    mealItems = [];
+    diaryEntries = [];
+  }
+
   /// Calculate total nutritional value
   // This is already done on the server. It might be better to read it from there.
   NutritionalValues get plannedNutritionalValues {
@@ -88,6 +114,22 @@ class Meal {
   factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
 
   Map<String, dynamic> toJson() => _$MealToJson(this);
+
+  /// Drift companion for updates against `nutrition_meal`.
+  ///
+  /// `order` is intentionally absent — it's server-managed and read-only.
+  MealTableCompanion toCompanion() {
+    final mealId = id;
+    if (mealId == null) {
+      throw StateError('Cannot persist meal without id (creation goes via REST)');
+    }
+    return MealTableCompanion(
+      id: drift.Value(mealId),
+      planId: drift.Value(planId),
+      time: time == null ? const drift.Value.absent() : drift.Value(time!),
+      name: drift.Value(name),
+    );
+  }
 
   Meal copyWith({
     int? id,

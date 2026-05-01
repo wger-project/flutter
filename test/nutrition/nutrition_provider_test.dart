@@ -23,6 +23,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/meal.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
@@ -83,6 +85,10 @@ void main() {
     // Edit + delete now go through Drift instead of REST.
     when(mockRepo.editLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRepo.editMealLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRepo.deleteMealLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRepo.editMealItemLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRepo.deleteMealItemLocalDrift(any)).thenAnswer((_) async => Future.value());
 
     nutritionalPlanInfoResponse = jsonDecode(
       fixture('nutrition/nutritional_plan_info_detail_response.json'),
@@ -292,6 +298,63 @@ void main() {
       await container.read(nutritionProvider.notifier).deletePlan(1);
 
       verify(mockRepo.deleteLocalDrift(1)).called(1);
+    });
+  });
+
+  group('meal write operations', () {
+    test('editMeal delegates to editMealLocalDrift (PowerSync), not REST', () async {
+      final meal = Meal(id: 5, plan: 1, name: 'breakfast');
+      final container = makeContainer();
+
+      await container.read(nutritionProvider.notifier).editMeal(meal);
+
+      verify(mockRepo.editMealLocalDrift(meal)).called(1);
+    });
+
+    test('deleteMeal delegates to deleteMealLocalDrift and updates state', () async {
+      final meal = Meal(id: 5, plan: 7, name: 'breakfast');
+      final plan = NutritionalPlan(
+        id: 7,
+        description: 'plan',
+        startDate: now,
+        creationDate: now,
+      )..meals = [meal];
+      final container = await containerWithPlans([plan]);
+
+      await container.read(nutritionProvider.notifier).deleteMeal(meal);
+
+      verify(mockRepo.deleteMealLocalDrift(5)).called(1);
+      final plans = container.read(nutritionProvider).value?.plans ?? const [];
+      expect(plans.single.meals, isEmpty);
+    });
+  });
+
+  group('meal item write operations', () {
+    test('editMealItem delegates to editMealItemLocalDrift (PowerSync)', () async {
+      final item = MealItem(id: 9, mealId: 5, ingredientId: 1, amount: 100);
+      final container = makeContainer();
+
+      await container.read(nutritionProvider.notifier).editMealItem(item);
+
+      verify(mockRepo.editMealItemLocalDrift(item)).called(1);
+    });
+
+    test('deleteMealItem delegates to deleteMealItemLocalDrift and updates state', () async {
+      final item = MealItem(id: 9, mealId: 5, ingredientId: 1, amount: 100);
+      final meal = Meal(id: 5, plan: 7, name: 'breakfast')..mealItems = [item];
+      final plan = NutritionalPlan(
+        id: 7,
+        description: 'plan',
+        startDate: now,
+        creationDate: now,
+      )..meals = [meal];
+      final container = await containerWithPlans([plan]);
+
+      await container.read(nutritionProvider.notifier).deleteMealItem(item);
+
+      verify(mockRepo.deleteMealItemLocalDrift(9)).called(1);
+      final plans = container.read(nutritionProvider).value?.plans ?? const [];
+      expect(plans.single.meals.single.mealItems, isEmpty);
     });
   });
 }

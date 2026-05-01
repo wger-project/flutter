@@ -17,9 +17,13 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/database/powersync/tables/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
+import 'package:wger/models/nutrition/meal.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 
 @UseRowClass(NutritionalPlan)
@@ -91,6 +95,70 @@ const PowersyncLogItemTable = ps.Table(
   ],
   indexes: [
     ps.Index('plan_idx', [ps.IndexedColumn('plan_id')]),
+    ps.Index('ingredient_idx', [ps.IndexedColumn('ingredient_id')]),
+  ],
+);
+
+/// A meal inside a nutritional plan (`nutrition_meal`).
+///
+/// Creation goes via REST (server assigns the integer PK and the `order`
+/// field), edits and deletes flow through PowerSync. The `time` is
+/// stored as a `HH:MM:SS` string and translated to/from [TimeOfDay] via
+/// [TimeOfDayConverter].
+@UseRowClass(Meal, constructor: 'fromDrift')
+class MealTable extends Table {
+  @override
+  String get tableName => 'nutrition_meal';
+
+  IntColumn get id => integer()();
+  IntColumn get planId => integer().named('plan_id').references(NutritionalPlanTable, #id)();
+  IntColumn get order => integer()();
+  TextColumn get time => text().map(const TimeOfDayConverter()).nullable()();
+  TextColumn get name => text().withDefault(const Constant(''))();
+}
+
+const PowersyncMealTable = ps.Table(
+  'nutrition_meal',
+  [
+    ps.Column.integer('plan_id'),
+    ps.Column.integer('order'),
+    ps.Column.text('time'),
+    ps.Column.text('name'),
+  ],
+  indexes: [
+    ps.Index('plan_idx', [ps.IndexedColumn('plan_id')]),
+  ],
+);
+
+/// A single ingredient + amount inside a meal (`nutrition_mealitem`).
+///
+/// Creation via REST, edits and deletes via PowerSync. `amount` is
+/// a `DecimalField(decimal_places=2, max_digits=6)` server-side, stored here
+/// as REAL — the rounding happens implicitly when DRF coerces back.
+@UseRowClass(MealItem, constructor: 'fromDrift')
+class MealItemTable extends Table {
+  @override
+  String get tableName => 'nutrition_mealitem';
+
+  IntColumn get id => integer()();
+  IntColumn get mealId => integer().named('meal_id').references(MealTable, #id)();
+  IntColumn get ingredientId => integer().named('ingredient_id').references(IngredientTable, #id)();
+  IntColumn get weightUnitId => integer().named('weight_unit_id').nullable()();
+  IntColumn get order => integer()();
+  RealColumn get amount => real()();
+}
+
+const PowersyncMealItemTable = ps.Table(
+  'nutrition_mealitem',
+  [
+    ps.Column.integer('meal_id'),
+    ps.Column.integer('ingredient_id'),
+    ps.Column.integer('weight_unit_id'),
+    ps.Column.integer('order'),
+    ps.Column.real('amount'),
+  ],
+  indexes: [
+    ps.Index('meal_idx', [ps.IndexedColumn('meal_id')]),
     ps.Index('ingredient_idx', [ps.IndexedColumn('ingredient_id')]),
   ],
 );

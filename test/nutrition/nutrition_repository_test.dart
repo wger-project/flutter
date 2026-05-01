@@ -16,12 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/nutrition/log.dart';
+import 'package:wger/models/nutrition/meal.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/nutrition_repository.dart';
@@ -121,6 +123,38 @@ void main() {
         );
   }
 
+  Future<void> seedMeal({required int id, required int planId, String name = ''}) async {
+    await db
+        .into(db.mealTable)
+        .insert(
+          MealTableCompanion.insert(
+            id: id,
+            planId: planId,
+            order: 1,
+            name: drift.Value(name),
+          ),
+        );
+  }
+
+  Future<void> seedMealItem({
+    required int id,
+    required int mealId,
+    required int ingredientId,
+    double amount = 100,
+  }) async {
+    await db
+        .into(db.mealItemTable)
+        .insert(
+          MealItemTableCompanion.insert(
+            id: id,
+            mealId: mealId,
+            ingredientId: ingredientId,
+            order: 1,
+            amount: amount,
+          ),
+        );
+  }
+
   // ---------------------------------------------------------------------------
 
   group('Plans — REST', () {
@@ -203,7 +237,7 @@ void main() {
     });
   });
 
-  group('Meals — REST', () {
+  group('Meals', () {
     test('createMeal POSTs to /meal/', () async {
       final uri = Uri.https('localhost', 'api/v2/meal/');
       when(mockBase.makeUrl('meal')).thenReturn(uri);
@@ -214,26 +248,37 @@ void main() {
       verify(mockBase.post({'name': 'breakfast'}, uri)).called(1);
     });
 
-    test('updateMeal PATCHes /meal/<id>/', () async {
-      final uri = Uri.https('localhost', 'api/v2/meal/5/');
-      when(mockBase.makeUrl('meal', id: 5)).thenReturn(uri);
-      when(mockBase.patch(any, uri)).thenAnswer((_) async => {'id': 5});
+    test('editMealLocalDrift overwrites the meal with matching id', () async {
+      await seedPlan(id: 1);
+      await seedMeal(id: 5, planId: 1, name: 'breakfast');
 
-      await repo.updateMeal(5, {'name': 'lunch'});
+      final updated = Meal(id: 5, plan: 1, name: 'lunch');
+      await repo.editMealLocalDrift(updated);
 
-      verify(mockBase.patch({'name': 'lunch'}, uri)).called(1);
+      final row = await (db.select(
+        db.mealTable,
+      )..where((t) => t.id.equals(5))).getSingle();
+      expect(row.name, 'lunch');
     });
 
-    test('deleteMeal sends a DELETE for /meal/<id>/', () async {
-      when(mockBase.deleteRequest('meal', 5)).thenAnswer((_) async => http.Response('', 204));
+    test('editMealLocalDrift throws StateError when id is null', () async {
+      final meal = Meal(plan: 1, name: 'no id');
+      expect(() => repo.editMealLocalDrift(meal), throwsStateError);
+    });
 
-      await repo.deleteMeal(5);
+    test('deleteMealLocalDrift removes the meal with matching id', () async {
+      await seedPlan(id: 1);
+      await seedMeal(id: 5, planId: 1);
+      await seedMeal(id: 6, planId: 1);
 
-      verify(mockBase.deleteRequest('meal', 5)).called(1);
+      await repo.deleteMealLocalDrift(5);
+
+      final remaining = await db.select(db.mealTable).get();
+      expect(remaining.map((m) => m.id), [6]);
     });
   });
 
-  group('Meal items — REST', () {
+  group('Meal items', () {
     test('createMealItem POSTs to /mealitem/', () async {
       final uri = Uri.https('localhost', 'api/v2/mealitem/');
       when(mockBase.makeUrl('mealitem')).thenReturn(uri);
@@ -244,14 +289,37 @@ void main() {
       verify(mockBase.post({'meal': 1, 'amount': 100}, uri)).called(1);
     });
 
-    test('deleteMealItem sends a DELETE for /mealitem/<id>/', () async {
-      when(
-        mockBase.deleteRequest('mealitem', 7),
-      ).thenAnswer((_) async => http.Response('', 204));
+    test('editMealItemLocalDrift overwrites the item with matching id', () async {
+      await seedPlan(id: 1);
+      await seedMeal(id: 1, planId: 1);
+      await seedIngredient(id: 1, name: 'Apple');
+      await seedMealItem(id: 7, mealId: 1, ingredientId: 1, amount: 100);
 
-      await repo.deleteMealItem(7);
+      final updated = MealItem(id: 7, mealId: 1, ingredientId: 1, amount: 250);
+      await repo.editMealItemLocalDrift(updated);
 
-      verify(mockBase.deleteRequest('mealitem', 7)).called(1);
+      final row = await (db.select(
+        db.mealItemTable,
+      )..where((t) => t.id.equals(7))).getSingle();
+      expect(row.amount, 250);
+    });
+
+    test('editMealItemLocalDrift throws StateError when id is null', () async {
+      final item = MealItem(mealId: 1, ingredientId: 1, amount: 50);
+      expect(() => repo.editMealItemLocalDrift(item), throwsStateError);
+    });
+
+    test('deleteMealItemLocalDrift removes the item with matching id', () async {
+      await seedPlan(id: 1);
+      await seedMeal(id: 1, planId: 1);
+      await seedIngredient(id: 1, name: 'Apple');
+      await seedMealItem(id: 7, mealId: 1, ingredientId: 1);
+      await seedMealItem(id: 8, mealId: 1, ingredientId: 1);
+
+      await repo.deleteMealItemLocalDrift(7);
+
+      final remaining = await db.select(db.mealItemTable).get();
+      expect(remaining.map((m) => m.id), [8]);
     });
   });
 

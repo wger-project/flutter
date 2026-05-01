@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
@@ -47,6 +49,10 @@ class MealItem {
   @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num amount;
 
+  /// Server-assigned ordering inside the meal. Not user-editable.
+  @JsonKey(includeToJson: false, defaultValue: 1)
+  int order = 1;
+
   MealItem({
     this.id,
     int? mealId,
@@ -66,10 +72,45 @@ class MealItem {
 
   MealItem.empty();
 
+  /// Constructor used by Drift's generated row factory.
+  ///
+  /// The hydrated [ingredient]/[weightUnitObj] are filled in by the repository
+  /// after a JOIN; instances built here have only the FK ids set.
+  MealItem.fromDrift({
+    this.id,
+    required int mealId,
+    required int ingredientId,
+    this.weightUnitId,
+    required int order,
+    required double amount,
+  }) {
+    this.mealId = mealId;
+    this.ingredientId = ingredientId;
+    this.amount = amount;
+    this.order = order;
+  }
+
   // Boilerplate
   factory MealItem.fromJson(Map<String, dynamic> json) => _$MealItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$MealItemToJson(this);
+
+  /// Drift companion for updates against `nutrition_mealitem`.
+  ///
+  /// `order` is intentionally absent — it's server-managed and read-only.
+  MealItemTableCompanion toCompanion() {
+    final itemId = id;
+    if (itemId == null) {
+      throw StateError('Cannot persist meal item without id (creation goes via REST)');
+    }
+    return MealItemTableCompanion(
+      id: drift.Value(itemId),
+      mealId: drift.Value(mealId),
+      ingredientId: drift.Value(ingredientId),
+      weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId!),
+      amount: drift.Value(amount.toDouble()),
+    );
+  }
 
   /// Calculations
   NutritionalValues get nutritionalValues {

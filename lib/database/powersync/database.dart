@@ -40,6 +40,8 @@ import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/log.dart';
+import 'package:wger/models/nutrition/meal.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -97,6 +99,8 @@ part 'database.g.dart';
     IngredientTable,
     IngredientImageTable,
     IngredientWeightUnitTable,
+    MealTable,
+    MealItemTable,
     LogItemTable,
 
     // Gallery

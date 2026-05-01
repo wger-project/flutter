@@ -20,7 +20,6 @@ import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -241,6 +240,9 @@ class NutritionNotifier extends _$NutritionNotifier {
 
   // --- Meals ---
 
+  /// Creation still goes through REST. The freshly-saved meal is injected into
+  /// in-memory state so the UI sees it immediately, before PowerSync has
+  /// replicated the row down into the local Drift database.
   Future<Meal> addMeal(Meal meal, int planId) async {
     final repo = ref.read(nutritionRepositoryProvider);
     final plan = findById(planId);
@@ -252,32 +254,27 @@ class NutritionNotifier extends _$NutritionNotifier {
     return saved;
   }
 
-  Future<Meal> editMeal(Meal meal) async {
+  /// Goes through PowerSync (Drift update → CRUD queue → backend).
+  Future<void> editMeal(Meal meal) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    final data = await repo.updateMeal(meal.id!, meal.toJson());
-    final updated = Meal.fromJson(data);
+    await repo.editMealLocalDrift(meal);
     _notifyAfterInPlaceMutation();
-    return updated;
   }
 
+  /// Goes through PowerSync (Drift delete → CRUD queue → backend), where
+  /// Django's FK CASCADE removes any dependent meal items.
   Future<void> deleteMeal(Meal meal) async {
     final repo = ref.read(nutritionRepositoryProvider);
     final plan = findById(meal.planId);
-    final mealIndex = plan.meals.indexWhere((e) => e.id == meal.id);
-    final existing = plan.meals[mealIndex];
-    plan.meals.removeAt(mealIndex);
+    plan.meals.removeWhere((e) => e.id == meal.id);
     _notifyAfterInPlaceMutation();
-
-    final response = await repo.deleteMeal(meal.id!);
-    if (response.statusCode >= 400) {
-      plan.meals.insert(mealIndex, existing);
-      _notifyAfterInPlaceMutation();
-      throw WgerHttpException(response);
-    }
+    await repo.deleteMealLocalDrift(meal.id!);
   }
 
   // --- Meal items ---
 
+  /// Creation still goes through REST. The saved item is injected into the
+  /// meal's in-memory list so the UI sees it immediately.
   Future<MealItem> addMealItem(MealItem mealItem, Meal meal) async {
     final repo = ref.read(nutritionRepositoryProvider);
     final data = await repo.createMealItem(mealItem.toJson());
@@ -288,20 +285,20 @@ class NutritionNotifier extends _$NutritionNotifier {
     return saved;
   }
 
+  /// Goes through PowerSync (Drift update → CRUD queue → backend).
+  Future<void> editMealItem(MealItem mealItem) async {
+    final repo = ref.read(nutritionRepositoryProvider);
+    await repo.editMealItemLocalDrift(mealItem);
+    _notifyAfterInPlaceMutation();
+  }
+
+  /// Goes through PowerSync (Drift delete → CRUD queue → backend).
   Future<void> deleteMealItem(MealItem mealItem) async {
     final repo = ref.read(nutritionRepositoryProvider);
     final meal = findMealById(mealItem.mealId)!;
-    final mealItemIndex = meal.mealItems.indexWhere((e) => e.id == mealItem.id);
-    final existing = meal.mealItems[mealItemIndex];
-    meal.mealItems.removeAt(mealItemIndex);
+    meal.mealItems.removeWhere((e) => e.id == mealItem.id);
     _notifyAfterInPlaceMutation();
-
-    final response = await repo.deleteMealItem(mealItem.id!);
-    if (response.statusCode >= 400) {
-      meal.mealItems.insert(mealItemIndex, existing);
-      _notifyAfterInPlaceMutation();
-      throw WgerHttpException(response);
-    }
+    await repo.deleteMealItemLocalDrift(mealItem.id!);
   }
 
   // --- Logs (nutrition diary) ---

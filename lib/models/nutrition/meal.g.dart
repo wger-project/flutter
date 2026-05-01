@@ -6,11 +6,14 @@ part of 'meal.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Meal _$MealFromJson(Map<String, dynamic> json) => Meal(
-  id: (json['id'] as num?)?.toInt(),
-  time: stringToTimeNull(json['time'] as String?),
-  name: json['name'] as String?,
-)..planId = (json['plan'] as num).toInt();
+Meal _$MealFromJson(Map<String, dynamic> json) =>
+    Meal(
+        id: (json['id'] as num?)?.toInt(),
+        time: stringToTimeNull(json['time'] as String?),
+        name: json['name'] as String?,
+      )
+      ..planId = (json['plan'] as num).toInt()
+      ..order = (json['order'] as num?)?.toInt() ?? 1;
 
 Map<String, dynamic> _$MealToJson(Meal instance) => <String, dynamic>{
   'id': instance.id,
