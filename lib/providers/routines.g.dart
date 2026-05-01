@@ -46,7 +46,7 @@ final class RoutineWeightUnitProvider
   }
 }
 
-String _$routineWeightUnitHash() => r'816e41348c3b3179084182f1cb13cd6b948ffaaa';
+String _$routineWeightUnitHash() => r'3f40e8a6ec8dea64ecafa4715b1f64408e0d9db4';
 
 @ProviderFor(routineRepetitionUnit)
 final routineRepetitionUnitProvider = RoutineRepetitionUnitProvider._();
@@ -85,7 +85,7 @@ final class RoutineRepetitionUnitProvider
   }
 }
 
-String _$routineRepetitionUnitHash() => r'ab09c8c70c4e2f6fc36cc9d1aae901aee165684a';
+String _$routineRepetitionUnitHash() => r'de9d2c5b6e2f4df761165d6899353b3fb2cee8c6';
 
 @ProviderFor(RoutinesRiverpod)
 final routinesRiverpodProvider = RoutinesRiverpodProvider._();

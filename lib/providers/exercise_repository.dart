@@ -21,7 +21,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/core/language.dart';
+import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/wger_base.dart';
@@ -194,5 +198,26 @@ class ExerciseRepository {
 
       return ExerciseState(map.values.toList());
     });
+  }
+
+  /// Streams all exercise categories.
+  Stream<List<ExerciseCategory>> watchCategoriesDrift() {
+    return _db.select(_db.exerciseCategoryTable).watch();
+  }
+
+  /// Streams all exercise equipment.
+  Stream<List<Equipment>> watchEquipmentDrift() {
+    return _db.select(_db.equipmentTable).watch();
+  }
+
+  /// Streams all exercise muscles.
+  Stream<List<Muscle>> watchMusclesDrift() {
+    return _db.select(_db.muscleTable).watch();
+  }
+
+  /// Streams the list of supported languages — reference data for exercise
+  /// translations.
+  Stream<List<Language>> watchLanguagesDrift() {
+    return _db.select(_db.languageTable).watch();
   }
 }

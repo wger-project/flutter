@@ -8,9 +8,11 @@ import 'dart:async' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/models/workouts/base_config.dart' as _i6;
 import 'package:wger/models/workouts/day.dart' as _i3;
+import 'package:wger/models/workouts/repetition_unit.dart' as _i10;
 import 'package:wger/models/workouts/routine.dart' as _i2;
 import 'package:wger/models/workouts/slot.dart' as _i4;
 import 'package:wger/models/workouts/slot_entry.dart' as _i5;
+import 'package:wger/models/workouts/weight_unit.dart' as _i9;
 import 'package:wger/providers/routines_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
@@ -107,6 +109,22 @@ class MockRoutinesRepository extends _i1.Mock implements _i7.RoutinesRepository 
             returnValueForMissingStub: _i8.Future<void>.value(),
           )
           as _i8.Future<void>);
+
+  @override
+  _i8.Stream<List<_i9.WeightUnit>> watchWeightUnitsDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchWeightUnitsDrift, []),
+            returnValue: _i8.Stream<List<_i9.WeightUnit>>.empty(),
+          )
+          as _i8.Stream<List<_i9.WeightUnit>>);
+
+  @override
+  _i8.Stream<List<_i10.RepetitionUnit>> watchRepetitionUnitsDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchRepetitionUnitsDrift, []),
+            returnValue: _i8.Stream<List<_i10.RepetitionUnit>>.empty(),
+          )
+          as _i8.Stream<List<_i10.RepetitionUnit>>);
 
   @override
   _i8.Future<_i3.Day> addDayServer(_i3.Day? day) =>

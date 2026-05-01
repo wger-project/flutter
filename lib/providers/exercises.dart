@@ -18,7 +18,7 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/database/powersync/database.dart';
+import 'package:wger/models/core/language.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -128,18 +128,20 @@ class Exercises extends _$Exercises {
 
 @riverpod
 Stream<List<ExerciseCategory>> exerciseCategories(Ref ref) {
-  final db = ref.read(driftPowerSyncDatabase);
-  return db.select(db.exerciseCategoryTable).watch();
+  return ref.read(exerciseRepositoryProvider).watchCategoriesDrift();
 }
 
 @riverpod
 Stream<List<Equipment>> exerciseEquipment(Ref ref) {
-  final db = ref.read(driftPowerSyncDatabase);
-  return db.select(db.equipmentTable).watch();
+  return ref.read(exerciseRepositoryProvider).watchEquipmentDrift();
 }
 
 @riverpod
 Stream<List<Muscle>> exerciseMuscles(Ref ref) {
-  final db = ref.read(driftPowerSyncDatabase);
-  return db.select(db.muscleTable).watch();
+  return ref.read(exerciseRepositoryProvider).watchMusclesDrift();
+}
+
+@riverpod
+Stream<List<Language>> languages(Ref ref) {
+  return ref.read(exerciseRepositoryProvider).watchLanguagesDrift();
 }

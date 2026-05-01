@@ -6,8 +6,12 @@
 import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/models/core/language.dart' as _i13;
+import 'package:wger/models/exercises/category.dart' as _i10;
+import 'package:wger/models/exercises/equipment.dart' as _i11;
 import 'package:wger/models/exercises/exercise_submission.dart' as _i5;
 import 'package:wger/models/exercises/exercise_submission_images.dart' as _i6;
+import 'package:wger/models/exercises/muscle.dart' as _i12;
 import 'package:wger/models/user/profile.dart' as _i2;
 import 'package:wger/providers/add_exercise_repository.dart' as _i3;
 import 'package:wger/providers/exercise_repository.dart' as _i8;
@@ -143,4 +147,36 @@ class MockExerciseRepository extends _i1.Mock implements _i8.ExerciseRepository 
             returnValue: _i4.Stream<_i9.ExerciseState>.empty(),
           )
           as _i4.Stream<_i9.ExerciseState>);
+
+  @override
+  _i4.Stream<List<_i10.ExerciseCategory>> watchCategoriesDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchCategoriesDrift, []),
+            returnValue: _i4.Stream<List<_i10.ExerciseCategory>>.empty(),
+          )
+          as _i4.Stream<List<_i10.ExerciseCategory>>);
+
+  @override
+  _i4.Stream<List<_i11.Equipment>> watchEquipmentDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchEquipmentDrift, []),
+            returnValue: _i4.Stream<List<_i11.Equipment>>.empty(),
+          )
+          as _i4.Stream<List<_i11.Equipment>>);
+
+  @override
+  _i4.Stream<List<_i12.Muscle>> watchMusclesDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchMusclesDrift, []),
+            returnValue: _i4.Stream<List<_i12.Muscle>>.empty(),
+          )
+          as _i4.Stream<List<_i12.Muscle>>);
+
+  @override
+  _i4.Stream<List<_i13.Language>> watchLanguagesDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLanguagesDrift, []),
+            returnValue: _i4.Stream<List<_i13.Language>>.empty(),
+          )
+          as _i4.Stream<List<_i13.Language>>);
 }

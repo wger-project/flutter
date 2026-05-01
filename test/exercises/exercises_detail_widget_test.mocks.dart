@@ -6,6 +6,10 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/models/core/language.dart' as _i8;
+import 'package:wger/models/exercises/category.dart' as _i5;
+import 'package:wger/models/exercises/equipment.dart' as _i6;
+import 'package:wger/models/exercises/muscle.dart' as _i7;
 import 'package:wger/providers/exercise_repository.dart' as _i2;
 import 'package:wger/providers/exercises.dart' as _i4;
 
@@ -55,4 +59,36 @@ class MockExerciseRepository extends _i1.Mock implements _i2.ExerciseRepository 
             returnValue: _i3.Stream<_i4.ExerciseState>.empty(),
           )
           as _i3.Stream<_i4.ExerciseState>);
+
+  @override
+  _i3.Stream<List<_i5.ExerciseCategory>> watchCategoriesDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchCategoriesDrift, []),
+            returnValue: _i3.Stream<List<_i5.ExerciseCategory>>.empty(),
+          )
+          as _i3.Stream<List<_i5.ExerciseCategory>>);
+
+  @override
+  _i3.Stream<List<_i6.Equipment>> watchEquipmentDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchEquipmentDrift, []),
+            returnValue: _i3.Stream<List<_i6.Equipment>>.empty(),
+          )
+          as _i3.Stream<List<_i6.Equipment>>);
+
+  @override
+  _i3.Stream<List<_i7.Muscle>> watchMusclesDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchMusclesDrift, []),
+            returnValue: _i3.Stream<List<_i7.Muscle>>.empty(),
+          )
+          as _i3.Stream<List<_i7.Muscle>>);
+
+  @override
+  _i3.Stream<List<_i8.Language>> watchLanguagesDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLanguagesDrift, []),
+            returnValue: _i3.Stream<List<_i8.Language>>.empty(),
+          )
+          as _i3.Stream<List<_i8.Language>>);
 }

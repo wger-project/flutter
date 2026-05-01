@@ -89,7 +89,7 @@ final class ExerciseCategoriesProvider
   }
 }
 
-String _$exerciseCategoriesHash() => r'0b43e83e3b68d18ae1319bcc9f553d2fed83e3f2';
+String _$exerciseCategoriesHash() => r'38e7b439ecc9682891373930813f2d3b7dc4f794';
 
 @ProviderFor(exerciseEquipment)
 final exerciseEquipmentProvider = ExerciseEquipmentProvider._();
@@ -124,7 +124,7 @@ final class ExerciseEquipmentProvider
   }
 }
 
-String _$exerciseEquipmentHash() => r'49e42160c8640d68fde7e9d9849f46a8cf6a10f9';
+String _$exerciseEquipmentHash() => r'cceb7e47e1292a1f33f1f6378f8efaf109fa7bb3';
 
 @ProviderFor(exerciseMuscles)
 final exerciseMusclesProvider = ExerciseMusclesProvider._();
@@ -158,4 +158,38 @@ final class ExerciseMusclesProvider
   }
 }
 
-String _$exerciseMusclesHash() => r'e283b2b2c170c136663b133764b164cd9cd4b347';
+String _$exerciseMusclesHash() => r'acb72b84288ff565183581fef1b718a516e7efd4';
+
+@ProviderFor(languages)
+final languagesProvider = LanguagesProvider._();
+
+final class LanguagesProvider
+    extends $FunctionalProvider<AsyncValue<List<Language>>, List<Language>, Stream<List<Language>>>
+    with $FutureModifier<List<Language>>, $StreamProvider<List<Language>> {
+  LanguagesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'languagesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$languagesHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<List<Language>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<Language>> create(Ref ref) {
+    return languages(ref);
+  }
+}
+
+String _$languagesHash() => r'70c3a3cad32a953443fc0e8a9e5bb402bf2f5a6d';

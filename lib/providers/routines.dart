@@ -19,7 +19,6 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
@@ -42,14 +41,12 @@ part 'routines.g.dart';
 // disposed during loading state".
 @Riverpod(keepAlive: true)
 Stream<List<WeightUnit>> routineWeightUnit(Ref ref) {
-  final db = ref.read(driftPowerSyncDatabase);
-  return db.select(db.routineWeightUnitTable).watch();
+  return ref.read(routinesRepositoryProvider).watchWeightUnitsDrift();
 }
 
 @Riverpod(keepAlive: true)
 Stream<List<RepetitionUnit>> routineRepetitionUnit(Ref ref) {
-  final db = ref.read(driftPowerSyncDatabase);
-  return db.select(db.routineRepetitionUnitTable).watch();
+  return ref.read(routinesRepositoryProvider).watchRepetitionUnitsDrift();
 }
 
 class RoutinesState {

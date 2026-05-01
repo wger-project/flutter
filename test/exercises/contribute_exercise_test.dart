@@ -28,7 +28,6 @@ import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/add_exercise_repository.dart';
-import 'package:wger/providers/core_data.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/network_provider.dart';

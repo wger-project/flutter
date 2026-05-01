@@ -23,9 +23,11 @@ import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
@@ -150,6 +152,16 @@ class RoutinesRepository {
   Future<void> deleteLocalDrift(int id) async {
     _logger.finer('Deleting local routine $id');
     await (_db.delete(_db.routineTable)..where((t) => t.id.equals(id))).go();
+  }
+
+  /// Streams the available weight units for routines (e.g. kg, lbs, plate).
+  Stream<List<WeightUnit>> watchWeightUnitsDrift() {
+    return _db.select(_db.routineWeightUnitTable).watch();
+  }
+
+  /// Streams the available repetition units for routines (e.g. reps, seconds).
+  Stream<List<RepetitionUnit>> watchRepetitionUnitsDrift() {
+    return _db.select(_db.routineRepetitionUnitTable).watch();
   }
 
   /*
