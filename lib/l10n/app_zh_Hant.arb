@@ -866,7 +866,7 @@
     "editorItalic": "斜體",
     "editorList": "清單",
     "enterTextInLanguage": "請輸入正確的語言!",
-    "simpleMode": "簡單模式",
+    "simpleMode": "簡易模式",
     "imageDetailsImageType": "相片格式",
     "@imageDetailsImageType": {
         "description": "Label for image type selector"
@@ -1007,11 +1007,11 @@
     "@addToOpenFoodFacts": {
         "description": "Label shown as the clickable link to go on Open Food Facts"
     },
-    "isVegan": "素食",
+    "isVegan": "純素",
     "@isVegan": {
         "description": "Label for vegan toggle"
     },
-    "isVegetarian": "素食者",
+    "isVegetarian": "素食",
     "@isVegetarian": {
         "description": "Label for vegetarian toggle"
     },
@@ -1074,19 +1074,61 @@
     "gymModeNotifyOnCountdownFinish": "倒數結束時通知",
     "personalRecords": "個人紀錄",
     "errorViewDetails": "技術細節",
-    "errorInfoDescription": "抱歉，出了點問題。你可以前往 GitHub 提交問題以幫助我們修復此問題。",
+    "errorInfoDescription": "不好意思，目前出了點問題。你可以前往 GitHub 提交問題以幫助我們修復此問題。",
     "errorInfoDescription2": "你可以繼續使用此應用程式，但有一些功能無法運作。",
-    "dayTypeTabata": "Tabata",
+    "dayTypeTabata": "塔巴塔訓練（Tabata）",
     "duration": "持續時間",
     "aboutContributeText": "我們鼓勵各種形式的貢獻。無論您是開發者、翻譯者，還是僅僅熱愛健身，您的每項支持都彌足珍貴！",
     "selectAvailablePlates": "選擇可用的槓片",
     "dayTypeCustom": "自訂",
     "dayTypeHiit": "高強度間歇訓練",
-    "dayTypeEdt": "逐步增加訓練密度",
+    "dayTypeEdt": "遞增密度訓練（在相同時間內完成更多訓練量，EDT）",
     "dayTypeEnom": "每分鐘一組訓練",
-    "dayTypeRft": "在最短時間內完成指定回合",
-    "dayTypeAfap": "越快越好",
-    "slotEntryTypeNormal": "正常",
+    "dayTypeRft": "回合計時",
+    "dayTypeAfap": "越快完成越好（AFAP）",
+    "slotEntryTypeNormal": "一般",
     "slotEntryTypeDropset": "遞減組",
-    "dashboardWidgets": "儀表板小工具"
+    "dashboardWidgets": "儀表板小工具",
+    "slotEntryTypeMyo": "微休息組（Myo）",
+    "slotEntryTypePartial": "局部動作",
+    "slotEntryTypeTut": "張力持續時間（TUT）",
+    "slotEntryTypeIso": "靜態撐住",
+    "routines": "課表",
+    "newRoutine": "新訓練課表",
+    "noRoutines": "你沒有訓練課表",
+    "impressionGood": "好",
+    "impressionNeutral": "感受一般",
+    "impressionBad": "壞",
+    "isRestDay": "是否為休息日",
+    "needsLogsToAdvance": "需有紀錄才會進行進度調整",
+    "needsLogsToAdvanceHelp": "選擇是否只有在當天有訓練紀錄時，才會進入下一個排定的訓練日",
+    "routineDays": "課表天數",
+    "resultingRoutine": "套用後課表",
+    "durationHoursMinutes": "{hours}小時 {minutes}分鐘",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "訓練量",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "訓練完成",
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "此營養計畫尚未設定任何餐點",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "請新增餐點到營養計畫",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "applicationLogs": "應用程式紀錄"
 }
