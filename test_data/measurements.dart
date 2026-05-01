@@ -94,7 +94,7 @@ List<MeasurementCategory> getMeasurementCategories() {
       ],
     ),
     MeasurementCategory(
-      id: '1',
+      id: '2',
       name: 'Biceps',
       unit: 'cm',
       entries: [
