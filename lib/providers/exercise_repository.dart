@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,26 +20,64 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/wger_base.dart';
 
 final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
+  final base = ref.read(wgerBaseProvider);
   final db = ref.read(driftPowerSyncDatabase);
-  return ExerciseRepository(db);
+  return ExerciseRepository(base, db);
 });
 
-/// Drift-backed read access for the exercise catalogue.
+/// Read access for the exercise catalogue.
 ///
-/// The catalogue is denormalised across many tables (translations,
-/// muscles, equipment, category, images, videos) — this repository owns
-/// the join + assembly so the [Exercises] notifier stays focused on
-/// state-shape and search, and so tests can swap a single mock instead of
-/// stubbing the whole `DriftPowersyncDatabase`.
+/// The catalogue is denormalised across many tables (translations, muscles,
+/// equipment, category, images, videos) — this repository owns the join +
+/// assembly so the [Exercises] notifier stays focused on state-shape and
+/// search routing, and so tests can swap a single mock instead of stubbing
+/// the whole `DriftPowersyncDatabase`.
 class ExerciseRepository {
   final _logger = Logger('ExerciseRepository');
+  final WgerBaseProvider _base;
   final DriftPowersyncDatabase _db;
 
-  ExerciseRepository(this._db);
+  static const exerciseInfoUrlPath = 'exerciseinfo';
+
+  ExerciseRepository(this._base, this._db);
+
+  /// Asks the wger backend to search by name. Hydration into [Exercise] objects
+  /// happens on [Exercises] against its in-memory snapshot.
+  Future<List<int>> searchExerciseServer(
+    String term, {
+    String languageCode = 'en',
+    bool searchEnglish = false,
+  }) async {
+    if (term.length <= 1) {
+      return [];
+    }
+    _logger.info('Online search for exercises: $term');
+
+    final languages = [languageCode];
+    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languages.add(LANGUAGE_SHORT_ENGLISH);
+    }
+
+    final result = await _base.fetch(
+      _base.makeUrl(
+        exerciseInfoUrlPath,
+        query: {
+          'name__search': term,
+          'language__code': languages.join(','),
+          'limit': API_RESULTS_PAGE_SIZE,
+        },
+      ),
+    );
+
+    return (result['results'] as List).map<int>((data) => data['id'] as int).toList();
+  }
 
   /// Streams the full exercise catalogue, hydrated with translations,
   /// muscles, equipment, category, images and videos.
