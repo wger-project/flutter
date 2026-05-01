@@ -20,19 +20,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:logging/logging.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 
 import '../helpers/consts.dart';
 
 class ApiClient {
-  final _logger = Logger('Powersync ApiClient');
   late final uri = Uri.parse('$serverUrl/api/v2/upload-powersync-data');
 
   final String serverUrl;
+  final http.Client _client;
   String token = '';
 
-  ApiClient(this.serverUrl);
+  ApiClient(this.serverUrl, {http.Client? client}) : _client = client ?? http.Client();
 
   Map<String, String> getHeaders() {
     return {
@@ -53,7 +52,7 @@ class ApiClient {
     // _logger.info('posting our token "${apiData["token"]}" to $baseUrl/api/v2/powersync-token');
 
     token = apiData['token'];
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$serverUrl/api/v2/powersync-token'),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
@@ -74,14 +73,14 @@ class ApiClient {
   // rejections like validation failures), but encodes any rejection
   // as `{'error': '...', 'details': ...}` in the body.
   Future<http.Response> upsert(Map<String, dynamic> record) {
-    return http.put(uri, headers: getHeaders(), body: json.encode(record));
+    return _client.put(uri, headers: getHeaders(), body: json.encode(record));
   }
 
   Future<http.Response> update(Map<String, dynamic> record) {
-    return http.patch(uri, headers: getHeaders(), body: json.encode(record));
+    return _client.patch(uri, headers: getHeaders(), body: json.encode(record));
   }
 
   Future<http.Response> delete(Map<String, dynamic> record) {
-    return http.delete(uri, headers: getHeaders(), body: json.encode(record));
+    return _client.delete(uri, headers: getHeaders(), body: json.encode(record));
   }
 }

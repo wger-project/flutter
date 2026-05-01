@@ -79,7 +79,8 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// Resets on app restart.
   final Set<String> _reportedFailedOps = {};
 
-  DjangoConnector({required this.baseUrl}) : apiClient = ApiClient(baseUrl);
+  DjangoConnector({required this.baseUrl, ApiClient? apiClient})
+    : apiClient = apiClient ?? ApiClient(baseUrl);
 
   /// Get a token to authenticate against the PowerSync instance.
   @override
@@ -89,17 +90,18 @@ class DjangoConnector extends PowerSyncBackendConnector {
     final session = await apiClient.getPowersyncToken();
     final token = session['token'] as String;
 
-    final payload = _decodeJwtPayload(token);
+    final payload = decodeJwtPayload(token);
     return PowerSyncCredentials(
       endpoint: session['powersync_url'],
       token: token,
       userId: payload?['sub']?.toString(),
-      expiresAt: _jwtExp(payload),
+      expiresAt: jwtExp(payload),
     );
   }
 
   /// Decodes the JWT payload (middle segment). Returns null on malformed input.
-  static Map<String, dynamic>? _decodeJwtPayload(String jwt) {
+  @visibleForTesting
+  static Map<String, dynamic>? decodeJwtPayload(String jwt) {
     try {
       final parts = jwt.split('.');
       if (parts.length != 3) {
@@ -114,7 +116,8 @@ class DjangoConnector extends PowerSyncBackendConnector {
   }
 
   /// Extracts the `exp` claim (unix seconds) as a UTC DateTime.
-  static DateTime? _jwtExp(Map<String, dynamic>? payload) {
+  @visibleForTesting
+  static DateTime? jwtExp(Map<String, dynamic>? payload) {
     final exp = payload?['exp'];
     if (exp is! num) {
       return null;
