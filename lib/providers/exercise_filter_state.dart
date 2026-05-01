@@ -80,8 +80,7 @@ class Filters {
     FilterCategory<ExerciseCategory>? exerciseCategories,
     FilterCategory<Equipment>? equipment,
     this.searchTerm = '',
-    bool doesNeedUpdate = false,
-  }) : _doesNeedUpdate = doesNeedUpdate {
+  }) {
     this.exerciseCategories =
         exerciseCategories ??
         FilterCategory<ExerciseCategory>(
@@ -104,29 +103,15 @@ class Filters {
     return !isExerciseCategoryMarked && !isEquipmentMarked;
   }
 
-  bool _doesNeedUpdate = false;
-
-  bool get doesNeedUpdate => _doesNeedUpdate;
-
-  void markNeedsUpdate() {
-    _doesNeedUpdate = true;
-  }
-
-  void markUpdated() {
-    _doesNeedUpdate = false;
-  }
-
   Filters copyWith({
     FilterCategory<ExerciseCategory>? exerciseCategories,
     FilterCategory<Equipment>? equipment,
     String? searchTerm,
-    bool? doesNeedUpdate,
   }) {
     return Filters(
       exerciseCategories: exerciseCategories ?? this.exerciseCategories,
       equipment: equipment ?? this.equipment,
       searchTerm: searchTerm ?? this.searchTerm,
-      doesNeedUpdate: doesNeedUpdate ?? _doesNeedUpdate,
     );
   }
 }

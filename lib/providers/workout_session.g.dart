@@ -9,39 +9,6 @@ part of 'workout_session.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(sessionStateReady)
-final sessionStateReadyProvider = SessionStateReadyProvider._();
-
-final class SessionStateReadyProvider
-    extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
-    with $FutureModifier<void>, $FutureProvider<void> {
-  SessionStateReadyProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'sessionStateReadyProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$sessionStateReadyHash();
-
-  @$internal
-  @override
-  $FutureProviderElement<void> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<void> create(Ref ref) {
-    return sessionStateReady(ref);
-  }
-}
-
-String _$sessionStateReadyHash() => r'18a6a7239149a753760d90c35cfcb739aec8a631';
-
 @ProviderFor(WorkoutSessionNotifier)
 final workoutSessionProvider = WorkoutSessionNotifierProvider._();
 

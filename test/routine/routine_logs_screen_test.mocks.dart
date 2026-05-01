@@ -126,14 +126,6 @@ class MockTrophyRepository extends _i1.Mock implements _i3.TrophyRepository {
             ),
           )
           as _i5.Future<List<_i8.UserTrophyProgression>>);
-
-  @override
-  List<_i6.Trophy> filterByType(List<_i6.Trophy>? list, _i6.TrophyType? type) =>
-      (super.noSuchMethod(
-            Invocation.method(#filterByType, [list, type]),
-            returnValue: <_i6.Trophy>[],
-          )
-          as List<_i6.Trophy>);
 }
 
 /// A class which mocks [WorkoutLogRepository].

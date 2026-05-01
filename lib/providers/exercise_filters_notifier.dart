@@ -86,12 +86,10 @@ class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
     List<ExerciseCategory> categories,
   ) {
     var filters = currentFilters;
-    var updated = false;
 
     if (filters.equipment.items.isEmpty && equipment.isNotEmpty) {
       final Map<Equipment, bool> items = {for (var e in equipment) e: false};
       filters = filters.copyWith(equipment: filters.equipment.copyWith(items: items));
-      updated = true;
     }
 
     if (filters.exerciseCategories.items.isEmpty && categories.isNotEmpty) {
@@ -99,12 +97,8 @@ class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
       filters = filters.copyWith(
         exerciseCategories: filters.exerciseCategories.copyWith(items: items),
       );
-      updated = true;
     }
 
-    if (updated) {
-      filters.markUpdated();
-    }
     return filters;
   }
 

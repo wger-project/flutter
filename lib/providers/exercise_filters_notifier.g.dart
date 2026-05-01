@@ -50,7 +50,7 @@ final class ExerciseFiltersNotifierProvider
   }
 }
 
-String _$exerciseFiltersNotifierHash() => r'5fed07a5c73dee7669b32a41f16a8c6439ebad63';
+String _$exerciseFiltersNotifierHash() => r'8b61ef1ad14bdef43f76d1defe83ac5524a467aa';
 
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting

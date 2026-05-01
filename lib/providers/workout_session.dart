@@ -23,13 +23,6 @@ import 'package:wger/providers/workout_session_repository.dart';
 
 part 'workout_session.g.dart';
 
-@riverpod
-Future<void> sessionStateReady(Ref ref) {
-  return Future.wait([
-    ref.watch(workoutSessionProvider.future),
-  ]);
-}
-
 @Riverpod(keepAlive: true)
 final class WorkoutSessionNotifier extends _$WorkoutSessionNotifier {
   final _logger = Logger('WorkoutSessionNotifier');

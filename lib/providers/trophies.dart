@@ -115,9 +115,6 @@ class TrophyRepository {
       return [];
     }
   }
-
-  List<Trophy> filterByType(List<Trophy> list, TrophyType type) =>
-      list.where((t) => t.type == type).toList();
 }
 
 @riverpod
