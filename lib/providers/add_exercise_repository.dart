@@ -34,7 +34,6 @@ final addExerciseRepositoryProvider = Provider<AddExerciseRepository>((ref) {
 class AddExerciseRepository {
   static const _exerciseSubmissionUrlPath = 'exercise-submission';
   static const _imagesUrlPath = 'exerciseimage';
-  static const _checkLanguageUrlPath = 'check-language';
 
   final _logger = Logger('AddExerciseRepository');
   final WgerBaseProvider _base;
@@ -75,13 +74,5 @@ class AddExerciseRepository {
     } else {
       throw Exception('Upload failed: ${streamedResponse.statusCode}');
     }
-  }
-
-  Future<bool> validateLanguage(String input, String languageCode) async {
-    await _base.post({
-      'input': input,
-      'language_code': languageCode,
-    }, _base.makeUrl(_checkLanguageUrlPath));
-    return false;
   }
 }

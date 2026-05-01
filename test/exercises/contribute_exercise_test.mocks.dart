@@ -69,14 +69,6 @@ class MockAddExerciseRepository extends _i1.Mock implements _i3.AddExerciseRepos
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
-
-  @override
-  _i4.Future<bool> validateLanguage(String? input, String? languageCode) =>
-      (super.noSuchMethod(
-            Invocation.method(#validateLanguage, [input, languageCode]),
-            returnValue: _i4.Future<bool>.value(false),
-          )
-          as _i4.Future<bool>);
 }
 
 /// A class which mocks [UserProfileRepository].

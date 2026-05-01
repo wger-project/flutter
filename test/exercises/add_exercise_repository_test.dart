@@ -57,39 +57,6 @@ void main() {
     });
   });
 
-  group('validateLanguage', () {
-    test('POSTs {input, language_code} to the check-language endpoint', () async {
-      final uri = Uri.https('localhost', 'api/v2/check-language/');
-      when(mockBase.makeUrl('check-language')).thenReturn(uri);
-      when(mockBase.post(any, uri)).thenAnswer((_) async => {});
-
-      await repo.validateLanguage('Bankdrücken', 'de');
-
-      verify(
-        mockBase.post({'input': 'Bankdrücken', 'language_code': 'de'}, uri),
-      ).called(1);
-    });
-
-    // KNOWN BUG (audit-memo): validateLanguage always returns false regardless
-    // of the API response. The function discards the POST result. No widget
-    // currently consumes the return value, so this hasn't surfaced as a UX
-    // issue — but the contract is broken. This test pins the current behavior
-    // so a fix is intentional, not accidental.
-    test('always returns false (current buggy behavior)', () async {
-      final uri = Uri.https('localhost', 'api/v2/check-language/');
-      when(mockBase.makeUrl('check-language')).thenReturn(uri);
-
-      when(mockBase.post(any, uri)).thenAnswer((_) async => {'is_valid': true});
-      expect(await repo.validateLanguage('hello', 'en'), isFalse);
-
-      when(mockBase.post(any, uri)).thenAnswer((_) async => {'is_valid': false});
-      expect(await repo.validateLanguage('hello', 'en'), isFalse);
-
-      when(mockBase.post(any, uri)).thenAnswer((_) async => {});
-      expect(await repo.validateLanguage('hello', 'en'), isFalse);
-    });
-  });
-
   // Note: uploadImage is not unit-tested here. It builds an http.MultipartRequest
   // and calls .send() directly without going through WgerBaseProvider, so a
   // proper test requires HTTP-level mocking (e.g. MockClient + dependency

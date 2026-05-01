@@ -87,8 +87,4 @@ class AddExerciseNotifier extends _$AddExerciseNotifier {
     clear();
     return exerciseId;
   }
-
-  Future<bool> validateLanguage(String input, String languageCode) {
-    return _repo.validateLanguage(input, languageCode);
-  }
 }

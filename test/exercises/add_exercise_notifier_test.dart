@@ -251,17 +251,4 @@ void main() {
       expect(captured.translations, hasLength(expected.translations.length));
     });
   });
-
-  group('validateLanguage', () {
-    test('delegates to the repository with the same args', () async {
-      when(mockRepo.validateLanguage(any, any)).thenAnswer((_) async => false);
-
-      final result = await container
-          .read(addExerciseProvider.notifier)
-          .validateLanguage('Bankdrücken', 'de');
-
-      expect(result, isFalse);
-      verify(mockRepo.validateLanguage('Bankdrücken', 'de')).called(1);
-    });
-  });
 }
