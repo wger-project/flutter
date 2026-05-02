@@ -89,7 +89,7 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
             if (pattern == '') {
               return null;
             }
-            return context.read<ExercisesProvider>().searchExercise(
+            return context.read<ExercisesProvider>().searchExerciseWithSearchMode(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
               searchLanguage: exerciseFilters.searchLanguage,
@@ -166,7 +166,7 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
   }
 
   /// The filter icon button — opens dialog with language, category, and search mode options.
-  /// Mirrors the filterButton() in IngredientTypeahead.
+  /// similar to the filterButton() in IngredientTypeahead.
   Widget _filterButton(BuildContext context) {
     final filters = ref.watch(exerciseFiltersSyncProvider);
     final i18n = AppLocalizations.of(context);
@@ -199,7 +199,6 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Language option — same as ingredient filter
                             ListTile(
                               contentPadding: EdgeInsets.zero,
                               title: Text(i18n.language),
@@ -208,16 +207,16 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                                   final items = <DropdownMenuItem<ExerciseSearchLanguage>>[
                                     DropdownMenuItem(
                                       value: ExerciseSearchLanguage.current,
-                                      child: Text(languageCode),
+                                      child: Text(i18n.searchLanguageCurrent(languageCode)),
                                     ),
                                     if (!isEnglish)
                                       DropdownMenuItem(
                                         value: ExerciseSearchLanguage.currentAndEnglish,
-                                        child: Text('$languageCode + EN'),
+                                        child: Text(i18n.searchLanguageEnglish(languageCode)),
                                       ),
-                                    const DropdownMenuItem(
+                                    DropdownMenuItem(
                                       value: ExerciseSearchLanguage.all,
-                                      child: Text('All languages'),
+                                      child: Text(i18n.searchLanguageAll),
                                     ),
                                   ];
 
@@ -242,11 +241,10 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                                 },
                               ),
                             ),
-                            // Search mode toggle — new for exercises
                             SwitchListTile(
                               title: const Text('Exact name match'),
                               subtitle: const Text(
-                                'Off: fuzzy search. On: exact name only.',
+                                'Off: fuzzy search | On: exact name search',
                               ),
                               value: filters.searchMode == ExerciseSearchMode.exact,
                               contentPadding: EdgeInsets.zero,
@@ -266,6 +264,10 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                         ),
                       ),
                       actions: [
+                        TextButton(
+                          onPressed: () => ref.read(exerciseFiltersProvider.notifier).resetAll(),
+                          child: Text(i18n.reset),
+                        ),
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           child: Text(MaterialLocalizations.of(context).closeButtonLabel),
