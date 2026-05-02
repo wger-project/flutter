@@ -1,37 +1,35 @@
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/category.dart';
-
-enum ExerciseSearchLanguage {
-  current,
-  currentAndEnglish,
-  all,
-}
 
 enum ExerciseSearchMode {
   exact,
   fulltext,
 }
 
+const Object _sentinel = Object();
+
 class ExerciseFilters {
-  final ExerciseSearchLanguage searchLanguage;
+  final SearchLanguage searchLanguage;
   final ExerciseSearchMode searchMode;
   final ExerciseCategory? selectedCategory;
 
   const ExerciseFilters({
-    this.searchLanguage = ExerciseSearchLanguage.currentAndEnglish,
+    this.searchLanguage = SearchLanguage.currentAndEnglish,
     this.searchMode = ExerciseSearchMode.fulltext,
-     this.selectedCategory,
+    this.selectedCategory,
   });
 
   ExerciseFilters copyWith({
-    ExerciseSearchLanguage? searchLanguage,
+    SearchLanguage? searchLanguage,
     ExerciseSearchMode? searchMode,
-    ExerciseCategory? selectedCategory,
-    bool clearCategory = false, // flag to explicitly set category to null
+    Object? selectedCategory = _sentinel,
   }) {
     return ExerciseFilters(
       searchLanguage: searchLanguage ?? this.searchLanguage,
       searchMode: searchMode ?? this.searchMode,
-      selectedCategory: clearCategory ? null : (selectedCategory ?? this.selectedCategory),
+      selectedCategory: identical(selectedCategory, _sentinel)
+          ? this.selectedCategory
+          : selectedCategory as ExerciseCategory?,
     );
   }
 }

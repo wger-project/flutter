@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/exercise_filters.dart';
 
@@ -24,7 +25,7 @@ class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
     return state.asData?.value ?? const ExerciseFilters();
   }
 
-  Future<void> chooseLanguage(ExerciseSearchLanguage value) async {
+  Future<void> chooseLanguage(SearchLanguage value) async {
     state = AsyncData(_current().copyWith(searchLanguage: value));
     await PreferenceHelper.instance.saveExerciseSearchLanguage(value);
   }
@@ -35,12 +36,14 @@ class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
   }
 
   void selectCategory(ExerciseCategory? category) {
-    // Category selection is synchronous and not persisted
-    if (category == null) {
-      state = AsyncData(_current().copyWith(clearCategory: true));
-    } else {
-      state = AsyncData(_current().copyWith(selectedCategory: category));
-    }
+    state = AsyncData(_current().copyWith(selectedCategory: category));
+  }
+
+  Future<void> resetAll() async {
+    state = const AsyncData(ExerciseFilters());
+    final prefs = PreferenceHelper.instance;
+    await prefs.saveExerciseSearchLanguage(SearchLanguage.currentAndEnglish);
+    await prefs.saveExerciseSearchMode(ExerciseSearchMode.fulltext);
   }
 }
 
