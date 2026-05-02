@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/util/legacy_to_async_migration_util.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
@@ -70,7 +71,7 @@ class PreferenceHelper {
       );
     }
   }
-  
+
   //4.nutri-score worst acceptable grade (null means the filter is off)
   Future<void> saveIngredientNutriscoreMax(NutriScore? value) async {
     if (value == null) {
@@ -93,21 +94,21 @@ class PreferenceHelper {
 
   // --- Exercise search filters ---
 
-  Future<void> saveExerciseSearchLanguage(ExerciseSearchLanguage language) async {
+  Future<void> saveExerciseSearchLanguage(SearchLanguage language) async {
     await PreferenceHelper.asyncPref.setString(
       'exercise_search_language',
       language.name,
     );
   }
 
-  Future<ExerciseSearchLanguage> getExerciseSearchLanguage() async {
+  Future<SearchLanguage> getExerciseSearchLanguage() async {
     final value = await PreferenceHelper.asyncPref.getString('exercise_search_language');
     if (value == null) {
-      return ExerciseSearchLanguage.currentAndEnglish; // same default as ingredients
+      return SearchLanguage.currentAndEnglish; // same default as ingredients
     }
-    return ExerciseSearchLanguage.values.firstWhere(
+    return SearchLanguage.values.firstWhere(
       (e) => e.name == value,
-      orElse: () => ExerciseSearchLanguage.currentAndEnglish,
+      orElse: () => SearchLanguage.currentAndEnglish,
     );
   }
 
@@ -126,9 +127,6 @@ class PreferenceHelper {
     return ExerciseSearchMode.values.firstWhere(
       (e) => e.name == value,
       orElse: () => ExerciseSearchMode.fulltext,
-      );
+    );
   }
 }
-
-  
-

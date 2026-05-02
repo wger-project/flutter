@@ -723,7 +723,7 @@ class ExercisesProvider with ChangeNotifier {
   Future<List<Exercise>> searchExerciseWithSearchMode(
     String name, {
     String languageCode = LANGUAGE_SHORT_ENGLISH,
-    ExerciseSearchLanguage searchLanguage = ExerciseSearchLanguage.currentAndEnglish,
+    SearchLanguage searchLanguage = SearchLanguage.currentAndEnglish,
     ExerciseSearchMode searchMode = ExerciseSearchMode.fulltext,
     ExerciseCategory? category,
   }) async {
@@ -732,10 +732,10 @@ class ExercisesProvider with ChangeNotifier {
     }
 
     final languageCodes = [languageCode];
-    if (searchLanguage == ExerciseSearchLanguage.currentAndEnglish &&
+    if (searchLanguage == SearchLanguage.currentAndEnglish &&
         languageCode != LANGUAGE_SHORT_ENGLISH) {
       languageCodes.add(LANGUAGE_SHORT_ENGLISH);
-    } else if (searchLanguage == ExerciseSearchLanguage.all) {
+    } else if (searchLanguage == SearchLanguage.all) {
       languageCodes.clear(); // no language filter
     }
 

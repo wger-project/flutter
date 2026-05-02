@@ -6,6 +6,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/providers/exercise_filters_riverpod.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
@@ -151,12 +152,12 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
         if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
           SwitchListTile(
             title: Text(AppLocalizations.of(context).searchNamesInEnglish),
-            value: exerciseFilters.searchLanguage == ExerciseSearchLanguage.currentAndEnglish,
+            value: exerciseFilters.searchLanguage == SearchLanguage.currentAndEnglish,
             onChanged: (val) {
               ref
                   .read(exerciseFiltersProvider.notifier)
                   .chooseLanguage(
-                    val ? ExerciseSearchLanguage.currentAndEnglish : ExerciseSearchLanguage.current,
+                    val ? SearchLanguage.currentAndEnglish : SearchLanguage.current,
                   );
             },
             dense: true,
@@ -174,9 +175,9 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
     final isEnglish = languageCode == LANGUAGE_SHORT_ENGLISH;
 
     // If the device is in English and currentAndEnglish is set, switch to current
-    if (isEnglish && filters.searchLanguage == ExerciseSearchLanguage.currentAndEnglish) {
+    if (isEnglish && filters.searchLanguage == SearchLanguage.currentAndEnglish) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(exerciseFiltersProvider.notifier).chooseLanguage(ExerciseSearchLanguage.current);
+        ref.read(exerciseFiltersProvider.notifier).chooseLanguage(SearchLanguage.current);
       });
     }
 
@@ -204,27 +205,27 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                               title: Text(i18n.language),
                               subtitle: Builder(
                                 builder: (context) {
-                                  final items = <DropdownMenuItem<ExerciseSearchLanguage>>[
+                                  final items = <DropdownMenuItem<SearchLanguage>>[
                                     DropdownMenuItem(
-                                      value: ExerciseSearchLanguage.current,
+                                      value: SearchLanguage.current,
                                       child: Text(i18n.searchLanguageCurrent(languageCode)),
                                     ),
                                     if (!isEnglish)
                                       DropdownMenuItem(
-                                        value: ExerciseSearchLanguage.currentAndEnglish,
+                                        value: SearchLanguage.currentAndEnglish,
                                         child: Text(i18n.searchLanguageEnglish(languageCode)),
                                       ),
                                     DropdownMenuItem(
-                                      value: ExerciseSearchLanguage.all,
+                                      value: SearchLanguage.all,
                                       child: Text(i18n.searchLanguageAll),
                                     ),
                                   ];
 
-                                  ExerciseSearchLanguage? selected = filters.searchLanguage;
+                                  SearchLanguage? selected = filters.searchLanguage;
                                   final containsSelected = items.any((it) => it.value == selected);
                                   if (!containsSelected) selected = null;
 
-                                  return DropdownButton<ExerciseSearchLanguage>(
+                                  return DropdownButton<SearchLanguage>(
                                     value: selected,
                                     isExpanded: true,
                                     onChanged: (val) {
