@@ -4,8 +4,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart' hide Consumer;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/providers/exercise_filters_riverpod.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
@@ -242,10 +242,8 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                               ),
                             ),
                             SwitchListTile(
-                              title: const Text('Exact name match'),
-                              subtitle: const Text(
-                                'Off: fuzzy search | On: exact name search',
-                              ),
+                              title: const Text(i18n.exerciseSearchExactName),
+                              subtitle: const Text(i18n.exerciseSearchExactNameSubtitle),
                               value: filters.searchMode == ExerciseSearchMode.exact,
                               contentPadding: EdgeInsets.zero,
                               onChanged: (val) {
@@ -258,6 +256,64 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                                             : ExerciseSearchMode.fulltext,
                                       );
                                 });
+                              },
+                            ),
+
+                            // Categories
+                            const SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                i18n.category,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Consumer(
+                              builder: (context, ref, _) {
+                                final exerciseProvider = Provider.of<ExercisesProvider>(
+                                  context,
+                                  listen: false,
+                                );
+                                final allCategories = exerciseProvider.categories;
+
+                                final filters = ref.watch(exerciseFiltersSyncProvider);
+
+                                return Wrap(
+                                  spacing: 8.0,
+                                  runSpacing: 4.0,
+                                  children: allCategories.map((category) {
+                                    final isSelected = filters.selectedCategory?.id == category.id;
+
+                                    return FilterChip(
+                                      label: Text(category.name),
+                                      selected: isSelected,
+                                      selectedColor: Colors.blueGrey.withValues(alpha: 0.3),
+                                      checkmarkColor: Colors.blueGrey,
+                                      labelStyle: TextStyle(
+                                        color: isSelected ? Colors.black : Colors.black87,
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                      onSelected: (bool selected) {
+                                        setDialogState(() {
+                                          // toggle it off (null). otherwise, set the new category
+                                          final newSelection = selected ? category : null;
+
+                                          ref
+                                              .read(exerciseFiltersProvider.notifier)
+                                              .selectCategory(newSelection);
+                                        });
+                                      },
+                                      avatar: Container(
+                                        width: 8.0,
+                                        height: 8.0,
+                                        color: Colors.grey[350],
+                                      ),
+                                    );
+                                  }).toList(),
+                                );
                               },
                             ),
                           ],
