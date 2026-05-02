@@ -29,6 +29,7 @@ import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/widgets/routines/forms/slot.dart';
 
 import '../../../test_data/routines.dart';
+import '../helpers/routine_form_test_overrides.dart';
 import 'slot_form_test.mocks.dart';
 
 @GenerateMocks([RoutinesRepository])
@@ -152,6 +153,7 @@ void main() {
       final container = ProviderContainer.test(
         overrides: [
           routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...routineFormAmbientOverrides(),
         ],
       );
       container.read(routinesRiverpodProvider.notifier).state = AsyncData(

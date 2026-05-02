@@ -19,7 +19,6 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -293,7 +292,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   Future<Day> addDay(Day day) async {
     final repo = ref.read(routinesRepositoryProvider);
     final newDay = await repo.addDayServer(day);
-    await repo.fetchAndSetRoutineFullServer(day.routineId);
+    await fetchAndSetRoutineFull(day.routineId);
 
     return newDay;
   }
@@ -301,20 +300,24 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   Future<void> editDay(Day day) async {
     final repo = ref.read(routinesRepositoryProvider);
     await repo.editDayServer(day);
-    await repo.fetchAndSetRoutineFullServer(day.routineId);
+    await fetchAndSetRoutineFull(day.routineId);
   }
 
   Future<void> editDays(List<Day> days) async {
+    if (days.isEmpty) {
+      return;
+    }
     final repo = ref.read(routinesRepositoryProvider);
     for (final day in days) {
       await repo.editDayServer(day);
     }
+    await fetchAndSetRoutineFull(days.first.routineId);
   }
 
   Future<void> deleteDay(int dayId, int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
     await repo.deleteDayServer(dayId);
-    await repo.fetchAndSetRoutineFullServer(routineId);
+    await fetchAndSetRoutineFull(routineId);
   }
 
   /*
@@ -323,20 +326,20 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   Future<Slot> addSlot(Slot slot, int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
     final newSlot = await repo.addSlotServer(slot);
-    await repo.fetchAndSetRoutineFullServer(routineId);
+    await fetchAndSetRoutineFull(routineId);
     return newSlot;
   }
 
   Future<void> deleteSlot(int slotId, int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
     await repo.deleteSlotServer(slotId);
-    await repo.fetchAndSetRoutineFullServer(routineId);
+    await fetchAndSetRoutineFull(routineId);
   }
 
   Future<void> editSlot(Slot slot, int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
     await repo.editSlotServer(slot);
-    await repo.fetchAndSetRoutineFullServer(routineId);
+    await fetchAndSetRoutineFull(routineId);
   }
 
   Future<void> editSlots(List<Slot> slots, int routineId) async {
@@ -345,7 +348,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
       await repo.editSlotServer(slot);
     }
 
-    await repo.fetchAndSetRoutineFullServer(routineId);
+    await fetchAndSetRoutineFull(routineId);
   }
 
   /*
@@ -354,7 +357,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   Future<SlotEntry> addSlotEntry(SlotEntry entry, int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
     final newEntry = await repo.addSlotEntryServer(entry);
-    await repo.fetchAndSetRoutineFullServer(routineId);
+    await fetchAndSetRoutineFull(routineId);
 
     return newEntry;
   }
@@ -363,14 +366,14 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     final repo = ref.read(routinesRepositoryProvider);
     await repo.deleteSlotEntryServer(id);
 
-    await repo.fetchAndSetRoutineFullServer(routineId);
+    await fetchAndSetRoutineFull(routineId);
   }
 
   Future<void> editSlotEntry(SlotEntry entry, int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
     await repo.editSlotEntryServer(entry);
 
-    await repo.fetchAndSetRoutineFullServer(routineId);
+    await fetchAndSetRoutineFull(routineId);
   }
 
   /*
@@ -379,19 +382,13 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   Future<void> editConfig(SlotEntry entry, num? value, ConfigType type, int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
     await repo.handleConfigServer(entry, value, type);
-    await repo.fetchAndSetRoutineFullServer(routineId);
+    await fetchAndSetRoutineFull(routineId);
   }
 
-  Future<BaseConfig> addConfig(BaseConfig config, ConfigType type) async {
-    final repo = ref.read(routinesRepositoryProvider);
-    return repo.addConfigServer(config, type);
-  }
-
-  Future<void> deleteConfig(int id, ConfigType type) async {
-    final repo = ref.read(routinesRepositoryProvider);
-    await repo.deleteConfigServer(id, type);
-  }
-
+  /// Single-config write helper. Intentionally does NOT trigger a routine
+  /// refresh — the only caller (`SlotEntryForm._save`) batches several of
+  /// these in a `Future.wait` and then calls [editSlotEntry] right after,
+  /// which performs the refresh once for the whole batch.
   Future<void> handleConfig(SlotEntry entry, num? value, ConfigType type) async {
     final repo = ref.read(routinesRepositoryProvider);
     await repo.handleConfigServer(entry, value, type);

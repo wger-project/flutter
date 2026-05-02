@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
@@ -31,7 +29,6 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/routines_repository.dart';
 
-import '../fixtures/fixture_reader.dart';
 import '../helpers/in_memory_drift.dart';
 import 'routines_repository_test.mocks.dart';
 
@@ -161,23 +158,7 @@ void main() {
   group('Days — REST', () {
     test('addDayServer POSTs to /day/ and returns the created Day', () async {
       final dayUri = Uri.https('localhost', 'api/v2/day/');
-      // addDayServer fires-and-forgets fetchAndSetRoutineFullServer afterwards;
-      // stub all three URLs it touches with valid-shaped JSON so the
-      // unawaited follow-up doesn't surface as an async error.
-      final structureUri = Uri.https('localhost', 'api/v2/routine/100/structure/');
-      final displayUri = Uri.https('localhost', 'api/v2/routine/100/date-sequence-display/');
-      final gymUri = Uri.https('localhost', 'api/v2/routine/100/date-sequence-gym/');
-
       when(mockBase.makeUrl('day')).thenReturn(dayUri);
-      when(
-        mockBase.makeUrl('routine', objectMethod: 'structure', id: 100),
-      ).thenReturn(structureUri);
-      when(
-        mockBase.makeUrl('routine', objectMethod: 'date-sequence-display', id: 100),
-      ).thenReturn(displayUri);
-      when(
-        mockBase.makeUrl('routine', objectMethod: 'date-sequence-gym', id: 100),
-      ).thenReturn(gymUri);
       when(mockBase.post(any, dayUri)).thenAnswer(
         (_) async => <String, dynamic>{
           'id': 7,
@@ -191,11 +172,6 @@ void main() {
           'config': null,
         },
       );
-      when(
-        mockBase.fetch(structureUri),
-      ).thenAnswer((_) async => jsonDecode(fixture('routines/routine_structure.json')));
-      when(mockBase.fetch(displayUri)).thenAnswer((_) async => <dynamic>[]);
-      when(mockBase.fetch(gymUri)).thenAnswer((_) async => <dynamic>[]);
 
       final created = await repo.addDayServer(
         Day(routineId: 100, name: 'Day 1'),

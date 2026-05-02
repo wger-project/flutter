@@ -24,24 +24,21 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
-import 'package:wger/providers/workout_session_repository.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
 import '../fake_connectivity.dart';
+import 'helpers/routine_form_test_overrides.dart';
 import 'routines_provider_test.mocks.dart';
 
-@GenerateMocks([RoutinesRepository, WorkoutSessionRepository, ExerciseRepository])
+@GenerateMocks([RoutinesRepository])
 void main() {
   late MockRoutinesRepository mockRepo;
   late MockWorkoutSessionRepository mockSessionRepo;
@@ -53,10 +50,9 @@ void main() {
   setUp(() {
     mockRepo = MockRoutinesRepository();
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const <Routine>[]));
-    // RoutinesRiverpod.build() listens to workoutSessionProvider and
-    // exercisesProvider for session/exercise hydration; stub the
-    // repositories that back them so we don't fall through to the real
-    // PowerSync DB.
+    // Mock repos for the two reference-data notifiers `fetchAndSetRoutineFull`
+    // awaits — kept locally so individual tests can re-stub them with
+    // specific session/exercise data.
     mockSessionRepo = MockWorkoutSessionRepository();
     when(
       mockSessionRepo.watchAllDrift(),
@@ -75,16 +71,12 @@ void main() {
 
   /// Overrides for the providers `RoutinesRiverpod.build()` listens to so
   /// they don't reach for the real PowerSync DB.
-  List<Override> ambientOverrides() => [
-    workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
-    exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
-    routineRepetitionUnitProvider.overrideWith(
-      (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),
-    ),
-    routineWeightUnitProvider.overrideWith(
-      (ref) => Stream<List<WeightUnit>>.value(testWeightUnits),
-    ),
-  ];
+  List<Override> ambientOverrides() => routineFormAmbientOverrides(
+    exercise: mockExerciseRepo,
+    session: mockSessionRepo,
+    repetitionUnits: testRepetitionUnits,
+    weightUnits: testWeightUnits,
+  );
 
   group('test routine methods', () {
     test('addRoutine calls repository (creation still goes via REST)', () async {
@@ -154,7 +146,7 @@ void main() {
       verify(mockRepo.fetchAndSetRoutineFullServer(testDay.routineId)).called(1);
     });
 
-    test('editDays calls repository.editDayServer for each day', () async {
+    test('editDays calls repository.editDayServer for each day and refreshes once', () async {
       // Arrange
       final day1 = Day(
         id: 20,
@@ -169,6 +161,7 @@ void main() {
         order: 2,
       );
       when(mockRepo.editDayServer(any)).thenAnswer((_) async => Future.value());
+      when(mockRepo.fetchAndSetRoutineFullServer(any)).thenAnswer((_) async => getTestRoutine());
 
       final container = ProviderContainer.test(
         overrides: [
@@ -184,7 +177,9 @@ void main() {
       // Assert
       verify(mockRepo.editDayServer(day1)).called(1);
       verify(mockRepo.editDayServer(day2)).called(1);
-      verifyNever(mockRepo.fetchAndSetRoutineFullServer(any));
+      // dayData/dayDataGym are server-computed, so we must refresh once after
+      // the batch — not once per edit.
+      verify(mockRepo.fetchAndSetRoutineFullServer(101)).called(1);
     });
 
     test(

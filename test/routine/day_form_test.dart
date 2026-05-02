@@ -30,6 +30,7 @@ import 'package:wger/widgets/routines/forms/day.dart';
 
 import '../../test_data/routines.dart';
 import 'day_form_test.mocks.dart';
+import 'helpers/routine_form_test_overrides.dart';
 
 @GenerateMocks([RoutinesRepository])
 void main() {
@@ -48,6 +49,7 @@ void main() {
       overrides: [
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
         networkStatusProvider.overrideWithValue(isOnline),
+        ...routineFormAmbientOverrides(),
       ],
       child: MaterialApp(
         locale: const Locale('en'),

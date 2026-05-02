@@ -172,11 +172,7 @@ class RoutinesRepository {
       day.toJson(),
       _baseProvider.makeUrl(_daysUrlPath),
     );
-    day = Day.fromJson(data);
-
-    fetchAndSetRoutineFullServer(day.routineId);
-
-    return day;
+    return Day.fromJson(data);
   }
 
   Future<void> editDayServer(Day day) async {

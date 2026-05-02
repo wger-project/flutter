@@ -33,6 +33,7 @@ import 'package:wger/widgets/routines/forms/weight.dart';
 
 import '../../test_data/routines.dart';
 import './slot_entry_form_test.mocks.dart';
+import 'helpers/routine_form_test_overrides.dart';
 
 @GenerateMocks([RoutinesRepository])
 void main() {
@@ -60,6 +61,7 @@ void main() {
           const AsyncValue.data(testRepetitionUnits),
         ),
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
+        ...exerciseAndSessionRepoOverrides(),
       ],
       child: MaterialApp(
         locale: Locale(locale),
