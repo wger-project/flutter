@@ -216,7 +216,7 @@ void main() {
   });
 
   group('plan write operations', () {
-    test('addPlan generates a UUID and delegates to addPlanLocalDrift', () async {
+    test('addPlan delegates to addPlanLocalDrift; the repository owns the UUID mint', () async {
       final toAdd = NutritionalPlan(
         id: null,
         description: 'New plan',
@@ -227,7 +227,9 @@ void main() {
       final container = makeContainer();
       final result = await container.read(nutritionProvider.notifier).addPlan(toAdd);
 
-      expect(result.id, isNotNull);
+      // Notifier no longer mints — the repository (Drift's clientDefault)
+      // does, on insert. The mock doesn't run that, so id stays null here.
+      expect(identical(result, toAdd), isTrue);
       verify(mockRepo.addPlanLocalDrift(toAdd)).called(1);
     });
 
@@ -257,13 +259,15 @@ void main() {
   group('meal write operations', () {
     const mealUuid = 'aa000000-0000-4000-8000-000000000001';
 
-    test('addMeal generates a UUID and delegates to addMealLocalDrift', () async {
+    test('addMeal delegates to addMealLocalDrift; the repository owns the UUID mint', () async {
       final meal = Meal(plan: planUuid1, name: 'breakfast');
       final container = makeContainer();
 
       final saved = await container.read(nutritionProvider.notifier).addMeal(meal, planUuid1);
 
-      expect(saved.id, isNotNull);
+      // Notifier sets planId and delegates; the UUID is minted by Drift on
+      // insert inside the repository. The mock doesn't run that.
+      expect(identical(saved, meal), isTrue);
       expect(saved.planId, planUuid1);
       verify(mockRepo.addMealLocalDrift(meal)).called(1);
     });
@@ -291,17 +295,22 @@ void main() {
     const mealUuid = 'aa000000-0000-4000-8000-000000000001';
     const itemUuid = 'bb000000-0000-4000-8000-000000000001';
 
-    test('addMealItem generates a UUID and delegates to addMealItemLocalDrift', () async {
-      final meal = Meal(id: mealUuid, plan: planUuid1, name: 'breakfast');
-      final item = MealItem(ingredientId: 1, amount: 100);
-      final container = makeContainer();
+    test(
+      'addMealItem delegates to addMealItemLocalDrift; the repository owns the UUID mint',
+      () async {
+        final meal = Meal(id: mealUuid, plan: planUuid1, name: 'breakfast');
+        final item = MealItem(ingredientId: 1, amount: 100);
+        final container = makeContainer();
 
-      final saved = await container.read(nutritionProvider.notifier).addMealItem(item, meal);
+        final saved = await container.read(nutritionProvider.notifier).addMealItem(item, meal);
 
-      expect(saved.id, isNotNull);
-      expect(saved.mealId, mealUuid);
-      verify(mockRepo.addMealItemLocalDrift(item)).called(1);
-    });
+        // Notifier sets mealId and delegates; the UUID is minted by Drift on
+        // insert inside the repository. The mock doesn't run that.
+        expect(identical(saved, item), isTrue);
+        expect(saved.mealId, mealUuid);
+        verify(mockRepo.addMealItemLocalDrift(item)).called(1);
+      },
+    );
 
     test('editMealItem delegates to editMealItemLocalDrift (PowerSync)', () async {
       final item = MealItem(id: itemUuid, mealId: mealUuid, ingredientId: 1, amount: 100);

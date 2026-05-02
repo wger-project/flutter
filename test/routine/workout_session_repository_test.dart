@@ -103,7 +103,7 @@ void main() {
       final session = makeSession();
       await repo.addLocalDrift(session);
 
-      await repo.deleteLocalDrift(session.id);
+      await repo.deleteLocalDrift(session.id!);
 
       expect(await db.select(db.workoutSessionTable).get(), isEmpty);
     });
@@ -136,8 +136,8 @@ void main() {
       await seedUnits();
       final session = makeSession();
       await repo.addLocalDrift(session);
-      final log1 = makeLog(sessionId: session.id, exerciseId: 1);
-      final log2 = makeLog(sessionId: session.id, exerciseId: 2);
+      final log1 = makeLog(sessionId: session.id!, exerciseId: 1);
+      final log2 = makeLog(sessionId: session.id!, exerciseId: 2);
       await db.into(db.workoutLogTable).insert(log1.toCompanion());
       await db.into(db.workoutLogTable).insert(log2.toCompanion());
 
@@ -150,7 +150,7 @@ void main() {
       await seedUnits();
       final session = makeSession();
       await repo.addLocalDrift(session);
-      await db.into(db.workoutLogTable).insert(makeLog(sessionId: session.id).toCompanion());
+      await db.into(db.workoutLogTable).insert(makeLog(sessionId: session.id!).toCompanion());
 
       final emitted = await repo.watchAllDrift().first;
 
@@ -173,8 +173,8 @@ void main() {
       final s2 = makeSession(routineId: 2);
       await repo.addLocalDrift(s1);
       await repo.addLocalDrift(s2);
-      await db.into(db.workoutLogTable).insert(makeLog(sessionId: s1.id).toCompanion());
-      await db.into(db.workoutLogTable).insert(makeLog(sessionId: s2.id).toCompanion());
+      await db.into(db.workoutLogTable).insert(makeLog(sessionId: s1.id!).toCompanion());
+      await db.into(db.workoutLogTable).insert(makeLog(sessionId: s2.id!).toCompanion());
 
       final emitted = await repo.watchAllDrift().first;
 

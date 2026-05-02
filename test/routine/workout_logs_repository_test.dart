@@ -74,6 +74,7 @@ void main() {
   group('addLocalDrift — log without sessionId', () {
     test('reuses an existing session for the same routine and day', () async {
       final existingSession = WorkoutSession(
+        id: 'existing-session-1',
         routineId: 100,
         date: DateTime.utc(2026, 4, 15),
       );
@@ -143,7 +144,7 @@ void main() {
       final log = makeLog(sessionId: 'session-1');
       await repo.addLocalDrift(log);
 
-      await repo.deleteLocalDrift(log.id);
+      await repo.deleteLocalDrift(log.id!);
 
       expect(await readLogs(), isEmpty);
     });

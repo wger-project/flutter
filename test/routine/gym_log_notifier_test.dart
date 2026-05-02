@@ -57,7 +57,7 @@ void main() {
     expect(container.read(gymLogProvider), isNull);
   });
 
-  test('setLog stores a copy with a fresh uuid and the current clock as date', () {
+  test('setLog stores a copy with cleared id and the current clock as date', () {
     final fixed = DateTime.utc(2026, 5, 1, 12);
     withClock(Clock.fixed(fixed), () {
       final source = makeLog(id: 'original-id', date: DateTime.utc(2020, 1, 1));
@@ -68,10 +68,10 @@ void main() {
       expect(state.exerciseId, source.exerciseId);
       expect(state.weight, source.weight);
       expect(state.date, fixed);
-      // setLog must mint a fresh id — the source log is a template, the new
-      // state is a separate entry that will get its own DB row.
-      expect(state.id, isNot('original-id'));
-      expect(state.id, isNotEmpty);
+      // setLog must clear the id — the source log is a template, the new
+      // state is a separate entry that will get its own UUID from Drift on
+      // insert.
+      expect(state.id, isNull);
     });
   });
 

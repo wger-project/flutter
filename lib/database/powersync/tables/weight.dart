@@ -25,7 +25,7 @@ class WeightEntryTable extends Table {
   @override
   String get tableName => 'weight_weightentry';
 
-  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   RealColumn get weight => real()();
   DateTimeColumn get date => dateTime().nullable()();
 }

@@ -63,7 +63,7 @@ class MeasurementRepository {
         final entry = row.readTableOrNull(_db.measurementEntryTable);
 
         final current = map.putIfAbsent(
-          category.id,
+          category.id!,
           () => category.copyWith(entries: []),
         );
 
@@ -91,7 +91,7 @@ class MeasurementRepository {
 
   Future<void> updateLocalDrift(MeasurementEntry entry) async {
     _logger.finer('Updating local measurement entry ${entry.id}');
-    final stmt = _db.update(_db.measurementEntryTable)..where((t) => t.id.equals(entry.id));
+    final stmt = _db.update(_db.measurementEntryTable)..where((t) => t.id.equals(entry.id!));
     await stmt.write(entry.toCompanion());
   }
 
@@ -108,7 +108,7 @@ class MeasurementRepository {
 
   Future<void> updateLocalDriftCategory(MeasurementCategory category) async {
     _logger.finer('Updating local measurement category ${category.id}');
-    final stmt = _db.update(_db.measurementCategoryTable)..where((t) => t.id.equals(category.id));
+    final stmt = _db.update(_db.measurementCategoryTable)..where((t) => t.id.equals(category.id!));
     await stmt.write(category.toCompanion());
   }
 

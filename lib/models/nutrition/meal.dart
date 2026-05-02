@@ -26,6 +26,7 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
 class Meal {
+  /// Client-generated UUID, is `null` only before the first persist
   String? id;
 
   /// FK to the parent plan
@@ -100,16 +101,11 @@ class Meal {
 
   /// Drift companion for inserts/updates against `nutrition_meal`.
   ///
-  /// On insert, leave `id` absent so the table's `clientDefault` UUID kicks
-  /// in (or set [includeId] true if you've already generated it). For an
-  /// update, the row id must be present, we throw if it's missing.
-  MealTableCompanion toCompanion({bool includeId = true}) {
-    final mealId = id;
-    if (includeId && mealId == null) {
-      throw StateError('Cannot persist meal without id');
-    }
+  /// If [id] is null, Drift's `clientDefault` mints a fresh UUID on insert.
+  /// If set, the value round-trips into the row as-is.
+  MealTableCompanion toCompanion() {
     return MealTableCompanion(
-      id: includeId && mealId != null ? drift.Value(mealId) : const drift.Value.absent(),
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       planId: drift.Value(planId),
       order: drift.Value(order),
       time: time == null ? const drift.Value.absent() : drift.Value(time!),

@@ -3123,7 +3123,7 @@ class $WeightEntryTableTable extends WeightEntryTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v4(),
+    clientDefault: () => ps.uuid.v7(),
   );
   static const VerificationMeta _weightMeta = const VerificationMeta('weight');
   @override
@@ -4746,13 +4746,16 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
     requiredDuringInsert: false,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<int, String> impression = GeneratedColumn<String>(
-    'impression',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  ).withConverter<int>($WorkoutSessionTableTable.$converterimpression);
+  late final GeneratedColumnWithTypeConverter<WorkoutImpression, String> impression =
+      GeneratedColumn<String>(
+        'impression',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<WorkoutImpression>(
+        $WorkoutSessionTableTable.$converterimpression,
+      );
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDay?, String> timeStart =
       GeneratedColumn<String>(
@@ -4879,7 +4882,8 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
     return $WorkoutSessionTableTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<int, String> $converterimpression = const IntToStringConverter();
+  static TypeConverter<WorkoutImpression, String> $converterimpression =
+      const WorkoutImpressionConverter();
   static TypeConverter<TimeOfDay, String> $convertertimeStart = const TimeOfDayConverter();
   static TypeConverter<TimeOfDay?, String?> $convertertimeStartn = NullAwareTypeConverter.wrap(
     $convertertimeStart,
@@ -4896,7 +4900,7 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
   final Value<int?> dayId;
   final Value<DateTime> date;
   final Value<String?> notes;
-  final Value<int> impression;
+  final Value<WorkoutImpression> impression;
   final Value<TimeOfDay?> timeStart;
   final Value<TimeOfDay?> timeEnd;
   final Value<int> rowid;
@@ -4917,7 +4921,7 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
     this.dayId = const Value.absent(),
     required DateTime date,
     this.notes = const Value.absent(),
-    required int impression,
+    required WorkoutImpression impression,
     this.timeStart = const Value.absent(),
     this.timeEnd = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -4953,7 +4957,7 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
     Value<int?>? dayId,
     Value<DateTime>? date,
     Value<String?>? notes,
-    Value<int>? impression,
+    Value<WorkoutImpression>? impression,
     Value<TimeOfDay?>? timeStart,
     Value<TimeOfDay?>? timeEnd,
     Value<int>? rowid,
@@ -5325,7 +5329,7 @@ class $NutritionalPlanTableTable extends NutritionalPlanTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v4(),
+    clientDefault: () => ps.uuid.v7(),
   );
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
@@ -7359,7 +7363,7 @@ class $MealTableTable extends MealTable with TableInfo<$MealTableTable, Meal> {
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v4(),
+    clientDefault: () => ps.uuid.v7(),
   );
   static const VerificationMeta _planIdMeta = const VerificationMeta('planId');
   @override
@@ -7595,7 +7599,7 @@ class $MealItemTableTable extends MealItemTable with TableInfo<$MealItemTableTab
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v4(),
+    clientDefault: () => ps.uuid.v7(),
   );
   static const VerificationMeta _mealIdMeta = const VerificationMeta('mealId');
   @override
@@ -7884,7 +7888,7 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v4(),
+    clientDefault: () => ps.uuid.v7(),
   );
   static const VerificationMeta _planIdMeta = const VerificationMeta('planId');
   @override

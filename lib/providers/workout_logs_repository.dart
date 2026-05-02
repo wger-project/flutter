@@ -49,7 +49,7 @@ class WorkoutLogRepository {
 
   Future<void> updateLocalDrift(Log log) async {
     _logger.finer('Updating local workout log entry ${log.id}');
-    final stmt = _db.update(_db.workoutLogTable)..where((t) => t.id.equals(log.id));
+    final stmt = _db.update(_db.workoutLogTable)..where((t) => t.id.equals(log.id!));
     await stmt.write(log.toCompanion());
   }
 
@@ -83,13 +83,16 @@ class WorkoutLogRepository {
             routineId: log.routineId,
             date: dayMidnightUtc,
           );
-          await _db.into(_db.workoutSessionTable).insert(newSession.toCompanion());
-          log.sessionId = newSession.id;
-          _logger.finer('Created lazy session ${newSession.id} for log ${log.id}');
+          final inserted = await _db
+              .into(_db.workoutSessionTable)
+              .insertReturning(newSession.toCompanion());
+          log.sessionId = inserted.id;
+          _logger.finer('Created lazy session ${inserted.id} for log');
         }
       }
 
-      await _db.into(_db.workoutLogTable).insert(log.toCompanion());
+      final inserted = await _db.into(_db.workoutLogTable).insertReturning(log.toCompanion());
+      log.id = inserted.id;
     });
   }
 }

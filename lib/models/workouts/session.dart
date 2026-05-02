@@ -56,8 +56,7 @@ extension WorkoutImpressionL10n on WorkoutImpression {
 }
 
 class WorkoutSession {
-  /// `null` only for instances built in-memory before the first persist;
-  /// Drift fills it in via the table's `clientDefault` UUID.
+  /// Client-generated UUID, is `null` only before the first persist
   String? id;
   late int? routineId;
   int? dayId;

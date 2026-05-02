@@ -176,7 +176,7 @@ void main() {
     test('deleteLocalDrift removes the row with matching id', () async {
       await seedCategoriesAndEntries();
 
-      await repo.deleteLocalDrift(testMeasurementEntry1.id);
+      await repo.deleteLocalDrift(testMeasurementEntry1.id!);
 
       final entries = (await repo.watchAll().first).firstWhere((c) => c.name == 'Body fat').entries;
       expect(entries.map((e) => e.id), isNot(contains(testMeasurementEntry1.id)));

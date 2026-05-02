@@ -23,8 +23,7 @@ import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
 class MealItem {
-  /// Client-generated UUID. `null` only for instances built in-memory before
-  /// the first persist; Drift fills it in via the table's `clientDefault`.
+  /// Client-generated UUID, is `null` only before the first persist
   String? id;
 
   /// FK to the parent meal — the meal's UUID, not the server-side integer PK.
@@ -83,15 +82,11 @@ class MealItem {
 
   /// Drift companion for inserts/updates against `nutrition_mealitem`.
   ///
-  /// On insert, leave `id` absent so the table's `clientDefault` UUID kicks
-  /// in (or set [includeId] true if you've already generated it).
-  MealItemTableCompanion toCompanion({bool includeId = true}) {
-    final itemId = id;
-    if (includeId && itemId == null) {
-      throw StateError('Cannot persist meal item without id');
-    }
+  /// If [id] is null, Drift's `clientDefault` mints a fresh UUID on insert.
+  /// If set, the value round-trips into the row as-is.
+  MealItemTableCompanion toCompanion() {
     return MealItemTableCompanion(
-      id: includeId && itemId != null ? drift.Value(itemId) : const drift.Value.absent(),
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       mealId: drift.Value(mealId),
       ingredientId: drift.Value(ingredientId),
       weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId!),

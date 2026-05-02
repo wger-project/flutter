@@ -33,8 +33,7 @@ import 'package:wger/models/nutrition/nutritional_values.dart';
 /// Named `LogItem` to mirror the Django model and Drift table name, and to
 /// avoid clashing with the workouts `Log`.
 class LogItem {
-  /// Client-generated UUID. `null` only for instances built in-memory before
-  /// the first persist; Drift fills it in via the table's `clientDefault`.
+  /// Client-generated UUID, is `null` only before the first persist
   String? id;
 
   String planId;
@@ -80,11 +79,11 @@ class LogItem {
 
   /// Drift companion for inserts/updates against `nutrition_logitem`.
   ///
-  /// On insert we leave `id` absent so the table's `clientDefault` UUID kicks
-  /// in. On update set `includeId: true` to address the existing row.
-  LogItemTableCompanion toCompanion({bool includeId = false}) {
+  /// If [id] is null, Drift's `clientDefault` mints a fresh UUID on insert.
+  /// If set, the value round-trips into the row as-is.
+  LogItemTableCompanion toCompanion() {
     return LogItemTableCompanion(
-      id: includeId && id != null ? drift.Value(id!) : const drift.Value.absent(),
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       planId: drift.Value(planId),
       mealId: mealId == null ? const drift.Value.absent() : drift.Value(mealId!),
       ingredientId: drift.Value(ingredientId),

@@ -40,7 +40,7 @@ final class GymLogNotifierProvider extends $NotifierProvider<GymLogNotifier, Log
   }
 }
 
-String _$gymLogNotifierHash() => r'5163fac0fee0c6f1210c52b1db02dc0a5b103daf';
+String _$gymLogNotifierHash() => r'82c162256cf93e6cc2c9673c1ebcd9d044a79de6';
 
 abstract class _$GymLogNotifier extends $Notifier<Log?> {
   Log? build();

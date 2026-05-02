@@ -18,15 +18,15 @@
 
 import 'package:drift/drift.dart' hide JsonKey;
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:powersync/powersync.dart' show uuid;
 import 'package:wger/database/powersync/database.dart';
 
 part 'measurement_entry.freezed.dart';
 
 @freezed
 class MeasurementEntry with _$MeasurementEntry {
+  /// Client-generated UUID, is `null` only before the first persist
   @override
-  final String id;
+  final String? id;
 
   @override
   final String categoryId;
@@ -41,17 +41,17 @@ class MeasurementEntry with _$MeasurementEntry {
   final String notes;
 
   MeasurementEntry({
-    String? id,
+    this.id,
     required this.categoryId,
     required this.date,
     required this.value,
     required this.notes,
-  }) : id = id ?? uuid.v7();
+  });
 
   // Boilerplate
-  MeasurementEntryTableCompanion toCompanion({bool includeId = false}) {
+  MeasurementEntryTableCompanion toCompanion() {
     return MeasurementEntryTableCompanion(
-      id: Value(id),
+      id: id != null ? Value(id!) : const Value.absent(),
       categoryId: Value(categoryId),
       date: Value(date.toUtc()),
       value: Value(value.toDouble()),

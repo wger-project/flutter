@@ -32,21 +32,16 @@ class MeasurementCategoryForm extends ConsumerWidget {
   final nameController = TextEditingController();
   final unitController = TextEditingController();
 
-  final Map<String, dynamic> categoryData = {
-    'id': null,
-    'name': '',
-    'unit': '',
-  };
+  final String? _existingId;
+  String _name;
+  String _unit;
 
-  MeasurementCategoryForm([MeasurementCategory? category]) {
-    if (category != null) {
-      categoryData['id'] = category.id;
-      categoryData['unit'] = category.unit;
-      categoryData['name'] = category.name;
-    }
-
-    unitController.text = categoryData['unit']!;
-    nameController.text = categoryData['name']!;
+  MeasurementCategoryForm([MeasurementCategory? category])
+    : _existingId = category?.id,
+      _name = category?.name ?? '',
+      _unit = category?.unit ?? '' {
+    nameController.text = _name;
+    unitController.text = _unit;
   }
 
   @override
@@ -63,7 +58,7 @@ class MeasurementCategoryForm extends ConsumerWidget {
             ),
             controller: nameController,
             onSaved: (newValue) {
-              categoryData['name'] = newValue;
+              _name = newValue!;
             },
             validator: (value) {
               if (value!.isEmpty) {
@@ -81,7 +76,7 @@ class MeasurementCategoryForm extends ConsumerWidget {
             ),
             controller: unitController,
             onSaved: (newValue) {
-              categoryData['unit'] = newValue;
+              _unit = newValue!;
             },
             validator: (value) {
               if (value!.isEmpty) {
@@ -93,7 +88,6 @@ class MeasurementCategoryForm extends ConsumerWidget {
           ElevatedButton(
             child: Text(AppLocalizations.of(context).save),
             onPressed: () async {
-              // Validate and save the current values to the weightEntry
               final isValid = _form.currentState!.validate();
               if (!isValid) {
                 return;
@@ -102,15 +96,16 @@ class MeasurementCategoryForm extends ConsumerWidget {
 
               final notifier = ref.read(measurementProvider.notifier);
               final category = MeasurementCategory(
-                id: categoryData['id'],
-                name: categoryData['name'],
-                unit: categoryData['unit'],
+                id: _existingId,
+                name: _name,
+                unit: _unit,
               );
 
-              // Save the entry on the server
-              categoryData['id'] == null
-                  ? await notifier.addCategory(category)
-                  : notifier.updateCategory(category);
+              if (category.id == null) {
+                await notifier.addCategory(category);
+              } else {
+                notifier.updateCategory(category);
+              }
 
               if (context.mounted) {
                 Navigator.of(context).pop();
@@ -131,25 +126,17 @@ class MeasurementEntryForm extends ConsumerWidget {
   final _timeController = TextEditingController(text: '');
   final _notesController = TextEditingController();
 
-  late final Map<String, dynamic> _entryData;
+  final String? _existingId;
+  DateTime _date;
+  num? _value;
+  String _notes;
 
-  MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry]) {
-    _entryData = {
-      'id': null,
-      'date': DateTime.now(),
-      'value': '',
-      'notes': '',
-    };
-
-    if (entry != null) {
-      _entryData['id'] = entry.id;
-      _entryData['value'] = entry.value;
-      _entryData['date'] = entry.date;
-      _entryData['notes'] = entry.notes;
-    }
-
-    _valueController.text = '';
-    _notesController.text = _entryData['notes']!;
+  MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry])
+    : _existingId = entry?.id,
+      _date = entry?.date ?? DateTime.now(),
+      _value = entry?.value,
+      _notes = entry?.notes ?? '' {
+    _notesController.text = _notes;
   }
 
   @override
@@ -161,17 +148,17 @@ class MeasurementEntryForm extends ConsumerWidget {
     final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(_categoryId);
 
     if (_dateController.text.isEmpty) {
-      _dateController.text = dateFormat.format(_entryData['date']);
+      _dateController.text = dateFormat.format(_date);
     }
     if (_timeController.text.isEmpty) {
-      _timeController.text = timeFormat.format(_entryData['date']);
+      _timeController.text = timeFormat.format(_date);
     }
 
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     // If the value is not empty, format it
-    if (_valueController.text.isEmpty && _entryData['value'] != null && _entryData['value'] != '') {
-      _valueController.text = numberFormat.format(_entryData['value']);
+    if (_valueController.text.isEmpty && _value != null) {
+      _valueController.text = numberFormat.format(_value);
     }
 
     return FutureBuilder(
@@ -209,7 +196,7 @@ class MeasurementEntryForm extends ConsumerWidget {
 
                   final pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: _entryData['date'],
+                    initialDate: _date,
                     firstDate: DateTime(DateTime.now().year - 10),
                     lastDate: DateTime.now(),
                   );
@@ -220,11 +207,7 @@ class MeasurementEntryForm extends ConsumerWidget {
                 },
                 onSaved: (newValue) {
                   final date = dateFormat.parse(newValue!);
-                  _entryData['date'] = (_entryData['date'] as DateTime).copyWith(
-                    year: date.year,
-                    month: date.month,
-                    day: date.day,
-                  );
+                  _date = _date.copyWith(year: date.year, month: date.month, day: date.day);
                 },
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -248,7 +231,7 @@ class MeasurementEntryForm extends ConsumerWidget {
                 onTap: () async {
                   final pickedTime = await showTimePicker(
                     context: context,
-                    initialTime: TimeOfDay.fromDateTime(_entryData['date']),
+                    initialTime: TimeOfDay.fromDateTime(_date),
                   );
 
                   if (pickedTime != null) {
@@ -265,7 +248,7 @@ class MeasurementEntryForm extends ConsumerWidget {
                 },
                 onSaved: (newValue) {
                   final time = timeFormat.parse(newValue!);
-                  _entryData['date'] = (_entryData['date'] as DateTime).copyWith(
+                  _date = _date.copyWith(
                     hour: time.hour,
                     minute: time.minute,
                     second: time.second,
@@ -294,7 +277,7 @@ class MeasurementEntryForm extends ConsumerWidget {
                   return null;
                 },
                 onSaved: (newValue) {
-                  _entryData['value'] = numberFormat.parse(newValue!);
+                  _value = numberFormat.parse(newValue!);
                 },
               ),
               // Notes
@@ -302,7 +285,7 @@ class MeasurementEntryForm extends ConsumerWidget {
                 decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
                 controller: _notesController,
                 onSaved: (newValue) {
-                  _entryData['notes'] = newValue;
+                  _notes = newValue ?? '';
                 },
                 validator: (value) {
                   const minLength = 0;
@@ -327,15 +310,17 @@ class MeasurementEntryForm extends ConsumerWidget {
                   _form.currentState!.save();
 
                   final entry = MeasurementEntry(
-                    id: _entryData['id'],
-                    categoryId: category.id,
-                    date: _entryData['date'],
-                    value: _entryData['value'],
-                    notes: _entryData['notes'],
+                    id: _existingId,
+                    categoryId: category.id!,
+                    date: _date,
+                    value: _value!,
+                    notes: _notes,
                   );
-                  _entryData['id'] == null
-                      ? await notifier.addEntry(entry)
-                      : await notifier.updateEntry(entry);
+                  if (entry.id == null) {
+                    await notifier.addEntry(entry);
+                  } else {
+                    await notifier.updateEntry(entry);
+                  }
 
                   if (context.mounted) {
                     Navigator.of(context).pop();

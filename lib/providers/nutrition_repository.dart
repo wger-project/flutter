@@ -56,14 +56,13 @@ class NutritionRepository {
     )..orderBy([(t) => OrderingTerm.desc(t.startDate)])).watch();
   }
 
-  /// Inserts a nutritional plan into the local Drift table. The caller must
-  /// have set [NutritionalPlan.id] (UUID) beforehand.
+  /// Inserts a nutritional plan into the local Drift table. If [plan] has no
+  /// id, Drift mints one and writes it back to [plan.id] so the caller can
+  /// reference it immediately (e.g. to add child meals in the same flow).
   Future<void> addPlanLocalDrift(NutritionalPlan plan) async {
-    if (plan.id == null) {
-      throw StateError('Cannot persist plan without id (caller must generate the UUID)');
-    }
-    _logger.finer('Inserting local nutritional plan ${plan.id}');
-    await _db.into(_db.nutritionalPlanTable).insert(plan.toCompanion());
+    _logger.finer('Inserting local nutritional plan');
+    final inserted = await _db.into(_db.nutritionalPlanTable).insertReturning(plan.toCompanion());
+    plan.id = inserted.id;
   }
 
   /// Updates a nutritional plan via the local Drift table. PowerSync's CRUD
@@ -178,13 +177,11 @@ class NutritionRepository {
   }
 
   /// Inserts a meal into the local Drift table. The caller must have set
-  /// [Meal.id] (UUID) and [Meal.planId] beforehand. The `order` is computed
-  /// here as `MAX(order) + 1` over the plan's existing meals so that newly
-  /// added meals land at the bottom of the ordering
+  /// [Meal.planId]; if [Meal.id] is null Drift mints one and writes it back
+  /// to [meal] so the caller can reference it immediately. The `order` is
+  /// computed here as `MAX(order) + 1` over the plan's existing meals so
+  /// that newly added meals land at the bottom of the ordering.
   Future<void> addMealLocalDrift(Meal meal) async {
-    if (meal.id == null) {
-      throw StateError('Cannot persist meal without id (caller must generate the UUID)');
-    }
     final maxOrder =
         await (_db.selectOnly(_db.mealTable)
               ..addColumns([_db.mealTable.order.max()])
@@ -192,8 +189,9 @@ class NutritionRepository {
             .map((row) => row.read(_db.mealTable.order.max()))
             .getSingleOrNull();
     meal.order = (maxOrder ?? 0) + 1;
-    _logger.finer('Inserting local meal ${meal.id} (order=${meal.order})');
-    await _db.into(_db.mealTable).insert(meal.toCompanion());
+    _logger.finer('Inserting local meal (order=${meal.order})');
+    final inserted = await _db.into(_db.mealTable).insertReturning(meal.toCompanion());
+    meal.id = inserted.id;
   }
 
   /// Updates a meal via the local Drift table. PowerSync's CRUD queue picks
@@ -216,13 +214,11 @@ class NutritionRepository {
 
   // --- Meal items ---
 
-  /// Inserts a meal item into the local Drift table. The caller must have set
-  /// [MealItem.id] (UUID) and [MealItem.mealId] (parent meal's UUID); `order`
-  /// is computed here as `MAX(order) + 1` over the meal's existing items.
+  /// Inserts a meal item into the local Drift table. The caller must have
+  /// set [MealItem.mealId] (parent meal's UUID); if [MealItem.id] is null
+  /// Drift mints one and writes it back. `order` is computed here as
+  /// `MAX(order) + 1` over the meal's existing items.
   Future<void> addMealItemLocalDrift(MealItem item) async {
-    if (item.id == null) {
-      throw StateError('Cannot persist meal item without id (caller must generate the UUID)');
-    }
     final maxOrder =
         await (_db.selectOnly(_db.mealItemTable)
               ..addColumns([_db.mealItemTable.order.max()])
@@ -230,8 +226,9 @@ class NutritionRepository {
             .map((row) => row.read(_db.mealItemTable.order.max()))
             .getSingleOrNull();
     item.order = (maxOrder ?? 0) + 1;
-    _logger.finer('Inserting local meal item ${item.id} (order=${item.order})');
-    await _db.into(_db.mealItemTable).insert(item.toCompanion());
+    _logger.finer('Inserting local meal item (order=${item.order})');
+    final inserted = await _db.into(_db.mealItemTable).insertReturning(item.toCompanion());
+    item.id = inserted.id;
   }
 
   /// Updates a meal item via the local Drift table. PowerSync picks the

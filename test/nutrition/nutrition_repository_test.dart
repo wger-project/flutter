@@ -197,7 +197,7 @@ void main() {
       expect(emitted.single.description, 'fresh');
     });
 
-    test('addPlanLocalDrift throws StateError when id is null', () async {
+    test('addPlanLocalDrift mints a UUID and writes it back when id is null', () async {
       final plan = NutritionalPlan(
         description: 'no id',
         creationDate: DateTime.utc(2024),
@@ -205,7 +205,12 @@ void main() {
         onlyLogging: false,
       );
 
-      expect(() => repo.addPlanLocalDrift(plan), throwsStateError);
+      await repo.addPlanLocalDrift(plan);
+
+      expect(plan.id, isNotNull);
+      final emitted = await repo.watchAllDrift().first;
+      expect(emitted.single.id, plan.id);
+      expect(emitted.single.description, 'no id');
     });
 
     test('editLocalDrift overwrites the plan with matching id', () async {
@@ -259,9 +264,17 @@ void main() {
       expect(row.order, 4);
     });
 
-    test('addMealLocalDrift throws StateError when id is null', () async {
+    test('addMealLocalDrift mints a UUID and writes it back when id is null', () async {
+      await seedPlan(id: planUuid1);
       final meal = Meal(plan: planUuid1, name: 'no id');
-      expect(() => repo.addMealLocalDrift(meal), throwsStateError);
+
+      await repo.addMealLocalDrift(meal);
+
+      expect(meal.id, isNotNull);
+      final row = await (db.select(
+        db.mealTable,
+      )..where((t) => t.id.equals(meal.id!))).getSingle();
+      expect(row.name, 'no id');
     });
 
     test('editMealLocalDrift overwrites the meal with matching id', () async {
@@ -315,9 +328,19 @@ void main() {
       expect(row.order, 6);
     });
 
-    test('addMealItemLocalDrift throws StateError when id is null', () async {
+    test('addMealItemLocalDrift mints a UUID and writes it back when id is null', () async {
+      await seedPlan(id: planUuid1);
+      await seedMeal(id: mealUuid, planId: planUuid1);
+      await seedIngredient(id: 1, name: 'Apple');
+
       final item = MealItem(mealId: mealUuid, ingredientId: 1, amount: 50);
-      expect(() => repo.addMealItemLocalDrift(item), throwsStateError);
+      await repo.addMealItemLocalDrift(item);
+
+      expect(item.id, isNotNull);
+      final row = await (db.select(
+        db.mealItemTable,
+      )..where((t) => t.id.equals(item.id!))).getSingle();
+      expect(row.amount, 50);
     });
 
     test('editMealItemLocalDrift overwrites the item with matching id', () async {
@@ -471,9 +494,9 @@ void main() {
         amount: 100,
         datetime: DateTime.utc(2026, 4, 15),
       );
-      await db.into(db.logItemTable).insert(log.toCompanion(includeId: true));
-      // Use insert with includeId: false (default) means a new id is generated.
-      // For our test, fetch the inserted id from the DB.
+      await db.into(db.logItemTable).insert(log.toCompanion());
+      // id was null in the model, so Drift's clientDefault minted one.
+      // Fetch the inserted id from the DB to use it below.
       final all = await db.select(db.logItemTable).get();
       final insertedId = all.single.id!;
 

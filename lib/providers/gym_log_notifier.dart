@@ -18,7 +18,6 @@
 
 import 'package:clock/clock.dart';
 import 'package:logging/logging.dart';
-import 'package:powersync/powersync.dart' show uuid;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -37,9 +36,10 @@ class GymLogNotifier extends _$GymLogNotifier {
   }
 
   void setLog(Log log) {
-    // Mint a fresh uuid explicitly
-    final newLog = log.copyWith(id: uuid.v7(), date: clock.now());
-    state = newLog;
+    // Clear the id so Drift mints a fresh UUID on insert — the source log
+    // is a template, the new state is a separate entry that will get its
+    // own DB row.
+    state = log.copyWith(date: clock.now())..id = null;
   }
 
   void setWeight(num weight) {

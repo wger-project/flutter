@@ -105,7 +105,7 @@ class MeasurementEntriesScreen extends ConsumerWidget {
                                 ),
                                 onPressed: () {
                                   // Confirmed, delete the category
-                                  notifier.deleteCategory(category.id);
+                                  notifier.deleteCategory(category.id!);
 
                                   // Close the popup
                                   Navigator.of(contextDialog).pop();

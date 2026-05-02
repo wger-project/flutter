@@ -31,7 +31,7 @@ class NutritionalPlanTable extends Table {
   @override
   String get tableName => 'nutrition_nutritionplan';
 
-  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   TextColumn get description => text()();
   DateTimeColumn get creationDate => dateTime().named('creation_date')();
   DateTimeColumn get startDate => dateTime().named('start')();
@@ -72,7 +72,7 @@ class LogItemTable extends Table {
   @override
   String get tableName => 'nutrition_logitem';
 
-  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   TextColumn get planId => text().named('plan_id').references(NutritionalPlanTable, #id)();
   TextColumn get mealId => text().nullable().named('meal_id')();
   IntColumn get ingredientId => integer().named('ingredient_id').references(IngredientTable, #id)();
@@ -109,7 +109,7 @@ class MealTable extends Table {
   @override
   String get tableName => 'nutrition_meal';
 
-  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   TextColumn get planId => text().named('plan_id').references(NutritionalPlanTable, #id)();
   IntColumn get order => integer().withDefault(const Constant(1))();
   TextColumn get time => text().map(const TimeOfDayConverter()).nullable()();
@@ -140,7 +140,7 @@ class MealItemTable extends Table {
   @override
   String get tableName => 'nutrition_mealitem';
 
-  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   TextColumn get mealId => text().named('meal_id').references(MealTable, #id)();
   IntColumn get ingredientId => integer().named('ingredient_id').references(IngredientTable, #id)();
   IntColumn get weightUnitId => integer().named('weight_unit_id').nullable()();

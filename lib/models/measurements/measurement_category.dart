@@ -18,7 +18,6 @@
 
 import 'package:drift/drift.dart' hide JsonKey;
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:powersync/powersync.dart' show uuid;
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
@@ -27,8 +26,9 @@ part 'measurement_category.freezed.dart';
 
 @freezed
 class MeasurementCategory with _$MeasurementCategory {
+  /// Client-generated UUID, is `null` only before the first persist
   @override
-  final String id;
+  final String? id;
 
   @override
   final String name;
@@ -40,11 +40,11 @@ class MeasurementCategory with _$MeasurementCategory {
   final List<MeasurementEntry> entries;
 
   MeasurementCategory({
-    String? id,
+    this.id,
     this.name = '',
     this.unit = '',
     this.entries = const [],
-  }) : id = id ?? uuid.v7();
+  });
 
   MeasurementEntry findEntryById(String id) {
     return entries.firstWhere(
@@ -54,9 +54,9 @@ class MeasurementCategory with _$MeasurementCategory {
   }
 
   // Boilerplate
-  MeasurementCategoryTableCompanion toCompanion({bool includeId = false}) {
+  MeasurementCategoryTableCompanion toCompanion() {
     return MeasurementCategoryTableCompanion(
-      id: Value(id),
+      id: id != null ? Value(id!) : const Value.absent(),
       name: Value(name),
       unit: Value(unit),
     );

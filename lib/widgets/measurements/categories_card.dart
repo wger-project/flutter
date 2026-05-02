@@ -93,7 +93,7 @@ class CategoriesCard extends StatelessWidget {
                               FormScreen.routeName,
                               arguments: FormScreenArguments(
                                 AppLocalizations.of(context).newEntry,
-                                MeasurementEntryForm(currentCategory.id),
+                                MeasurementEntryForm(currentCategory.id!),
                               ),
                             );
                           },

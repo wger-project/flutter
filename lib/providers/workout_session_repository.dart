@@ -63,16 +63,16 @@ class WorkoutSessionRepository {
 
       for (final row in rows) {
         final session = row.readTable(_db.workoutSessionTable);
-        final entry = sessions.putIfAbsent(session.id, () {
+        final entry = sessions.putIfAbsent(session.id!, () {
           session.logs = [];
           return session;
         });
 
         final log = row.readTableOrNull(_db.workoutLogTable);
-        if (log == null || seenLogs.contains(log.id)) {
+        if (log == null || seenLogs.contains(log.id!)) {
           continue;
         }
-        seenLogs.add(log.id);
+        seenLogs.add(log.id!);
 
         final repetitionUnit = row.readTableOrNull(_db.routineRepetitionUnitTable);
         if (repetitionUnit != null) {
@@ -96,12 +96,15 @@ class WorkoutSessionRepository {
 
   Future<void> editLocalDrift(WorkoutSession session) async {
     _logger.finer('Updating local workout session entry ${session.id}');
-    final stmt = _db.update(_db.workoutSessionTable)..where((t) => t.id.equals(session.id));
+    final stmt = _db.update(_db.workoutSessionTable)..where((t) => t.id.equals(session.id!));
     await stmt.write(session.toCompanion());
   }
 
+  /// Inserts the session locally; if [session.id] is null, Drift mints one
+  /// and writes it back so the caller can reference it immediately.
   Future<void> addLocalDrift(WorkoutSession session) async {
     _logger.finer('Adding local workout session entry ${session.date}');
-    await _db.into(_db.workoutSessionTable).insert(session.toCompanion());
+    final inserted = await _db.into(_db.workoutSessionTable).insertReturning(session.toCompanion());
+    session.id = inserted.id;
   }
 }

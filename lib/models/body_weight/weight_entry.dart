@@ -20,6 +20,7 @@ import 'package:drift/drift.dart';
 import 'package:wger/database/powersync/database.dart';
 
 class WeightEntry {
+  /// Client-generated UUID, is `null` only before the first persist
   String? id;
 
   late num weight = 0;
@@ -40,9 +41,9 @@ class WeightEntry {
     date: date ?? this.date,
   );
 
-  WeightEntryTableCompanion toCompanion({bool includeId = false}) {
+  WeightEntryTableCompanion toCompanion() {
     return WeightEntryTableCompanion(
-      id: includeId && id != null ? Value(id!) : const Value.absent(),
+      id: id != null ? Value(id!) : const Value.absent(),
       date: Value(date.toUtc()),
       weight: Value(weight as double),
     );

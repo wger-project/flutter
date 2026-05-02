@@ -80,7 +80,7 @@ class EntriesList extends ConsumerWidget {
                             arguments: FormScreenArguments(
                               AppLocalizations.of(context).edit,
                               MeasurementEntryForm(
-                                _category.id,
+                                _category.id!,
                                 currentEntry,
                               ),
                             ),
@@ -90,7 +90,7 @@ class EntriesList extends ConsumerWidget {
                           child: Text(AppLocalizations.of(context).delete),
                           onTap: () async {
                             // Delete entry from DB
-                            await provider.deleteEntry(currentEntry.id);
+                            await provider.deleteEntry(currentEntry.id!);
 
                             // and inform the user
                             if (context.mounted) {

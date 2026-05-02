@@ -32,8 +32,7 @@ import 'package:wger/models/nutrition/nutritional_values.dart';
 class NutritionalPlan {
   final _logger = Logger('NutritionalPlan Model');
 
-  /// `null` only for instances built in-memory before the first persist;
-  /// Drift fills it in via the table's `clientDefault`.
+  /// Client-generated UUID, is `null` only before the first persist
   String? id;
 
   late String description;
@@ -106,16 +105,11 @@ class NutritionalPlan {
 
   /// Drift companion for inserts/updates against `nutrition_nutritionplan`.
   ///
-  /// On insert, leave `id` absent so the table's `clientDefault` UUID kicks
-  /// in (or set [includeId] true if you've already generated it). For an
-  /// update, the row id must be present — we throw if it's missing.
-  NutritionalPlanTableCompanion toCompanion({bool includeId = true}) {
-    final planId = id;
-    if (includeId && planId == null) {
-      throw StateError('Cannot persist nutritional plan without id');
-    }
+  /// If [id] is null, Drift's `clientDefault` mints a fresh UUID on insert.
+  /// If set, the value round-trips into the row as-is.
+  NutritionalPlanTableCompanion toCompanion() {
     return NutritionalPlanTableCompanion(
-      id: includeId && planId != null ? drift.Value(planId) : const drift.Value.absent(),
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       description: drift.Value(description),
       creationDate: drift.Value(creationDate.toUtc()),
       // `start`/`end` are `DateField` server-side

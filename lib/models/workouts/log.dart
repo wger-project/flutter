@@ -18,7 +18,6 @@
 
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
-import 'package:powersync/powersync.dart' show uuid;
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
@@ -36,7 +35,8 @@ enum LogTargetStatus {
 }
 
 class Log {
-  String id;
+  /// Client-generated UUID, is `null` only before the first persist
+  String? id;
 
   late int exerciseId;
   late Exercise exerciseObj;
@@ -61,7 +61,7 @@ class Log {
   late DateTime date;
 
   Log({
-    String? id,
+    this.id,
     required this.exerciseId,
     this.iteration,
     this.slotEntryId,
@@ -78,11 +78,9 @@ class Log {
     this.weightUnitId = WEIGHT_UNIT_KG,
     this.weightUnitObj,
     DateTime? date,
-  }) : id = id ?? uuid.v7(),
-       date = date ?? DateTime.now();
+  }) : date = date ?? DateTime.now();
 
-  Log.fromSetConfigData(SetConfigData setConfig, {int? routineId, this.iteration})
-    : id = uuid.v7() {
+  Log.fromSetConfigData(SetConfigData setConfig, {int? routineId, this.iteration}) {
     date = DateTime.now();
     sessionId = null;
 
@@ -162,7 +160,7 @@ class Log {
 
   WorkoutLogTableCompanion toCompanion() {
     return WorkoutLogTableCompanion(
-      id: drift.Value(id),
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       exerciseId: drift.Value(exerciseId),
       routineId: drift.Value(routineId),
       sessionId: sessionId != null ? drift.Value(sessionId) : const drift.Value.absent(),

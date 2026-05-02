@@ -17,7 +17,6 @@
  */
 
 import 'package:collection/collection.dart';
-import 'package:powersync/powersync.dart' as ps;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
@@ -138,12 +137,11 @@ class NutritionNotifier extends _$NutritionNotifier {
 
   // --- Plans ---
 
-  /// Persists a new nutritional plan via Drift. The UUID is generated here so
-  /// callers can reference it immediately (e.g. to add meals in the same
-  /// flow); PowerSync replicates the row to the backend asynchronously.
+  /// Persists a new nutritional plan via Drift; the repository writes it
+  /// back to [plan] with the UUID Drift assigned, so callers can reference
+  /// it immediately (e.g. to add meals in the same flow)
   Future<NutritionalPlan> addPlan(NutritionalPlan plan) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    plan.id ??= ps.uuid.v4();
     await repo.addPlanLocalDrift(plan);
     return plan;
   }
@@ -162,13 +160,13 @@ class NutritionNotifier extends _$NutritionNotifier {
 
   // --- Meals ---
 
-  /// Persists a new meal via Drift. The UUID is generated here so callers can
-  /// reference it immediately (e.g. to add meal items in the same flow); the
-  /// repository computes the next `order` value from existing rows.
+  /// Persists a new meal via Drift; the repository writes the assigned
+  /// UUID back to [meal] so callers can reference it immediately (e.g. to
+  /// add meal items in the same flow). The repository also computes the
+  /// next `order` value from existing rows.
   Future<Meal> addMeal(Meal meal, String planId) async {
     final repo = ref.read(nutritionRepositoryProvider);
     meal.planId = planId;
-    meal.id ??= ps.uuid.v4();
     await repo.addMealLocalDrift(meal);
     return meal;
   }
@@ -186,11 +184,11 @@ class NutritionNotifier extends _$NutritionNotifier {
 
   // --- Meal items ---
 
-  /// Persists a new meal item
+  /// Persists a new meal item; the repository writes the assigned UUID
+  /// back to [mealItem].
   Future<MealItem> addMealItem(MealItem mealItem, Meal meal) async {
     final repo = ref.read(nutritionRepositoryProvider);
     mealItem.mealId = meal.id!;
-    mealItem.id ??= ps.uuid.v4();
     await repo.addMealItemLocalDrift(mealItem);
     return mealItem;
   }
