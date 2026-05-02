@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -32,19 +31,16 @@ class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');
   final WorkoutSession _session;
   final Function()? _onSaved;
-  final bool _isNew;
 
   static const SLIDER_START = -0.5;
 
   SessionForm(int routineId, {Function()? onSaved, WorkoutSession? session, int? dayId})
     : _onSaved = onSaved,
-      _isNew = session == null,
       _session =
           session ??
           WorkoutSession(
             routineId: routineId,
             dayId: dayId,
-            impression: DEFAULT_IMPRESSION,
             date: clock.now(),
             timeEnd: TimeOfDay.fromDateTime(clock.now()),
             timeStart: null,
@@ -58,13 +54,9 @@ class _SessionFormState extends ConsumerState<SessionForm> {
   Widget errorMessage = const SizedBox.shrink();
   final _form = GlobalKey<FormState>();
 
-  final impressionController = TextEditingController();
   final notesController = TextEditingController();
   final timeStartController = TextEditingController();
   final timeEndController = TextEditingController();
-
-  /// Selected impression: bad,  neutral, good
-  var selectedImpression = [false, false, false];
 
   @override
   void initState() {
@@ -77,12 +69,10 @@ class _SessionFormState extends ConsumerState<SessionForm> {
         ? ''
         : timeToString(widget._session.timeEnd)!;
     notesController.text = widget._session.notes ?? '';
-    selectedImpression[widget._session.impression - 1] = true;
   }
 
   @override
   void dispose() {
-    impressionController.dispose();
     notesController.dispose();
     timeStartController.dispose();
     timeEndController.dispose();
@@ -104,18 +94,12 @@ class _SessionFormState extends ConsumerState<SessionForm> {
             renderBorder: false,
             onPressed: (int index) {
               setState(() {
-                for (int buttonIndex = 0; buttonIndex < selectedImpression.length; buttonIndex++) {
-                  widget._session.impression = index + 1;
-
-                  if (buttonIndex == index) {
-                    selectedImpression[buttonIndex] = true;
-                  } else {
-                    selectedImpression[buttonIndex] = false;
-                  }
-                }
+                widget._session.impression = WorkoutImpression.values[index];
               });
             },
-            isSelected: selectedImpression,
+            isSelected: WorkoutImpression.values
+                .map((e) => e == widget._session.impression)
+                .toList(),
             children: const [
               Icon(Icons.sentiment_very_dissatisfied),
               Icon(Icons.sentiment_neutral),
@@ -252,7 +236,7 @@ class _SessionFormState extends ConsumerState<SessionForm> {
 
               // Save the entry on the server
               try {
-                if (widget._isNew) {
+                if (widget._session.id == null) {
                   widget._logger.fine('Adding new session');
                   await sessionProvider.addEntry(widget._session);
                 } else {

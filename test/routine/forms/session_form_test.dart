@@ -54,7 +54,7 @@ void main() {
         id: '1',
         routineId: 1,
         notes: 'Existing notes',
-        impression: 1,
+        impression: WorkoutImpression.bad,
         date: DateTime.now(),
         timeStart: const TimeOfDay(hour: 10, minute: 0),
         timeEnd: const TimeOfDay(hour: 11, minute: 0),
@@ -93,7 +93,7 @@ void main() {
         id: '1',
         routineId: 1,
         notes: 'Old notes',
-        impression: 2,
+        impression: WorkoutImpression.neutral,
         date: DateTime.now(),
       );
 

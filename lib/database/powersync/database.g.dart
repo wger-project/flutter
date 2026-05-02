@@ -14675,7 +14675,7 @@ typedef $$WorkoutSessionTableTableCreateCompanionBuilder =
       Value<int?> dayId,
       required DateTime date,
       Value<String?> notes,
-      required int impression,
+      required WorkoutImpression impression,
       Value<TimeOfDay?> timeStart,
       Value<TimeOfDay?> timeEnd,
       Value<int> rowid,
@@ -14687,7 +14687,7 @@ typedef $$WorkoutSessionTableTableUpdateCompanionBuilder =
       Value<int?> dayId,
       Value<DateTime> date,
       Value<String?> notes,
-      Value<int> impression,
+      Value<WorkoutImpression> impression,
       Value<TimeOfDay?> timeStart,
       Value<TimeOfDay?> timeEnd,
       Value<int> rowid,
@@ -14727,10 +14727,11 @@ class $$WorkoutSessionTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<int, int, String> get impression => $composableBuilder(
-    column: $table.impression,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
+  ColumnWithTypeConverterFilters<WorkoutImpression, WorkoutImpression, String> get impression =>
+      $composableBuilder(
+        column: $table.impression,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnWithTypeConverterFilters<TimeOfDay?, TimeOfDay, String> get timeStart => $composableBuilder(
     column: $table.timeStart,
@@ -14817,7 +14818,7 @@ class $$WorkoutSessionTableTableAnnotationComposer
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<int, String> get impression => $composableBuilder(
+  GeneratedColumnWithTypeConverter<WorkoutImpression, String> get impression => $composableBuilder(
     column: $table.impression,
     builder: (column) => column,
   );
@@ -14871,7 +14872,7 @@ class $$WorkoutSessionTableTableTableManager
                 Value<int?> dayId = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
-                Value<int> impression = const Value.absent(),
+                Value<WorkoutImpression> impression = const Value.absent(),
                 Value<TimeOfDay?> timeStart = const Value.absent(),
                 Value<TimeOfDay?> timeEnd = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -14893,7 +14894,7 @@ class $$WorkoutSessionTableTableTableManager
                 Value<int?> dayId = const Value.absent(),
                 required DateTime date,
                 Value<String?> notes = const Value.absent(),
-                required int impression,
+                required WorkoutImpression impression,
                 Value<TimeOfDay?> timeStart = const Value.absent(),
                 Value<TimeOfDay?> timeEnd = const Value.absent(),
                 Value<int> rowid = const Value.absent(),

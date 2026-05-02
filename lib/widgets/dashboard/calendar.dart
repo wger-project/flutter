@@ -116,7 +116,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       events[date]!.add(
         Event(
           EventType.session,
-          '${i18n.impression}: ${session.impressionAsString(context)} $time',
+          '${i18n.impression}: ${session.impression.localized(context)} $time',
         ),
       );
     }

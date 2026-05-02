@@ -19,24 +19,50 @@
 import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
-import 'package:powersync/powersync.dart' show uuid;
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 
-const IMPRESSION_MAP = {1: 'bad', 2: 'neutral', 3: 'good'};
+/// User's general impression of a workout session.
+///
+/// The wire values mirror Django's `WorkoutSession.IMPRESSION` choices
+/// (`CharField` with `'1'`, `'2'`, `'3'`), so the same string round-trips
+/// through PowerSync without any extra mapping on the connector.
+enum WorkoutImpression {
+  bad('1'),
+  neutral('2'),
+  good('3')
+  ;
+
+  final String wireValue;
+  const WorkoutImpression(this.wireValue);
+
+  /// Looks up an enum case by its Django wire value.
+  static WorkoutImpression fromWire(String value) =>
+      WorkoutImpression.values.firstWhere((e) => e.wireValue == value);
+}
+
+extension WorkoutImpressionL10n on WorkoutImpression {
+  /// Localized human-readable label (e.g. "Good", "Neutral", "Bad").
+  String localized(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return switch (this) {
+      WorkoutImpression.bad => l10n.impressionBad,
+      WorkoutImpression.neutral => l10n.impressionNeutral,
+      WorkoutImpression.good => l10n.impressionGood,
+    };
+  }
+}
 
 class WorkoutSession {
-  final _logger = Logger('WorkoutSession');
-
-  String id;
+  /// `null` only for instances built in-memory before the first persist;
+  /// Drift fills it in via the table's `clientDefault` UUID.
+  String? id;
   late int? routineId;
   int? dayId;
   DateTime date;
-  late int impression;
+  WorkoutImpression impression;
   late String? notes;
   late TimeOfDay? timeStart;
   late TimeOfDay? timeEnd;
@@ -44,21 +70,20 @@ class WorkoutSession {
   List<Log> logs = [];
 
   WorkoutSession({
-    String? id,
+    this.id,
     this.dayId,
     required this.routineId,
-    this.impression = DEFAULT_IMPRESSION,
+    this.impression = WorkoutImpression.neutral,
     this.notes = '',
     this.timeStart,
     this.timeEnd,
     this.logs = const [],
     DateTime? date,
-  }) : id = id ?? uuid.v7(),
-       date = date ?? clock.now();
+  }) : date = date ?? clock.now();
 
-  WorkoutSessionTableCompanion toCompanion({bool includeId = false}) {
+  WorkoutSessionTableCompanion toCompanion() {
     return WorkoutSessionTableCompanion(
-      id: drift.Value(id),
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       routineId: routineId != null ? drift.Value(routineId) : const drift.Value.absent(),
       dayId: dayId != null ? drift.Value(dayId) : const drift.Value.absent(),
       // Server-side `date` is a `DateField` (no time, no TZ). We  send here the
@@ -121,18 +146,5 @@ class WorkoutSession {
       exerciseSet.add(log.exerciseObj);
     }
     return exerciseSet.toList();
-  }
-
-  String impressionAsString(BuildContext context) {
-    if (impression == 1) {
-      return AppLocalizations.of(context).impressionBad;
-    } else if (impression == 2) {
-      return AppLocalizations.of(context).impressionNeutral;
-    } else if (impression == 3) {
-      return AppLocalizations.of(context).impressionGood;
-    }
-
-    _logger.warning('Unknown impression value: $impression');
-    return AppLocalizations.of(context).impressionGood;
   }
 }

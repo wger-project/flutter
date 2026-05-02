@@ -18,8 +18,8 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
-import 'package:wger/database/converters/int_to_string_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
+import 'package:wger/database/converters/workout_impression_converter.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
@@ -77,7 +77,7 @@ class WorkoutLogTable extends Table {
 
   RealColumn get weight => real().nullable()();
   RealColumn get weightTarget => real().nullable().named('weight_target')();
-  IntColumn get weightUnitId => integer().nullable().named('weight_unit_id').nullable()();
+  IntColumn get weightUnitId => integer().nullable().named('weight_unit_id')();
 
   DateTimeColumn get date => dateTime()();
 }
@@ -120,7 +120,7 @@ class WorkoutSessionTable extends Table {
   IntColumn get dayId => integer().named('day_id').nullable()();
   DateTimeColumn get date => dateTime()();
   TextColumn get notes => text().nullable()();
-  TextColumn get impression => text().map(const IntToStringConverter())();
+  TextColumn get impression => text().map(const WorkoutImpressionConverter())();
   TextColumn get timeStart =>
       text().named('time_start').nullable().map(const TimeOfDayConverter())();
   TextColumn get timeEnd => text().named('time_end').nullable().map(const TimeOfDayConverter())();

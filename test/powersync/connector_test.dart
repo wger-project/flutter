@@ -50,10 +50,10 @@ void main() {
     test('injects the row id and copies all fields', () {
       final out = connector.genericTransform(
         'manager_workoutsession',
-        {'notes': 'leg day', 'impression': 1},
+        {'notes': 'leg day', 'impression': '1'},
         '42',
       );
-      expect(out, {'id': '42', 'notes': 'leg day', 'impression': 1});
+      expect(out, {'id': '42', 'notes': 'leg day', 'impression': '1'});
     });
 
     test('strips the `_id` suffix from foreign-key column names', () {

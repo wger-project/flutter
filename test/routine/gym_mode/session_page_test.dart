@@ -156,7 +156,7 @@ void main() {
               as WorkoutSession;
 
       expect(captured.id, '1');
-      expect(captured.impression, 3);
+      expect(captured.impression, WorkoutImpression.good);
       expect(captured.notes, equals('This is a note'));
       expect(captured.timeStart, equals(const TimeOfDay(hour: 10, minute: 0)));
       expect(captured.timeEnd, equals(const TimeOfDay(hour: 12, minute: 34)));

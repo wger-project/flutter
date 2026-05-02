@@ -38,9 +38,6 @@ const TESTSERVER_PASSWORD = 'flutteruser';
 /// auto-login and mirrors what the server does with MIN_APP_VERSION.
 const MIN_SERVER_VERSION = '2.5';
 
-/// Default impression for a workout session (neutral)
-const DEFAULT_IMPRESSION = 2;
-
 // Weight and repetition units for the workout logs
 const REP_UNIT_REPETITIONS_ID = 1;
 const REP_UNIT_TILL_FAILURE_ID = 2;

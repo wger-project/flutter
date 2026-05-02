@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2020- wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,17 +17,16 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:wger/models/workouts/session.dart';
 
-class IntToStringConverter extends TypeConverter<int, String> {
-  const IntToStringConverter();
-
-  @override
-  int fromSql(String fromDb) {
-    return int.parse(fromDb);
-  }
+/// Maps a [WorkoutImpression] to and from the Django wire format
+/// (`'1'`, `'2'`, `'3'`).
+class WorkoutImpressionConverter extends TypeConverter<WorkoutImpression, String> {
+  const WorkoutImpressionConverter();
 
   @override
-  String toSql(int value) {
-    return value.toString();
-  }
+  WorkoutImpression fromSql(String fromDb) => WorkoutImpression.fromWire(fromDb);
+
+  @override
+  String toSql(WorkoutImpression value) => value.wireValue;
 }
