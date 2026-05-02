@@ -27,10 +27,12 @@ import 'package:wger/core/locator.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -698,6 +700,69 @@ class ExercisesProvider with ChangeNotifier {
           'language__code': languages.join(','),
           'limit': API_RESULTS_PAGE_SIZE,
         },
+      ),
+    );
+
+    return (result['results'] as List)
+        .map((e) => Exercise.fromApiDataJson(e as Map<String, dynamic>, _languages))
+        .toList();
+  }
+
+  /// Searches for exercises via the wger API using names, languages, and a category.
+  ///
+  /// [name] is the search string. The request is bypassed if [name] is 1 character or less.
+  ///
+  /// Logic applied:
+  /// * **Search Mode**: Uses `name__search` for PostgreSQL trigram similarity (fuzzy search)
+  ///   or `name__exact` for standard case-insensitive matches.
+  /// * **Languages**: Filters results based on [languageCode]. Can optionally include
+  ///   English as a fallback or search across all languages.
+  /// * **Category**: result for a specific exercise category ID[cite: 10].
+  ///
+  /// Returns a [List<Exercise>] parsed from the `exerciseinfo` endpoint.
+  Future<List<Exercise>> searchExerciseWithSearchMode(
+    String name, {
+    String languageCode = LANGUAGE_SHORT_ENGLISH,
+    ExerciseSearchLanguage searchLanguage = ExerciseSearchLanguage.currentAndEnglish,
+    ExerciseSearchMode searchMode = ExerciseSearchMode.fulltext,
+    ExerciseCategory? category,
+  }) async {
+    if (name.length <= 1) {
+      return [];
+    }
+
+    final languageCodes = [languageCode];
+    if (searchLanguage == ExerciseSearchLanguage.currentAndEnglish &&
+        languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languageCodes.add(LANGUAGE_SHORT_ENGLISH);
+    } else if (searchLanguage == ExerciseSearchLanguage.all) {
+      languageCodes.clear(); // no language filter
+    }
+
+    final query = <String, String>{};
+
+    if (searchMode == ExerciseSearchMode.fulltext) {
+      query['name__search'] = name;
+    } else {
+      query['name__exact'] = name;
+    }
+
+    if (languageCodes.isNotEmpty) {
+      query['language__code'] = languageCodes.join(',');
+    }
+
+    if (category != null) {
+      query['category'] = category.id.toString();
+    }
+
+    query['limit'] = API_RESULTS_PAGE_SIZE;
+    query['format'] = 'json';
+
+    // Send the request
+    final result = await baseProvider.fetch(
+      baseProvider.makeUrl(
+        exerciseInfoUrlPath,
+        query: query,
       ),
     );
 
