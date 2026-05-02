@@ -59,15 +59,18 @@ void main() {
     weightUnitStr: 'kg',
   );
 
+  const planUuid1 = 'cc000000-0000-4000-8000-000000000001';
+  const planUuid2 = 'cc000000-0000-4000-8000-000000000002';
+
   final plans = [
     NutritionalPlan(
-      id: 1,
+      id: planUuid1,
       description: 'test plan 1',
       creationDate: DateTime(2021, 01, 01),
       startDate: DateTime(2021, 01, 01),
     ),
     NutritionalPlan(
-      id: 2,
+      id: planUuid2,
       description: 'test plan 2',
       creationDate: DateTime(2021, 01, 10),
       startDate: DateTime(2021, 01, 10),
@@ -83,7 +86,7 @@ void main() {
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
     when(mockNutritionRepo.watchAllDrift()).thenAnswer((_) => Stream.value(plans));
-    // build() now combines plans + diary entries; default to an empty diary.
+    when(mockNutritionRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(const []));
     when(mockNutritionRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
     when(mockNutritionRepo.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
   });

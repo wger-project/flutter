@@ -37,8 +37,11 @@ class LogItem {
   /// the first persist; Drift fills it in via the table's `clientDefault`.
   String? id;
 
-  int planId;
-  int? mealId;
+  String planId;
+
+  /// Optional parent meal (`null` for free-form diary entries that don't belong to a meal)
+  String? mealId;
+
   int ingredientId;
   int? weightUnitId;
   late DateTime datetime;

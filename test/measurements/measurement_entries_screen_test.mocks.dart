@@ -124,42 +124,21 @@ class MockNutritionRepository extends _i1.Mock implements _i6.NutritionRepositor
   }
 
   @override
-  _i3.Future<Map<String, dynamic>> fetchPlanSparse(int? planId) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchPlanSparse, [planId]),
-            returnValue: _i3.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i3.Future<Map<String, dynamic>>);
-
-  @override
-  _i3.Future<Map<String, dynamic>> fetchPlanFull(int? planId) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchPlanFull, [planId]),
-            returnValue: _i3.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i3.Future<Map<String, dynamic>>);
-
-  @override
-  _i3.Future<Map<String, dynamic>> createPlan(Map<String, dynamic>? data) =>
-      (super.noSuchMethod(
-            Invocation.method(#createPlan, [data]),
-            returnValue: _i3.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i3.Future<Map<String, dynamic>>);
-
-  @override
   _i3.Stream<List<_i7.NutritionalPlan>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
             returnValue: _i3.Stream<List<_i7.NutritionalPlan>>.empty(),
           )
           as _i3.Stream<List<_i7.NutritionalPlan>>);
+
+  @override
+  _i3.Future<void> addPlanLocalDrift(_i7.NutritionalPlan? plan) =>
+      (super.noSuchMethod(
+            Invocation.method(#addPlanLocalDrift, [plan]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 
   @override
   _i3.Future<void> editLocalDrift(_i7.NutritionalPlan? plan) =>
@@ -171,7 +150,7 @@ class MockNutritionRepository extends _i1.Mock implements _i6.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> deleteLocalDrift(int? id) =>
+  _i3.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
             returnValue: _i3.Future<void>.value(),
@@ -180,14 +159,21 @@ class MockNutritionRepository extends _i1.Mock implements _i6.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Future<Map<String, dynamic>> createMeal(Map<String, dynamic>? data) =>
+  _i3.Stream<List<_i8.Meal>> watchAllMealsHydrated() =>
       (super.noSuchMethod(
-            Invocation.method(#createMeal, [data]),
-            returnValue: _i3.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
+            Invocation.method(#watchAllMealsHydrated, []),
+            returnValue: _i3.Stream<List<_i8.Meal>>.empty(),
           )
-          as _i3.Future<Map<String, dynamic>>);
+          as _i3.Stream<List<_i8.Meal>>);
+
+  @override
+  _i3.Future<void> addMealLocalDrift(_i8.Meal? meal) =>
+      (super.noSuchMethod(
+            Invocation.method(#addMealLocalDrift, [meal]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 
   @override
   _i3.Future<void> editMealLocalDrift(_i8.Meal? meal) =>
@@ -199,7 +185,7 @@ class MockNutritionRepository extends _i1.Mock implements _i6.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> deleteMealLocalDrift(int? id) =>
+  _i3.Future<void> deleteMealLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteMealLocalDrift, [id]),
             returnValue: _i3.Future<void>.value(),
@@ -208,14 +194,13 @@ class MockNutritionRepository extends _i1.Mock implements _i6.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Future<Map<String, dynamic>> createMealItem(Map<String, dynamic>? data) =>
+  _i3.Future<void> addMealItemLocalDrift(_i9.MealItem? item) =>
       (super.noSuchMethod(
-            Invocation.method(#createMealItem, [data]),
-            returnValue: _i3.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
+            Invocation.method(#addMealItemLocalDrift, [item]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i3.Future<Map<String, dynamic>>);
+          as _i3.Future<void>);
 
   @override
   _i3.Future<void> editMealItemLocalDrift(_i9.MealItem? item) =>
@@ -227,7 +212,7 @@ class MockNutritionRepository extends _i1.Mock implements _i6.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> deleteMealItemLocalDrift(int? id) =>
+  _i3.Future<void> deleteMealItemLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteMealItemLocalDrift, [id]),
             returnValue: _i3.Future<void>.value(),

@@ -53,12 +53,13 @@ void main() {
     mockRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
 
+    when(mockRepo.addMealLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.editMealLocalDrift(any)).thenAnswer((_) async => Future.value());
-    when(mockRepo.createMeal(any)).thenAnswer((_) async => Meal(id: 99, plan: 1).toJson());
-    // NutritionNotifier.build() subscribes to two Drift streams (plans +
-    // diary entries) — emit the seed plan and an empty diary so the
+    // NutritionNotifier.build() subscribes to three Drift streams (plans,
+    // meals, diary entries) — emit the seed plan and empty meals/diary so the
     // combined stream produces a value.
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value([plan1]));
+    when(mockRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(plan1.meals));
     when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
 
     container = ProviderContainer(
@@ -88,7 +89,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: MealForm(1, meal)),
+        home: Scaffold(body: MealForm(plan1.id!, meal)),
         routes: {
           NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
         },
@@ -127,7 +128,7 @@ void main() {
 
     // Correct method was called
     verify(mockRepo.editMealLocalDrift(any));
-    verifyNever(mockRepo.createMeal(any));
+    verifyNever(mockRepo.addMealLocalDrift(any));
   });
 
   testWidgets('Test creating a new nutritional plan', (WidgetTester tester) async {
@@ -166,17 +167,19 @@ void main() {
 
       // Correct method was called
       verifyNever(mockRepo.editMealLocalDrift(any));
-      verify(mockRepo.createMeal(any));
+      verify(mockRepo.addMealLocalDrift(any));
     });
 
     // Detail page
     // ...
   });
 
-  testWidgets('Submit is disabled offline only when creating a new meal', (
+  testWidgets('Submit stays enabled offline (PowerSync handles create/edit locally)', (
     WidgetTester tester,
   ) async {
-    // Build a fresh container that overrides the network status to offline.
+    // Both create and edit now flow through PowerSync (Drift insert/update),
+    // so the meal form's submit button should never be disabled by network
+    // status.
     final offlineContainer = ProviderContainer(
       overrides: [
         nutritionRepositoryProvider.overrideWithValue(mockRepo),
@@ -186,7 +189,6 @@ void main() {
     );
     addTearDown(offlineContainer.dispose);
 
-    // 1) Creating a new meal offline: button must be disabled (REST POST).
     final newMeal = Meal(time: const TimeOfDay(hour: 8, minute: 0));
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -195,7 +197,7 @@ void main() {
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(body: MealForm(1, newMeal)),
+          home: Scaffold(body: MealForm(plan1.id!, newMeal)),
         ),
       ),
     );
@@ -204,33 +206,6 @@ void main() {
     final createButton = tester.widget<ElevatedButton>(
       find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
     );
-    expect(createButton.onPressed, isNull);
-    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
-    await tester.pump();
-    verifyNever(mockRepo.createMeal(any));
-    verifyNever(mockRepo.editMealLocalDrift(any));
-
-    // 2) Editing an existing meal offline: PowerSync handles it locally,
-    //    so the button must remain enabled.
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: offlineContainer,
-        child: MaterialApp(
-          locale: const Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(body: MealForm(1, meal1)),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    final editButton = tester.widget<ElevatedButton>(
-      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
-    );
-    expect(editButton.onPressed, isNotNull);
-
-    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-    await tester.pump();
-    verify(mockRepo.editMealLocalDrift(any)).called(1);
+    expect(createButton.onPressed, isNotNull);
   });
 }

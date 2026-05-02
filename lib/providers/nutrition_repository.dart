@@ -37,55 +37,33 @@ final nutritionRepositoryProvider = Provider<NutritionRepository>((ref) {
 });
 
 /// Data access for nutrition-related entities.
-///
-/// Creation paths still use HTTP (plans, meals, meal items — the server picks
-/// the integer PK and the `order`). Edits and deletes for [NutritionalPlan],
-/// [Meal], [MealItem] and the diary [LogItem] table all flow through the
-/// local PowerSync-backed Drift database; see [editLocalDrift] /
-/// [deleteLocalDrift] (plans), [editMealLocalDrift] / [deleteMealLocalDrift],
-/// [editMealItemLocalDrift] / [deleteMealItemLocalDrift], and the log
-/// methods.
-///
-/// Ingredient searches (local + REST) live on [IngredientRepository].
 class NutritionRepository {
   final _logger = Logger('NutritionRepository');
   final WgerBaseProvider _base;
   final DriftPowersyncDatabase _db;
 
-  static const plansPath = 'nutritionplan';
-  static const plansInfoPath = 'nutritionplaninfo';
-  static const mealPath = 'meal';
-  static const mealItemPath = 'mealitem';
-
   NutritionRepository(this._base, this._db);
 
   // --- Plans ---
 
-  Future<Map<String, dynamic>> fetchPlanSparse(int planId) async {
-    _logger.fine('Fetching plan $planId (sparse)');
-    final data = await _base.fetch(_base.makeUrl(plansPath, id: planId));
-    return data as Map<String, dynamic>;
-  }
-
-  Future<Map<String, dynamic>> fetchPlanFull(int planId) async {
-    _logger.fine('Fetching plan $planId (full)');
-    final data = await _base.fetch(_base.makeUrl(plansInfoPath, id: planId));
-    return data as Map<String, dynamic>;
-  }
-
-  Future<Map<String, dynamic>> createPlan(Map<String, dynamic> data) async {
-    return _base.post(data, _base.makeUrl(plansPath));
-  }
-
   /// Streams all nutritional plans from the local PowerSync-backed Drift table.
   ///
-  /// Sort matches Django's `NutritionalPlan.Meta.ordering = ['-start']` so
-  /// that REST responses and PowerSync emissions agree on the row order.
+  /// Sort matches Django's `NutritionalPlan.Meta.ordering = ['-start']`.
   Stream<List<NutritionalPlan>> watchAllDrift() {
     _logger.finer('Watching all local nutritional plans');
     return (_db.select(
       _db.nutritionalPlanTable,
     )..orderBy([(t) => OrderingTerm.desc(t.startDate)])).watch();
+  }
+
+  /// Inserts a nutritional plan into the local Drift table. The caller must
+  /// have set [NutritionalPlan.id] (UUID) beforehand.
+  Future<void> addPlanLocalDrift(NutritionalPlan plan) async {
+    if (plan.id == null) {
+      throw StateError('Cannot persist plan without id (caller must generate the UUID)');
+    }
+    _logger.finer('Inserting local nutritional plan ${plan.id}');
+    await _db.into(_db.nutritionalPlanTable).insert(plan.toCompanion());
   }
 
   /// Updates a nutritional plan via the local Drift table. PowerSync's CRUD
@@ -104,18 +82,118 @@ class NutritionRepository {
   /// Deletes a nutritional plan via the local Drift table. Deletion of children
   /// entities (meals, meal items, diary entries) is handled by the backend via
   /// FK CASCADE, so we don't have to worry about that here.
-  Future<void> deleteLocalDrift(int id) async {
+  Future<void> deleteLocalDrift(String id) async {
     _logger.finer('Deleting local nutritional plan $id');
     await (_db.delete(_db.nutritionalPlanTable)..where((t) => t.id.equals(id))).go();
   }
 
   // --- Meals ---
 
-  /// Creation still goes through REST: the server assigns the integer PK and
-  /// the `order` field, then PowerSync replicates the row down so subsequent
-  /// edits and deletes can target the local Drift row.
-  Future<Map<String, dynamic>> createMeal(Map<String, dynamic> data) async {
-    return _base.post(data, _base.makeUrl(mealPath));
+  /// Streams all meals (across every plan) with their meal items hydrated
+  /// from the same Drift database in one query. Re-emits whenever any of the
+  /// joined tables changes.
+  ///
+  /// Each [MealItem] has its [Ingredient] and optional [IngredientWeightUnit]
+  /// resolved via the same query
+  Stream<List<Meal>> watchAllMealsHydrated() {
+    _logger.finer('Watching all local meals');
+    final query =
+        _db.select(_db.mealTable).join([
+          leftOuterJoin(_db.mealItemTable, _db.mealItemTable.mealId.equalsExp(_db.mealTable.id)),
+          leftOuterJoin(
+            _db.ingredientTable,
+            _db.ingredientTable.id.equalsExp(_db.mealItemTable.ingredientId),
+          ),
+          leftOuterJoin(
+            _db.ingredientImageTable,
+            _db.ingredientImageTable.ingredientId.equalsExp(_db.ingredientTable.id),
+          ),
+          leftOuterJoin(
+            _db.ingredientWeightUnitTable,
+            _db.ingredientWeightUnitTable.ingredientId.equalsExp(_db.ingredientTable.id),
+          ),
+        ])..orderBy([
+          OrderingTerm.asc(_db.mealTable.planId),
+          OrderingTerm.asc(_db.mealTable.order),
+          OrderingTerm.asc(_db.mealTable.time),
+        ]);
+
+    return query.watch().map(_hydrateMeals);
+  }
+
+  /// Collapses cross-joined rows into hydrated [Meal]s with their child items.
+  List<Meal> _hydrateMeals(Iterable<TypedResult> rows) {
+    final meals = <String, Meal>{};
+    final itemsByMeal = <String, Map<String, MealItem>>{};
+    final ingredients = <int, Ingredient>{};
+    final weightUnitsByIngredient = <int, List<IngredientWeightUnit>>{};
+
+    for (final row in rows) {
+      final meal = row.readTable(_db.mealTable);
+      meals.putIfAbsent(meal.id!, () => meal);
+
+      final mealItem = row.readTableOrNull(_db.mealItemTable);
+      if (mealItem == null) continue;
+
+      final ingredient = row.readTableOrNull(_db.ingredientTable);
+      final image = row.readTableOrNull(_db.ingredientImageTable);
+      final wu = row.readTableOrNull(_db.ingredientWeightUnitTable);
+
+      if (ingredient != null) {
+        final ingEntry = ingredients.putIfAbsent(ingredient.id, () => ingredient);
+        if (image != null) {
+          ingEntry.image = image;
+        }
+        if (wu != null) {
+          final list = weightUnitsByIngredient.putIfAbsent(ingredient.id, () => []);
+          if (!list.any((w) => w.id == wu.id)) {
+            list.add(wu);
+          }
+        }
+      }
+
+      itemsByMeal.putIfAbsent(meal.id!, () => {}).putIfAbsent(mealItem.id!, () => mealItem);
+    }
+
+    for (final ing in ingredients.values) {
+      ing.weightUnits = weightUnitsByIngredient[ing.id] ?? const [];
+    }
+    for (final entry in itemsByMeal.entries) {
+      final meal = meals[entry.key]!;
+      meal.mealItems = entry.value.values.toList()..sort((a, b) => a.order.compareTo(b.order));
+      for (final item in meal.mealItems) {
+        final ing = ingredients[item.ingredientId];
+        if (ing != null) {
+          item.ingredient = ing;
+          if (item.weightUnitId != null) {
+            item.weightUnitObj = ing.weightUnits.firstWhereOrNull(
+              (w) => w.id == item.weightUnitId,
+            );
+          }
+        }
+      }
+    }
+
+    return meals.values.toList();
+  }
+
+  /// Inserts a meal into the local Drift table. The caller must have set
+  /// [Meal.id] (UUID) and [Meal.planId] beforehand. The `order` is computed
+  /// here as `MAX(order) + 1` over the plan's existing meals so that newly
+  /// added meals land at the bottom of the ordering
+  Future<void> addMealLocalDrift(Meal meal) async {
+    if (meal.id == null) {
+      throw StateError('Cannot persist meal without id (caller must generate the UUID)');
+    }
+    final maxOrder =
+        await (_db.selectOnly(_db.mealTable)
+              ..addColumns([_db.mealTable.order.max()])
+              ..where(_db.mealTable.planId.equals(meal.planId)))
+            .map((row) => row.read(_db.mealTable.order.max()))
+            .getSingleOrNull();
+    meal.order = (maxOrder ?? 0) + 1;
+    _logger.finer('Inserting local meal ${meal.id} (order=${meal.order})');
+    await _db.into(_db.mealTable).insert(meal.toCompanion());
   }
 
   /// Updates a meal via the local Drift table. PowerSync's CRUD queue picks
@@ -131,17 +209,29 @@ class NutritionRepository {
 
   /// Deletes a meal via the local Drift table. The backend cascades through
   /// to the dependent meal items.
-  Future<void> deleteMealLocalDrift(int id) async {
+  Future<void> deleteMealLocalDrift(String id) async {
     _logger.finer('Deleting local meal $id');
     await (_db.delete(_db.mealTable)..where((t) => t.id.equals(id))).go();
   }
 
   // --- Meal items ---
 
-  /// Creation still goes through REST (server-assigned PK and `order`);
-  /// PowerSync replicates the row down for subsequent local edits/deletes.
-  Future<Map<String, dynamic>> createMealItem(Map<String, dynamic> data) async {
-    return _base.post(data, _base.makeUrl(mealItemPath));
+  /// Inserts a meal item into the local Drift table. The caller must have set
+  /// [MealItem.id] (UUID) and [MealItem.mealId] (parent meal's UUID); `order`
+  /// is computed here as `MAX(order) + 1` over the meal's existing items.
+  Future<void> addMealItemLocalDrift(MealItem item) async {
+    if (item.id == null) {
+      throw StateError('Cannot persist meal item without id (caller must generate the UUID)');
+    }
+    final maxOrder =
+        await (_db.selectOnly(_db.mealItemTable)
+              ..addColumns([_db.mealItemTable.order.max()])
+              ..where(_db.mealItemTable.mealId.equals(item.mealId)))
+            .map((row) => row.read(_db.mealItemTable.order.max()))
+            .getSingleOrNull();
+    item.order = (maxOrder ?? 0) + 1;
+    _logger.finer('Inserting local meal item ${item.id} (order=${item.order})');
+    await _db.into(_db.mealItemTable).insert(item.toCompanion());
   }
 
   /// Updates a meal item via the local Drift table. PowerSync picks the
@@ -156,7 +246,7 @@ class NutritionRepository {
   }
 
   /// Deletes a meal item via the local Drift table.
-  Future<void> deleteMealItemLocalDrift(int id) async {
+  Future<void> deleteMealItemLocalDrift(String id) async {
     _logger.finer('Deleting local meal item $id');
     await (_db.delete(_db.mealItemTable)..where((t) => t.id.equals(id))).go();
   }

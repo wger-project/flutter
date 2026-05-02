@@ -17,7 +17,7 @@
  */
 
 import 'package:collection/collection.dart';
-import 'package:logging/logging.dart';
+import 'package:powersync/powersync.dart' as ps;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
@@ -25,7 +25,6 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 
 part 'nutrition_notifier.g.dart';
@@ -60,14 +59,14 @@ class NutritionState {
   }
 
   /// Throws [NoSuchEntryException] if no plan with the given id exists.
-  NutritionalPlan findById(int id) {
+  NutritionalPlan findById(String id) {
     return plans.firstWhere(
       (plan) => plan.id == id,
       orElse: () => throw const NoSuchEntryException(),
     );
   }
 
-  Meal? findMealById(int id) {
+  Meal? findMealById(String id) {
     for (final plan in plans) {
       final meal = plan.meals.firstWhereOrNull((m) => m.id == id);
       if (meal != null) {
@@ -80,224 +79,131 @@ class NutritionState {
 
 @Riverpod(keepAlive: true)
 class NutritionNotifier extends _$NutritionNotifier {
-  final _logger = Logger('NutritionNotifier');
-
   @override
   Stream<NutritionState> build() {
-    _logger.fine('Building NutritionNotifier');
     ref.keepAlive();
 
-    // Top-level plans and diary entries both come from synced tables. The
-    // hierarchy in between meals and meal items still lives behind REST and
-    // is layered on top by callers via [fetchAndSetPlanFull]; we re-attach
-    // it from the previous state on every emission so a remote edit doesn't
-    // wipe locally-hydrated meals.
-    //
-    // [combineLatest] holds back the first emission until both streams have
-    // produced a value, so the resulting plans always carry coherent diary
-    // data
+    // We chain three streams via [combineLatest]: the first emission is held
+    // back until every source has produced a value, so the resulting plans
+    // always carry coherent meal/diary data.
     final repo = ref.read(nutritionRepositoryProvider);
-    return repo.watchAllDrift().combineLatest(repo.watchAllLogsHydrated(), (freshPlans, allLogs) {
-      final existing = state.value?.plans ?? const <NutritionalPlan>[];
-      for (final fresh in freshPlans) {
-        final old = existing.firstWhereOrNull((p) => p.id == fresh.id);
-        if (old != null) {
-          fresh.meals = old.meals;
-        }
-        fresh.diaryEntries = allLogs.where((l) => l.planId == fresh.id).toList();
-        for (final meal in fresh.meals) {
-          meal.diaryEntries = fresh.diaryEntries.where((l) => l.mealId == meal.id).toList();
-        }
+    return repo
+        .watchAllDrift()
+        .combineLatest(
+          repo.watchAllMealsHydrated(),
+          (plans, meals) => (plans, meals),
+        )
+        .combineLatest(repo.watchAllLogsHydrated(), (acc, logs) {
+          final plans = acc.$1;
+          final meals = acc.$2;
+          return _assemble(plans, meals, logs);
+        });
+  }
+
+  NutritionState _assemble(
+    List<NutritionalPlan> plans,
+    List<Meal> meals,
+    List<LogItem> logs,
+  ) {
+    final mealsByPlan = <String, List<Meal>>{};
+    for (final meal in meals) {
+      mealsByPlan.putIfAbsent(meal.planId, () => []).add(meal);
+    }
+    final logsByPlan = <String, List<LogItem>>{};
+    final logsByMeal = <String, List<LogItem>>{};
+    for (final log in logs) {
+      logsByPlan.putIfAbsent(log.planId, () => []).add(log);
+      if (log.mealId != null) {
+        logsByMeal.putIfAbsent(log.mealId!, () => []).add(log);
       }
-      return NutritionState(plans: freshPlans);
-    });
+    }
+    for (final plan in plans) {
+      plan.meals = mealsByPlan[plan.id] ?? const [];
+      plan.diaryEntries = logsByPlan[plan.id] ?? const [];
+      for (final meal in plan.meals) {
+        meal.diaryEntries = logsByMeal[meal.id] ?? const [];
+      }
+    }
+    return NutritionState(plans: plans);
   }
 
   // --- Convenience accessors (delegate to state) ---
 
-  List<NutritionalPlan> get _plans => state.value?.plans ?? const [];
-
   /// Throws [NoSuchEntryException] if no plan with the given id exists.
-  NutritionalPlan findById(int id) => (state.value ?? const NutritionState()).findById(id);
+  NutritionalPlan findById(String id) => (state.value ?? const NutritionState()).findById(id);
 
-  Meal? findMealById(int id) => (state.value ?? const NutritionState()).findMealById(id);
+  Meal? findMealById(String id) => (state.value ?? const NutritionState()).findMealById(id);
 
   NutritionalPlan? get currentPlan => (state.value ?? const NutritionState()).currentPlan;
 
-  /// Notifies listeners after in-place mutation on the plans list (e.g. when
-  /// meals or logs on a plan are mutated via object references). Equivalent to
-  /// the old `notifyListeners()`.
-  void _notifyAfterInPlaceMutation() {
-    state = AsyncData(NutritionState(plans: List.of(_plans)));
-  }
-
-  /// Replaces the in-memory plan list. Used to apply optimistic updates that
-  /// are eventually overwritten by the next stream emission.
-  void _setPlans(List<NutritionalPlan> plans) {
-    state = AsyncData(NutritionState(plans: List.of(plans)));
-  }
-
   // --- Plans ---
 
-  Future<NutritionalPlan> fetchAndSetPlanSparse(int planId) async {
+  /// Persists a new nutritional plan via Drift. The UUID is generated here so
+  /// callers can reference it immediately (e.g. to add meals in the same
+  /// flow); PowerSync replicates the row to the backend asynchronously.
+  Future<NutritionalPlan> addPlan(NutritionalPlan plan) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    final data = await repo.fetchPlanSparse(planId);
-    final plan = NutritionalPlan.fromJson(data);
-    final plans = List<NutritionalPlan>.of(_plans)..add(plan);
-    // Match Django's `Meta.ordering = ['-start']`.
-    plans.sort((a, b) => b.startDate.compareTo(a.startDate));
-    _setPlans(plans);
+    plan.id ??= ps.uuid.v4();
+    await repo.addPlanLocalDrift(plan);
     return plan;
   }
 
-  /// Fetches a plan with meals, meal items, and log entries.
-  Future<NutritionalPlan> fetchAndSetPlanFull(int planId) async {
-    _logger.fine('Fetching full nutritional plan $planId');
-
-    final repo = ref.read(nutritionRepositoryProvider);
-
-    NutritionalPlan plan;
-    try {
-      plan = findById(planId);
-    } on NoSuchEntryException {
-      plan = await fetchAndSetPlanSparse(planId);
-    }
-
-    final fullPlanData = await repo.fetchPlanFull(planId);
-    final ingredientRepo = ref.read(ingredientRepositoryProvider);
-
-    // Meals
-    final List<Meal> meals = [];
-    for (final mealData in (fullPlanData['meals'] as List?) ?? const []) {
-      final meal = Meal.fromJson(mealData);
-      final List<dynamic> mealItemsData = (mealData['meal_items'] as List?) ?? const [];
-
-      // Resolve all ingredients for this meal in parallel
-      final resolved = await Future.wait(
-        mealItemsData.map((data) async {
-          final mealItem = MealItem.fromJson(data);
-          final ingredient = await ingredientRepo
-              .watchById(mealItem.ingredientId)
-              .firstWhere((i) => i != null, orElse: () => null)
-              .timeout(const Duration(seconds: 5), onTimeout: () => null);
-          if (ingredient == null) {
-            _logger.warning(
-              'Ingredient ${mealItem.ingredientId} not in local DB after 5s '
-              'wait, skipping meal item ${mealItem.id}',
-            );
-            return null;
-          }
-          mealItem.ingredient = ingredient;
-          return mealItem;
-        }),
-      );
-      meal.mealItems = resolved.whereType<MealItem>().toList();
-      meals.add(meal);
-    }
-    plan.meals = meals;
-
-    // Diary entries are streamed in by build() from PowerSync. Distribute
-    // the logs we already have onto the freshly-loaded meals so the UI sees
-    // them immediately, before the next stream tick.
-    for (final meal in meals) {
-      meal.diaryEntries = plan.diaryEntries.where((e) => e.mealId == meal.id).toList();
-    }
-
-    _notifyAfterInPlaceMutation();
-    return plan;
-  }
-
-  /// Creation still goes through REST. PowerSync will eventually replicate the
-  /// new row via the stream, but to avoid a perceptible UI lag we also inject
-  /// the freshly-created plan into state right away. When the stream later
-  /// re-emits the same row, build()'s sub-data preservation logic keeps things
-  /// stable.
-  Future<NutritionalPlan> addPlan(NutritionalPlan planData) async {
-    final repo = ref.read(nutritionRepositoryProvider);
-    final data = await repo.createPlan(planData.toJson());
-    final plan = NutritionalPlan.fromJson(data);
-    final plans = List<NutritionalPlan>.of(_plans)..add(plan);
-    // Match Django's `Meta.ordering = ['-start']`.
-    plans.sort((a, b) => b.startDate.compareTo(a.startDate));
-    _setPlans(plans);
-    return plan;
-  }
-
-  /// Goes through PowerSync (Drift update → CRUD queue → backend).
-  /// Local state picks up the change on the next stream emission.
   Future<void> editPlan(NutritionalPlan plan) async {
     final repo = ref.read(nutritionRepositoryProvider);
     await repo.editLocalDrift(plan);
   }
 
-  /// Goes through PowerSync (Drift delete → CRUD queue → backend), where
   /// Django's FK CASCADE removes any dependent meals/items/diary entries.
   /// Local state picks up the removal on the next stream emission.
-  Future<void> deletePlan(int id) async {
+  Future<void> deletePlan(String id) async {
     final repo = ref.read(nutritionRepositoryProvider);
     await repo.deleteLocalDrift(id);
   }
 
   // --- Meals ---
 
-  /// Creation still goes through REST. The freshly-saved meal is injected into
-  /// in-memory state so the UI sees it immediately, before PowerSync has
-  /// replicated the row down into the local Drift database.
-  Future<Meal> addMeal(Meal meal, int planId) async {
+  /// Persists a new meal via Drift. The UUID is generated here so callers can
+  /// reference it immediately (e.g. to add meal items in the same flow); the
+  /// repository computes the next `order` value from existing rows.
+  Future<Meal> addMeal(Meal meal, String planId) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    final plan = findById(planId);
     meal.planId = planId;
-    final data = await repo.createMeal(meal.toJson());
-    final saved = Meal.fromJson(data);
-    plan.meals.add(saved);
-    _notifyAfterInPlaceMutation();
-    return saved;
+    meal.id ??= ps.uuid.v4();
+    await repo.addMealLocalDrift(meal);
+    return meal;
   }
 
-  /// Goes through PowerSync (Drift update → CRUD queue → backend).
   Future<void> editMeal(Meal meal) async {
     final repo = ref.read(nutritionRepositoryProvider);
     await repo.editMealLocalDrift(meal);
-    _notifyAfterInPlaceMutation();
   }
 
-  /// Goes through PowerSync (Drift delete → CRUD queue → backend), where
   /// Django's FK CASCADE removes any dependent meal items.
   Future<void> deleteMeal(Meal meal) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    final plan = findById(meal.planId);
-    plan.meals.removeWhere((e) => e.id == meal.id);
-    _notifyAfterInPlaceMutation();
     await repo.deleteMealLocalDrift(meal.id!);
   }
 
   // --- Meal items ---
 
-  /// Creation still goes through REST. The saved item is injected into the
-  /// meal's in-memory list so the UI sees it immediately.
+  /// Persists a new meal item
   Future<MealItem> addMealItem(MealItem mealItem, Meal meal) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    final data = await repo.createMealItem(mealItem.toJson());
-    final saved = MealItem.fromJson(data);
-    saved.ingredient = mealItem.ingredient;
-    meal.mealItems.add(saved);
-    _notifyAfterInPlaceMutation();
-    return saved;
+    mealItem.mealId = meal.id!;
+    mealItem.id ??= ps.uuid.v4();
+    await repo.addMealItemLocalDrift(mealItem);
+    return mealItem;
   }
 
   /// Goes through PowerSync (Drift update → CRUD queue → backend).
   Future<void> editMealItem(MealItem mealItem) async {
     final repo = ref.read(nutritionRepositoryProvider);
     await repo.editMealItemLocalDrift(mealItem);
-    _notifyAfterInPlaceMutation();
   }
 
   /// Goes through PowerSync (Drift delete → CRUD queue → backend).
   Future<void> deleteMealItem(MealItem mealItem) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    final meal = findMealById(mealItem.mealId)!;
-    meal.mealItems.removeWhere((e) => e.id == mealItem.id);
-    _notifyAfterInPlaceMutation();
     await repo.deleteMealItemLocalDrift(mealItem.id!);
   }
 
@@ -314,7 +220,7 @@ class NutritionNotifier extends _$NutritionNotifier {
 
   Future<void> logIngredientToDiary(
     MealItem mealItem,
-    int planId, [
+    String planId, [
     DateTime? dateTime,
   ]) async {
     final repo = ref.read(nutritionRepositoryProvider);

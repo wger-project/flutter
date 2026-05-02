@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -52,8 +51,6 @@ void main() {
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
 
-  late Map<String, dynamic> nutritionalPlanInfoResponse;
-  late Map<String, dynamic> nutritionalPlanDetailResponse;
   late Ingredient fetchedIngredient;
 
   setUp(() {
@@ -65,23 +62,17 @@ void main() {
     mockNutritionRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
 
-    when(mockNutritionRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const []));
-
-    nutritionalPlanInfoResponse = jsonDecode(
-      fixture('nutrition/nutritional_plan_info_detail_response.json'),
-    );
-    nutritionalPlanDetailResponse = jsonDecode(
-      fixture('nutrition/nutritional_plan_detail_response.json'),
-    );
     fetchedIngredient = Ingredient.fromJson(
       jsonDecode(fixture('nutrition/ingredientinfo_10065.json')),
     );
 
+    // Plans, meals and logs all stream in via Drift now.
     when(
-      mockNutritionRepo.fetchPlanSparse(any),
-    ).thenAnswer((_) async => nutritionalPlanDetailResponse);
-    when(mockNutritionRepo.fetchPlanFull(any)).thenAnswer((_) async => nutritionalPlanInfoResponse);
-
+      mockNutritionRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(const []));
+    when(
+      mockNutritionRepo.watchAllMealsHydrated(),
+    ).thenAnswer((_) => Stream.value(const []));
     when(
       mockNutritionRepo.watchAllLogsHydrated(),
     ).thenAnswer((_) => Stream.value(getTestNutritionLogs()));
@@ -222,39 +213,4 @@ void main() {
 
     expect(find.textContaining('17:00'), findsOneWidget);
   });
-
-  testWidgets(
-    'loading indicator does not reappear after popup menu tap',
-    (WidgetTester tester) async {
-      final completer = Completer<Map<String, dynamic>>();
-
-      // Override the fetchPlanFull behavior so we can control when it completes
-      when(mockNutritionRepo.fetchPlanFull(any)).thenAnswer((_) => completer.future);
-
-      final container = makeContainer();
-      await tester.pumpWidget(createNutritionalPlan(container: container));
-      await tester.tap(find.byType(TextButton));
-
-      // Two pumps: first for route transition, second for FutureBuilder waiting state
-      await tester.pump();
-      await tester.pump();
-
-      // Future is still pending — spinner must be visible
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
-      // Now resolve the future — simulates network response
-      completer.complete(nutritionalPlanInfoResponse);
-      await tester.pumpAndSettle();
-
-      // Spinner gone after successful load
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-
-      // Tap popup menu — this is the exact scenario that triggered the bug
-      await tester.tap(find.byIcon(Icons.more_vert));
-      await tester.pump();
-
-      // Core assertion: spinner must NOT reappear after menu tap
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-    },
-  );
 }

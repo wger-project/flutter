@@ -25,7 +25,6 @@ import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
-import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
@@ -45,22 +44,28 @@ class NutritionalPlanScreen extends ConsumerStatefulWidget {
 }
 
 class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
-  Future<NutritionalPlan>? _planFuture;
-  late NutritionalPlan _nutritionalPlan;
+  late NutritionalPlan _argumentPlan;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_planFuture == null) {
-      _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
-      _planFuture = ref.read(nutritionProvider.notifier).fetchAndSetPlanFull(_nutritionalPlan.id!);
-    }
+    _argumentPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
   }
 
   @override
   Widget build(BuildContext context) {
     const appBarForeground = Colors.white;
     final isOnline = ref.watch(networkStatusProvider);
+    // Resolve the freshest plan from state so meal/diary edits reflect
+    // immediately. Falls back to the route argument if state hasn't streamed
+    // yet (e.g. cold open, deep link).
+    final state = ref.watch(nutritionProvider).value;
+    final NutritionalPlan _nutritionalPlan =
+        state?.plans.firstWhere(
+          (p) => p.id == _argumentPlan.id,
+          orElse: () => _argumentPlan,
+        ) ??
+        _argumentPlan;
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       floatingActionButton: Row(
@@ -185,36 +190,10 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
               ),
             ),
           ),
-          FutureBuilder(
-            future: _planFuture,
-            builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SliverList(
-                  delegate: SliverChildListDelegate(
-                    [const BoxedProgressIndicator()],
-                  ),
-                );
-              }
-              if (snapshot.hasError) {
-                return SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      StreamErrorIndicator(
-                        snapshot.error!,
-                        stacktrace: snapshot.stackTrace,
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return Consumer(
-                builder: (context, ref, child) {
-                  ref.watch(nutritionProvider);
-                  return NutritionalPlanDetailWidget(_nutritionalPlan);
-                },
-              );
-            },
-          ),
+          if (state == null)
+            const SliverToBoxAdapter(child: BoxedProgressIndicator())
+          else
+            NutritionalPlanDetailWidget(_nutritionalPlan),
         ],
       ),
     );

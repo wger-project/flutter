@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +19,6 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -50,7 +49,7 @@ void main() {
   // ---- seed helpers ---------------------------------------------------------
 
   Future<void> seedPlan({
-    required int id,
+    required String id,
     String description = '',
     DateTime? startDate,
   }) async {
@@ -58,7 +57,7 @@ void main() {
         .into(db.nutritionalPlanTable)
         .insert(
           NutritionalPlanTableCompanion.insert(
-            id: id,
+            id: drift.Value(id),
             description: description,
             creationDate: DateTime.utc(2024),
             startDate: startDate ?? DateTime.utc(2024, 1, 1),
@@ -123,33 +122,39 @@ void main() {
         );
   }
 
-  Future<void> seedMeal({required int id, required int planId, String name = ''}) async {
+  Future<void> seedMeal({
+    required String id,
+    required String planId,
+    int order = 1,
+    String name = '',
+  }) async {
     await db
         .into(db.mealTable)
         .insert(
           MealTableCompanion.insert(
-            id: id,
+            id: drift.Value(id),
             planId: planId,
-            order: 1,
+            order: drift.Value(order),
             name: drift.Value(name),
           ),
         );
   }
 
   Future<void> seedMealItem({
-    required int id,
-    required int mealId,
+    required String id,
+    required String mealId,
     required int ingredientId,
+    int order = 1,
     double amount = 100,
   }) async {
     await db
         .into(db.mealItemTable)
         .insert(
           MealItemTableCompanion.insert(
-            id: id,
+            id: drift.Value(id),
             mealId: mealId,
             ingredientId: ingredientId,
-            order: 1,
+            order: drift.Value(order),
             amount: amount,
           ),
         );
@@ -157,37 +162,9 @@ void main() {
 
   // ---------------------------------------------------------------------------
 
-  group('Plans — REST', () {
-    test('fetchPlanSparse hits /nutritionplan/<id>/ and returns the body as a map', () async {
-      final uri = Uri.https('localhost', 'api/v2/nutritionplan/42/');
-      when(mockBase.makeUrl('nutritionplan', id: 42)).thenReturn(uri);
-      when(mockBase.fetch(uri)).thenAnswer((_) async => {'id': 42, 'description': 'plan'});
-
-      final result = await repo.fetchPlanSparse(42);
-
-      expect(result, {'id': 42, 'description': 'plan'});
-    });
-
-    test('fetchPlanFull hits /nutritionplaninfo/<id>/', () async {
-      final uri = Uri.https('localhost', 'api/v2/nutritionplaninfo/42/');
-      when(mockBase.makeUrl('nutritionplaninfo', id: 42)).thenReturn(uri);
-      when(mockBase.fetch(uri)).thenAnswer((_) async => {'id': 42});
-
-      final result = await repo.fetchPlanFull(42);
-
-      expect(result['id'], 42);
-    });
-
-    test('createPlan POSTs the payload to /nutritionplan/', () async {
-      final uri = Uri.https('localhost', 'api/v2/nutritionplan/');
-      when(mockBase.makeUrl('nutritionplan')).thenReturn(uri);
-      when(mockBase.post(any, uri)).thenAnswer((_) async => {'id': 1});
-
-      await repo.createPlan({'description': 'new plan'});
-
-      verify(mockBase.post({'description': 'new plan'}, uri)).called(1);
-    });
-  });
+  const planUuid1 = 'cc000000-0000-4000-8000-000000000001';
+  const planUuid2 = 'cc000000-0000-4000-8000-000000000002';
+  const planUuid3 = 'cc000000-0000-4000-8000-000000000003';
 
   group('Plans — Drift', () {
     test('watchAllDrift emits an empty list when no plans exist', () async {
@@ -195,17 +172,44 @@ void main() {
     });
 
     test('watchAllDrift emits plans sorted by start desc', () async {
-      await seedPlan(id: 1, startDate: DateTime.utc(2024, 1, 1));
-      await seedPlan(id: 2, startDate: DateTime.utc(2024, 6, 1));
-      await seedPlan(id: 3, startDate: DateTime.utc(2024, 3, 1));
+      await seedPlan(id: planUuid1, startDate: DateTime.utc(2024, 1, 1));
+      await seedPlan(id: planUuid2, startDate: DateTime.utc(2024, 6, 1));
+      await seedPlan(id: planUuid3, startDate: DateTime.utc(2024, 3, 1));
 
       final emitted = await repo.watchAllDrift().first;
 
-      expect(emitted.map((p) => p.id).toList(), [2, 3, 1]);
+      expect(emitted.map((p) => p.id).toList(), [planUuid2, planUuid3, planUuid1]);
+    });
+
+    test('addPlanLocalDrift inserts the plan', () async {
+      final fresh = NutritionalPlan(
+        id: planUuid1,
+        description: 'fresh',
+        creationDate: DateTime.utc(2024),
+        startDate: DateTime.utc(2024, 1, 1),
+        onlyLogging: false,
+      );
+
+      await repo.addPlanLocalDrift(fresh);
+
+      final emitted = await repo.watchAllDrift().first;
+      expect(emitted.single.id, planUuid1);
+      expect(emitted.single.description, 'fresh');
+    });
+
+    test('addPlanLocalDrift throws StateError when id is null', () async {
+      final plan = NutritionalPlan(
+        description: 'no id',
+        creationDate: DateTime.utc(2024),
+        startDate: DateTime.utc(2024),
+        onlyLogging: false,
+      );
+
+      expect(() => repo.addPlanLocalDrift(plan), throwsStateError);
     });
 
     test('editLocalDrift overwrites the plan with matching id', () async {
-      await seedPlan(id: 1, description: 'original');
+      await seedPlan(id: planUuid1, description: 'original');
       final plan = (await repo.watchAllDrift().first).single;
       plan.description = 'updated';
 
@@ -227,99 +231,155 @@ void main() {
     });
 
     test('deleteLocalDrift removes the plan with matching id', () async {
-      await seedPlan(id: 1);
-      await seedPlan(id: 2);
+      await seedPlan(id: planUuid1);
+      await seedPlan(id: planUuid2);
 
-      await repo.deleteLocalDrift(1);
+      await repo.deleteLocalDrift(planUuid1);
 
       final emitted = await repo.watchAllDrift().first;
-      expect(emitted.map((p) => p.id), [2]);
+      expect(emitted.map((p) => p.id), [planUuid2]);
     });
   });
 
   group('Meals', () {
-    test('createMeal POSTs to /meal/', () async {
-      final uri = Uri.https('localhost', 'api/v2/meal/');
-      when(mockBase.makeUrl('meal')).thenReturn(uri);
-      when(mockBase.post(any, uri)).thenAnswer((_) async => {'id': 1});
+    const mealUuid1 = 'aa000000-0000-4000-8000-000000000001';
+    const mealUuid2 = 'aa000000-0000-4000-8000-000000000002';
 
-      await repo.createMeal({'name': 'breakfast'});
+    test('addMealLocalDrift inserts the meal and computes order from existing rows', () async {
+      await seedPlan(id: planUuid1);
+      await seedMeal(id: mealUuid1, planId: planUuid1, order: 3);
 
-      verify(mockBase.post({'name': 'breakfast'}, uri)).called(1);
+      final fresh = Meal(id: mealUuid2, plan: planUuid1, name: 'lunch');
+      await repo.addMealLocalDrift(fresh);
+
+      final row = await (db.select(
+        db.mealTable,
+      )..where((t) => t.id.equals(mealUuid2))).getSingle();
+      expect(row.name, 'lunch');
+      expect(row.order, 4);
+    });
+
+    test('addMealLocalDrift throws StateError when id is null', () async {
+      final meal = Meal(plan: planUuid1, name: 'no id');
+      expect(() => repo.addMealLocalDrift(meal), throwsStateError);
     });
 
     test('editMealLocalDrift overwrites the meal with matching id', () async {
-      await seedPlan(id: 1);
-      await seedMeal(id: 5, planId: 1, name: 'breakfast');
+      await seedPlan(id: planUuid1);
+      await seedMeal(id: mealUuid1, planId: planUuid1, name: 'breakfast');
 
-      final updated = Meal(id: 5, plan: 1, name: 'lunch');
+      final updated = Meal(id: mealUuid1, plan: planUuid1, name: 'lunch');
       await repo.editMealLocalDrift(updated);
 
       final row = await (db.select(
         db.mealTable,
-      )..where((t) => t.id.equals(5))).getSingle();
+      )..where((t) => t.id.equals(mealUuid1))).getSingle();
       expect(row.name, 'lunch');
     });
 
     test('editMealLocalDrift throws StateError when id is null', () async {
-      final meal = Meal(plan: 1, name: 'no id');
+      final meal = Meal(plan: planUuid1, name: 'no id');
       expect(() => repo.editMealLocalDrift(meal), throwsStateError);
     });
 
     test('deleteMealLocalDrift removes the meal with matching id', () async {
-      await seedPlan(id: 1);
-      await seedMeal(id: 5, planId: 1);
-      await seedMeal(id: 6, planId: 1);
+      await seedPlan(id: planUuid1);
+      await seedMeal(id: mealUuid1, planId: planUuid1);
+      await seedMeal(id: mealUuid2, planId: planUuid1);
 
-      await repo.deleteMealLocalDrift(5);
+      await repo.deleteMealLocalDrift(mealUuid1);
 
       final remaining = await db.select(db.mealTable).get();
-      expect(remaining.map((m) => m.id), [6]);
+      expect(remaining.map((m) => m.id), [mealUuid2]);
     });
   });
 
   group('Meal items', () {
-    test('createMealItem POSTs to /mealitem/', () async {
-      final uri = Uri.https('localhost', 'api/v2/mealitem/');
-      when(mockBase.makeUrl('mealitem')).thenReturn(uri);
-      when(mockBase.post(any, uri)).thenAnswer((_) async => {'id': 1});
+    const mealUuid = 'aa000000-0000-4000-8000-000000000001';
+    const itemUuid1 = 'bb000000-0000-4000-8000-000000000001';
+    const itemUuid2 = 'bb000000-0000-4000-8000-000000000002';
 
-      await repo.createMealItem({'meal': 1, 'amount': 100});
+    test('addMealItemLocalDrift inserts and computes order from existing items', () async {
+      await seedPlan(id: planUuid1);
+      await seedMeal(id: mealUuid, planId: planUuid1);
+      await seedIngredient(id: 1, name: 'Apple');
+      await seedMealItem(id: itemUuid1, mealId: mealUuid, ingredientId: 1, order: 5);
 
-      verify(mockBase.post({'meal': 1, 'amount': 100}, uri)).called(1);
+      final fresh = MealItem(id: itemUuid2, mealId: mealUuid, ingredientId: 1, amount: 200);
+      await repo.addMealItemLocalDrift(fresh);
+
+      final row = await (db.select(
+        db.mealItemTable,
+      )..where((t) => t.id.equals(itemUuid2))).getSingle();
+      expect(row.amount, 200);
+      expect(row.order, 6);
+    });
+
+    test('addMealItemLocalDrift throws StateError when id is null', () async {
+      final item = MealItem(mealId: mealUuid, ingredientId: 1, amount: 50);
+      expect(() => repo.addMealItemLocalDrift(item), throwsStateError);
     });
 
     test('editMealItemLocalDrift overwrites the item with matching id', () async {
-      await seedPlan(id: 1);
-      await seedMeal(id: 1, planId: 1);
+      await seedPlan(id: planUuid1);
+      await seedMeal(id: mealUuid, planId: planUuid1);
       await seedIngredient(id: 1, name: 'Apple');
-      await seedMealItem(id: 7, mealId: 1, ingredientId: 1, amount: 100);
+      await seedMealItem(id: itemUuid1, mealId: mealUuid, ingredientId: 1, amount: 100);
 
-      final updated = MealItem(id: 7, mealId: 1, ingredientId: 1, amount: 250);
+      final updated = MealItem(id: itemUuid1, mealId: mealUuid, ingredientId: 1, amount: 250);
       await repo.editMealItemLocalDrift(updated);
 
       final row = await (db.select(
         db.mealItemTable,
-      )..where((t) => t.id.equals(7))).getSingle();
+      )..where((t) => t.id.equals(itemUuid1))).getSingle();
       expect(row.amount, 250);
     });
 
     test('editMealItemLocalDrift throws StateError when id is null', () async {
-      final item = MealItem(mealId: 1, ingredientId: 1, amount: 50);
+      final item = MealItem(mealId: mealUuid, ingredientId: 1, amount: 50);
       expect(() => repo.editMealItemLocalDrift(item), throwsStateError);
     });
 
     test('deleteMealItemLocalDrift removes the item with matching id', () async {
-      await seedPlan(id: 1);
-      await seedMeal(id: 1, planId: 1);
+      await seedPlan(id: planUuid1);
+      await seedMeal(id: mealUuid, planId: planUuid1);
       await seedIngredient(id: 1, name: 'Apple');
-      await seedMealItem(id: 7, mealId: 1, ingredientId: 1);
-      await seedMealItem(id: 8, mealId: 1, ingredientId: 1);
+      await seedMealItem(id: itemUuid1, mealId: mealUuid, ingredientId: 1);
+      await seedMealItem(id: itemUuid2, mealId: mealUuid, ingredientId: 1);
 
-      await repo.deleteMealItemLocalDrift(7);
+      await repo.deleteMealItemLocalDrift(itemUuid1);
 
       final remaining = await db.select(db.mealItemTable).get();
-      expect(remaining.map((m) => m.id), [8]);
+      expect(remaining.map((m) => m.id), [itemUuid2]);
+    });
+  });
+
+  group('Meals — watchAllMealsHydrated', () {
+    const mealUuid1 = 'aa000000-0000-4000-8000-000000000001';
+    const mealUuid2 = 'aa000000-0000-4000-8000-000000000002';
+    const itemUuid1 = 'bb000000-0000-4000-8000-000000000001';
+    const itemUuid2 = 'bb000000-0000-4000-8000-000000000002';
+
+    test('emits empty when no meals exist', () async {
+      expect(await repo.watchAllMealsHydrated().first, isEmpty);
+    });
+
+    test('emits meals with their items hydrated and ingredients attached', () async {
+      await seedPlan(id: planUuid1);
+      await seedIngredient(id: 1, name: 'Apple');
+      await seedMeal(id: mealUuid1, planId: planUuid1, name: 'breakfast');
+      await seedMeal(id: mealUuid2, planId: planUuid1, name: 'lunch');
+      await seedMealItem(id: itemUuid1, mealId: mealUuid1, ingredientId: 1, amount: 100);
+      await seedMealItem(id: itemUuid2, mealId: mealUuid1, ingredientId: 1, amount: 50);
+
+      final emitted = await repo.watchAllMealsHydrated().first;
+
+      expect(emitted, hasLength(2));
+      final breakfast = emitted.firstWhere((m) => m.id == mealUuid1);
+      expect(breakfast.mealItems, hasLength(2));
+      expect(breakfast.mealItems.first.ingredient.name, 'Apple');
+      final lunch = emitted.firstWhere((m) => m.id == mealUuid2);
+      expect(lunch.mealItems, isEmpty);
     });
   });
 
@@ -329,11 +389,11 @@ void main() {
     });
 
     test('addLogLocalDrift inserts a log visible in watchAllLogsHydrated', () async {
-      await seedPlan(id: 1);
+      await seedPlan(id: planUuid1);
       await seedIngredient(id: 1, name: 'Apple');
 
       final log = LogItem(
-        planId: 1,
+        planId: planUuid1,
         ingredientId: 1,
         amount: 100,
         datetime: DateTime.utc(2026, 4, 15),
@@ -347,13 +407,13 @@ void main() {
     });
 
     test('watchAllLogsHydrated attaches image and weight units to each ingredient', () async {
-      await seedPlan(id: 1);
+      await seedPlan(id: planUuid1);
       await seedIngredient(id: 1, name: 'Apple');
       await seedIngredientImage(id: 10, ingredientId: 1);
       await seedIngredientWeightUnit(id: 100, ingredientId: 1);
       await repo.addLogLocalDrift(
         LogItem(
-          planId: 1,
+          planId: planUuid1,
           ingredientId: 1,
           amount: 100,
           datetime: DateTime.utc(2026, 4, 15),
@@ -367,12 +427,12 @@ void main() {
     });
 
     test('watchAllLogsHydrated resolves weightUnitObj on the log when set', () async {
-      await seedPlan(id: 1);
+      await seedPlan(id: planUuid1);
       await seedIngredient(id: 1, name: 'Apple');
       await seedIngredientWeightUnit(id: 100, ingredientId: 1);
       await repo.addLogLocalDrift(
         LogItem(
-          planId: 1,
+          planId: planUuid1,
           ingredientId: 1,
           weightUnitId: 100,
           amount: 1,
@@ -386,11 +446,11 @@ void main() {
     });
 
     test('watchAllLogsHydrated leaves weightUnitObj null when log has no weightUnitId', () async {
-      await seedPlan(id: 1);
+      await seedPlan(id: planUuid1);
       await seedIngredient(id: 1, name: 'Apple');
       await repo.addLogLocalDrift(
         LogItem(
-          planId: 1,
+          planId: planUuid1,
           ingredientId: 1,
           amount: 100,
           datetime: DateTime.utc(2026, 4, 15),
@@ -403,10 +463,10 @@ void main() {
     });
 
     test('deleteLogLocalDrift removes the log with matching id', () async {
-      await seedPlan(id: 1);
+      await seedPlan(id: planUuid1);
       await seedIngredient(id: 1, name: 'Apple');
       final log = LogItem(
-        planId: 1,
+        planId: planUuid1,
         ingredientId: 1,
         amount: 100,
         datetime: DateTime.utc(2026, 4, 15),

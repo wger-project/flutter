@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,40 +18,29 @@
 
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-part 'meal.g.dart';
-
-@JsonSerializable()
 class Meal {
-  @JsonKey(required: false)
-  late int? id;
+  String? id;
 
-  @JsonKey(name: 'plan')
-  late int planId;
+  /// FK to the parent plan
+  late String planId;
 
-  @JsonKey(toJson: timeToString, fromJson: stringToTimeNull)
   TimeOfDay? time;
 
-  @JsonKey(name: 'name')
   late String name;
 
-  /// Server-assigned ordering inside the plan. Not user-editable; we sync it
-  /// down so PowerSync can replicate the row, but never push changes back.
-  @JsonKey(includeToJson: false, defaultValue: 1)
+  /// Server-side ordering inside the plan. Replicated down for completeness;
+  /// the client computes new values as `MAX(order) + 1` on insert.
   int order = 1;
 
-  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<MealItem> mealItems = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<LogItem> diaryEntries = [];
 
   List<LogItem> get diaryEntriesToday =>
@@ -59,7 +48,7 @@ class Meal {
 
   Meal({
     this.id,
-    int? plan,
+    String? plan,
     this.time,
     String? name,
     List<MealItem>? mealItems,
@@ -81,7 +70,7 @@ class Meal {
   /// by the repository hydration step.
   Meal.fromDrift({
     this.id,
-    required int planId,
+    required String planId,
     required int order,
     this.time,
     required String name,
@@ -93,8 +82,7 @@ class Meal {
     diaryEntries = [];
   }
 
-  /// Calculate total nutritional value
-  // This is already done on the server. It might be better to read it from there.
+  /// Total nutritional values across all child meal items.
   NutritionalValues get plannedNutritionalValues {
     return mealItems.fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
   }
@@ -110,30 +98,28 @@ class Meal {
     return id != null && id != PSEUDO_MEAL_ID;
   }
 
-  // Boilerplate
-  factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MealToJson(this);
-
-  /// Drift companion for updates against `nutrition_meal`.
+  /// Drift companion for inserts/updates against `nutrition_meal`.
   ///
-  /// `order` is intentionally absent — it's server-managed and read-only.
-  MealTableCompanion toCompanion() {
+  /// On insert, leave `id` absent so the table's `clientDefault` UUID kicks
+  /// in (or set [includeId] true if you've already generated it). For an
+  /// update, the row id must be present, we throw if it's missing.
+  MealTableCompanion toCompanion({bool includeId = true}) {
     final mealId = id;
-    if (mealId == null) {
-      throw StateError('Cannot persist meal without id (creation goes via REST)');
+    if (includeId && mealId == null) {
+      throw StateError('Cannot persist meal without id');
     }
     return MealTableCompanion(
-      id: drift.Value(mealId),
+      id: includeId && mealId != null ? drift.Value(mealId) : const drift.Value.absent(),
       planId: drift.Value(planId),
+      order: drift.Value(order),
       time: time == null ? const drift.Value.absent() : drift.Value(time!),
       name: drift.Value(name),
     );
   }
 
   Meal copyWith({
-    int? id,
-    int? planId,
+    String? id,
+    String? planId,
     TimeOfDay? time,
     String? name,
     List<MealItem>? mealItems,

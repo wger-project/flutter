@@ -36,8 +36,10 @@ void main() {
   late MockNutritionRepository mockRepo;
   late MockIngredientRepository mockIngredientRepo;
 
+  const planUuid1 = 'cc000000-0000-4000-8000-000000000001';
+
   final plan1 = NutritionalPlan(
-    id: 1,
+    id: planUuid1,
     creationDate: DateTime(2021, 1, 1),
     startDate: DateTime(2021, 1, 1),
     endDate: DateTime(2021, 2, 10),
@@ -49,9 +51,10 @@ void main() {
     mockRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
 
-    when(mockRepo.createPlan(any)).thenAnswer((_) async => plan1.toJson());
+    when(mockRepo.addPlanLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.editLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const []));
+    when(mockRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(const []));
     when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
   });
 
@@ -98,7 +101,7 @@ void main() {
 
     // Correct method was called
     verify(mockRepo.editLocalDrift(any));
-    verifyNever(mockRepo.createPlan(any));
+    verifyNever(mockRepo.addPlanLocalDrift(any));
   });
 
   testWidgets('Test creating a new nutritional plan', (WidgetTester tester) async {
@@ -116,6 +119,6 @@ void main() {
 
     // Correct method was called
     verifyNever(mockRepo.editLocalDrift(any));
-    verify(mockRepo.createPlan(any));
+    verify(mockRepo.addPlanLocalDrift(any));
   });
 }

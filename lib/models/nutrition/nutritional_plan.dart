@@ -19,11 +19,9 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/widgets.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -31,57 +29,37 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-part 'nutritional_plan.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class NutritionalPlan {
   final _logger = Logger('NutritionalPlan Model');
 
-  @JsonKey(required: true)
-  int? id;
+  /// `null` only for instances built in-memory before the first persist;
+  /// Drift fills it in via the table's `clientDefault`.
+  String? id;
 
-  @JsonKey(required: true)
   late String description;
 
-  @JsonKey(
-    required: true,
-    name: 'creation_date',
-    fromJson: utcIso8601ToLocalDate,
-    toJson: dateToUtcIso8601,
-  )
   late DateTime creationDate;
 
-  @JsonKey(required: true, name: 'start', toJson: dateToYYYYMMDD)
   late DateTime startDate;
 
-  @JsonKey(required: true, name: 'end', toJson: dateToYYYYMMDD)
   late DateTime? endDate;
 
-  @JsonKey(required: true, name: 'only_logging')
   late bool onlyLogging;
 
-  @JsonKey(required: true, name: 'goal_energy')
   late num? goalEnergy;
 
-  @JsonKey(required: true, name: 'goal_protein')
   late num? goalProtein;
 
-  @JsonKey(required: true, name: 'goal_carbohydrates')
   late num? goalCarbohydrates;
 
-  @JsonKey(required: true, name: 'goal_fat')
   late num? goalFat;
 
-  @JsonKey(required: true, name: 'goal_fiber')
   late num? goalFiber;
 
-  @JsonKey(name: 'has_goal_calories', defaultValue: false)
   late bool hasGoalCalories;
 
-  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<Meal> meals = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
   List<LogItem> diaryEntries = [];
 
   NutritionalPlan({
@@ -126,18 +104,18 @@ class NutritionalPlan {
     goalFat = null;
   }
 
-  // Boilerplate
-  factory NutritionalPlan.fromJson(Map<String, dynamic> json) => _$NutritionalPlanFromJson(json);
-
-  Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
-
-  NutritionalPlanTableCompanion toCompanion() {
+  /// Drift companion for inserts/updates against `nutrition_nutritionplan`.
+  ///
+  /// On insert, leave `id` absent so the table's `clientDefault` UUID kicks
+  /// in (or set [includeId] true if you've already generated it). For an
+  /// update, the row id must be present — we throw if it's missing.
+  NutritionalPlanTableCompanion toCompanion({bool includeId = true}) {
     final planId = id;
-    if (planId == null) {
-      throw StateError('Cannot persist nutritional plan without id (creation goes via REST)');
+    if (includeId && planId == null) {
+      throw StateError('Cannot persist nutritional plan without id');
     }
     return NutritionalPlanTableCompanion(
-      id: drift.Value(planId),
+      id: includeId && planId != null ? drift.Value(planId) : const drift.Value.absent(),
       description: drift.Value(description),
       creationDate: drift.Value(creationDate.toUtc()),
       // `start`/`end` are `DateField` server-side

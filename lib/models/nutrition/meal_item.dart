@@ -17,45 +17,36 @@
  */
 
 import 'package:drift/drift.dart' as drift;
-import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-part 'meal_item.g.dart';
-
-@JsonSerializable()
 class MealItem {
-  @JsonKey(required: true)
-  int? id;
+  /// Client-generated UUID. `null` only for instances built in-memory before
+  /// the first persist; Drift fills it in via the table's `clientDefault`.
+  String? id;
 
-  @JsonKey(required: false, name: 'meal')
-  late int mealId;
+  /// FK to the parent meal — the meal's UUID, not the server-side integer PK.
+  late String mealId;
 
-  @JsonKey(required: false, name: 'ingredient')
   late int ingredientId;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   late Ingredient ingredient;
 
-  @JsonKey(required: false, name: 'weight_unit')
   int? weightUnitId;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   IngredientWeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num amount;
 
-  /// Server-assigned ordering inside the meal. Not user-editable.
-  @JsonKey(includeToJson: false, defaultValue: 1)
+  /// Server-side ordering inside the meal. Replicated down for completeness;
+  /// the client computes new values as `MAX(order) + 1` on insert.
   int order = 1;
 
   MealItem({
     this.id,
-    int? mealId,
+    String? mealId,
     required this.ingredientId,
     this.weightUnitId,
     required this.amount,
@@ -78,7 +69,7 @@ class MealItem {
   /// after a JOIN; instances built here have only the FK ids set.
   MealItem.fromDrift({
     this.id,
-    required int mealId,
+    required String mealId,
     required int ingredientId,
     this.weightUnitId,
     required int order,
@@ -90,24 +81,21 @@ class MealItem {
     this.order = order;
   }
 
-  // Boilerplate
-  factory MealItem.fromJson(Map<String, dynamic> json) => _$MealItemFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MealItemToJson(this);
-
-  /// Drift companion for updates against `nutrition_mealitem`.
+  /// Drift companion for inserts/updates against `nutrition_mealitem`.
   ///
-  /// `order` is intentionally absent — it's server-managed and read-only.
-  MealItemTableCompanion toCompanion() {
+  /// On insert, leave `id` absent so the table's `clientDefault` UUID kicks
+  /// in (or set [includeId] true if you've already generated it).
+  MealItemTableCompanion toCompanion({bool includeId = true}) {
     final itemId = id;
-    if (itemId == null) {
-      throw StateError('Cannot persist meal item without id (creation goes via REST)');
+    if (includeId && itemId == null) {
+      throw StateError('Cannot persist meal item without id');
     }
     return MealItemTableCompanion(
-      id: drift.Value(itemId),
+      id: includeId && itemId != null ? drift.Value(itemId) : const drift.Value.absent(),
       mealId: drift.Value(mealId),
       ingredientId: drift.Value(ingredientId),
       weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId!),
+      order: drift.Value(order),
       amount: drift.Value(amount.toDouble()),
     );
   }
@@ -120,8 +108,8 @@ class MealItem {
   }
 
   MealItem copyWith({
-    int? id,
-    int? mealId,
+    String? id,
+    String? mealId,
     int? ingredientId,
     int? weightUnitId,
     num? amount,

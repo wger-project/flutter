@@ -28,7 +28,6 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -37,7 +36,7 @@ import 'package:wger/widgets/nutrition/widgets.dart';
 
 class MealForm extends ConsumerWidget {
   late final Meal _meal;
-  final int _planId;
+  final String _planId;
 
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
@@ -51,11 +50,7 @@ class MealForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Creation still goes through REST (server-assigned PK + order); editing
-    // flows through PowerSync and is therefore offline-capable.
     final isCreating = _meal.id == null;
-    final isOnline = ref.watch(networkStatusProvider);
-    final canSubmit = !isCreating || isOnline;
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
@@ -95,19 +90,17 @@ class MealForm extends ConsumerWidget {
             ElevatedButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
               child: Text(AppLocalizations.of(context).save),
-              onPressed: canSubmit
-                  ? () {
-                      if (!_form.currentState!.validate()) {
-                        return;
-                      }
-                      _form.currentState!.save();
+              onPressed: () {
+                if (!_form.currentState!.validate()) {
+                  return;
+                }
+                _form.currentState!.save();
 
-                      final notifier = ref.read(nutritionProvider.notifier);
-                      isCreating ? notifier.addMeal(_meal, _planId) : notifier.editMeal(_meal);
+                final notifier = ref.read(nutritionProvider.notifier);
+                isCreating ? notifier.addMeal(_meal, _planId) : notifier.editMeal(_meal);
 
-                      Navigator.of(context).pop();
-                    }
-                  : null,
+                Navigator.of(context).pop();
+              },
             ),
           ],
         ),
@@ -123,8 +116,9 @@ Widget getMealItemForm(
   bool? test,
 ]) {
   return IngredientForm(
-    // TODO we use planId 0 here cause we don't have one and we don't need it I think?
-    recent: recent.map((e) => LogItem.fromMealItem(e, 0, e.mealId)).toList(),
+    // The recent list is ephemeral display data — planId isn't used for
+    // persistence, so an empty sentinel is fine.
+    recent: recent.map((e) => LogItem.fromMealItem(e, '', e.mealId)).toList(),
     onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) {
       mealItem.mealId = meal.id!;
       ref.read(nutritionProvider.notifier).addMealItem(mealItem, meal);
@@ -549,11 +543,7 @@ class _PlanFormState extends ConsumerState<PlanForm> {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    // Creation still goes through REST (server-assigned PK + creation_date);
-    // editing flows through PowerSync and is therefore offline-capable.
     final isCreating = widget._plan.id == null;
-    final isOnline = ref.watch(networkStatusProvider);
-    final canSubmit = !isCreating || isOnline;
 
     return Form(
       key: _form,
@@ -765,33 +755,31 @@ class _PlanFormState extends ConsumerState<PlanForm> {
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             child: Text(AppLocalizations.of(context).save),
-            onPressed: canSubmit
-                ? () async {
-                    // Validate and save the current values to the plan
-                    final isValid = _form.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    _form.currentState!.save();
+            onPressed: () async {
+              // Validate and save the current values to the plan
+              final isValid = _form.currentState!.validate();
+              if (!isValid) {
+                return;
+              }
+              _form.currentState!.save();
 
-                    // Save to DB
-                    final notifier = ref.read(nutritionProvider.notifier);
-                    if (!isCreating) {
-                      await notifier.editPlan(widget._plan);
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
-                      }
-                    } else {
-                      widget._plan = await notifier.addPlan(widget._plan);
-                      if (context.mounted) {
-                        Navigator.of(context).pushReplacementNamed(
-                          NutritionalPlanScreen.routeName,
-                          arguments: widget._plan,
-                        );
-                      }
-                    }
-                  }
-                : null,
+              // Save to DB
+              final notifier = ref.read(nutritionProvider.notifier);
+              if (!isCreating) {
+                await notifier.editPlan(widget._plan);
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              } else {
+                widget._plan = await notifier.addPlan(widget._plan);
+                if (context.mounted) {
+                  Navigator.of(context).pushReplacementNamed(
+                    NutritionalPlanScreen.routeName,
+                    arguments: widget._plan,
+                  );
+                }
+              }
+            },
           ),
         ],
       ),

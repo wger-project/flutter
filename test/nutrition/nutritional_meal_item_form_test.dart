@@ -97,11 +97,14 @@ void main() {
     plan1 = getNutritionalPlan();
     meal1 = plan1.meals.first;
     final MealItem mealItem = MealItem(
-      id: 10,
-      mealId: 1,
+      id: 'bb000000-0000-4000-8000-000000000010',
+      mealId: 'aa000000-0000-4000-8000-000000000001',
       ingredientId: ingredient.id,
       amount: 2,
     );
+    // Silence unused-local warning while we keep the fixture for documentation.
+    // ignore: unnecessary_statements
+    mealItem;
 
     mockRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
@@ -128,15 +131,16 @@ void main() {
       (_) => Future.value([ingredient1, ingredient2]),
     );
 
-    when(mockRepo.createMealItem(any)).thenAnswer((_) async => mealItem.toJson());
+    when(mockRepo.addMealItemLocalDrift(any)).thenAnswer((_) async => Future.value());
     // Ingredient lookups go through PowerSync. Weight units now travel with
     // the Ingredient (inlined by REST or JOINed by the repository), so no
     // separate stub is needed.
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => ingredient);
-    // NutritionNotifier.build() now subscribes to two Drift streams (plans
-    // + diary entries) — emit the seed plan and an empty diary so the
-    // combined stream produces a value.
+    // NutritionNotifier.build() subscribes to three Drift streams (plans,
+    // meals, diary entries) — emit the seed plan and meals so the combined
+    // stream produces a value.
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value([plan1]));
+    when(mockRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(plan1.meals));
     when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
 
     container = ProviderContainer(
@@ -358,7 +362,7 @@ void main() {
 
         expect(formState.mealItem.amount, 2);
 
-        verify(mockRepo.createMealItem(any));
+        verify(mockRepo.addMealItemLocalDrift(any));
       },
     );
   });

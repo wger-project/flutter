@@ -31,7 +31,7 @@ class NutritionalPlanTable extends Table {
   @override
   String get tableName => 'nutrition_nutritionplan';
 
-  IntColumn get id => integer()();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
   TextColumn get description => text()();
   DateTimeColumn get creationDate => dateTime().named('creation_date')();
   DateTimeColumn get startDate => dateTime().named('start')();
@@ -73,8 +73,8 @@ class LogItemTable extends Table {
   String get tableName => 'nutrition_logitem';
 
   TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
-  IntColumn get planId => integer().named('plan_id').references(NutritionalPlanTable, #id)();
-  IntColumn get mealId => integer().nullable().named('meal_id')();
+  TextColumn get planId => text().named('plan_id').references(NutritionalPlanTable, #id)();
+  TextColumn get mealId => text().nullable().named('meal_id')();
   IntColumn get ingredientId => integer().named('ingredient_id').references(IngredientTable, #id)();
   IntColumn get weightUnitId => integer().nullable().named('weight_unit_id')();
   DateTimeColumn get datetime => dateTime()();
@@ -85,8 +85,8 @@ class LogItemTable extends Table {
 const PowersyncLogItemTable = ps.Table(
   'nutrition_logitem',
   [
-    ps.Column.integer('plan_id'),
-    ps.Column.integer('meal_id'),
+    ps.Column.text('plan_id'),
+    ps.Column.text('meal_id'),
     ps.Column.integer('ingredient_id'),
     ps.Column.integer('weight_unit_id'),
     ps.Column.text('datetime'),
@@ -101,18 +101,17 @@ const PowersyncLogItemTable = ps.Table(
 
 /// A meal inside a nutritional plan (`nutrition_meal`).
 ///
-/// Creation goes via REST (server assigns the integer PK and the `order`
-/// field), edits and deletes flow through PowerSync. The `time` is
-/// stored as a `HH:MM:SS` string and translated to/from [TimeOfDay] via
-/// [TimeOfDayConverter].
+/// Identified by uuid client-side; creation, edits and deletes all flow
+/// through PowerSync. The `time` is stored as a `HH:MM:SS` string and
+/// translated to/from [TimeOfDay] via [TimeOfDayConverter].
 @UseRowClass(Meal, constructor: 'fromDrift')
 class MealTable extends Table {
   @override
   String get tableName => 'nutrition_meal';
 
-  IntColumn get id => integer()();
-  IntColumn get planId => integer().named('plan_id').references(NutritionalPlanTable, #id)();
-  IntColumn get order => integer()();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get planId => text().named('plan_id').references(NutritionalPlanTable, #id)();
+  IntColumn get order => integer().withDefault(const Constant(1))();
   TextColumn get time => text().map(const TimeOfDayConverter()).nullable()();
   TextColumn get name => text().withDefault(const Constant(''))();
 }
@@ -120,7 +119,7 @@ class MealTable extends Table {
 const PowersyncMealTable = ps.Table(
   'nutrition_meal',
   [
-    ps.Column.integer('plan_id'),
+    ps.Column.text('plan_id'),
     ps.Column.integer('order'),
     ps.Column.text('time'),
     ps.Column.text('name'),
@@ -132,26 +131,27 @@ const PowersyncMealTable = ps.Table(
 
 /// A single ingredient + amount inside a meal (`nutrition_mealitem`).
 ///
-/// Creation via REST, edits and deletes via PowerSync. `amount` is
-/// a `DecimalField(decimal_places=2, max_digits=6)` server-side, stored here
+/// Identified by uuid client-side; the `meal_id` FK is the parent meal's
+/// uuid (not the server-side integer PK). `amount` is a
+/// `DecimalField(decimal_places=2, max_digits=6)` server-side, stored here
 /// as REAL — the rounding happens implicitly when DRF coerces back.
 @UseRowClass(MealItem, constructor: 'fromDrift')
 class MealItemTable extends Table {
   @override
   String get tableName => 'nutrition_mealitem';
 
-  IntColumn get id => integer()();
-  IntColumn get mealId => integer().named('meal_id').references(MealTable, #id)();
+  TextColumn get id => text().clientDefault(() => ps.uuid.v4())();
+  TextColumn get mealId => text().named('meal_id').references(MealTable, #id)();
   IntColumn get ingredientId => integer().named('ingredient_id').references(IngredientTable, #id)();
   IntColumn get weightUnitId => integer().named('weight_unit_id').nullable()();
-  IntColumn get order => integer()();
+  IntColumn get order => integer().withDefault(const Constant(1))();
   RealColumn get amount => real()();
 }
 
 const PowersyncMealItemTable = ps.Table(
   'nutrition_mealitem',
   [
-    ps.Column.integer('meal_id'),
+    ps.Column.text('meal_id'),
     ps.Column.integer('ingredient_id'),
     ps.Column.integer('weight_unit_id'),
     ps.Column.integer('order'),

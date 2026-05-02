@@ -16,13 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -31,7 +28,6 @@ import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 
 import '../fake_connectivity.dart';
-import '../fixtures/fixture_reader.dart';
 import 'nutrition_provider_test.mocks.dart';
 
 @GenerateMocks([NutritionRepository, IngredientRepository])
@@ -43,10 +39,6 @@ void main() {
   final now = DateTime.now();
   late MockNutritionRepository mockRepo;
   late MockIngredientRepository mockIngredientRepo;
-
-  late Map<String, dynamic> nutritionalPlanInfoResponse;
-  late Map<String, dynamic> nutritionalPlanDetailResponse;
-  late Map<String, dynamic> ingredient10065Response;
 
   ProviderContainer makeContainer() {
     return ProviderContainer.test(
@@ -83,56 +75,29 @@ void main() {
     when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
 
     // Edit + delete now go through Drift instead of REST.
+    when(mockRepo.addPlanLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.editLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(const []));
+    when(mockRepo.addMealLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.editMealLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.deleteMealLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRepo.addMealItemLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.editMealItemLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.deleteMealItemLocalDrift(any)).thenAnswer((_) async => Future.value());
-
-    nutritionalPlanInfoResponse = jsonDecode(
-      fixture('nutrition/nutritional_plan_info_detail_response.json'),
-    );
-    nutritionalPlanDetailResponse = jsonDecode(
-      fixture('nutrition/nutritional_plan_detail_response.json'),
-    );
-    ingredient10065Response = jsonDecode(
-      fixture('nutrition/ingredientinfo_10065.json'),
-    );
 
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
   });
 
-  group('fetchAndSetPlanFull', () {
-    test('should correctly load a full nutritional plan', () async {
-      // arrange
-      when(mockRepo.fetchPlanSparse(1)).thenAnswer(
-        (_) async => nutritionalPlanDetailResponse,
-      );
-      when(mockRepo.fetchPlanFull(1)).thenAnswer(
-        (_) async => nutritionalPlanInfoResponse,
-      );
-      when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
-      // Ingredient lookups now go through PowerSync — stub the local repo.
-      final ingredient = Ingredient.fromJson(ingredient10065Response);
-      when(mockIngredientRepo.getById(any)).thenAnswer((_) async => ingredient);
-      when(mockIngredientRepo.watchById(any)).thenAnswer((_) => Stream.value(ingredient));
-
-      final container = makeContainer();
-
-      // act
-      await container.read(nutritionProvider.notifier).fetchAndSetPlanFull(1);
-
-      // assert
-      final plans = container.read(nutritionProvider).value?.plans ?? const [];
-      expect(plans.isEmpty, false);
-    });
-  });
+  const planUuid1 = 'cc000000-0000-4000-8000-000000000001';
+  const planUuid2 = 'cc000000-0000-4000-8000-000000000002';
+  const planUuidA = 'cc000000-0000-4000-8000-00000000000a';
+  const planUuidB = 'cc000000-0000-4000-8000-00000000000b';
 
   group('currentPlan', () {
     test('gibt den aktiven Plan zurück, wenn nur einer aktiv ist', () async {
       final plan = NutritionalPlan(
-        id: 1,
+        id: planUuid1,
         description: 'Aktiver Plan',
         startDate: now.subtract(const Duration(days: 1)),
         endDate: now.add(const Duration(days: 1)),
@@ -147,14 +112,14 @@ void main() {
 
     test('gibt den neuesten aktiven Plan zurück, wenn mehrere aktiv sind', () async {
       final olderPlan = NutritionalPlan(
-        id: 1,
+        id: planUuid1,
         description: 'Älterer aktiver Plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
         creationDate: now.subtract(const Duration(days: 10)),
       );
       final newerPlan = NutritionalPlan(
-        id: 2,
+        id: planUuid2,
         description: 'Neuerer aktiver Plan',
         startDate: now.subtract(const Duration(days: 5)),
         endDate: now.add(const Duration(days: 5)),
@@ -177,13 +142,13 @@ void main() {
     test('no active plan -> null', () async {
       final plans = [
         NutritionalPlan(
-          id: 1,
+          id: planUuid1,
           description: 'plan 1',
           startDate: now.subtract(const Duration(days: 30)),
           endDate: now.subtract(const Duration(days: 5)),
         ),
         NutritionalPlan(
-          id: 2,
+          id: planUuid2,
           description: 'plan 2',
           startDate: now.add(const Duration(days: 100)),
           endDate: now.add(const Duration(days: 50)),
@@ -195,7 +160,7 @@ void main() {
 
     test('active plan exists -> return it', () async {
       final plan = NutritionalPlan(
-        id: 42,
+        id: planUuidA,
         description: 'Active plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
@@ -209,13 +174,13 @@ void main() {
 
     test('inactive plans are ignored', () async {
       final inactivePlan = NutritionalPlan(
-        id: 10,
+        id: planUuidA,
         description: 'Inactive plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.subtract(const Duration(days: 5)),
       );
       final plan = NutritionalPlan(
-        id: 11,
+        id: planUuidB,
         description: 'Active plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
@@ -229,14 +194,14 @@ void main() {
 
     test('several active plans exists -> return newest', () async {
       final olderPlan = NutritionalPlan(
-        id: 100,
+        id: planUuidA,
         description: 'Old active plan',
         startDate: now.subtract(const Duration(days: 10)),
         endDate: now.add(const Duration(days: 10)),
         creationDate: now.subtract(const Duration(days: 10)),
       );
       final newerPlan = NutritionalPlan(
-        id: 101,
+        id: planUuidB,
         description: 'Newer active plan',
         startDate: now.subtract(const Duration(days: 5)),
         endDate: now.add(const Duration(days: 5)),
@@ -251,36 +216,24 @@ void main() {
   });
 
   group('plan write operations', () {
-    test('addPlan calls repository (creation still goes via REST)', () async {
+    test('addPlan generates a UUID and delegates to addPlanLocalDrift', () async {
       final toAdd = NutritionalPlan(
         id: null,
         description: 'New plan',
         startDate: now,
         creationDate: now,
       );
-      final created = NutritionalPlan(
-        id: 99,
-        description: 'New plan',
-        startDate: now,
-        creationDate: now,
-      );
-      when(mockRepo.createPlan(any)).thenAnswer((_) async => created.toJson());
 
-      // Default `Stream.empty()` from setUp leaves state in AsyncLoading,
-      // which addPlan promotes to AsyncData via its optimistic update.
       final container = makeContainer();
       final result = await container.read(nutritionProvider.notifier).addPlan(toAdd);
 
-      verify(mockRepo.createPlan(any)).called(1);
-      expect(result.id, created.id);
-      // Optimistic state injection: the new plan is visible right away.
-      final plans = container.read(nutritionProvider).value?.plans ?? const [];
-      expect(plans.map((p) => p.id), contains(99));
+      expect(result.id, isNotNull);
+      verify(mockRepo.addPlanLocalDrift(toAdd)).called(1);
     });
 
-    test('editPlan delegates to editLocalDrift (PowerSync), not REST', () async {
+    test('editPlan delegates to editLocalDrift', () async {
       final plan = NutritionalPlan(
-        id: 1,
+        id: planUuid1,
         description: 'edit me',
         startDate: now,
         creationDate: now,
@@ -292,18 +245,31 @@ void main() {
       verify(mockRepo.editLocalDrift(plan)).called(1);
     });
 
-    test('deletePlan delegates to deleteLocalDrift (PowerSync), not REST', () async {
+    test('deletePlan delegates to deleteLocalDrift', () async {
       final container = makeContainer();
 
-      await container.read(nutritionProvider.notifier).deletePlan(1);
+      await container.read(nutritionProvider.notifier).deletePlan(planUuid1);
 
-      verify(mockRepo.deleteLocalDrift(1)).called(1);
+      verify(mockRepo.deleteLocalDrift(planUuid1)).called(1);
     });
   });
 
   group('meal write operations', () {
+    const mealUuid = 'aa000000-0000-4000-8000-000000000001';
+
+    test('addMeal generates a UUID and delegates to addMealLocalDrift', () async {
+      final meal = Meal(plan: planUuid1, name: 'breakfast');
+      final container = makeContainer();
+
+      final saved = await container.read(nutritionProvider.notifier).addMeal(meal, planUuid1);
+
+      expect(saved.id, isNotNull);
+      expect(saved.planId, planUuid1);
+      verify(mockRepo.addMealLocalDrift(meal)).called(1);
+    });
+
     test('editMeal delegates to editMealLocalDrift (PowerSync), not REST', () async {
-      final meal = Meal(id: 5, plan: 1, name: 'breakfast');
+      final meal = Meal(id: mealUuid, plan: planUuid1, name: 'breakfast');
       final container = makeContainer();
 
       await container.read(nutritionProvider.notifier).editMeal(meal);
@@ -311,27 +277,34 @@ void main() {
       verify(mockRepo.editMealLocalDrift(meal)).called(1);
     });
 
-    test('deleteMeal delegates to deleteMealLocalDrift and updates state', () async {
-      final meal = Meal(id: 5, plan: 7, name: 'breakfast');
-      final plan = NutritionalPlan(
-        id: 7,
-        description: 'plan',
-        startDate: now,
-        creationDate: now,
-      )..meals = [meal];
-      final container = await containerWithPlans([plan]);
+    test('deleteMeal delegates to deleteMealLocalDrift', () async {
+      final meal = Meal(id: mealUuid, plan: planUuid1, name: 'breakfast');
+      final container = makeContainer();
 
       await container.read(nutritionProvider.notifier).deleteMeal(meal);
 
-      verify(mockRepo.deleteMealLocalDrift(5)).called(1);
-      final plans = container.read(nutritionProvider).value?.plans ?? const [];
-      expect(plans.single.meals, isEmpty);
+      verify(mockRepo.deleteMealLocalDrift(mealUuid)).called(1);
     });
   });
 
   group('meal item write operations', () {
+    const mealUuid = 'aa000000-0000-4000-8000-000000000001';
+    const itemUuid = 'bb000000-0000-4000-8000-000000000001';
+
+    test('addMealItem generates a UUID and delegates to addMealItemLocalDrift', () async {
+      final meal = Meal(id: mealUuid, plan: planUuid1, name: 'breakfast');
+      final item = MealItem(ingredientId: 1, amount: 100);
+      final container = makeContainer();
+
+      final saved = await container.read(nutritionProvider.notifier).addMealItem(item, meal);
+
+      expect(saved.id, isNotNull);
+      expect(saved.mealId, mealUuid);
+      verify(mockRepo.addMealItemLocalDrift(item)).called(1);
+    });
+
     test('editMealItem delegates to editMealItemLocalDrift (PowerSync)', () async {
-      final item = MealItem(id: 9, mealId: 5, ingredientId: 1, amount: 100);
+      final item = MealItem(id: itemUuid, mealId: mealUuid, ingredientId: 1, amount: 100);
       final container = makeContainer();
 
       await container.read(nutritionProvider.notifier).editMealItem(item);
@@ -339,22 +312,13 @@ void main() {
       verify(mockRepo.editMealItemLocalDrift(item)).called(1);
     });
 
-    test('deleteMealItem delegates to deleteMealItemLocalDrift and updates state', () async {
-      final item = MealItem(id: 9, mealId: 5, ingredientId: 1, amount: 100);
-      final meal = Meal(id: 5, plan: 7, name: 'breakfast')..mealItems = [item];
-      final plan = NutritionalPlan(
-        id: 7,
-        description: 'plan',
-        startDate: now,
-        creationDate: now,
-      )..meals = [meal];
-      final container = await containerWithPlans([plan]);
+    test('deleteMealItem delegates to deleteMealItemLocalDrift', () async {
+      final item = MealItem(id: itemUuid, mealId: mealUuid, ingredientId: 1, amount: 100);
+      final container = makeContainer();
 
       await container.read(nutritionProvider.notifier).deleteMealItem(item);
 
-      verify(mockRepo.deleteMealItemLocalDrift(9)).called(1);
-      final plans = container.read(nutritionProvider).value?.plans ?? const [];
-      expect(plans.single.meals.single.mealItems, isEmpty);
+      verify(mockRepo.deleteMealItemLocalDrift(itemUuid)).called(1);
     });
   });
 }

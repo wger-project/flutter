@@ -111,8 +111,11 @@ enum EXERCISE_IMAGE_ART_STYLE {
   OTHER,
 }
 
-/// Dummy ID for pseudo meals
-const PSEUDO_MEAL_ID = -1;
+/// Sentinel UUID for the synthetic "loose log entries" pseudo-meal.
+///
+/// All-zero UUID is reserved by RFC 4122 (the "nil UUID") and won't collide
+/// with any client-generated UUID v4.
+const PSEUDO_MEAL_ID = '00000000-0000-0000-0000-000000000000';
 
 /// Colors used for muscles
 const COLOR_MAIN_MUSCLES = Colors.red;

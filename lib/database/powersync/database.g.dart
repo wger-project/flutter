@@ -5319,12 +5319,13 @@ class $NutritionalPlanTableTable extends NutritionalPlanTable
   $NutritionalPlanTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => ps.uuid.v4(),
   );
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
@@ -5482,8 +5483,6 @@ class $NutritionalPlanTableTable extends NutritionalPlanTable
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
@@ -5589,7 +5588,7 @@ class $NutritionalPlanTableTable extends NutritionalPlanTable
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return NutritionalPlan(
       id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
       description: attachedDatabase.typeMapping.read(
@@ -5646,7 +5645,7 @@ class $NutritionalPlanTableTable extends NutritionalPlanTable
 }
 
 class NutritionalPlanTableCompanion extends UpdateCompanion<NutritionalPlan> {
-  final Value<int> id;
+  final Value<String> id;
   final Value<String> description;
   final Value<DateTime> creationDate;
   final Value<DateTime> startDate;
@@ -5675,7 +5674,7 @@ class NutritionalPlanTableCompanion extends UpdateCompanion<NutritionalPlan> {
     this.rowid = const Value.absent(),
   });
   NutritionalPlanTableCompanion.insert({
-    required int id,
+    this.id = const Value.absent(),
     required String description,
     required DateTime creationDate,
     required DateTime startDate,
@@ -5688,14 +5687,13 @@ class NutritionalPlanTableCompanion extends UpdateCompanion<NutritionalPlan> {
     this.goalFat = const Value.absent(),
     required bool hasGoalCalories,
     this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       description = Value(description),
+  }) : description = Value(description),
        creationDate = Value(creationDate),
        startDate = Value(startDate),
        onlyLogging = Value(onlyLogging),
        hasGoalCalories = Value(hasGoalCalories);
   static Insertable<NutritionalPlan> custom({
-    Expression<int>? id,
+    Expression<String>? id,
     Expression<String>? description,
     Expression<DateTime>? creationDate,
     Expression<DateTime>? startDate,
@@ -5727,7 +5725,7 @@ class NutritionalPlanTableCompanion extends UpdateCompanion<NutritionalPlan> {
   }
 
   NutritionalPlanTableCompanion copyWith({
-    Value<int>? id,
+    Value<String>? id,
     Value<String>? description,
     Value<DateTime>? creationDate,
     Value<DateTime>? startDate,
@@ -5762,7 +5760,7 @@ class NutritionalPlanTableCompanion extends UpdateCompanion<NutritionalPlan> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -7355,20 +7353,21 @@ class $MealTableTable extends MealTable with TableInfo<$MealTableTable, Meal> {
   $MealTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => ps.uuid.v4(),
   );
   static const VerificationMeta _planIdMeta = const VerificationMeta('planId');
   @override
-  late final GeneratedColumn<int> planId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> planId = GeneratedColumn<String>(
     'plan_id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES nutrition_nutritionplan (id)',
@@ -7381,7 +7380,8 @@ class $MealTableTable extends MealTable with TableInfo<$MealTableTable, Meal> {
     aliasedName,
     false,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
   );
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDay?, String> time = GeneratedColumn<String>(
@@ -7417,8 +7417,6 @@ class $MealTableTable extends MealTable with TableInfo<$MealTableTable, Meal> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('plan_id')) {
       context.handle(
@@ -7433,8 +7431,6 @@ class $MealTableTable extends MealTable with TableInfo<$MealTableTable, Meal> {
         _orderMeta,
         order.isAcceptableOrUnknown(data['order']!, _orderMeta),
       );
-    } else if (isInserting) {
-      context.missing(_orderMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -7452,11 +7448,11 @@ class $MealTableTable extends MealTable with TableInfo<$MealTableTable, Meal> {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Meal.fromDrift(
       id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
       planId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}plan_id'],
       )!,
       order: attachedDatabase.typeMapping.read(
@@ -7488,8 +7484,8 @@ class $MealTableTable extends MealTable with TableInfo<$MealTableTable, Meal> {
 }
 
 class MealTableCompanion extends UpdateCompanion<Meal> {
-  final Value<int> id;
-  final Value<int> planId;
+  final Value<String> id;
+  final Value<String> planId;
   final Value<int> order;
   final Value<TimeOfDay?> time;
   final Value<String> name;
@@ -7503,18 +7499,16 @@ class MealTableCompanion extends UpdateCompanion<Meal> {
     this.rowid = const Value.absent(),
   });
   MealTableCompanion.insert({
-    required int id,
-    required int planId,
-    required int order,
+    this.id = const Value.absent(),
+    required String planId,
+    this.order = const Value.absent(),
     this.time = const Value.absent(),
     this.name = const Value.absent(),
     this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       planId = Value(planId),
-       order = Value(order);
+  }) : planId = Value(planId);
   static Insertable<Meal> custom({
-    Expression<int>? id,
-    Expression<int>? planId,
+    Expression<String>? id,
+    Expression<String>? planId,
     Expression<int>? order,
     Expression<String>? time,
     Expression<String>? name,
@@ -7531,8 +7525,8 @@ class MealTableCompanion extends UpdateCompanion<Meal> {
   }
 
   MealTableCompanion copyWith({
-    Value<int>? id,
-    Value<int>? planId,
+    Value<String>? id,
+    Value<String>? planId,
     Value<int>? order,
     Value<TimeOfDay?>? time,
     Value<String>? name,
@@ -7552,10 +7546,10 @@ class MealTableCompanion extends UpdateCompanion<Meal> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (planId.present) {
-      map['plan_id'] = Variable<int>(planId.value);
+      map['plan_id'] = Variable<String>(planId.value);
     }
     if (order.present) {
       map['order'] = Variable<int>(order.value);
@@ -7595,20 +7589,21 @@ class $MealItemTableTable extends MealItemTable with TableInfo<$MealItemTableTab
   $MealItemTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => ps.uuid.v4(),
   );
   static const VerificationMeta _mealIdMeta = const VerificationMeta('mealId');
   @override
-  late final GeneratedColumn<int> mealId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> mealId = GeneratedColumn<String>(
     'meal_id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES nutrition_meal (id)',
@@ -7646,7 +7641,8 @@ class $MealItemTableTable extends MealItemTable with TableInfo<$MealItemTableTab
     aliasedName,
     false,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
   );
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
@@ -7680,8 +7676,6 @@ class $MealItemTableTable extends MealItemTable with TableInfo<$MealItemTableTab
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('meal_id')) {
       context.handle(
@@ -7716,8 +7710,6 @@ class $MealItemTableTable extends MealItemTable with TableInfo<$MealItemTableTab
         _orderMeta,
         order.isAcceptableOrUnknown(data['order']!, _orderMeta),
       );
-    } else if (isInserting) {
-      context.missing(_orderMeta);
     }
     if (data.containsKey('amount')) {
       context.handle(
@@ -7737,11 +7729,11 @@ class $MealItemTableTable extends MealItemTable with TableInfo<$MealItemTableTab
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return MealItem.fromDrift(
       id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
       mealId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}meal_id'],
       )!,
       ingredientId: attachedDatabase.typeMapping.read(
@@ -7770,8 +7762,8 @@ class $MealItemTableTable extends MealItemTable with TableInfo<$MealItemTableTab
 }
 
 class MealItemTableCompanion extends UpdateCompanion<MealItem> {
-  final Value<int> id;
-  final Value<int> mealId;
+  final Value<String> id;
+  final Value<String> mealId;
   final Value<int> ingredientId;
   final Value<int?> weightUnitId;
   final Value<int> order;
@@ -7787,21 +7779,19 @@ class MealItemTableCompanion extends UpdateCompanion<MealItem> {
     this.rowid = const Value.absent(),
   });
   MealItemTableCompanion.insert({
-    required int id,
-    required int mealId,
+    this.id = const Value.absent(),
+    required String mealId,
     required int ingredientId,
     this.weightUnitId = const Value.absent(),
-    required int order,
+    this.order = const Value.absent(),
     required double amount,
     this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       mealId = Value(mealId),
+  }) : mealId = Value(mealId),
        ingredientId = Value(ingredientId),
-       order = Value(order),
        amount = Value(amount);
   static Insertable<MealItem> custom({
-    Expression<int>? id,
-    Expression<int>? mealId,
+    Expression<String>? id,
+    Expression<String>? mealId,
     Expression<int>? ingredientId,
     Expression<int>? weightUnitId,
     Expression<int>? order,
@@ -7820,8 +7810,8 @@ class MealItemTableCompanion extends UpdateCompanion<MealItem> {
   }
 
   MealItemTableCompanion copyWith({
-    Value<int>? id,
-    Value<int>? mealId,
+    Value<String>? id,
+    Value<String>? mealId,
     Value<int>? ingredientId,
     Value<int?>? weightUnitId,
     Value<int>? order,
@@ -7843,10 +7833,10 @@ class MealItemTableCompanion extends UpdateCompanion<MealItem> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (mealId.present) {
-      map['meal_id'] = Variable<int>(mealId.value);
+      map['meal_id'] = Variable<String>(mealId.value);
     }
     if (ingredientId.present) {
       map['ingredient_id'] = Variable<int>(ingredientId.value);
@@ -7898,11 +7888,11 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
   );
   static const VerificationMeta _planIdMeta = const VerificationMeta('planId');
   @override
-  late final GeneratedColumn<int> planId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> planId = GeneratedColumn<String>(
     'plan_id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES nutrition_nutritionplan (id)',
@@ -7910,11 +7900,11 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
   );
   static const VerificationMeta _mealIdMeta = const VerificationMeta('mealId');
   @override
-  late final GeneratedColumn<int> mealId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> mealId = GeneratedColumn<String>(
     'meal_id',
     aliasedName,
     true,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
   static const VerificationMeta _ingredientIdMeta = const VerificationMeta(
@@ -8069,7 +8059,7 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
         data['${effectivePrefix}id'],
       )!,
       mealId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}meal_id'],
       ),
       ingredientId: attachedDatabase.typeMapping.read(
@@ -8085,7 +8075,7 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
         data['${effectivePrefix}amount'],
       )!,
       planId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}plan_id'],
       )!,
       datetime: attachedDatabase.typeMapping.read(
@@ -8107,8 +8097,8 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
 
 class LogItemTableCompanion extends UpdateCompanion<LogItem> {
   final Value<String> id;
-  final Value<int> planId;
-  final Value<int?> mealId;
+  final Value<String> planId;
+  final Value<String?> mealId;
   final Value<int> ingredientId;
   final Value<int?> weightUnitId;
   final Value<DateTime> datetime;
@@ -8128,7 +8118,7 @@ class LogItemTableCompanion extends UpdateCompanion<LogItem> {
   });
   LogItemTableCompanion.insert({
     this.id = const Value.absent(),
-    required int planId,
+    required String planId,
     this.mealId = const Value.absent(),
     required int ingredientId,
     this.weightUnitId = const Value.absent(),
@@ -8142,8 +8132,8 @@ class LogItemTableCompanion extends UpdateCompanion<LogItem> {
        amount = Value(amount);
   static Insertable<LogItem> custom({
     Expression<String>? id,
-    Expression<int>? planId,
-    Expression<int>? mealId,
+    Expression<String>? planId,
+    Expression<String>? mealId,
     Expression<int>? ingredientId,
     Expression<int>? weightUnitId,
     Expression<DateTime>? datetime,
@@ -8166,8 +8156,8 @@ class LogItemTableCompanion extends UpdateCompanion<LogItem> {
 
   LogItemTableCompanion copyWith({
     Value<String>? id,
-    Value<int>? planId,
-    Value<int?>? mealId,
+    Value<String>? planId,
+    Value<String?>? mealId,
     Value<int>? ingredientId,
     Value<int?>? weightUnitId,
     Value<DateTime>? datetime,
@@ -8195,10 +8185,10 @@ class LogItemTableCompanion extends UpdateCompanion<LogItem> {
       map['id'] = Variable<String>(id.value);
     }
     if (planId.present) {
-      map['plan_id'] = Variable<int>(planId.value);
+      map['plan_id'] = Variable<String>(planId.value);
     }
     if (mealId.present) {
-      map['meal_id'] = Variable<int>(mealId.value);
+      map['meal_id'] = Variable<String>(mealId.value);
     }
     if (ingredientId.present) {
       map['ingredient_id'] = Variable<int>(ingredientId.value);
@@ -15246,7 +15236,7 @@ typedef $$RoutineWeightUnitTableTableProcessedTableManager =
     >;
 typedef $$NutritionalPlanTableTableCreateCompanionBuilder =
     NutritionalPlanTableCompanion Function({
-      required int id,
+      Value<String> id,
       required String description,
       required DateTime creationDate,
       required DateTime startDate,
@@ -15262,7 +15252,7 @@ typedef $$NutritionalPlanTableTableCreateCompanionBuilder =
     });
 typedef $$NutritionalPlanTableTableUpdateCompanionBuilder =
     NutritionalPlanTableCompanion Function({
-      Value<int> id,
+      Value<String> id,
       Value<String> description,
       Value<DateTime> creationDate,
       Value<DateTime> startDate,
@@ -15299,7 +15289,7 @@ final class $$NutritionalPlanTableTableReferences
     final manager = $$MealTableTableTableManager(
       $_db,
       $_db.mealTable,
-    ).filter((f) => f.planId.id.sqlEquals($_itemColumn<int>('id')!));
+    ).filter((f) => f.planId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_mealTableRefsTable($_db));
     return ProcessedTableManager(
@@ -15321,7 +15311,7 @@ final class $$NutritionalPlanTableTableReferences
     final manager = $$LogItemTableTableTableManager(
       $_db,
       $_db.logItemTable,
-    ).filter((f) => f.planId.id.sqlEquals($_itemColumn<int>('id')!));
+    ).filter((f) => f.planId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_logItemTableRefsTable($_db));
     return ProcessedTableManager(
@@ -15339,7 +15329,7 @@ class $$NutritionalPlanTableTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
+  ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
   );
@@ -15457,7 +15447,7 @@ class $$NutritionalPlanTableTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
+  ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
   );
@@ -15527,7 +15517,8 @@ class $$NutritionalPlanTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
     column: $table.description,
@@ -15659,7 +15650,7 @@ class $$NutritionalPlanTableTableTableManager
           ),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
+                Value<String> id = const Value.absent(),
                 Value<String> description = const Value.absent(),
                 Value<DateTime> creationDate = const Value.absent(),
                 Value<DateTime> startDate = const Value.absent(),
@@ -15689,7 +15680,7 @@ class $$NutritionalPlanTableTableTableManager
               ),
           createCompanionCallback:
               ({
-                required int id,
+                Value<String> id = const Value.absent(),
                 required String description,
                 required DateTime creationDate,
                 required DateTime startDate,
@@ -17491,17 +17482,17 @@ typedef $$IngredientWeightUnitTableTableProcessedTableManager =
     >;
 typedef $$MealTableTableCreateCompanionBuilder =
     MealTableCompanion Function({
-      required int id,
-      required int planId,
-      required int order,
+      Value<String> id,
+      required String planId,
+      Value<int> order,
       Value<TimeOfDay?> time,
       Value<String> name,
       Value<int> rowid,
     });
 typedef $$MealTableTableUpdateCompanionBuilder =
     MealTableCompanion Function({
-      Value<int> id,
-      Value<int> planId,
+      Value<String> id,
+      Value<String> planId,
       Value<int> order,
       Value<TimeOfDay?> time,
       Value<String> name,
@@ -17518,7 +17509,7 @@ final class $$MealTableTableReferences
       );
 
   $$NutritionalPlanTableTableProcessedTableManager get planId {
-    final $_column = $_itemColumn<int>('plan_id')!;
+    final $_column = $_itemColumn<String>('plan_id')!;
 
     final manager = $$NutritionalPlanTableTableTableManager(
       $_db,
@@ -17545,7 +17536,7 @@ final class $$MealTableTableReferences
     final manager = $$MealItemTableTableTableManager(
       $_db,
       $_db.mealItemTable,
-    ).filter((f) => f.mealId.id.sqlEquals($_itemColumn<int>('id')!));
+    ).filter((f) => f.mealId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_mealItemTableRefsTable($_db));
     return ProcessedTableManager(
@@ -17562,7 +17553,7 @@ class $$MealTableTableFilterComposer extends Composer<_$DriftPowersyncDatabase, 
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
+  ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
   );
@@ -17637,7 +17628,7 @@ class $$MealTableTableOrderingComposer extends Composer<_$DriftPowersyncDatabase
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
+  ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
   );
@@ -17689,7 +17680,8 @@ class $$MealTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<int> get order =>
       $composableBuilder(column: $table.order, builder: (column) => column);
@@ -17775,8 +17767,8 @@ class $$MealTableTableTableManager
               $$MealTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
-                Value<int> planId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> planId = const Value.absent(),
                 Value<int> order = const Value.absent(),
                 Value<TimeOfDay?> time = const Value.absent(),
                 Value<String> name = const Value.absent(),
@@ -17791,9 +17783,9 @@ class $$MealTableTableTableManager
               ),
           createCompanionCallback:
               ({
-                required int id,
-                required int planId,
-                required int order,
+                Value<String> id = const Value.absent(),
+                required String planId,
+                Value<int> order = const Value.absent(),
                 Value<TimeOfDay?> time = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -17887,18 +17879,18 @@ typedef $$MealTableTableProcessedTableManager =
     >;
 typedef $$MealItemTableTableCreateCompanionBuilder =
     MealItemTableCompanion Function({
-      required int id,
-      required int mealId,
+      Value<String> id,
+      required String mealId,
       required int ingredientId,
       Value<int?> weightUnitId,
-      required int order,
+      Value<int> order,
       required double amount,
       Value<int> rowid,
     });
 typedef $$MealItemTableTableUpdateCompanionBuilder =
     MealItemTableCompanion Function({
-      Value<int> id,
-      Value<int> mealId,
+      Value<String> id,
+      Value<String> mealId,
       Value<int> ingredientId,
       Value<int?> weightUnitId,
       Value<int> order,
@@ -17919,7 +17911,7 @@ final class $$MealItemTableTableReferences
   );
 
   $$MealTableTableProcessedTableManager get mealId {
-    final $_column = $_itemColumn<int>('meal_id')!;
+    final $_column = $_itemColumn<String>('meal_id')!;
 
     final manager = $$MealTableTableTableManager(
       $_db,
@@ -17962,7 +17954,7 @@ class $$MealItemTableTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
+  ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
   );
@@ -18036,7 +18028,7 @@ class $$MealItemTableTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
+  ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
   );
@@ -18110,7 +18102,8 @@ class $$MealItemTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<int> get weightUnitId => $composableBuilder(
     column: $table.weightUnitId,
@@ -18197,8 +18190,8 @@ class $$MealItemTableTableTableManager
               $$MealItemTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
-                Value<int> mealId = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> mealId = const Value.absent(),
                 Value<int> ingredientId = const Value.absent(),
                 Value<int?> weightUnitId = const Value.absent(),
                 Value<int> order = const Value.absent(),
@@ -18215,11 +18208,11 @@ class $$MealItemTableTableTableManager
               ),
           createCompanionCallback:
               ({
-                required int id,
-                required int mealId,
+                Value<String> id = const Value.absent(),
+                required String mealId,
                 required int ingredientId,
                 Value<int?> weightUnitId = const Value.absent(),
-                required int order,
+                Value<int> order = const Value.absent(),
                 required double amount,
                 Value<int> rowid = const Value.absent(),
               }) => MealItemTableCompanion.insert(
@@ -18314,8 +18307,8 @@ typedef $$MealItemTableTableProcessedTableManager =
 typedef $$LogItemTableTableCreateCompanionBuilder =
     LogItemTableCompanion Function({
       Value<String> id,
-      required int planId,
-      Value<int?> mealId,
+      required String planId,
+      Value<String?> mealId,
       required int ingredientId,
       Value<int?> weightUnitId,
       required DateTime datetime,
@@ -18326,8 +18319,8 @@ typedef $$LogItemTableTableCreateCompanionBuilder =
 typedef $$LogItemTableTableUpdateCompanionBuilder =
     LogItemTableCompanion Function({
       Value<String> id,
-      Value<int> planId,
-      Value<int?> mealId,
+      Value<String> planId,
+      Value<String?> mealId,
       Value<int> ingredientId,
       Value<int?> weightUnitId,
       Value<DateTime> datetime,
@@ -18349,7 +18342,7 @@ final class $$LogItemTableTableReferences
       );
 
   $$NutritionalPlanTableTableProcessedTableManager get planId {
-    final $_column = $_itemColumn<int>('plan_id')!;
+    final $_column = $_itemColumn<String>('plan_id')!;
 
     final manager = $$NutritionalPlanTableTableTableManager(
       $_db,
@@ -18397,7 +18390,7 @@ class $$LogItemTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get mealId => $composableBuilder(
+  ColumnFilters<String> get mealId => $composableBuilder(
     column: $table.mealId,
     builder: (column) => ColumnFilters(column),
   );
@@ -18481,7 +18474,7 @@ class $$LogItemTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get mealId => $composableBuilder(
+  ColumnOrderings<String> get mealId => $composableBuilder(
     column: $table.mealId,
     builder: (column) => ColumnOrderings(column),
   );
@@ -18563,7 +18556,7 @@ class $$LogItemTableTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<int> get mealId =>
+  GeneratedColumn<String> get mealId =>
       $composableBuilder(column: $table.mealId, builder: (column) => column);
 
   GeneratedColumn<int> get weightUnitId => $composableBuilder(
@@ -18654,8 +18647,8 @@ class $$LogItemTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<int> planId = const Value.absent(),
-                Value<int?> mealId = const Value.absent(),
+                Value<String> planId = const Value.absent(),
+                Value<String?> mealId = const Value.absent(),
                 Value<int> ingredientId = const Value.absent(),
                 Value<int?> weightUnitId = const Value.absent(),
                 Value<DateTime> datetime = const Value.absent(),
@@ -18676,8 +18669,8 @@ class $$LogItemTableTableTableManager
           createCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                required int planId,
-                Value<int?> mealId = const Value.absent(),
+                required String planId,
+                Value<String?> mealId = const Value.absent(),
                 required int ingredientId,
                 Value<int?> weightUnitId = const Value.absent(),
                 required DateTime datetime,
