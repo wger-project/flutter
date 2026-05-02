@@ -122,6 +122,38 @@ class Routine {
 
   Map<String, dynamic> toJson() => _$RoutineToJson(this);
 
+  Routine copyWith({
+    int? id,
+    DateTime? created,
+    String? name,
+    String? description,
+    bool? fitInWeek,
+    bool? isTemplate,
+    bool? isPublic,
+    DateTime? start,
+    DateTime? end,
+    List<Day>? days,
+    List<DayData>? dayData,
+    List<DayData>? dayDataGym,
+    List<WorkoutSession>? sessions,
+  }) {
+    return Routine(
+      id: id ?? this.id,
+      created: created ?? this.created,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      fitInWeek: fitInWeek ?? this.fitInWeek,
+      isTemplate: isTemplate ?? this.isTemplate,
+      isPublic: isPublic ?? this.isPublic,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      days: days ?? this.days,
+      dayData: dayData ?? this.dayData,
+      dayDataGym: dayDataGym ?? this.dayDataGym,
+      sessions: sessions ?? this.sessions,
+    );
+  }
+
   RoutineTableCompanion toCompanion() {
     final routineId = id;
     if (routineId == null) {
@@ -237,8 +269,14 @@ class Routine {
     return groupedLogs;
   }
 
-  void replaceExercise(int oldExerciseId, Exercise newExercise) {
-    for (final session in sessions) {
+  Routine replaceExercise(int oldExerciseId, Exercise newExercise) {
+    final updatedRoutine = this.copyWith(
+      sessions: List<WorkoutSession>.from(this.sessions),
+      dayData: List<DayData>.from(this.dayData),
+      dayDataGym: List<DayData>.from(this.dayDataGym),
+    );
+
+    for (final session in updatedRoutine.sessions) {
       for (final log in session.logs) {
         if (log.exerciseId == oldExerciseId) {
           log.exerciseId = newExercise.id!;
@@ -247,7 +285,7 @@ class Routine {
       }
     }
 
-    for (final day in dayData) {
+    for (final day in updatedRoutine.dayData) {
       for (final slot in day.slots) {
         for (final config in slot.setConfigs) {
           if (config.exerciseId == oldExerciseId) {
@@ -258,7 +296,7 @@ class Routine {
       }
     }
 
-    for (final day in dayDataGym) {
+    for (final day in updatedRoutine.dayDataGym) {
       for (final slot in day.slots) {
         for (final config in slot.setConfigs) {
           if (config.exerciseId == oldExerciseId) {
@@ -268,5 +306,6 @@ class Routine {
         }
       }
     }
+    return updatedRoutine;
   }
 }
