@@ -1,9 +1,9 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/providers/exercise_filters_riverpod.dart';
 
@@ -18,7 +18,7 @@ void main() {
     final container = ProviderContainer.test();
     final filters = await container.read(exerciseFiltersProvider.future);
 
-    expect(filters.searchLanguage, ExerciseSearchLanguage.currentAndEnglish);
+    expect(filters.searchLanguage, SearchLanguage.currentAndEnglish);
     expect(filters.searchMode, ExerciseSearchMode.fulltext);
     expect(filters.selectedCategory, isNull);
   });
@@ -28,13 +28,13 @@ void main() {
     await container.read(exerciseFiltersProvider.future);
     final notifier = container.read(exerciseFiltersProvider.notifier);
 
-    await notifier.chooseLanguage(ExerciseSearchLanguage.all);
+    await notifier.chooseLanguage(SearchLanguage.all);
 
     final filters = await container.read(exerciseFiltersProvider.future);
-    expect(filters.searchLanguage, ExerciseSearchLanguage.all);
+    expect(filters.searchLanguage, SearchLanguage.all);
     expect(
       await PreferenceHelper.instance.getExerciseSearchLanguage(),
-      ExerciseSearchLanguage.all,
+      SearchLanguage.all,
     );
   });
 
@@ -69,18 +69,22 @@ void main() {
     // create container, set values, destroy, create new container
     final container1 = ProviderContainer.test();
     await container1.read(exerciseFiltersProvider.future);
-    await container1.read(exerciseFiltersProvider.notifier).chooseLanguage(
-      ExerciseSearchLanguage.current,
-    );
-    await container1.read(exerciseFiltersProvider.notifier).chooseSearchMode(
-      ExerciseSearchMode.exact,
-    );
+    await container1
+        .read(exerciseFiltersProvider.notifier)
+        .chooseLanguage(
+          SearchLanguage.current,
+        );
+    await container1
+        .read(exerciseFiltersProvider.notifier)
+        .chooseSearchMode(
+          ExerciseSearchMode.exact,
+        );
     container1.dispose();
 
     // New container
     final container2 = ProviderContainer.test();
     final filters = await container2.read(exerciseFiltersProvider.future);
-    expect(filters.searchLanguage, ExerciseSearchLanguage.current);
+    expect(filters.searchLanguage, SearchLanguage.current);
     expect(filters.searchMode, ExerciseSearchMode.exact);
   });
 }
