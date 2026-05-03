@@ -19,7 +19,6 @@
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -57,23 +56,9 @@ class NutritionState {
         .firstOrNull;
   }
 
-  /// Throws [NoSuchEntryException] if no plan with the given id exists.
-  NutritionalPlan findById(String id) {
-    return plans.firstWhere(
-      (plan) => plan.id == id,
-      orElse: () => throw const NoSuchEntryException(),
-    );
-  }
-
-  Meal? findMealById(String id) {
-    for (final plan in plans) {
-      final meal = plan.meals.firstWhereOrNull((m) => m.id == id);
-      if (meal != null) {
-        return meal;
-      }
-    }
-    return null;
-  }
+  /// Returns the plan with the given [id], or `null` if it isn't (yet) in the
+  /// streamed snapshot
+  NutritionalPlan? findByIdOrNull(String? id) => plans.firstWhereOrNull((plan) => plan.id == id);
 }
 
 @Riverpod(keepAlive: true)
@@ -125,15 +110,6 @@ class NutritionNotifier extends _$NutritionNotifier {
     }
     return NutritionState(plans: plans);
   }
-
-  // --- Convenience accessors (delegate to state) ---
-
-  /// Throws [NoSuchEntryException] if no plan with the given id exists.
-  NutritionalPlan findById(String id) => (state.value ?? const NutritionState()).findById(id);
-
-  Meal? findMealById(String id) => (state.value ?? const NutritionState()).findMealById(id);
-
-  NutritionalPlan? get currentPlan => (state.value ?? const NutritionState()).currentPlan;
 
   // --- Plans ---
 
@@ -209,9 +185,8 @@ class NutritionNotifier extends _$NutritionNotifier {
 
   Future<void> logMealToDiary(Meal meal, DateTime mealDateTime) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    final plan = findById(meal.planId);
     for (final item in meal.mealItems) {
-      final log = LogItem.fromMealItem(item, plan.id!, meal.id, mealDateTime);
+      final log = LogItem.fromMealItem(item, meal.planId, meal.id, mealDateTime);
       await repo.addLogLocalDrift(log);
     }
   }
@@ -222,8 +197,7 @@ class NutritionNotifier extends _$NutritionNotifier {
     DateTime? dateTime,
   ]) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    final plan = findById(planId);
-    final log = LogItem.fromMealItem(mealItem, plan.id!, null, dateTime);
+    final log = LogItem.fromMealItem(mealItem, planId, null, dateTime);
     await repo.addLogLocalDrift(log);
   }
 

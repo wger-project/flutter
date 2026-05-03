@@ -61,11 +61,7 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
     // yet (e.g. cold open, deep link).
     final state = ref.watch(nutritionProvider).value;
     final NutritionalPlan _nutritionalPlan =
-        state?.plans.firstWhere(
-          (p) => p.id == _argumentPlan.id,
-          orElse: () => _argumentPlan,
-        ) ??
-        _argumentPlan;
+        state?.findByIdOrNull(_argumentPlan.id) ?? _argumentPlan;
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       floatingActionButton: Row(

@@ -65,7 +65,6 @@ class DashboardNutritionWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
-    final notifier = ref.read(nutritionProvider.notifier);
 
     return AsyncValueWidget<NutritionState>(
       value: ref.watch(nutritionProvider),
@@ -87,10 +86,8 @@ class DashboardNutritionWidget extends ConsumerWidget {
         trailing: const Icon(Icons.error_outline, color: Colors.red),
         child: StreamErrorIndicator(e, stacktrace: st),
       ),
-      data: (_) {
-        // currentPlan is derived from the notifier (it filters by date), so we
-        // pull it from the notifier rather than the raw plan list.
-        final plan = notifier.currentPlan;
+      data: (state) {
+        final plan = state.currentPlan;
         if (plan == null) {
           return _shell(
             context,
