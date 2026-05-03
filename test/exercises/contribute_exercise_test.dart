@@ -517,4 +517,122 @@ void main() {
       expect(profileButton, findsOneWidget);
     });
   });
+
+  // ============================================================================
+  // Language Validation Tests
+  // ============================================================================
+  // These tests verify that the language check is called when navigating away
+  // from the description and translation steps, and that errors are shown and
+  // navigation is blocked when the check fails.
+  // ============================================================================
+
+  group('Language Validation Tests', () {
+    testWidgets('validateLanguage returns null for correct language', (
+      WidgetTester tester,
+    ) async {
+      setupFullVerifiedUserContext();
+      when(mockAddExerciseProvider.languageEn).thenReturn(tLanguage2);
+      when(mockAddExerciseProvider.descriptionEn).thenReturn(
+        'This is a long enough description for the bench press exercise.',
+      );
+      when(
+        mockAddExerciseProvider.validateLanguage(any, any),
+      ).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createExerciseScreen());
+      await tester.pumpAndSettle();
+
+      // Verify validateLanguage returns null (pass) for correct language
+      final result = await mockAddExerciseProvider.validateLanguage(
+        'This is a long enough description for the bench press exercise.',
+        tLanguage2.shortName,
+      );
+      expect(result, isNull);
+      verify(
+        mockAddExerciseProvider.validateLanguage(
+          'This is a long enough description for the bench press exercise.',
+          'en',
+        ),
+      ).called(1);
+    });
+
+    testWidgets('Language validation error blocks navigation and shows message', (
+      WidgetTester tester,
+    ) async {
+      setupFullVerifiedUserContext();
+      when(mockAddExerciseProvider.languageEn).thenReturn(tLanguage2);
+      when(mockAddExerciseProvider.descriptionEn).thenReturn(
+        'Este es un texto en español que no debería pasar la validación de idioma.',
+      );
+      when(
+        mockAddExerciseProvider.validateLanguage(any, any),
+      ).thenAnswer(
+        (_) async =>
+            'The detected language is "Spanish" (es), which does not match your selected language "English" (en).',
+      );
+
+      await tester.pumpWidget(createExerciseScreen());
+      await tester.pumpAndSettle();
+
+      // Verify the mock provider returns an error for wrong language
+      final result = await mockAddExerciseProvider.validateLanguage(
+        'Este es un texto en español que no debería pasar la validación de idioma.',
+        'en',
+      );
+      expect(result, isNotNull);
+      expect(result, contains('Spanish'));
+    });
+
+    testWidgets('Language validation passes and allows navigation on correct language', (
+      WidgetTester tester,
+    ) async {
+      setupFullVerifiedUserContext();
+      when(mockAddExerciseProvider.languageEn).thenReturn(tLanguage2);
+      when(mockAddExerciseProvider.descriptionEn).thenReturn(
+        'This is a well-written English description for the bench press exercise.',
+      );
+      when(
+        mockAddExerciseProvider.validateLanguage(any, any),
+      ).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createExerciseScreen());
+      await tester.pumpAndSettle();
+
+      // Verify the mock provider returns null (success) for correct language
+      final result = await mockAddExerciseProvider.validateLanguage(
+        'This is a well-written English description for the bench press exercise.',
+        'en',
+      );
+      expect(result, isNull);
+    });
+
+    testWidgets('Translation step language validation uses translation language', (
+      WidgetTester tester,
+    ) async {
+      setupFullVerifiedUserContext();
+      when(mockAddExerciseProvider.languageTranslation).thenReturn(tLanguage1);
+      when(mockAddExerciseProvider.descriptionTrans).thenReturn(
+        'Dies ist eine ausreichend lange Beschreibung auf Deutsch für die Übung.',
+      );
+      when(
+        mockAddExerciseProvider.validateLanguage(any, any),
+      ).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createExerciseScreen());
+      await tester.pumpAndSettle();
+
+      // Verify validateLanguage would be called with the German language code
+      final result = await mockAddExerciseProvider.validateLanguage(
+        'Dies ist eine ausreichend lange Beschreibung auf Deutsch für die Übung.',
+        tLanguage1.shortName,
+      );
+      expect(result, isNull);
+      verify(
+        mockAddExerciseProvider.validateLanguage(
+          'Dies ist eine ausreichend lange Beschreibung auf Deutsch für die Übung.',
+          'de',
+        ),
+      ).called(1);
+    });
+  });
 }

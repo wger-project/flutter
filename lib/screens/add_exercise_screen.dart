@@ -47,6 +47,8 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseStepper.STEPS_IN_FORM - 1;
   bool _isLoading = false;
+  bool _isValidatingLanguage = false;
+  String? _languageError;
   Widget errorWidget = const SizedBox.shrink();
 
   final List<GlobalKey<FormState>> _keys = [
@@ -63,6 +65,14 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
       children: [
         const SizedBox(height: 10),
         if (_currentStep == lastStepIndex) errorWidget,
+        if (_languageError != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              _languageError!,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -139,8 +149,10 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
               )
             else
               ElevatedButton(
-                onPressed: details.onStepContinue,
-                child: Text(AppLocalizations.of(context).next),
+                onPressed: _isValidatingLanguage ? null : details.onStepContinue,
+                child: _isValidatingLanguage
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator())
+                    : Text(AppLocalizations.of(context).next),
               ),
           ],
         ),
@@ -179,15 +191,59 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
             Step(title: Text(AppLocalizations.of(context).overview), content: Step6Overview()),
           ],
           currentStep: _currentStep,
-          onStepContinue: () {
-            if (_keys[_currentStep].currentState?.validate() ?? false) {
-              _keys[_currentStep].currentState?.save();
+          onStepContinue: () async {
+            if (!(_keys[_currentStep].currentState?.validate() ?? false)) {
+              return;
+            }
+            _keys[_currentStep].currentState?.save();
 
-              if (_currentStep != lastStepIndex) {
+            final addExerciseProvider = context.read<AddExerciseProvider>();
+
+            // Steps 2 (Description) and 3 (Translation) require a language check
+            if (_currentStep == 2 || _currentStep == 3) {
+              final isTranslationStep = _currentStep == 3;
+              final language = isTranslationStep
+                  ? addExerciseProvider.languageTranslation
+                  : addExerciseProvider.languageEn;
+              final description = isTranslationStep
+                  ? addExerciseProvider.descriptionTrans
+                  : addExerciseProvider.descriptionEn;
+
+              // Only validate if there is text and a language to check against
+              if (language != null && description != null && description.isNotEmpty) {
                 setState(() {
-                  _currentStep += 1;
+                  _isValidatingLanguage = true;
+                  _languageError = null;
+                });
+
+                final error = await addExerciseProvider.validateLanguage(
+                  description,
+                  language.shortName,
+                );
+
+                if (!mounted) return;
+
+                if (error != null) {
+                  setState(() {
+                    _isValidatingLanguage = false;
+                    _languageError = error;
+                  });
+                  return;
+                }
+
+                setState(() {
+                  _isValidatingLanguage = false;
+                  _languageError = null;
                 });
               }
+            } else {
+              setState(() => _languageError = null);
+            }
+
+            if (_currentStep != lastStepIndex) {
+              setState(() {
+                _currentStep += 1;
+              });
             }
           },
           onStepCancel: () => setState(() {

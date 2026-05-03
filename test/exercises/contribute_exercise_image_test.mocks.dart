@@ -34,31 +34,37 @@ import 'package:wger/providers/base_provider.dart' as _i2;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake
+    implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeAuthProvider_1 extends _i1.SmartFake implements _i3.AuthProvider {
-  _FakeAuthProvider_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeAuthProvider_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeClient_2 extends _i1.SmartFake implements _i4.Client {
-  _FakeClient_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeClient_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeUri_3 extends _i1.SmartFake implements Uri {
-  _FakeUri_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeUri_3(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeResponse_4 extends _i1.SmartFake implements _i4.Response {
-  _FakeResponse_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeResponse_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AddExerciseProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAddExerciseProvider extends _i1.Mock implements _i5.AddExerciseProvider {
+class MockAddExerciseProvider extends _i1.Mock
+    implements _i5.AddExerciseProvider {
   MockAddExerciseProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -119,7 +125,8 @@ class MockAddExerciseProvider extends _i1.Mock implements _i5.AddExerciseProvide
 
   @override
   bool get newVariation =>
-      (super.noSuchMethod(Invocation.getter(#newVariation), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#newVariation), returnValue: false)
+          as bool);
 
   @override
   List<_i9.Muscle> get primaryMuscles =>
@@ -240,7 +247,8 @@ class MockAddExerciseProvider extends _i1.Mock implements _i5.AddExerciseProvide
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
   void clear() => super.noSuchMethod(
@@ -249,10 +257,11 @@ class MockAddExerciseProvider extends _i1.Mock implements _i5.AddExerciseProvide
   );
 
   @override
-  void addExerciseImages(List<_i6.ExerciseSubmissionImage>? images) => super.noSuchMethod(
-    Invocation.method(#addExerciseImages, [images]),
-    returnValueForMissingStub: null,
-  );
+  void addExerciseImages(List<_i6.ExerciseSubmissionImage>? images) =>
+      super.noSuchMethod(
+        Invocation.method(#addExerciseImages, [images]),
+        returnValueForMissingStub: null,
+      );
 
   @override
   void removeImage(String? path) => super.noSuchMethod(
@@ -286,12 +295,12 @@ class MockAddExerciseProvider extends _i1.Mock implements _i5.AddExerciseProvide
           as _i13.Future<void>);
 
   @override
-  _i13.Future<bool> validateLanguage(String? input, String? languageCode) =>
+  _i13.Future<String?> validateLanguage(String? input, String? languageCode) =>
       (super.noSuchMethod(
             Invocation.method(#validateLanguage, [input, languageCode]),
-            returnValue: _i13.Future<bool>.value(false),
+            returnValue: _i13.Future<String?>.value(),
           )
-          as _i13.Future<bool>);
+          as _i13.Future<String?>);
 
   @override
   void addListener(_i14.VoidCallback? listener) => super.noSuchMethod(
