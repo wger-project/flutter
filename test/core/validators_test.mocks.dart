@@ -3976,6 +3976,72 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get exerciseSearchMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#exerciseSearchMode),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#exerciseSearchMode),
+            ),
+          )
+          as String);
+
+  @override
+  String get searchModeFuzzy =>
+      (super.noSuchMethod(
+            Invocation.getter(#searchModeFuzzy),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#searchModeFuzzy),
+            ),
+          )
+          as String);
+
+  @override
+  String get searchModeExact =>
+      (super.noSuchMethod(
+            Invocation.getter(#searchModeExact),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#searchModeExact),
+            ),
+          )
+          as String);
+
+  @override
+  String get filterNutriscore =>
+      (super.noSuchMethod(
+            Invocation.getter(#filterNutriscore),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#filterNutriscore),
+            ),
+          )
+          as String);
+
+  @override
+  String get filterNutriscoreOff =>
+      (super.noSuchMethod(
+            Invocation.getter(#filterNutriscoreOff),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#filterNutriscoreOff),
+            ),
+          )
+          as String);
+
+  @override
+  String get filterNutriscoreNoFilter =>
+      (super.noSuchMethod(
+            Invocation.getter(#filterNutriscoreNoFilter),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#filterNutriscoreNoFilter),
+            ),
+          )
+          as String);
+
+  @override
   String exerciseNr(String? nr) =>
       (super.noSuchMethod(
             Invocation.method(#exerciseNr, [nr]),
@@ -4257,6 +4323,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#searchLanguageEnglish, [lang]),
+            ),
+          )
+          as String);
+
+  @override
+  String filterNutriscoreOrBetter(String? grade) =>
+      (super.noSuchMethod(
+            Invocation.method(#filterNutriscoreOrBetter, [grade]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#filterNutriscoreOrBetter, [grade]),
             ),
           )
           as String);

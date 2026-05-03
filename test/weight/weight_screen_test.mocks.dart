@@ -11,6 +11,7 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:shared_preferences/shared_preferences.dart' as _i4;
 import 'package:wger/database/ingredients/ingredients_database.dart' as _i5;
 import 'package:wger/models/body_weight/weight_entry.dart' as _i3;
+import 'package:wger/models/core/search_options.dart' as _i18;
 import 'package:wger/models/nutrition/ingredient.dart' as _i9;
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart' as _i17;
 import 'package:wger/models/nutrition/meal.dart' as _i7;
@@ -649,7 +650,7 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i16.NutritionPlans
   _i11.Future<List<_i9.Ingredient>> searchIngredient(
     String? name, {
     String? languageCode = 'en',
-    _i16.IngredientSearchLanguage? searchLanguage = _i16.IngredientSearchLanguage.current,
+    _i18.SearchLanguage? searchLanguage = _i18.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i9.NutriScore? nutriscoreMax,

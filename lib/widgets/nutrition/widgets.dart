@@ -28,12 +28,14 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
+import 'package:wger/widgets/nutrition/ingredient_filter_dialog.dart';
 import 'package:wger/widgets/nutrition/nutri_score_badge.dart';
 
 class ScanReader extends StatelessWidget {
@@ -276,199 +278,33 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
     );
   }
 
+  /// The filter icon button — shows an active-filter badge and opens
+  /// [IngredientFilterDialog] on tap.
   Widget filterButton() {
     final filters = ref.watch(ingredientFiltersSyncProvider);
-    final i18n = AppLocalizations.of(context);
     final languageCode = Localizations.localeOf(context).languageCode;
-    // If we are in English, we don't need the "Current & English" option
-    final isEnglish = languageCode == LANGUAGE_SHORT_ENGLISH;
 
-    if (isEnglish && filters.searchLanguage == IngredientSearchLanguage.currentAndEnglish) {
+    // Auto-correct: in an English locale "current + English" collapses to
+    // "current" — fix it once if a stored preference landed on the
+    // non-locale-aware default.
+    if (languageCode == LANGUAGE_SHORT_ENGLISH &&
+        filters.searchLanguage == SearchLanguage.currentAndEnglish) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref
-            .read(ingredientFiltersProvider.notifier)
-            .chooseLanguage(IngredientSearchLanguage.current);
+        ref.read(ingredientFiltersProvider.notifier).chooseLanguage(SearchLanguage.current);
       });
     }
 
+    final activeFilterCount = filters.activeFilterCount(languageCode);
+
     return IconButton(
-      icon: const Icon(Icons.tune),
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return StatefulBuilder(
-              builder: (context, setDialogState) {
-                return Consumer(
-                  builder: (context, ref, _) {
-                    final filters = ref.watch(ingredientFiltersSyncProvider);
-                    return AlertDialog(
-                      title: Text(i18n.filter),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(i18n.language),
-                            subtitle: Builder(
-                              builder: (context) {
-                                final localItems = <DropdownMenuItem<IngredientSearchLanguage>>[
-                                  DropdownMenuItem(
-                                    value: IngredientSearchLanguage.current,
-                                    child: Text(i18n.searchLanguageCurrent(languageCode)),
-                                  ),
-                                  if (!isEnglish)
-                                    DropdownMenuItem(
-                                      value: IngredientSearchLanguage.currentAndEnglish,
-                                      child: Text(i18n.searchLanguageEnglish(languageCode)),
-                                    ),
-                                  DropdownMenuItem(
-                                    value: IngredientSearchLanguage.all,
-                                    child: Text(i18n.searchLanguageAll),
-                                  ),
-                                ];
-
-                                IngredientSearchLanguage? selectedLanguage = filters.searchLanguage;
-                                final containsSelected = localItems.any(
-                                  (it) => it.value == selectedLanguage,
-                                );
-                                if (!containsSelected) {
-                                  // If the saved preference isn't present in this
-                                  // locale's items, fall back to null so Dropdown
-                                  // shows a valid state.
-                                  selectedLanguage = null;
-                                }
-
-                                return DropdownButton<IngredientSearchLanguage>(
-                                  value: selectedLanguage,
-                                  isExpanded: true,
-                                  onChanged: (IngredientSearchLanguage? newValue) {
-                                    setDialogState(() {
-                                      if (newValue != null) {
-                                        ref
-                                            .read(ingredientFiltersProvider.notifier)
-                                            .chooseLanguage(newValue);
-                                      }
-                                    });
-                                  },
-                                  items: localItems,
-                                );
-                              },
-                            ),
-                          ),
-                          SwitchListTile(
-                            title: Text(i18n.isVegan),
-                            value: filters.isVegan,
-                            contentPadding: EdgeInsets.zero,
-                            onChanged: (val) {
-                              setDialogState(() {
-                                ref.read(ingredientFiltersProvider.notifier).toggleVegan(val);
-                              });
-                            },
-                          ),
-                          SwitchListTile(
-                            title: Text(i18n.isVegetarian),
-                            value: filters.isVegetarian,
-                            contentPadding: EdgeInsets.zero,
-                            onChanged: (val) {
-                              setDialogState(() {
-                                ref.read(ingredientFiltersProvider.notifier).toggleVegetarian(val);
-                              });
-                            },
-                          ),
-                          _NutriscoreSlider(
-                            value: filters.nutriscoreMax,
-                            onChanged: (grade) {
-                              setDialogState(() {
-                                ref
-                                    .read(ingredientFiltersProvider.notifier)
-                                    .chooseNutriscoreMax(grade);
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-/// Discrete slider that lets the user pick the worst acceptable [NutriScore]
-/// grade. Index 0 is the "Off" position (no filter, `null` value) and
-/// indices 1..N map to [NutriScore.values].
-class _NutriscoreSlider extends StatelessWidget {
-  final NutriScore? value;
-  final ValueChanged<NutriScore?> onChanged;
-
-  const _NutriscoreSlider({required this.value, required this.onChanged});
-
-  static const int _offIndex = 0;
-
-  int _valueToIndex(NutriScore? v) => v == null ? _offIndex : NutriScore.values.indexOf(v) + 1;
-
-  NutriScore? _indexToValue(int i) => i == _offIndex ? null : NutriScore.values[i - 1];
-
-  @override
-  Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context);
-    final index = _valueToIndex(value);
-    final maxIndex = NutriScore.values.length; // 0=Off, then A..E
-    final helperText = value == null
-        ? i18n.filterNutriscoreNoFilter
-        : i18n.filterNutriscoreOrBetter(value!.name.toUpperCase());
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            i18n.filterNutriscore,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          Text(
-            helperText,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          Slider(
-            value: index.toDouble(),
-            min: 0,
-            max: maxIndex.toDouble(),
-            divisions: maxIndex,
-            label: value == null ? i18n.filterNutriscoreOff : value!.name.toUpperCase(),
-            onChanged: (v) => onChanged(_indexToValue(v.round())),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  i18n.filterNutriscoreOff,
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-                ...NutriScore.values.map(
-                  (score) => Text(
-                    score.name.toUpperCase(),
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      icon: Badge(
+        label: Text('$activeFilterCount'),
+        isLabelVisible: activeFilterCount > 0,
+        child: const Icon(Icons.tune),
+      ),
+      onPressed: () => showDialog(
+        context: context,
+        builder: (_) => const IngredientFilterDialog(),
       ),
     );
   }

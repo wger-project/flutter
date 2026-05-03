@@ -4,14 +4,16 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i11;
-import 'dart:ui' as _i13;
+import 'dart:ui' as _i15;
 
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/database/exercises/exercise_database.dart' as _i5;
+import 'package:wger/models/core/search_options.dart' as _i13;
 import 'package:wger/models/exercises/category.dart' as _i7;
 import 'package:wger/models/exercises/equipment.dart' as _i8;
 import 'package:wger/models/exercises/exercise.dart' as _i6;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i14;
 import 'package:wger/models/exercises/language.dart' as _i10;
 import 'package:wger/models/exercises/muscle.dart' as _i9;
 import 'package:wger/providers/auth.dart' as _i2;
@@ -631,13 +633,38 @@ class MockExercisesProvider extends _i1.Mock implements _i12.ExercisesProvider {
           as _i11.Future<List<_i6.Exercise>>);
 
   @override
-  void addListener(_i13.VoidCallback? listener) => super.noSuchMethod(
+  _i11.Future<List<_i6.Exercise>> searchExerciseWithSearchMode(
+    String? name, {
+    String? languageCode = 'en',
+    _i13.SearchLanguage? searchLanguage = _i13.SearchLanguage.currentAndEnglish,
+    _i14.ExerciseSearchMode? searchMode = _i14.ExerciseSearchMode.fulltext,
+    Set<_i7.ExerciseCategory>? categories = const {},
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseWithSearchMode,
+              [name],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #categories: categories,
+              },
+            ),
+            returnValue: _i11.Future<List<_i6.Exercise>>.value(
+              <_i6.Exercise>[],
+            ),
+          )
+          as _i11.Future<List<_i6.Exercise>>);
+
+  @override
+  void addListener(_i15.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeListener(_i13.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i15.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );

@@ -27,10 +27,12 @@ import 'package:wger/core/locator.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -698,6 +700,66 @@ class ExercisesProvider with ChangeNotifier {
           'language__code': languages.join(','),
           'limit': API_RESULTS_PAGE_SIZE,
         },
+      ),
+    );
+
+    return (result['results'] as List)
+        .map((e) => Exercise.fromApiDataJson(e as Map<String, dynamic>, _languages))
+        .toList();
+  }
+
+  /// Searches for exercises by name, optionally narrowed by language and category.
+  ///
+  /// Returns an empty list if [name] is 1 character or less.
+  ///
+  /// * [searchMode] selects between a fuzzy match and an exact name match.
+  /// * [searchLanguage] determines which translations are searched: only the
+  ///   current locale, the current locale plus English as a fallback, or every
+  ///   available language.
+  /// * [categories] restricts results to the given categories. An empty set
+  ///   means no category filter is applied.
+  Future<List<Exercise>> searchExerciseWithSearchMode(
+    String name, {
+    String languageCode = LANGUAGE_SHORT_ENGLISH,
+    SearchLanguage searchLanguage = SearchLanguage.currentAndEnglish,
+    ExerciseSearchMode searchMode = ExerciseSearchMode.fulltext,
+    Set<ExerciseCategory> categories = const {},
+  }) async {
+    if (name.length <= 1) {
+      return [];
+    }
+
+    final languageCodes = [languageCode];
+    if (searchLanguage == SearchLanguage.currentAndEnglish &&
+        languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languageCodes.add(LANGUAGE_SHORT_ENGLISH);
+    } else if (searchLanguage == SearchLanguage.all) {
+      languageCodes.clear(); // no language filter
+    }
+
+    final query = <String, String>{};
+
+    if (searchMode == ExerciseSearchMode.fulltext) {
+      query['name__search'] = name;
+    } else {
+      query['name__exact'] = name;
+    }
+
+    if (languageCodes.isNotEmpty) {
+      query['language__code'] = languageCodes.join(',');
+    }
+
+    if (categories.isNotEmpty) {
+      query['category__in'] = categories.map((c) => c.id).join(',');
+    }
+
+    query['limit'] = API_RESULTS_PAGE_SIZE;
+
+    // Send the request
+    final result = await baseProvider.fetch(
+      baseProvider.makeUrl(
+        exerciseInfoUrlPath,
+        query: query,
       ),
     );
 

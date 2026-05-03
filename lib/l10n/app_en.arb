@@ -1199,7 +1199,24 @@
     }
   },
   "searchLanguageAll": "All languages",
-  "@searchLanguageAll": {},
+  "@searchLanguageAll": {
+    "description": "Label used in the language selector to indicate no specific language filter is applied"
+  },
+
+  "exerciseSearchMode": "Search mode",
+  "@exerciseSearchMode": {
+    "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+  },
+
+  "searchModeFuzzy": "Fuzzy",
+  "@searchModeFuzzy": {
+    "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+  },
+
+  "searchModeExact": "Exact",
+  "@searchModeExact": {
+    "description": "Label for the search mode that only matches exercises with this exact name"
+  },
   "filterNutriscore": "Nutri-Score filter",
   "@filterNutriscore": {
     "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"

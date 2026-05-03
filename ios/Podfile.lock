@@ -88,9 +88,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
 
 SPEC CHECKSUMS:
-  camera_avfoundation: 5675ca25298b6f81fa0a325188e7df62cc217741
+  camera_avfoundation: 968a9a5323c79a99c166ad9d7866bfd2047b5a9b
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_zxing: e8bcc43bd3056c70c271b732ed94e7a16fd62f93
+  flutter_zxing: fe1338b6d79b8a455d209a28381e336b6cfb4161
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499

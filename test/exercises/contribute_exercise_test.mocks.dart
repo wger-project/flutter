@@ -11,9 +11,11 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i12;
 import 'package:shared_preferences/shared_preferences.dart' as _i3;
 import 'package:wger/database/exercises/exercise_database.dart' as _i4;
+import 'package:wger/models/core/search_options.dart' as _i20;
 import 'package:wger/models/exercises/category.dart' as _i6;
 import 'package:wger/models/exercises/equipment.dart' as _i7;
 import 'package:wger/models/exercises/exercise.dart' as _i5;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i21;
 import 'package:wger/models/exercises/exercise_submission.dart' as _i13;
 import 'package:wger/models/exercises/exercise_submission_images.dart' as _i11;
 import 'package:wger/models/exercises/language.dart' as _i9;
@@ -897,6 +899,31 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
               #searchExercise,
               [name],
               {#languageCode: languageCode, #searchEnglish: searchEnglish},
+            ),
+            returnValue: _i14.Future<List<_i5.Exercise>>.value(
+              <_i5.Exercise>[],
+            ),
+          )
+          as _i14.Future<List<_i5.Exercise>>);
+
+  @override
+  _i14.Future<List<_i5.Exercise>> searchExerciseWithSearchMode(
+    String? name, {
+    String? languageCode = 'en',
+    _i20.SearchLanguage? searchLanguage = _i20.SearchLanguage.currentAndEnglish,
+    _i21.ExerciseSearchMode? searchMode = _i21.ExerciseSearchMode.fulltext,
+    Set<_i6.ExerciseCategory>? categories = const {},
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseWithSearchMode,
+              [name],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #categories: categories,
+              },
             ),
             returnValue: _i14.Future<List<_i5.Exercise>>.value(
               <_i5.Exercise>[],

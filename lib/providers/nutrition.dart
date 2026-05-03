@@ -26,6 +26,7 @@ import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
@@ -34,12 +35,6 @@ import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/base_provider.dart';
-
-enum IngredientSearchLanguage {
-  current,
-  currentAndEnglish,
-  all,
-}
 
 class NutritionPlansProvider with ChangeNotifier {
   final _logger = Logger('NutritionPlansProvider');
@@ -411,7 +406,7 @@ class NutritionPlansProvider with ChangeNotifier {
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',
-    IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
+    SearchLanguage searchLanguage = SearchLanguage.current,
     bool isVegan = false,
     bool isVegetarian = false,
     NutriScore? nutriscoreMax,
@@ -422,16 +417,16 @@ class NutritionPlansProvider with ChangeNotifier {
     final List<String> languages = [];
 
     switch (searchLanguage) {
-      case IngredientSearchLanguage.current:
+      case SearchLanguage.current:
         languages.add(languageCode);
         break;
-      case IngredientSearchLanguage.currentAndEnglish:
+      case SearchLanguage.currentAndEnglish:
         languages.add(languageCode);
         if (languageCode != LANGUAGE_SHORT_ENGLISH) {
           languages.add(LANGUAGE_SHORT_ENGLISH);
         }
         break;
-      case IngredientSearchLanguage.all:
+      case SearchLanguage.all:
         // Don't add any language code to search in all languages
         break;
     }

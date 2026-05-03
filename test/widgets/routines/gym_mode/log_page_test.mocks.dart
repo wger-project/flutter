@@ -4,19 +4,21 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i19;
-import 'dart:ui' as _i20;
+import 'dart:ui' as _i22;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i23;
+import 'package:mockito/src/dummies.dart' as _i25;
 import 'package:wger/database/exercises/exercise_database.dart' as _i3;
+import 'package:wger/models/core/search_options.dart' as _i20;
 import 'package:wger/models/exercises/category.dart' as _i5;
 import 'package:wger/models/exercises/equipment.dart' as _i6;
 import 'package:wger/models/exercises/exercise.dart' as _i4;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i21;
 import 'package:wger/models/exercises/language.dart' as _i8;
 import 'package:wger/models/exercises/muscle.dart' as _i7;
 import 'package:wger/models/workouts/base_config.dart' as _i15;
 import 'package:wger/models/workouts/day.dart' as _i12;
-import 'package:wger/models/workouts/day_data.dart' as _i22;
+import 'package:wger/models/workouts/day_data.dart' as _i24;
 import 'package:wger/models/workouts/log.dart' as _i17;
 import 'package:wger/models/workouts/repetition_unit.dart' as _i10;
 import 'package:wger/models/workouts/routine.dart' as _i11;
@@ -26,7 +28,7 @@ import 'package:wger/models/workouts/slot_entry.dart' as _i14;
 import 'package:wger/models/workouts/weight_unit.dart' as _i9;
 import 'package:wger/providers/base_provider.dart' as _i2;
 import 'package:wger/providers/exercises.dart' as _i18;
-import 'package:wger/providers/routines.dart' as _i21;
+import 'package:wger/providers/routines.dart' as _i23;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -510,13 +512,38 @@ class MockExercisesProvider extends _i1.Mock implements _i18.ExercisesProvider {
           as _i19.Future<List<_i4.Exercise>>);
 
   @override
-  void addListener(_i20.VoidCallback? listener) => super.noSuchMethod(
+  _i19.Future<List<_i4.Exercise>> searchExerciseWithSearchMode(
+    String? name, {
+    String? languageCode = 'en',
+    _i20.SearchLanguage? searchLanguage = _i20.SearchLanguage.currentAndEnglish,
+    _i21.ExerciseSearchMode? searchMode = _i21.ExerciseSearchMode.fulltext,
+    Set<_i5.ExerciseCategory>? categories = const {},
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseWithSearchMode,
+              [name],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #categories: categories,
+              },
+            ),
+            returnValue: _i19.Future<List<_i4.Exercise>>.value(
+              <_i4.Exercise>[],
+            ),
+          )
+          as _i19.Future<List<_i4.Exercise>>);
+
+  @override
+  void addListener(_i22.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeListener(_i20.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i22.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );
@@ -537,7 +564,7 @@ class MockExercisesProvider extends _i1.Mock implements _i18.ExercisesProvider {
 /// A class which mocks [RoutinesProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesProvider extends _i1.Mock implements _i21.RoutinesProvider {
+class MockRoutinesProvider extends _i1.Mock implements _i23.RoutinesProvider {
   MockRoutinesProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -696,7 +723,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i21.RoutinesProvider {
 
   @override
   _i19.Future<void> setExercisesAndUnits(
-    List<_i22.DayData>? entries, {
+    List<_i24.DayData>? entries, {
     Map<int, _i4.Exercise>? exercises,
   }) =>
       (super.noSuchMethod(
@@ -906,7 +933,7 @@ class MockRoutinesProvider extends _i1.Mock implements _i21.RoutinesProvider {
   String getConfigUrl(_i14.ConfigType? type) =>
       (super.noSuchMethod(
             Invocation.method(#getConfigUrl, [type]),
-            returnValue: _i23.dummyValue<String>(
+            returnValue: _i25.dummyValue<String>(
               this,
               Invocation.method(#getConfigUrl, [type]),
             ),
@@ -1026,13 +1053,13 @@ class MockRoutinesProvider extends _i1.Mock implements _i21.RoutinesProvider {
           as _i19.Future<void>);
 
   @override
-  void addListener(_i20.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i22.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeListener(_i20.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i22.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );
