@@ -192,7 +192,7 @@ class SlotEntry {
     int? order,
     SlotEntryType? type,
     required Exercise exercise,
-    int? weightUnitId,
+    this.weightUnitId,
     this.weightRounding,
     int? repetitionUnitId,
     this.repetitionRounding,
@@ -203,7 +203,6 @@ class SlotEntry {
     this.type = type ?? SlotEntryType.normal;
     exerciseObj = exercise;
     exerciseId = exercise.id!;
-    this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG;
 
     this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;
   }

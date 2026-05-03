@@ -18,6 +18,7 @@
 
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
@@ -28,6 +29,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
@@ -35,6 +37,10 @@ import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
 import 'routines_screen_test.mocks.dart';
+
+class PlateNotifierMock extends Notifier<PlateCalculatorState>
+    with Mock
+    implements PlateCalculatorNotifier {}
 
 @GenerateMocks([WgerBaseProvider])
 void main() {
@@ -61,6 +67,7 @@ void main() {
       create: (context) => RoutinesProvider(
         mockBaseProvider,
         testExercisesProvider,
+        PlateNotifierMock(),
         [
           Routine(
             id: 1,

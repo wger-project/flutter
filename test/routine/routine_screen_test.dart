@@ -20,18 +20,25 @@ import 'dart:io';
 
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/routine_screen.dart';
 
 import '../../test_data/routines.dart';
 import 'routine_screen_test.mocks.dart';
+
+class PlateNotifierMock extends Notifier<PlateCalculatorState>
+    with Mock
+    implements PlateCalculatorNotifier {}
 
 @GenerateMocks([WgerBaseProvider])
 void main() {
@@ -48,6 +55,7 @@ void main() {
       create: (context) => RoutinesProvider(
         mockBaseProvider,
         exercisesProvider,
+        PlateNotifierMock(),
         [getTestRoutine()],
       ),
       child: MaterialApp(
