@@ -103,7 +103,7 @@ void main() {
     await tester.pumpWidget(createWidget(container: container));
     await tester.pumpAndSettle();
 
-    final initial = container.read(appSettingsProvider).value!.dashboardItems.visibleWidgets;
+    final initial = container.read(appSettingsProvider).requireValue.dashboardItems.visibleWidgets;
     expect(initial[0], DashboardWidget.networkInfo);
     expect(initial[1], DashboardWidget.trophies);
     expect(initial[2], DashboardWidget.routines);
@@ -115,7 +115,7 @@ void main() {
     await tester.drag(firstHandle, const Offset(0, 100));
     await tester.pumpAndSettle();
 
-    final updated = container.read(appSettingsProvider).value!.dashboardItems.visibleWidgets;
+    final updated = container.read(appSettingsProvider).requireValue.dashboardItems.visibleWidgets;
     expect(updated[0], DashboardWidget.trophies);
     expect(updated[1], DashboardWidget.routines);
     expect(updated[2], DashboardWidget.networkInfo);

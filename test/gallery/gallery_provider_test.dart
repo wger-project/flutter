@@ -70,7 +70,7 @@ void main() {
     // Drift returns rows in `Meta.ordering = ['-date']` order.
     final container = await containerWithImages([image2, image1]);
 
-    final images = container.read(galleryProvider).value!;
+    final images = container.read(galleryProvider).requireValue;
     expect(images, hasLength(2));
     expect(images.first.id, 59);
     verify(mockRepo.watchAllDrift()).called(1);

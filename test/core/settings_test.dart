@@ -105,7 +105,7 @@ void main() {
       await container.read(appSettingsProvider.future);
       await container.read(appSettingsProvider.notifier).setThemeMode(ThemeMode.dark);
 
-      expect(container.read(appSettingsProvider).value!.themeMode, ThemeMode.dark);
+      expect(container.read(appSettingsProvider).requireValue.themeMode, ThemeMode.dark);
       verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, true)).called(1);
     });
 

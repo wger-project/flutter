@@ -105,7 +105,7 @@ void main() {
       );
       final container = await containerWithPlans([plan]);
       expect(
-        container.read(nutritionProvider.notifier).currentPlan?.id,
+        container.read(nutritionProvider).requireValue.currentPlan?.id,
         equals(plan.id),
       );
     });
@@ -127,7 +127,7 @@ void main() {
       );
       final container = await containerWithPlans([olderPlan, newerPlan]);
       expect(
-        container.read(nutritionProvider.notifier).currentPlan?.id,
+        container.read(nutritionProvider).requireValue.currentPlan?.id,
         equals(newerPlan.id),
       );
     });
@@ -136,7 +136,7 @@ void main() {
   group('currentPlan correctly returns the active plan', () {
     test('no plans available -> null', () async {
       final container = await containerWithPlans([]);
-      expect(container.read(nutritionProvider.notifier).currentPlan, isNull);
+      expect(container.read(nutritionProvider).requireValue.currentPlan, isNull);
     });
 
     test('no active plan -> null', () async {
@@ -155,7 +155,7 @@ void main() {
         ),
       ];
       final container = await containerWithPlans(plans);
-      expect(container.read(nutritionProvider.notifier).currentPlan, isNull);
+      expect(container.read(nutritionProvider).requireValue.currentPlan, isNull);
     });
 
     test('active plan exists -> return it', () async {
@@ -167,7 +167,7 @@ void main() {
       );
       final container = await containerWithPlans([plan]);
       expect(
-        container.read(nutritionProvider.notifier).currentPlan?.id,
+        container.read(nutritionProvider).requireValue.currentPlan?.id,
         equals(plan.id),
       );
     });
@@ -187,7 +187,7 @@ void main() {
       );
       final container = await containerWithPlans([plan, inactivePlan]);
       expect(
-        container.read(nutritionProvider.notifier).currentPlan?.id,
+        container.read(nutritionProvider).requireValue.currentPlan?.id,
         equals(plan.id),
       );
     });
@@ -209,7 +209,7 @@ void main() {
       );
       final container = await containerWithPlans([olderPlan, newerPlan]);
       expect(
-        container.read(nutritionProvider.notifier).currentPlan?.id,
+        container.read(nutritionProvider).requireValue.currentPlan?.id,
         equals(newerPlan.id),
       );
     });

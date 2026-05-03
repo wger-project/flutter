@@ -70,7 +70,7 @@ void main() {
     );
     // Explicit listener keeps the provider element alive while we wait for
     // the Drift-stream emission ([plan1]) to land in state. Required so that
-    // any addMeal call in the test can resolve the plan via findById.
+    // the form widget sees the seeded plan in state when it builds.
     container.listen(nutritionProvider, (_, _) {});
     await pumpEventQueue();
   });

@@ -115,7 +115,7 @@ class Exercises extends _$Exercises {
     final lowerTerm = term.toLowerCase();
     for (final e in _exercises) {
       for (final lang in languages) {
-        final title = (e.getTranslation(lang).name ?? '').toLowerCase();
+        final title = e.getTranslation(lang).name.toLowerCase();
         if (title.contains(lowerTerm)) {
           out.add(e);
           break;

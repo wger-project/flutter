@@ -125,11 +125,11 @@ void main() {
       final notifier = container.read(appSettingsProvider.notifier);
 
       await notifier.setWidgetVisible(DashboardWidget.routines, false);
-      var items = container.read(appSettingsProvider).value!.dashboardItems;
+      var items = container.read(appSettingsProvider).requireValue.dashboardItems;
       expect(items.isWidgetVisible(DashboardWidget.routines), false);
 
       await notifier.setWidgetVisible(DashboardWidget.routines, true);
-      items = container.read(appSettingsProvider).value!.dashboardItems;
+      items = container.read(appSettingsProvider).requireValue.dashboardItems;
       expect(items.isWidgetVisible(DashboardWidget.routines), true);
     });
 
@@ -137,14 +137,22 @@ void main() {
       await container.read(appSettingsProvider.future);
       final notifier = container.read(appSettingsProvider.notifier);
 
-      final initial = container.read(appSettingsProvider).value!.dashboardItems.visibleWidgets;
+      final initial = container
+          .read(appSettingsProvider)
+          .requireValue
+          .dashboardItems
+          .visibleWidgets;
       final initialFirst = initial[0];
       final initialSecond = initial[1];
 
       // move first to second position (ReorderableListView semantics)
       await notifier.setDashboardOrder(0, 2);
 
-      final updated = container.read(appSettingsProvider).value!.dashboardItems.visibleWidgets;
+      final updated = container
+          .read(appSettingsProvider)
+          .requireValue
+          .dashboardItems
+          .visibleWidgets;
       expect(updated[0], initialSecond);
       expect(updated[1], initialFirst);
     });

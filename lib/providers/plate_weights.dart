@@ -137,10 +137,10 @@ class PlateCalculatorState {
 class PlateCalculatorNotifier extends Notifier<PlateCalculatorState> {
   final _logger = Logger('PlateCalculatorNotifier');
 
-  late SharedPreferencesAsync prefs;
+  late SharedPreferencesAsync _prefs;
 
   PlateCalculatorNotifier({SharedPreferencesAsync? prefs}) : super() {
-    this.prefs = prefs ?? PreferenceHelper.asyncPref;
+    _prefs = prefs ?? PreferenceHelper.asyncPref;
   }
 
   @override
@@ -151,12 +151,12 @@ class PlateCalculatorNotifier extends Notifier<PlateCalculatorState> {
 
   Future<void> saveToSharedPrefs() async {
     _logger.fine('Saving plate data to SharedPreferences');
-    await prefs.setString(PREFS_KEY_PLATES, jsonEncode(state.toJson()));
+    await _prefs.setString(PREFS_KEY_PLATES, jsonEncode(state.toJson()));
   }
 
   Future<void> _readDataFromSharedPrefs() async {
     _logger.fine('Reading plate data from SharedPreferences');
-    final prefsData = await prefs.getString(PREFS_KEY_PLATES);
+    final prefsData = await _prefs.getString(PREFS_KEY_PLATES);
 
     if (prefsData != null) {
       try {
