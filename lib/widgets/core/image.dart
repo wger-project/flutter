@@ -10,23 +10,20 @@ Widget handleImageError(
   StackTrace? stackTrace,
   String imageUrl,
 ) {
-  final imageFormat = imageUrl.split('.').last.toUpperCase();
+  final path = Uri.tryParse(imageUrl)?.path ?? imageUrl;
+  final imageFormat = path.contains('.') ? path.split('.').last.toUpperCase() : 'UNKNOWN';
   final logger = Logger('handleImageError');
   logger.warning('Failed to load image $imageUrl: $error, $stackTrace');
 
   // NOTE: for the moment the other error messages are not localized
-  String message = '';
-  switch (error.runtimeType) {
-    case NetworkImageLoadException:
-      message = 'Network error';
-    case HttpException:
-      message = 'Http error';
-    case FormatException:
-      //TODO: not sure if this is the right exception for unsupported image formats?
-      message = AppLocalizations.of(context).imageFormatNotSupported(imageFormat);
-    default:
-      message = 'Other exception';
-  }
+  final message = switch (error) {
+    NetworkImageLoadException _ => 'Network error',
+    HttpException _ => 'Server connection failed',
+    SocketException _ => 'No internet connection',
+    //TODO: not sure if this is the right exception for unsupported image formats?
+    FormatException _ => AppLocalizations.of(context).imageFormatNotSupported(imageFormat),
+    _ => 'An unexpected error occurred',
+  };
 
   return AspectRatio(
     aspectRatio: 1,

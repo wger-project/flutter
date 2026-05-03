@@ -676,10 +676,11 @@ class GymStateNotifier extends _$GymStateNotifier {
       return page.copyWith(slotPages: updatedSlotPages);
     }).toList();
 
-    // TODO: this should not be done in-place!
-    state.routine.replaceExercise(originalExerciseId, newExercise);
+    // replace and update new immutable routine instance
+    final updatedRoutine = state.routine.replaceExercise(originalExerciseId, newExercise);
     state = state.copyWith(
       pages: updatedPages,
+      routine: updatedRoutine,
     );
     _logger.fine('Replaced exercise $originalExerciseId with ${newExercise.id}');
   }
