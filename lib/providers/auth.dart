@@ -29,7 +29,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/sanity_checks.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 
 import 'helpers.dart';
@@ -155,6 +154,42 @@ class AuthProvider with ChangeNotifier {
     return needUpdate;
   }
 
+  /// Detects reverse-proxy misconfiguration on the server by checking that
+  /// pagination URLs returned by the API point to the same host and scheme as
+  /// the configured [serverUrl].
+  ///
+  /// Returns `true` when the configuration looks fine (or the check could not
+  /// be completed conclusively), `false` when a mismatch is detected.
+  Future<bool> serverConfigSane() async {
+    try {
+      final baseUri = Uri.parse(serverUrl!);
+      final response = await client.get(
+        Uri.parse('$serverUrl/api/v2/exercise/?limit=1'),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Token $token',
+          HttpHeaders.acceptHeader: 'application/json',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        return true;
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final nextUrl = data['next'] as String?;
+      if (nextUrl == null) {
+        return true;
+      }
+
+      final nextUri = Uri.parse(nextUrl);
+      return nextUri.host.toLowerCase() == baseUri.host.toLowerCase() &&
+          nextUri.scheme == baseUri.scheme;
+    } catch (e) {
+      _logger.info('serverConfigSane check failed: $e');
+      return true;
+    }
+  }
+
   /// Registers a new user
   Future<LoginActions> register({
     required String username,
@@ -196,6 +231,7 @@ class AuthProvider with ChangeNotifier {
     String? apiToken,
   ) async {
     await logout(shouldNotify: false);
+    _serverConfigWarning = false;
 
     // Login using the API token
     if (apiToken != null && apiToken.isNotEmpty) {
@@ -249,19 +285,11 @@ class AuthProvider with ChangeNotifier {
       return LoginActions.update;
     }
 
-    // Check server configuration sanity
-    try {
-      final sanityCheck = await checkServerPaginationUrls(
-        baseUrl: serverUrl,
-        token: token!,
-      );
-
-      if (!sanityCheck.isValid) {
-        _serverConfigWarning = true;
-        notifyListeners();
-      }
-    } catch (e) {
-      _logger.info('Sanity check error: $e');
+    // Surface a warning to the user when the server's reverse proxy is
+    // misconfigured (pagination URLs pointing to the wrong host).
+    if (!await serverConfigSane()) {
+      _serverConfigWarning = true;
+      notifyListeners();
     }
 
     // Log user in

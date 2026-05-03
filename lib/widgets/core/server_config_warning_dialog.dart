@@ -21,7 +21,7 @@ void showServerConfigWarning(BuildContext context) {
     builder: (context) => AlertDialog(
       title: Row(
         children: [
-          const Icon(Icons.warning, color: Colors.orange, size: 28),
+          Icon(Icons.warning, color: Theme.of(context).colorScheme.error, size: 28),
           const SizedBox(width: 12),
           Expanded(child: Text(i18n.serverConfigIssueTitle)),
         ],
