@@ -31,12 +31,12 @@ part 'exercise_filters_notifier.g.dart';
 /// search term, selected categories/equipment, and the resulting
 /// [filteredExercises] list.
 @Riverpod(keepAlive: true)
-class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
-  final _logger = Logger('ExerciseFiltersNotifier');
+class ExerciseListFiltersNotifier extends _$ExerciseListFiltersNotifier {
+  final _logger = Logger('ExerciseListFiltersNotifier');
 
   @override
   ExerciseFilterState build() {
-    _logger.finer('Building ExerciseFiltersNotifier');
+    _logger.finer('Building ExerciseListFiltersNotifier');
     ref.keepAlive();
 
     final exercisesAsync = ref.watch(exercisesProvider);
@@ -49,7 +49,7 @@ class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
 
     final error = exercisesAsync.error ?? equipmentAsync.error ?? categoriesAsync.error;
     if (error != null) {
-      _logger.warning('Error building ExerciseFiltersNotifier: $error');
+      _logger.warning('Error building ExerciseListFiltersNotifier: $error');
       return ExerciseFilterState(isLoading: false);
     }
 

@@ -33,6 +33,7 @@ import 'package:wger/widgets/auth/email_field.dart';
 import 'package:wger/widgets/auth/password_field.dart';
 import 'package:wger/widgets/auth/server_field.dart';
 import 'package:wger/widgets/auth/username_field.dart';
+import 'package:wger/widgets/core/server_config_warning_dialog.dart';
 
 enum AuthMode {
   Register,
@@ -218,6 +219,15 @@ class _AuthCardState extends ConsumerState<AuthCard> {
           return;
         }
       }
+
+      if (context.mounted && res == LoginActions.proceed) {
+        final showWarning = ref.read(authProvider).value?.serverConfigWarning ?? false;
+        if (showWarning && context.mounted) {
+          showServerConfigWarning(context);
+          ref.read(authProvider.notifier).clearServerConfigWarning();
+        }
+      }
+
       if (context.mounted) {
         setState(() {
           _isLoading = false;

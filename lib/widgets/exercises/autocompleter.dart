@@ -1,11 +1,32 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/providers/exercise_filters_riverpod.dart';
 import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
+import 'package:wger/widgets/exercises/exercise_filter_dialog.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 typedef ExerciseSelectedCallback = void Function(Exercise exercise);
@@ -20,11 +41,11 @@ class ExerciseAutocompleter extends ConsumerStatefulWidget {
 }
 
 class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
-  bool _searchEnglish = true;
   final _exercisesController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final exerciseFilters = ref.watch(exerciseFiltersSyncProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
     return Column(
@@ -49,50 +70,24 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).searchExercise,
                 prefixIcon: const Icon(Icons.search),
-                // suffixIcon: IconButton(
-                //   icon: const Icon(Icons.help),
-                //   onPressed: () {
-                //     showDialog(
-                //       context: context,
-                //       builder: (context) => AlertDialog(
-                //         content: Column(
-                //           mainAxisSize: MainAxisSize.min,
-                //           children: [
-                //             Text(AppLocalizations.of(context).selectExercises),
-                //             const SizedBox(height: 10),
-                //             Text(AppLocalizations.of(context).sameRepetitions),
-                //           ],
-                //         ),
-                //         actions: [
-                //           TextButton(
-                //             child: Text(
-                //               MaterialLocalizations.of(context).closeButtonLabel,
-                //             ),
-                //             onPressed: () {
-                //               Navigator.of(context).pop();
-                //             },
-                //           ),
-                //         ],
-                //       ),
-                //     );
-                //   },
-                // ),
+                suffixIcon: _filterButton(context),
                 errorMaxLines: 2,
                 border: InputBorder.none,
               ),
             );
           },
-          suggestionsCallback: (pattern) async {
+          suggestionsCallback: (pattern) {
             if (pattern.isEmpty) {
               return null;
             }
-
             return ref
                 .read(exercisesProvider.notifier)
-                .searchExercise(
+                .searchExerciseWithSearchMode(
                   pattern,
                   languageCode: languageCode,
-                  searchEnglish: _searchEnglish,
+                  searchLanguage: exerciseFilters.searchLanguage,
+                  searchMode: exerciseFilters.searchMode,
+                  categories: exerciseFilters.selectedCategories,
                 );
           },
           itemBuilder:
@@ -144,18 +139,38 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
             _exercisesController.text = '';
           },
         ),
-        if (languageCode != LANGUAGE_SHORT_ENGLISH)
-          SwitchListTile(
-            title: Text(AppLocalizations.of(context).searchNamesInEnglish),
-            value: _searchEnglish,
-            onChanged: (_) {
-              setState(() {
-                _searchEnglish = !_searchEnglish;
-              });
-            },
-            dense: true,
-          ),
       ],
+    );
+  }
+
+  /// The filter icon button — shows an active-filter badge and opens
+  /// [ExerciseFilterDialog] on tap.
+  Widget _filterButton(BuildContext context) {
+    final filters = ref.watch(exerciseFiltersSyncProvider);
+    final languageCode = Localizations.localeOf(context).languageCode;
+
+    // Auto-correct: in an English locale "current + English" collapses to
+    // "current" — fix it once if a stored preference landed on the
+    // non-locale-aware default.
+    if (languageCode == LANGUAGE_SHORT_ENGLISH &&
+        filters.searchLanguage == SearchLanguage.currentAndEnglish) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(exerciseFiltersProvider.notifier).chooseLanguage(SearchLanguage.current);
+      });
+    }
+
+    final activeFilterCount = filters.activeFilterCount(languageCode);
+
+    return IconButton(
+      icon: Badge(
+        label: Text('$activeFilterCount'),
+        isLabelVisible: activeFilterCount > 0,
+        child: const Icon(Icons.tune),
+      ),
+      onPressed: () => showDialog(
+        context: context,
+        builder: (_) => const ExerciseFilterDialog(),
+      ),
     );
   }
 }

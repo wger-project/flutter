@@ -1,7 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/util/legacy_to_async_migration_util.dart';
+import 'package:wger/models/core/search_options.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/models/nutrition/ingredient_filters.dart';
 
 /// A helper class that manages preferences using SharedPreferencesAsync
 /// and handles migration from the legacy SharedPreferences to
@@ -54,18 +56,19 @@ class PreferenceHelper {
   }
 
   //3.language
-  Future<void> saveIngredientSearchLanguage(IngredientSearchLanguage language) async {
+  Future<void> saveIngredientSearchLanguage(SearchLanguage language) async {
     await PreferenceHelper.asyncPref.setString('search_language', language.name);
   }
 
-  Future<IngredientSearchLanguage> getIngredientSearchLanguage() async {
+  Future<SearchLanguage> getIngredientSearchLanguage() async {
+    const fallback = IngredientFilters();
     final value = await PreferenceHelper.asyncPref.getString('search_language');
     if (value == null) {
-      return IngredientSearchLanguage.currentAndEnglish;
+      return fallback.searchLanguage;
     } else {
-      return IngredientSearchLanguage.values.firstWhere(
+      return SearchLanguage.values.firstWhere(
         (e) => e.name == value,
-        orElse: () => IngredientSearchLanguage.currentAndEnglish,
+        orElse: () => fallback.searchLanguage,
       );
     }
   }
@@ -87,6 +90,46 @@ class PreferenceHelper {
     return NutriScore.values.firstWhere(
       (e) => e.name == value,
       orElse: () => NutriScore.c,
+    );
+  }
+
+  // --- Exercise search filters ---
+
+  Future<void> saveExerciseSearchLanguage(SearchLanguage language) async {
+    await PreferenceHelper.asyncPref.setString(
+      'exercise_search_language',
+      language.name,
+    );
+  }
+
+  Future<SearchLanguage> getExerciseSearchLanguage() async {
+    const fallback = ExerciseFilters();
+    final value = await PreferenceHelper.asyncPref.getString('exercise_search_language');
+    if (value == null) {
+      return fallback.searchLanguage;
+    }
+    return SearchLanguage.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => fallback.searchLanguage,
+    );
+  }
+
+  Future<void> saveExerciseSearchMode(ExerciseSearchMode mode) async {
+    await PreferenceHelper.asyncPref.setString(
+      'exercise_search_mode',
+      mode.name,
+    );
+  }
+
+  Future<ExerciseSearchMode> getExerciseSearchMode() async {
+    const fallback = ExerciseFilters();
+    final value = await PreferenceHelper.asyncPref.getString('exercise_search_mode');
+    if (value == null) {
+      return fallback.searchMode;
+    }
+    return ExerciseSearchMode.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => fallback.searchMode,
     );
   }
 }

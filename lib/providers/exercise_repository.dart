@@ -22,9 +22,11 @@ import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/core/language.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises_notifier.dart';
@@ -80,6 +82,46 @@ class ExerciseRepository {
       ),
     );
 
+    return (result['results'] as List).map<int>((data) => data['id'] as int).toList();
+  }
+
+  /// Searches by name with extended options: language scope, fulltext-vs-exact
+  /// match, and category filter. Returns ID list for hydration on the caller.
+  Future<List<int>> searchExerciseServerWithSearchMode(
+    String term, {
+    String languageCode = LANGUAGE_SHORT_ENGLISH,
+    SearchLanguage searchLanguage = SearchLanguage.currentAndEnglish,
+    ExerciseSearchMode searchMode = ExerciseSearchMode.fulltext,
+    Set<ExerciseCategory> categories = const {},
+  }) async {
+    if (term.length <= 1) {
+      return [];
+    }
+    _logger.info('Online search for exercises (mode=$searchMode): $term');
+
+    final languageCodes = [languageCode];
+    if (searchLanguage == SearchLanguage.currentAndEnglish &&
+        languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languageCodes.add(LANGUAGE_SHORT_ENGLISH);
+    } else if (searchLanguage == SearchLanguage.all) {
+      languageCodes.clear();
+    }
+
+    final query = <String, String>{};
+    if (searchMode == ExerciseSearchMode.fulltext) {
+      query['name__search'] = term;
+    } else {
+      query['name__exact'] = term;
+    }
+    if (languageCodes.isNotEmpty) {
+      query['language__code'] = languageCodes.join(',');
+    }
+    if (categories.isNotEmpty) {
+      query['category__in'] = categories.map((c) => c.id).join(',');
+    }
+    query['limit'] = API_RESULTS_PAGE_SIZE;
+
+    final result = await _base.fetch(_base.makeUrl(exerciseInfoUrlPath, query: query));
     return (result['results'] as List).map<int>((data) => data['id'] as int).toList();
   }
 

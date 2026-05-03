@@ -48,7 +48,7 @@ Widget createGymModeScreen({Locale? locale}) {
   final routine = getTestRoutine(exercises: getScreenshotExercises());
   final container = riverpod.ProviderContainer.test(
     overrides: [
-      exerciseFiltersProvider.overrideWithValue(
+      exerciseListFiltersProvider.overrideWithValue(
         ExerciseFilterState(exercises: getTestExercises()),
       ),
     ],

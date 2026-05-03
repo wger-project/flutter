@@ -4086,6 +4086,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get exerciseSearchMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#exerciseSearchMode),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#exerciseSearchMode),
+            ),
+          )
+          as String);
+
+  @override
+  String get searchModeFuzzy =>
+      (super.noSuchMethod(
+            Invocation.getter(#searchModeFuzzy),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#searchModeFuzzy),
+            ),
+          )
+          as String);
+
+  @override
+  String get searchModeExact =>
+      (super.noSuchMethod(
+            Invocation.getter(#searchModeExact),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#searchModeExact),
+            ),
+          )
+          as String);
+
+  @override
   String get syncStatusConnected =>
       (super.noSuchMethod(
             Invocation.getter(#syncStatusConnected),
@@ -4224,6 +4257,50 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#filterNutriscoreNoFilter),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverConfigIssueTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverConfigIssueTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverConfigIssueTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverConfigIssueMessage =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverConfigIssueMessage),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverConfigIssueMessage),
+            ),
+          )
+          as String);
+
+  @override
+  String get understand =>
+      (super.noSuchMethod(
+            Invocation.getter(#understand),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#understand),
+            ),
+          )
+          as String);
+
+  @override
+  String get viewDocumentation =>
+      (super.noSuchMethod(
+            Invocation.getter(#viewDocumentation),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#viewDocumentation),
             ),
           )
           as String);

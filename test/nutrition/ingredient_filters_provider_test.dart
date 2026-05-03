@@ -21,8 +21,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/providers/ingredient_filters_notifier.dart';
-import 'package:wger/providers/ingredient_repository.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -38,24 +38,24 @@ void main() {
     var filters = await container.read(ingredientFiltersProvider.future);
     expect(filters.isVegan, false);
     expect(filters.isVegetarian, false);
-    expect(filters.searchLanguage, IngredientSearchLanguage.currentAndEnglish);
+    expect(filters.searchLanguage, SearchLanguage.currentAndEnglish);
 
     // Act
     await notifier.toggleVegan(true);
     await notifier.toggleVegetarian(true);
-    await notifier.chooseLanguage(IngredientSearchLanguage.all);
+    await notifier.chooseLanguage(SearchLanguage.all);
 
     // Assert
     filters = await container.read(ingredientFiltersProvider.future);
     expect(filters.isVegan, true);
     expect(filters.isVegetarian, true);
-    expect(filters.searchLanguage, IngredientSearchLanguage.all);
+    expect(filters.searchLanguage, SearchLanguage.all);
 
     expect(await PreferenceHelper.instance.getIngredientVeganFilter(), true);
     expect(await PreferenceHelper.instance.getIngredientVeganFilter(), true);
     expect(
       await PreferenceHelper.instance.getIngredientSearchLanguage(),
-      IngredientSearchLanguage.all,
+      SearchLanguage.all,
     );
   });
 }

@@ -23,6 +23,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/ingredient_repository.dart';
@@ -254,7 +255,7 @@ void main() {
       await repo.searchIngredientServer(
         'apple',
         languageCode: 'de',
-        searchLanguage: IngredientSearchLanguage.currentAndEnglish,
+        searchLanguage: SearchLanguage.currentAndEnglish,
       );
 
       final captured =
@@ -274,7 +275,7 @@ void main() {
       await repo.searchIngredientServer(
         'apple',
         languageCode: 'en',
-        searchLanguage: IngredientSearchLanguage.currentAndEnglish,
+        searchLanguage: SearchLanguage.currentAndEnglish,
       );
 
       final captured =
@@ -293,7 +294,7 @@ void main() {
 
       await repo.searchIngredientServer(
         'apple',
-        searchLanguage: IngredientSearchLanguage.all,
+        searchLanguage: SearchLanguage.all,
       );
 
       final captured =

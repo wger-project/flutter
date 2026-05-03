@@ -18,10 +18,13 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/core/language.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -94,6 +97,55 @@ class Exercises extends _$Exercises {
       return _exercises.where((e) => ids.contains(e.id)).toList();
     }
     return _searchExerciseLocal(term, languageCode: languageCode, searchEnglish: searchEnglish);
+  }
+
+  /// Searches for exercises matching [term] with extended search options:
+  /// language scope, fulltext-vs-exact mode, and a category filter.
+  ///
+  /// Routes to the REST API when online (the backend handles `searchMode` and
+  /// `categories` server-side), or to the in-memory snapshot when offline
+  /// (substring match within the configured languages, post-filtered by
+  /// [categories]). Empty/short terms return an empty list.
+  Future<List<Exercise>> searchExerciseWithSearchMode(
+    String term, {
+    String languageCode = LANGUAGE_SHORT_ENGLISH,
+    SearchLanguage searchLanguage = SearchLanguage.currentAndEnglish,
+    ExerciseSearchMode searchMode = ExerciseSearchMode.fulltext,
+    Set<ExerciseCategory> categories = const {},
+  }) async {
+    if (term.length <= 1) {
+      return [];
+    }
+
+    if (ref.read(networkStatusProvider)) {
+      final ids = await ref
+          .read(exerciseRepositoryProvider)
+          .searchExerciseServerWithSearchMode(
+            term,
+            languageCode: languageCode,
+            searchLanguage: searchLanguage,
+            searchMode: searchMode,
+            categories: categories,
+          );
+      return _exercises.where((e) => ids.contains(e.id)).toList();
+    }
+
+    final searchEnglish = searchLanguage == SearchLanguage.currentAndEnglish;
+    var results = await _searchExerciseLocal(
+      term,
+      languageCode: languageCode,
+      searchEnglish: searchEnglish,
+    );
+    if (searchMode == ExerciseSearchMode.exact) {
+      final lower = term.toLowerCase();
+      results = results.where((e) {
+        return e.getTranslation(languageCode).name.toLowerCase() == lower;
+      }).toList();
+    }
+    if (categories.isNotEmpty) {
+      results = results.where((e) => categories.contains(e.category)).toList();
+    }
+    return results;
   }
 
   /// Pure in-memory substring search across the configured translations.

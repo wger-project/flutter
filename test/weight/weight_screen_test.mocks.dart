@@ -6,17 +6,18 @@
 import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/body_weight/weight_entry.dart' as _i12;
+import 'package:wger/models/body_weight/weight_entry.dart' as _i13;
+import 'package:wger/models/core/search_options.dart' as _i11;
 import 'package:wger/models/nutrition/ingredient.dart' as _i10;
 import 'package:wger/models/nutrition/log.dart' as _i8;
 import 'package:wger/models/nutrition/meal.dart' as _i6;
 import 'package:wger/models/nutrition/meal_item.dart' as _i7;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i5;
 import 'package:wger/models/user/profile.dart' as _i2;
-import 'package:wger/providers/body_weight_repository.dart' as _i11;
+import 'package:wger/providers/body_weight_repository.dart' as _i12;
 import 'package:wger/providers/ingredient_repository.dart' as _i9;
 import 'package:wger/providers/nutrition_repository.dart' as _i3;
-import 'package:wger/providers/user_profile_repository.dart' as _i13;
+import 'package:wger/providers/user_profile_repository.dart' as _i14;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -222,7 +223,7 @@ class MockIngredientRepository extends _i1.Mock implements _i9.IngredientReposit
   _i4.Future<List<_i10.Ingredient>> searchIngredientServer(
     String? name, {
     String? languageCode = 'en',
-    _i9.IngredientSearchLanguage? searchLanguage = _i9.IngredientSearchLanguage.current,
+    _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i10.NutriScore? nutriscoreMax,
@@ -257,18 +258,18 @@ class MockIngredientRepository extends _i1.Mock implements _i9.IngredientReposit
 /// A class which mocks [BodyWeightRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightRepository {
+class MockBodyWeightRepository extends _i1.Mock implements _i12.BodyWeightRepository {
   MockBodyWeightRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Stream<List<_i12.WeightEntry>> watchAllDrift() =>
+  _i4.Stream<List<_i13.WeightEntry>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i4.Stream<List<_i12.WeightEntry>>.empty(),
+            returnValue: _i4.Stream<List<_i13.WeightEntry>>.empty(),
           )
-          as _i4.Stream<List<_i12.WeightEntry>>);
+          as _i4.Stream<List<_i13.WeightEntry>>);
 
   @override
   _i4.Future<void> deleteLocalDrift(String? id) =>
@@ -280,7 +281,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightReposi
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> updateLocalDrift(_i12.WeightEntry? entry) =>
+  _i4.Future<void> updateLocalDrift(_i13.WeightEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDrift, [entry]),
             returnValue: _i4.Future<void>.value(),
@@ -289,7 +290,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightReposi
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> addLocalDrift(_i12.WeightEntry? entry) =>
+  _i4.Future<void> addLocalDrift(_i13.WeightEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
             returnValue: _i4.Future<void>.value(),
@@ -301,7 +302,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightReposi
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i13.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock implements _i14.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }

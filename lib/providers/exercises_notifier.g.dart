@@ -32,7 +32,7 @@ final class ExercisesProvider extends $StreamNotifierProvider<Exercises, Exercis
   Exercises create() => Exercises();
 }
 
-String _$exercisesHash() => r'c54e9bbcae562bbed8de4071f4cdb6392813bb7c';
+String _$exercisesHash() => r'8b90de950cfd41bcad764e9b4a44b47f2dce4a7f';
 
 abstract class _$Exercises extends $StreamNotifier<ExerciseState> {
   Stream<ExerciseState> build();

@@ -145,11 +145,16 @@ class AuthNotifier extends _$AuthNotifier {
       json.encode({'serverUrl': serverUrl}),
     );
 
-    final newState = await _resolveAuthState(
+    var newState = await _resolveAuthState(
       token: token,
       serverUrl: serverUrl,
       appVersion: appVersion,
     );
+
+    if (newState.status == AuthStatus.loggedIn && !await _serverConfigSane(serverUrl, token)) {
+      newState = newState.copyWith(serverConfigWarning: true);
+    }
+
     state = AsyncData(newState);
 
     if (newState.status == AuthStatus.loggedIn) {
@@ -163,6 +168,50 @@ class AuthNotifier extends _$AuthNotifier {
       AuthStatus.serverUpdateRequired || AuthStatus.updateRequired => LoginActions.update,
       _ => LoginActions.proceed,
     };
+  }
+
+  /// Clears the server config warning flag — called from the auth screen after
+  /// the corresponding warning dialog has been shown to the user, so it doesn't
+  /// re-appear on the next state read.
+  void clearServerConfigWarning() {
+    final current = state.asData?.value;
+    if (current != null && current.serverConfigWarning) {
+      state = AsyncData(current.copyWith(serverConfigWarning: false));
+    }
+  }
+
+  /// Detects reverse-proxy misconfiguration on the wger server: pagination
+  /// URLs returned by the API should point to the same host and scheme as the
+  /// configured [serverUrl]. Returns `true` when the configuration looks fine
+  /// (or the check could not be completed conclusively).
+  Future<bool> _serverConfigSane(String serverUrl, String token) async {
+    try {
+      final baseUri = Uri.parse(serverUrl);
+      final response = await _client.get(
+        Uri.parse('$serverUrl/api/v2/exercise/?limit=1'),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Token $token',
+          HttpHeaders.acceptHeader: 'application/json',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        return true;
+      }
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final nextUrl = data['next'] as String?;
+      if (nextUrl == null) {
+        return true;
+      }
+
+      final nextUri = Uri.parse(nextUrl);
+      return nextUri.host.toLowerCase() == baseUri.host.toLowerCase() &&
+          nextUri.scheme == baseUri.scheme;
+    } catch (e) {
+      _logger.info('serverConfigSane check failed: $e');
+      return true;
+    }
   }
 
   /// Re-runs the auto-login flow. Used by the recovery screens

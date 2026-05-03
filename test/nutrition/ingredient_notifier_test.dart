@@ -22,6 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/ingredient_notifier.dart';
 import 'package:wger/providers/ingredient_repository.dart';
@@ -142,7 +143,7 @@ void main() {
           .searchIngredient(
             'apple',
             languageCode: 'de',
-            searchLanguage: IngredientSearchLanguage.currentAndEnglish,
+            searchLanguage: SearchLanguage.currentAndEnglish,
             isVegan: true,
             isVegetarian: true,
             nutriscoreMax: NutriScore.b,
@@ -153,7 +154,7 @@ void main() {
         mockRepo.searchIngredientServer(
           'apple',
           languageCode: 'de',
-          searchLanguage: IngredientSearchLanguage.currentAndEnglish,
+          searchLanguage: SearchLanguage.currentAndEnglish,
           isVegan: true,
           isVegetarian: true,
           nutriscoreMax: NutriScore.b,

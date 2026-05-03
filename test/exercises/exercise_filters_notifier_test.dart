@@ -51,14 +51,14 @@ void main() {
     when(mockRepo.watchMusclesDrift()).thenAnswer((_) => Stream.value(<Muscle>[]));
   });
 
-  /// Builds a container, subscribes to [exerciseFiltersProvider] (so Riverpod
+  /// Builds a container, subscribes to [exerciseListFiltersProvider] (so Riverpod
   /// actually starts watching the upstream streams), drains the microtask
   /// queue so the streams' first values land, and returns the container.
   Future<ProviderContainer> primedContainer() async {
     final container = ProviderContainer.test(
       overrides: [exerciseRepositoryProvider.overrideWithValue(mockRepo)],
     );
-    container.listen(exerciseFiltersProvider, (_, _) {});
+    container.listen(exerciseListFiltersProvider, (_, _) {});
     await pumpEventQueue();
     return container;
   }
@@ -67,7 +67,7 @@ void main() {
     test('returns isLoading=false with full data after streams settle', () async {
       final container = await primedContainer();
 
-      final state = container.read(exerciseFiltersProvider);
+      final state = container.read(exerciseListFiltersProvider);
 
       expect(state.isLoading, isFalse);
       expect(state.exercises, hasLength(exercises.length));
@@ -78,7 +78,7 @@ void main() {
       when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.error(StateError('boom')));
 
       final container = await primedContainer();
-      final state = container.read(exerciseFiltersProvider);
+      final state = container.read(exerciseListFiltersProvider);
 
       expect(state.isLoading, isFalse);
       expect(state.exercises, isEmpty);
@@ -90,7 +90,7 @@ void main() {
     test('populates filter maps with all categories and equipment unselected', () async {
       final container = await primedContainer();
 
-      final state = container.read(exerciseFiltersProvider);
+      final state = container.read(exerciseListFiltersProvider);
 
       expect(state.filters.exerciseCategories.items.keys, containsAll(categories));
       expect(state.filters.exerciseCategories.items.values.every((v) => v == false), isTrue);
@@ -102,22 +102,22 @@ void main() {
   group('_applyFilters via setFilters', () {
     test('returns all exercises when nothing is marked and search term is short', () async {
       final container = await primedContainer();
-      final state = container.read(exerciseFiltersProvider);
+      final state = container.read(exerciseListFiltersProvider);
 
       // 1-char search term is below the threshold — should return all.
       container
-          .read(exerciseFiltersProvider.notifier)
+          .read(exerciseListFiltersProvider.notifier)
           .setFilters(state.filters.copyWith(searchTerm: 'D'));
 
       expect(
-        container.read(exerciseFiltersProvider).filteredExercises,
+        container.read(exerciseListFiltersProvider).filteredExercises,
         hasLength(exercises.length),
       );
     });
 
     test('filters by selected category', () async {
       final container = await primedContainer();
-      final state = container.read(exerciseFiltersProvider);
+      final state = container.read(exerciseListFiltersProvider);
 
       // tCategory3 (Abs) covers DeadLift, Curls and Squats.
       final newFilters = state.filters.copyWith(
@@ -125,43 +125,43 @@ void main() {
           items: {for (final c in categories) c: c == testCategoryAbs},
         ),
       );
-      container.read(exerciseFiltersProvider.notifier).setFilters(newFilters);
+      container.read(exerciseListFiltersProvider.notifier).setFilters(newFilters);
 
-      final filtered = container.read(exerciseFiltersProvider).filteredExercises;
+      final filtered = container.read(exerciseListFiltersProvider).filteredExercises;
       expect(filtered.map((e) => e.id).toSet(), {testDeadLift.id, testCurls.id, testSquats.id});
     });
 
     test('filters by selected equipment', () async {
       // testBenchPress is the only fixture with tEquipment1 (Bench).
       final container = await primedContainer();
-      final state = container.read(exerciseFiltersProvider);
+      final state = container.read(exerciseListFiltersProvider);
 
       final newFilters = state.filters.copyWith(
         equipment: state.filters.equipment.copyWith(
           items: {for (final e in equipment) e: e == testEquipmentBench},
         ),
       );
-      container.read(exerciseFiltersProvider.notifier).setFilters(newFilters);
+      container.read(exerciseListFiltersProvider.notifier).setFilters(newFilters);
 
-      final filtered = container.read(exerciseFiltersProvider).filteredExercises;
+      final filtered = container.read(exerciseListFiltersProvider).filteredExercises;
       expect(filtered.map((e) => e.id).toList(), [testBenchPress.id]);
     });
 
     test('filters by search term against the English translation name', () async {
       final container = await primedContainer();
-      final state = container.read(exerciseFiltersProvider);
+      final state = container.read(exerciseListFiltersProvider);
 
       container
-          .read(exerciseFiltersProvider.notifier)
+          .read(exerciseListFiltersProvider.notifier)
           .setFilters(state.filters.copyWith(searchTerm: 'dead'));
 
-      final filtered = container.read(exerciseFiltersProvider).filteredExercises;
+      final filtered = container.read(exerciseListFiltersProvider).filteredExercises;
       expect(filtered.map((e) => e.id).toList(), [testDeadLift.id]);
     });
 
     test('combines category + equipment + search', () async {
       final container = await primedContainer();
-      final state = container.read(exerciseFiltersProvider);
+      final state = container.read(exerciseListFiltersProvider);
 
       // Category=Abs (tCategory3), Equipment=Dumbbell (tEquipment2), search='Squat'
       // → matches only testSquats. testBenchPress is filtered out by category
@@ -175,9 +175,9 @@ void main() {
           items: {for (final e in equipment) e: e == testEquipmentDumbbell},
         ),
       );
-      container.read(exerciseFiltersProvider.notifier).setFilters(newFilters);
+      container.read(exerciseListFiltersProvider.notifier).setFilters(newFilters);
 
-      final filtered = container.read(exerciseFiltersProvider).filteredExercises;
+      final filtered = container.read(exerciseListFiltersProvider).filteredExercises;
       expect(filtered.map((e) => e.id).toList(), [testSquats.id]);
     });
   });
@@ -185,13 +185,13 @@ void main() {
   group('setFilters', () {
     test('updates state.filters and re-runs filtering', () async {
       final container = await primedContainer();
-      final state = container.read(exerciseFiltersProvider);
+      final state = container.read(exerciseListFiltersProvider);
 
       container
-          .read(exerciseFiltersProvider.notifier)
+          .read(exerciseListFiltersProvider.notifier)
           .setFilters(state.filters.copyWith(searchTerm: 'curls'));
 
-      final after = container.read(exerciseFiltersProvider);
+      final after = container.read(exerciseListFiltersProvider);
       expect(after.filters.searchTerm, 'curls');
       expect(after.filteredExercises.map((e) => e.id).toList(), [testCurls.id]);
     });

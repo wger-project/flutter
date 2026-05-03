@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthState {
 
- AuthStatus get status; String? get token; String? get serverUrl; String? get serverVersion; PackageInfo? get applicationVersion;
+ AuthStatus get status; String? get token; String? get serverUrl; String? get serverVersion; PackageInfo? get applicationVersion; bool get serverConfigWarning;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.status, status) || other.status == status)&&(identical(other.token, token) || other.token == token)&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&(identical(other.serverVersion, serverVersion) || other.serverVersion == serverVersion)&&(identical(other.applicationVersion, applicationVersion) || other.applicationVersion == applicationVersion));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.status, status) || other.status == status)&&(identical(other.token, token) || other.token == token)&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&(identical(other.serverVersion, serverVersion) || other.serverVersion == serverVersion)&&(identical(other.applicationVersion, applicationVersion) || other.applicationVersion == applicationVersion)&&(identical(other.serverConfigWarning, serverConfigWarning) || other.serverConfigWarning == serverConfigWarning));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,token,serverUrl,serverVersion,applicationVersion);
+int get hashCode => Object.hash(runtimeType,status,token,serverUrl,serverVersion,applicationVersion,serverConfigWarning);
 
 @override
 String toString() {
-  return 'AuthState(status: $status, token: $token, serverUrl: $serverUrl, serverVersion: $serverVersion, applicationVersion: $applicationVersion)';
+  return 'AuthState(status: $status, token: $token, serverUrl: $serverUrl, serverVersion: $serverVersion, applicationVersion: $applicationVersion, serverConfigWarning: $serverConfigWarning)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- AuthStatus status, String? token, String? serverUrl, String? serverVersion, PackageInfo? applicationVersion
+ AuthStatus status, String? token, String? serverUrl, String? serverVersion, PackageInfo? applicationVersion, bool serverConfigWarning
 });
 
 
@@ -62,14 +62,15 @@ class _$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? token = freezed,Object? serverUrl = freezed,Object? serverVersion = freezed,Object? applicationVersion = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? token = freezed,Object? serverUrl = freezed,Object? serverVersion = freezed,Object? applicationVersion = freezed,Object? serverConfigWarning = null,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as AuthStatus,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String?,serverUrl: freezed == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
 as String?,serverVersion: freezed == serverVersion ? _self.serverVersion : serverVersion // ignore: cast_nullable_to_non_nullable
 as String?,applicationVersion: freezed == applicationVersion ? _self.applicationVersion : applicationVersion // ignore: cast_nullable_to_non_nullable
-as PackageInfo?,
+as PackageInfo?,serverConfigWarning: null == serverConfigWarning ? _self.serverConfigWarning : serverConfigWarning // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -151,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AuthStatus status,  String? token,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AuthStatus status,  String? token,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion,  bool serverConfigWarning)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.status,_that.token,_that.serverUrl,_that.serverVersion,_that.applicationVersion);case _:
+return $default(_that.status,_that.token,_that.serverUrl,_that.serverVersion,_that.applicationVersion,_that.serverConfigWarning);case _:
   return orElse();
 
 }
@@ -172,10 +173,10 @@ return $default(_that.status,_that.token,_that.serverUrl,_that.serverVersion,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AuthStatus status,  String? token,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AuthStatus status,  String? token,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion,  bool serverConfigWarning)  $default,) {final _that = this;
 switch (_that) {
 case _AuthState():
-return $default(_that.status,_that.token,_that.serverUrl,_that.serverVersion,_that.applicationVersion);}
+return $default(_that.status,_that.token,_that.serverUrl,_that.serverVersion,_that.applicationVersion,_that.serverConfigWarning);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -189,10 +190,10 @@ return $default(_that.status,_that.token,_that.serverUrl,_that.serverVersion,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AuthStatus status,  String? token,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AuthStatus status,  String? token,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion,  bool serverConfigWarning)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.status,_that.token,_that.serverUrl,_that.serverVersion,_that.applicationVersion);case _:
+return $default(_that.status,_that.token,_that.serverUrl,_that.serverVersion,_that.applicationVersion,_that.serverConfigWarning);case _:
   return null;
 
 }
@@ -204,7 +205,7 @@ return $default(_that.status,_that.token,_that.serverUrl,_that.serverVersion,_th
 
 
 class _AuthState extends AuthState {
-  const _AuthState({this.status = AuthStatus.loggedOut, this.token, this.serverUrl, this.serverVersion, this.applicationVersion}): super._();
+  const _AuthState({this.status = AuthStatus.loggedOut, this.token, this.serverUrl, this.serverVersion, this.applicationVersion, this.serverConfigWarning = false}): super._();
   
 
 @override@JsonKey() final  AuthStatus status;
@@ -212,6 +213,7 @@ class _AuthState extends AuthState {
 @override final  String? serverUrl;
 @override final  String? serverVersion;
 @override final  PackageInfo? applicationVersion;
+@override@JsonKey() final  bool serverConfigWarning;
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
@@ -223,16 +225,16 @@ _$AuthStateCopyWith<_AuthState> get copyWith => __$AuthStateCopyWithImpl<_AuthSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.status, status) || other.status == status)&&(identical(other.token, token) || other.token == token)&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&(identical(other.serverVersion, serverVersion) || other.serverVersion == serverVersion)&&(identical(other.applicationVersion, applicationVersion) || other.applicationVersion == applicationVersion));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.status, status) || other.status == status)&&(identical(other.token, token) || other.token == token)&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&(identical(other.serverVersion, serverVersion) || other.serverVersion == serverVersion)&&(identical(other.applicationVersion, applicationVersion) || other.applicationVersion == applicationVersion)&&(identical(other.serverConfigWarning, serverConfigWarning) || other.serverConfigWarning == serverConfigWarning));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,token,serverUrl,serverVersion,applicationVersion);
+int get hashCode => Object.hash(runtimeType,status,token,serverUrl,serverVersion,applicationVersion,serverConfigWarning);
 
 @override
 String toString() {
-  return 'AuthState(status: $status, token: $token, serverUrl: $serverUrl, serverVersion: $serverVersion, applicationVersion: $applicationVersion)';
+  return 'AuthState(status: $status, token: $token, serverUrl: $serverUrl, serverVersion: $serverVersion, applicationVersion: $applicationVersion, serverConfigWarning: $serverConfigWarning)';
 }
 
 
@@ -243,7 +245,7 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- AuthStatus status, String? token, String? serverUrl, String? serverVersion, PackageInfo? applicationVersion
+ AuthStatus status, String? token, String? serverUrl, String? serverVersion, PackageInfo? applicationVersion, bool serverConfigWarning
 });
 
 
@@ -260,14 +262,15 @@ class __$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? token = freezed,Object? serverUrl = freezed,Object? serverVersion = freezed,Object? applicationVersion = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? token = freezed,Object? serverUrl = freezed,Object? serverVersion = freezed,Object? applicationVersion = freezed,Object? serverConfigWarning = null,}) {
   return _then(_AuthState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as AuthStatus,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String?,serverUrl: freezed == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
 as String?,serverVersion: freezed == serverVersion ? _self.serverVersion : serverVersion // ignore: cast_nullable_to_non_nullable
 as String?,applicationVersion: freezed == applicationVersion ? _self.applicationVersion : applicationVersion // ignore: cast_nullable_to_non_nullable
-as PackageInfo?,
+as PackageInfo?,serverConfigWarning: null == serverConfigWarning ? _self.serverConfigWarning : serverConfigWarning // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

@@ -1215,7 +1215,21 @@
     }
   },
   "searchLanguageAll": "All languages",
-  "@searchLanguageAll": {},
+  "@searchLanguageAll": {
+    "description": "Label used in the language selector to indicate no specific language filter is applied"
+  },
+  "exerciseSearchMode": "Search mode",
+  "@exerciseSearchMode": {
+    "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+  },
+  "searchModeFuzzy": "Fuzzy",
+  "@searchModeFuzzy": {
+    "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+  },
+  "searchModeExact": "Exact",
+  "@searchModeExact": {
+    "description": "Label for the search mode that only matches exercises with this exact name"
+  },
   "syncStatusConnected": "Connected",
   "@syncStatusConnected": {
     "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
@@ -1277,5 +1291,21 @@
         "example": "C"
       }
     }
-  }
+  },
+  "serverConfigIssueTitle": "Server Configuration Issue",
+  "@serverConfigIssueTitle": {
+   "description": "Title of the dialog shown when server misconfiguration is detected"
+   },
+   "serverConfigIssueMessage": "Server misconfiguration detected, headers are not being passed correctly, please consult the documentation.",
+   "@serverConfigIssueMessage": {
+   "description": "Message explaining server misconfiguration and linking to documentation"
+   },
+   "understand": "I understand",
+   "@understand": {
+   "description": "Button label to acknowledge and dismiss the server configuration warning"
+   },
+   "viewDocumentation": "View documentation",
+   "@viewDocumentation": {
+   "description": "Button label to open the documentation about server configuration"
+   }
 }

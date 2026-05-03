@@ -6,21 +6,23 @@
 import 'dart:async' as _i8;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/core/language.dart' as _i15;
-import 'package:wger/models/exercises/category.dart' as _i12;
-import 'package:wger/models/exercises/equipment.dart' as _i13;
-import 'package:wger/models/exercises/muscle.dart' as _i14;
+import 'package:wger/models/core/language.dart' as _i17;
+import 'package:wger/models/core/search_options.dart' as _i11;
+import 'package:wger/models/exercises/category.dart' as _i13;
+import 'package:wger/models/exercises/equipment.dart' as _i15;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i12;
+import 'package:wger/models/exercises/muscle.dart' as _i16;
 import 'package:wger/models/workouts/base_config.dart' as _i6;
 import 'package:wger/models/workouts/day.dart' as _i3;
-import 'package:wger/models/workouts/repetition_unit.dart' as _i18;
+import 'package:wger/models/workouts/repetition_unit.dart' as _i20;
 import 'package:wger/models/workouts/routine.dart' as _i2;
 import 'package:wger/models/workouts/session.dart' as _i9;
 import 'package:wger/models/workouts/slot.dart' as _i4;
 import 'package:wger/models/workouts/slot_entry.dart' as _i5;
-import 'package:wger/models/workouts/weight_unit.dart' as _i17;
+import 'package:wger/models/workouts/weight_unit.dart' as _i19;
 import 'package:wger/providers/exercise_repository.dart' as _i10;
-import 'package:wger/providers/exercises_notifier.dart' as _i11;
-import 'package:wger/providers/routines_repository.dart' as _i16;
+import 'package:wger/providers/exercises_notifier.dart' as _i14;
+import 'package:wger/providers/routines_repository.dart' as _i18;
 import 'package:wger/providers/workout_session_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
@@ -127,50 +129,73 @@ class MockExerciseRepository extends _i1.Mock implements _i10.ExerciseRepository
           as _i8.Future<List<int>>);
 
   @override
-  _i8.Stream<_i11.ExerciseState> watchAllDrift() =>
+  _i8.Future<List<int>> searchExerciseServerWithSearchMode(
+    String? term, {
+    String? languageCode = 'en',
+    _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.currentAndEnglish,
+    _i12.ExerciseSearchMode? searchMode = _i12.ExerciseSearchMode.fulltext,
+    Set<_i13.ExerciseCategory>? categories = const {},
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseServerWithSearchMode,
+              [term],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #categories: categories,
+              },
+            ),
+            returnValue: _i8.Future<List<int>>.value(<int>[]),
+          )
+          as _i8.Future<List<int>>);
+
+  @override
+  _i8.Stream<_i14.ExerciseState> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i8.Stream<_i11.ExerciseState>.empty(),
+            returnValue: _i8.Stream<_i14.ExerciseState>.empty(),
           )
-          as _i8.Stream<_i11.ExerciseState>);
+          as _i8.Stream<_i14.ExerciseState>);
 
   @override
-  _i8.Stream<List<_i12.ExerciseCategory>> watchCategoriesDrift() =>
+  _i8.Stream<List<_i13.ExerciseCategory>> watchCategoriesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchCategoriesDrift, []),
-            returnValue: _i8.Stream<List<_i12.ExerciseCategory>>.empty(),
+            returnValue: _i8.Stream<List<_i13.ExerciseCategory>>.empty(),
           )
-          as _i8.Stream<List<_i12.ExerciseCategory>>);
+          as _i8.Stream<List<_i13.ExerciseCategory>>);
 
   @override
-  _i8.Stream<List<_i13.Equipment>> watchEquipmentDrift() =>
+  _i8.Stream<List<_i15.Equipment>> watchEquipmentDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchEquipmentDrift, []),
-            returnValue: _i8.Stream<List<_i13.Equipment>>.empty(),
+            returnValue: _i8.Stream<List<_i15.Equipment>>.empty(),
           )
-          as _i8.Stream<List<_i13.Equipment>>);
+          as _i8.Stream<List<_i15.Equipment>>);
 
   @override
-  _i8.Stream<List<_i14.Muscle>> watchMusclesDrift() =>
+  _i8.Stream<List<_i16.Muscle>> watchMusclesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchMusclesDrift, []),
-            returnValue: _i8.Stream<List<_i14.Muscle>>.empty(),
+            returnValue: _i8.Stream<List<_i16.Muscle>>.empty(),
           )
-          as _i8.Stream<List<_i14.Muscle>>);
+          as _i8.Stream<List<_i16.Muscle>>);
 
   @override
-  _i8.Stream<List<_i15.Language>> watchLanguagesDrift() =>
+  _i8.Stream<List<_i17.Language>> watchLanguagesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchLanguagesDrift, []),
-            returnValue: _i8.Stream<List<_i15.Language>>.empty(),
+            returnValue: _i8.Stream<List<_i17.Language>>.empty(),
           )
-          as _i8.Stream<List<_i15.Language>>);
+          as _i8.Stream<List<_i17.Language>>);
 }
 
 /// A class which mocks [RoutinesRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesRepository extends _i1.Mock implements _i16.RoutinesRepository {
+class MockRoutinesRepository extends _i1.Mock implements _i18.RoutinesRepository {
   MockRoutinesRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -228,20 +253,20 @@ class MockRoutinesRepository extends _i1.Mock implements _i16.RoutinesRepository
           as _i8.Future<void>);
 
   @override
-  _i8.Stream<List<_i17.WeightUnit>> watchWeightUnitsDrift() =>
+  _i8.Stream<List<_i19.WeightUnit>> watchWeightUnitsDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchWeightUnitsDrift, []),
-            returnValue: _i8.Stream<List<_i17.WeightUnit>>.empty(),
+            returnValue: _i8.Stream<List<_i19.WeightUnit>>.empty(),
           )
-          as _i8.Stream<List<_i17.WeightUnit>>);
+          as _i8.Stream<List<_i19.WeightUnit>>);
 
   @override
-  _i8.Stream<List<_i18.RepetitionUnit>> watchRepetitionUnitsDrift() =>
+  _i8.Stream<List<_i20.RepetitionUnit>> watchRepetitionUnitsDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchRepetitionUnitsDrift, []),
-            returnValue: _i8.Stream<List<_i18.RepetitionUnit>>.empty(),
+            returnValue: _i8.Stream<List<_i20.RepetitionUnit>>.empty(),
           )
-          as _i8.Stream<List<_i18.RepetitionUnit>>);
+          as _i8.Stream<List<_i20.RepetitionUnit>>);
 
   @override
   _i8.Future<_i3.Day> addDayServer(_i3.Day? day) =>

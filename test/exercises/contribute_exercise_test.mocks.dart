@@ -6,16 +6,18 @@
 import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/core/language.dart' as _i13;
-import 'package:wger/models/exercises/category.dart' as _i10;
-import 'package:wger/models/exercises/equipment.dart' as _i11;
+import 'package:wger/models/core/language.dart' as _i15;
+import 'package:wger/models/core/search_options.dart' as _i9;
+import 'package:wger/models/exercises/category.dart' as _i11;
+import 'package:wger/models/exercises/equipment.dart' as _i13;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i10;
 import 'package:wger/models/exercises/exercise_submission.dart' as _i5;
 import 'package:wger/models/exercises/exercise_submission_images.dart' as _i6;
-import 'package:wger/models/exercises/muscle.dart' as _i12;
+import 'package:wger/models/exercises/muscle.dart' as _i14;
 import 'package:wger/models/user/profile.dart' as _i2;
 import 'package:wger/providers/add_exercise_repository.dart' as _i3;
 import 'package:wger/providers/exercise_repository.dart' as _i8;
-import 'package:wger/providers/exercises_notifier.dart' as _i9;
+import 'package:wger/providers/exercises_notifier.dart' as _i12;
 import 'package:wger/providers/user_profile_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
@@ -133,42 +135,65 @@ class MockExerciseRepository extends _i1.Mock implements _i8.ExerciseRepository 
           as _i4.Future<List<int>>);
 
   @override
-  _i4.Stream<_i9.ExerciseState> watchAllDrift() =>
+  _i4.Future<List<int>> searchExerciseServerWithSearchMode(
+    String? term, {
+    String? languageCode = 'en',
+    _i9.SearchLanguage? searchLanguage = _i9.SearchLanguage.currentAndEnglish,
+    _i10.ExerciseSearchMode? searchMode = _i10.ExerciseSearchMode.fulltext,
+    Set<_i11.ExerciseCategory>? categories = const {},
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseServerWithSearchMode,
+              [term],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #categories: categories,
+              },
+            ),
+            returnValue: _i4.Future<List<int>>.value(<int>[]),
+          )
+          as _i4.Future<List<int>>);
+
+  @override
+  _i4.Stream<_i12.ExerciseState> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i4.Stream<_i9.ExerciseState>.empty(),
+            returnValue: _i4.Stream<_i12.ExerciseState>.empty(),
           )
-          as _i4.Stream<_i9.ExerciseState>);
+          as _i4.Stream<_i12.ExerciseState>);
 
   @override
-  _i4.Stream<List<_i10.ExerciseCategory>> watchCategoriesDrift() =>
+  _i4.Stream<List<_i11.ExerciseCategory>> watchCategoriesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchCategoriesDrift, []),
-            returnValue: _i4.Stream<List<_i10.ExerciseCategory>>.empty(),
+            returnValue: _i4.Stream<List<_i11.ExerciseCategory>>.empty(),
           )
-          as _i4.Stream<List<_i10.ExerciseCategory>>);
+          as _i4.Stream<List<_i11.ExerciseCategory>>);
 
   @override
-  _i4.Stream<List<_i11.Equipment>> watchEquipmentDrift() =>
+  _i4.Stream<List<_i13.Equipment>> watchEquipmentDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchEquipmentDrift, []),
-            returnValue: _i4.Stream<List<_i11.Equipment>>.empty(),
+            returnValue: _i4.Stream<List<_i13.Equipment>>.empty(),
           )
-          as _i4.Stream<List<_i11.Equipment>>);
+          as _i4.Stream<List<_i13.Equipment>>);
 
   @override
-  _i4.Stream<List<_i12.Muscle>> watchMusclesDrift() =>
+  _i4.Stream<List<_i14.Muscle>> watchMusclesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchMusclesDrift, []),
-            returnValue: _i4.Stream<List<_i12.Muscle>>.empty(),
+            returnValue: _i4.Stream<List<_i14.Muscle>>.empty(),
           )
-          as _i4.Stream<List<_i12.Muscle>>);
+          as _i4.Stream<List<_i14.Muscle>>);
 
   @override
-  _i4.Stream<List<_i13.Language>> watchLanguagesDrift() =>
+  _i4.Stream<List<_i15.Language>> watchLanguagesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchLanguagesDrift, []),
-            returnValue: _i4.Stream<List<_i13.Language>>.empty(),
+            returnValue: _i4.Stream<List<_i15.Language>>.empty(),
           )
-          as _i4.Stream<List<_i13.Language>>);
+          as _i4.Stream<List<_i15.Language>>);
 }

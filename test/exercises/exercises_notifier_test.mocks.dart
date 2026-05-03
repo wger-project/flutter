@@ -6,12 +6,14 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/core/language.dart' as _i8;
-import 'package:wger/models/exercises/category.dart' as _i5;
-import 'package:wger/models/exercises/equipment.dart' as _i6;
-import 'package:wger/models/exercises/muscle.dart' as _i7;
+import 'package:wger/models/core/language.dart' as _i10;
+import 'package:wger/models/core/search_options.dart' as _i4;
+import 'package:wger/models/exercises/category.dart' as _i6;
+import 'package:wger/models/exercises/equipment.dart' as _i8;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i5;
+import 'package:wger/models/exercises/muscle.dart' as _i9;
 import 'package:wger/providers/exercise_repository.dart' as _i2;
-import 'package:wger/providers/exercises_notifier.dart' as _i4;
+import 'package:wger/providers/exercises_notifier.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -53,42 +55,65 @@ class MockExerciseRepository extends _i1.Mock implements _i2.ExerciseRepository 
           as _i3.Future<List<int>>);
 
   @override
-  _i3.Stream<_i4.ExerciseState> watchAllDrift() =>
+  _i3.Future<List<int>> searchExerciseServerWithSearchMode(
+    String? term, {
+    String? languageCode = 'en',
+    _i4.SearchLanguage? searchLanguage = _i4.SearchLanguage.currentAndEnglish,
+    _i5.ExerciseSearchMode? searchMode = _i5.ExerciseSearchMode.fulltext,
+    Set<_i6.ExerciseCategory>? categories = const {},
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseServerWithSearchMode,
+              [term],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #categories: categories,
+              },
+            ),
+            returnValue: _i3.Future<List<int>>.value(<int>[]),
+          )
+          as _i3.Future<List<int>>);
+
+  @override
+  _i3.Stream<_i7.ExerciseState> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i3.Stream<_i4.ExerciseState>.empty(),
+            returnValue: _i3.Stream<_i7.ExerciseState>.empty(),
           )
-          as _i3.Stream<_i4.ExerciseState>);
+          as _i3.Stream<_i7.ExerciseState>);
 
   @override
-  _i3.Stream<List<_i5.ExerciseCategory>> watchCategoriesDrift() =>
+  _i3.Stream<List<_i6.ExerciseCategory>> watchCategoriesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchCategoriesDrift, []),
-            returnValue: _i3.Stream<List<_i5.ExerciseCategory>>.empty(),
+            returnValue: _i3.Stream<List<_i6.ExerciseCategory>>.empty(),
           )
-          as _i3.Stream<List<_i5.ExerciseCategory>>);
+          as _i3.Stream<List<_i6.ExerciseCategory>>);
 
   @override
-  _i3.Stream<List<_i6.Equipment>> watchEquipmentDrift() =>
+  _i3.Stream<List<_i8.Equipment>> watchEquipmentDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchEquipmentDrift, []),
-            returnValue: _i3.Stream<List<_i6.Equipment>>.empty(),
+            returnValue: _i3.Stream<List<_i8.Equipment>>.empty(),
           )
-          as _i3.Stream<List<_i6.Equipment>>);
+          as _i3.Stream<List<_i8.Equipment>>);
 
   @override
-  _i3.Stream<List<_i7.Muscle>> watchMusclesDrift() =>
+  _i3.Stream<List<_i9.Muscle>> watchMusclesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchMusclesDrift, []),
-            returnValue: _i3.Stream<List<_i7.Muscle>>.empty(),
+            returnValue: _i3.Stream<List<_i9.Muscle>>.empty(),
           )
-          as _i3.Stream<List<_i7.Muscle>>);
+          as _i3.Stream<List<_i9.Muscle>>);
 
   @override
-  _i3.Stream<List<_i8.Language>> watchLanguagesDrift() =>
+  _i3.Stream<List<_i10.Language>> watchLanguagesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchLanguagesDrift, []),
-            returnValue: _i3.Stream<List<_i8.Language>>.empty(),
+            returnValue: _i3.Stream<List<_i10.Language>>.empty(),
           )
-          as _i3.Stream<List<_i8.Language>>);
+          as _i3.Stream<List<_i10.Language>>);
 }

@@ -12,34 +12,34 @@ part of 'exercise_filters_notifier.dart';
 /// search term, selected categories/equipment, and the resulting
 /// [filteredExercises] list.
 
-@ProviderFor(ExerciseFiltersNotifier)
-final exerciseFiltersProvider = ExerciseFiltersNotifierProvider._();
+@ProviderFor(ExerciseListFiltersNotifier)
+final exerciseListFiltersProvider = ExerciseListFiltersNotifierProvider._();
 
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
 /// [filteredExercises] list.
-final class ExerciseFiltersNotifierProvider
-    extends $NotifierProvider<ExerciseFiltersNotifier, ExerciseFilterState> {
+final class ExerciseListFiltersNotifierProvider
+    extends $NotifierProvider<ExerciseListFiltersNotifier, ExerciseFilterState> {
   /// Holds the *UI-side* state for the exercises catalogue screen:
   /// search term, selected categories/equipment, and the resulting
   /// [filteredExercises] list.
-  ExerciseFiltersNotifierProvider._()
+  ExerciseListFiltersNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'exerciseFiltersProvider',
+        name: r'exerciseListFiltersProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$exerciseFiltersNotifierHash();
+  String debugGetCreateSourceHash() => _$exerciseListFiltersNotifierHash();
 
   @$internal
   @override
-  ExerciseFiltersNotifier create() => ExerciseFiltersNotifier();
+  ExerciseListFiltersNotifier create() => ExerciseListFiltersNotifier();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ExerciseFilterState value) {
@@ -50,13 +50,13 @@ final class ExerciseFiltersNotifierProvider
   }
 }
 
-String _$exerciseFiltersNotifierHash() => r'8b61ef1ad14bdef43f76d1defe83ac5524a467aa';
+String _$exerciseListFiltersNotifierHash() => r'b6e2571249061a69b53712118615c388f2afefec';
 
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
 /// [filteredExercises] list.
 
-abstract class _$ExerciseFiltersNotifier extends $Notifier<ExerciseFilterState> {
+abstract class _$ExerciseListFiltersNotifier extends $Notifier<ExerciseFilterState> {
   ExerciseFilterState build();
   @$mustCallSuper
   @override

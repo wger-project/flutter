@@ -24,6 +24,7 @@ import 'dart:async';
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/network_provider.dart';
 
@@ -109,7 +110,7 @@ final class IngredientNotifier extends _$IngredientNotifier {
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',
-    IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
+    SearchLanguage searchLanguage = SearchLanguage.current,
     bool isVegan = false,
     bool isVegetarian = false,
     NutriScore? nutriscoreMax,

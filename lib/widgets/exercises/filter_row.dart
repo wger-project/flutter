@@ -38,15 +38,15 @@ class _FilterRowState extends ConsumerState<FilterRow> {
   void initState() {
     super.initState();
 
-    final initialSearch = ref.read(exerciseFiltersProvider).filters.searchTerm;
+    final initialSearch = ref.read(exerciseListFiltersProvider).filters.searchTerm;
 
     _exerciseNameController = TextEditingController(text: initialSearch)
       ..addListener(() {
         final text = _exerciseNameController.text;
-        final currentFilters = ref.read(exerciseFiltersProvider).filters;
+        final currentFilters = ref.read(exerciseListFiltersProvider).filters;
         if (currentFilters.searchTerm != text) {
           ref
-              .read(exerciseFiltersProvider.notifier)
+              .read(exerciseListFiltersProvider.notifier)
               .setFilters(
                 currentFilters.copyWith(searchTerm: text),
                 Localizations.localeOf(context).languageCode,

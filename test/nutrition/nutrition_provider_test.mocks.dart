@@ -6,6 +6,7 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/models/core/search_options.dart' as _i10;
 import 'package:wger/models/nutrition/ingredient.dart' as _i9;
 import 'package:wger/models/nutrition/log.dart' as _i7;
 import 'package:wger/models/nutrition/meal.dart' as _i5;
@@ -214,7 +215,7 @@ class MockIngredientRepository extends _i1.Mock implements _i8.IngredientReposit
   _i3.Future<List<_i9.Ingredient>> searchIngredientServer(
     String? name, {
     String? languageCode = 'en',
-    _i8.IngredientSearchLanguage? searchLanguage = _i8.IngredientSearchLanguage.current,
+    _i10.SearchLanguage? searchLanguage = _i10.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i9.NutriScore? nutriscoreMax,

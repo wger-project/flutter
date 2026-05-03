@@ -19,9 +19,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_filters.dart';
-import 'package:wger/providers/ingredient_repository.dart';
 
 part 'ingredient_filters_notifier.g.dart';
 
@@ -45,12 +45,7 @@ class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {
 
   // Return the current IngredientFilters value or a single canonical default.
   IngredientFilters _current() {
-    return state.asData?.value ??
-        IngredientFilters(
-          isVegan: false,
-          isVegetarian: false,
-          searchLanguage: IngredientSearchLanguage.current,
-        );
+    return state.asData?.value ?? const IngredientFilters();
   }
 
   Future<void> toggleVegan(bool value) async {
@@ -65,7 +60,7 @@ class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {
     await PreferenceHelper.instance.saveIngredientVegetarianFilter(value);
   }
 
-  Future<void> chooseLanguage(IngredientSearchLanguage value) async {
+  Future<void> chooseLanguage(SearchLanguage value) async {
     final current = _current();
     state = AsyncData(current.copyWith(searchLanguage: value));
     await PreferenceHelper.instance.saveIngredientSearchLanguage(value);
@@ -85,10 +80,5 @@ class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {
 // Synchronous helper provider to unwrap the AsyncValue produced by `ingredientFiltersProvider`
 final ingredientFiltersSyncProvider = Provider<IngredientFilters>((ref) {
   final async = ref.watch(ingredientFiltersProvider);
-  return async.asData?.value ??
-      IngredientFilters(
-        isVegan: false,
-        isVegetarian: false,
-        searchLanguage: IngredientSearchLanguage.current,
-      );
+  return async.asData?.value ?? const IngredientFilters();
 });

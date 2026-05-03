@@ -20,19 +20,13 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
 import '../database/powersync/database.dart';
-
-/// Which language(s) the server-side ingredient search should consider.
-enum IngredientSearchLanguage {
-  current,
-  currentAndEnglish,
-  all,
-}
 
 final ingredientRepositoryProvider = Provider<IngredientRepository>((ref) {
   final base = ref.read(wgerBaseProvider);
@@ -111,7 +105,7 @@ class IngredientRepository {
   Future<List<Ingredient>> searchIngredientServer(
     String name, {
     String languageCode = 'en',
-    IngredientSearchLanguage searchLanguage = IngredientSearchLanguage.current,
+    SearchLanguage searchLanguage = SearchLanguage.current,
     bool isVegan = false,
     bool isVegetarian = false,
     NutriScore? nutriscoreMax,
@@ -122,14 +116,14 @@ class IngredientRepository {
     final List<String> languages = [];
 
     switch (searchLanguage) {
-      case IngredientSearchLanguage.current:
+      case SearchLanguage.current:
         languages.add(languageCode);
-      case IngredientSearchLanguage.currentAndEnglish:
+      case SearchLanguage.currentAndEnglish:
         languages.add(languageCode);
         if (languageCode != LANGUAGE_SHORT_ENGLISH) {
           languages.add(LANGUAGE_SHORT_ENGLISH);
         }
-      case IngredientSearchLanguage.all:
+      case SearchLanguage.all:
         // Don't add any language code to search in all languages
         break;
     }

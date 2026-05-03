@@ -26,6 +26,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
@@ -204,7 +205,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // The dropdown should be visible
-    expect(find.byType(DropdownButton<IngredientSearchLanguage>), findsOneWidget);
+    expect(find.byType(DropdownButton<SearchLanguage>), findsOneWidget);
 
     // Toggle Vegan switch to ON
     await tester.tap(find.widgetWithText(SwitchListTile, 'Vegan'));
@@ -225,7 +226,7 @@ void main() {
       mockIngredientRepo.searchIngredientServer(
         'Apple',
         languageCode: 'en',
-        searchLanguage: IngredientSearchLanguage.current,
+        searchLanguage: SearchLanguage.current,
         isVegan: true,
         isVegetarian: false,
         nutriscoreMax: null,
@@ -276,7 +277,7 @@ void main() {
       mockIngredientRepo.searchIngredientServer(
         'Apple',
         languageCode: 'en',
-        searchLanguage: IngredientSearchLanguage.current,
+        searchLanguage: SearchLanguage.current,
         isVegan: false,
         isVegetarian: false,
         nutriscoreMax: NutriScore.a,
@@ -296,7 +297,7 @@ void main() {
       mockIngredientRepo.searchIngredientServer(
         'Apple',
         languageCode: 'en',
-        searchLanguage: IngredientSearchLanguage.current,
+        searchLanguage: SearchLanguage.current,
         isVegan: false,
         isVegetarian: false,
         nutriscoreMax: null,

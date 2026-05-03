@@ -16,7 +16,7 @@ class ExercisesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final exerciseState = ref.watch(exerciseFiltersProvider);
+    final exerciseState = ref.watch(exerciseListFiltersProvider);
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).exercises),

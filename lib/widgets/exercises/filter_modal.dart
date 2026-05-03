@@ -35,7 +35,7 @@ class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBod
   @override
   void initState() {
     super.initState();
-    filters = ref.read(exerciseFiltersProvider).filters;
+    filters = ref.read(exerciseListFiltersProvider).filters;
   }
 
   @override
@@ -72,7 +72,7 @@ class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBod
                       setState(() {
                         filterCategory.items.update(currentEntry.key, (value) => !value);
                         ref
-                            .read(exerciseFiltersProvider.notifier)
+                            .read(exerciseListFiltersProvider.notifier)
                             .setFilters(
                               filters,
                               Localizations.localeOf(context).languageCode,
