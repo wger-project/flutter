@@ -54,6 +54,8 @@ class AuthProvider with ChangeNotifier {
   PackageInfo? applicationVersion;
   Map<String, String> metadata = {};
   AuthState state = AuthState.loggedOut;
+  bool _serverConfigWarning = false;
+  bool get serverConfigWarning => _serverConfigWarning;
 
   static const MIN_APP_VERSION_URL = 'min-app-version';
   static const SERVER_VERSION_URL = 'version';
@@ -65,6 +67,12 @@ class AuthProvider with ChangeNotifier {
 
   AuthProvider([http.Client? client]) {
     this.client = client ?? http.Client();
+  }
+
+  /// Clear the server config warnings
+  void clearServerConfigWarning() {
+    _serverConfigWarning = false;
+    notifyListeners();
   }
 
   /// flag to indicate that the application has successfully loaded all initial data
@@ -146,6 +154,42 @@ class AuthProvider with ChangeNotifier {
     return needUpdate;
   }
 
+  /// Detects reverse-proxy misconfiguration on the server by checking that
+  /// pagination URLs returned by the API point to the same host and scheme as
+  /// the configured [serverUrl].
+  ///
+  /// Returns `true` when the configuration looks fine (or the check could not
+  /// be completed conclusively), `false` when a mismatch is detected.
+  Future<bool> serverConfigSane() async {
+    try {
+      final baseUri = Uri.parse(serverUrl!);
+      final response = await client.get(
+        Uri.parse('$serverUrl/api/v2/exercise/?limit=1'),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Token $token',
+          HttpHeaders.acceptHeader: 'application/json',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        return true;
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final nextUrl = data['next'] as String?;
+      if (nextUrl == null) {
+        return true;
+      }
+
+      final nextUri = Uri.parse(nextUrl);
+      return nextUri.host.toLowerCase() == baseUri.host.toLowerCase() &&
+          nextUri.scheme == baseUri.scheme;
+    } catch (e) {
+      _logger.info('serverConfigSane check failed: $e');
+      return true;
+    }
+  }
+
   /// Registers a new user
   Future<LoginActions> register({
     required String username,
@@ -187,6 +231,7 @@ class AuthProvider with ChangeNotifier {
     String? apiToken,
   ) async {
     await logout(shouldNotify: false);
+    _serverConfigWarning = false;
 
     // Login using the API token
     if (apiToken != null && apiToken.isNotEmpty) {
@@ -238,6 +283,13 @@ class AuthProvider with ChangeNotifier {
     if (await applicationUpdateRequired()) {
       state = AuthState.updateRequired;
       return LoginActions.update;
+    }
+
+    // Surface a warning to the user when the server's reverse proxy is
+    // misconfigured (pagination URLs pointing to the wrong host).
+    if (!await serverConfigSane()) {
+      _serverConfigWarning = true;
+      notifyListeners();
     }
 
     // Log user in

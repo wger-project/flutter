@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
@@ -143,6 +145,105 @@ void main() {
     test('completely unparseable server version — returns false (lenient)', () {
       authProvider.serverVersion = 'unknown';
       expect(authProvider.serverUpdateRequired(), false);
+    });
+  });
+
+  group('server config sanity check', () {
+    final tCheckUri = Uri.parse('http://localhost/api/v2/exercise/?limit=1');
+
+    setUp(() {
+      authProvider.token = 'test-token';
+    });
+
+    Response paginatedResponse(String? next) => Response(
+      '{"count": 1, "next": ${next == null ? 'null' : '"$next"'}, "previous": null, "results": []}',
+      200,
+    );
+
+    test('matching pagination URL — sane', () async {
+      when(mockClient.get(tCheckUri, headers: anyNamed('headers'))).thenAnswer(
+        (_) =>
+            Future(() => paginatedResponse('http://localhost/api/v2/exercise/?limit=1&offset=1')),
+      );
+      expect(await authProvider.serverConfigSane(), true);
+    });
+
+    test('host mismatch (localhost leak through reverse proxy) — not sane', () async {
+      authProvider.serverUrl = 'https://wger.example.com';
+      final uri = Uri.parse('https://wger.example.com/api/v2/exercise/?limit=1');
+      when(mockClient.get(uri, headers: anyNamed('headers'))).thenAnswer(
+        (_) => Future(
+          () => paginatedResponse('http://localhost:8000/api/v2/exercise/?limit=1&offset=1'),
+        ),
+      );
+      expect(await authProvider.serverConfigSane(), false);
+    });
+
+    test('scheme mismatch (https expected, http returned) — not sane', () async {
+      authProvider.serverUrl = 'https://wger.example.com';
+      final uri = Uri.parse('https://wger.example.com/api/v2/exercise/?limit=1');
+      when(mockClient.get(uri, headers: anyNamed('headers'))).thenAnswer(
+        (_) => Future(
+          () => paginatedResponse('http://wger.example.com/api/v2/exercise/?limit=1&offset=1'),
+        ),
+      );
+      expect(await authProvider.serverConfigSane(), false);
+    });
+
+    test('host comparison is case-insensitive', () async {
+      authProvider.serverUrl = 'https://Wger.Example.com';
+      final uri = Uri.parse('https://Wger.Example.com/api/v2/exercise/?limit=1');
+      when(mockClient.get(uri, headers: anyNamed('headers'))).thenAnswer(
+        (_) => Future(
+          () => paginatedResponse('https://wger.example.com/api/v2/exercise/?limit=1&offset=1'),
+        ),
+      );
+      expect(await authProvider.serverConfigSane(), true);
+    });
+
+    test('no pagination (next is null) — sane', () async {
+      when(mockClient.get(tCheckUri, headers: anyNamed('headers'))).thenAnswer(
+        (_) => Future(() => paginatedResponse(null)),
+      );
+      expect(await authProvider.serverConfigSane(), true);
+    });
+
+    test('non-200 response — inconclusive, returns sane', () async {
+      when(mockClient.get(tCheckUri, headers: anyNamed('headers'))).thenAnswer(
+        (_) => Future(() => Response('Internal Server Error', 500)),
+      );
+      expect(await authProvider.serverConfigSane(), true);
+    });
+
+    test('network error — inconclusive, returns sane', () async {
+      when(mockClient.get(tCheckUri, headers: anyNamed('headers'))).thenAnswer(
+        (_) => Future.error(Exception('Network error')),
+      );
+      expect(await authProvider.serverConfigSane(), true);
+    });
+
+    test('sends Authorization and Accept headers', () async {
+      Map<String, String>? captured;
+      when(mockClient.get(tCheckUri, headers: anyNamed('headers'))).thenAnswer((invocation) {
+        captured = invocation.namedArguments[#headers] as Map<String, String>;
+        return Future(() => paginatedResponse(null));
+      });
+
+      await authProvider.serverConfigSane();
+      expect(captured?[HttpHeaders.authorizationHeader], 'Token test-token');
+      expect(captured?[HttpHeaders.acceptHeader], 'application/json');
+    });
+
+    test('port numbers match — sane', () async {
+      authProvider.serverUrl = 'https://wger.example.com:8443';
+      final uri = Uri.parse('https://wger.example.com:8443/api/v2/exercise/?limit=1');
+      when(mockClient.get(uri, headers: anyNamed('headers'))).thenAnswer(
+        (_) => Future(
+          () =>
+              paginatedResponse('https://wger.example.com:8443/api/v2/exercise/?limit=1&offset=1'),
+        ),
+      );
+      expect(await authProvider.serverConfigSane(), true);
     });
   });
 }
