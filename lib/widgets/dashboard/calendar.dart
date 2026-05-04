@@ -226,72 +226,75 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              AppLocalizations.of(context).calendar,
-              style: Theme.of(context).textTheme.headlineMedium,
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Card(
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                AppLocalizations.of(context).calendar,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              leading: Icon(
+                Icons.calendar_today,
+                color: Theme.of(context).textTheme.headlineMedium!.color,
+              ),
             ),
-            leading: Icon(
-              Icons.calendar_today,
-              color: Theme.of(context).textTheme.headlineMedium!.color,
+            TableCalendar<Event>(
+              locale: Localizations.localeOf(context).languageCode,
+              firstDay: DateTime.now().subtract(const Duration(days: 1000)),
+              lastDay: DateTime.now().add(const Duration(days: 365)),
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              rangeStartDay: _rangeStart,
+              rangeEndDay: _rangeEnd,
+              calendarFormat: CalendarFormat.month,
+              availableGestures: AvailableGestures.horizontalSwipe,
+              availableCalendarFormats: const {CalendarFormat.month: ''},
+              rangeSelectionMode: _rangeSelectionMode,
+              eventLoader: _getEventsForDay,
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              calendarStyle: getWgerCalendarStyle(Theme.of(context)),
+              onDaySelected: _onDaySelected,
+              onRangeSelected: _onRangeSelected,
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
             ),
-          ),
-          TableCalendar<Event>(
-            locale: Localizations.localeOf(context).languageCode,
-            firstDay: DateTime.now().subtract(const Duration(days: 1000)),
-            lastDay: DateTime.now().add(const Duration(days: 365)),
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            calendarFormat: CalendarFormat.month,
-            availableGestures: AvailableGestures.horizontalSwipe,
-            availableCalendarFormats: const {CalendarFormat.month: ''},
-            rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: _getEventsForDay,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: getWgerCalendarStyle(Theme.of(context)),
-            onDaySelected: _onDaySelected,
-            onRangeSelected: _onRangeSelected,
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-          ),
-          const SizedBox(height: 8.0),
-          ValueListenableBuilder<List<Event>>(
-            valueListenable: _selectedEvents,
-            builder: (context, value, _) => Column(
-              children: [
-                ...value.map(
-                  (event) => ListTile(
-                    title: Text(
-                      (() {
-                        switch (event.type) {
-                          case EventType.caloriesDiary:
-                            return AppLocalizations.of(context).nutritionalDiary;
+            const SizedBox(height: 8.0),
+            ValueListenableBuilder<List<Event>>(
+              valueListenable: _selectedEvents,
+              builder: (context, value, _) => Column(
+                children: [
+                  ...value.map(
+                    (event) => ListTile(
+                      title: Text(
+                        (() {
+                          switch (event.type) {
+                            case EventType.caloriesDiary:
+                              return AppLocalizations.of(context).nutritionalDiary;
 
-                          case EventType.session:
-                            return AppLocalizations.of(context).workoutSession;
+                            case EventType.session:
+                              return AppLocalizations.of(context).workoutSession;
 
-                          case EventType.weight:
-                            return AppLocalizations.of(context).weight;
+                            case EventType.weight:
+                              return AppLocalizations.of(context).weight;
 
-                          case EventType.measurement:
-                            return AppLocalizations.of(context).measurement;
-                        }
-                      })(),
+                            case EventType.measurement:
+                              return AppLocalizations.of(context).measurement;
+                          }
+                        })(),
+                      ),
+                      subtitle: Text(event.description),
+                      //onTap: () => print('$event tapped!'),
                     ),
-                    subtitle: Text(event.description),
-                    //onTap: () => print('$event tapped!'),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

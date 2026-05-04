@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
@@ -37,7 +36,6 @@ import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
-import 'package:wger/screens/weight_screen.dart';
 
 class HomeTabsScreen extends ConsumerStatefulWidget {
   final _logger = Logger('HomeTabsScreen');
@@ -76,7 +74,6 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     const DashboardScreen(),
     const RoutineListScreen(),
     const NutritionalPlansScreen(),
-    const WeightScreen(),
     const GalleryScreen(),
   ];
 
@@ -163,10 +160,6 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       NavigationDestination(
         icon: const Icon(Icons.restaurant),
         label: AppLocalizations.of(context).labelBottomNavNutrition,
-      ),
-      NavigationDestination(
-        icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
-        label: AppLocalizations.of(context).weight,
       ),
       NavigationDestination(
         icon: const Icon(Icons.photo_library),

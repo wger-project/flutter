@@ -21,9 +21,13 @@ import 'package:provider/provider.dart';
 import 'package:wger/providers/measurement.dart';
 
 import 'categories_card.dart';
+import 'charts.dart';
 
 class CategoriesList extends StatelessWidget {
-  const CategoriesList();
+  final ChartTimeRange timeRange;
+
+  const CategoriesList({required this.timeRange});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
@@ -33,7 +37,13 @@ class CategoriesList extends StatelessWidget {
       child: ListView.builder(
         padding: const EdgeInsets.all(10.0),
         itemCount: provider.categories.length,
-        itemBuilder: (context, index) => CategoriesCard(provider.categories[index]),
+        itemBuilder: (context, index) => SizedBox(
+          height: 310,
+          child: CategoriesCard(
+            provider.categories[index],
+            timeRange: timeRange,
+          ),
+        ),
       ),
     );
   }

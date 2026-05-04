@@ -1,94 +1,213 @@
 import 'package:flutter/material.dart';
-import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/measurement_entries_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
 
 import 'charts.dart';
-import 'forms.dart';
+import 'edit_modals.dart';
+import 'entries_modal.dart';
 
 class CategoriesCard extends StatelessWidget {
   final MeasurementCategory currentCategory;
-  final double? elevation;
+  final ChartTimeRange? timeRange;
+  final bool showCard;
 
-  const CategoriesCard(this.currentCategory, {this.elevation});
+  const CategoriesCard(this.currentCategory, {this.timeRange, this.showCard = true});
+
+  DateTime? _getStartDate() {
+    final now = DateTime.now();
+    switch (timeRange) {
+      case ChartTimeRange.week:
+        return now.subtract(const Duration(days: 7));
+      case ChartTimeRange.month:
+        return now.subtract(const Duration(days: 30));
+      case ChartTimeRange.sixMonths:
+        return now.subtract(const Duration(days: 182));
+      case ChartTimeRange.year:
+        return now.subtract(const Duration(days: 365));
+      case ChartTimeRange.all:
+        return null; // No start date filter for all-time
+      case null:
+        return now.subtract(const Duration(days: 30));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final (entriesAll, entries7dAvg) = sensibleRange(
-      currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
-    );
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return Card(
-      elevation: elevation,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: Text(
-                currentCategory.name,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              height: 220,
-              child: MeasurementChartWidgetFl(
-                entriesAll,
-                currentCategory.unit,
-                avgs: entries7dAvg,
-              ),
-            ),
-            if (entries7dAvg.isNotEmpty)
-              MeasurementOverallChangeWidget(
-                entries7dAvg.first,
-                entries7dAvg.last,
-                currentCategory.unit,
-              ),
-            const Divider(),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          child: Text(AppLocalizations.of(context).goToDetailPage),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              MeasurementEntriesScreen.routeName,
-                              arguments: currentCategory.id,
-                            );
-                          },
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            await Navigator.pushNamed(
-                              context,
-                              FormScreen.routeName,
-                              arguments: FormScreenArguments(
-                                AppLocalizations.of(context).newEntry,
-                                MeasurementEntryForm(currentCategory.id!),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
-                      ],
-                    ),
+    final allEntries = currentCategory.entries
+        .map((e) => MeasurementChartEntry(e.value, e.date))
+        .toList();
+    final startDate = _getStartDate();
+    // For "all" time range, use all entries; otherwise filter by date
+    final filteredEntries = startDate != null
+        ? allEntries
+              .where((e) => e.date.isAfter(startDate) || e.date.isAtSameMomentAs(startDate))
+              .toList()
+        : allEntries;
+    final avgDays = getAverageDaysForTimeRange(timeRange);
+    final entriesAvg = movingAverage(filteredEntries, avgDays);
+
+    final content = Column(
+      children: [
+        // Category name (tappable to view entries)
+        GestureDetector(
+          onTap: () => showEntriesModal(context, currentCategory),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  currentCategory.name,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: isDarkMode ? Colors.grey.shade300 : Colors.grey.shade700,
                   ),
-                );
-              },
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.expand_more_rounded,
+                  size: 20,
+                  color: isDarkMode ? Colors.grey.shade400 : Colors.grey.shade500,
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Chart - uses Expanded to fill available space in constrained contexts
+        Expanded(
+          child: MeasurementChartWidgetFl(
+            filteredEntries,
+            currentCategory.unit,
+            avgs: entriesAvg,
+            timeRange: timeRange,
+          ),
+        ),
+        const SizedBox(height: 12),
+        // Bottom row with trend indicator and add button
+        Row(
+          children: [
+            // Trend indicator
+            if (entriesAvg != null && entriesAvg.isNotEmpty)
+              _buildTrendIndicator(
+                context,
+                entriesAvg.first,
+                entriesAvg.last,
+                currentCategory.unit,
+                isDarkMode,
+              ),
+            const Spacer(),
+            // Add button
+            Material(
+              color: wgerAccentColor,
+              borderRadius: BorderRadius.circular(10),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: () => showEditEntryModal(context, currentCategory, null),
+                child: const Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Icon(
+                    Icons.add_rounded,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
+      ],
+    );
+
+    // When used inside dashboard (showCard=false), just return content with padding
+    if (!showCard) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: content,
+      );
+    }
+
+    // When used in detail page (showCard=true), wrap in card container
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDarkMode ? Theme.of(context).cardColor : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+              spreadRadius: 0,
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+        child: content,
+      ),
+    );
+  }
+
+  Widget _buildTrendIndicator(
+    BuildContext context,
+    MeasurementChartEntry first,
+    MeasurementChartEntry last,
+    String unit,
+    bool isDarkMode,
+  ) {
+    final delta = last.value - first.value;
+    final isPositive = delta > 0;
+    final isNegative = delta < 0;
+
+    const Color trendColor = wgerAccentColor;
+    final Color bgColor = wgerAccentColor.withValues(alpha: isDarkMode ? 0.2 : 0.1);
+
+    final IconData trendIcon;
+    if (isPositive) {
+      trendIcon = Icons.trending_up_rounded;
+    } else if (isNegative) {
+      trendIcon = Icons.trending_down_rounded;
+    } else {
+      trendIcon = Icons.trending_flat_rounded;
+    }
+
+    final prefix = isPositive ? '+' : '';
+    final valueText = '$prefix${delta.toStringAsFixed(1)} $unit';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            trendIcon,
+            size: 16,
+            color: trendColor,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            valueText,
+            style: const TextStyle(
+              color: trendColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+          ),
+        ],
       ),
     );
   }

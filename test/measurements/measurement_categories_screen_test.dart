@@ -26,6 +26,7 @@ import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/measurement.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
+import 'package:wger/widgets/measurements/categories_card.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
 import 'measurement_categories_screen_test.mocks.dart';
@@ -77,7 +78,7 @@ void main() {
     expect(find.text('Measurements'), findsOneWidget);
     expect(find.text('body fat'), findsOneWidget);
     expect(find.text('biceps'), findsOneWidget);
-    expect(find.byType(Card), findsNWidgets(2));
+    expect(find.byType(CategoriesCard), findsNWidgets(2));
     expect(find.byType(MeasurementChartWidgetFl), findsNWidgets(2));
   });
 }
