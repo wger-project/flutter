@@ -1071,5 +1071,33 @@
                 "example": "C"
             }
         }
+    },
+    "viewDocumentation": "Ver documentação",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    },
+    "exerciseSearchMode": "Modo de pesquisa",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeFuzzy": "Busca aproximada",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "searchModeExact": "Busca exata",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "serverConfigIssueTitle": "Problema de configuração do servidor",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Configuração incorreta do servidor; os cabeçalhos não estão a ser transmitidos corretamente. Consulta a documentação.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "Entendo",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
     }
 }
