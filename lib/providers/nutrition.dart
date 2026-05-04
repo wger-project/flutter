@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,13 +21,15 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/ingredients/ingredients_database.dart';
-import 'package:wger/exceptions/http_exception.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart';
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
@@ -43,6 +45,7 @@ class NutritionPlansProvider with ChangeNotifier {
   static const _mealItemPath = 'mealitem';
   static const _ingredientInfoPath = 'ingredientinfo';
   static const _nutritionDiaryPath = 'nutritiondiary';
+  static const _ingredientWeightUnitPath = 'ingredientweightunit';
 
   final WgerBaseProvider baseProvider;
   late IngredientDatabase database;
@@ -220,7 +223,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       _plans.insert(existingPlanIndex, existingPlan);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
     //existingPlan = null;
   }
@@ -263,7 +266,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       plan.meals.insert(mealIndex, existingMeal);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
   }
 
@@ -293,7 +296,7 @@ class NutritionPlansProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       meal.mealItems.insert(mealItemIndex, existingMealItem);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
   }
 
@@ -374,6 +377,17 @@ class NutritionPlansProvider with ChangeNotifier {
     return ingredient;
   }
 
+  /// Fetch the available weight units for an ingredient
+  Future<List<IngredientWeightUnit>> fetchWeightUnits(int ingredientId) async {
+    final data = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        _ingredientWeightUnitPath,
+        query: {'ingredient': ingredientId.toString()},
+      ),
+    );
+    return data.map((e) => IngredientWeightUnit.fromJson(e)).toList();
+  }
+
   /// Loads the available ingredients from the local cache
   Future<void> fetchIngredientsFromCache() async {
     final ingredientDb = await database.select(database.ingredients).get();
@@ -384,31 +398,68 @@ class NutritionPlansProvider with ChangeNotifier {
   }
 
   /// Searches for an ingredient
+  ///
+  /// [nutriscoreMax] — if non-null, the worst acceptable Nutri-Score grade,
+  /// sent to the backend as `nutriscore__lte`. The Django filterset
+  /// compares lexicographically on the `a`..`e` choices, so passing
+  /// [NutriScore.b] yields "only A or B".
   Future<List<Ingredient>> searchIngredient(
     String name, {
     String languageCode = 'en',
-    bool searchEnglish = false,
+    SearchLanguage searchLanguage = SearchLanguage.current,
+    bool isVegan = false,
+    bool isVegetarian = false,
+    NutriScore? nutriscoreMax,
   }) async {
     if (name.length <= 1) {
       return [];
     }
+    final List<String> languages = [];
 
-    final languages = [languageCode];
-    if (searchEnglish && languageCode != LANGUAGE_SHORT_ENGLISH) {
-      languages.add(LANGUAGE_SHORT_ENGLISH);
+    switch (searchLanguage) {
+      case SearchLanguage.current:
+        languages.add(languageCode);
+        break;
+      case SearchLanguage.currentAndEnglish:
+        languages.add(languageCode);
+        if (languageCode != LANGUAGE_SHORT_ENGLISH) {
+          languages.add(LANGUAGE_SHORT_ENGLISH);
+        }
+        break;
+      case SearchLanguage.all:
+        // Don't add any language code to search in all languages
+        break;
+    }
+
+    final query = {
+      'name__search': name,
+      'limit': API_RESULTS_PAGE_SIZE,
+    };
+
+    if (languages.isNotEmpty) {
+      query['language__code'] = languages.join(',');
+    }
+
+    if (isVegan) {
+      query['is_vegan'] = 'true';
+    }
+
+    if (isVegetarian) {
+      query['is_vegetarian'] = 'true';
+    }
+
+    if (nutriscoreMax != null) {
+      query['nutriscore__lte'] = nutriscoreMax.name;
     }
 
     // Send the request
-    _logger.info("Fetching ingredients from server");
+    _logger.info('Fetching ingredients from server');
     final response = await baseProvider.fetch(
       baseProvider.makeUrl(
         _ingredientInfoPath,
-        query: {
-          'name__search': name,
-          'language__code': languages.join(','),
-          'limit': API_RESULTS_PAGE_SIZE,
-        },
+        query: query,
       ),
+      timeout: const Duration(seconds: 20),
     );
 
     return (response['results'] as List)

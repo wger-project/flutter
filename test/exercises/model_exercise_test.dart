@@ -39,7 +39,7 @@ void main() {
       expect(exercise.id, 9);
       expect(exercise.uuid, '1b020b3a-3732-4c7e-92fd-a0cec90ed69b');
       expect(exercise.categoryId, 10);
-      expect(exercise.variationId, 25);
+      expect(exercise.variationGroup, '4e1bb2fc-3b0e-4a1a-bd3e-3728a0e6d8a7');
       expect(exercise.authors, ['Foo Bar']);
       expect(exercise.authorsGlobal, ['Foo Bar', 'tester McTestface', 'Mr. X']);
       expect(exercise.equipment.map((e) => e.name), ['Kettlebell']);
@@ -49,9 +49,8 @@ void main() {
         'Obliquus externus abdominis',
       ]);
       expect(exercise.musclesSecondary.map((e) => e.name), [
-        'Biceps femoris',
-        'Brachialis',
-        'Obliquus externus abdominis',
+        'Anterior deltoid',
+        'Trapezius',
       ]);
       expect(exercise.images.map((e) => e.uuid), [
         '1f5d2b2f-d4ea-4eeb-9377-56176465e08d',

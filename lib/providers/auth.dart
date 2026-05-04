@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,7 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 
@@ -40,6 +40,7 @@ enum LoginActions {
 
 enum AuthState {
   updateRequired,
+  serverUpdateRequired,
   loggedIn,
   loggedOut,
 }
@@ -53,17 +54,25 @@ class AuthProvider with ChangeNotifier {
   PackageInfo? applicationVersion;
   Map<String, String> metadata = {};
   AuthState state = AuthState.loggedOut;
+  bool _serverConfigWarning = false;
+  bool get serverConfigWarning => _serverConfigWarning;
 
   static const MIN_APP_VERSION_URL = 'min-app-version';
   static const SERVER_VERSION_URL = 'version';
   static const REGISTRATION_URL = 'register';
   static const LOGIN_URL = 'login';
-  static const TEST_URL = 'userprofile';
+  static const USERPROFILE_URL = 'userprofile';
 
   late http.Client client;
 
   AuthProvider([http.Client? client]) {
     this.client = client ?? http.Client();
+  }
+
+  /// Clear the server config warnings
+  void clearServerConfigWarning() {
+    _serverConfigWarning = false;
+    notifyListeners();
   }
 
   /// flag to indicate that the application has successfully loaded all initial data
@@ -105,6 +114,82 @@ class AuthProvider with ChangeNotifier {
     return needUpdate;
   }
 
+  /// Checks whether the connected server meets the minimum version required
+  /// by this build of the app.
+  ///
+  /// [version] overrides [serverVersion] and is intended for unit testing.
+  bool serverUpdateRequired([String? version]) {
+    final rawVersion = version ?? serverVersion;
+    if (rawVersion == null) {
+      // If we couldn't read the server version, allow the login to proceed
+      // so as not to lock out users on unexpected server configurations.
+      _logger.warning('serverUpdateRequired: serverVersion is null, skipping check');
+      return false;
+    }
+
+    // Strip common non-semver suffixes emitted by Python/Django backends,
+    // e.g. '2.5.0a2' → '2.5.0', '2.3.0 (git-abc1234)' → '2.3.0'.
+    final sanitized = rawVersion
+        .replaceFirst(RegExp(r'\s.*$'), '') // strip trailing space + anything after
+        .replaceFirst(RegExp(r'[a-zA-Z].*$'), ''); // strip alpha/beta/rc suffix
+
+    final Version current;
+    try {
+      current = Version.parse(sanitized);
+    } on FormatException {
+      // Completely unparseable version string — be lenient and allow login.
+      _logger.warning(
+        'serverUpdateRequired: could not parse server version "$rawVersion" '
+        '(sanitized: "$sanitized"), skipping check',
+      );
+      return false;
+    }
+    final required = Version.parse(MIN_SERVER_VERSION);
+
+    final needUpdate = current < required;
+    if (needUpdate) {
+      _logger.fine('Server update required: server $current < minimum $required');
+    }
+
+    return needUpdate;
+  }
+
+  /// Detects reverse-proxy misconfiguration on the server by checking that
+  /// pagination URLs returned by the API point to the same host and scheme as
+  /// the configured [serverUrl].
+  ///
+  /// Returns `true` when the configuration looks fine (or the check could not
+  /// be completed conclusively), `false` when a mismatch is detected.
+  Future<bool> serverConfigSane() async {
+    try {
+      final baseUri = Uri.parse(serverUrl!);
+      final response = await client.get(
+        Uri.parse('$serverUrl/api/v2/exercise/?limit=1'),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Token $token',
+          HttpHeaders.acceptHeader: 'application/json',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        return true;
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final nextUrl = data['next'] as String?;
+      if (nextUrl == null) {
+        return true;
+      }
+
+      final nextUri = Uri.parse(nextUrl);
+      return nextUri.host.toLowerCase() == baseUri.host.toLowerCase() &&
+          nextUri.scheme == baseUri.scheme;
+    } catch (e) {
+      _logger.info('serverConfigSane check failed: $e');
+      return true;
+    }
+  }
+
   /// Registers a new user
   Future<LoginActions> register({
     required String username,
@@ -132,7 +217,7 @@ class AuthProvider with ChangeNotifier {
     );
 
     if (response.statusCode >= 400) {
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
 
     return login(username, password, serverUrl, null);
@@ -146,11 +231,12 @@ class AuthProvider with ChangeNotifier {
     String? apiToken,
   ) async {
     await logout(shouldNotify: false);
+    _serverConfigWarning = false;
 
     // Login using the API token
     if (apiToken != null && apiToken.isNotEmpty) {
       final response = await client.get(
-        makeUri(serverUrl, TEST_URL),
+        makeUri(serverUrl, USERPROFILE_URL),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
           HttpHeaders.userAgentHeader: getAppNameHeader(),
@@ -158,8 +244,8 @@ class AuthProvider with ChangeNotifier {
         },
       );
 
-      if (response.statusCode != 200) {
-        throw WgerHttpException(response.body);
+      if (response.statusCode >= 400) {
+        throw WgerHttpException(response);
       }
 
       token = apiToken;
@@ -169,26 +255,41 @@ class AuthProvider with ChangeNotifier {
       final response = await client.post(
         makeUri(serverUrl, LOGIN_URL),
         headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
           HttpHeaders.userAgentHeader: getAppNameHeader(),
         },
         body: json.encode({'username': username, 'password': password}),
       );
-      final responseData = json.decode(response.body);
 
       if (response.statusCode >= 400) {
-        throw WgerHttpException(response.body);
+        throw WgerHttpException(response);
       }
+
+      final responseData = json.decode(response.body);
 
       token = responseData['token'];
     }
 
     await initVersions(serverUrl);
 
-    // If update is required don't log in user
+    // If the server is too old for this app version, surface the dedicated
+    // screen so the user knows what to do (ask their server admin to upgrade).
+    if (serverUpdateRequired()) {
+      state = AuthState.serverUpdateRequired;
+      return LoginActions.update;
+    }
+
+    // If app update is required don't log in user
     if (await applicationUpdateRequired()) {
       state = AuthState.updateRequired;
       return LoginActions.update;
+    }
+
+    // Surface a warning to the user when the server's reverse proxy is
+    // misconfigured (pagination URLs pointing to the wrong host).
+    if (!await serverConfigSane()) {
+      _serverConfigWarning = true;
+      notifyListeners();
     }
 
     // Log user in
@@ -262,7 +363,15 @@ class AuthProvider with ChangeNotifier {
 
     await initVersions(serverUrl!);
 
-    // If update is required don't log in user
+    // If the server is too old for this app version, surface the dedicated
+    // screen so the user knows what to do (ask their server admin to upgrade).
+    if (serverUpdateRequired()) {
+      state = AuthState.serverUpdateRequired;
+      notifyListeners();
+      return;
+    }
+
+    // If app update is required don't log in user
     if (await applicationUpdateRequired()) {
       state = AuthState.updateRequired;
     } else {
@@ -297,7 +406,8 @@ class AuthProvider with ChangeNotifier {
       out =
           '/${applicationVersion!.version} '
           '(${applicationVersion!.packageName}; '
-          'build: ${applicationVersion!.buildNumber})'
+          'build: ${applicationVersion!.buildNumber}; '
+          'platform: ${Platform.operatingSystem})'
           ' - https://github.com/wger-project';
     }
     return 'wger App$out';

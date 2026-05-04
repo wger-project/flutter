@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,9 +31,9 @@ import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
-import 'package:wger/widgets/routines/forms/reps_unit.dart';
+import 'package:wger/widgets/routines/forms/repetitions.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
-import 'package:wger/widgets/routines/forms/weight_unit.dart';
+import 'package:wger/widgets/routines/forms/weight.dart';
 import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
@@ -101,7 +101,7 @@ void main() {
       when(mockExerciseProvider.findExerciseById(1)).thenReturn(testExercises[0]);
       when(mockExerciseProvider.findExerciseById(6)).thenReturn(testExercises[5]);
       when(
-        mockExerciseProvider.findExercisesByVariationId(
+        mockExerciseProvider.findExercisesByVariationGroup(
           null,
           exerciseIdToExclude: anyNamed('exerciseIdToExclude'),
         ),
@@ -109,12 +109,10 @@ void main() {
 
       await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
         await tester.pumpWidget(renderGymMode());
-
         await tester.pumpAndSettle();
         await tester.tap(find.byType(TextButton));
-
         await tester.pumpAndSettle();
-        //await tester.ensureVisible(find.byKey(Key(key as String)));
+
         //
         // Start page
         //
@@ -306,6 +304,7 @@ void main() {
         expect(find.byIcon(Icons.chevron_right), findsNothing);
       });
     },
+    tags: ['golden'],
     semanticsEnabled: false,
   );
 }

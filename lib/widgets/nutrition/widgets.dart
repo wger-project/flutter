@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -18,20 +18,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as legacy_provider;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
+import 'package:wger/widgets/nutrition/ingredient_filter_dialog.dart';
+import 'package:wger/widgets/nutrition/nutri_score_badge.dart';
 
 class ScanReader extends StatelessWidget {
   const ScanReader();
@@ -53,7 +58,7 @@ class ScanReader extends StatelessWidget {
   );
 }
 
-class IngredientTypeahead extends StatefulWidget {
+class IngredientTypeahead extends ConsumerStatefulWidget {
   final _logger = Logger('IngredientTypeahead');
 
   final TextEditingController _ingredientController;
@@ -79,13 +84,11 @@ class IngredientTypeahead extends StatefulWidget {
   });
 
   @override
-  _IngredientTypeaheadState createState() => _IngredientTypeaheadState();
+  ConsumerState<IngredientTypeahead> createState() => _IngredientTypeaheadState();
 }
 
-class _IngredientTypeaheadState extends State<IngredientTypeahead> {
-  var _searchEnglish = true;
+class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   late String barcode;
-
   @override
   void initState() {
     super.initState();
@@ -114,6 +117,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
 
   @override
   Widget build(BuildContext context) {
+    final filters = ref.watch(ingredientFiltersSyncProvider);
     return Column(
       children: [
         TypeAheadField<Ingredient>(
@@ -133,7 +137,13 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 labelText: AppLocalizations.of(context).searchIngredient,
-                suffixIcon: (widget.showScanner && !isDesktop) ? scanButton() : null,
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    filterButton(),
+                    if (widget.showScanner && !isDesktop) scanButton(),
+                  ],
+                ),
               ),
             );
           },
@@ -146,13 +156,54 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
             widget.onUpdateSearchQuery(pattern);
             widget.onDeselectIngredient();
 
-            return Provider.of<NutritionPlansProvider>(context, listen: false).searchIngredient(
+            return legacy_provider.Provider.of<NutritionPlansProvider>(
+              context,
+              listen: false,
+            ).searchIngredient(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
-              searchEnglish: _searchEnglish,
+              searchLanguage: filters.searchLanguage,
+              isVegan: filters.isVegan,
+              isVegetarian: filters.isVegetarian,
+              nutriscoreMax: filters.nutriscoreMax,
             );
           },
           itemBuilder: (context, ingredient) {
+            final i18n = AppLocalizations.of(context);
+            final chips = <Widget>[];
+            if (ingredient.isVegan == true) {
+              chips.add(
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.green[100],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    i18n.isVegan,
+                    style: TextStyle(fontSize: 11, color: Colors.green[900]),
+                  ),
+                ),
+              );
+            } else if (ingredient.isVegetarian == true) {
+              chips.add(
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.green[100],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    i18n.isVegetarian,
+                    style: TextStyle(fontSize: 11, color: Colors.green[900]),
+                  ),
+                ),
+              );
+            }
+            if (ingredient.nutriscore != null) {
+              chips.add(NutriScoreBadge(score: ingredient.nutriscore!, size: NutriScoreSize.small));
+            }
+
             return ListTile(
               leading: ingredient.image != null
                   ? CircleAvatar(
@@ -166,6 +217,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
+              subtitle: chips.isNotEmpty ? Wrap(spacing: 4, runSpacing: 4, children: chips) : null,
               trailing: IconButton(
                 icon: const Icon(Icons.info_outline),
                 onPressed: () {
@@ -186,22 +238,14 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           ),
           onSelected: (suggestion) async {
             // Cache selected ingredient
-            final provider = Provider.of<NutritionPlansProvider>(context, listen: false);
+            final provider = legacy_provider.Provider.of<NutritionPlansProvider>(
+              context,
+              listen: false,
+            );
             await provider.cacheIngredient(suggestion);
             widget.selectIngredient(suggestion.id, suggestion.name, null);
           },
         ),
-        if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
-          SwitchListTile(
-            title: Text(AppLocalizations.of(context).searchNamesInEnglish),
-            value: _searchEnglish,
-            onChanged: (_) {
-              setState(() {
-                _searchEnglish = !_searchEnglish;
-              });
-            },
-            dense: true,
-          ),
       ],
     );
   }
@@ -221,7 +265,7 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
         showDialog(
           context: context,
           builder: (context) => FutureBuilder<Ingredient?>(
-            future: Provider.of<NutritionPlansProvider>(
+            future: legacy_provider.Provider.of<NutritionPlansProvider>(
               context,
               listen: false,
             ).searchIngredientWithBarcode(barcode),
@@ -231,6 +275,37 @@ class _IngredientTypeaheadState extends State<IngredientTypeahead> {
           ),
         );
       },
+    );
+  }
+
+  /// The filter icon button — shows an active-filter badge and opens
+  /// [IngredientFilterDialog] on tap.
+  Widget filterButton() {
+    final filters = ref.watch(ingredientFiltersSyncProvider);
+    final languageCode = Localizations.localeOf(context).languageCode;
+
+    // Auto-correct: in an English locale "current + English" collapses to
+    // "current" — fix it once if a stored preference landed on the
+    // non-locale-aware default.
+    if (languageCode == LANGUAGE_SHORT_ENGLISH &&
+        filters.searchLanguage == SearchLanguage.currentAndEnglish) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(ingredientFiltersProvider.notifier).chooseLanguage(SearchLanguage.current);
+      });
+    }
+
+    final activeFilterCount = filters.activeFilterCount(languageCode);
+
+    return IconButton(
+      icon: Badge(
+        label: Text('$activeFilterCount'),
+        isLabelVisible: activeFilterCount > 0,
+        child: const Icon(Icons.tune),
+      ),
+      onPressed: () => showDialog(
+        context: context,
+        builder: (_) => const IngredientFilterDialog(),
+      ),
     );
   }
 }

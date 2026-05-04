@@ -1,30 +1,53 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' hide Consumer;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/providers/exercise_filters_riverpod.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
+import 'package:wger/widgets/exercises/exercise_filter_dialog.dart';
 import 'package:wger/widgets/exercises/images.dart';
 
 typedef ExerciseSelectedCallback = void Function(Exercise exercise);
 
-class ExerciseAutocompleter extends StatefulWidget {
+class ExerciseAutocompleter extends ConsumerStatefulWidget {
   final ExerciseSelectedCallback onExerciseSelected;
 
   const ExerciseAutocompleter({required this.onExerciseSelected});
 
   @override
-  State<ExerciseAutocompleter> createState() => _ExerciseAutocompleterState();
+  ConsumerState<ExerciseAutocompleter> createState() => _ExerciseAutocompleterState();
 }
 
-class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
-  bool _searchEnglish = true;
+class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
   final _exercisesController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final exerciseFilters = ref.watch(exerciseFiltersSyncProvider);
+
     return Column(
       // mainAxisSize: MainAxisSize.min,
       children: [
@@ -47,34 +70,7 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).searchExercise,
                 prefixIcon: const Icon(Icons.search),
-                // suffixIcon: IconButton(
-                //   icon: const Icon(Icons.help),
-                //   onPressed: () {
-                //     showDialog(
-                //       context: context,
-                //       builder: (context) => AlertDialog(
-                //         content: Column(
-                //           mainAxisSize: MainAxisSize.min,
-                //           children: [
-                //             Text(AppLocalizations.of(context).selectExercises),
-                //             const SizedBox(height: 10),
-                //             Text(AppLocalizations.of(context).sameRepetitions),
-                //           ],
-                //         ),
-                //         actions: [
-                //           TextButton(
-                //             child: Text(
-                //               MaterialLocalizations.of(context).closeButtonLabel,
-                //             ),
-                //             onPressed: () {
-                //               Navigator.of(context).pop();
-                //             },
-                //           ),
-                //         ],
-                //       ),
-                //     );
-                //   },
-                // ),
+                suffixIcon: _filterButton(context),
                 errorMaxLines: 2,
                 border: InputBorder.none,
               ),
@@ -84,10 +80,12 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
             if (pattern == '') {
               return null;
             }
-            return context.read<ExercisesProvider>().searchExercise(
+            return context.read<ExercisesProvider>().searchExerciseWithSearchMode(
               pattern,
               languageCode: Localizations.localeOf(context).languageCode,
-              searchEnglish: _searchEnglish,
+              searchLanguage: exerciseFilters.searchLanguage,
+              searchMode: exerciseFilters.searchMode,
+              categories: exerciseFilters.selectedCategories,
             );
           },
           itemBuilder:
@@ -141,18 +139,38 @@ class _ExerciseAutocompleterState extends State<ExerciseAutocompleter> {
             _exercisesController.text = '';
           },
         ),
-        if (Localizations.localeOf(context).languageCode != LANGUAGE_SHORT_ENGLISH)
-          SwitchListTile(
-            title: Text(AppLocalizations.of(context).searchNamesInEnglish),
-            value: _searchEnglish,
-            onChanged: (_) {
-              setState(() {
-                _searchEnglish = !_searchEnglish;
-              });
-            },
-            dense: true,
-          ),
       ],
+    );
+  }
+
+  /// The filter icon button — shows an active-filter badge and opens
+  /// [ExerciseFilterDialog] on tap.
+  Widget _filterButton(BuildContext context) {
+    final filters = ref.watch(exerciseFiltersSyncProvider);
+    final languageCode = Localizations.localeOf(context).languageCode;
+
+    // Auto-correct: in an English locale "current + English" collapses to
+    // "current" — fix it once if a stored preference landed on the
+    // non-locale-aware default.
+    if (languageCode == LANGUAGE_SHORT_ENGLISH &&
+        filters.searchLanguage == SearchLanguage.currentAndEnglish) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(exerciseFiltersProvider.notifier).chooseLanguage(SearchLanguage.current);
+      });
+    }
+
+    final activeFilterCount = filters.activeFilterCount(languageCode);
+
+    return IconButton(
+      icon: Badge(
+        label: Text('$activeFilterCount'),
+        isLabelVisible: activeFilterCount > 0,
+        child: const Icon(Icons.tune),
+      ),
+      onPressed: () => showDialog(
+        context: context,
+        builder: (_) => const ExerciseFilterDialog(),
+      ),
     );
   }
 }

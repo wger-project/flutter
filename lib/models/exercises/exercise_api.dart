@@ -21,7 +21,7 @@ sealed class ExerciseApiData with _$ExerciseApiData {
     required int id,
     required String uuid,
     // ignore: invalid_annotation_target
-    @Default(null) @JsonKey(name: 'variations') int? variationId,
+    @Default(null) @JsonKey(name: 'variation_group') String? variationGroup,
     // ignore: invalid_annotation_target
     @JsonKey(name: 'created') required DateTime created,
     // ignore: invalid_annotation_target
@@ -47,45 +47,4 @@ sealed class ExerciseApiData with _$ExerciseApiData {
   factory ExerciseApiData.fromString(String input) => _$ExerciseApiDataFromJson(json.decode(input));
 
   factory ExerciseApiData.fromJson(Map<String, dynamic> json) => _$ExerciseApiDataFromJson(json);
-}
-
-/// Model for the search results returned from the /api/v2/exercise/search endpoint
-///
-@freezed
-sealed class ExerciseSearchDetails with _$ExerciseSearchDetails {
-  factory ExerciseSearchDetails({
-    // ignore: invalid_annotation_target
-    @JsonKey(name: 'id') required int translationId,
-    // ignore: invalid_annotation_target
-    @JsonKey(name: 'base_id') required int exerciseId,
-    required String name,
-    required String category,
-    required String? image,
-    // ignore: invalid_annotation_target
-    @JsonKey(name: 'image_thumbnail') required String? imageThumbnail,
-  }) = _ExerciseSearchDetails;
-
-  factory ExerciseSearchDetails.fromJson(Map<String, dynamic> json) =>
-      _$ExerciseSearchDetailsFromJson(json);
-}
-
-@freezed
-sealed class ExerciseSearchEntry with _$ExerciseSearchEntry {
-  factory ExerciseSearchEntry({
-    required String value,
-    required ExerciseSearchDetails data,
-  }) = _ExerciseSearchEntry;
-
-  factory ExerciseSearchEntry.fromJson(Map<String, dynamic> json) =>
-      _$ExerciseSearchEntryFromJson(json);
-}
-
-@freezed
-sealed class ExerciseApiSearch with _$ExerciseApiSearch {
-  factory ExerciseApiSearch({
-    required List<ExerciseSearchEntry> suggestions,
-  }) = _ExerciseApiSearch;
-
-  factory ExerciseApiSearch.fromJson(Map<String, dynamic> json) =>
-      _$ExerciseApiSearchFromJson(json);
 }

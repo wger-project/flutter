@@ -50,6 +50,7 @@ app.*.map.json
 /fastlane/metadata/envfiles/key.properties
 
 # Others
+/.claude/
 /vendor/bundle/ruby/
 /coverage/
 /lib/l10n/generated/
@@ -65,3 +66,5 @@ ios/fastlane/output
 ios/Runner.ipa
 ios/Runner.app.dSYM.zip
 
+#Flutter Version Management
+.fvm/

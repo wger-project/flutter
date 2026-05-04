@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
+import 'package:drift_flutter/drift_flutter.dart';
 import 'package:logging/logging.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
 part 'ingredients_database.g.dart';
 
@@ -63,10 +59,6 @@ class IngredientDatabase extends _$IngredientDatabase {
   }
 }
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationCacheDirectory();
-    final file = File(p.join(dbFolder.path, 'ingredients.sqlite'));
-    return NativeDatabase.createInBackground(file);
-  });
+QueryExecutor _openConnection() {
+  return driftDatabase(name: 'ingredients');
 }

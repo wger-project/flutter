@@ -1,4 +1,23 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -71,47 +90,58 @@ Widget createDashboardScreen({Locale? locale}) {
 
   final mockUserProvider = MockUserProvider();
   when(mockUserProvider.profile).thenReturn(tProfile1);
+  when(mockUserProvider.dashboardWidgets).thenReturn([
+    DashboardWidget.routines,
+    DashboardWidget.weight,
+    DashboardWidget.measurements,
+    DashboardWidget.calendar,
+    DashboardWidget.nutrition,
+    DashboardWidget.trophies,
+  ]);
 
-  return MediaQuery(
-    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
-      padding: EdgeInsets.zero,
-      viewPadding: EdgeInsets.zero,
-      viewInsets: EdgeInsets.zero,
-    ),
-    child: MultiProvider(
-      providers: [
-        ChangeNotifierProvider<GalleryProvider>(
-          create: (context) => mockGalleryProvider,
+  return riverpod.ProviderScope(
+    child: MediaQuery(
+      data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first)
+          .copyWith(
+            padding: EdgeInsets.zero,
+            viewPadding: EdgeInsets.zero,
+            viewInsets: EdgeInsets.zero,
+          ),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<GalleryProvider>(
+            create: (context) => mockGalleryProvider,
+          ),
+          ChangeNotifierProvider<ExercisesProvider>(
+            create: (context) => mockExercisesProvider,
+          ),
+          ChangeNotifierProvider<AuthProvider>(
+            create: (context) => mockAuthProvider,
+          ),
+          ChangeNotifierProvider<UserProvider>(
+            create: (context) => mockUserProvider,
+          ),
+          ChangeNotifierProvider<RoutinesProvider>(
+            create: (context) => mockWorkoutProvider,
+          ),
+          ChangeNotifierProvider<NutritionPlansProvider>(
+            create: (context) => mockNutritionProvider,
+          ),
+          ChangeNotifierProvider<BodyWeightProvider>(
+            create: (context) => mockWeightProvider,
+          ),
+          ChangeNotifierProvider<MeasurementProvider>(
+            create: (context) => mockMeasurementProvider,
+          ),
+        ],
+        child: MaterialApp(
+          locale: locale,
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: wgerLightTheme,
+          home: HomeTabsScreen(),
         ),
-        ChangeNotifierProvider<ExercisesProvider>(
-          create: (context) => mockExercisesProvider,
-        ),
-        ChangeNotifierProvider<AuthProvider>(
-          create: (context) => mockAuthProvider,
-        ),
-        ChangeNotifierProvider<UserProvider>(
-          create: (context) => mockUserProvider,
-        ),
-        ChangeNotifierProvider<RoutinesProvider>(
-          create: (context) => mockWorkoutProvider,
-        ),
-        ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => mockNutritionProvider,
-        ),
-        ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => mockWeightProvider,
-        ),
-        ChangeNotifierProvider<MeasurementProvider>(
-          create: (context) => mockMeasurementProvider,
-        ),
-      ],
-      child: MaterialApp(
-        locale: locale,
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        theme: wgerLightTheme,
-        home: HomeTabsScreen(),
       ),
     ),
   );

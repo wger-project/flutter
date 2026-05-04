@@ -529,7 +529,7 @@ as String,
 /// @nodoc
 mixin _$ExerciseTranslationSubmissionApi {
 
- String get name; String get description; int get language;@JsonKey(name: 'license_author') String get author; List<ExerciseAliasSubmissionApi> get aliases; List<ExerciseCommentSubmissionApi> get comments;
+ String get name;@JsonKey(name: 'description_source') String get descriptionSource; int get language;@JsonKey(name: 'license_author') String get author; List<ExerciseAliasSubmissionApi> get aliases; List<ExerciseCommentSubmissionApi> get comments;
 /// Create a copy of ExerciseTranslationSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -542,16 +542,16 @@ $ExerciseTranslationSubmissionApiCopyWith<ExerciseTranslationSubmissionApi> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other.aliases, aliases)&&const DeepCollectionEquality().equals(other.comments, comments));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.descriptionSource, descriptionSource) || other.descriptionSource == descriptionSource)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other.aliases, aliases)&&const DeepCollectionEquality().equals(other.comments, comments));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,description,language,author,const DeepCollectionEquality().hash(aliases),const DeepCollectionEquality().hash(comments));
+int get hashCode => Object.hash(runtimeType,name,descriptionSource,language,author,const DeepCollectionEquality().hash(aliases),const DeepCollectionEquality().hash(comments));
 
 @override
 String toString() {
-  return 'ExerciseTranslationSubmissionApi(name: $name, description: $description, language: $language, author: $author, aliases: $aliases, comments: $comments)';
+  return 'ExerciseTranslationSubmissionApi(name: $name, descriptionSource: $descriptionSource, language: $language, author: $author, aliases: $aliases, comments: $comments)';
 }
 
 
@@ -562,7 +562,7 @@ abstract mixin class $ExerciseTranslationSubmissionApiCopyWith<$Res>  {
   factory $ExerciseTranslationSubmissionApiCopyWith(ExerciseTranslationSubmissionApi value, $Res Function(ExerciseTranslationSubmissionApi) _then) = _$ExerciseTranslationSubmissionApiCopyWithImpl;
 @useResult
 $Res call({
- String name, String description, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
+ String name,@JsonKey(name: 'description_source') String descriptionSource, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
 });
 
 
@@ -579,10 +579,10 @@ class _$ExerciseTranslationSubmissionApiCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseTranslationSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? description = null,Object? language = null,Object? author = null,Object? aliases = null,Object? comments = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? descriptionSource = null,Object? language = null,Object? author = null,Object? aliases = null,Object? comments = null,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,descriptionSource: null == descriptionSource ? _self.descriptionSource : descriptionSource // ignore: cast_nullable_to_non_nullable
 as String,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
 as int,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String,aliases: null == aliases ? _self.aliases : aliases // ignore: cast_nullable_to_non_nullable
@@ -669,10 +669,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'description_source')  String descriptionSource,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExerciseTranslationSubmissionApi() when $default != null:
-return $default(_that.name,_that.description,_that.language,_that.author,_that.aliases,_that.comments);case _:
+return $default(_that.name,_that.descriptionSource,_that.language,_that.author,_that.aliases,_that.comments);case _:
   return orElse();
 
 }
@@ -690,10 +690,10 @@ return $default(_that.name,_that.description,_that.language,_that.author,_that.a
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'description_source')  String descriptionSource,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseTranslationSubmissionApi():
-return $default(_that.name,_that.description,_that.language,_that.author,_that.aliases,_that.comments);}
+return $default(_that.name,_that.descriptionSource,_that.language,_that.author,_that.aliases,_that.comments);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -707,10 +707,10 @@ return $default(_that.name,_that.description,_that.language,_that.author,_that.a
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String description,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(name: 'description_source')  String descriptionSource,  int language, @JsonKey(name: 'license_author')  String author,  List<ExerciseAliasSubmissionApi> aliases,  List<ExerciseCommentSubmissionApi> comments)?  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseTranslationSubmissionApi() when $default != null:
-return $default(_that.name,_that.description,_that.language,_that.author,_that.aliases,_that.comments);case _:
+return $default(_that.name,_that.descriptionSource,_that.language,_that.author,_that.aliases,_that.comments);case _:
   return null;
 
 }
@@ -722,11 +722,11 @@ return $default(_that.name,_that.description,_that.language,_that.author,_that.a
 @JsonSerializable()
 
 class _ExerciseTranslationSubmissionApi implements ExerciseTranslationSubmissionApi {
-  const _ExerciseTranslationSubmissionApi({required this.name, required this.description, required this.language, @JsonKey(name: 'license_author') required this.author, final  List<ExerciseAliasSubmissionApi> aliases = const [], final  List<ExerciseCommentSubmissionApi> comments = const []}): _aliases = aliases,_comments = comments;
+  const _ExerciseTranslationSubmissionApi({required this.name, @JsonKey(name: 'description_source') required this.descriptionSource, required this.language, @JsonKey(name: 'license_author') required this.author, final  List<ExerciseAliasSubmissionApi> aliases = const [], final  List<ExerciseCommentSubmissionApi> comments = const []}): _aliases = aliases,_comments = comments;
   factory _ExerciseTranslationSubmissionApi.fromJson(Map<String, dynamic> json) => _$ExerciseTranslationSubmissionApiFromJson(json);
 
 @override final  String name;
-@override final  String description;
+@override@JsonKey(name: 'description_source') final  String descriptionSource;
 @override final  int language;
 @override@JsonKey(name: 'license_author') final  String author;
  final  List<ExerciseAliasSubmissionApi> _aliases;
@@ -757,16 +757,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other._aliases, _aliases)&&const DeepCollectionEquality().equals(other._comments, _comments));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.descriptionSource, descriptionSource) || other.descriptionSource == descriptionSource)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other._aliases, _aliases)&&const DeepCollectionEquality().equals(other._comments, _comments));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,description,language,author,const DeepCollectionEquality().hash(_aliases),const DeepCollectionEquality().hash(_comments));
+int get hashCode => Object.hash(runtimeType,name,descriptionSource,language,author,const DeepCollectionEquality().hash(_aliases),const DeepCollectionEquality().hash(_comments));
 
 @override
 String toString() {
-  return 'ExerciseTranslationSubmissionApi(name: $name, description: $description, language: $language, author: $author, aliases: $aliases, comments: $comments)';
+  return 'ExerciseTranslationSubmissionApi(name: $name, descriptionSource: $descriptionSource, language: $language, author: $author, aliases: $aliases, comments: $comments)';
 }
 
 
@@ -777,7 +777,7 @@ abstract mixin class _$ExerciseTranslationSubmissionApiCopyWith<$Res> implements
   factory _$ExerciseTranslationSubmissionApiCopyWith(_ExerciseTranslationSubmissionApi value, $Res Function(_ExerciseTranslationSubmissionApi) _then) = __$ExerciseTranslationSubmissionApiCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String description, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
+ String name,@JsonKey(name: 'description_source') String descriptionSource, int language,@JsonKey(name: 'license_author') String author, List<ExerciseAliasSubmissionApi> aliases, List<ExerciseCommentSubmissionApi> comments
 });
 
 
@@ -794,10 +794,10 @@ class __$ExerciseTranslationSubmissionApiCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseTranslationSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? description = null,Object? language = null,Object? author = null,Object? aliases = null,Object? comments = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? descriptionSource = null,Object? language = null,Object? author = null,Object? aliases = null,Object? comments = null,}) {
   return _then(_ExerciseTranslationSubmissionApi(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,descriptionSource: null == descriptionSource ? _self.descriptionSource : descriptionSource // ignore: cast_nullable_to_non_nullable
 as String,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
 as int,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String,aliases: null == aliases ? _self._aliases : aliases // ignore: cast_nullable_to_non_nullable
@@ -813,7 +813,8 @@ as List<ExerciseCommentSubmissionApi>,
 /// @nodoc
 mixin _$ExerciseSubmissionApi {
 
- int get category; List<int> get muscles;@JsonKey(name: 'muscles_secondary') List<int> get musclesSecondary; List<int> get equipment;@JsonKey(name: 'license_author') String get author;@JsonKey(includeToJson: true) int? get variation;@JsonKey(includeToJson: true, name: 'variations_connect_to') int? get variationConnectTo; List<ExerciseTranslationSubmissionApi> get translations;
+ int get category; List<int> get muscles;@JsonKey(name: 'muscles_secondary') List<int> get musclesSecondary; List<int> get equipment;@JsonKey(name: 'license_author') String get author;@JsonKey(includeToJson: true, name: 'variation_group') String? get variationGroup;/// Exercise ID to connect to -- the server copies that exercise's variation group
+@JsonKey(includeToJson: true, name: 'variations_connect_to') int? get variationConnectTo; List<ExerciseTranslationSubmissionApi> get translations;
 /// Create a copy of ExerciseSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -826,16 +827,16 @@ $ExerciseSubmissionApiCopyWith<ExerciseSubmissionApi> get copyWith => _$Exercise
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseSubmissionApi&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.muscles, muscles)&&const DeepCollectionEquality().equals(other.musclesSecondary, musclesSecondary)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&(identical(other.author, author) || other.author == author)&&(identical(other.variation, variation) || other.variation == variation)&&(identical(other.variationConnectTo, variationConnectTo) || other.variationConnectTo == variationConnectTo)&&const DeepCollectionEquality().equals(other.translations, translations));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseSubmissionApi&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.muscles, muscles)&&const DeepCollectionEquality().equals(other.musclesSecondary, musclesSecondary)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&(identical(other.author, author) || other.author == author)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.variationConnectTo, variationConnectTo) || other.variationConnectTo == variationConnectTo)&&const DeepCollectionEquality().equals(other.translations, translations));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,category,const DeepCollectionEquality().hash(muscles),const DeepCollectionEquality().hash(musclesSecondary),const DeepCollectionEquality().hash(equipment),author,variation,variationConnectTo,const DeepCollectionEquality().hash(translations));
+int get hashCode => Object.hash(runtimeType,category,const DeepCollectionEquality().hash(muscles),const DeepCollectionEquality().hash(musclesSecondary),const DeepCollectionEquality().hash(equipment),author,variationGroup,variationConnectTo,const DeepCollectionEquality().hash(translations));
 
 @override
 String toString() {
-  return 'ExerciseSubmissionApi(category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, author: $author, variation: $variation, variationConnectTo: $variationConnectTo, translations: $translations)';
+  return 'ExerciseSubmissionApi(category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, author: $author, variationGroup: $variationGroup, variationConnectTo: $variationConnectTo, translations: $translations)';
 }
 
 
@@ -846,7 +847,7 @@ abstract mixin class $ExerciseSubmissionApiCopyWith<$Res>  {
   factory $ExerciseSubmissionApiCopyWith(ExerciseSubmissionApi value, $Res Function(ExerciseSubmissionApi) _then) = _$ExerciseSubmissionApiCopyWithImpl;
 @useResult
 $Res call({
- int category, List<int> muscles,@JsonKey(name: 'muscles_secondary') List<int> musclesSecondary, List<int> equipment,@JsonKey(name: 'license_author') String author,@JsonKey(includeToJson: true) int? variation,@JsonKey(includeToJson: true, name: 'variations_connect_to') int? variationConnectTo, List<ExerciseTranslationSubmissionApi> translations
+ int category, List<int> muscles,@JsonKey(name: 'muscles_secondary') List<int> musclesSecondary, List<int> equipment,@JsonKey(name: 'license_author') String author,@JsonKey(includeToJson: true, name: 'variation_group') String? variationGroup,@JsonKey(includeToJson: true, name: 'variations_connect_to') int? variationConnectTo, List<ExerciseTranslationSubmissionApi> translations
 });
 
 
@@ -863,15 +864,15 @@ class _$ExerciseSubmissionApiCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? author = null,Object? variation = freezed,Object? variationConnectTo = freezed,Object? translations = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? author = null,Object? variationGroup = freezed,Object? variationConnectTo = freezed,Object? translations = null,}) {
   return _then(_self.copyWith(
 category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as int,muscles: null == muscles ? _self.muscles : muscles // ignore: cast_nullable_to_non_nullable
 as List<int>,musclesSecondary: null == musclesSecondary ? _self.musclesSecondary : musclesSecondary // ignore: cast_nullable_to_non_nullable
 as List<int>,equipment: null == equipment ? _self.equipment : equipment // ignore: cast_nullable_to_non_nullable
 as List<int>,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
-as String,variation: freezed == variation ? _self.variation : variation // ignore: cast_nullable_to_non_nullable
-as int?,variationConnectTo: freezed == variationConnectTo ? _self.variationConnectTo : variationConnectTo // ignore: cast_nullable_to_non_nullable
+as String,variationGroup: freezed == variationGroup ? _self.variationGroup : variationGroup // ignore: cast_nullable_to_non_nullable
+as String?,variationConnectTo: freezed == variationConnectTo ? _self.variationConnectTo : variationConnectTo // ignore: cast_nullable_to_non_nullable
 as int?,translations: null == translations ? _self.translations : translations // ignore: cast_nullable_to_non_nullable
 as List<ExerciseTranslationSubmissionApi>,
   ));
@@ -955,10 +956,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int category,  List<int> muscles, @JsonKey(name: 'muscles_secondary')  List<int> musclesSecondary,  List<int> equipment, @JsonKey(name: 'license_author')  String author, @JsonKey(includeToJson: true)  int? variation, @JsonKey(includeToJson: true, name: 'variations_connect_to')  int? variationConnectTo,  List<ExerciseTranslationSubmissionApi> translations)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int category,  List<int> muscles, @JsonKey(name: 'muscles_secondary')  List<int> musclesSecondary,  List<int> equipment, @JsonKey(name: 'license_author')  String author, @JsonKey(includeToJson: true, name: 'variation_group')  String? variationGroup, @JsonKey(includeToJson: true, name: 'variations_connect_to')  int? variationConnectTo,  List<ExerciseTranslationSubmissionApi> translations)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExerciseSubmissionApi() when $default != null:
-return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.author,_that.variation,_that.variationConnectTo,_that.translations);case _:
+return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.author,_that.variationGroup,_that.variationConnectTo,_that.translations);case _:
   return orElse();
 
 }
@@ -976,10 +977,10 @@ return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipm
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int category,  List<int> muscles, @JsonKey(name: 'muscles_secondary')  List<int> musclesSecondary,  List<int> equipment, @JsonKey(name: 'license_author')  String author, @JsonKey(includeToJson: true)  int? variation, @JsonKey(includeToJson: true, name: 'variations_connect_to')  int? variationConnectTo,  List<ExerciseTranslationSubmissionApi> translations)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int category,  List<int> muscles, @JsonKey(name: 'muscles_secondary')  List<int> musclesSecondary,  List<int> equipment, @JsonKey(name: 'license_author')  String author, @JsonKey(includeToJson: true, name: 'variation_group')  String? variationGroup, @JsonKey(includeToJson: true, name: 'variations_connect_to')  int? variationConnectTo,  List<ExerciseTranslationSubmissionApi> translations)  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseSubmissionApi():
-return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.author,_that.variation,_that.variationConnectTo,_that.translations);}
+return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.author,_that.variationGroup,_that.variationConnectTo,_that.translations);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -993,10 +994,10 @@ return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipm
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int category,  List<int> muscles, @JsonKey(name: 'muscles_secondary')  List<int> musclesSecondary,  List<int> equipment, @JsonKey(name: 'license_author')  String author, @JsonKey(includeToJson: true)  int? variation, @JsonKey(includeToJson: true, name: 'variations_connect_to')  int? variationConnectTo,  List<ExerciseTranslationSubmissionApi> translations)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int category,  List<int> muscles, @JsonKey(name: 'muscles_secondary')  List<int> musclesSecondary,  List<int> equipment, @JsonKey(name: 'license_author')  String author, @JsonKey(includeToJson: true, name: 'variation_group')  String? variationGroup, @JsonKey(includeToJson: true, name: 'variations_connect_to')  int? variationConnectTo,  List<ExerciseTranslationSubmissionApi> translations)?  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseSubmissionApi() when $default != null:
-return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.author,_that.variation,_that.variationConnectTo,_that.translations);case _:
+return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipment,_that.author,_that.variationGroup,_that.variationConnectTo,_that.translations);case _:
   return null;
 
 }
@@ -1008,7 +1009,7 @@ return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipm
 @JsonSerializable()
 
 class _ExerciseSubmissionApi implements ExerciseSubmissionApi {
-  const _ExerciseSubmissionApi({required this.category, required final  List<int> muscles, @JsonKey(name: 'muscles_secondary') required final  List<int> musclesSecondary, required final  List<int> equipment, @JsonKey(name: 'license_author') required this.author, @JsonKey(includeToJson: true) this.variation, @JsonKey(includeToJson: true, name: 'variations_connect_to') this.variationConnectTo, required final  List<ExerciseTranslationSubmissionApi> translations}): _muscles = muscles,_musclesSecondary = musclesSecondary,_equipment = equipment,_translations = translations;
+  const _ExerciseSubmissionApi({required this.category, required final  List<int> muscles, @JsonKey(name: 'muscles_secondary') required final  List<int> musclesSecondary, required final  List<int> equipment, @JsonKey(name: 'license_author') required this.author, @JsonKey(includeToJson: true, name: 'variation_group') this.variationGroup, @JsonKey(includeToJson: true, name: 'variations_connect_to') this.variationConnectTo, required final  List<ExerciseTranslationSubmissionApi> translations}): _muscles = muscles,_musclesSecondary = musclesSecondary,_equipment = equipment,_translations = translations;
   factory _ExerciseSubmissionApi.fromJson(Map<String, dynamic> json) => _$ExerciseSubmissionApiFromJson(json);
 
 @override final  int category;
@@ -1034,7 +1035,8 @@ class _ExerciseSubmissionApi implements ExerciseSubmissionApi {
 }
 
 @override@JsonKey(name: 'license_author') final  String author;
-@override@JsonKey(includeToJson: true) final  int? variation;
+@override@JsonKey(includeToJson: true, name: 'variation_group') final  String? variationGroup;
+/// Exercise ID to connect to -- the server copies that exercise's variation group
 @override@JsonKey(includeToJson: true, name: 'variations_connect_to') final  int? variationConnectTo;
  final  List<ExerciseTranslationSubmissionApi> _translations;
 @override List<ExerciseTranslationSubmissionApi> get translations {
@@ -1057,16 +1059,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseSubmissionApi&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._muscles, _muscles)&&const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&(identical(other.author, author) || other.author == author)&&(identical(other.variation, variation) || other.variation == variation)&&(identical(other.variationConnectTo, variationConnectTo) || other.variationConnectTo == variationConnectTo)&&const DeepCollectionEquality().equals(other._translations, _translations));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseSubmissionApi&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._muscles, _muscles)&&const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&(identical(other.author, author) || other.author == author)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.variationConnectTo, variationConnectTo) || other.variationConnectTo == variationConnectTo)&&const DeepCollectionEquality().equals(other._translations, _translations));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,category,const DeepCollectionEquality().hash(_muscles),const DeepCollectionEquality().hash(_musclesSecondary),const DeepCollectionEquality().hash(_equipment),author,variation,variationConnectTo,const DeepCollectionEquality().hash(_translations));
+int get hashCode => Object.hash(runtimeType,category,const DeepCollectionEquality().hash(_muscles),const DeepCollectionEquality().hash(_musclesSecondary),const DeepCollectionEquality().hash(_equipment),author,variationGroup,variationConnectTo,const DeepCollectionEquality().hash(_translations));
 
 @override
 String toString() {
-  return 'ExerciseSubmissionApi(category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, author: $author, variation: $variation, variationConnectTo: $variationConnectTo, translations: $translations)';
+  return 'ExerciseSubmissionApi(category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, author: $author, variationGroup: $variationGroup, variationConnectTo: $variationConnectTo, translations: $translations)';
 }
 
 
@@ -1077,7 +1079,7 @@ abstract mixin class _$ExerciseSubmissionApiCopyWith<$Res> implements $ExerciseS
   factory _$ExerciseSubmissionApiCopyWith(_ExerciseSubmissionApi value, $Res Function(_ExerciseSubmissionApi) _then) = __$ExerciseSubmissionApiCopyWithImpl;
 @override @useResult
 $Res call({
- int category, List<int> muscles,@JsonKey(name: 'muscles_secondary') List<int> musclesSecondary, List<int> equipment,@JsonKey(name: 'license_author') String author,@JsonKey(includeToJson: true) int? variation,@JsonKey(includeToJson: true, name: 'variations_connect_to') int? variationConnectTo, List<ExerciseTranslationSubmissionApi> translations
+ int category, List<int> muscles,@JsonKey(name: 'muscles_secondary') List<int> musclesSecondary, List<int> equipment,@JsonKey(name: 'license_author') String author,@JsonKey(includeToJson: true, name: 'variation_group') String? variationGroup,@JsonKey(includeToJson: true, name: 'variations_connect_to') int? variationConnectTo, List<ExerciseTranslationSubmissionApi> translations
 });
 
 
@@ -1094,15 +1096,15 @@ class __$ExerciseSubmissionApiCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? author = null,Object? variation = freezed,Object? variationConnectTo = freezed,Object? translations = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? author = null,Object? variationGroup = freezed,Object? variationConnectTo = freezed,Object? translations = null,}) {
   return _then(_ExerciseSubmissionApi(
 category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as int,muscles: null == muscles ? _self._muscles : muscles // ignore: cast_nullable_to_non_nullable
 as List<int>,musclesSecondary: null == musclesSecondary ? _self._musclesSecondary : musclesSecondary // ignore: cast_nullable_to_non_nullable
 as List<int>,equipment: null == equipment ? _self._equipment : equipment // ignore: cast_nullable_to_non_nullable
 as List<int>,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
-as String,variation: freezed == variation ? _self.variation : variation // ignore: cast_nullable_to_non_nullable
-as int?,variationConnectTo: freezed == variationConnectTo ? _self.variationConnectTo : variationConnectTo // ignore: cast_nullable_to_non_nullable
+as String,variationGroup: freezed == variationGroup ? _self.variationGroup : variationGroup // ignore: cast_nullable_to_non_nullable
+as String?,variationConnectTo: freezed == variationConnectTo ? _self.variationConnectTo : variationConnectTo // ignore: cast_nullable_to_non_nullable
 as int?,translations: null == translations ? _self._translations : translations // ignore: cast_nullable_to_non_nullable
 as List<ExerciseTranslationSubmissionApi>,
   ));
