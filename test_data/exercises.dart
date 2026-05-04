@@ -128,6 +128,7 @@ final benchPressDe = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Bankdrücken',
   description: 'add clever text',
+  descriptionSource: 'add clever text',
   exerciseId: 1,
   language: tLanguage1,
 );
@@ -138,6 +139,7 @@ final benchPressEn = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Bench press',
   description: 'add clever text',
+  descriptionSource: 'add clever text',
   exerciseId: 1,
   language: tLanguage1,
 );
@@ -148,6 +150,7 @@ final deadLiftEn = Translation(
   created: DateTime(2021, 1, 15),
   name: 'Dead Lift',
   description: 'Lorem ipsum etc',
+  descriptionSource: 'Lorem ipsum etc',
   exerciseId: 3,
   language: tLanguage2,
 );
@@ -158,6 +161,7 @@ final crunchesFr = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Crunches',
   description: 'The man in black fled across the desert, and the gunslinger followed',
+  descriptionSource: 'The man in black fled across the desert, and the gunslinger followed',
   exerciseId: 2,
   language: tLanguage3,
 );
@@ -168,6 +172,7 @@ final crunchesDe = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Crunches',
   description: 'The story so far: in the beginning, the universe was created',
+  descriptionSource: 'The story so far: in the beginning, the universe was created',
   exerciseId: 2,
   language: tLanguage1,
 );
@@ -178,6 +183,7 @@ final crunchesEn = Translation(
   created: DateTime(2021, 4, 1),
   name: 'test exercise 5',
   description: 'I am an invisible man',
+  descriptionSource: 'I am an invisible man',
   exerciseId: 2,
   language: tLanguage2,
 );
@@ -188,6 +194,7 @@ final curlsEn = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Curls',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
+  descriptionSource: 'It was a bright cold day in April, and the clocks were striking thirteen',
   exerciseId: 4,
   language: tLanguage2,
 );
@@ -198,6 +205,7 @@ final squatsEn = Translation(
   created: DateTime(2021, 4, 1),
   name: 'Squats',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
+  descriptionSource: 'It was a bright cold day in April, and the clocks were striking thirteen',
   exerciseId: 5,
   language: tLanguage2,
 );
@@ -208,6 +216,7 @@ final sideRaisesEn = Translation(
   created: DateTime(2022, 11, 1),
   name: 'Side raises',
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
+  descriptionSource: 'It was a bright cold day in April, and the clocks were striking thirteen',
   exerciseId: 6,
   language: tLanguage2,
 );

@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -45,6 +45,8 @@ class EntriesList extends StatelessWidget {
         .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
+    final datetimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode).add_Hm();
+
     return Column(
       children: [
         ...getOverviewWidgetsSeries(
@@ -66,11 +68,7 @@ class EntriesList extends StatelessWidget {
               return Card(
                 child: ListTile(
                   title: Text('${numberFormat.format(currentEntry.value)} ${_category.unit}'),
-                  subtitle: Text(
-                    DateFormat.yMd(
-                      Localizations.localeOf(context).languageCode,
-                    ).format(currentEntry.date),
-                  ),
+                  subtitle: Text(datetimeFormat.format(currentEntry.date)),
                   trailing: PopupMenuButton(
                     itemBuilder: (BuildContext context) {
                       return [

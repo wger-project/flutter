@@ -20,6 +20,7 @@ import 'package:wger/l10n/generated/app_localizations.dart' as _i2;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 /// A class which mocks [AppLocalizations].
 ///
@@ -404,6 +405,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get dashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#dashboardWidgets),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#dashboardWidgets),
+            ),
+          )
+          as String);
+
+  @override
   String get labelDashboard =>
       (super.noSuchMethod(
             Invocation.getter(#labelDashboard),
@@ -712,6 +724,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get slotEntryTypeWarmup =>
+      (super.noSuchMethod(
+            Invocation.getter(#slotEntryTypeWarmup),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#slotEntryTypeWarmup),
+            ),
+          )
+          as String);
+
+  @override
   String get slotEntryTypePartial =>
       (super.noSuchMethod(
             Invocation.getter(#slotEntryTypePartial),
@@ -762,6 +785,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#slotEntryTypeJump),
+            ),
+          )
+          as String);
+
+  @override
+  String get trophies =>
+      (super.noSuchMethod(
+            Invocation.getter(#trophies),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trophies),
             ),
           )
           as String);
@@ -920,6 +954,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get impressionGood =>
+      (super.noSuchMethod(
+            Invocation.getter(#impressionGood),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#impressionGood),
+            ),
+          )
+          as String);
+
+  @override
+  String get impressionNeutral =>
+      (super.noSuchMethod(
+            Invocation.getter(#impressionNeutral),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#impressionNeutral),
+            ),
+          )
+          as String);
+
+  @override
+  String get impressionBad =>
+      (super.noSuchMethod(
+            Invocation.getter(#impressionBad),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#impressionBad),
+            ),
+          )
+          as String);
+
+  @override
   String get impression =>
       (super.noSuchMethod(
             Invocation.getter(#impression),
@@ -1063,6 +1130,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get personalRecords =>
+      (super.noSuchMethod(
+            Invocation.getter(#personalRecords),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#personalRecords),
+            ),
+          )
+          as String);
+
+  @override
   String get gymMode =>
       (super.noSuchMethod(
             Invocation.getter(#gymMode),
@@ -1091,6 +1169,105 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#gymModeShowTimer),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeTimerType =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeTimerType),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeTimerType),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeTimerTypeHelText =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeTimerTypeHelText),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeTimerTypeHelText),
+            ),
+          )
+          as String);
+
+  @override
+  String get countdown =>
+      (super.noSuchMethod(
+            Invocation.getter(#countdown),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#countdown),
+            ),
+          )
+          as String);
+
+  @override
+  String get stopwatch =>
+      (super.noSuchMethod(
+            Invocation.getter(#stopwatch),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#stopwatch),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeDefaultCountdownTime =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeDefaultCountdownTime),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeDefaultCountdownTime),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeNotifyOnCountdownFinish =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeNotifyOnCountdownFinish),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeNotifyOnCountdownFinish),
+            ),
+          )
+          as String);
+
+  @override
+  String get duration =>
+      (super.noSuchMethod(
+            Invocation.getter(#duration),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#duration),
+            ),
+          )
+          as String);
+
+  @override
+  String get volume =>
+      (super.noSuchMethod(
+            Invocation.getter(#volume),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#volume),
+            ),
+          )
+          as String);
+
+  @override
+  String get workoutCompleted =>
+      (super.noSuchMethod(
+            Invocation.getter(#workoutCompleted),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#workoutCompleted),
             ),
           )
           as String);
@@ -2042,6 +2219,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get noTrophies =>
+      (super.noSuchMethod(
+            Invocation.getter(#noTrophies),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noTrophies),
+            ),
+          )
+          as String);
+
+  @override
   String get noWeightEntries =>
       (super.noSuchMethod(
             Invocation.getter(#noWeightEntries),
@@ -2079,6 +2267,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
       (super.noSuchMethod(
             Invocation.getter(#edit),
             returnValue: _i3.dummyValue<String>(this, Invocation.getter(#edit)),
+          )
+          as String);
+
+  @override
+  String get preview =>
+      (super.noSuchMethod(
+            Invocation.getter(#preview),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#preview),
+            ),
           )
           as String);
 
@@ -2496,6 +2695,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#appUpdateContent),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverUpdateTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverUpdateTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverUpdateTitle),
             ),
           )
           as String);
@@ -2963,6 +3173,50 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#baseData),
+            ),
+          )
+          as String);
+
+  @override
+  String get useBasicMarkdown =>
+      (super.noSuchMethod(
+            Invocation.getter(#useBasicMarkdown),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#useBasicMarkdown),
+            ),
+          )
+          as String);
+
+  @override
+  String get editorBold =>
+      (super.noSuchMethod(
+            Invocation.getter(#editorBold),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#editorBold),
+            ),
+          )
+          as String);
+
+  @override
+  String get editorItalic =>
+      (super.noSuchMethod(
+            Invocation.getter(#editorItalic),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#editorItalic),
+            ),
+          )
+          as String);
+
+  @override
+  String get editorList =>
+      (super.noSuchMethod(
+            Invocation.getter(#editorList),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#editorList),
             ),
           )
           as String);
@@ -3656,6 +3910,138 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get productNotFoundOpenFoodFacts =>
+      (super.noSuchMethod(
+            Invocation.getter(#productNotFoundOpenFoodFacts),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#productNotFoundOpenFoodFacts),
+            ),
+          )
+          as String);
+
+  @override
+  String get addToOpenFoodFacts =>
+      (super.noSuchMethod(
+            Invocation.getter(#addToOpenFoodFacts),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#addToOpenFoodFacts),
+            ),
+          )
+          as String);
+
+  @override
+  String get isVegan =>
+      (super.noSuchMethod(
+            Invocation.getter(#isVegan),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#isVegan),
+            ),
+          )
+          as String);
+
+  @override
+  String get isVegetarian =>
+      (super.noSuchMethod(
+            Invocation.getter(#isVegetarian),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#isVegetarian),
+            ),
+          )
+          as String);
+
+  @override
+  String get filter =>
+      (super.noSuchMethod(
+            Invocation.getter(#filter),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#filter),
+            ),
+          )
+          as String);
+
+  @override
+  String get searchLanguageAll =>
+      (super.noSuchMethod(
+            Invocation.getter(#searchLanguageAll),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#searchLanguageAll),
+            ),
+          )
+          as String);
+
+  @override
+  String get exerciseSearchMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#exerciseSearchMode),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#exerciseSearchMode),
+            ),
+          )
+          as String);
+
+  @override
+  String get searchModeFuzzy =>
+      (super.noSuchMethod(
+            Invocation.getter(#searchModeFuzzy),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#searchModeFuzzy),
+            ),
+          )
+          as String);
+
+  @override
+  String get searchModeExact =>
+      (super.noSuchMethod(
+            Invocation.getter(#searchModeExact),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#searchModeExact),
+            ),
+          )
+          as String);
+
+  @override
+  String get filterNutriscore =>
+      (super.noSuchMethod(
+            Invocation.getter(#filterNutriscore),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#filterNutriscore),
+            ),
+          )
+          as String);
+
+  @override
+  String get filterNutriscoreOff =>
+      (super.noSuchMethod(
+            Invocation.getter(#filterNutriscoreOff),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#filterNutriscoreOff),
+            ),
+          )
+          as String);
+
+  @override
+  String get filterNutriscoreNoFilter =>
+      (super.noSuchMethod(
+            Invocation.getter(#filterNutriscoreNoFilter),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#filterNutriscoreNoFilter),
+            ),
+          )
+          as String);
+
+  @override
   String exerciseNr(String? nr) =>
       (super.noSuchMethod(
             Invocation.method(#exerciseNr, [nr]),
@@ -3673,6 +4059,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#supersetNr, [nr]),
+            ),
+          )
+          as String);
+
+  @override
+  String setNr(String? nr) =>
+      (super.noSuchMethod(
+            Invocation.method(#setNr, [nr]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#setNr, [nr]),
+            ),
+          )
+          as String);
+
+  @override
+  String topSet(String? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#topSet, [value]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#topSet, [value]),
+            ),
+          )
+          as String);
+
+  @override
+  String durationHoursMinutes(int? hours, int? minutes) =>
+      (super.noSuchMethod(
+            Invocation.method(#durationHoursMinutes, [hours, minutes]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#durationHoursMinutes, [hours, minutes]),
             ),
           )
           as String);
@@ -3766,6 +4185,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String formMinMaxValues(int? min, int? max) =>
+      (super.noSuchMethod(
+            Invocation.method(#formMinMaxValues, [min, max]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#formMinMaxValues, [min, max]),
+            ),
+          )
+          as String);
+
+  @override
   String enterMinCharacters(String? min) =>
       (super.noSuchMethod(
             Invocation.method(#enterMinCharacters, [min]),
@@ -3783,6 +4213,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#nrOfSets, [nrOfSets]),
+            ),
+          )
+          as String);
+
+  @override
+  String serverUpdateContent(String? minVersion) =>
+      (super.noSuchMethod(
+            Invocation.method(#serverUpdateContent, [minVersion]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#serverUpdateContent, [minVersion]),
             ),
           )
           as String);
@@ -3860,6 +4301,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#contributeExerciseWarning, [days]),
+            ),
+          )
+          as String);
+
+  @override
+  String searchLanguageCurrent(String? lang) =>
+      (super.noSuchMethod(
+            Invocation.method(#searchLanguageCurrent, [lang]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#searchLanguageCurrent, [lang]),
+            ),
+          )
+          as String);
+
+  @override
+  String searchLanguageEnglish(String? lang) =>
+      (super.noSuchMethod(
+            Invocation.method(#searchLanguageEnglish, [lang]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#searchLanguageEnglish, [lang]),
+            ),
+          )
+          as String);
+
+  @override
+  String filterNutriscoreOrBetter(String? grade) =>
+      (super.noSuchMethod(
+            Invocation.method(#filterNutriscoreOrBetter, [grade]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#filterNutriscoreOrBetter, [grade]),
             ),
           )
           as String);

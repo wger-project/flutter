@@ -100,6 +100,7 @@
   "@labelWorkoutPlan": {
     "description": "Title for screen workout plan"
   },
+  "dashboardWidgets": "Dashboard widgets",
   "labelDashboard": "Dashboard",
   "@labelDashboard": {
     "description": "Title for screen dashboard"
@@ -170,11 +171,13 @@
   "slotEntryTypeNormal": "Normal",
   "slotEntryTypeDropset": "Dropset",
   "slotEntryTypeMyo": "Myo",
+  "slotEntryTypeWarmup": "Warmup",
   "slotEntryTypePartial": "Partial",
   "slotEntryTypeForced": "Forced",
   "slotEntryTypeTut": "Time under Tension",
   "slotEntryTypeIso": "Isometric hold",
   "slotEntryTypeJump": "Jump",
+  "trophies": "Trophies",
   "routines": "Routines",
   "newRoutine": "New routine",
   "noRoutines": "You have no routines",
@@ -226,11 +229,31 @@
       }
     }
   },
+  "setNr": "Set {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set within a group of same exercises.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
   "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
   "@sameRepetitions": {},
   "comment": "Comment",
   "@comment": {
     "description": "Comment, additional information"
+  },
+  "topSet": "Top set: {value}",
+  "@topSet": {
+    "description": "Value is a representation of the set, like '10 x 80kg'",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   },
   "impressionGood": "Good",
   "impressionNeutral": "Neutral",
@@ -262,6 +285,7 @@
   },
   "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
   "@selectExercises": {},
+  "personalRecords": "Personal records",
   "gymMode": "Gym mode",
   "@gymMode": {
     "description": "Label when starting the gym mode"
@@ -590,6 +614,7 @@
   "@newEntry": {
     "description": "Title when adding a new entry such as a weight or log entry"
   },
+  "noTrophies": "You have no trophies yet",
   "noWeightEntries": "You have no weight entries",
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
@@ -604,6 +629,7 @@
   },
   "edit": "Edit",
   "@edit": {},
+  "preview": "Preview",
   "loadingText": "Loading...",
   "@loadingText": {
     "description": "Text to show when entries are being loaded in the background: Loading..."
@@ -748,6 +774,18 @@
   "@appUpdateTitle": {},
   "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
   "@appUpdateContent": {},
+  "serverUpdateTitle": "Server update required",
+  "@serverUpdateTitle": {},
+  "serverUpdateContent": "The connected server is too old for this version of the app. Please ask the server administrator to update to at least version {minVersion}.",
+  "@serverUpdateContent": {
+    "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+    "type": "text",
+    "placeholders": {
+      "minVersion": {
+        "type": "String"
+      }
+    }
+  },
   "productFound": "Product found",
   "@productFound": {
     "description": "Header label for dialog when product is found with barcode"
@@ -885,7 +923,7 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
-  "fitInWeek": "Fit in week",
+  "fitInWeek": "Fixed weekly schedule",
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
   "superset": "Superset",
@@ -899,6 +937,13 @@
   "@baseData": {
     "description": "The base data for an exercise such as category, trained muscles, etc."
   },
+  "useBasicMarkdown": "You can use basic Markdown to format the text",
+  "editorBold": "Bold",
+  "@editorBold": {
+    "description": "Label for bold formatting"
+  },
+  "editorItalic": "Italic",
+  "editorList": "List",
   "enterTextInLanguage": "Please enter the text in the correct language!",
   "settingsTitle": "Settings",
   "settingsCacheTitle": "Cache",
@@ -1114,5 +1159,100 @@
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
-  "systemMode": "System settings"
+  "systemMode": "System settings",
+  "productNotFoundOpenFoodFacts": "You can add this product to Open Food Facts to help the community!",
+  "@productNotFoundOpenFoodFacts": {
+  "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+  },
+  "addToOpenFoodFacts": "Add to Open Food Facts",
+  "@addToOpenFoodFacts": {
+    "description": "Label shown as the clickable link to go on Open Food Facts"
+   },
+  "isVegan": "Vegan",
+  "@isVegan": {
+    "description": "Label for vegan toggle"
+  },
+  "isVegetarian": "Vegetarian",
+  "@isVegetarian": {
+    "description": "Label for vegetarian toggle"
+  },
+  "filter": "Filter",
+  "@filter": {
+    "description": "Label for filter button"
+  },
+  "searchLanguageCurrent": "Only in current language ({lang})",
+  "@searchLanguageCurrent": {
+  "type": "text",
+  "placeholders": {
+    "lang": {
+      "type": "String"
+      }
+    }
+  },
+  "searchLanguageEnglish": "Current language ({lang}) & English",
+  "@searchLanguageEnglish": {
+    "type": "text",
+    "placeholders": {
+      "lang": {
+        "type": "String"
+      }
+    }
+  },
+  "searchLanguageAll": "All languages",
+  "@searchLanguageAll": {
+    "description": "Label used in the language selector to indicate no specific language filter is applied"
+  },
+
+  "exerciseSearchMode": "Search mode",
+  "@exerciseSearchMode": {
+    "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+  },
+
+  "searchModeFuzzy": "Fuzzy",
+  "@searchModeFuzzy": {
+    "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+  },
+
+  "searchModeExact": "Exact",
+  "@searchModeExact": {
+    "description": "Label for the search mode that only matches exercises with this exact name"
+  },
+  "filterNutriscore": "Nutri-Score filter",
+  "@filterNutriscore": {
+    "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+  },
+  "filterNutriscoreOff": "Off",
+  "@filterNutriscoreOff": {
+    "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+  },
+  "filterNutriscoreNoFilter": "No filter",
+  "@filterNutriscoreNoFilter": {
+    "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+  },
+  "filterNutriscoreOrBetter": "{grade} or better",
+  "@filterNutriscoreOrBetter": {
+    "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+    "placeholders": {
+      "grade": {
+        "type": "String",
+        "example": "C"
+      }
+    }
+  },
+  "serverConfigIssueTitle": "Server Configuration Issue",
+  "@serverConfigIssueTitle": {
+   "description": "Title of the dialog shown when server misconfiguration is detected"
+   },
+   "serverConfigIssueMessage": "Server misconfiguration detected, headers are not being passed correctly, please consult the documentation.",
+   "@serverConfigIssueMessage": {
+   "description": "Message explaining server misconfiguration and linking to documentation"
+   },
+   "understand": "I understand",
+   "@understand": {
+   "description": "Button label to acknowledge and dismiss the server configuration warning"
+   },
+   "viewDocumentation": "View documentation",
+   "@viewDocumentation": {
+   "description": "Button label to open the documentation about server configuration"
+   }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +30,7 @@ import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
 import 'package:wger/widgets/user/forms.dart';
@@ -157,6 +158,16 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         PopupMenuItem<String>(
+          value: 'configure',
+          child: Row(
+            children: [
+              const Icon(Icons.widgets_outlined, size: 20),
+              const SizedBox(width: 12),
+              Text(AppLocalizations.of(context).dashboardWidgets),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
           value: 'settings',
           child: Row(
             children: [
@@ -256,6 +267,14 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   },
                 ),
                 ListTile(
+                  leading: const Icon(Icons.widgets_outlined),
+                  title: Text(AppLocalizations.of(context).dashboardWidgets),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _handleMenuSelection(context, 'configure');
+                  },
+                ),
+                ListTile(
                   leading: const Icon(Icons.settings),
                   title: Text(AppLocalizations.of(context).settingsTitle),
                   onTap: () {
@@ -305,6 +324,9 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         );
+        break;
+      case 'configure':
+        Navigator.of(context).pushNamed(ConfigureDashboardWidgetsScreen.routeName);
         break;
       case 'settings':
         Navigator.of(context).pushNamed(SettingsPage.routeName);

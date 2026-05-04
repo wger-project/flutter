@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
@@ -7,12 +25,14 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/exercises.dart';
 
@@ -30,7 +50,7 @@ void main() {
   const String muscleUrl = 'muscle';
   const String equipmentUrl = 'equipment';
   const String languageUrl = 'language';
-  const String searchExerciseUrl = 'exercise/search';
+  const String exerciseSearchUrl = 'exerciseinfo';
 
   final Uri tCategoryEntriesUri = Uri(
     scheme: 'http',
@@ -65,7 +85,7 @@ void main() {
   final Uri tSearchByNameUri = Uri(
     scheme: 'http',
     host: 'localhost',
-    path: 'api/v2/$searchExerciseUrl/',
+    path: 'api/v2/$exerciseSearchUrl/',
   );
 
   const category1 = ExerciseCategory(id: 1, name: 'Arms');
@@ -105,19 +125,25 @@ void main() {
     driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
     // Mock categories
-    when(mockBaseProvider.makeUrl(categoryUrl)).thenReturn(tCategoryEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(categoryUrl, query: anyNamed('query')),
+    ).thenReturn(tCategoryEntriesUri);
     when(
       mockBaseProvider.fetchPaginated(tCategoryEntriesUri),
     ).thenAnswer((_) => Future.value(tCategoryMap['results']));
 
     // Mock muscles
-    when(mockBaseProvider.makeUrl(muscleUrl)).thenReturn(tMuscleEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(muscleUrl, query: anyNamed('query')),
+    ).thenReturn(tMuscleEntriesUri);
     when(
       mockBaseProvider.fetchPaginated(tMuscleEntriesUri),
     ).thenAnswer((_) => Future.value(tMuscleMap['results']));
 
     // Mock equipment
-    when(mockBaseProvider.makeUrl(equipmentUrl)).thenReturn(tEquipmentEntriesUri);
+    when(
+      mockBaseProvider.makeUrl(equipmentUrl, query: anyNamed('query')),
+    ).thenReturn(tEquipmentEntriesUri);
     when(
       mockBaseProvider.fetchPaginated(tEquipmentEntriesUri),
     ).thenAnswer((_) => Future.value(tEquipmentMap['results']));
@@ -340,22 +366,54 @@ void main() {
         setUp(() {
           const String tSearchTerm = 'press';
           const String tSearchLanguage = 'en';
-          final Map<String, dynamic> query = {'term': tSearchTerm, 'language': tSearchLanguage};
+          final Map<String, dynamic> query = {
+            'name__search': tSearchTerm,
+            'language__code': tSearchLanguage,
+            'limit': '100',
+          };
           tSearchByNameUri = Uri(
             scheme: 'http',
             host: 'localhost',
-            path: 'api/v2/$searchExerciseUrl/',
+            path: 'api/v2/$exerciseSearchUrl/',
             queryParameters: query,
           );
-          final Map<String, dynamic> tSearchResponse = jsonDecode(
-            fixture('exercises/exercise_search_entries.json'),
-          );
+
+          final exerciseInfoEntry =
+              jsonDecode(
+                    fixture('exercises/exerciseinfo_response.json'),
+                  )
+                  as Map<String, dynamic>;
+
+          // Build a paginated exerciseinfo response with two results that
+          // have the categories used by the test exercises so that the
+          // category filter test below works correctly.
+          final Map<String, dynamic> tSearchResponse = {
+            'count': 2,
+            'next': null,
+            'previous': null,
+            'results': [
+              {
+                ...exerciseInfoEntry,
+                'id': 1,
+                'category': {'id': 1, 'name': 'Arms'},
+              },
+              {
+                ...exerciseInfoEntry,
+                'id': 2,
+                'category': {'id': 2, 'name': 'Legs'},
+              },
+            ],
+          };
 
           // Mock exercise search
           when(
             mockBaseProvider.makeUrl(
-              searchExerciseUrl,
-              query: {'term': tSearchTerm, 'language': tSearchLanguage},
+              exerciseSearchUrl,
+              query: {
+                'name__search': tSearchTerm,
+                'language__code': tSearchLanguage,
+                'limit': '100',
+              },
             ),
           ).thenReturn(tSearchByNameUri);
           when(mockBaseProvider.fetch(tSearchByNameUri)).thenAnswer((_) async => tSearchResponse);
@@ -370,10 +428,8 @@ void main() {
 
           // assert
           verify(provider.baseProvider.fetch(tSearchByNameUri)).called(1);
-          expect(
-            provider.filteredExercises,
-            [data.getTestExercises()[0], data.getTestExercises()[1]],
-          );
+          expect(provider.filteredExercises.length, 2);
+          expect(provider.filteredExercises.map((e) => e.id).toList(), [1, 2]);
         });
         test('Should find items from selection but should filter them by search term', () async {
           // arrange
@@ -390,6 +446,139 @@ void main() {
           expect(provider.filteredExercises, isEmpty);
         });
       });
+    });
+  });
+
+  group('searchExerciseWithSearchMode', () {
+    final Uri tFakeSearchUri = Uri(
+      scheme: 'http',
+      host: 'localhost',
+      path: 'api/v2/$exerciseSearchUrl/',
+    );
+
+    setUp(() {
+      // Generic catch-all stub for the search endpoint — actual query content
+      // is captured per test via `captureAnyNamed('query')` below.
+      when(
+        mockBaseProvider.makeUrl(exerciseSearchUrl, query: anyNamed('query')),
+      ).thenReturn(tFakeSearchUri);
+      when(
+        mockBaseProvider.fetch(tFakeSearchUri),
+      ).thenAnswer((_) async => {'results': <dynamic>[]});
+    });
+
+    /// Returns the most recent query map passed to `makeUrl(exerciseSearchUrl)`.
+    Map<String, dynamic> captureLastQuery() {
+      return verify(
+            mockBaseProvider.makeUrl(exerciseSearchUrl, query: captureAnyNamed('query')),
+          ).captured.last
+          as Map<String, dynamic>;
+    }
+
+    test('returns empty list and skips the API call when name is too short', () async {
+      final result = await provider.searchExerciseWithSearchMode('a');
+
+      expect(result, isEmpty);
+      verifyNever(mockBaseProvider.makeUrl(exerciseSearchUrl, query: anyNamed('query')));
+    });
+
+    test('fulltext mode sends name__search and not name__exact', () async {
+      await provider.searchExerciseWithSearchMode('press', languageCode: 'de');
+
+      final query = captureLastQuery();
+      expect(query['name__search'], 'press');
+      expect(query.containsKey('name__exact'), isFalse);
+    });
+
+    test('exact mode sends name__exact and not name__search', () async {
+      await provider.searchExerciseWithSearchMode(
+        'bench press',
+        languageCode: 'de',
+        searchMode: ExerciseSearchMode.exact,
+      );
+
+      final query = captureLastQuery();
+      expect(query['name__exact'], 'bench press');
+      expect(query.containsKey('name__search'), isFalse);
+    });
+
+    test('searchLanguage current sends only the locale code', () async {
+      await provider.searchExerciseWithSearchMode(
+        'press',
+        languageCode: 'de',
+        searchLanguage: SearchLanguage.current,
+      );
+
+      expect(captureLastQuery()['language__code'], 'de');
+    });
+
+    test('searchLanguage currentAndEnglish appends en to a non-English locale', () async {
+      await provider.searchExerciseWithSearchMode(
+        'press',
+        languageCode: 'de',
+        searchLanguage: SearchLanguage.currentAndEnglish,
+      );
+
+      expect(captureLastQuery()['language__code'], 'de,en');
+    });
+
+    test('searchLanguage currentAndEnglish on en locale only sends en (no duplicate)', () async {
+      await provider.searchExerciseWithSearchMode(
+        'press',
+        languageCode: 'en',
+        searchLanguage: SearchLanguage.currentAndEnglish,
+      );
+
+      expect(captureLastQuery()['language__code'], 'en');
+    });
+
+    test('searchLanguage all omits the language__code param', () async {
+      await provider.searchExerciseWithSearchMode(
+        'press',
+        languageCode: 'de',
+        searchLanguage: SearchLanguage.all,
+      );
+
+      expect(captureLastQuery().containsKey('language__code'), isFalse);
+    });
+
+    test('empty categories omits the category__in param', () async {
+      await provider.searchExerciseWithSearchMode('press', languageCode: 'de');
+
+      expect(captureLastQuery().containsKey('category__in'), isFalse);
+    });
+
+    test('a single category is sent as category__in with one id', () async {
+      const abs = ExerciseCategory(id: 1, name: 'Abs');
+
+      await provider.searchExerciseWithSearchMode(
+        'press',
+        languageCode: 'de',
+        categories: {abs},
+      );
+
+      expect(captureLastQuery()['category__in'], '1');
+    });
+
+    test('multiple categories are sent as comma-separated ids in category__in', () async {
+      const abs = ExerciseCategory(id: 1, name: 'Abs');
+      const arms = ExerciseCategory(id: 2, name: 'Arms');
+
+      await provider.searchExerciseWithSearchMode(
+        'press',
+        languageCode: 'de',
+        categories: {abs, arms},
+      );
+
+      // The set is unordered, so check membership rather than the literal string.
+      final ids = (captureLastQuery()['category__in'] as String).split(',').toSet();
+      expect(ids, {'1', '2'});
+    });
+
+    test('limit param is always sent', () async {
+      await provider.searchExerciseWithSearchMode('press', languageCode: 'de');
+
+      expect(captureLastQuery()['limit'], '100');
     });
   });
 

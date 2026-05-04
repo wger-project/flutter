@@ -34,19 +34,33 @@ enum NutritionalPlanOptions {
   delete,
 }
 
-class NutritionalPlanScreen extends StatelessWidget {
+class NutritionalPlanScreen extends StatefulWidget {
   const NutritionalPlanScreen();
 
   static const routeName = '/nutritional-plan-detail';
 
-  Future<NutritionalPlan> _loadFullPlan(BuildContext context, int planId) {
-    return Provider.of<NutritionPlansProvider>(context, listen: false).fetchAndSetPlanFull(planId);
+  @override
+  State<NutritionalPlanScreen> createState() => _NutritionalPlanScreenState();
+}
+
+class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
+  Future<NutritionalPlan>? _planFuture;
+  late NutritionalPlan _nutritionalPlan;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_planFuture == null) {
+      _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
+      _planFuture = Provider.of<NutritionPlansProvider>(
+        context,
+        listen: false,
+      ).fetchAndSetPlanFull(_nutritionalPlan.id!);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       floatingActionButton: Row(
@@ -61,7 +75,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   AppLocalizations.of(context).logIngredient,
-                  getIngredientLogForm(nutritionalPlan),
+                  getIngredientLogForm(_nutritionalPlan),
                   hasListView: true,
                 ),
               );
@@ -78,7 +92,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pushNamed(
                 LogMealsScreen.routeName,
-                arguments: nutritionalPlan,
+                arguments: _nutritionalPlan,
               );
             },
             child: const SvgIcon(
@@ -102,7 +116,7 @@ class NutritionalPlanScreen extends StatelessWidget {
             iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
             flexibleSpace: buildAppBarBlurBackground(context),
             actions: [
-              if (!nutritionalPlan.onlyLogging)
+              if (!_nutritionalPlan.onlyLogging)
                 IconButton(
                   icon: SvgIcon(
                     icon: const SvgIconData('assets/icons/meal-add.svg'),
@@ -114,7 +128,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).addMeal,
-                        MealForm(nutritionalPlan.id!),
+                        MealForm(_nutritionalPlan.id!),
                       ),
                     );
                   },
@@ -129,7 +143,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                         FormScreen.routeName,
                         arguments: FormScreenArguments(
                           AppLocalizations.of(context).edit,
-                          PlanForm(nutritionalPlan),
+                          PlanForm(_nutritionalPlan),
                           hasListView: true,
                         ),
                       );
@@ -138,7 +152,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                       Provider.of<NutritionPlansProvider>(
                         context,
                         listen: false,
-                      ).deletePlan(nutritionalPlan.id!);
+                      ).deletePlan(_nutritionalPlan.id!);
                       Navigator.of(context).pop();
                       break;
                   }
@@ -165,12 +179,12 @@ class NutritionalPlanScreen extends StatelessWidget {
               ),
             ],
             title: Text(
-              nutritionalPlan.getLabel(context),
+              _nutritionalPlan.getLabel(context),
               style: kAppBarTitleStyle,
             ),
           ),
           FutureBuilder(
-            future: _loadFullPlan(context, nutritionalPlan.id!),
+            future: _planFuture,
             builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
                 snapshot.connectionState == ConnectionState.waiting
                 ? SliverList(
@@ -187,7 +201,7 @@ class NutritionalPlanScreen extends StatelessWidget {
                   )
                 : Consumer<NutritionPlansProvider>(
                     builder: (context, value, child) =>
-                        NutritionalPlanDetailWidget(nutritionalPlan),
+                        NutritionalPlanDetailWidget(_nutritionalPlan),
                   ),
           ),
         ],

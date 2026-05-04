@@ -82,13 +82,13 @@ class ExerciseDetail extends StatelessWidget {
 
   List<Widget> getVariations(BuildContext context) {
     final variations = Provider.of<ExercisesProvider>(context, listen: false)
-        .findExercisesByVariationId(
-          _exercise.variationId,
+        .findExercisesByVariationGroup(
+          _exercise.variationGroup,
           exerciseIdToExclude: _exercise.id,
         );
 
     final List<Widget> out = [];
-    if (_exercise.variationId == null) {
+    if (_exercise.variationGroup == null) {
       return out;
     }
 

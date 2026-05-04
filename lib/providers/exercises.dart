@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,15 +22,17 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/database/exercises/exercise_database.dart';
-import 'package:wger/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_api.dart';
+import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -49,7 +51,6 @@ class ExercisesProvider with ChangeNotifier {
 
   static const exerciseUrlPath = 'exercise';
   static const exerciseInfoUrlPath = 'exerciseinfo';
-  static const exerciseSearchPath = 'exercise/search';
 
   static const categoriesUrlPath = 'exercisecategory';
   static const musclesUrlPath = 'muscle';
@@ -81,15 +82,15 @@ class ExercisesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<int, List<Exercise>> get exerciseByVariation {
-    final Map<int, List<Exercise>> variations = {};
+  Map<String, List<Exercise>> get exerciseByVariation {
+    final Map<String, List<Exercise>> variations = {};
 
-    for (final exercise in exercises.where((e) => e.variationId != null)) {
-      if (!variations.containsKey(exercise.variationId)) {
-        variations[exercise.variationId!] = [];
+    for (final exercise in exercises.where((e) => e.variationGroup != null)) {
+      if (!variations.containsKey(exercise.variationGroup)) {
+        variations[exercise.variationGroup!] = [];
       }
 
-      variations[exercise.variationId]!.add(exercise);
+      variations[exercise.variationGroup]!.add(exercise);
     }
 
     return variations;
@@ -187,12 +188,12 @@ class ExercisesProvider with ChangeNotifier {
   /// returned exercises. Since this is typically called by one exercise, we are
   /// not interested in seeing that same exercise returned in the list of variations.
   /// If this parameter is not passed, all exercises are returned.
-  List<Exercise> findExercisesByVariationId(int? variationId, {int? exerciseIdToExclude}) {
-    if (variationId == null) {
+  List<Exercise> findExercisesByVariationGroup(String? variationGroup, {int? exerciseIdToExclude}) {
+    if (variationGroup == null) {
       return [];
     }
 
-    var out = exercises.where((base) => base.variationId == variationId).toList();
+    var out = exercises.where((base) => base.variationGroup == variationGroup).toList();
 
     if (exerciseIdToExclude != null) {
       out = out.where((e) => e.id != exerciseIdToExclude).toList();
@@ -234,7 +235,12 @@ class ExercisesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetCategoriesFromApi() async {
     _logger.info('Loading exercise categories from API');
-    final categories = await baseProvider.fetchPaginated(baseProvider.makeUrl(categoriesUrlPath));
+    final categories = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        categoriesUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
     for (final category in categories) {
       _categories.add(ExerciseCategory.fromJson(category));
     }
@@ -242,7 +248,12 @@ class ExercisesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetMusclesFromApi() async {
     _logger.info('Loading muscles from API');
-    final muscles = await baseProvider.fetchPaginated(baseProvider.makeUrl(musclesUrlPath));
+    final muscles = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        musclesUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
 
     for (final muscle in muscles) {
       _muscles.add(Muscle.fromJson(muscle));
@@ -251,7 +262,12 @@ class ExercisesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetEquipmentsFromApi() async {
     _logger.info('Loading equipment from API');
-    final equipments = await baseProvider.fetchPaginated(baseProvider.makeUrl(equipmentUrlPath));
+    final equipments = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        equipmentUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
 
     for (final equipment in equipments) {
       _equipment.add(Equipment.fromJson(equipment));
@@ -261,7 +277,12 @@ class ExercisesProvider with ChangeNotifier {
   Future<void> fetchAndSetLanguagesFromApi() async {
     _logger.info('Loading languages from API');
 
-    final languageData = await baseProvider.fetchPaginated(baseProvider.makeUrl(languageUrlPath));
+    final languageData = await baseProvider.fetchPaginated(
+      baseProvider.makeUrl(
+        languageUrlPath,
+        query: {'limit': API_MAX_PAGE_SIZE},
+      ),
+    );
 
     for (final language in languageData) {
       _languages.add(Language.fromJson(language));
@@ -272,6 +293,7 @@ class ExercisesProvider with ChangeNotifier {
     _logger.info('Loading all exercises from API');
     final exerciseData = await baseProvider.fetchPaginated(
       baseProvider.makeUrl(exerciseUrlPath, query: {'limit': API_MAX_PAGE_SIZE}),
+      timeout: const Duration(seconds: 25), // just in case
     );
     final exerciseIds = exerciseData.map<int>((e) => e['id'] as int).toSet();
 
@@ -293,7 +315,21 @@ class ExercisesProvider with ChangeNotifier {
       // Note: no await since we don't care for the updated data right now. It
       // will be written to the db whenever the request finishes and we will get
       // the updated exercise the next time
-      handleUpdateExerciseFromApi(database, exerciseId);
+      try {
+        handleUpdateExerciseFromApi(database, exerciseId).then(
+          (_) {},
+          onError: (error, stackTrace) => _logger.info(
+            'Error while calling unawaited handleUpdateExerciseFromApi',
+            error,
+            stackTrace,
+          ),
+        );
+      } catch (e) {
+        // This is here just to catch any errors that seem to happen when the app is running
+        // in the background: https://github.com/wger-project/wger/issues/2206
+
+        _logger.info('Error while calling handleUpdateExerciseFromApi:', e);
+      }
 
       return exercise;
     } on NoSuchEntryException {
@@ -342,8 +378,13 @@ class ExercisesProvider with ChangeNotifier {
           'Re-fetching exercise $exerciseId from API since last fetch was ${exerciseDb.lastFetched}',
         );
 
+        // Note: we set a very long timeout here since the exercise api endpoint might
+        // take a long time to load if the exercise data has not been cached yet. A test
+        // on a raspberry pi showed that this can take up to 45 seconds, so one minute
+        // should be safe.
         final apiData = await baseProvider.fetch(
           baseProvider.makeUrl(exerciseInfoUrlPath, id: exerciseId),
+          timeout: const Duration(seconds: 120),
         );
         final exerciseApiData = ExerciseApiData.fromJson(apiData);
 
@@ -399,7 +440,7 @@ class ExercisesProvider with ChangeNotifier {
     return exercise;
   }
 
-  Future<void> initCacheTimesLocalPrefs({forceInit = false}) async {
+  Future<void> initCacheTimesLocalPrefs({bool forceInit = false}) async {
     final prefs = PreferenceHelper.asyncPref;
 
     final initDate = DateTime(2023, 1, 1).toIso8601String();
@@ -653,26 +694,78 @@ class ExercisesProvider with ChangeNotifier {
     // Send the request
     final result = await baseProvider.fetch(
       baseProvider.makeUrl(
-        exerciseSearchPath,
-        query: {'term': name, 'language': languages.join(',')},
+        exerciseInfoUrlPath,
+        query: {
+          'name__search': name,
+          'language__code': languages.join(','),
+          'limit': API_RESULTS_PAGE_SIZE,
+        },
       ),
     );
 
-    // Load the exercises
-    final results = ExerciseApiSearch.fromJson(result);
+    return (result['results'] as List)
+        .map((e) => Exercise.fromApiDataJson(e as Map<String, dynamic>, _languages))
+        .toList();
+  }
 
-    final List<Exercise> out = [];
-    for (final result in results.suggestions) {
-      final exercise = await fetchAndSetExercise(result.data.exerciseId);
-      if (exercise != null) {
-        out.add(exercise);
-      }
+  /// Searches for exercises by name, optionally narrowed by language and category.
+  ///
+  /// Returns an empty list if [name] is 1 character or less.
+  ///
+  /// * [searchMode] selects between a fuzzy match and an exact name match.
+  /// * [searchLanguage] determines which translations are searched: only the
+  ///   current locale, the current locale plus English as a fallback, or every
+  ///   available language.
+  /// * [categories] restricts results to the given categories. An empty set
+  ///   means no category filter is applied.
+  Future<List<Exercise>> searchExerciseWithSearchMode(
+    String name, {
+    String languageCode = LANGUAGE_SHORT_ENGLISH,
+    SearchLanguage searchLanguage = SearchLanguage.currentAndEnglish,
+    ExerciseSearchMode searchMode = ExerciseSearchMode.fulltext,
+    Set<ExerciseCategory> categories = const {},
+  }) async {
+    if (name.length <= 1) {
+      return [];
     }
-    // return Future.wait(
-    //   results.suggestions.map((e) => fetchAndSetExercise(e.data.exerciseId)),
-    // );
 
-    return out;
+    final languageCodes = [languageCode];
+    if (searchLanguage == SearchLanguage.currentAndEnglish &&
+        languageCode != LANGUAGE_SHORT_ENGLISH) {
+      languageCodes.add(LANGUAGE_SHORT_ENGLISH);
+    } else if (searchLanguage == SearchLanguage.all) {
+      languageCodes.clear(); // no language filter
+    }
+
+    final query = <String, String>{};
+
+    if (searchMode == ExerciseSearchMode.fulltext) {
+      query['name__search'] = name;
+    } else {
+      query['name__exact'] = name;
+    }
+
+    if (languageCodes.isNotEmpty) {
+      query['language__code'] = languageCodes.join(',');
+    }
+
+    if (categories.isNotEmpty) {
+      query['category__in'] = categories.map((c) => c.id).join(',');
+    }
+
+    query['limit'] = API_RESULTS_PAGE_SIZE;
+
+    // Send the request
+    final result = await baseProvider.fetch(
+      baseProvider.makeUrl(
+        exerciseInfoUrlPath,
+        query: query,
+      ),
+    );
+
+    return (result['results'] as List)
+        .map((e) => Exercise.fromApiDataJson(e as Map<String, dynamic>, _languages))
+        .toList();
   }
 }
 
