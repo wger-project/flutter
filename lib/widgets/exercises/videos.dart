@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/models/exercises/video.dart';
 
@@ -33,9 +34,10 @@ class ExerciseVideoWidget extends StatefulWidget {
 }
 
 class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
+  final logger = Logger('ExerciseVideoWidgetState');
+
   late VideoPlayerController _controller;
   bool hasError = false;
-  final logger = Logger('ExerciseVideoWidgetState');
 
   @override
   void initState() {
@@ -66,10 +68,14 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
   @override
   Widget build(BuildContext context) {
     return hasError
-        ? const GeneralErrorsWidget(
-            [
-              'An error happened while loading the video. If you can, please check the application logs.',
-            ],
+        ? FormHttpErrorsWidget(
+            WgerHttpException.fromMap(
+              const {
+                'error':
+                    'An error happened while loading the video. If you can, '
+                    'please check the application logs.',
+              },
+            ),
           )
         : _controller.value.isInitialized
         ? AspectRatio(

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,7 +51,7 @@ class Log {
   late int routineId;
 
   @JsonKey(required: true, name: 'session')
-  late int? sessionId;
+  int? sessionId;
 
   @JsonKey(required: true)
   int? iteration;
@@ -72,22 +72,22 @@ class Log {
   num? repetitionsTarget;
 
   @JsonKey(required: true, name: 'repetitions_unit')
-  late int? repetitionsUnitId;
+  int? repetitionsUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late RepetitionUnit? repetitionsUnitObj;
+  RepetitionUnit? repetitionsUnitObj;
 
   @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString)
-  late num? weight;
+  num? weight;
 
   @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString, name: 'weight_target')
   num? weightTarget;
 
   @JsonKey(required: true, name: 'weight_unit')
-  late int? weightUnitId;
+  int? weightUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late WeightUnit? weightUnitObj;
+  WeightUnit? weightUnitObj;
 
   @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime date;
@@ -101,41 +101,91 @@ class Log {
     this.repetitions,
     this.repetitionsTarget,
     this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
-    required this.rir,
+    this.repetitionsUnitObj,
+    this.rir,
     this.rirTarget,
     this.weight,
     this.weightTarget,
     this.weightUnitId = WEIGHT_UNIT_KG,
-    required this.date,
-  });
+    this.weightUnitObj,
+    DateTime? date,
+  }) : date = date ?? DateTime.now();
 
-  Log.empty();
-
-  Log.fromSetConfigData(SetConfigData data) {
+  Log.fromSetConfigData(SetConfigData setConfig) {
     date = DateTime.now();
     sessionId = null;
 
-    slotEntryId = data.slotEntryId;
-    exerciseBase = data.exercise;
+    slotEntryId = setConfig.slotEntryId;
+    exerciseBase = setConfig.exercise;
 
-    if (data.weight != null) {
-      weight = data.weight;
-      weightTarget = data.weight;
-    }
-    if (data.weightUnit != null) {
-      weightUnit = data.weightUnit;
+    weight = setConfig.weight;
+    weightTarget = setConfig.weight;
+    weightUnitId = setConfig.weightUnitId ?? WEIGHT_UNIT_KG;
+    weightUnitObj = setConfig.weightUnit;
+
+    repetitions = setConfig.repetitions;
+    repetitionsTarget = setConfig.repetitions;
+    repetitionsUnitId = setConfig.repetitionsUnitId ?? REP_UNIT_REPETITIONS_ID;
+    repetitionsUnitObj = setConfig.repetitionsUnit;
+
+    rir = setConfig.rir;
+    rirTarget = setConfig.rir;
+  }
+
+  Log copyWith({
+    int? id,
+    int? exerciseId,
+    int? routineId,
+    int? sessionId,
+    int? iteration,
+    int? slotEntryId,
+    num? rir,
+    num? rirTarget,
+    num? repetitions,
+    num? repetitionsTarget,
+    int? repetitionsUnitId,
+    RepetitionUnit? repetitionsUnitObj,
+    num? weight,
+    num? weightTarget,
+    int? weightUnitId,
+    WeightUnit? weightUnitObj,
+    DateTime? date,
+  }) {
+    final out = Log(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      iteration: iteration ?? this.iteration,
+      slotEntryId: slotEntryId ?? this.slotEntryId,
+      routineId: routineId ?? this.routineId,
+      repetitions: repetitions ?? this.repetitions,
+      repetitionsTarget: repetitionsTarget ?? this.repetitionsTarget,
+      repetitionsUnitId: repetitionsUnitId ?? this.repetitionsUnitId,
+      repetitionsUnitObj: repetitionsUnitObj ?? this.repetitionsUnitObj,
+      rir: rir ?? this.rir,
+      rirTarget: rirTarget ?? this.rirTarget,
+      weight: weight ?? this.weight,
+      weightTarget: weightTarget ?? this.weightTarget,
+      weightUnitId: weightUnitId ?? this.weightUnitId,
+      weightUnitObj: weightUnitObj ?? this.weightUnitObj,
+      date: date ?? this.date,
+    );
+
+    if (sessionId != null) {
+      out.sessionId = sessionId;
     }
 
-    if (data.repetitions != null) {
-      repetitions = data.repetitions;
-      repetitionsTarget = data.repetitions;
-    }
-    if (data.repetitionsUnit != null) {
-      repetitionUnit = data.repetitionsUnit;
+    if (repetitionsUnitObj != null) {
+      out.repetitionsUnitObj = repetitionsUnitObj;
+      out.repetitionsUnitId = repetitionsUnitObj.id;
     }
 
-    rir = data.rir;
-    rirTarget = data.rir;
+    if (weightUnitObj != null) {
+      out.weightUnitObj = weightUnitObj;
+      out.weightUnitId = weightUnitObj.id;
+    }
+    out.exerciseBase = exercise;
+
+    return out;
   }
 
   // Boilerplate

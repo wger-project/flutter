@@ -1,5 +1,11 @@
 name: Build Apple
 on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch/Tag to build'
+        required: true
+        default: 'master'
   workflow_call:
     inputs:
       ref:
@@ -15,12 +21,10 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
-      # This seems to be related to https://github.com/actions/runner-images/issues/12758
-      # Select appropriate Xcode version from
-      # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md#xcode
       - name: Xcode setup
-        run: |
-          sudo xcode-select --switch /Applications/Xcode_16.4.app
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
@@ -31,7 +35,7 @@ jobs:
           cd build/ios/iphoneos
           zip -r Runner.app.zip Runner.app
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: builds-ios
           path: build/ios/iphoneos/Runner.app.zip
@@ -48,20 +52,13 @@ jobs:
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
 
-      # This seems to be related to https://github.com/actions/runner-images/issues/12758
-      # Select appropriate Xcode version from
-      # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md#xcode
-      - name: Xcode setup
-        run: |
-          sudo xcode-select --switch /Applications/Xcode_16.4.app
-
       - name: Build .xcarchive
         run: |
           flutter build ipa --release --no-codesign
           cd build/ios/archive
           zip -r Runner.xcarchive.zip Runner.xcarchive
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: builds-ipa
           path: build/ios/archive/Runner.xcarchive.zip
@@ -84,7 +81,7 @@ jobs:
           cd build/macos/Build/Products/Release
           zip -r wger.app.zip wger.app
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: builds-macos
           path: build/macos/Build/Products/Release/wger.app.zip

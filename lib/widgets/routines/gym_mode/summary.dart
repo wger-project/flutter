@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,10 +24,12 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/trophies/user_trophy.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session_api.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/trophies.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
@@ -36,7 +38,6 @@ import '../logs/muscle_groups.dart';
 
 class WorkoutSummary extends ConsumerStatefulWidget {
   final _logger = Logger('WorkoutSummary');
-
   final PageController _controller;
 
   WorkoutSummary(this._controller);
@@ -48,24 +49,39 @@ class WorkoutSummary extends ConsumerStatefulWidget {
 class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
   late Future<void> _initData;
   late Routine _routine;
+  bool _didInit = false;
 
   @override
   void initState() {
     super.initState();
-    _initData = _reloadRoutineData();
   }
 
-  Future<void> _reloadRoutineData() async {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_didInit) {
+      final languageCode = Localizations.localeOf(context).languageCode;
+      _initData = _reloadRoutineData(languageCode);
+      _didInit = true;
+    }
+  }
+
+  Future<void> _reloadRoutineData(String languageCode) async {
     widget._logger.fine('Loading routine data');
     final gymState = ref.read(gymStateProvider);
 
     _routine = await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
       gymState.routine.id!,
     );
+
+    final trophyNotifier = ref.read(trophyStateProvider.notifier);
+    await trophyNotifier.fetchUserTrophies(language: languageCode);
   }
 
   @override
   Widget build(BuildContext context) {
+    final trophyState = ref.watch(trophyStateProvider);
+
     return Column(
       children: [
         NavigationHeader(
@@ -80,12 +96,20 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const BoxedProgressIndicator();
               } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}: ${snapshot.stackTrace}'));
+                widget._logger.warning(snapshot.error);
+                widget._logger.warning(snapshot.stackTrace);
+                return Center(child: Text('Error: ${snapshot.error}'));
               } else if (snapshot.connectionState == ConnectionState.done) {
+                final apiSession = _routine.sessions.firstWhereOrNull(
+                  (s) => s.session.date.isSameDayAs(clock.now()),
+                );
+                final userTrophies = trophyState.prTrophies
+                    .where((t) => t.contextData?.sessionId == apiSession?.session.id)
+                    .toList();
+
                 return WorkoutSessionStats(
-                  _routine.sessions.firstWhereOrNull(
-                    (s) => s.session.date.isSameDayAs(clock.now()),
-                  ),
+                  apiSession,
+                  userTrophies,
                 );
               }
 
@@ -102,12 +126,14 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
 class WorkoutSessionStats extends ConsumerWidget {
   final _logger = Logger('WorkoutSessionStats');
   final WorkoutSessionApi? _sessionApi;
+  final List<UserTrophy> _userPrTrophies;
 
-  WorkoutSessionStats(this._sessionApi, {super.key});
+  WorkoutSessionStats(this._sessionApi, this._userPrTrophies, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     if (_sessionApi == null) {
       return Center(
@@ -159,16 +185,19 @@ class WorkoutSessionStats extends ConsumerWidget {
             ),
           ],
         ),
-        // const SizedBox(height: 16),
-        // InfoCard(
-        //   title: 'Personal Records',
-        //   value: prCount.toString(),
-        //   color: theme.colorScheme.tertiaryContainer,
-        // ),
+        if (_userPrTrophies.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: InfoCard(
+              title: i18n.personalRecords,
+              value: _userPrTrophies.length.toString(),
+              color: theme.colorScheme.tertiaryContainer,
+            ),
+          ),
         const SizedBox(height: 10),
         MuscleGroupsCard(_sessionApi.logs),
         const SizedBox(height: 10),
-        ExercisesCard(_sessionApi),
+        ExercisesCard(_sessionApi, _userPrTrophies),
         FilledButton(
           onPressed: () {
             ref.read(gymStateProvider.notifier).clear();

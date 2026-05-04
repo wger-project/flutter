@@ -4,13 +4,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i10;
-import 'dart:ui' as _i11;
+import 'dart:ui' as _i13;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/database/exercises/exercise_database.dart' as _i3;
+import 'package:wger/models/core/search_options.dart' as _i11;
 import 'package:wger/models/exercises/category.dart' as _i5;
 import 'package:wger/models/exercises/equipment.dart' as _i6;
 import 'package:wger/models/exercises/exercise.dart' as _i4;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i12;
 import 'package:wger/models/exercises/language.dart' as _i8;
 import 'package:wger/models/exercises/muscle.dart' as _i7;
 import 'package:wger/providers/base_provider.dart' as _i2;
@@ -109,12 +111,12 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
           as List<_i4.Exercise>);
 
   @override
-  Map<int, List<_i4.Exercise>> get exerciseByVariation =>
+  Map<String, List<_i4.Exercise>> get exerciseByVariation =>
       (super.noSuchMethod(
             Invocation.getter(#exerciseByVariation),
-            returnValue: <int, List<_i4.Exercise>>{},
+            returnValue: <String, List<_i4.Exercise>>{},
           )
-          as Map<int, List<_i4.Exercise>>);
+          as Map<String, List<_i4.Exercise>>);
 
   @override
   List<_i5.ExerciseCategory> get categories =>
@@ -218,14 +220,14 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
           as _i4.Exercise);
 
   @override
-  List<_i4.Exercise> findExercisesByVariationId(
-    int? variationId, {
+  List<_i4.Exercise> findExercisesByVariationGroup(
+    String? variationGroup, {
     int? exerciseIdToExclude,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
-              #findExercisesByVariationId,
-              [variationId],
+              #findExercisesByVariationGroup,
+              [variationGroup],
               {#exerciseIdToExclude: exerciseIdToExclude},
             ),
             returnValue: <_i4.Exercise>[],
@@ -352,7 +354,7 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
           as _i10.Future<_i4.Exercise>);
 
   @override
-  _i10.Future<void> initCacheTimesLocalPrefs({dynamic forceInit = false}) =>
+  _i10.Future<void> initCacheTimesLocalPrefs({bool? forceInit = false}) =>
       (super.noSuchMethod(
             Invocation.method(#initCacheTimesLocalPrefs, [], {
               #forceInit: forceInit,
@@ -460,13 +462,38 @@ class MockExercisesProvider extends _i1.Mock implements _i9.ExercisesProvider {
           as _i10.Future<List<_i4.Exercise>>);
 
   @override
-  void addListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  _i10.Future<List<_i4.Exercise>> searchExerciseWithSearchMode(
+    String? name, {
+    String? languageCode = 'en',
+    _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.currentAndEnglish,
+    _i12.ExerciseSearchMode? searchMode = _i12.ExerciseSearchMode.fulltext,
+    Set<_i5.ExerciseCategory>? categories = const {},
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseWithSearchMode,
+              [name],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #categories: categories,
+              },
+            ),
+            returnValue: _i10.Future<List<_i4.Exercise>>.value(
+              <_i4.Exercise>[],
+            ),
+          )
+          as _i10.Future<List<_i4.Exercise>>);
+
+  @override
+  void addListener(_i13.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i13.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );

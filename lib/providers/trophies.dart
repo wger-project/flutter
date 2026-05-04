@@ -1,0 +1,179 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:logging/logging.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/trophies/trophy.dart';
+import 'package:wger/models/trophies/user_trophy.dart';
+import 'package:wger/models/trophies/user_trophy_progression.dart';
+import 'package:wger/providers/wger_base_riverpod.dart';
+
+import 'base_provider.dart';
+
+part 'trophies.g.dart';
+
+class TrophyState {
+  final _logger = Logger('TrophyState');
+
+  final List<Trophy> trophies;
+  final List<UserTrophy> userTrophies;
+  final List<UserTrophyProgression> trophyProgression;
+
+  TrophyState({
+    this.trophies = const [],
+    this.userTrophies = const [],
+    this.trophyProgression = const [],
+  });
+
+  TrophyState copyWith({
+    List<Trophy>? trophies,
+    List<UserTrophy>? userTrophies,
+    List<UserTrophyProgression>? trophyProgression,
+  }) {
+    return TrophyState(
+      trophies: trophies ?? this.trophies,
+      userTrophies: userTrophies ?? this.userTrophies,
+      trophyProgression: trophyProgression ?? this.trophyProgression,
+    );
+  }
+
+  List<UserTrophy> get prTrophies =>
+      userTrophies.where((t) => t.trophy.type == TrophyType.pr).toList();
+
+  List<UserTrophy> get nonPrTrophies =>
+      userTrophies.where((t) => t.trophy.type != TrophyType.pr).toList();
+}
+
+class TrophyRepository {
+  final _logger = Logger('TrophyRepository');
+
+  final WgerBaseProvider base;
+  final trophiesPath = 'trophy';
+  final userTrophiesPath = 'user-trophy';
+  final userTrophyProgressionPath = 'trophy/progress';
+
+  TrophyRepository(this.base);
+
+  Future<List<Trophy>> fetchTrophies({String? language}) async {
+    try {
+      final url = base.makeUrl(trophiesPath, query: {'limit': API_MAX_PAGE_SIZE});
+      final trophyData = await base.fetchPaginated(url, language: language);
+      return trophyData.map((e) => Trophy.fromJson(e)).toList();
+    } catch (e, stk) {
+      _logger.warning('Error fetching trophies:', e, stk);
+      return [];
+    }
+  }
+
+  Future<List<UserTrophy>> fetchUserTrophies({
+    Map<String, String>? filterQuery,
+    String? language,
+  }) async {
+    final query = {'limit': API_MAX_PAGE_SIZE};
+    if (filterQuery != null) {
+      query.addAll(filterQuery);
+    }
+
+    try {
+      final url = base.makeUrl(userTrophiesPath, query: query);
+      final trophyData = await base.fetchPaginated(url, language: language);
+      return trophyData.map((e) => UserTrophy.fromJson(e)).toList();
+    } catch (e, stk) {
+      _logger.warning('Error fetching user trophies:');
+      _logger.warning(e);
+      _logger.warning(stk);
+      return [];
+    }
+  }
+
+  Future<List<UserTrophyProgression>> fetchProgression({
+    Map<String, String>? filterQuery,
+    String? language,
+  }) async {
+    try {
+      final url = base.makeUrl(userTrophyProgressionPath, query: filterQuery);
+      final List<dynamic> data = await base.fetch(url, language: language);
+      return data.map((e) => UserTrophyProgression.fromJson(e)).toList();
+    } catch (e, stk) {
+      _logger.warning('Error fetching user trophy progression:', e, stk);
+      return [];
+    }
+  }
+
+  List<Trophy> filterByType(List<Trophy> list, TrophyType type) =>
+      list.where((t) => t.type == type).toList();
+}
+
+@riverpod
+TrophyRepository trophyRepository(Ref ref) {
+  final base = ref.read(wgerBaseProvider);
+  return TrophyRepository(base);
+}
+
+@Riverpod(keepAlive: true)
+final class TrophyStateNotifier extends _$TrophyStateNotifier {
+  final _logger = Logger('TrophyStateNotifier');
+
+  @override
+  TrophyState build() {
+    return TrophyState();
+  }
+
+  Future<void> fetchAll({String? language}) async {
+    await Future.wait([
+      fetchTrophies(language: language),
+      fetchUserTrophies(language: language),
+      fetchTrophyProgression(language: language),
+    ]);
+  }
+
+  /// Fetch all available trophies
+  Future<List<Trophy>> fetchTrophies({String? language}) async {
+    _logger.finer('Fetching trophies');
+
+    final repo = ref.read(trophyRepositoryProvider);
+    final result = await repo.fetchTrophies(language: language);
+    state = state.copyWith(trophies: result);
+    return result;
+  }
+
+  /// Fetch trophies awarded to the user, excludes hidden trophies
+  Future<List<UserTrophy>> fetchUserTrophies({String? language}) async {
+    _logger.finer('Fetching user trophies');
+
+    final repo = ref.read(trophyRepositoryProvider);
+    final result = await repo.fetchUserTrophies(
+      filterQuery: {'trophy__is_hidden': 'false'}, //'trophy__is_repeatable': 'false'
+      language: language,
+    );
+    state = state.copyWith(userTrophies: result);
+    return result;
+  }
+
+  /// Fetch trophy progression for the user
+  Future<List<UserTrophyProgression>> fetchTrophyProgression({String? language}) async {
+    _logger.finer('Fetching user trophy progression');
+
+    // Note that repeatable trophies are filtered out in the backend
+    final repo = ref.read(trophyRepositoryProvider);
+    final result = await repo.fetchProgression(language: language);
+    state = state.copyWith(trophyProgression: result);
+    return result;
+  }
+}

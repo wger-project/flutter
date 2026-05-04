@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2025 - 2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,21 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/base_provider.dart';
 
-part 'weight_unit.g.dart';
-
-@JsonSerializable()
-class WeightUnit {
-  @JsonKey(required: true)
-  final int id;
-
-  @JsonKey(required: true)
-  final String name;
-
-  const WeightUnit({required this.id, required this.name});
-
-  // Boilerplate
-  factory WeightUnit.fromJson(Map<String, dynamic> json) => _$WeightUnitFromJson(json);
-  Map<String, dynamic> toJson() => _$WeightUnitToJson(this);
-}
+/// Central provider that maps an existing [AuthProvider] (from the provider package)
+/// to a [WgerBaseProvider] used by repositories.
+///
+/// Usage: ref.watch(wgerBaseProvider(authProvider))
+final wgerBaseProvider = Provider<WgerBaseProvider>((ref) {
+  throw UnimplementedError(
+    'Override wgerBaseProvider in a ProviderScope with your existing WgerBaseProvider instance',
+  );
+});

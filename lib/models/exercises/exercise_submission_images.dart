@@ -25,7 +25,8 @@ enum ImageType {
   threeD(id: 2, label: '3D', icon: Icons.view_in_ar),
   line(id: 3, label: 'Line', icon: Icons.show_chart),
   lowPoly(id: 4, label: 'Low-Poly', icon: Icons.filter_vintage),
-  other(id: 5, label: 'Other', icon: Icons.more_horiz);
+  other(id: 5, label: 'Other', icon: Icons.more_horiz)
+  ;
 
   const ImageType({required this.id, required this.label, required this.icon});
 

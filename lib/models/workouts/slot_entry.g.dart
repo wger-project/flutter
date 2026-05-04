@@ -102,6 +102,7 @@ Map<String, dynamic> _$SlotEntryToJson(SlotEntry instance) => <String, dynamic>{
 
 const _$SlotEntryTypeEnumMap = {
   SlotEntryType.normal: 'normal',
+  SlotEntryType.warmup: 'warmup',
   SlotEntryType.dropset: 'dropset',
   SlotEntryType.myo: 'myo',
   SlotEntryType.partial: 'partial',

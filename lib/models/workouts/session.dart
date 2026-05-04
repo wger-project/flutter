@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -62,14 +64,14 @@ class WorkoutSession {
     this.id,
     this.dayId,
     required this.routineId,
-    this.impression = 2,
+    this.impression = DEFAULT_IMPRESSION,
     this.notes = '',
     this.timeStart,
     this.timeEnd,
     this.logs = const <Log>[],
     DateTime? date,
   }) {
-    this.date = date ?? DateTime.now();
+    this.date = date ?? clock.now();
   }
 
   Duration? get duration {

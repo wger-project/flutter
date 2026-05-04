@@ -429,7 +429,10 @@ typedef $$IngredientsTableProcessedTableManager =
       $$IngredientsTableAnnotationComposer,
       $$IngredientsTableCreateCompanionBuilder,
       $$IngredientsTableUpdateCompanionBuilder,
-      (IngredientTable, BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>),
+      (
+        IngredientTable,
+        BaseReferences<_$IngredientDatabase, $IngredientsTable, IngredientTable>,
+      ),
       IngredientTable,
       PrefetchHooks Function()
     >;
