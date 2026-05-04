@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2025 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,18 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
+import 'package:flutter/material.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/trophies/trophies_overview.dart';
 
-part 'variation.g.dart';
+class TrophyScreen extends StatelessWidget {
+  const TrophyScreen();
 
-@JsonSerializable()
-class Variation {
-  @JsonKey(required: true)
-  final int id;
+  static const routeName = '/trophies';
 
-  const Variation({required this.id});
-
-  // Boilerplate
-  factory Variation.fromJson(Map<String, dynamic> json) => _$VariationFromJson(json);
-  Map<String, dynamic> toJson() => _$VariationToJson(this);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: EmptyAppBar(AppLocalizations.of(context).trophies),
+      body: const WidescreenWrapper(child: TrophiesOverview()),
+    );
+  }
 }

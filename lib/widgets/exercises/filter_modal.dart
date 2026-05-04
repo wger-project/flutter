@@ -72,6 +72,7 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
                     onChanged: (_) {
                       setState(() {
                         filterCategory.items.update(currentEntry.key, (value) => !value);
+
                         Provider.of<ExercisesProvider>(context, listen: false).setFilters(filters);
                       });
                     },

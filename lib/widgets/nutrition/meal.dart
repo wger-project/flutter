@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -229,20 +229,17 @@ class MealItemEditableFullTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(x): add real support for weight units
-    /*
-    String unit = _item.weightUnitId == null
-        ? AppLocalizations.of(context).g
-        : _item.weightUnitObj!.weightUnit.name;
-
-     */
-    final String unit = AppLocalizations.of(context).g;
     final values = _item.nutritionalValues;
+    final i18n = AppLocalizations.of(context);
+
+    final String amountText = _item.weightUnitObj != null
+        ? '${_item.amount.toStringAsFixed(0)} × ${_item.weightUnitObj!.name}'
+        : i18n.gValue(_item.amount.toStringAsFixed(0));
 
     return NutritionTile(
       leading: IngredientAvatar(ingredient: _item.ingredient),
       title: Text(
-        '${_item.amount.toStringAsFixed(0)}$unit ${_item.ingredient.name}',
+        '$amountText ${_item.ingredient.name}',
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.left,
       ),
@@ -252,7 +249,7 @@ class MealItemEditableFullTile extends StatelessWidget {
       trailing: _editing
           ? IconButton(
               icon: const Icon(Icons.delete, size: ICON_SIZE_SMALL),
-              tooltip: AppLocalizations.of(context).delete,
+              tooltip: i18n.delete,
               iconSize: ICON_SIZE_SMALL,
               onPressed: () {
                 // Delete the meal item
@@ -262,7 +259,7 @@ class MealItemEditableFullTile extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      AppLocalizations.of(context).successfullyDeleted,
+                      i18n.successfullyDeleted,
                       textAlign: TextAlign.center,
                     ),
                   ),

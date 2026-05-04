@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +25,10 @@ import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/helpers/uuid.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
+import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
+import 'package:wger/providers/gym_log_state.dart';
 
 part 'gym_state.g.dart';
 
@@ -113,7 +133,11 @@ class SlotPageEntry {
     this.setConfigData,
     this.logDone = false,
     String? uuid,
-  }) : uuid = uuid ?? uuidV4();
+  }) : assert(
+         type != SlotPageType.log || setConfigData != null,
+         'You need to set setConfigData for SlotPageType.log',
+       ),
+       uuid = uuid ?? uuidV4();
 
   SlotPageEntry copyWith({
     String? uuid,
@@ -463,7 +487,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     pages.add(PageEntry(type: PageType.workoutSummary, pageIndex: pageIndex + 1));
 
     state = state.copyWith(pages: pages);
-    // _logger.finer(readPageStructure());
+    // print(readPageStructure());
     _logger.finer('Initialized ${state.pages.length} pages');
   }
 
@@ -555,6 +579,17 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setCurrentPage(int page) {
     state = state.copyWith(currentPage: page);
+
+    // Ensure that there is a log entry for the current slot entry
+    final slotEntryPage = state.getSlotEntryPageByIndex();
+    if (slotEntryPage == null || slotEntryPage.setConfigData == null) {
+      return;
+    }
+
+    final log = Log.fromSetConfigData(slotEntryPage.setConfigData!);
+    log.routineId = state.routine.id!;
+    log.iteration = state.iteration;
+    ref.read(gymLogProvider.notifier).setLog(log);
   }
 
   void setShowExercisePages(bool value) {

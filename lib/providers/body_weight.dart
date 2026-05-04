@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -115,7 +115,7 @@ class BodyWeightProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       _entries.insert(existingEntryIndex, existingWeightEntry);
       notifyListeners();
-      throw WgerHttpException(response.body);
+      throw WgerHttpException(response);
     }
   }
 }

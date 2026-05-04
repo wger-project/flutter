@@ -41,6 +41,9 @@ final ingredient1 = Ingredient(
   fatSaturated: 7,
   fiber: 12,
   sodium: 0.5,
+  isVegan: true,
+  isVegetarian: true,
+  nutriscore: NutriScore.a,
 );
 final ingredient2 = Ingredient(
   remoteId: '2',
@@ -92,6 +95,9 @@ final muesli = Ingredient(
   fatSaturated: 7,
   fiber: 12,
   sodium: 0.5,
+  isVegan: true,
+  isVegetarian: true,
+  nutriscore: NutriScore.b,
 );
 final milk = Ingredient(
   remoteId: '1',
@@ -109,6 +115,8 @@ final milk = Ingredient(
   fatSaturated: 7,
   fiber: 12,
   sodium: 0.5,
+  isVegetarian: true,
+  nutriscore: NutriScore.c,
 );
 final apple = Ingredient(
   remoteId: '1',

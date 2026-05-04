@@ -21,7 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
@@ -97,7 +97,7 @@ void main() {
     when(mockAddExerciseProvider.primaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.secondaryMuscles).thenReturn([]);
     when(mockAddExerciseProvider.variationConnectToExercise).thenReturn(null);
-    when(mockAddExerciseProvider.variationId).thenReturn(null);
+    when(mockAddExerciseProvider.variationGroup).thenReturn(null);
     when(mockAddExerciseProvider.category).thenReturn(null);
     when(mockAddExerciseProvider.languageEn).thenReturn(null);
     when(mockAddExerciseProvider.languageTranslation).thenReturn(null);
@@ -422,7 +422,7 @@ void main() {
     testWidgets('Failed submission displays error message', (WidgetTester tester) async {
       // Setup: Create verified user and mock failed submission
       setupFullVerifiedUserContext();
-      final httpException = WgerHttpException({
+      final httpException = WgerHttpException.fromMap({
         'name': ['This field is required'],
       });
       when(mockAddExerciseProvider.postExerciseToServer()).thenThrow(httpException);
