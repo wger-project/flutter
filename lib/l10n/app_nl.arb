@@ -28,9 +28,7 @@
         "description": "Error message when the user enters an invalid email"
     },
     "confirmPassword": "Bevestig wachtwoord",
-    "@confirmPassword": {},
     "userProfile": "Jouw profiel",
-    "@userProfile": {},
     "useDefaultServer": "Gebruik standaard server",
     "@useDefaultServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
@@ -40,15 +38,12 @@
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "password": "Wachtwoord",
-    "@password": {},
     "invalidUrl": "Vul een geldige URL in",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
     },
     "email": "E-mailadres",
-    "@email": {},
     "username": "Gebruikersnaam",
-    "@username": {},
     "invalidUsername": "Vul een geldige gebruikersnaam in",
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
@@ -62,7 +57,6 @@
         "description": "Message when an item was successfully saved"
     },
     "exerciseList": "Oefeningen lijst",
-    "@exerciseList": {},
     "exercise": "Oefening",
     "@exercise": {
         "description": "An exercise for a workout"
@@ -92,21 +86,15 @@
         "description": "(main) muscles trained by an exercise"
     },
     "selectAvailablePlates": "Selecteer beschikbare platen",
-    "@selectAvailablePlates": {},
     "barWeight": "Gewicht stang",
-    "@barWeight": {},
     "useColors": "Gebruik kleuren",
-    "@useColors": {},
     "useApiToken": "Gebruik API Token",
-    "@useApiToken": {},
     "useUsernameAndPassword": "Gebruik gebruikersnaam en wachtwoord",
-    "@useUsernameAndPassword": {},
     "comment": "Commentaar",
     "@comment": {
         "description": "Comment, additional information"
     },
     "apiToken": "API Token",
-    "@apiToken": {},
     "invalidApiToken": "Voer alstublieft een correcte API key in",
     "@invalidApiToken": {
         "description": "Error message when the user enters an invalid API key"
@@ -124,9 +112,7 @@
         "description": "Button text allowing the user to reset the entered values to the default"
     },
     "registerInstead": "Nog geen account? Registreer nu",
-    "@registerInstead": {},
     "loginInstead": "Heeft u al een account? Login",
-    "@loginInstead": {},
     "labelBottomNavWorkout": "Workout",
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
@@ -156,13 +142,11 @@
         "description": "Label on set form. Selected exercises are added to the set"
     },
     "noIngredientsDefined": "Nog geen ingrediënten gedefinieerd",
-    "@noIngredientsDefined": {},
     "noMatchingExerciseFound": "Geen overeenkomende oefeningen gevonden",
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
     "searchNamesInEnglish": "Zoek ook voor namen in het Engels",
-    "@searchNamesInEnglish": {},
     "equipment": "Uitrusting",
     "@equipment": {
         "description": "Equipment needed to perform an exercise"
@@ -176,43 +160,24 @@
         "description": "The start date of a nutritional plan or routine"
     },
     "dayTypeCustom": "Aangepast",
-    "@dayTypeCustom": {},
     "dayTypeEnom": "Elke minuut op de minuut",
-    "@dayTypeEnom": {},
     "dayTypeAmrap": "Zoveel mogelijk rondes mogelijk",
-    "@dayTypeAmrap": {},
     "dayTypeHiit": "Hoge intensiteit interval training",
-    "@dayTypeHiit": {},
     "dayTypeTabata": "Tabata",
-    "@dayTypeTabata": {},
     "dayTypeEdt": "Escaleerende dichtheids training",
-    "@dayTypeEdt": {},
     "dayTypeRft": "Rondes voor tijd",
-    "@dayTypeRft": {},
     "dayTypeAfap": "Zo snel mogelijk",
-    "@dayTypeAfap": {},
     "slotEntryTypeNormal": "Normaal",
-    "@slotEntryTypeNormal": {},
     "slotEntryTypeDropset": "Dropset",
-    "@slotEntryTypeDropset": {},
     "slotEntryTypePartial": "Deels",
-    "@slotEntryTypePartial": {},
     "slotEntryTypeForced": "Verplicht",
-    "@slotEntryTypeForced": {},
     "slotEntryTypeTut": "Tijd onder spanning",
-    "@slotEntryTypeTut": {},
     "slotEntryTypeIso": "Isometrische houding",
-    "@slotEntryTypeIso": {},
     "slotEntryTypeJump": "Springen",
-    "@slotEntryTypeJump": {},
     "routines": "Routines",
-    "@routines": {},
     "newRoutine": "Nieuwe routine",
-    "@newRoutine": {},
     "noRoutines": "U heeft geen routines",
-    "@noRoutines": {},
     "restTime": "Rust tijd",
-    "@restTime": {},
     "sets": "Sets",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
@@ -226,17 +191,13 @@
         "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
     },
     "useMetric": "Gebruik metrische eenheden voor lichaamsgewicht",
-    "@useMetric": {},
     "weightUnit": "Gewichtseenheid",
-    "@weightUnit": {},
     "repetitionUnit": "Herhalingseenheid",
-    "@repetitionUnit": {},
     "set": "Set",
     "@set": {
         "description": "A set in a workout plan"
     },
     "dayDescriptionHelp": "Een beschrijving van wat er deze dag is gedaan (b.v. 'pull dag') of welk lichaamsdeel getraind is (b.v. 'borst en schouders')",
-    "@dayDescriptionHelp": {},
     "exerciseNr": "Oefening {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -258,13 +219,9 @@
         }
     },
     "sameRepetitions": "Als je dezelfde herhalingen en gewichten gebruikt voor alle sets kan je één rij invullen. Voor 4 sets kan je bijvoorbeeld 10 invullen voor de herhalingen, dit wordt dan automatisch \"4 x 10\".",
-    "@sameRepetitions": {},
     "impressionGood": "Goed",
-    "@impressionGood": {},
     "impressionNeutral": "Neutraal",
-    "@impressionNeutral": {},
     "impressionBad": "Slecht",
-    "@impressionBad": {},
     "impression": "Impressie",
     "@impression": {
         "description": "General impression (e.g. for a workout session) such as good, bad, etc."
@@ -278,49 +235,31 @@
         "description": "A (logged) workout session"
     },
     "restDay": "Rust dag",
-    "@restDay": {},
     "isRestDay": "Is rust dag",
-    "@isRestDay": {},
     "isRestDayHelp": "Houd er rekening mee dat alle sets en oefeningen verwijderd worden als u deze dag markeert als rust dag.",
-    "@isRestDayHelp": {},
     "needsLogsToAdvance": "Vereist logs om door te gaan",
-    "@needsLogsToAdvance": {},
     "needsLogsToAdvanceHelp": "Selecteer als je wilt dat de routine alleen doorgaat naar de volgende dag als je voor de dag een workout hebt vastgelegd",
-    "@needsLogsToAdvanceHelp": {},
     "routineDays": "Dagen in routine",
-    "@routineDays": {},
     "resultingRoutine": "Resulterende routine",
-    "@resultingRoutine": {},
     "newDay": "Nieuwe dag",
-    "@newDay": {},
     "newSet": "Nieuwe set",
     "@newSet": {
         "description": "Header when adding a new set to a workout day"
     },
     "selectExercises": "Als je een superset wilt doen kan je naar verschillende oefeningen zoeken, en kan je ze samen groeperen",
-    "@selectExercises": {},
     "gymMode": "Gym modus",
     "@gymMode": {
         "description": "Label when starting the gym mode"
     },
     "gymModeShowExercises": "Toon oefeningsoverzicht paginas",
-    "@gymModeShowExercises": {},
     "gymModeShowTimer": "Toon timer tussen sets",
-    "@gymModeShowTimer": {},
     "gymModeTimerType": "Timer type",
-    "@gymModeTimerType": {},
     "gymModeTimerTypeHelText": "Als een set pauze tijd heeft, wordt altijd een afteller gebruikt.",
-    "@gymModeTimerTypeHelText": {},
     "countdown": "Afteller",
-    "@countdown": {},
     "stopwatch": "Stopwatch",
-    "@stopwatch": {},
     "gymModeDefaultCountdownTime": "Standaard afteltijd, in secondes",
-    "@gymModeDefaultCountdownTime": {},
     "gymModeNotifyOnCountdownFinish": "Notificeer op einde aftelling",
-    "@gymModeNotifyOnCountdownFinish": {},
     "duration": "Duur",
-    "@duration": {},
     "durationHoursMinutes": "{hours}u {minutes}m",
     "@durationHoursMinutes": {
         "description": "A duration, in hours and minutes",
@@ -339,7 +278,6 @@
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
     "workoutCompleted": "Workout voltooid",
-    "@workoutCompleted": {},
     "plateCalculator": "Platen",
     "@plateCalculator": {
         "description": "Label used for the plate calculator in the gym mode"
@@ -357,61 +295,43 @@
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
     "todaysWorkout": "Uw workout vandaag",
-    "@todaysWorkout": {},
     "logHelpEntries": "Als er op een enkele dag meerdere oefeningen met hetzelfde aantal herhalingen, maar verschillende gewichten zijn, wordt in het diagram alleen de oefening met het hoogste gewicht weergegeven.",
-    "@logHelpEntries": {},
     "logHelpEntriesUnits": "Let op: alleen gegevens met een gewichtseenheid (kg of lb) en herhalingen worden weergegeven; andere combinaties, zoals tijd of tot uitputting, worden hier buiten beschouwing gelaten.",
-    "@logHelpEntriesUnits": {},
     "description": "Beschrijving",
-    "@description": {},
     "name": "Naam",
     "@name": {
         "description": "Name for a workout or nutritional plan"
     },
     "save": "Opslaan",
-    "@save": {},
     "verify": "Bevestig",
-    "@verify": {},
     "addSet": "Set toevoegen",
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
     },
     "addMeal": "Maaltijd toevoegen",
-    "@addMeal": {},
     "mealLogged": "Maaltijd geregistreerd in dagboek",
-    "@mealLogged": {},
     "ingredientLogged": "Ingrediënten geregistreerd in dagboek",
-    "@ingredientLogged": {},
     "logMeal": "Noteer de maaltijd in je voedingsdagboek",
-    "@logMeal": {},
     "addIngredient": "Voeg ingrediënt toe",
-    "@addIngredient": {},
     "logIngredient": "Noteer ingrediënt in je voedingsdagboek",
-    "@logIngredient": {},
     "searchIngredient": "Zoek ingrediënt",
     "@searchIngredient": {
         "description": "Label on ingredient search form"
     },
     "nutritionalPlan": "Voedingsplan",
-    "@nutritionalPlan": {},
     "nutritionalDiary": "Voedingsdagboek",
-    "@nutritionalDiary": {},
     "nutritionalPlans": "Voedingsplannen",
-    "@nutritionalPlans": {},
     "noNutritionalPlans": "U heeft geen voedingsplannen",
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
     "onlyLogging": "Alleen calorieën bijhouden",
-    "@onlyLogging": {},
     "onlyLoggingHelpText": "Vink dit vakje aan als u alleen uw calorieën wilt registreren en geen gedetailleerd voedingsplan met specifieke maaltijden wilt opstellen",
-    "@onlyLoggingHelpText": {},
     "goalMacro": "Macro doelen",
     "@goalMacro": {
         "description": "The goal for macronutrients"
     },
     "selectMealToLog": "Selecteer een maaltijd om in je dagboek te registreren",
-    "@selectMealToLog": {},
     "yourCurrentNutritionPlanHasNoMealsDefinedYet": "In je huidige voedingsplan zijn geen maaltijden vastgelegd",
     "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
         "description": "Message shown when a nutrition plan doesn't have any meals"
@@ -421,39 +341,24 @@
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
     "goalEnergy": "Energie doel",
-    "@goalEnergy": {},
     "goalProtein": "Proteïne doel",
-    "@goalProtein": {},
     "goalCarbohydrates": "Koolhydratendoel",
-    "@goalCarbohydrates": {},
     "goalFat": "Vet doel",
-    "@goalFat": {},
     "goalFiber": "Vezel doel",
-    "@goalFiber": {},
     "anErrorOccurred": "Er is een fout opgetreden!",
-    "@anErrorOccurred": {},
     "errorInfoDescription": "Het spijt ons, maar er is iets misgegaan. Je kunt ons helpen dit op te lossen door het probleem te melden op GitHub.",
-    "@errorInfoDescription": {},
     "errorInfoDescription2": "Je kunt de app blijven gebruiken, maar sommige functies werken mogelijk niet.",
-    "@errorInfoDescription2": {},
     "errorViewDetails": "Technische details",
-    "@errorViewDetails": {},
     "applicationLogs": "Applicatie logboek",
-    "@applicationLogs": {},
     "errorCouldNotConnectToServer": "Kon niet verbinden met de server",
-    "@errorCouldNotConnectToServer": {},
     "errorCouldNotConnectToServerDetails": "De applicatie kon geen verbinding maken met de server. Controleer uw internetverbinding of de server-URL en probeer het opnieuw. Als het probleem aanhoudt, neem dan contact op met de serverbeheerder.",
-    "@errorCouldNotConnectToServerDetails": {},
     "copyToClipboard": "Kopieer naar klembord",
-    "@copyToClipboard": {},
     "weight": "Gewicht",
     "@weight": {
         "description": "The weight of a workout log or body weight entry"
     },
     "min": "Min",
-    "@min": {},
     "max": "Max",
-    "@max": {},
     "chartAllTimeTitle": "{name} over gehele tijd",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
@@ -488,15 +393,12 @@
         }
     },
     "measurement": "Meting",
-    "@measurement": {},
     "measurements": "Metingen",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
     },
     "measurementCategoriesHelpText": "Meetcategorie, zoals 'biceps' of 'lichaamsvet'",
-    "@measurementCategoriesHelpText": {},
     "measurementEntriesHelpText": "De eenheid die wordt gebruikt om de categorie te meten, zoals 'cm' of '%'",
-    "@measurementEntriesHelpText": {},
     "date": "Datum",
     "@date": {
         "description": "The date of a workout log or body weight entry"
@@ -530,9 +432,7 @@
         "description": "The end time of a workout"
     },
     "timeStartAhead": "De begintijd mag niet voor de eindtijd liggen",
-    "@timeStartAhead": {},
     "ingredient": "Ingrediënt",
-    "@ingredient": {},
     "energy": "Energie",
     "@energy": {
         "description": "Energy in a meal, ingredient etc. e.g. in kJ"
@@ -542,7 +442,6 @@
         "description": "The first letter or short name of the word 'Energy', used in overviews"
     },
     "macronutrients": "Macronutriënten",
-    "@macronutrients": {},
     "planned": "Gepland",
     "@planned": {
         "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
@@ -552,9 +451,7 @@
         "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
     },
     "today": "Vandaag",
-    "@today": {},
     "loggedToday": "Vandaag gelogd",
-    "@loggedToday": {},
     "weekAverage": "7 dagen gemiddelde",
     "@weekAverage": {
         "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
@@ -568,9 +465,7 @@
         "description": "Caloric deficit (either planned or unplanned)"
     },
     "difference": "Verschil",
-    "@difference": {},
     "percentEnergy": "Procent energie",
-    "@percentEnergy": {},
     "gPerBodyKg": "g per lichaams kg",
     "@gPerBodyKg": {
         "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
@@ -622,31 +517,24 @@
         }
     },
     "protein": "Proteïne",
-    "@protein": {},
     "proteinShort": "P",
     "@proteinShort": {
         "description": "The first letter or short name of the word 'Protein', used in overviews"
     },
     "carbohydrates": "Koolhydraten",
-    "@carbohydrates": {},
     "carbohydratesShort": "K",
     "@carbohydratesShort": {
         "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
     },
     "sugars": "Suikers",
-    "@sugars": {},
     "fat": "Vet",
-    "@fat": {},
     "fatShort": "V",
     "@fatShort": {
         "description": "The first letter or short name of the word 'Fat', used in overviews"
     },
     "saturatedFat": "Verzadigd vet",
-    "@saturatedFat": {},
     "fiber": "Vezels",
-    "@fiber": {},
     "sodium": "Natrium",
-    "@sodium": {},
     "amount": "Hoeveelheid",
     "@amount": {
         "description": "The amount (e.g. in grams) of an ingredient in a meal"
@@ -664,19 +552,16 @@
         "description": "Message shown when the user has no logged weight entries"
     },
     "noMeasurementEntries": "U heeft geen meetgegevens ingevoerd",
-    "@noMeasurementEntries": {},
     "moreMeasurementEntries": "Nieuwe meting toevoegen",
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
     },
     "edit": "Wijzig",
-    "@edit": {},
     "loadingText": "Laden...",
     "@loadingText": {
         "description": "Text to show when entries are being loaded in the background: Loading..."
     },
     "delete": "Verwijder",
-    "@delete": {},
     "confirmDelete": "Weet je zeker dat je '{toDelete}' wilt verwijderen?",
     "@confirmDelete": {
         "description": "Confirmation text before the user deletes an object",
@@ -688,45 +573,29 @@
         }
     },
     "newNutritionalPlan": "Nieuw voedingsplan",
-    "@newNutritionalPlan": {},
     "overview": "Overzicht",
-    "@overview": {},
     "toggleDetails": "Schakel details in",
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"
     },
     "goToDetailPage": "Ga naar detail pagina",
-    "@goToDetailPage": {},
     "aboutWhySupportTitle": "Open Source & gratis te gebruiken ❤️",
-    "@aboutWhySupportTitle": {},
     "aboutDescription": "Bedankt voor het gebruiken van wger! wger is een collaboratief open source project, gemaakt door fitness fans van over de hele wereld.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
     },
     "aboutDonateTitle": "Maak een donatie",
-    "@aboutDonateTitle": {},
     "aboutDonateText": "Hoewel het project gratis is en dat ook altijd zal blijven, zijn de kosten voor het draaien van de server dat niet! De ontwikkeling vergt bovendien veel tijd en inzet van vrijwilligers. Uw bijdrage dekt deze kosten direct en helpt de betrouwbaarheid van de dienst te waarborgen.",
-    "@aboutDonateText": {},
     "aboutContributeTitle": "Bijdragen",
-    "@aboutContributeTitle": {},
     "aboutContributeText": "Alle soorten bijdragen zijn welkom. Of je nu ontwikkelaar bent, vertaler of gewoon een fitnessliefhebber, elke vorm van steun wordt gewaardeerd!",
-    "@aboutContributeText": {},
     "aboutBugsListTitle": "Meld een probleem of stel een functie voor",
-    "@aboutBugsListTitle": {},
     "aboutTranslationListTitle": "Vertaal de applicatie",
-    "@aboutTranslationListTitle": {},
     "aboutSourceListTitle": "Bekijk broncode",
-    "@aboutSourceListTitle": {},
     "aboutJoinCommunityTitle": "Sluit je aan bij de community",
-    "@aboutJoinCommunityTitle": {},
     "aboutMastodonTitle": "Mastodon",
-    "@aboutMastodonTitle": {},
     "aboutDiscordTitle": "Discord",
-    "@aboutDiscordTitle": {},
     "others": "Anderen",
-    "@others": {},
     "calendar": "Kalender",
-    "@calendar": {},
     "goToToday": "Ga naar vandaag",
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"
@@ -736,7 +605,6 @@
         "description": "Error message when the user hasn't entered a value on a required field"
     },
     "selectEntry": "Selecteer een entry",
-    "@selectEntry": {},
     "selectExercise": "Selecteer een oefening",
     "@selectExercise": {
         "description": "Error message when the user hasn't selected an exercise in the form"
@@ -778,7 +646,6 @@
         }
     },
     "baseNameEnglish": "Alle oefeningen moeten een basisnaam in het Engels hebben",
-    "@baseNameEnglish": {},
     "nrOfSets": "Sets per oefening: {nrOfSets}",
     "@nrOfSets": {
         "description": "Label shown on the slider where the user selects the nr of sets",
@@ -815,21 +682,15 @@
         "description": "Label for the popup with general app options"
     },
     "takePicture": "Neem een foto",
-    "@takePicture": {},
     "chooseFromLibrary": "Kies uit foto galerij",
-    "@chooseFromLibrary": {},
     "gallery": "Galerij",
-    "@gallery": {},
     "addImage": "Afbeelding toevoegen",
-    "@addImage": {},
     "dataCopied": "Gegevens gekopieerd naar een nieuw item",
     "@dataCopied": {
         "description": "Snackbar message to show on copying data to a new log entry"
     },
     "appUpdateTitle": "Update vereist",
-    "@appUpdateTitle": {},
     "appUpdateContent": "Deze versie van de app is niet compatibel met de server, update uw applicatie.",
-    "@appUpdateContent": {},
     "productFound": "Product gevonden",
     "@productFound": {
         "description": "Header label for dialog when product is found with barcode"
@@ -867,11 +728,8 @@
         "description": "Translation for close"
     },
     "identicalExercisePleaseDiscard": "Als je een oefening ziet die identiek is aan degene die je toevoegt, gooi dan je concept weg en bewerk die oefening in plaats daarvan.",
-    "@identicalExercisePleaseDiscard": {},
     "checkInformationBeforeSubmitting": "Controleer of de ingevoerde gegevens correct zijn voordat u de oefening indient",
-    "@checkInformationBeforeSubmitting": {},
     "add_exercise_image_license": "Afbeeldingen moeten compatibel zijn met de CC BY SA-licentie. Upload bij twijfel alleen foto's die je zelf hebt gemaakt.",
-    "@add_exercise_image_license": {},
     "imageDetailsTitle": "Afbeeldingsdetails",
     "@imageDetailsTitle": {
         "description": "Title for image details form"
@@ -889,7 +747,6 @@
         "description": "Label for source link field"
     },
     "author": "Auteur(s)",
-    "@author": {},
     "authorHint": "Voer auteursnaam in",
     "@authorHint": {
         "description": "Hint text for author field"
@@ -911,9 +768,7 @@
         "description": "Label for image type selector"
     },
     "imageDetailsLicenseNotice": "Door deze afbeelding in te dienen, stemt u ermee in deze vrij te geven onder de CC-BY-SA-4-licentie. De afbeelding moet uw eigen werk zijn of de auteur moet deze hebben vrijgegeven onder een licentie die hiermee compatibel is.",
-    "@imageDetailsLicenseNotice": {},
     "imageDetailsLicenseNoticeLinkToLicense": "Zie licentie tekst.",
-    "@imageDetailsLicenseNoticeLinkToLicense": {},
     "imageFormatNotSupported": "{imageFormat} wordt niet ondersteund",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
@@ -952,11 +807,8 @@
         "description": "List of alternative names for an exercise"
     },
     "verifiedEmail": "Geverifieerde email",
-    "@verifiedEmail": {},
     "unVerifiedEmail": "Niet-geverifieerde e-mail",
-    "@unVerifiedEmail": {},
     "verifiedEmailReason": "Je moet je e-mailadres verifiëren om oefeningen te kunnen doen",
-    "@verifiedEmailReason": {},
     "verifiedEmailInfo": "Er is een verificatiemail verzonden naar {email}",
     "@verifiedEmailInfo": {
         "placeholders": {
@@ -966,59 +818,34 @@
         }
     },
     "alternativeNames": "Alternatieve namen",
-    "@alternativeNames": {},
     "oneNamePerLine": "Een naam per lijn",
-    "@oneNamePerLine": {},
     "whatVariationsExist": "Welke varianten van deze oefening bestaan er, indien van toepassing?",
-    "@whatVariationsExist": {},
     "previous": "Vorige",
-    "@previous": {},
     "next": "Volgende",
-    "@next": {},
     "images": "Afbeeldingen",
-    "@images": {},
     "language": "Taal",
-    "@language": {},
     "addExercise": "Voeg oefening toe",
-    "@addExercise": {},
     "fitInWeek": "In week passen",
-    "@fitInWeek": {},
     "fitInWeekHelp": "Indien ingeschakeld, zullen de dagen zich herhalen in een wekelijkse cyclus; anders zullen de dagen elkaar opeenvolgend opvolgen, ongeacht het begin van een nieuwe week.",
-    "@fitInWeekHelp": {},
     "addSuperset": "Superset toevoegen",
-    "@addSuperset": {},
     "superset": "Superset",
-    "@superset": {},
     "setHasProgression": "Set heeft progressie",
-    "@setHasProgression": {},
     "setHasProgressionWarning": "Houd er rekening mee dat het momenteel niet mogelijk is om alle instellingen voor een set te bewerken in de mobiele app of om de automatische voortgang te configureren. Gebruik hiervoor voorlopig de webapp.",
-    "@setHasProgressionWarning": {},
     "setHasNoExercises": "Deze set heeft nog geen oefeningen!",
-    "@setHasNoExercises": {},
     "contributeExercise": "Draag een oefening bij",
-    "@contributeExercise": {},
     "translation": "Vertaling",
-    "@translation": {},
     "translateExercise": "Vertaal deze oefening",
-    "@translateExercise": {},
     "baseData": "Basics in Engels",
     "@baseData": {
         "description": "The base data for an exercise such as category, trained muscles, etc."
     },
     "enterTextInLanguage": "Voer de tekst in de juiste taal in!",
-    "@enterTextInLanguage": {},
     "settingsTitle": "Instellingen",
-    "@settingsTitle": {},
     "settingsCacheTitle": "Cache",
-    "@settingsCacheTitle": {},
     "settingsExerciseCacheDescription": "Oefeningscache",
-    "@settingsExerciseCacheDescription": {},
     "settingsIngredientCacheDescription": "Ingrediënten cache",
-    "@settingsIngredientCacheDescription": {},
     "settingsCacheDeletedSnackbar": "Cache succesvol geleegd",
-    "@settingsCacheDeletedSnackbar": {},
     "aboutPageTitle": "Over ons & Support",
-    "@aboutPageTitle": {},
     "contributeExerciseWarning": "Je kunt alleen oefeningen bijdragen als je account ouder is dan {days} dagen en je e-mailadres is geverifieerd",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
@@ -1030,17 +857,11 @@
         }
     },
     "simpleMode": "Eenvoudige modus",
-    "@simpleMode": {},
     "simpleModeHelp": "Verberg enkele van de meer geavanceerde instellingen tijdens het bewerken van oefeningen",
-    "@simpleModeHelp": {},
     "progressionRules": "Deze oefening heeft voortgangsregels en kan niet worden bewerkt in de mobiele app. Gebruik de webapplicatie om deze oefening te bewerken.",
-    "@progressionRules": {},
     "cacheWarning": "Vanwege de caching kan het even duren voordat de wijzigingen in de hele applicatie zichtbaar zijn.",
-    "@cacheWarning": {},
     "textPromptTitle": "Klaar om te starten?",
-    "@textPromptTitle": {},
     "textPromptSubheading": "Druk op de actieknop om te beginnen",
-    "@textPromptSubheading": {},
     "abs": "Buikspieren",
     "@abs": {
         "description": "Generated entry for translation for server strings"
@@ -1202,7 +1023,6 @@
         "description": "Log a specific meal (imperative form)"
     },
     "done": "Klaar",
-    "@done": {},
     "overallChangeWeight": "Algemene verandering",
     "@overallChangeWeight": {
         "description": "Overall change in weight, added for localization"
@@ -1232,13 +1052,8 @@
         "description": "Use the imperative, label on button to finish the current workout in gym mode"
     },
     "themeMode": "Thema modus",
-    "@themeMode": {},
     "darkMode": "Altijd donkere modus",
-    "@darkMode": {},
     "lightMode": "Altijd lichte modus",
-    "@lightMode": {},
     "systemMode": "Systeem instellingen",
-    "@systemMode": {},
-    "slotEntryTypeMyo": "Myo",
-    "@slotEntryTypeMyo": {}
+    "slotEntryTypeMyo": "Myo"
 }

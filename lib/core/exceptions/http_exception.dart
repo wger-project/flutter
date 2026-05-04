@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,7 +43,8 @@ class WgerHttpException implements Exception {
     final dynamic responseBody = response.body;
 
     final contentType = response.headers[HttpHeaders.contentTypeHeader];
-    if (contentType != null && contentType.contains('text/html')) {
+    if ((contentType != null && contentType.contains('text/html')) ||
+        responseBody.toString().contains('<html')) {
       type = ErrorType.html;
     }
 

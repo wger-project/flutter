@@ -209,13 +209,16 @@ void main() {
         find.byKey(const ValueKey('inputApiToken')),
         '1234567890abcdef1234567890abcdef12345678',
       );
+
+      // Assert that API token mode is active before submitting.
+      expect(find.byKey(const ValueKey('inputApiToken')), findsOne);
+      expect(find.byKey(const Key('inputUsername')), findsNothing);
+      expect(find.byKey(const Key('inputPassword')), findsNothing);
+
       await tester.tap(find.byKey(const Key('actionButton')));
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.byKey(const ValueKey('inputApiToken')), findsOne);
-      expect(find.byKey(const Key('inputUsername')), findsNothing);
-      expect(find.byKey(const Key('inputPassword')), findsNothing);
       expect(find.textContaining('An Error Occurred'), findsNothing);
 
       verify(

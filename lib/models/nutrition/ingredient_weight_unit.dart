@@ -17,8 +17,6 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/weight_unit.dart';
 
 part 'ingredient_weight_unit.g.dart';
 
@@ -27,24 +25,16 @@ class IngredientWeightUnit {
   @JsonKey(required: true)
   final int id;
 
-  @JsonKey(required: true, name: 'weight_unit')
-  final WeightUnit weightUnit;
-
   @JsonKey(required: true)
-  final Ingredient ingredient;
+  final String name;
 
-  @JsonKey(required: true)
+  @JsonKey(required: true, name: 'gram')
   final int grams;
-
-  @JsonKey(required: true)
-  final double amount;
 
   const IngredientWeightUnit({
     required this.id,
-    required this.weightUnit,
-    required this.ingredient,
+    required this.name,
     required this.grams,
-    required this.amount,
   });
 
   // Boilerplate

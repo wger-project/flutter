@@ -72,24 +72,10 @@ class MealItem {
   Map<String, dynamic> toJson() => _$MealItemToJson(this);
 
   /// Calculations
-  /// TODO why does this not consider weightUnitObj ? should we do the same as Log.nutritionalValues here?
   NutritionalValues get nutritionalValues {
-    // This is already done on the server. It might be better to read it from there.
-    final out = NutritionalValues();
+    final weight = weightUnitObj == null ? amount : amount * weightUnitObj!.grams;
 
-    //final weight = this.weightUnit == null ? amount : amount * weightUnit.amount * weightUnit.grams;
-    final weight = amount;
-
-    out.energy = ingredient.energy * weight / 100;
-    out.protein = ingredient.protein * weight / 100;
-    out.carbohydrates = ingredient.carbohydrates * weight / 100;
-    out.carbohydratesSugar = ingredient.carbohydratesSugar * weight / 100;
-    out.fat = ingredient.fat * weight / 100;
-    out.fatSaturated = ingredient.fatSaturated * weight / 100;
-    out.fiber = ingredient.fiber * weight / 100;
-    out.sodium = ingredient.sodium * weight / 100;
-
-    return out;
+    return ingredient.nutritionalValues / (100 / weight);
   }
 
   MealItem copyWith({

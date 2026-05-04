@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,12 +24,14 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/update_app_screen.dart';
+import 'package:wger/screens/update_server_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/auth/api_token_field.dart';
 import 'package:wger/widgets/auth/email_field.dart';
 import 'package:wger/widgets/auth/password_field.dart';
 import 'package:wger/widgets/auth/server_field.dart';
 import 'package:wger/widgets/auth/username_field.dart';
+import 'package:wger/widgets/core/server_config_warning_dialog.dart';
 
 import '../providers/auth.dart';
 
@@ -199,13 +201,32 @@ class _AuthCardState extends State<AuthCard> {
         );
       }
 
-      // Check if update is required else continue normally
+      // Navigate to the appropriate "update required" screen.
       if (res == LoginActions.update && mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
-        );
-        return;
+        final authState = context.read<AuthProvider>().state;
+        if (authState == AuthState.updateRequired) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
+          );
+          return;
+        } else if (authState == AuthState.serverUpdateRequired) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const UpdateServerScreen()),
+          );
+          return;
+        }
       }
+
+      if (context.mounted && res == LoginActions.proceed) {
+        final authProvider = context.read<AuthProvider>();
+        if (authProvider.serverConfigWarning) {
+          if (context.mounted) {
+            showServerConfigWarning(context);
+            authProvider.clearServerConfigWarning();
+          }
+        }
+      }
+
       if (context.mounted) {
         setState(() {
           _isLoading = false;
@@ -264,7 +285,7 @@ class _AuthCardState extends State<AuthCard> {
                   errorMessage,
                   if (_useUsernameAndPassword)
                     UsernameField(
-                      controller: _apiTokenController,
+                      controller: _usernameController,
                       onSaved: (value) => _authData['username'] = value!,
                     ),
                   if (_authMode == AuthMode.Register)

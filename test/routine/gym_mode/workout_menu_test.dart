@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020,  wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/widgets/routines/gym_mode/workout_menu.dart';
@@ -32,6 +34,8 @@ void main() {
   late ProviderContainer container;
 
   setUp(() {
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+
     container = ProviderContainer.test();
     notifier = container.read(gymStateProvider.notifier);
     notifier.state = notifier.state.copyWith(

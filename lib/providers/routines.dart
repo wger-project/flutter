@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -668,7 +668,7 @@ class RoutinesProvider with ChangeNotifier {
     final newLog = Log.fromJson(data);
 
     newLog.weightUnit = _weightUnits.firstWhere((e) => e.id == log.weightUnitId);
-    newLog.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.weightUnitId);
+    newLog.repetitionUnit = _repetitionUnits.firstWhere((e) => e.id == log.repetitionsUnitId);
     newLog.exerciseBase = (await _exerciseProvider.fetchAndSetExercise(log.exerciseId))!;
 
     final plan = findById(newLog.routineId);

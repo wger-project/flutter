@@ -1,3 +1,21 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,6 +24,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
+import 'package:wger/widgets/nutrition/nutri_score_badge.dart';
 
 Widget ingredientImage(String url, BuildContext context) {
   var radius = 100.0;
@@ -112,6 +131,10 @@ class IngredientDetails extends StatelessWidget {
                     showGperKg: false,
                   ),
                 ),
+              if (snapshot.hasData) ...[
+                const SizedBox(height: 12),
+                _DietaryInfoSection(ingredient: ingredient!),
+              ],
               if (snapshot.hasData && ingredient!.licenseObjectURl == null)
                 Text('Source: ${source!}'),
               if (snapshot.hasData && ingredient!.licenseObjectURl != null)
@@ -162,6 +185,7 @@ class IngredientScanResultDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     Ingredient? ingredient;
     NutritionalGoals? goals;
     String? title;
@@ -169,9 +193,7 @@ class IngredientScanResultDialog extends StatelessWidget {
 
     if (snapshot.connectionState == ConnectionState.done) {
       ingredient = snapshot.data;
-      title = ingredient != null
-          ? AppLocalizations.of(context).productFound
-          : AppLocalizations.of(context).productNotFound;
+      title = ingredient != null ? i18n.productFound : i18n.productNotFound;
       if (ingredient != null) {
         goals = ingredient.nutritionalValues.toGoals();
         source = ingredient.sourceName ?? 'unknown';
@@ -194,15 +216,25 @@ class IngredientScanResultDialog extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done && ingredient == null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    AppLocalizations.of(context).productNotFoundDescription(barcode),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        i18n.productNotFoundDescription(barcode),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        i18n.productNotFoundOpenFoodFacts,
+                      ),
+                    ],
                   ),
                 ),
+
               if (ingredient != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
-                    AppLocalizations.of(context).productFoundDescription(ingredient.name),
+                    i18n.productFoundDescription(ingredient.name),
                   ),
                 ),
               if (ingredient?.image?.url != null) ingredientImage(ingredient!.image!.url, context),
@@ -241,6 +273,17 @@ class IngredientScanResultDialog extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
+        // if didn't find a result after scanning
+        if (snapshot.connectionState == ConnectionState.done && ingredient == null)
+          TextButton.icon(
+            key: const Key('ingredient-scan-result-dialog-open-food-facts-button'),
+            icon: const Icon(Icons.add_circle_outline),
+            label: Text(i18n.addToOpenFoodFacts),
+            onPressed: () {
+              launchURL('https://world.openfoodfacts.org/cgi/product.pl', context);
+              Navigator.of(context).pop();
+            },
+          ),
         // if didn't match, or we're still waiting
         TextButton(
           key: const Key('ingredient-scan-result-dialog-close-button'),
@@ -248,6 +291,59 @@ class IngredientScanResultDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
+        ),
+      ],
+    );
+  }
+}
+
+class _DietaryInfoSection extends StatelessWidget {
+  final Ingredient ingredient;
+
+  const _DietaryInfoSection({required this.ingredient});
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(i18n.isVegan),
+            if (ingredient.isVegan == null)
+              const Text('N/A')
+            else if (ingredient.isVegan!)
+              Icon(Icons.eco, color: Colors.green[700])
+            else
+              Icon(Icons.block, color: Colors.red[400]),
+          ],
+        ),
+        const Divider(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(i18n.isVegetarian),
+            if (ingredient.isVegetarian == null)
+              const Text('N/A')
+            else if (ingredient.isVegetarian!)
+              Icon(Icons.eco, color: Colors.green[700])
+            else
+              Icon(Icons.block, color: Colors.red[400]),
+          ],
+        ),
+        const Divider(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Nutri-Score'),
+            if (ingredient.nutriscore != null)
+              NutriScoreBadge(score: ingredient.nutriscore!)
+            else
+              const Text('N/A'),
+          ],
         ),
       ],
     );

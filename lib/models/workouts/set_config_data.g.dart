@@ -83,6 +83,7 @@ Map<String, dynamic> _$SetConfigDataToJson(SetConfigData instance) => <String, d
 
 const _$SlotEntryTypeEnumMap = {
   SlotEntryType.normal: 'normal',
+  SlotEntryType.warmup: 'warmup',
   SlotEntryType.dropset: 'dropset',
   SlotEntryType.myo: 'myo',
   SlotEntryType.partial: 'partial',

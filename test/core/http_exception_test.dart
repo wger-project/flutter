@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,20 +25,24 @@ import 'package:wger/core/exceptions/http_exception.dart';
 void main() {
   group('WgerHttpException', () {
     test('parses valid JSON response', () {
+      // Arrange
       final resp = http.Response(
         '{"foo":"bar"}',
         400,
         headers: {HttpHeaders.contentTypeHeader: 'application/json'},
       );
 
+      // Act
       final ex = WgerHttpException(resp);
 
+      // Assert
       expect(ex.type, ErrorType.json);
       expect(ex.errors['foo'], 'bar');
       expect(ex.toString(), contains('WgerHttpException'));
     });
 
     test('falls back on malformed JSON', () {
+      // Arrange
       const body = '{"foo":';
       final resp = http.Response(
         body,
@@ -46,13 +50,16 @@ void main() {
         headers: {HttpHeaders.contentTypeHeader: 'application/json'},
       );
 
+      // Act
       final ex = WgerHttpException(resp);
 
+      // Assert
       expect(ex.type, ErrorType.json);
       expect(ex.errors['unknown_error'], body);
     });
 
-    test('detects HTML response', () {
+    test('detects HTML response from headers', () {
+      // Arrange
       const body = '<html lang="en"><body>Error</body></html>';
       final resp = http.Response(
         body,
@@ -60,16 +67,39 @@ void main() {
         headers: {HttpHeaders.contentTypeHeader: 'text/html; charset=utf-8'},
       );
 
+      // Act
       final ex = WgerHttpException(resp);
 
+      // Assert
+      expect(ex.type, ErrorType.html);
+      expect(ex.htmlError, body);
+    });
+
+    test('detects HTML response from content', () {
+      // Arrange
+      const body = '<html lang="en"><body>Error</body></html>';
+      final resp = http.Response(
+        body,
+        500,
+        headers: {HttpHeaders.contentTypeHeader: 'text/foo; charset=utf-8'},
+      );
+
+      // Act
+      final ex = WgerHttpException(resp);
+
+      // Assert
       expect(ex.type, ErrorType.html);
       expect(ex.htmlError, body);
     });
 
     test('fromMap sets errors and type', () {
+      // Arrange
       final map = <String, dynamic>{'field': 'value'};
+
+      // Act
       final ex = WgerHttpException.fromMap(map);
 
+      // Assert
       expect(ex.type, ErrorType.json);
       expect(ex.errors, map);
     });

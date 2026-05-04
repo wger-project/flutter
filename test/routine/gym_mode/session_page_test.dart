@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -90,7 +90,6 @@ void main() {
       await tester.pumpWidget(renderSessionPage());
       await tester.pumpAndSettle();
 
-      debugDumpApp();
       expect(find.text('10:00'), findsOneWidget);
       expect(find.text('12:34'), findsOneWidget);
       expect(find.text('This is a note'), findsOneWidget);
