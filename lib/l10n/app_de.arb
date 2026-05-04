@@ -969,11 +969,8 @@
     },
     "superset": "Superset",
     "isVegan": "Vegan",
-    "@isVegan": {},
     "isVegetarian": "Vegetarisch",
-    "@isVegetarian": {},
     "filter": "Filtern",
-    "@filter": {},
     "searchLanguageCurrent": "Nur aktuelle Sprache ({lang})",
     "@searchLanguageCurrent": {
         "type": "text",
@@ -993,5 +990,17 @@
         }
     },
     "searchLanguageAll": "Alle Sprachen",
-    "@searchLanguageAll": {}
+    "dashboardWidgets": "Dashboard Widgets",
+    "slotEntryTypeWarmup": "Aufwärmtraining",
+    "trophies": "Trophäen",
+    "topSet": "Höchster Satz: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    }
 }
