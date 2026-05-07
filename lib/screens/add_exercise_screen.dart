@@ -17,6 +17,7 @@ import 'package:wger/widgets/add_exercise/steps/step_4_translations.dart';
 import 'package:wger/widgets/add_exercise/steps/step_5_images.dart';
 import 'package:wger/widgets/add_exercise/steps/step_6_overview.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/user/forms.dart';
 
 import 'form_screen.dart';
@@ -38,6 +39,8 @@ class AddExerciseStepper extends StatefulWidget {
   const AddExerciseStepper({super.key});
 
   static const STEPS_IN_FORM = 6;
+  static const DESCRIPTION_STEP_INDEX = 2;
+  static const TRANSLATION_STEP_INDEX = 3;
 
   @override
   _AddExerciseStepperState createState() => _AddExerciseStepperState();
@@ -65,7 +68,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
       children: [
         const SizedBox(height: 10),
         if (_currentStep == lastStepIndex) errorWidget,
-        if (_languageError != null)
+        if (_languageError != null && details.stepIndex == _currentStep)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
@@ -144,14 +147,14 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                         );
                       },
                 child: _isLoading
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator())
+                    ? const FormProgressIndicator()
                     : Text(AppLocalizations.of(context).save),
               )
             else
               ElevatedButton(
                 onPressed: _isValidatingLanguage ? null : details.onStepContinue,
                 child: _isValidatingLanguage
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator())
+                    ? const FormProgressIndicator()
                     : Text(AppLocalizations.of(context).next),
               ),
           ],
@@ -199,9 +202,10 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
 
             final addExerciseProvider = context.read<AddExerciseProvider>();
 
-            // Steps 2 (Description) and 3 (Translation) require a language check
-            if (_currentStep == 2 || _currentStep == 3) {
-              final isTranslationStep = _currentStep == 3;
+            // The Description and Translation steps require a language check
+            if (_currentStep == AddExerciseStepper.DESCRIPTION_STEP_INDEX ||
+                _currentStep == AddExerciseStepper.TRANSLATION_STEP_INDEX) {
+              final isTranslationStep = _currentStep == AddExerciseStepper.TRANSLATION_STEP_INDEX;
               final language = isTranslationStep
                   ? addExerciseProvider.languageTranslation
                   : addExerciseProvider.languageEn;
@@ -247,6 +251,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
             }
           },
           onStepCancel: () => setState(() {
+            _languageError = null;
             if (_currentStep != 0) {
               _currentStep -= 1;
             }

@@ -23,6 +23,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/exercises/category.dart';
 import 'package:wger/providers/add_exercise.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/user.dart';
@@ -521,118 +522,151 @@ void main() {
   // ============================================================================
   // Language Validation Tests
   // ============================================================================
-  // These tests verify that the language check is called when navigating away
-  // from the description and translation steps, and that errors are shown and
-  // navigation is blocked when the check fails.
+  // These tests drive the stepper from step 0 through to step 2 (Description)
+  // and verify that the language check is invoked, that an error message blocks
+  // navigation and renders inline, and that a passing check advances the step.
+  // The parsing of the server response is covered separately in
+  // test/providers/add_exercise_test.dart.
   // ============================================================================
 
   group('Language Validation Tests', () {
-    testWidgets('validateLanguage returns null for correct language', (
-      WidgetTester tester,
-    ) async {
+    const validDescription =
+        'This is a long enough English description for the bench press exercise.';
+
+    /// Tap the Next button of whichever step is currently active. The Stepper
+    /// renders all step bodies but only the active step's controls are
+    /// hit-testable; this scrolls the visible button into view first so the
+    /// tap doesn't fail when the form is taller than the test viewport.
+    Future<void> tapNext(WidgetTester tester, AppLocalizations l10n) async {
+      final nextButton = find.widgetWithText(ElevatedButton, l10n.next).first;
+      await tester.ensureVisible(nextButton);
+      await tester.pumpAndSettle();
+      await tester.tap(nextButton);
+      await tester.pumpAndSettle();
+    }
+
+    /// Drives the stepper from step 0 (Basics) through to step 2 (Description)
+    /// by filling required fields, selecting a category, and tapping Next twice.
+    /// Leaves the stepper on step 2 with [validDescription] entered.
+    Future<void> navigateToDescriptionStep(WidgetTester tester) async {
       setupFullVerifiedUserContext();
       when(mockAddExerciseProvider.languageEn).thenReturn(tLanguage2);
-      when(mockAddExerciseProvider.descriptionEn).thenReturn(
-        'This is a long enough description for the bench press exercise.',
-      );
-      when(
-        mockAddExerciseProvider.validateLanguage(any, any),
-      ).thenAnswer((_) async => null);
+      when(mockAddExerciseProvider.descriptionEn).thenReturn(validDescription);
 
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
-      // Verify validateLanguage returns null (pass) for correct language
-      final result = await mockAddExerciseProvider.validateLanguage(
-        'This is a long enough description for the bench press exercise.',
-        tLanguage2.shortName,
-      );
-      expect(result, isNull);
+      final l10n = AppLocalizations.of(tester.element(find.byType(Stepper)));
+
+      // Step 0: name, author, category dropdown
+      final textFields = find.byType(TextFormField);
+      await tester.enterText(textFields.at(0), 'Bench Press');
+      await tester.enterText(textFields.at(2), 'Test Author');
+
+      // Open the category dropdown and pick the first category. The
+      // ExerciseCategoryInputWidget doesn't forward its `Key` argument to its
+      // child DropdownButtonFormField, so target the dropdown by type instead.
+      await tester.tap(find.byType(DropdownButtonFormField<ExerciseCategory>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(tCategory1.name).last);
+      await tester.pumpAndSettle();
+
+      // Tap Next on step 0 → step 1
+      await tapNext(tester, l10n);
+
+      // Tap Next on step 1 (Variations has no validators) → step 2
+      await tapNext(tester, l10n);
+
+      // Step 2: description (markdown editor's TextFormField is currently visible)
+      final descriptionField = find.byType(TextFormField).hitTestable();
+      await tester.enterText(descriptionField, validDescription);
+      await tester.pumpAndSettle();
+
+      // Sanity check: stepper is on step 2
+      final stepper = tester.widget<Stepper>(find.byType(Stepper));
+      expect(stepper.currentStep, 2);
+    }
+
+    testWidgets('renders the server error and blocks advancing past step 2', (
+      WidgetTester tester,
+    ) async {
+      const serverMessage =
+          'The detected language is "Spanish" (es), which does not match your selected language "English" (en).';
+      when(
+        mockAddExerciseProvider.validateLanguage(any, any),
+      ).thenAnswer((_) async => serverMessage);
+
+      await navigateToDescriptionStep(tester);
+
+      final l10n = AppLocalizations.of(tester.element(find.byType(Stepper)));
+
+      // Tap Next on step 2 — triggers the language check
+      await tapNext(tester, l10n);
+
       verify(
-        mockAddExerciseProvider.validateLanguage(
-          'This is a long enough description for the bench press exercise.',
-          'en',
-        ),
+        mockAddExerciseProvider.validateLanguage(validDescription, tLanguage2.shortName),
       ).called(1);
+
+      // The error text is rendered inline, only on the active step's controls.
+      expect(find.text(serverMessage), findsOneWidget);
+
+      // … and the stepper has not advanced past step 2.
+      final stepper = tester.widget<Stepper>(find.byType(Stepper));
+      expect(stepper.currentStep, 2);
     });
 
-    testWidgets('Language validation error blocks navigation and shows message', (
+    testWidgets('advances past step 2 when the language check succeeds', (
       WidgetTester tester,
     ) async {
-      setupFullVerifiedUserContext();
-      when(mockAddExerciseProvider.languageEn).thenReturn(tLanguage2);
-      when(mockAddExerciseProvider.descriptionEn).thenReturn(
-        'Este es un texto en español que no debería pasar la validación de idioma.',
-      );
-      when(
-        mockAddExerciseProvider.validateLanguage(any, any),
-      ).thenAnswer(
-        (_) async =>
-            'The detected language is "Spanish" (es), which does not match your selected language "English" (en).',
-      );
-
-      await tester.pumpWidget(createExerciseScreen());
-      await tester.pumpAndSettle();
-
-      // Verify the mock provider returns an error for wrong language
-      final result = await mockAddExerciseProvider.validateLanguage(
-        'Este es un texto en español que no debería pasar la validación de idioma.',
-        'en',
-      );
-      expect(result, isNotNull);
-      expect(result, contains('Spanish'));
-    });
-
-    testWidgets('Language validation passes and allows navigation on correct language', (
-      WidgetTester tester,
-    ) async {
-      setupFullVerifiedUserContext();
-      when(mockAddExerciseProvider.languageEn).thenReturn(tLanguage2);
-      when(mockAddExerciseProvider.descriptionEn).thenReturn(
-        'This is a well-written English description for the bench press exercise.',
-      );
       when(
         mockAddExerciseProvider.validateLanguage(any, any),
       ).thenAnswer((_) async => null);
 
-      await tester.pumpWidget(createExerciseScreen());
-      await tester.pumpAndSettle();
+      await navigateToDescriptionStep(tester);
 
-      // Verify the mock provider returns null (success) for correct language
-      final result = await mockAddExerciseProvider.validateLanguage(
-        'This is a well-written English description for the bench press exercise.',
-        'en',
-      );
-      expect(result, isNull);
-    });
+      final l10n = AppLocalizations.of(tester.element(find.byType(Stepper)));
+      await tapNext(tester, l10n);
 
-    testWidgets('Translation step language validation uses translation language', (
-      WidgetTester tester,
-    ) async {
-      setupFullVerifiedUserContext();
-      when(mockAddExerciseProvider.languageTranslation).thenReturn(tLanguage1);
-      when(mockAddExerciseProvider.descriptionTrans).thenReturn(
-        'Dies ist eine ausreichend lange Beschreibung auf Deutsch für die Übung.',
-      );
-      when(
-        mockAddExerciseProvider.validateLanguage(any, any),
-      ).thenAnswer((_) async => null);
-
-      await tester.pumpWidget(createExerciseScreen());
-      await tester.pumpAndSettle();
-
-      // Verify validateLanguage would be called with the German language code
-      final result = await mockAddExerciseProvider.validateLanguage(
-        'Dies ist eine ausreichend lange Beschreibung auf Deutsch für die Übung.',
-        tLanguage1.shortName,
-      );
-      expect(result, isNull);
       verify(
-        mockAddExerciseProvider.validateLanguage(
-          'Dies ist eine ausreichend lange Beschreibung auf Deutsch für die Übung.',
-          'de',
-        ),
+        mockAddExerciseProvider.validateLanguage(validDescription, tLanguage2.shortName),
       ).called(1);
+
+      final stepper = tester.widget<Stepper>(find.byType(Stepper));
+      expect(stepper.currentStep, 3);
+    });
+
+    testWidgets('skips the language check on step 2 when the description is empty', (
+      WidgetTester tester,
+    ) async {
+      // Same setup as navigateToDescriptionStep, but leave descriptionEn empty
+      // so the screen short-circuits and never calls validateLanguage.
+      setupFullVerifiedUserContext();
+      when(mockAddExerciseProvider.languageEn).thenReturn(tLanguage2);
+      when(mockAddExerciseProvider.descriptionEn).thenReturn(null);
+
+      await tester.pumpWidget(createExerciseScreen());
+      await tester.pumpAndSettle();
+
+      final l10n = AppLocalizations.of(tester.element(find.byType(Stepper)));
+
+      final textFields = find.byType(TextFormField);
+      await tester.enterText(textFields.at(0), 'Bench Press');
+      await tester.enterText(textFields.at(2), 'Test Author');
+
+      await tester.tap(find.byType(DropdownButtonFormField<ExerciseCategory>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(tCategory1.name).last);
+      await tester.pumpAndSettle();
+
+      await tapNext(tester, l10n);
+      await tapNext(tester, l10n);
+
+      // Description field still empty: form validation alone blocks Next.
+      await tapNext(tester, l10n);
+
+      verifyNever(mockAddExerciseProvider.validateLanguage(any, any));
+      final stepper = tester.widget<Stepper>(find.byType(Stepper));
+      expect(stepper.currentStep, 2);
     });
   });
 }

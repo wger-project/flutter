@@ -41,55 +41,46 @@ import 'package:wger/providers/user.dart' as _i16;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake
-    implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeSharedPreferencesAsync_1 extends _i1.SmartFake
-    implements _i3.SharedPreferencesAsync {
+class _FakeSharedPreferencesAsync_1 extends _i1.SmartFake implements _i3.SharedPreferencesAsync {
   _FakeSharedPreferencesAsync_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeExerciseDatabase_2 extends _i1.SmartFake
-    implements _i4.ExerciseDatabase {
+class _FakeExerciseDatabase_2 extends _i1.SmartFake implements _i4.ExerciseDatabase {
   _FakeExerciseDatabase_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeExercise_3 extends _i1.SmartFake implements _i5.Exercise {
-  _FakeExercise_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeExercise_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeExerciseCategory_4 extends _i1.SmartFake
-    implements _i6.ExerciseCategory {
+class _FakeExerciseCategory_4 extends _i1.SmartFake implements _i6.ExerciseCategory {
   _FakeExerciseCategory_4(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeEquipment_5 extends _i1.SmartFake implements _i7.Equipment {
-  _FakeEquipment_5(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeEquipment_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeMuscle_6 extends _i1.SmartFake implements _i8.Muscle {
-  _FakeMuscle_6(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeMuscle_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeLanguage_7 extends _i1.SmartFake implements _i9.Language {
-  _FakeLanguage_7(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeLanguage_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AddExerciseProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAddExerciseProvider extends _i1.Mock
-    implements _i10.AddExerciseProvider {
+class MockAddExerciseProvider extends _i1.Mock implements _i10.AddExerciseProvider {
   MockAddExerciseProvider() {
     _i1.throwOnMissingStub(this);
   }
@@ -150,8 +141,7 @@ class MockAddExerciseProvider extends _i1.Mock
 
   @override
   bool get newVariation =>
-      (super.noSuchMethod(Invocation.getter(#newVariation), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#newVariation), returnValue: false) as bool);
 
   @override
   List<_i8.Muscle> get primaryMuscles =>
@@ -272,8 +262,7 @@ class MockAddExerciseProvider extends _i1.Mock
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   void clear() => super.noSuchMethod(
@@ -282,11 +271,10 @@ class MockAddExerciseProvider extends _i1.Mock
   );
 
   @override
-  void addExerciseImages(List<_i11.ExerciseSubmissionImage>? images) =>
-      super.noSuchMethod(
-        Invocation.method(#addExerciseImages, [images]),
-        returnValueForMissingStub: null,
-      );
+  void addExerciseImages(List<_i11.ExerciseSubmissionImage>? images) => super.noSuchMethod(
+    Invocation.method(#addExerciseImages, [images]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void removeImage(String? path) => super.noSuchMethod(
@@ -426,8 +414,7 @@ class MockUserProvider extends _i1.Mock implements _i16.UserProvider {
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   void clear() => super.noSuchMethod(
@@ -621,11 +608,10 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
   );
 
   @override
-  set filteredExercises(List<_i5.Exercise>? newFilteredExercises) =>
-      super.noSuchMethod(
-        Invocation.setter(#filteredExercises, newFilteredExercises),
-        returnValueForMissingStub: null,
-      );
+  set filteredExercises(List<_i5.Exercise>? newFilteredExercises) => super.noSuchMethod(
+    Invocation.setter(#filteredExercises, newFilteredExercises),
+    returnValueForMissingStub: null,
+  );
 
   @override
   set languages(List<_i9.Language>? languages) => super.noSuchMethod(
@@ -635,8 +621,7 @@ class MockExercisesProvider extends _i1.Mock implements _i19.ExercisesProvider {
 
   @override
   bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
   _i14.Future<void> setFilters(_i19.Filters? newFilters) =>
