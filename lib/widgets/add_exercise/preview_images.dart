@@ -68,7 +68,7 @@ class PreviewExerciseImages extends StatelessWidget {
                 color: Colors.white,
                 iconSize: 20,
                 style: IconButton.styleFrom(
-                  backgroundColor: Colors.black.withOpacity(0.6),
+                  backgroundColor: Colors.black.withValues(alpha: 0.6),
                   padding: const EdgeInsets.all(4),
                 ),
                 onPressed: () {
@@ -89,7 +89,7 @@ class PreviewExerciseImages extends StatelessWidget {
         height: 120,
         margin: const EdgeInsets.only(right: 8),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: Theme.of(context).colorScheme.outline,
