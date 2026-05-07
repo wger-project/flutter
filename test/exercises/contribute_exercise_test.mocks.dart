@@ -308,12 +308,12 @@ class MockAddExerciseProvider extends _i1.Mock implements _i10.AddExerciseProvid
           as _i14.Future<void>);
 
   @override
-  _i14.Future<bool> validateLanguage(String? input, String? languageCode) =>
+  _i14.Future<String?> validateLanguage(String? input, String? languageCode) =>
       (super.noSuchMethod(
             Invocation.method(#validateLanguage, [input, languageCode]),
-            returnValue: _i14.Future<bool>.value(false),
+            returnValue: _i14.Future<String?>.value(),
           )
-          as _i14.Future<bool>);
+          as _i14.Future<String?>);
 
   @override
   void addListener(_i15.VoidCallback? listener) => super.noSuchMethod(

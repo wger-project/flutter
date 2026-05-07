@@ -19,6 +19,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
@@ -229,13 +230,20 @@ class AddExerciseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> validateLanguage(String input, String languageCode) async {
-    final Map<String, dynamic> result = await baseProvider.post({
-      'input': input,
-      'language_code': languageCode,
-    }, baseProvider.makeUrl(_checkLanguageUrlPath));
-    notifyListeners();
-
-    return false;
+  /// Returns null if the language check passes, or an error message if it fails.
+  Future<String?> validateLanguage(String input, String languageCode) async {
+    try {
+      await baseProvider.post({
+        'input': input,
+        'language_code': languageCode,
+      }, baseProvider.makeUrl(_checkLanguageUrlPath));
+      return null;
+    } on WgerHttpException catch (e) {
+      final check = e.errors['check'];
+      if (check is Map && check['message'] != null) {
+        return check['message'] as String;
+      }
+      return e.errors.toString();
+    }
   }
 }
