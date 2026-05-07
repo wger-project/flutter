@@ -118,7 +118,7 @@ void main() {
       expect(nameField, findsOneWidget);
 
       await tester.enterText(nameField, 'Bench Press');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(find.text('Bench Press'), findsOneWidget);
     });
@@ -133,7 +133,7 @@ void main() {
 
       final alternativeNamesField = textFields.at(1);
       await tester.enterText(alternativeNamesField, 'Chest Press\nFlat Bench Press');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(find.text('Chest Press\nFlat Bench Press'), findsOneWidget);
     });
@@ -145,7 +145,7 @@ void main() {
 
       final nameField = find.byType(TextFormField).first;
       await tester.enterText(nameField, 'Test Exercise');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       final context = tester.element(find.byType(Stepper));
       final l10n = AppLocalizations.of(context);
@@ -174,7 +174,7 @@ void main() {
 
       final nameField = find.byType(TextFormField).first;
       await tester.enterText(nameField, 'Test Exercise');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(find.text('Test Exercise'), findsOneWidget);
     });

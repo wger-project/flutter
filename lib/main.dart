@@ -25,6 +25,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/errors.dart';
+import 'package:wger/helpers/locale.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/app_settings_notifier.dart';
@@ -228,6 +229,7 @@ class MainApp extends ConsumerWidget {
                 const ConfigureDashboardWidgetsScreen(),
             TrophyScreen.routeName: (ctx) => const TrophyScreen(),
           },
+          localeListResolutionCallback: resolveLocale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
         );

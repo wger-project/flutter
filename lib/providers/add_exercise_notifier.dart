@@ -73,6 +73,10 @@ class AddExerciseNotifier extends _$AddExerciseNotifier {
     state = const AddExerciseState();
   }
 
+  /// Returns null if the language check passes, or an error message if it fails.
+  Future<String?> validateLanguage(String input, String languageCode) =>
+      _repo.validateLanguage(input, languageCode);
+
   /// Submits the exercise and uploads any attached images. Clears the form on
   /// success. Returns the id of the newly created exercise.
   Future<int> postExerciseToServer() async {

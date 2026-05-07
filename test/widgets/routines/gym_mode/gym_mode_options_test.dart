@@ -92,19 +92,19 @@ void main() {
     final notifySwitch = find.byKey(const ValueKey('gym-mode-notify-countdown'));
     expect(notifySwitch, findsOneWidget);
     await tester.tap(notifySwitch);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     // Now toggle show exercises
     final showExercisesSwitch = find.byKey(const ValueKey('gym-mode-option-show-exercises'));
     expect(showExercisesSwitch, findsOneWidget);
     await tester.tap(showExercisesSwitch);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     // Toggle show timer (this will disable notify switch)
     final showTimerSwitch = find.byKey(const ValueKey('gym-mode-option-show-timer'));
     expect(showTimerSwitch, findsOneWidget);
     await tester.tap(showTimerSwitch);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     final notifier = container.read(gymStateProvider.notifier);
     expect(notifier.state.showExercisePages, isFalse);
@@ -156,7 +156,7 @@ void main() {
     expect(textField, findsOneWidget);
 
     await tester.enterText(textField, '60');
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(notifier.state.countdownDuration.inSeconds, 60);
 
@@ -164,7 +164,7 @@ void main() {
     final refreshIcon = find.descendant(of: countdownField, matching: find.byIcon(Icons.refresh));
     expect(refreshIcon, findsOneWidget);
     await tester.tap(refreshIcon);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(notifier.state.countdownDuration.inSeconds, DEFAULT_COUNTDOWN_DURATION);
   });

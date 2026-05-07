@@ -83,13 +83,13 @@ void main() {
       // Correctly toggles the useColors switch
       expect(notifier.state.useColors, isFalse);
       await tester.tap(find.byKey(const ValueKey('useColorsSwitch')));
-      await tester.pumpAndSettle();
+      await tester.pump();
       expect(notifier.state.useColors, isTrue);
 
       // Correctly adds and removes plates
       expect(notifier.state.selectedPlates.contains(5.0), isTrue);
       await tester.tap(find.byKey(const ValueKey('plateWeight-5')));
-      await tester.pumpAndSettle();
+      await tester.pump();
       expect(notifier.state.selectedPlates.contains(5.0), isFalse);
     },
   );

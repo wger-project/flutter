@@ -293,7 +293,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.content_copy));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       verify(
         mockRepo.addSlotServer(
@@ -327,7 +327,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.content_copy).first);
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // slot2 must be shifted to order 3 to make room for the new slot at order 2
       verify(

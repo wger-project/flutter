@@ -122,11 +122,11 @@ void main() {
     expect(tester.widget<SwitchListTile>(vegetarianSwitchFinder).value, isFalse);
 
     await tester.tap(veganSwitchFinder);
-    await tester.pumpAndSettle();
+    await tester.pump();
     expect(tester.widget<SwitchListTile>(veganSwitchFinder).value, isTrue);
 
     await tester.tap(vegetarianSwitchFinder);
-    await tester.pumpAndSettle();
+    await tester.pump();
     expect(tester.widget<SwitchListTile>(vegetarianSwitchFinder).value, isTrue);
   });
 
@@ -209,7 +209,7 @@ void main() {
 
     // Toggle Vegan switch to ON
     await tester.tap(find.widgetWithText(SwitchListTile, 'Vegan'));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     await tester.tap(find.text('Close'));
     await tester.pumpAndSettle();
@@ -263,7 +263,7 @@ void main() {
     final sliderFinder = find.byType(Slider);
     final Slider slider = tester.widget<Slider>(sliderFinder);
     slider.onChanged!(1.0);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     await tester.tap(find.text('Close'));
     await tester.pumpAndSettle();

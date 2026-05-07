@@ -19,6 +19,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/models/exercises/exercise_submission.dart';
 import 'package:wger/providers/add_exercise_repository.dart';
 import 'package:wger/providers/base_provider.dart';
@@ -61,4 +62,72 @@ void main() {
   // and calls .send() directly without going through WgerBaseProvider, so a
   // proper test requires HTTP-level mocking (e.g. MockClient + dependency
   // injection of the http.Client). Tracked as a separate task.
+
+  group('validateLanguage', () {
+    final checkLanguageUri = Uri.parse('https://localhost/api/v2/check-language/');
+
+    setUp(() {
+      when(mockBase.makeUrl('check-language')).thenReturn(checkLanguageUri);
+    });
+
+    test('returns null when the server accepts the language', () async {
+      when(
+        mockBase.post(any, checkLanguageUri),
+      ).thenAnswer((_) async => {'result': true});
+
+      final result = await repo.validateLanguage('a long enough description', 'en');
+
+      expect(result, isNull);
+      verify(
+        mockBase.post({
+          'input': 'a long enough description',
+          'language_code': 'en',
+        }, checkLanguageUri),
+      ).called(1);
+    });
+
+    test('returns the server-supplied message when the language does not match', () async {
+      const serverMessage =
+          'The detected language is "Spanish" (es), which does not match your selected language "English" (en).';
+      when(mockBase.post(any, checkLanguageUri)).thenThrow(
+        WgerHttpException.fromMap({
+          'check': {
+            'result': false,
+            'detected_language': 'es',
+            'message': serverMessage,
+          },
+        }),
+      );
+
+      final result = await repo.validateLanguage('Hola, esto es una prueba.', 'en');
+
+      expect(result, equals(serverMessage));
+    });
+
+    test('falls back to the raw error map when the response shape is unexpected', () async {
+      when(mockBase.post(any, checkLanguageUri)).thenThrow(
+        WgerHttpException.fromMap({
+          'input': ['Ensure this field has at least 10 characters.'],
+        }),
+      );
+
+      final result = await repo.validateLanguage('short', 'en');
+
+      expect(result, isNotNull);
+      expect(result, contains('input'));
+    });
+
+    test('falls back to the raw error map when `check` is present without a message', () async {
+      when(mockBase.post(any, checkLanguageUri)).thenThrow(
+        WgerHttpException.fromMap({
+          'check': {'result': false},
+        }),
+      );
+
+      final result = await repo.validateLanguage('a long enough description', 'en');
+
+      expect(result, isNotNull);
+      expect(result, contains('check'));
+    });
+  });
 }

@@ -50,7 +50,7 @@ dependencies:
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.0.0
   http: ^1.6.0
-  image_picker: ^1.2.1
+  image_picker: ^1.2.2
   intl: ^0.20.0
   json_annotation: ^4.11.0
   markdown: ^7.3.0
@@ -79,7 +79,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  build_runner: ^2.14.1
+  build_runner: ^2.15.0
   cider: ^0.2.9
   # Used to stub the connectivity_plus platform interface
   connectivity_plus_platform_interface: ^2.1.0

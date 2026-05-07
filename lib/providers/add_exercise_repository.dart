@@ -19,6 +19,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/exercises/exercise_submission.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
@@ -34,6 +35,7 @@ final addExerciseRepositoryProvider = Provider<AddExerciseRepository>((ref) {
 class AddExerciseRepository {
   static const _exerciseSubmissionUrlPath = 'exercise-submission';
   static const _imagesUrlPath = 'exerciseimage';
+  static const _checkLanguageUrlPath = 'check-language';
 
   final _logger = Logger('AddExerciseRepository');
   final WgerBaseProvider _base;
@@ -73,6 +75,24 @@ class AddExerciseRepository {
       _logger.fine('Image uploaded successfully');
     } else {
       throw Exception('Upload failed: ${streamedResponse.statusCode}');
+    }
+  }
+
+  /// Returns null if [input] matches [languageCode] according to the server,
+  /// otherwise the server-supplied error message.
+  Future<String?> validateLanguage(String input, String languageCode) async {
+    try {
+      await _base.post(
+        {'input': input, 'language_code': languageCode},
+        _base.makeUrl(_checkLanguageUrlPath),
+      );
+      return null;
+    } on WgerHttpException catch (e) {
+      final check = e.errors['check'];
+      if (check is Map && check['message'] != null) {
+        return check['message'] as String;
+      }
+      return e.errors.toString();
     }
   }
 }

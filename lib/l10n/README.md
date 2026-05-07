@@ -19,3 +19,11 @@ Remove unused keys from the arb files (this removes both `key` as well as `@key`
 cd lib/l10n
 dart remove_keys.dart arbKey1 anotherArbKey
 ```
+
+## Android 13+ Per-App Language Support
+
+When adding a new language (e.g. adding a new `app_<locale>.arb` file), please ensure that the new locale is also registered in:
+
+`android/app/src/main/res/xml/locales_config.xml`
+
+This is required so the new language appears in the Android system settings for per-app language preferences.
