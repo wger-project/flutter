@@ -21,7 +21,7 @@ import 'package:wger/models/exercises/image.dart';
 import 'package:wger/widgets/core/image.dart';
 
 class ExerciseImageWidget extends StatelessWidget {
-  ExerciseImageWidget({this.image, this.height});
+  const ExerciseImageWidget({this.image, this.height});
 
   final ExerciseImage? image;
   final double? height;

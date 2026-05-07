@@ -4042,6 +4042,50 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get serverConfigIssueTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverConfigIssueTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverConfigIssueTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverConfigIssueMessage =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverConfigIssueMessage),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverConfigIssueMessage),
+            ),
+          )
+          as String);
+
+  @override
+  String get understand =>
+      (super.noSuchMethod(
+            Invocation.getter(#understand),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#understand),
+            ),
+          )
+          as String);
+
+  @override
+  String get viewDocumentation =>
+      (super.noSuchMethod(
+            Invocation.getter(#viewDocumentation),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#viewDocumentation),
+            ),
+          )
+          as String);
+
+  @override
   String exerciseNr(String? nr) =>
       (super.noSuchMethod(
             Invocation.method(#exerciseNr, [nr]),

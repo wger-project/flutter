@@ -127,7 +127,7 @@ class WorkoutSessionStats extends ConsumerWidget {
   final WorkoutSessionApi? _sessionApi;
   final List<UserTrophy> _userPrTrophies;
 
-  WorkoutSessionStats(this._sessionApi, this._userPrTrophies, {super.key});
+  const WorkoutSessionStats(this._sessionApi, this._userPrTrophies, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

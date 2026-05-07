@@ -76,6 +76,14 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
           as _i3.AuthState);
 
   @override
+  bool get serverConfigWarning =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverConfigWarning),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
   _i2.Client get client =>
       (super.noSuchMethod(
             Invocation.getter(#client),
@@ -143,6 +151,12 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
 
   @override
+  void clearServerConfigWarning() => super.noSuchMethod(
+    Invocation.method(#clearServerConfigWarning, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
   _i5.Future<void> setServerVersion() =>
       (super.noSuchMethod(
             Invocation.method(#setServerVersion, []),
@@ -184,6 +198,14 @@ class MockAuthProvider extends _i1.Mock implements _i3.AuthProvider {
             returnValue: false,
           )
           as bool);
+
+  @override
+  _i5.Future<bool> serverConfigSane() =>
+      (super.noSuchMethod(
+            Invocation.method(#serverConfigSane, []),
+            returnValue: _i5.Future<bool>.value(false),
+          )
+          as _i5.Future<bool>);
 
   @override
   _i5.Future<_i3.LoginActions> register({

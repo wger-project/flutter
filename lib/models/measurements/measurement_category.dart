@@ -40,7 +40,7 @@ class MeasurementCategory extends Equatable {
     );
   }
 
-  MeasurementEntry findEntryById(entryId) {
+  MeasurementEntry findEntryById(int entryId) {
     return entries.firstWhere(
       (entry) => entry.id == entryId,
       orElse: () => throw const NoSuchEntryException(),
@@ -57,6 +57,5 @@ class MeasurementCategory extends Equatable {
   List<Object?> get props => [id, name, unit, entries];
 
   // Helper function which makes the entries list of the toJson output null, as it isn't needed
-  //ignore: always_declare_return_types
-  static _nullValue(_) => null;
+  static Null _nullValue(List<MeasurementEntry> _) => null;
 }

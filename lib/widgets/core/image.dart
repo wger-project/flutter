@@ -16,12 +16,12 @@ Widget handleImageError(
 
   // NOTE: for the moment the other error messages are not localized
   String message = '';
-  switch (error.runtimeType) {
-    case NetworkImageLoadException:
+  switch (error) {
+    case NetworkImageLoadException _:
       message = 'Network error';
-    case HttpException:
+    case HttpException _:
       message = 'Http error';
-    case FormatException:
+    case FormatException _:
       //TODO: not sure if this is the right exception for unsupported image formats?
       message = AppLocalizations.of(context).imageFormatNotSupported(imageFormat);
     default:
