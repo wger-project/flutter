@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:drift/drift.dart';
