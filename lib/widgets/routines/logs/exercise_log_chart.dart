@@ -25,9 +25,8 @@ import 'package:wger/widgets/routines/charts.dart';
 
 class ExerciseLogChart extends StatelessWidget {
   final Map<num, List<Log>> _logs;
-  final DateTime _selectedDate;
 
-  const ExerciseLogChart(this._logs, this._selectedDate);
+  const ExerciseLogChart(this._logs);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +35,7 @@ class ExerciseLogChart extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        LogChartWidgetFl(_logs, _selectedDate),
+        LogChartWidgetFl(_logs),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(

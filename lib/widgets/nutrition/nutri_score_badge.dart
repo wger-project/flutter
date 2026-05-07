@@ -83,7 +83,7 @@ class NutriScoreBadge extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: isActive ? dim.activePx : dim.px),
           margin: EdgeInsets.symmetric(horizontal: isActive ? dim.activePx : 0),
           decoration: BoxDecoration(
-            color: (_nutriScoreColors[s] ?? Colors.grey).withOpacity(isActive ? 1.0 : 0.4),
+            color: (_nutriScoreColors[s] ?? Colors.grey).withValues(alpha: isActive ? 1.0 : 0.4),
             borderRadius: BorderRadius.horizontal(
               left: isFirst ? Radius.circular(h / 2) : Radius.zero,
               right: isLast ? Radius.circular(h / 2) : Radius.zero,

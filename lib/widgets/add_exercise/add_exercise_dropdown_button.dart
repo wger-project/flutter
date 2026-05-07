@@ -37,7 +37,7 @@ class _AddExerciseDropdownButtonState extends State<AddExerciseDropdownButton> {
           });
           widget.onChange(value);
         },
-        value: _selectedItem,
+        initialValue: _selectedItem,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           border: const OutlineInputBorder(

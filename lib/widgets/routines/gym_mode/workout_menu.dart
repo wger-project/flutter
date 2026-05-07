@@ -415,7 +415,7 @@ class WorkoutMenuDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gymState = ref.watch(gymStateProvider);
 
-    final endWorkoutButton = true
+    final endWorkoutButton = showEndWorkoutButton
         ? TextButton(
             child: Text(AppLocalizations.of(context).endWorkout),
             onPressed: () {

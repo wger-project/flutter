@@ -39,7 +39,9 @@ String _bytesToUuid(Uint8List bytes) {
   final sb = StringBuffer();
   for (var i = 0; i < bytes.length; i++) {
     sb.write(bytes[i].toRadixString(16).padLeft(2, '0'));
-    if (i == 3 || i == 5 || i == 7 || i == 9) sb.write('-');
+    if (i == 3 || i == 5 || i == 7 || i == 9) {
+      sb.write('-');
+    }
   }
   return sb.toString();
 }

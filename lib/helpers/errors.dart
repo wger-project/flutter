@@ -407,6 +407,7 @@ String _formatHeader(String key) {
 
 /// Processes the error messages from the server and returns a list of widgets
 List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
+  final logger = Logger('formatApiErrors');
   final textColor = color ?? Colors.black;
 
   final List<Widget> errorList = [];
@@ -419,7 +420,7 @@ List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
       ),
     );
 
-    print(error.errorMessages);
+    logger.warning(error.errorMessages);
     for (final message in error.errorMessages) {
       errorList.add(Text(message, style: TextStyle(color: textColor)));
     }

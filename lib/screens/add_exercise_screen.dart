@@ -271,7 +271,9 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
                   language.shortName,
                 );
 
-                if (!mounted) return;
+                if (!mounted) {
+                  return;
+                }
 
                 if (error != null) {
                   setState(() {

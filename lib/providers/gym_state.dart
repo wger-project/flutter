@@ -170,8 +170,6 @@ class SlotPageEntry {
 }
 
 class GymModeState {
-  final _logger = Logger('GymModeState');
-
   // Navigation data
   final bool isInitialized;
 

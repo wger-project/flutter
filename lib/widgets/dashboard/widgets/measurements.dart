@@ -117,8 +117,8 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: Theme.of(context).textTheme.headlineSmall!.color!
-                                      .withOpacity(
-                                        _current == entry.key ? 0.9 : 0.4,
+                                      .withValues(
+                                        alpha: _current == entry.key ? 0.9 : 0.4,
                                       ),
                                 ),
                               ),

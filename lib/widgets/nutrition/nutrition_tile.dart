@@ -32,8 +32,8 @@ class NutritionTile extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                if (title != null) title!,
-                if (subtitle != null) subtitle!,
+                ?title,
+                ?subtitle,
               ],
             ),
           ),

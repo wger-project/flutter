@@ -27,17 +27,15 @@ class ExerciseCategoryInputWidget<T> extends StatefulWidget {
   late final List<T> _entries;
   late final Function _getDisplayName;
   late final Function? _validator;
-  late final Key? _key;
 
   ExerciseCategoryInputWidget({
-    Key? key,
+    super.key,
     required String title,
     required List<T> entries,
     required Function callback,
     required Function displayName,
     Function? validator,
   }) {
-    _key = key;
     _entries = entries;
     _title = title;
     _callback = callback;
@@ -58,7 +56,7 @@ class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWi
       padding: const EdgeInsets.all(8.0),
       child: DropdownButtonFormField(
         key: widget.key,
-        value: selectedEntry,
+        initialValue: selectedEntry,
         decoration: InputDecoration(
           labelText: widget._title,
           contentPadding: const EdgeInsets.all(8.0),

@@ -85,6 +85,7 @@ dev_dependencies:
   connectivity_plus_platform_interface: ^2.1.0
   drift_dev: ^2.31.0
   flutter_lints: ^6.0.0
+  flutter_native_splash: ^2.4.7
   freezed: ^3.2.0
   json_serializable: ^6.13.0
   mockito: ^5.6.4
@@ -135,3 +136,19 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
   generate: true
+
+# Native splash screen configuration. Regenerate with:
+#   dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/logo-512.png
+  color_dark: "#2a4c7d"
+  image_dark: assets/images/logo-white.png
+  android_12:
+    color: "#ffffff"
+    image: assets/images/logo-512.png
+    color_dark: "#2a4c7d"
+    image_dark: assets/images/logo-white.png
+  android: true
+  ios: true
+  web: false

@@ -119,7 +119,9 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
     // Notify parent and rebuild preview on every controller change.
     _controller.addListener(() {
       widget.onChanged(_controller.text);
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -164,7 +166,9 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   Widget _buildToolbar() {
     final i18n = AppLocalizations.of(context);
 
-    if (!widget.showToolbar || widget.readOnly) return const SizedBox.shrink();
+    if (!widget.showToolbar || widget.readOnly) {
+      return const SizedBox.shrink();
+    }
     return Row(
       children: [
         IconButton(

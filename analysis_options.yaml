@@ -1,6 +1,10 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  exclude:
+    - '**/*.g.dart'
+    - '**/*.freezed.dart'
+    - '**/*.mocks.dart'
   strong-mode:
     implicit-casts: true # to be changed
     implicit-dynamic: true # to be changed
@@ -14,15 +18,17 @@ analyzer:
     # Allow self-reference to deprecated members (we do this because otherwise we have
     # to annotate every member in every test, assert, etc, when we deprecate something)
     deprecated_member_use_from_same_package: ignore
-  plugins:
-    - riverpod_lint
 
 formatter:
   page_width: 100
   trailing_commas: preserve
 
+# Note: it seems that adding riverpod_lint here has the side effect that every
+# standard lint is reported twice. We are leaving this for now since the
+# riverpod-specific checks are worth it.
+# Use `dart analyze | sort -u` in scripts if duplicates are a problem.
 plugins:
-  riverpod_lint: 3.1.0
+  riverpod_lint: 3.1.3
 
 linter:
   rules:

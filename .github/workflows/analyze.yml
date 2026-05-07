@@ -1,0 +1,33 @@
+name: Analyze
+on:
+  push:
+    paths:
+      - '**.dart'
+      - 'pubspec.yaml'
+      - 'analysis_options.yaml'
+  pull_request:
+    branches: [ master, ]
+    paths:
+      - '**/*.dart'
+      - 'pubspec.yaml'
+      - 'analysis_options.yaml'
+      - '.github/actions/flutter-common/action.yml'
+      - '.github/workflows/analyze.yml'
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Run analyzer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings

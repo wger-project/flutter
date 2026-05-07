@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -23,12 +25,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-import '1_dashboard.dart';
-import '2_workout.dart';
-import '3_gym_mode.dart';
-import '4_measurements.dart';
-import '5_nutritional_plan.dart';
-import '6_weight.dart';
+import 'screenshots_01_dashboard.dart';
+import 'screenshots_02_workout.dart';
+import 'screenshots_03_gym_mode.dart';
+import 'screenshots_04_measurements.dart';
+import 'screenshots_05_nutritional_plan.dart';
+import 'screenshots_06_weight.dart';
 
 /// Type of device
 ///
@@ -61,7 +63,7 @@ const _deviceArg = String.fromEnvironment('DEVICE_TYPE', defaultValue: 'androidP
 
 // Determine the destination device type based on the provided argument
 final DeviceType destination = DeviceType.values.firstWhere(
-  (d) => d.toString().split('.').last == _deviceArg || ((d.name ?? '') == _deviceArg),
+  (d) => d.name == _deviceArg,
   orElse: () {
     print('***** Unknown DEVICE_TYPE="$_deviceArg", defaulting to androidPhone *****');
     return DeviceType.androidPhone;

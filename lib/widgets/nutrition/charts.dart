@@ -397,7 +397,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.center,
-                  barTouchData: BarTouchData(enabled: false),
+                  barTouchData: const BarTouchData(enabled: false),
                   titlesData: FlTitlesData(
                     show: true,
                     bottomTitles: AxisTitles(
@@ -532,7 +532,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
             return BarChart(
               BarChartData(
                 alignment: BarChartAlignment.center,
-                barTouchData: BarTouchData(enabled: false),
+                barTouchData: const BarTouchData(enabled: false),
                 titlesData: FlTitlesData(
                   show: true,
                   bottomTitles: AxisTitles(
