@@ -179,7 +179,7 @@ void main() {
 
       // Enter text into the name field
       await tester.enterText(nameField, 'Bench Press');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // Verify that the entered text is displayed
       expect(find.text('Bench Press'), findsOneWidget);
@@ -204,7 +204,7 @@ void main() {
 
       // Enter multi-line text with newline character
       await tester.enterText(alternativeNamesField, 'Chest Press\nFlat Bench Press');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // Verify that multi-line text was accepted and is displayed
       expect(find.text('Chest Press\nFlat Bench Press'), findsOneWidget);
@@ -226,7 +226,7 @@ void main() {
       // Fill the name field (to isolate category validation)
       final nameField = find.byType(TextFormField).first;
       await tester.enterText(nameField, 'Test Exercise');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // Get localized text for UI elements
       final context = tester.element(find.byType(Stepper));
@@ -268,7 +268,7 @@ void main() {
       // Enter text in the name field
       final nameField = find.byType(TextFormField).first;
       await tester.enterText(nameField, 'Test Exercise');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // Verify that the entered text persists
       final enteredText = find.text('Test Exercise');

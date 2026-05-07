@@ -211,7 +211,7 @@ void main() {
 
       await tester.enterText(editableFields.at(0), '12'); // Reps
       await tester.enterText(editableFields.at(1), '34'); // Weight
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       Log? capturedLog;
       when(mockRoutines.addLog(any)).thenAnswer((invocation) async {

@@ -202,9 +202,9 @@ void main() {
 
       // Act
       await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
-      await tester.pumpAndSettle();
+      await tester.pump();
       await tester.tap(find.byKey(const ValueKey('toggleApiTokenButton')));
-      await tester.pumpAndSettle();
+      await tester.pump();
       await tester.enterText(
         find.byKey(const ValueKey('inputApiToken')),
         '1234567890abcdef1234567890abcdef12345678',
@@ -255,9 +255,9 @@ void main() {
 
       // Act
       await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
-      await tester.pumpAndSettle();
+      await tester.pump();
       await tester.tap(find.byKey(const ValueKey('toggleApiTokenButton')));
-      await tester.pumpAndSettle();
+      await tester.pump();
       await tester.enterText(
         find.byKey(const ValueKey('inputApiToken')),
         '31e2ea0322c07b9df583a9b6d1e794f7139e78d4',

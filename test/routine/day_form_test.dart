@@ -58,7 +58,7 @@ void main() {
       await tester.pumpWidget(renderWidget());
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('field-is-rest-day')));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       final nameField = find.byKey(const Key('field-name'));
       final TextFormField nameTextField = tester.widget(nameField);

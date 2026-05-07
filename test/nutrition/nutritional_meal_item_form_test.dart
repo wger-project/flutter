@@ -211,10 +211,10 @@ void main() {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.enterText(find.byKey(const Key('field-weight')), '');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(find.text('Please enter a value'), findsOneWidget);
     });
@@ -223,10 +223,10 @@ void main() {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.enterText(find.byKey(const Key('field-weight')), '2');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(find.text('Please enter a valid number'), findsNothing);
     });
@@ -234,10 +234,10 @@ void main() {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.enterText(find.byKey(const Key('field-weight')), 'test');
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(find.text('Please enter a valid number'), findsOneWidget);
     });
@@ -280,7 +280,7 @@ void main() {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(find.text('Please select an ingredient'), findsOneWidget);
       expect(find.text('Please enter a value'), findsOneWidget);
@@ -300,7 +300,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       expect(find.text('Please enter a value'), findsOneWidget);
     });
@@ -335,7 +335,7 @@ void main() {
         expect(find.byKey(const Key('ingredient-scan-result-dialog')), findsNothing);
 
         await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
-        await tester.pumpAndSettle();
+        await tester.pump();
 
         expect(formState.mealItem.amount, 2);
 
