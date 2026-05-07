@@ -61,7 +61,7 @@ const _deviceArg = String.fromEnvironment('DEVICE_TYPE', defaultValue: 'androidP
 
 // Determine the destination device type based on the provided argument
 final DeviceType destination = DeviceType.values.firstWhere(
-  (d) => d.toString().split('.').last == _deviceArg || ((d.name ?? '') == _deviceArg),
+  (d) => d.name == _deviceArg,
   orElse: () {
     print('***** Unknown DEVICE_TYPE="$_deviceArg", defaulting to androidPhone *****');
     return DeviceType.androidPhone;

@@ -133,7 +133,7 @@ void main() {
     });
 
     test('server version with Python alpha suffix below min — blocked', () {
-      authProvider.serverVersion = '${belowMin}.0a2';
+      authProvider.serverVersion = '$belowMin.0a2';
       expect(authProvider.serverUpdateRequired(), true);
     });
 

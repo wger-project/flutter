@@ -50,7 +50,7 @@ class Step2Variations extends StatelessWidget {
                           ),
                         ),
                         Consumer<AddExerciseProvider>(
-                          builder: (ctx, provider, __) => Switch(
+                          builder: (ctx, provider, _) => Switch(
                             value: provider.variationGroup == key,
                             onChanged: (state) => provider.variationGroup = state ? key : null,
                           ),
@@ -83,7 +83,7 @@ class Step2Variations extends StatelessWidget {
                               ),
                             ),
                             Consumer<AddExerciseProvider>(
-                              builder: (ctx, provider, __) => Switch(
+                              builder: (ctx, provider, _) => Switch(
                                 value: provider.variationConnectToExercise == base.id,
                                 onChanged: (state) => provider.variationConnectToExercise = base.id,
                               ),

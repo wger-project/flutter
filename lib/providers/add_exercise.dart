@@ -220,7 +220,7 @@ class AddExerciseProvider with ChangeNotifier {
           _logger.fine('Image uploaded successfully');
         } else {
           final response = await http.Response.fromStream(streamedResponse);
-          throw Exception('Upload failed: ${streamedResponse.statusCode}');
+          throw Exception('Upload failed: ${streamedResponse.statusCode}: ${response.body}');
         }
       } catch (e) {
         rethrow;

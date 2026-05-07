@@ -57,11 +57,9 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
               backgroundColor: Colors.transparent,
               isExpanded: filterCategory.isExpanded,
               headerBuilder: (context, isExpanded) {
-                return Container(
-                  child: Text(
-                    filterCategory.title,
-                    style: theme.textTheme.headlineSmall,
-                  ),
+                return Text(
+                  filterCategory.title,
+                  style: theme.textTheme.headlineSmall,
                 );
               },
               body: Column(

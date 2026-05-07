@@ -27,17 +27,15 @@ class ExerciseCategoryInputWidget<T> extends StatefulWidget {
   late final List<T> _entries;
   late final Function _getDisplayName;
   late final Function? _validator;
-  late final Key? _key;
 
   ExerciseCategoryInputWidget({
-    Key? key,
+    super.key,
     required String title,
     required List<T> entries,
     required Function callback,
     required Function displayName,
     Function? validator,
   }) {
-    _key = key;
     _entries = entries;
     _title = title;
     _callback = callback;

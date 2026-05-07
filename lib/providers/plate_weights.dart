@@ -21,8 +21,6 @@ final plateCalculatorProvider = NotifierProvider<PlateCalculatorNotifier, PlateC
 );
 
 class PlateCalculatorState {
-  final _logger = Logger('PlateWeightsState');
-
   // https://en.wikipedia.org/wiki/Barbell#Bumper_plates
   final Map<double, Color> plateColorMapKg = {
     25: Colors.red,

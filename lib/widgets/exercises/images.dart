@@ -17,22 +17,17 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
-import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/widgets/core/image.dart';
 
 class ExerciseImageWidget extends StatelessWidget {
   ExerciseImageWidget({this.image, this.height});
 
-  final _logger = Logger('ExerciseImageWidget');
   final ExerciseImage? image;
   final double? height;
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context);
-
     return image != null
         ? Image.network(
             image!.url,

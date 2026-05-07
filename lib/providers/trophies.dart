@@ -29,8 +29,6 @@ import 'base_provider.dart';
 part 'trophies.g.dart';
 
 class TrophyState {
-  final _logger = Logger('TrophyState');
-
   final List<Trophy> trophies;
   final List<UserTrophy> userTrophies;
   final List<UserTrophyProgression> trophyProgression;

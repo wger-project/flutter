@@ -205,7 +205,7 @@ class Exercise extends Equatable {
         (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
         orElse: () {
           _logger.info(
-            'Could not find fallback english translation for exercise-ID ${id}, returning '
+            'Could not find fallback english translation for exercise-ID $id, returning '
             'first language (${translations.first.languageObj.shortName}) instead.',
           );
           return translations.first;

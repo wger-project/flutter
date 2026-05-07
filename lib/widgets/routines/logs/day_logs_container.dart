@@ -116,7 +116,6 @@ class DayLogWidget extends ConsumerWidget {
                             filterNullReps: true,
                             filterNullWeights: true,
                           ),
-                          _date,
                         ),
                       ),
                     ],

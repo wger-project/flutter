@@ -124,7 +124,6 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
 }
 
 class WorkoutSessionStats extends ConsumerWidget {
-  final _logger = Logger('WorkoutSessionStats');
   final WorkoutSessionApi? _sessionApi;
   final List<UserTrophy> _userPrTrophies;
 
