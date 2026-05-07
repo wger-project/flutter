@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/helpers/errors.dart';
+import 'package:wger/helpers/locale.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/add_exercise.dart';
@@ -279,12 +280,7 @@ class MainApp extends StatelessWidget {
                           const ConfigureDashboardWidgetsScreen(),
                       TrophyScreen.routeName: (ctx) => const TrophyScreen(),
                     },
-                    localeListResolutionCallback: (locales, supportedLocales) {
-                      if (locales != null && locales.isNotEmpty) {
-                        return locales.first;
-                      }
-                      return null;
-                    },
+                    localeListResolutionCallback: resolveLocale,
                     localizationsDelegates: AppLocalizations.localizationsDelegates,
                     supportedLocales: AppLocalizations.supportedLocales,
                   );
