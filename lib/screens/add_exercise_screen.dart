@@ -225,7 +225,9 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                   language.shortName,
                 );
 
-                if (!mounted) return;
+                if (!mounted) {
+                  return;
+                }
 
                 if (error != null) {
                   setState(() {

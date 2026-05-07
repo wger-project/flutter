@@ -47,7 +47,9 @@ class _TimerWidgetState extends State<TimerWidget> {
 
     _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       // ignore: no-empty-block, avoid-empty-setstate
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -109,7 +111,9 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
 
     _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       // ignore: no-empty-block, avoid-empty-setstate
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
