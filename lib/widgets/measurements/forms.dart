@@ -33,15 +33,10 @@ class MeasurementCategoryForm extends ConsumerWidget {
   final unitController = TextEditingController();
 
   final String? _existingId;
-  String _name;
-  String _unit;
 
-  MeasurementCategoryForm([MeasurementCategory? category])
-    : _existingId = category?.id,
-      _name = category?.name ?? '',
-      _unit = category?.unit ?? '' {
-    nameController.text = _name;
-    unitController.text = _unit;
+  MeasurementCategoryForm([MeasurementCategory? category]) : _existingId = category?.id {
+    nameController.text = category?.name ?? '';
+    unitController.text = category?.unit ?? '';
   }
 
   @override
@@ -57,9 +52,6 @@ class MeasurementCategoryForm extends ConsumerWidget {
               helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
             ),
             controller: nameController,
-            onSaved: (newValue) {
-              _name = newValue!;
-            },
             validator: (value) {
               if (value!.isEmpty) {
                 return AppLocalizations.of(context).enterValue;
@@ -75,9 +67,6 @@ class MeasurementCategoryForm extends ConsumerWidget {
               helperText: AppLocalizations.of(context).measurementEntriesHelpText,
             ),
             controller: unitController,
-            onSaved: (newValue) {
-              _unit = newValue!;
-            },
             validator: (value) {
               if (value!.isEmpty) {
                 return AppLocalizations.of(context).enterValue;
@@ -97,8 +86,8 @@ class MeasurementCategoryForm extends ConsumerWidget {
               final notifier = ref.read(measurementProvider.notifier);
               final category = MeasurementCategory(
                 id: _existingId,
-                name: _name,
-                unit: _unit,
+                name: nameController.text,
+                unit: unitController.text,
               );
 
               if (category.id == null) {
@@ -118,34 +107,55 @@ class MeasurementCategoryForm extends ConsumerWidget {
   }
 }
 
-class MeasurementEntryForm extends ConsumerWidget {
-  final _form = GlobalKey<FormState>();
+class MeasurementEntryForm extends ConsumerStatefulWidget {
   final String _categoryId;
+  final MeasurementEntry? _entry;
+
+  const MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry])
+    : _entry = entry;
+
+  @override
+  ConsumerState<MeasurementEntryForm> createState() => _MeasurementEntryFormState();
+}
+
+class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
+  final _form = GlobalKey<FormState>();
   final _valueController = TextEditingController();
-  final _dateController = TextEditingController(text: '');
-  final _timeController = TextEditingController(text: '');
+  final _dateController = TextEditingController();
+  final _timeController = TextEditingController();
   final _notesController = TextEditingController();
 
-  final String? _existingId;
-  DateTime _date;
+  late final String? _existingId = widget._entry?.id;
+  late DateTime _date = widget._entry?.date ?? DateTime.now();
   num? _value;
-  String _notes;
+  String _notes = '';
 
-  MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry])
-    : _existingId = entry?.id,
-      _date = entry?.date ?? DateTime.now(),
-      _value = entry?.value,
-      _notes = entry?.notes ?? '' {
+  @override
+  void initState() {
+    super.initState();
+    _value = widget._entry?.value;
+    _notes = widget._entry?.notes ?? '';
     _notesController.text = _notes;
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _valueController.dispose();
+    _dateController.dispose();
+    _timeController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
 
     final notifier = ref.read(measurementProvider.notifier);
-    final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(_categoryId);
+    final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(
+      widget._categoryId,
+    );
 
     if (_dateController.text.isEmpty) {
       _dateController.text = dateFormat.format(_date);

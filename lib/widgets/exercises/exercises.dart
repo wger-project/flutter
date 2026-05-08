@@ -37,11 +37,6 @@ import 'package:wger/widgets/exercises/videos.dart';
 
 class ExerciseDetail extends ConsumerWidget {
   final Exercise _exercise;
-  // Reassigned on every build (which can fire repeatedly now that
-  // [_exerciseState] subscribes to the catalogue stream via
-  // `ref.watch`). `late final` would throw on the second assignment.
-  late Translation _translation;
-  late ExerciseState _exerciseState;
   static const PADDING = 9.0;
   final CarouselController carouselController = CarouselController();
 
@@ -51,8 +46,8 @@ class ExerciseDetail extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Reactive: rebuild when the catalogue updates. Empty fallback while
     // the stream hasn't emitted yet.
-    _exerciseState = ref.watch(exercisesProvider).value ?? const ExerciseState([]);
-    _translation = _exercise.getTranslation(Localizations.localeOf(context).languageCode);
+    final exerciseState = ref.watch(exercisesProvider).value ?? const ExerciseState([]);
+    final translation = _exercise.getTranslation(Localizations.localeOf(context).languageCode);
 
     return SingleChildScrollView(
       child: Column(
@@ -63,7 +58,7 @@ class ExerciseDetail extends ConsumerWidget {
           getCategoriesAndEquipment(context),
 
           // Alternative names
-          ...getAliases(context),
+          ...getAliases(context, translation),
 
           // Videos
           ...getVideos(),
@@ -72,23 +67,23 @@ class ExerciseDetail extends ConsumerWidget {
           ...getImages(),
 
           // Description
-          ...getDescription(context),
+          ...getDescription(context, translation),
 
           // Notes
-          ...getNotes(context),
+          ...getNotes(context, translation),
 
           // Muscles
           ...getMuscles(context),
 
           // Variants
-          ...getVariations(context),
+          ...getVariations(context, exerciseState),
         ],
       ),
     );
   }
 
-  List<Widget> getVariations(BuildContext context) {
-    final variations = _exerciseState.findByVariationGroup(
+  List<Widget> getVariations(BuildContext context, ExerciseState exerciseState) {
+    final variations = exerciseState.findByVariationGroup(
       _exercise.variationGroup,
       exerciseIdToExclude: _exercise.id,
     );
@@ -115,16 +110,16 @@ class ExerciseDetail extends ConsumerWidget {
     return out;
   }
 
-  List<Widget> getNotes(BuildContext context) {
+  List<Widget> getNotes(BuildContext context, Translation translation) {
     final List<Widget> out = [];
-    if (_translation.notes.isNotEmpty) {
+    if (translation.notes.isNotEmpty) {
       out.add(
         Text(
           AppLocalizations.of(context).notes,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       );
-      for (final e in _translation.notes) {
+      for (final e in translation.notes) {
         out.add(Text(e.comment));
       }
       out.add(const SizedBox(height: PADDING));
@@ -195,7 +190,7 @@ class ExerciseDetail extends ConsumerWidget {
     return out;
   }
 
-  List<Widget> getDescription(BuildContext context) {
+  List<Widget> getDescription(BuildContext context, Translation translation) {
     final List<Widget> out = [];
     out.add(
       Text(
@@ -203,7 +198,7 @@ class ExerciseDetail extends ConsumerWidget {
         style: Theme.of(context).textTheme.headlineSmall,
       ),
     );
-    out.add(Html(data: _translation.description));
+    out.add(Html(data: translation.description));
 
     return out;
   }
@@ -272,13 +267,13 @@ class ExerciseDetail extends ConsumerWidget {
     return out;
   }
 
-  List<Widget> getAliases(BuildContext context) {
+  List<Widget> getAliases(BuildContext context, Translation translation) {
     final List<Widget> out = [];
-    if (_translation.aliases.isNotEmpty) {
+    if (translation.aliases.isNotEmpty) {
       out.add(
         MutedText(
           AppLocalizations.of(context).alsoKnownAs(
-            _translation.aliases.map((e) => e.alias).toList().join(', '),
+            translation.aliases.map((e) => e.alias).toList().join(', '),
           ),
         ),
       );

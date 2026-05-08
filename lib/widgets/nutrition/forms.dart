@@ -511,11 +511,12 @@ enum GoalType {
 }
 
 class PlanForm extends ConsumerStatefulWidget {
-  late NutritionalPlan _plan;
+  // Mutated in-place by descendant onSaved/onTap callbacks (e.g. setting
+  // [NutritionalPlan.description] or [startDate]); the field reference itself
+  // is fixed at construction so the widget stays @immutable-compatible.
+  final NutritionalPlan _plan;
 
-  PlanForm([NutritionalPlan? plan]) {
-    _plan = plan ?? NutritionalPlan.empty();
-  }
+  PlanForm([NutritionalPlan? plan]) : _plan = plan ?? NutritionalPlan.empty();
 
   @override
   ConsumerState<PlanForm> createState() => _PlanFormState();
@@ -771,11 +772,11 @@ class _PlanFormState extends ConsumerState<PlanForm> {
                   Navigator.of(context).pop();
                 }
               } else {
-                widget._plan = await notifier.addPlan(widget._plan);
+                final saved = await notifier.addPlan(widget._plan);
                 if (context.mounted) {
                   Navigator.of(context).pushReplacementNamed(
                     NutritionalPlanScreen.routeName,
-                    arguments: widget._plan,
+                    arguments: saved,
                   );
                 }
               }
