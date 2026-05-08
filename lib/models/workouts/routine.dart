@@ -37,7 +37,7 @@ class Routine {
 
   /// In weeks
   static const MIN_DURATION = 2;
-  static const MAX_DURATION = 16;
+  static const MAX_DURATION = 17;
   static const DEFAULT_DURATION = 12;
 
   @JsonKey(required: true, includeToJson: false)
