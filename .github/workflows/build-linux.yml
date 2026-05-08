@@ -21,6 +21,10 @@ on:
     secrets:
       SSH_DEPLOY_KEY:
         required: true
+
+permissions:
+  contents: read
+
 jobs:
 
   # TODO: note that we currently only build for x64, as arm64 is not supported by

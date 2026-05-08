@@ -6,6 +6,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+
 jobs:
   determine_version:
     name: Create tag

@@ -7,6 +7,9 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: read
+
 jobs:
   screenshots_apple:
     name: 'iOS'
@@ -131,6 +134,8 @@ jobs:
       - screenshots_android
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
 
