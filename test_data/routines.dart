@@ -149,7 +149,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     slotId: 2,
     type: SlotEntryType.normal,
     order: 1,
-    exerciseId: testExercises[4].id!,
+    exerciseId: testExercises[4].id,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
     weightUnitId: 1,
@@ -171,7 +171,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     slotId: 2,
     type: SlotEntryType.normal,
     order: 1,
-    exerciseId: testExercises[5].id!,
+    exerciseId: testExercises[5].id,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
     weightUnitId: 1,
@@ -216,7 +216,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         SlotData(
           comment: 'Make sure to warm up',
           isSuperset: false,
-          exerciseIds: [testExercises[0].id!],
+          exerciseIds: [testExercises[0].id],
           setConfigs: [
             SetConfigData(
               exerciseId: 1,
@@ -233,7 +233,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '3x100kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[0].id!,
+              exerciseId: testExercises[0].id,
               exercise: testExercises[0],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -247,7 +247,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '3x100kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[0].id!,
+              exerciseId: testExercises[0].id,
               exercise: testExercises[0],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -265,10 +265,10 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         SlotData(
           comment: 'Side rises',
           isSuperset: false,
-          exerciseIds: [testExercises[5].id!],
+          exerciseIds: [testExercises[5].id],
           setConfigs: [
             SetConfigData(
-              exerciseId: testExercises[5].id!,
+              exerciseId: testExercises[5].id,
               exercise: testExercises[5],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -282,7 +282,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '12x10kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[5].id!,
+              exerciseId: testExercises[5].id,
               exercise: testExercises[5],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -296,7 +296,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '12x10kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[5].id!,
+              exerciseId: testExercises[5].id,
               exercise: testExercises[5],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -322,10 +322,10 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         SlotData(
           comment: 'Squats',
           isSuperset: false,
-          exerciseIds: [testExercises[4].id!],
+          exerciseIds: [testExercises[4].id],
           setConfigs: [
             SetConfigData(
-              exerciseId: testExercises[4].id!,
+              exerciseId: testExercises[4].id,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -339,7 +339,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '3x100kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[4].id!,
+              exerciseId: testExercises[4].id,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -353,7 +353,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '3x100kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[4].id!,
+              exerciseId: testExercises[4].id,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -432,10 +432,10 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         SlotData(
           comment: 'Make sure to go deep. Slow down, and push through your heels',
           isSuperset: false,
-          exerciseIds: [testExercises[4].id!],
+          exerciseIds: [testExercises[4].id],
           setConfigs: [
             SetConfigData(
-              exerciseId: testExercises[4].id!,
+              exerciseId: testExercises[4].id,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 4,

@@ -65,7 +65,7 @@ void main() {
     });
 
     test('single slot is not grouped', () {
-      final slots = [makeSlot(1, 1, makeEntry(1, benchPress.id!, exerciseObj: benchPress))];
+      final slots = [makeSlot(1, 1, makeEntry(1, benchPress.id, exerciseObj: benchPress))];
       final groups = computeSlotGroups(slots, 'en');
 
       expect(groups[0]!.groupSize, 1);
@@ -75,8 +75,8 @@ void main() {
 
     test('two consecutive same-exercise slots form a group', () {
       final slots = [
-        makeSlot(1, 1, makeEntry(1, benchPress.id!, exerciseObj: benchPress)),
-        makeSlot(2, 2, makeEntry(2, benchPress.id!, exerciseObj: benchPress)),
+        makeSlot(1, 1, makeEntry(1, benchPress.id, exerciseObj: benchPress)),
+        makeSlot(2, 2, makeEntry(2, benchPress.id, exerciseObj: benchPress)),
       ];
       final groups = computeSlotGroups(slots, 'en');
 
@@ -90,8 +90,8 @@ void main() {
 
     test('different exercises are not grouped', () {
       final slots = [
-        makeSlot(1, 1, makeEntry(1, benchPress.id!, exerciseObj: benchPress)),
-        makeSlot(2, 2, makeEntry(2, sideRaises.id!, exerciseObj: sideRaises)),
+        makeSlot(1, 1, makeEntry(1, benchPress.id, exerciseObj: benchPress)),
+        makeSlot(2, 2, makeEntry(2, sideRaises.id, exerciseObj: sideRaises)),
       ];
       final groups = computeSlotGroups(slots, 'en');
 
@@ -102,10 +102,10 @@ void main() {
     test('only consecutive same-exercise slots are grouped', () {
       // Bench, Bench, Side raises, Bench → group[2], single, single
       final slots = [
-        makeSlot(1, 1, makeEntry(1, benchPress.id!, exerciseObj: benchPress)),
-        makeSlot(2, 2, makeEntry(2, benchPress.id!, exerciseObj: benchPress)),
-        makeSlot(3, 3, makeEntry(3, sideRaises.id!, exerciseObj: sideRaises)),
-        makeSlot(4, 4, makeEntry(4, benchPress.id!, exerciseObj: benchPress)),
+        makeSlot(1, 1, makeEntry(1, benchPress.id, exerciseObj: benchPress)),
+        makeSlot(2, 2, makeEntry(2, benchPress.id, exerciseObj: benchPress)),
+        makeSlot(3, 3, makeEntry(3, sideRaises.id, exerciseObj: sideRaises)),
+        makeSlot(4, 4, makeEntry(4, benchPress.id, exerciseObj: benchPress)),
       ];
       final groups = computeSlotGroups(slots, 'en');
 
@@ -117,12 +117,12 @@ void main() {
 
     test('superset slots (multiple entries) are never grouped', () {
       final supersetSlot = Slot.withData(id: 1, day: 1, order: 1);
-      supersetSlot.entries.add(makeEntry(1, benchPress.id!, exerciseObj: benchPress));
-      supersetSlot.entries.add(makeEntry(1, sideRaises.id!, exerciseObj: sideRaises));
+      supersetSlot.entries.add(makeEntry(1, benchPress.id, exerciseObj: benchPress));
+      supersetSlot.entries.add(makeEntry(1, sideRaises.id, exerciseObj: sideRaises));
 
       final slots = [
         supersetSlot,
-        makeSlot(2, 2, makeEntry(2, benchPress.id!, exerciseObj: benchPress)),
+        makeSlot(2, 2, makeEntry(2, benchPress.id, exerciseObj: benchPress)),
       ];
       final groups = computeSlotGroups(slots, 'en');
 

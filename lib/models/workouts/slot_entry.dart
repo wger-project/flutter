@@ -202,7 +202,7 @@ class SlotEntry {
     config = null;
     this.type = type ?? SlotEntryType.normal;
     exerciseObj = exercise;
-    exerciseId = exercise.id!;
+    exerciseId = exercise.id;
     this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG;
 
     this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;
@@ -258,7 +258,7 @@ class SlotEntry {
 
   set exercise(Exercise exercise) {
     exerciseObj = exercise;
-    exerciseId = exercise.id!;
+    exerciseId = exercise.id;
   }
 
   set weightUnit(WeightUnit weightUnit) {

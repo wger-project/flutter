@@ -339,7 +339,7 @@ class ExerciseSwapWidget extends ConsumerWidget {
                       onExerciseSelected: (exercise) {
                         gymProvider.replaceExercises(
                           page.uuid,
-                          originalExerciseId: e.id!,
+                          originalExerciseId: e.id,
                           newExercise: exercise,
                         );
                         onDone?.call();

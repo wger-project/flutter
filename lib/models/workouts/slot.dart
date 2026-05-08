@@ -72,7 +72,7 @@ class Slot {
     this.comment = comment ?? '';
     config = null;
     exercisesObj = exercises ?? [];
-    exercisesIds = exercisesObj.map((e) => e.id!).toList();
+    exercisesIds = exercisesObj.map((e) => e.id).toList();
     entries = entries ?? [];
     if (day != null) {
       this.day = day;
@@ -81,7 +81,7 @@ class Slot {
 
   void addExerciseBase(Exercise base) {
     exercisesObj.add(base);
-    exercisesIds.add(base.id!);
+    exercisesIds.add(base.id);
   }
 
   void removeExercise(Exercise base) {

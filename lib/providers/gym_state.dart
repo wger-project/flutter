@@ -703,7 +703,7 @@ class GymStateNotifier extends _$GymStateNotifier {
               setIndex: 0,
               setConfigData: SetConfigData(
                 textRepr: '-/-',
-                exerciseId: newExercise.id!,
+                exerciseId: newExercise.id,
                 exercise: newExercise,
                 slotEntryId: setConfigData.slotEntryId,
               ),

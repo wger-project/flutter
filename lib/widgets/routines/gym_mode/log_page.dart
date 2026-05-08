@@ -351,7 +351,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     final gymState = ref.read(gymStateProvider);
                     final gymProvider = ref.read(gymStateProvider.notifier);
 
-                    logProvider.addEntry(log!);
+                    logProvider.addEntry(log);
                     final page = gymState.getSlotEntryPageByIndex()!;
                     gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
 
