@@ -668,6 +668,12 @@
     "routines": "Rutinas",
     "newRoutine": "Nueva rutina",
     "noRoutines": "No hay rutinas",
+    "@noRoutines": {},
+    "noRoutinesSubtitle": "Crea tu primera rutina para comenzar a seguir tus entrenamientos",
+    "noWorkoutScheduled": "Sin entrenamiento programado",
+    "workoutCompleted": "Completado",
+    "workoutUpcoming": "Próximo",
+    "workoutMissed": "Perdido",
     "restTime": "Tiempo de descanso",
     "sets": "El número de rondas para cada ejercicio",
     "@sets": {

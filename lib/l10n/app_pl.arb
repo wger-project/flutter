@@ -735,6 +735,12 @@
         "description": "Error message when the user tries to input a API key with forbidden characters"
     },
     "noRoutines": "Ty nie masz żadnej rutyny",
+    "@noRoutines": {},
+    "noRoutinesSubtitle": "Stwórz swoją pierwszą rutynę, aby rozpocząć śledzenie swoich treningów",
+    "noWorkoutScheduled": "Brak zaplanowanego treningu",
+    "workoutCompleted": "Ukończony",
+    "workoutUpcoming": "Nadchodzący",
+    "workoutMissed": "Pominięty",
     "restDay": "Dzień odpoczynkowy",
     "errorInfoDescription2": "Możesz kontynuować używanie tej aplikacji, ale niektóre funkcje mogą być niedostępne.",
     "resistance_band": "Guma oporowa",

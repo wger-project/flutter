@@ -840,6 +840,12 @@
     "routines": "Routine",
     "newRoutine": "Nuova routine",
     "noRoutines": "Non hai nessuna routine",
+    "@noRoutines": {},
+    "noRoutinesSubtitle": "Crea la tua prima routine per iniziare a monitorare i tuoi allenamenti",
+    "noWorkoutScheduled": "Nessun allenamento programmato",
+    "workoutCompleted": "Completato",
+    "workoutUpcoming": "In arrivo",
+    "workoutMissed": "Saltato",
     "restTime": "Tempo di riposo",
     "exerciseNr": "Esercizio {nr}",
     "@exerciseNr": {

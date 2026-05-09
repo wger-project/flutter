@@ -181,6 +181,11 @@
   "routines": "Routines",
   "newRoutine": "New routine",
   "noRoutines": "You have no routines",
+  "noRoutinesSubtitle": "Create your first routine to start tracking your workouts",
+  "noWorkoutScheduled": "No workout scheduled",
+  "workoutCompleted": "Completed",
+  "workoutUpcoming": "Upcoming",
+  "workoutMissed": "Missed",
   "reps": "Reps",
   "@reps": {
     "description": "Shorthand for repetitions, used when space constraints are tighter"
@@ -1160,6 +1165,14 @@
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
   "systemMode": "System settings",
+  "showAll": "Show all",
+  "@showAll": {
+    "description": "Text for expand button to show all items"
+  },
+  "showLess": "Show less",
+  "@showLess": {
+    "description": "Text for collapse button to hide items"
+  },
   "productNotFoundOpenFoodFacts": "You can add this product to Open Food Facts to help the community!",
   "@productNotFoundOpenFoodFacts": {
   "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
