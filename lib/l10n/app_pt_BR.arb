@@ -167,7 +167,7 @@
     "@pause": {
         "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
     },
-    "success": "Bem sucedido",
+    "success": "Sucesso",
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
     },
