@@ -40,6 +40,8 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
+import 'package:wger/screens/ingredient_screen.dart';
+import 'package:wger/screens/ingredients_screen.dart';
 import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
@@ -211,6 +213,8 @@ class MainApp extends ConsumerWidget {
             NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
             NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
             NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+            IngredientDetailScreen.routeName: (ctx) => const IngredientDetailScreen(),
+            IngredientsScreen.routeName: (ctx) => const IngredientsScreen(),
             LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
             LogMealScreen.routeName: (ctx) => const LogMealScreen(),
             WeightScreen.routeName: (ctx) => const WeightScreen(),

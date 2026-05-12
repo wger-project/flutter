@@ -366,7 +366,7 @@
   "@logIngredient": {},
   "searchIngredient": "Search ingredient",
   "@searchIngredient": {
-    "description": "Label on ingredient search form"
+    "description": "Label (or Hint text) on ingredient search form"
   },
   "nutritionalPlan": "Nutritional plan",
   "@nutritionalPlan": {},
@@ -378,6 +378,11 @@
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
   },
+  "manageLists": "Manage lists",
+  "@manageLists": {
+    "description": "Label for the button to manage ingredient lists"
+  },
+  "clearSearchTerm": "Clear search term (text)",
   "onlyLogging": "Only track calories",
   "onlyLoggingHelpText": "Check the box if you only want to log your calories and don't want to setup a detailed nutritional plan with specific meals",
   "goalMacro": "Macro goals",
@@ -494,7 +499,9 @@
   "timeStartAhead": "Start time cannot be ahead of end time",
   "@timeStartAhead": {},
   "ingredient": "Ingredient",
-  "@ingredient": {},
+  "@ingredient": {
+        "description": "Title for the ingredients screen"
+    },
   "energy": "Energy",
   "@energy": {
     "description": "Energy in a meal, ingredient etc. e.g. in kJ"
@@ -1273,6 +1280,10 @@
   "filterNutriscore": "Nutri-Score filter",
   "@filterNutriscore": {
     "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+  },
+  "nutriscoreValue": "Nutri-Score:",
+  "@filterNutriscore": {
+    "description": "label for Nutri-Score(nutriscore) for.eg, in subtitle of ingredient custom lists"
   },
   "filterNutriscoreOff": "Off",
   "@filterNutriscoreOff": {

@@ -12,12 +12,14 @@ class IngredientFilters {
   /// `nutriscore__lte`. `null` means the filter is off (slider at the
   /// "No filter" position).
   final NutriScore? nutriscoreMax;
+  final String searchTerm;
 
   const IngredientFilters({
     this.isVegan = false,
     this.isVegetarian = false,
     this.searchLanguage = SearchLanguage.currentAndEnglish,
     this.nutriscoreMax,
+    this.searchTerm = '',
   });
 
   /// Locale-aware default filter set.
@@ -37,12 +39,14 @@ class IngredientFilters {
     SearchLanguage? searchLanguage,
     NutriScore? nutriscoreMax,
     bool clearNutriscoreMax = false,
+    String? searchTerm,
   }) {
     return IngredientFilters(
       isVegan: isVegan ?? this.isVegan,
       isVegetarian: isVegetarian ?? this.isVegetarian,
       searchLanguage: searchLanguage ?? this.searchLanguage,
       nutriscoreMax: clearNutriscoreMax ? null : (nutriscoreMax ?? this.nutriscoreMax),
+      searchTerm: searchTerm ?? this.searchTerm,
     );
   }
 

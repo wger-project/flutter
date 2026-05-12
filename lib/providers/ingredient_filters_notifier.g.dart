@@ -33,7 +33,7 @@ final class IngredientFiltersNotifierProvider
   IngredientFiltersNotifier create() => IngredientFiltersNotifier();
 }
 
-String _$ingredientFiltersNotifierHash() => r'3fb2ae558584d5ea3cce83679b6682ef5b1ba6f2';
+String _$ingredientFiltersNotifierHash() => r'c8e5577795e50643a8fdcf5b44c0a22b21830dfb';
 
 abstract class _$IngredientFiltersNotifier extends $AsyncNotifier<IngredientFilters> {
   FutureOr<IngredientFilters> build();

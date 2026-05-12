@@ -75,6 +75,32 @@ class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {
     );
     await PreferenceHelper.instance.saveIngredientNutriscoreMax(value);
   }
+
+  /// Updates the search term in the state without persisting it.
+  void setSearchTerm(String value) {
+    final current = _current();
+    if (current.searchTerm != value) {
+      state = AsyncData(current.copyWith(searchTerm: value));
+    }
+  }
+
+  /// Resets all filters to their default values and clears persisted preferences.
+  Future<void> resetFilters() async {
+    state = const AsyncData(
+      IngredientFilters(
+        isVegan: false,
+        isVegetarian: false,
+        searchLanguage: SearchLanguage.current,
+        searchTerm: '',
+      ),
+    );
+
+    final pref = PreferenceHelper.instance;
+    await pref.saveIngredientVeganFilter(false);
+    await pref.saveIngredientVegetarianFilter(false);
+    await pref.saveIngredientSearchLanguage(SearchLanguage.current);
+    await pref.saveIngredientNutriscoreMax(null);
+  }
 }
 
 // Synchronous helper provider to unwrap the AsyncValue produced by `ingredientFiltersProvider`

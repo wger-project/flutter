@@ -62,6 +62,18 @@ class IngredientRepository {
     });
   }
 
+  /// Watches all locally synced ingredients.
+  ///
+  /// Only ingredients that are used in a nutritional plan or log are
+  /// synced to the device for offline storage in the Drift database.
+  Stream<List<Ingredient>> watchAllDrift() {
+    _logger.finer('Watching all synced ingredients');
+    final query = _baseJoinedQuery()..orderBy([OrderingTerm(expression: _db.ingredientTable.name)]);
+    return query.watch().map((rows) {
+      return _hydrate(rows);
+    });
+  }
+
   /// Read a single ingredient by [id] once from the DB
   Future<Ingredient?> getById(int id) async {
     _logger.finer('Reading ingredient $id');

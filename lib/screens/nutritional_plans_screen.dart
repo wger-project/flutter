@@ -22,9 +22,13 @@ import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/screens/ingredients_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plans_list.dart';
+
+enum _NutritionalPlansAppBarOptions {
+  list,
+}
 
 class NutritionalPlansScreen extends ConsumerWidget {
   const NutritionalPlansScreen();
@@ -36,7 +40,28 @@ class NutritionalPlansScreen extends ConsumerWidget {
     final isOnline = ref.watch(networkStatusProvider);
 
     return Scaffold(
-      appBar: EmptyAppBar(AppLocalizations.of(context).nutritionalPlans),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).nutritionalPlans),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+              const  PopupMenuItem<_NutritionalPlansAppBarOptions>(
+                  value: _NutritionalPlansAppBarOptions.list,
+                  child: Text('ingredient list'), // TODO: i10n
+                ),
+              ];
+            },
+            onSelected: (value) {
+              switch (value) {
+                case _NutritionalPlansAppBarOptions.list:
+                  Navigator.of(context).pushNamed(IngredientsScreen.routeName);
+                  break;
+              }
+            },
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: isOnline ? null : Colors.grey,
         onPressed: isOnline

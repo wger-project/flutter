@@ -22,17 +22,19 @@
 
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/providers/ingredient_filters_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
 
 import 'ingredient_repository.dart';
 
 part 'ingredient_notifier.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 final class IngredientNotifier extends _$IngredientNotifier {
   final _logger = Logger('IngredientProvider');
 
@@ -45,37 +47,32 @@ final class IngredientNotifier extends _$IngredientNotifier {
   final Map<int, Future<Ingredient?>> _inflight = {};
 
   @override
-  FutureOr<void> build() async {
-    _repo = ref.read(ingredientRepositoryProvider);
-    return null;
+  Stream<List<Ingredient>> build() {
+    ref.keepAlive();
+    _logger.finer('Building ingredient stream');
+    _repo = ref.watch(ingredientRepositoryProvider);
+    // Clear cache when the main list changes
+    // ref.onDispose(() => _cache.clear());
+
+    return _repo.watchAllDrift();
   }
 
   /// Fetch ingredient by [id] from the DB (one-shot) and update state.
   /// If the id is present in the in-memory cache, the cached value is
   /// returned immediately without a DB read. Simultaneous calls for the
-  /// same id are deduplicated. The provider `state` is used only as a
-  /// status signal (loading/done/error) and does not carry the Ingredient
-  /// itself — consumers should read the data from the notifier's cache.
+  /// same id are deduplicated.
   Future<Ingredient?> fetch(int id) async {
     _logger.finer('Fetching ingredient id: $id');
 
     // Return cached result if present (could be null meaning 'not found').
     if (_cache.containsKey(id)) {
-      final cached = _cache[id];
-      if (ref.mounted) {
-        state = const AsyncData(null);
-      }
-      return cached;
+      return _cache[id];
     }
 
     // If a fetch for this id is already ongoing, await it.
     if (_inflight.containsKey(id)) {
       _logger.finer('Awaiting in-flight fetch for id: $id');
-      final res = await _inflight[id];
-      if (ref.mounted) {
-        state = const AsyncData(null);
-      }
-      return res;
+      return await _inflight[id];
     }
 
     // Start a new DB read and store the future in _inflight to dedupe.
@@ -91,15 +88,8 @@ final class IngredientNotifier extends _$IngredientNotifier {
   }
 
   Future<Ingredient?> _doFetch(int id) async {
-    if (ref.mounted) {
-      state = const AsyncLoading();
-    }
     final item = await _repo.getById(id);
     _cache[id] = item; // store null as 'not found' as well
-    if (!ref.mounted) {
-      return item;
-    }
-    state = const AsyncData(null);
     return item;
   }
 
@@ -133,3 +123,19 @@ final class IngredientNotifier extends _$IngredientNotifier {
     );
   }
 }
+
+/// Trigger ingredient search flow by reacting to filter changes.
+final searchedIngredientsProvider = FutureProvider<List<Ingredient>>((ref) async {
+  final filters = ref.watch(ingredientFiltersSyncProvider);
+
+  // search logic handles the Online/Offline routing
+  return ref
+      .read(ingredientProvider.notifier)
+      .searchIngredient(
+        filters.searchTerm,
+        searchLanguage: filters.searchLanguage,
+        isVegan: filters.isVegan,
+        isVegetarian: filters.isVegetarian,
+        nutriscoreMax: filters.nutriscoreMax,
+      );
+});

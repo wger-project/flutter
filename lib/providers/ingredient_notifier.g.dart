@@ -12,14 +12,15 @@ part of 'ingredient_notifier.dart';
 @ProviderFor(IngredientNotifier)
 final ingredientProvider = IngredientNotifierProvider._();
 
-final class IngredientNotifierProvider extends $AsyncNotifierProvider<IngredientNotifier, void> {
+final class IngredientNotifierProvider
+    extends $StreamNotifierProvider<IngredientNotifier, List<Ingredient>> {
   IngredientNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'ingredientProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -32,19 +33,19 @@ final class IngredientNotifierProvider extends $AsyncNotifierProvider<Ingredient
   IngredientNotifier create() => IngredientNotifier();
 }
 
-String _$ingredientNotifierHash() => r'40e9fa3376a25289b04a86f9303e20de77cab1d8';
+String _$ingredientNotifierHash() => r'd94756d249a15e604640f2e9a5c1802a7d4f9711';
 
-abstract class _$IngredientNotifier extends $AsyncNotifier<void> {
-  FutureOr<void> build();
+abstract class _$IngredientNotifier extends $StreamNotifier<List<Ingredient>> {
+  Stream<List<Ingredient>> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final ref = this.ref as $Ref<AsyncValue<List<Ingredient>>, List<Ingredient>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<void>, void>,
-              AsyncValue<void>,
+              AnyNotifier<AsyncValue<List<Ingredient>>, List<Ingredient>>,
+              AsyncValue<List<Ingredient>>,
               Object?,
               Object?
             >;
