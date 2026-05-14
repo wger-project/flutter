@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 
 class ExerciseDetailScreen extends StatelessWidget {
@@ -31,12 +32,13 @@ class ExerciseDetailScreen extends StatelessWidget {
     final exercise = ModalRoute.of(context)!.settings.arguments as Exercise;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(exercise.getTranslation(Localizations.localeOf(context).languageCode).name),
+      extendBodyBehindAppBar: true,
+      appBar: WgerAppBar(
+        exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
       ),
       body: WidescreenWrapper(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: getAppBarBodyPadding(context, left: 10, right: 10),
           child: ExerciseDetail(exercise),
         ),
       ),

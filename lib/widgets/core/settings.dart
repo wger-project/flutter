@@ -17,12 +17,13 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/settings_plates_screen.dart';
-
-import './settings/exercise_cache.dart';
-import './settings/ingredient_cache.dart';
-import './settings/theme.dart';
+import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/core/settings/exercise_cache.dart';
+import 'package:wger/widgets/core/settings/ingredient_cache.dart';
+import 'package:wger/widgets/core/settings/theme.dart';
 
 class SettingsPage extends StatelessWidget {
   static String routeName = '/SettingsPage';
@@ -34,24 +35,31 @@ class SettingsPage extends StatelessWidget {
     final i18n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(i18n.settingsTitle)),
-      body: ListView(
-        children: [
-          ListTile(
-            title: Text(i18n.settingsCacheTitle, style: Theme.of(context).textTheme.headlineSmall),
-          ),
-          const SettingsExerciseCache(),
-          const SettingsIngredientCache(),
-          ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
-          const SettingsTheme(),
-          ListTile(
-            title: Text(i18n.selectAvailablePlates),
-            onTap: () {
-              Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
-            },
-            trailing: const Icon(Icons.chevron_right),
-          ),
-        ],
+      appBar: WgerAppBar(i18n.settingsTitle),
+      extendBodyBehindAppBar: true,
+      body: WidescreenWrapper(
+        child: ListView(
+          padding: getAppBarBodyPadding(context),
+          children: [
+            ListTile(
+              title: Text(
+                i18n.settingsCacheTitle,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+            const SettingsExerciseCache(),
+            const SettingsIngredientCache(),
+            ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
+            const SettingsTheme(),
+            ListTile(
+              title: Text(i18n.selectAvailablePlates),
+              onTap: () {
+                Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
+              },
+              trailing: const Icon(Icons.chevron_right),
+            ),
+          ],
+        ),
       ),
     );
   }

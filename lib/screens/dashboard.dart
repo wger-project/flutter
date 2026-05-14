@@ -70,18 +70,31 @@ class DashboardScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
+      extendBodyBehindAppBar: true,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: MATERIAL_LG_BREAKPOINT),
           child: isMobile
               ? ListView.builder(
-                  padding: const EdgeInsets.all(10),
+                  padding: getAppBarBodyPadding(
+                    context,
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
+                    extraTop: 10,
+                  ),
                   itemBuilder: (context, index) =>
                       _getDashboardWidget(user.dashboardWidgets[index]),
                   itemCount: user.dashboardWidgets.length,
                 )
               : GridView.builder(
-                  padding: const EdgeInsets.all(10),
+                  padding: getAppBarBodyPadding(
+                    context,
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
+                    extraTop: 10,
+                  ),
                   itemBuilder: (context, index) => SingleChildScrollView(
                     child: _getDashboardWidget(user.dashboardWidgets[index]),
                   ),
