@@ -32,10 +32,11 @@ class AccountNotifier extends _$AccountNotifier {
     return _repo.fetchAccount();
   }
 
-  /// Triggers the server's verification email flow.
-  Future<void> verifyEmail() async {
-    await _repo.verifyEmail();
-  }
+  /// Starts an email-change flow; see [AccountRepository.requestEmailChange].
+  Future<void> requestEmailChange(String newEmail) => _repo.requestEmailChange(newEmail);
+
+  /// Re-sends the verification mail for [email].
+  Future<void> resendVerification(String email) => _repo.resendVerification(email);
 
   /// Clears the cached account (e.g. on logout).
   void clear() {

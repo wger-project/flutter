@@ -67,13 +67,23 @@ void main() {
     expect(container.read(accountProvider).value, isNull);
   });
 
-  test('verifyEmail delegates to the repository', () async {
+  test('requestEmailChange delegates to the repository', () async {
     final container = makeContainer();
     await container.read(accountProvider.future);
-    when(mockRepo.verifyEmail()).thenAnswer((_) async {});
+    when(mockRepo.requestEmailChange(any)).thenAnswer((_) async {});
 
-    await container.read(accountProvider.notifier).verifyEmail();
+    await container.read(accountProvider.notifier).requestEmailChange('new@example.com');
 
-    verify(mockRepo.verifyEmail()).called(1);
+    verify(mockRepo.requestEmailChange('new@example.com')).called(1);
+  });
+
+  test('resendVerification delegates to the repository', () async {
+    final container = makeContainer();
+    await container.read(accountProvider.future);
+    when(mockRepo.resendVerification(any)).thenAnswer((_) async {});
+
+    await container.read(accountProvider.notifier).resendVerification('me@example.com');
+
+    verify(mockRepo.resendVerification('me@example.com')).called(1);
   });
 }

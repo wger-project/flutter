@@ -71,6 +71,9 @@ class WgerBaseProvider {
     return makeUri(serverUrl!, path, id: id, objectMethod: objectMethod, query: query);
   }
 
+  /// Builds a `/_allauth/app/v1/<path>` URL for the headless API.
+  Uri makeHeadlessUrl(String path) => makeHeadlessUri(serverUrl!, path);
+
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
   /// with a simple retry mechanism for transient errors.
   Future<dynamic> fetch(
@@ -162,6 +165,17 @@ class WgerBaseProvider {
     }
 
     return json.decode(response.body);
+  }
+
+  /// PUTs to the given URI.
+  Future<Map<String, dynamic>> put(Map<String, dynamic> data, Uri uri) async {
+    final response = await client.put(uri, headers: getDefaultHeaders(), body: json.encode(data));
+
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response);
+    }
+
+    return response.body.isEmpty ? {} : json.decode(response.body);
   }
 
   /// PATCHEs an existing object

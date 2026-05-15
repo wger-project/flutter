@@ -33,6 +33,7 @@ import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/jwt.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/providers/auth_http_client.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/helpers.dart';
@@ -819,7 +820,7 @@ class AuthNotifier extends _$AuthNotifier {
     }
     try {
       final db = await ref.read(powerSyncInstanceProvider.future);
-      connectPowerSync(db, serverUrl);
+      connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
     } catch (e, s) {
       _logger.warning('PowerSync reconnect failed', e, s);
     }

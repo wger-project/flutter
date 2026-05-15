@@ -68,8 +68,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// Resets on app restart.
   final Set<String> _reportedFailedOps = {};
 
-  DjangoConnector({required this.baseUrl, ApiClient? apiClient})
-    : apiClient = apiClient ?? ApiClient(baseUrl);
+  DjangoConnector({required this.baseUrl, required this.apiClient});
 
   /// Get a token to authenticate against the PowerSync instance.
   @override

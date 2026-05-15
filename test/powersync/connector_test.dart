@@ -32,7 +32,7 @@ void main() {
   late DjangoConnector connector;
 
   setUp(() {
-    connector = DjangoConnector(baseUrl: 'http://example.invalid');
+    connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: MockApiClient());
   });
 
   /// Builds a JWT-shaped string with the given payload (signature is a sham,

@@ -56,17 +56,25 @@ void main() {
     });
   });
 
-  group('verifyEmail', () {
-    test('hits the verify-email subpath of userprofile', () async {
-      final uri = Uri.https('localhost', 'api/v2/userprofile/verify-email/');
-      when(
-        mockBase.makeUrl('userprofile', objectMethod: 'verify-email'),
-      ).thenReturn(uri);
-      when(mockBase.fetch(uri)).thenAnswer((_) async => {});
+  group('email management via headless', () {
+    final emailUri = Uri.https('localhost', '/_allauth/app/v1/account/email');
 
-      await repo.verifyEmail();
+    test('requestEmailChange POSTs the new address to account/email', () async {
+      when(mockBase.makeHeadlessUrl('account/email')).thenReturn(emailUri);
+      when(mockBase.post(any, emailUri)).thenAnswer((_) async => {});
 
-      verify(mockBase.fetch(uri)).called(1);
+      await repo.requestEmailChange('new@example.com');
+
+      verify(mockBase.post({'email': 'new@example.com'}, emailUri)).called(1);
+    });
+
+    test('resendVerification PUTs the address to account/email', () async {
+      when(mockBase.makeHeadlessUrl('account/email')).thenReturn(emailUri);
+      when(mockBase.put(any, emailUri)).thenAnswer((_) async => {});
+
+      await repo.resendVerification('old@example.com');
+
+      verify(mockBase.put({'email': 'old@example.com'}, emailUri)).called(1);
     });
   });
 }

@@ -243,6 +243,17 @@ class MockWgerBaseProvider extends _i1.Mock implements _i5.WgerBaseProvider {
           as Uri);
 
   @override
+  Uri makeHeadlessUrl(String? path) =>
+      (super.noSuchMethod(
+            Invocation.method(#makeHeadlessUrl, [path]),
+            returnValue: _FakeUri_1(
+              this,
+              Invocation.method(#makeHeadlessUrl, [path]),
+            ),
+          )
+          as Uri);
+
+  @override
   _i4.Future<dynamic> fetch(
     Uri? uri, {
     int? maxRetries = 3,
@@ -285,6 +296,16 @@ class MockWgerBaseProvider extends _i1.Mock implements _i5.WgerBaseProvider {
   _i4.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(
             Invocation.method(#post, [data, uri]),
+            returnValue: _i4.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i4.Future<Map<String, dynamic>>);
+
+  @override
+  _i4.Future<Map<String, dynamic>> put(Map<String, dynamic>? data, Uri? uri) =>
+      (super.noSuchMethod(
+            Invocation.method(#put, [data, uri]),
             returnValue: _i4.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
