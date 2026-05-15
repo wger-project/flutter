@@ -32,6 +32,11 @@
         "description": "Label on button to jump back to 'today' in the calendar widget"
     },
     "calendar": "Calendrier",
+    "@calendar": {},
+    "firstDayOfWeek": "Premier jour de la semaine",
+    "monday": "Lundi",
+    "sunday": "Dimanche",
+    "saturday": "Samedi",
     "toggleDetails": "Afficher les détails",
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"

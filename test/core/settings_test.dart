@@ -28,6 +28,7 @@ import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/nutrition.dart';
 import 'package:wger/providers/user.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/widgets/core/settings.dart';
 
 import '../../test_data/exercises.dart';
@@ -49,6 +50,7 @@ void main() {
 
   setUp(() {
     when(mockUserProvider.themeMode).thenReturn(ThemeMode.system);
+    when(mockUserProvider.firstDayOfWeek).thenReturn(StartingDayOfWeek.monday);
     when(
       mockSharedPreferences.getString(UserProvider.PREFS_DASHBOARD_CONFIG),
     ).thenAnswer((_) async => null);
@@ -103,6 +105,7 @@ void main() {
   group('Theme settings', () {
     test('Default theme is system', () async {
       when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => null);
+      when(mockSharedPreferences.getInt(PREFS_FIRST_DAY_OF_WEEK)).thenAnswer((_) async => null);
       final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
       await Future.delayed(const Duration(milliseconds: 50)); // wait for async prefs load
       expect(userProvider.themeMode, ThemeMode.system);
@@ -110,6 +113,7 @@ void main() {
 
     test('Loads light theme', () async {
       when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => false);
+      when(mockSharedPreferences.getInt(PREFS_FIRST_DAY_OF_WEEK)).thenAnswer((_) async => null);
       final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
       await Future.delayed(const Duration(milliseconds: 50)); // wait for async prefs load
       expect(userProvider.themeMode, ThemeMode.light);
@@ -117,8 +121,9 @@ void main() {
 
     test('Saves theme to prefs', () {
       when(mockSharedPreferences.getBool(any)).thenAnswer((_) async => null);
+      when(mockSharedPreferences.getInt(any)).thenAnswer((_) async => null);
       when(
-        mockSharedPreferences.getString('dashboardWidgetVisibility'),
+        mockSharedPreferences.getString(UserProvider.PREFS_DASHBOARD_CONFIG),
       ).thenAnswer((_) async => null);
       final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
       userProvider.setThemeMode(ThemeMode.dark);

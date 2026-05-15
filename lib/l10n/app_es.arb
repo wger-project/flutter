@@ -55,6 +55,11 @@
         "description": "Label on button to jump back to 'today' in the calendar widget"
     },
     "calendar": "Calendario",
+    "@calendar": {},
+    "firstDayOfWeek": "Primer día de la semana",
+    "monday": "Lunes",
+    "sunday": "Domingo",
+    "saturday": "Sábado",
     "aboutDescription": "¡Gracias por usar wger! wger es un proyecto colaborativo de código abierto, realizado por entusiastas del fitness de todo el planeta.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
