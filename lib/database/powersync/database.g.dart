@@ -2418,8 +2418,155 @@ class $ExerciseImageTableTable extends ExerciseImageTable
       'CHECK ("is_main" IN (0, 1))',
     ),
   );
+  static const VerificationMeta _isAiGeneratedMeta = const VerificationMeta(
+    'isAiGenerated',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, uuid, exerciseId, image, isMain];
+  late final GeneratedColumn<bool> isAiGenerated = GeneratedColumn<bool>(
+    'is_ai_generated',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_ai_generated" IN (0, 1))',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<ExerciseImageStyle, String> style =
+      GeneratedColumn<String>(
+        'style',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<ExerciseImageStyle>($ExerciseImageTableTable.$converterstyle);
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdMeta = const VerificationMeta(
+    'created',
+  );
+  @override
+  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
+    'created',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdateMeta = const VerificationMeta(
+    'lastUpdate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUpdate = GeneratedColumn<DateTime>(
+    'last_update',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseIdMeta = const VerificationMeta(
+    'licenseId',
+  );
+  @override
+  late final GeneratedColumn<int> licenseId = GeneratedColumn<int>(
+    'license_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseTitleMeta = const VerificationMeta(
+    'licenseTitle',
+  );
+  @override
+  late final GeneratedColumn<String> licenseTitle = GeneratedColumn<String>(
+    'license_title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseObjectUrlMeta = const VerificationMeta(
+    'licenseObjectUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseObjectUrl = GeneratedColumn<String>(
+    'license_object_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseAuthorMeta = const VerificationMeta(
+    'licenseAuthor',
+  );
+  @override
+  late final GeneratedColumn<String> licenseAuthor = GeneratedColumn<String>(
+    'license_author',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _licenseAuthorUrlMeta = const VerificationMeta(
+    'licenseAuthorUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseAuthorUrl = GeneratedColumn<String>(
+    'license_author_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseDerivativeSourceUrlMeta = const VerificationMeta(
+    'licenseDerivativeSourceUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseDerivativeSourceUrl = GeneratedColumn<String>(
+    'license_derivative_source_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    uuid,
+    exerciseId,
+    image,
+    isMain,
+    isAiGenerated,
+    style,
+    width,
+    height,
+    created,
+    lastUpdate,
+    licenseId,
+    licenseTitle,
+    licenseObjectUrl,
+    licenseAuthor,
+    licenseAuthorUrl,
+    licenseDerivativeSourceUrl,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2469,6 +2616,106 @@ class $ExerciseImageTableTable extends ExerciseImageTable
     } else if (isInserting) {
       context.missing(_isMainMeta);
     }
+    if (data.containsKey('is_ai_generated')) {
+      context.handle(
+        _isAiGeneratedMeta,
+        isAiGenerated.isAcceptableOrUnknown(
+          data['is_ai_generated']!,
+          _isAiGeneratedMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_isAiGeneratedMeta);
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    }
+    if (data.containsKey('created')) {
+      context.handle(
+        _createdMeta,
+        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdMeta);
+    }
+    if (data.containsKey('last_update')) {
+      context.handle(
+        _lastUpdateMeta,
+        lastUpdate.isAcceptableOrUnknown(data['last_update']!, _lastUpdateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUpdateMeta);
+    }
+    if (data.containsKey('license_id')) {
+      context.handle(
+        _licenseIdMeta,
+        licenseId.isAcceptableOrUnknown(data['license_id']!, _licenseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseIdMeta);
+    }
+    if (data.containsKey('license_title')) {
+      context.handle(
+        _licenseTitleMeta,
+        licenseTitle.isAcceptableOrUnknown(
+          data['license_title']!,
+          _licenseTitleMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseTitleMeta);
+    }
+    if (data.containsKey('license_object_url')) {
+      context.handle(
+        _licenseObjectUrlMeta,
+        licenseObjectUrl.isAcceptableOrUnknown(
+          data['license_object_url']!,
+          _licenseObjectUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseObjectUrlMeta);
+    }
+    if (data.containsKey('license_author')) {
+      context.handle(
+        _licenseAuthorMeta,
+        licenseAuthor.isAcceptableOrUnknown(
+          data['license_author']!,
+          _licenseAuthorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('license_author_url')) {
+      context.handle(
+        _licenseAuthorUrlMeta,
+        licenseAuthorUrl.isAcceptableOrUnknown(
+          data['license_author_url']!,
+          _licenseAuthorUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseAuthorUrlMeta);
+    }
+    if (data.containsKey('license_derivative_source_url')) {
+      context.handle(
+        _licenseDerivativeSourceUrlMeta,
+        licenseDerivativeSourceUrl.isAcceptableOrUnknown(
+          data['license_derivative_source_url']!,
+          _licenseDerivativeSourceUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseDerivativeSourceUrlMeta);
+    }
     return context;
   }
 
@@ -2498,6 +2745,56 @@ class $ExerciseImageTableTable extends ExerciseImageTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_main'],
       )!,
+      isAiGenerated: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_ai_generated'],
+      )!,
+      style: $ExerciseImageTableTable.$converterstyle.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}style'],
+        )!,
+      ),
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      ),
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      ),
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
+      )!,
+      licenseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}license_id'],
+      )!,
+      licenseTitle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_title'],
+      )!,
+      licenseObjectUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_object_url'],
+      )!,
+      licenseAuthor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_author'],
+      ),
+      licenseAuthorUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_author_url'],
+      )!,
+      licenseDerivativeSourceUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_derivative_source_url'],
+      )!,
     );
   }
 
@@ -2505,6 +2802,9 @@ class $ExerciseImageTableTable extends ExerciseImageTable
   $ExerciseImageTableTable createAlias(String alias) {
     return $ExerciseImageTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<ExerciseImageStyle, String> $converterstyle =
+      const ExerciseImageStyleConverter();
 }
 
 class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
@@ -2513,6 +2813,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
   final Value<int> exerciseId;
   final Value<String> image;
   final Value<bool> isMain;
+  final Value<bool> isAiGenerated;
+  final Value<ExerciseImageStyle> style;
+  final Value<int?> width;
+  final Value<int?> height;
+  final Value<DateTime> created;
+  final Value<DateTime> lastUpdate;
+  final Value<int> licenseId;
+  final Value<String> licenseTitle;
+  final Value<String> licenseObjectUrl;
+  final Value<String?> licenseAuthor;
+  final Value<String> licenseAuthorUrl;
+  final Value<String> licenseDerivativeSourceUrl;
   final Value<int> rowid;
   const ExerciseImageTableCompanion({
     this.id = const Value.absent(),
@@ -2520,6 +2832,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     this.exerciseId = const Value.absent(),
     this.image = const Value.absent(),
     this.isMain = const Value.absent(),
+    this.isAiGenerated = const Value.absent(),
+    this.style = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.created = const Value.absent(),
+    this.lastUpdate = const Value.absent(),
+    this.licenseId = const Value.absent(),
+    this.licenseTitle = const Value.absent(),
+    this.licenseObjectUrl = const Value.absent(),
+    this.licenseAuthor = const Value.absent(),
+    this.licenseAuthorUrl = const Value.absent(),
+    this.licenseDerivativeSourceUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ExerciseImageTableCompanion.insert({
@@ -2528,18 +2852,51 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     required int exerciseId,
     required String image,
     required bool isMain,
+    required bool isAiGenerated,
+    required ExerciseImageStyle style,
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    required DateTime created,
+    required DateTime lastUpdate,
+    required int licenseId,
+    required String licenseTitle,
+    required String licenseObjectUrl,
+    this.licenseAuthor = const Value.absent(),
+    required String licenseAuthorUrl,
+    required String licenseDerivativeSourceUrl,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        uuid = Value(uuid),
        exerciseId = Value(exerciseId),
        image = Value(image),
-       isMain = Value(isMain);
+       isMain = Value(isMain),
+       isAiGenerated = Value(isAiGenerated),
+       style = Value(style),
+       created = Value(created),
+       lastUpdate = Value(lastUpdate),
+       licenseId = Value(licenseId),
+       licenseTitle = Value(licenseTitle),
+       licenseObjectUrl = Value(licenseObjectUrl),
+       licenseAuthorUrl = Value(licenseAuthorUrl),
+       licenseDerivativeSourceUrl = Value(licenseDerivativeSourceUrl);
   static Insertable<ExerciseImage> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<int>? exerciseId,
     Expression<String>? image,
     Expression<bool>? isMain,
+    Expression<bool>? isAiGenerated,
+    Expression<String>? style,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<DateTime>? created,
+    Expression<DateTime>? lastUpdate,
+    Expression<int>? licenseId,
+    Expression<String>? licenseTitle,
+    Expression<String>? licenseObjectUrl,
+    Expression<String>? licenseAuthor,
+    Expression<String>? licenseAuthorUrl,
+    Expression<String>? licenseDerivativeSourceUrl,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2548,6 +2905,19 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
       if (exerciseId != null) 'exercise_id': exerciseId,
       if (image != null) 'image': image,
       if (isMain != null) 'is_main': isMain,
+      if (isAiGenerated != null) 'is_ai_generated': isAiGenerated,
+      if (style != null) 'style': style,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (created != null) 'created': created,
+      if (lastUpdate != null) 'last_update': lastUpdate,
+      if (licenseId != null) 'license_id': licenseId,
+      if (licenseTitle != null) 'license_title': licenseTitle,
+      if (licenseObjectUrl != null) 'license_object_url': licenseObjectUrl,
+      if (licenseAuthor != null) 'license_author': licenseAuthor,
+      if (licenseAuthorUrl != null) 'license_author_url': licenseAuthorUrl,
+      if (licenseDerivativeSourceUrl != null)
+        'license_derivative_source_url': licenseDerivativeSourceUrl,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2558,6 +2928,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     Value<int>? exerciseId,
     Value<String>? image,
     Value<bool>? isMain,
+    Value<bool>? isAiGenerated,
+    Value<ExerciseImageStyle>? style,
+    Value<int?>? width,
+    Value<int?>? height,
+    Value<DateTime>? created,
+    Value<DateTime>? lastUpdate,
+    Value<int>? licenseId,
+    Value<String>? licenseTitle,
+    Value<String>? licenseObjectUrl,
+    Value<String?>? licenseAuthor,
+    Value<String>? licenseAuthorUrl,
+    Value<String>? licenseDerivativeSourceUrl,
     Value<int>? rowid,
   }) {
     return ExerciseImageTableCompanion(
@@ -2566,6 +2948,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
       exerciseId: exerciseId ?? this.exerciseId,
       image: image ?? this.image,
       isMain: isMain ?? this.isMain,
+      isAiGenerated: isAiGenerated ?? this.isAiGenerated,
+      style: style ?? this.style,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      created: created ?? this.created,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
+      licenseId: licenseId ?? this.licenseId,
+      licenseTitle: licenseTitle ?? this.licenseTitle,
+      licenseObjectUrl: licenseObjectUrl ?? this.licenseObjectUrl,
+      licenseAuthor: licenseAuthor ?? this.licenseAuthor,
+      licenseAuthorUrl: licenseAuthorUrl ?? this.licenseAuthorUrl,
+      licenseDerivativeSourceUrl: licenseDerivativeSourceUrl ?? this.licenseDerivativeSourceUrl,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2588,6 +2982,46 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     if (isMain.present) {
       map['is_main'] = Variable<bool>(isMain.value);
     }
+    if (isAiGenerated.present) {
+      map['is_ai_generated'] = Variable<bool>(isAiGenerated.value);
+    }
+    if (style.present) {
+      map['style'] = Variable<String>(
+        $ExerciseImageTableTable.$converterstyle.toSql(style.value),
+      );
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (created.present) {
+      map['created'] = Variable<DateTime>(created.value);
+    }
+    if (lastUpdate.present) {
+      map['last_update'] = Variable<DateTime>(lastUpdate.value);
+    }
+    if (licenseId.present) {
+      map['license_id'] = Variable<int>(licenseId.value);
+    }
+    if (licenseTitle.present) {
+      map['license_title'] = Variable<String>(licenseTitle.value);
+    }
+    if (licenseObjectUrl.present) {
+      map['license_object_url'] = Variable<String>(licenseObjectUrl.value);
+    }
+    if (licenseAuthor.present) {
+      map['license_author'] = Variable<String>(licenseAuthor.value);
+    }
+    if (licenseAuthorUrl.present) {
+      map['license_author_url'] = Variable<String>(licenseAuthorUrl.value);
+    }
+    if (licenseDerivativeSourceUrl.present) {
+      map['license_derivative_source_url'] = Variable<String>(
+        licenseDerivativeSourceUrl.value,
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2602,6 +3036,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
           ..write('exerciseId: $exerciseId, ')
           ..write('image: $image, ')
           ..write('isMain: $isMain, ')
+          ..write('isAiGenerated: $isAiGenerated, ')
+          ..write('style: $style, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate, ')
+          ..write('licenseId: $licenseId, ')
+          ..write('licenseTitle: $licenseTitle, ')
+          ..write('licenseObjectUrl: $licenseObjectUrl, ')
+          ..write('licenseAuthor: $licenseAuthor, ')
+          ..write('licenseAuthorUrl: $licenseAuthorUrl, ')
+          ..write('licenseDerivativeSourceUrl: $licenseDerivativeSourceUrl, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2644,6 +3090,18 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES exercises_exercise (id)',
+    ),
+  );
+  static const VerificationMeta _isMainMeta = const VerificationMeta('isMain');
+  @override
+  late final GeneratedColumn<bool> isMain = GeneratedColumn<bool>(
+    'is_main',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_main" IN (0, 1))',
     ),
   );
   static const VerificationMeta _urlMeta = const VerificationMeta('url');
@@ -2713,6 +3171,28 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _createdMeta = const VerificationMeta(
+    'created',
+  );
+  @override
+  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
+    'created',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdateMeta = const VerificationMeta(
+    'lastUpdate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUpdate = GeneratedColumn<DateTime>(
+    'last_update',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _licenseIdMeta = const VerificationMeta(
     'licenseId',
   );
@@ -2724,12 +3204,56 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _licenseTitleMeta = const VerificationMeta(
+    'licenseTitle',
+  );
+  @override
+  late final GeneratedColumn<String> licenseTitle = GeneratedColumn<String>(
+    'license_title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseObjectUrlMeta = const VerificationMeta(
+    'licenseObjectUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseObjectUrl = GeneratedColumn<String>(
+    'license_object_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _licenseAuthorMeta = const VerificationMeta(
     'licenseAuthor',
   );
   @override
   late final GeneratedColumn<String> licenseAuthor = GeneratedColumn<String>(
     'license_author',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _licenseAuthorUrlMeta = const VerificationMeta(
+    'licenseAuthorUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseAuthorUrl = GeneratedColumn<String>(
+    'license_author_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseDerivativeSourceUrlMeta = const VerificationMeta(
+    'licenseDerivativeSourceUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseDerivativeSourceUrl = GeneratedColumn<String>(
+    'license_derivative_source_url',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -2740,6 +3264,7 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     id,
     uuid,
     exerciseId,
+    isMain,
     url,
     size,
     duration,
@@ -2747,8 +3272,14 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     height,
     codec,
     codecLong,
+    created,
+    lastUpdate,
     licenseId,
+    licenseTitle,
+    licenseObjectUrl,
     licenseAuthor,
+    licenseAuthorUrl,
+    licenseDerivativeSourceUrl,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2782,6 +3313,14 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
       );
     } else if (isInserting) {
       context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('is_main')) {
+      context.handle(
+        _isMainMeta,
+        isMain.isAcceptableOrUnknown(data['is_main']!, _isMainMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isMainMeta);
     }
     if (data.containsKey('url')) {
       context.handle(
@@ -2839,6 +3378,22 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     } else if (isInserting) {
       context.missing(_codecLongMeta);
     }
+    if (data.containsKey('created')) {
+      context.handle(
+        _createdMeta,
+        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdMeta);
+    }
+    if (data.containsKey('last_update')) {
+      context.handle(
+        _lastUpdateMeta,
+        lastUpdate.isAcceptableOrUnknown(data['last_update']!, _lastUpdateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUpdateMeta);
+    }
     if (data.containsKey('license_id')) {
       context.handle(
         _licenseIdMeta,
@@ -2846,6 +3401,28 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
       );
     } else if (isInserting) {
       context.missing(_licenseIdMeta);
+    }
+    if (data.containsKey('license_title')) {
+      context.handle(
+        _licenseTitleMeta,
+        licenseTitle.isAcceptableOrUnknown(
+          data['license_title']!,
+          _licenseTitleMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseTitleMeta);
+    }
+    if (data.containsKey('license_object_url')) {
+      context.handle(
+        _licenseObjectUrlMeta,
+        licenseObjectUrl.isAcceptableOrUnknown(
+          data['license_object_url']!,
+          _licenseObjectUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseObjectUrlMeta);
     }
     if (data.containsKey('license_author')) {
       context.handle(
@@ -2855,8 +3432,28 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
           _licenseAuthorMeta,
         ),
       );
+    }
+    if (data.containsKey('license_author_url')) {
+      context.handle(
+        _licenseAuthorUrlMeta,
+        licenseAuthorUrl.isAcceptableOrUnknown(
+          data['license_author_url']!,
+          _licenseAuthorUrlMeta,
+        ),
+      );
     } else if (isInserting) {
-      context.missing(_licenseAuthorMeta);
+      context.missing(_licenseAuthorUrlMeta);
+    }
+    if (data.containsKey('license_derivative_source_url')) {
+      context.handle(
+        _licenseDerivativeSourceUrlMeta,
+        licenseDerivativeSourceUrl.isAcceptableOrUnknown(
+          data['license_derivative_source_url']!,
+          _licenseDerivativeSourceUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseDerivativeSourceUrlMeta);
     }
     return context;
   }
@@ -2879,13 +3476,17 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
         DriftSqlType.int,
         data['${effectivePrefix}exercise_id'],
       )!,
-      size: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}size'],
+      isMain: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_main'],
       )!,
       url: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}url'],
+      )!,
+      size: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size'],
       )!,
       duration: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -2907,13 +3508,37 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
         DriftSqlType.string,
         data['${effectivePrefix}codec_long'],
       )!,
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
+      )!,
       licenseId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}license_id'],
       )!,
+      licenseTitle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_title'],
+      )!,
+      licenseObjectUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_object_url'],
+      )!,
       licenseAuthor: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}license_author'],
+      ),
+      licenseAuthorUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_author_url'],
+      )!,
+      licenseDerivativeSourceUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_derivative_source_url'],
       )!,
     );
   }
@@ -2928,6 +3553,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
   final Value<int> id;
   final Value<String> uuid;
   final Value<int> exerciseId;
+  final Value<bool> isMain;
   final Value<String> url;
   final Value<int> size;
   final Value<int> duration;
@@ -2935,13 +3561,20 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
   final Value<int> height;
   final Value<String> codec;
   final Value<String> codecLong;
+  final Value<DateTime> created;
+  final Value<DateTime> lastUpdate;
   final Value<int> licenseId;
-  final Value<String> licenseAuthor;
+  final Value<String> licenseTitle;
+  final Value<String> licenseObjectUrl;
+  final Value<String?> licenseAuthor;
+  final Value<String> licenseAuthorUrl;
+  final Value<String> licenseDerivativeSourceUrl;
   final Value<int> rowid;
   const ExerciseVideoTableCompanion({
     this.id = const Value.absent(),
     this.uuid = const Value.absent(),
     this.exerciseId = const Value.absent(),
+    this.isMain = const Value.absent(),
     this.url = const Value.absent(),
     this.size = const Value.absent(),
     this.duration = const Value.absent(),
@@ -2949,14 +3582,21 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     this.height = const Value.absent(),
     this.codec = const Value.absent(),
     this.codecLong = const Value.absent(),
+    this.created = const Value.absent(),
+    this.lastUpdate = const Value.absent(),
     this.licenseId = const Value.absent(),
+    this.licenseTitle = const Value.absent(),
+    this.licenseObjectUrl = const Value.absent(),
     this.licenseAuthor = const Value.absent(),
+    this.licenseAuthorUrl = const Value.absent(),
+    this.licenseDerivativeSourceUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ExerciseVideoTableCompanion.insert({
     required int id,
     required String uuid,
     required int exerciseId,
+    required bool isMain,
     required String url,
     required int size,
     required int duration,
@@ -2964,12 +3604,19 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     required int height,
     required String codec,
     required String codecLong,
+    required DateTime created,
+    required DateTime lastUpdate,
     required int licenseId,
-    required String licenseAuthor,
+    required String licenseTitle,
+    required String licenseObjectUrl,
+    this.licenseAuthor = const Value.absent(),
+    required String licenseAuthorUrl,
+    required String licenseDerivativeSourceUrl,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        uuid = Value(uuid),
        exerciseId = Value(exerciseId),
+       isMain = Value(isMain),
        url = Value(url),
        size = Value(size),
        duration = Value(duration),
@@ -2977,12 +3624,18 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
        height = Value(height),
        codec = Value(codec),
        codecLong = Value(codecLong),
+       created = Value(created),
+       lastUpdate = Value(lastUpdate),
        licenseId = Value(licenseId),
-       licenseAuthor = Value(licenseAuthor);
+       licenseTitle = Value(licenseTitle),
+       licenseObjectUrl = Value(licenseObjectUrl),
+       licenseAuthorUrl = Value(licenseAuthorUrl),
+       licenseDerivativeSourceUrl = Value(licenseDerivativeSourceUrl);
   static Insertable<Video> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<int>? exerciseId,
+    Expression<bool>? isMain,
     Expression<String>? url,
     Expression<int>? size,
     Expression<int>? duration,
@@ -2990,14 +3643,21 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     Expression<int>? height,
     Expression<String>? codec,
     Expression<String>? codecLong,
+    Expression<DateTime>? created,
+    Expression<DateTime>? lastUpdate,
     Expression<int>? licenseId,
+    Expression<String>? licenseTitle,
+    Expression<String>? licenseObjectUrl,
     Expression<String>? licenseAuthor,
+    Expression<String>? licenseAuthorUrl,
+    Expression<String>? licenseDerivativeSourceUrl,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (uuid != null) 'uuid': uuid,
       if (exerciseId != null) 'exercise_id': exerciseId,
+      if (isMain != null) 'is_main': isMain,
       if (url != null) 'url': url,
       if (size != null) 'size': size,
       if (duration != null) 'duration': duration,
@@ -3005,8 +3665,15 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
       if (height != null) 'height': height,
       if (codec != null) 'codec': codec,
       if (codecLong != null) 'codec_long': codecLong,
+      if (created != null) 'created': created,
+      if (lastUpdate != null) 'last_update': lastUpdate,
       if (licenseId != null) 'license_id': licenseId,
+      if (licenseTitle != null) 'license_title': licenseTitle,
+      if (licenseObjectUrl != null) 'license_object_url': licenseObjectUrl,
       if (licenseAuthor != null) 'license_author': licenseAuthor,
+      if (licenseAuthorUrl != null) 'license_author_url': licenseAuthorUrl,
+      if (licenseDerivativeSourceUrl != null)
+        'license_derivative_source_url': licenseDerivativeSourceUrl,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3015,6 +3682,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     Value<int>? id,
     Value<String>? uuid,
     Value<int>? exerciseId,
+    Value<bool>? isMain,
     Value<String>? url,
     Value<int>? size,
     Value<int>? duration,
@@ -3022,14 +3690,21 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     Value<int>? height,
     Value<String>? codec,
     Value<String>? codecLong,
+    Value<DateTime>? created,
+    Value<DateTime>? lastUpdate,
     Value<int>? licenseId,
-    Value<String>? licenseAuthor,
+    Value<String>? licenseTitle,
+    Value<String>? licenseObjectUrl,
+    Value<String?>? licenseAuthor,
+    Value<String>? licenseAuthorUrl,
+    Value<String>? licenseDerivativeSourceUrl,
     Value<int>? rowid,
   }) {
     return ExerciseVideoTableCompanion(
       id: id ?? this.id,
       uuid: uuid ?? this.uuid,
       exerciseId: exerciseId ?? this.exerciseId,
+      isMain: isMain ?? this.isMain,
       url: url ?? this.url,
       size: size ?? this.size,
       duration: duration ?? this.duration,
@@ -3037,8 +3712,14 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
       height: height ?? this.height,
       codec: codec ?? this.codec,
       codecLong: codecLong ?? this.codecLong,
+      created: created ?? this.created,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
       licenseId: licenseId ?? this.licenseId,
+      licenseTitle: licenseTitle ?? this.licenseTitle,
+      licenseObjectUrl: licenseObjectUrl ?? this.licenseObjectUrl,
       licenseAuthor: licenseAuthor ?? this.licenseAuthor,
+      licenseAuthorUrl: licenseAuthorUrl ?? this.licenseAuthorUrl,
+      licenseDerivativeSourceUrl: licenseDerivativeSourceUrl ?? this.licenseDerivativeSourceUrl,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3054,6 +3735,9 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     }
     if (exerciseId.present) {
       map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (isMain.present) {
+      map['is_main'] = Variable<bool>(isMain.value);
     }
     if (url.present) {
       map['url'] = Variable<String>(url.value);
@@ -3076,11 +3760,31 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     if (codecLong.present) {
       map['codec_long'] = Variable<String>(codecLong.value);
     }
+    if (created.present) {
+      map['created'] = Variable<DateTime>(created.value);
+    }
+    if (lastUpdate.present) {
+      map['last_update'] = Variable<DateTime>(lastUpdate.value);
+    }
     if (licenseId.present) {
       map['license_id'] = Variable<int>(licenseId.value);
     }
+    if (licenseTitle.present) {
+      map['license_title'] = Variable<String>(licenseTitle.value);
+    }
+    if (licenseObjectUrl.present) {
+      map['license_object_url'] = Variable<String>(licenseObjectUrl.value);
+    }
     if (licenseAuthor.present) {
       map['license_author'] = Variable<String>(licenseAuthor.value);
+    }
+    if (licenseAuthorUrl.present) {
+      map['license_author_url'] = Variable<String>(licenseAuthorUrl.value);
+    }
+    if (licenseDerivativeSourceUrl.present) {
+      map['license_derivative_source_url'] = Variable<String>(
+        licenseDerivativeSourceUrl.value,
+      );
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -3094,6 +3798,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
           ..write('id: $id, ')
           ..write('uuid: $uuid, ')
           ..write('exerciseId: $exerciseId, ')
+          ..write('isMain: $isMain, ')
           ..write('url: $url, ')
           ..write('size: $size, ')
           ..write('duration: $duration, ')
@@ -3101,8 +3806,14 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
           ..write('height: $height, ')
           ..write('codec: $codec, ')
           ..write('codecLong: $codecLong, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate, ')
           ..write('licenseId: $licenseId, ')
+          ..write('licenseTitle: $licenseTitle, ')
+          ..write('licenseObjectUrl: $licenseObjectUrl, ')
           ..write('licenseAuthor: $licenseAuthor, ')
+          ..write('licenseAuthorUrl: $licenseAuthorUrl, ')
+          ..write('licenseDerivativeSourceUrl: $licenseDerivativeSourceUrl, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6679,6 +7390,46 @@ class $IngredientImageTableTable extends IngredientImageTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdMeta = const VerificationMeta(
+    'created',
+  );
+  @override
+  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
+    'created',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdateMeta = const VerificationMeta(
+    'lastUpdate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUpdate = GeneratedColumn<DateTime>(
+    'last_update',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _licenseIdMeta = const VerificationMeta(
     'licenseId',
   );
@@ -6695,9 +7446,9 @@ class $IngredientImageTableTable extends IngredientImageTable
   late final GeneratedColumn<String> author = GeneratedColumn<String>(
     'license_author',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _authorUrlMeta = const VerificationMeta(
     'authorUrl',
@@ -6748,6 +7499,10 @@ class $IngredientImageTableTable extends IngredientImageTable
     ingredientId,
     image,
     size,
+    width,
+    height,
+    created,
+    lastUpdate,
     licenseId,
     author,
     authorUrl,
@@ -6807,6 +7562,38 @@ class $IngredientImageTableTable extends IngredientImageTable
     } else if (isInserting) {
       context.missing(_sizeMeta);
     }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_widthMeta);
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_heightMeta);
+    }
+    if (data.containsKey('created')) {
+      context.handle(
+        _createdMeta,
+        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdMeta);
+    }
+    if (data.containsKey('last_update')) {
+      context.handle(
+        _lastUpdateMeta,
+        lastUpdate.isAcceptableOrUnknown(data['last_update']!, _lastUpdateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUpdateMeta);
+    }
     if (data.containsKey('license_id')) {
       context.handle(
         _licenseIdMeta,
@@ -6820,8 +7607,6 @@ class $IngredientImageTableTable extends IngredientImageTable
         _authorMeta,
         author.isAcceptableOrUnknown(data['license_author']!, _authorMeta),
       );
-    } else if (isInserting) {
-      context.missing(_authorMeta);
     }
     if (data.containsKey('license_author_url')) {
       context.handle(
@@ -6893,6 +7678,22 @@ class $IngredientImageTableTable extends IngredientImageTable
         DriftSqlType.int,
         data['${effectivePrefix}size'],
       )!,
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      )!,
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      )!,
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
+      )!,
       licenseId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}license_id'],
@@ -6900,7 +7701,7 @@ class $IngredientImageTableTable extends IngredientImageTable
       author: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}license_author'],
-      )!,
+      ),
       authorUrl: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}license_author_url'],
@@ -6932,8 +7733,12 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
   final Value<int> ingredientId;
   final Value<String> image;
   final Value<int> size;
+  final Value<int> width;
+  final Value<int> height;
+  final Value<DateTime> created;
+  final Value<DateTime> lastUpdate;
   final Value<int> licenseId;
-  final Value<String> author;
+  final Value<String?> author;
   final Value<String> authorUrl;
   final Value<String> title;
   final Value<String> objectUrl;
@@ -6945,6 +7750,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     this.ingredientId = const Value.absent(),
     this.image = const Value.absent(),
     this.size = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.created = const Value.absent(),
+    this.lastUpdate = const Value.absent(),
     this.licenseId = const Value.absent(),
     this.author = const Value.absent(),
     this.authorUrl = const Value.absent(),
@@ -6959,8 +7768,12 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     required int ingredientId,
     required String image,
     required int size,
+    required int width,
+    required int height,
+    required DateTime created,
+    required DateTime lastUpdate,
     required int licenseId,
-    required String author,
+    this.author = const Value.absent(),
     required String authorUrl,
     required String title,
     required String objectUrl,
@@ -6971,8 +7784,11 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
        ingredientId = Value(ingredientId),
        image = Value(image),
        size = Value(size),
+       width = Value(width),
+       height = Value(height),
+       created = Value(created),
+       lastUpdate = Value(lastUpdate),
        licenseId = Value(licenseId),
-       author = Value(author),
        authorUrl = Value(authorUrl),
        title = Value(title),
        objectUrl = Value(objectUrl),
@@ -6983,6 +7799,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     Expression<int>? ingredientId,
     Expression<String>? image,
     Expression<int>? size,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<DateTime>? created,
+    Expression<DateTime>? lastUpdate,
     Expression<int>? licenseId,
     Expression<String>? author,
     Expression<String>? authorUrl,
@@ -6997,6 +7817,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
       if (ingredientId != null) 'ingredient_id': ingredientId,
       if (image != null) 'image': image,
       if (size != null) 'size': size,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (created != null) 'created': created,
+      if (lastUpdate != null) 'last_update': lastUpdate,
       if (licenseId != null) 'license_id': licenseId,
       if (author != null) 'license_author': author,
       if (authorUrl != null) 'license_author_url': authorUrl,
@@ -7013,8 +7837,12 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     Value<int>? ingredientId,
     Value<String>? image,
     Value<int>? size,
+    Value<int>? width,
+    Value<int>? height,
+    Value<DateTime>? created,
+    Value<DateTime>? lastUpdate,
     Value<int>? licenseId,
-    Value<String>? author,
+    Value<String?>? author,
     Value<String>? authorUrl,
     Value<String>? title,
     Value<String>? objectUrl,
@@ -7027,6 +7855,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
       ingredientId: ingredientId ?? this.ingredientId,
       image: image ?? this.image,
       size: size ?? this.size,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      created: created ?? this.created,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
       licenseId: licenseId ?? this.licenseId,
       author: author ?? this.author,
       authorUrl: authorUrl ?? this.authorUrl,
@@ -7054,6 +7886,18 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     }
     if (size.present) {
       map['size'] = Variable<int>(size.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (created.present) {
+      map['created'] = Variable<DateTime>(created.value);
+    }
+    if (lastUpdate.present) {
+      map['last_update'] = Variable<DateTime>(lastUpdate.value);
     }
     if (licenseId.present) {
       map['license_id'] = Variable<int>(licenseId.value);
@@ -7089,6 +7933,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
           ..write('ingredientId: $ingredientId, ')
           ..write('image: $image, ')
           ..write('size: $size, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate, ')
           ..write('licenseId: $licenseId, ')
           ..write('author: $author, ')
           ..write('authorUrl: $authorUrl, ')
@@ -12429,6 +13277,18 @@ typedef $$ExerciseImageTableTableCreateCompanionBuilder =
       required int exerciseId,
       required String image,
       required bool isMain,
+      required bool isAiGenerated,
+      required ExerciseImageStyle style,
+      Value<int?> width,
+      Value<int?> height,
+      required DateTime created,
+      required DateTime lastUpdate,
+      required int licenseId,
+      required String licenseTitle,
+      required String licenseObjectUrl,
+      Value<String?> licenseAuthor,
+      required String licenseAuthorUrl,
+      required String licenseDerivativeSourceUrl,
       Value<int> rowid,
     });
 typedef $$ExerciseImageTableTableUpdateCompanionBuilder =
@@ -12438,6 +13298,18 @@ typedef $$ExerciseImageTableTableUpdateCompanionBuilder =
       Value<int> exerciseId,
       Value<String> image,
       Value<bool> isMain,
+      Value<bool> isAiGenerated,
+      Value<ExerciseImageStyle> style,
+      Value<int?> width,
+      Value<int?> height,
+      Value<DateTime> created,
+      Value<DateTime> lastUpdate,
+      Value<int> licenseId,
+      Value<String> licenseTitle,
+      Value<String> licenseObjectUrl,
+      Value<String?> licenseAuthor,
+      Value<String> licenseAuthorUrl,
+      Value<String> licenseDerivativeSourceUrl,
       Value<int> rowid,
     });
 
@@ -12501,6 +13373,67 @@ class $$ExerciseImageTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get isAiGenerated => $composableBuilder(
+    column: $table.isAiGenerated,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ExerciseImageStyle, ExerciseImageStyle, String> get style =>
+      $composableBuilder(
+        column: $table.style,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get licenseId => $composableBuilder(
+    column: $table.licenseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseAuthor => $composableBuilder(
+    column: $table.licenseAuthor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$ExerciseTableTableFilterComposer get exerciseId {
     final $$ExerciseTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -12553,6 +13486,66 @@ class $$ExerciseImageTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isAiGenerated => $composableBuilder(
+    column: $table.isAiGenerated,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get style => $composableBuilder(
+    column: $table.style,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get licenseId => $composableBuilder(
+    column: $table.licenseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseAuthor => $composableBuilder(
+    column: $table.licenseAuthor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$ExerciseTableTableOrderingComposer get exerciseId {
     final $$ExerciseTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -12595,6 +13588,56 @@ class $$ExerciseImageTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isMain =>
       $composableBuilder(column: $table.isMain, builder: (column) => column);
+
+  GeneratedColumn<bool> get isAiGenerated => $composableBuilder(
+    column: $table.isAiGenerated,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<ExerciseImageStyle, String> get style =>
+      $composableBuilder(column: $table.style, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get created =>
+      $composableBuilder(column: $table.created, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get licenseId =>
+      $composableBuilder(column: $table.licenseId, builder: (column) => column);
+
+  GeneratedColumn<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseAuthor => $composableBuilder(
+    column: $table.licenseAuthor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
+    builder: (column) => column,
+  );
 
   $$ExerciseTableTableAnnotationComposer get exerciseId {
     final $$ExerciseTableTableAnnotationComposer composer = $composerBuilder(
@@ -12656,6 +13699,18 @@ class $$ExerciseImageTableTableTableManager
                 Value<int> exerciseId = const Value.absent(),
                 Value<String> image = const Value.absent(),
                 Value<bool> isMain = const Value.absent(),
+                Value<bool> isAiGenerated = const Value.absent(),
+                Value<ExerciseImageStyle> style = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<DateTime> created = const Value.absent(),
+                Value<DateTime> lastUpdate = const Value.absent(),
+                Value<int> licenseId = const Value.absent(),
+                Value<String> licenseTitle = const Value.absent(),
+                Value<String> licenseObjectUrl = const Value.absent(),
+                Value<String?> licenseAuthor = const Value.absent(),
+                Value<String> licenseAuthorUrl = const Value.absent(),
+                Value<String> licenseDerivativeSourceUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseImageTableCompanion(
                 id: id,
@@ -12663,6 +13718,18 @@ class $$ExerciseImageTableTableTableManager
                 exerciseId: exerciseId,
                 image: image,
                 isMain: isMain,
+                isAiGenerated: isAiGenerated,
+                style: style,
+                width: width,
+                height: height,
+                created: created,
+                lastUpdate: lastUpdate,
+                licenseId: licenseId,
+                licenseTitle: licenseTitle,
+                licenseObjectUrl: licenseObjectUrl,
+                licenseAuthor: licenseAuthor,
+                licenseAuthorUrl: licenseAuthorUrl,
+                licenseDerivativeSourceUrl: licenseDerivativeSourceUrl,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -12672,6 +13739,18 @@ class $$ExerciseImageTableTableTableManager
                 required int exerciseId,
                 required String image,
                 required bool isMain,
+                required bool isAiGenerated,
+                required ExerciseImageStyle style,
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                required DateTime created,
+                required DateTime lastUpdate,
+                required int licenseId,
+                required String licenseTitle,
+                required String licenseObjectUrl,
+                Value<String?> licenseAuthor = const Value.absent(),
+                required String licenseAuthorUrl,
+                required String licenseDerivativeSourceUrl,
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseImageTableCompanion.insert(
                 id: id,
@@ -12679,6 +13758,18 @@ class $$ExerciseImageTableTableTableManager
                 exerciseId: exerciseId,
                 image: image,
                 isMain: isMain,
+                isAiGenerated: isAiGenerated,
+                style: style,
+                width: width,
+                height: height,
+                created: created,
+                lastUpdate: lastUpdate,
+                licenseId: licenseId,
+                licenseTitle: licenseTitle,
+                licenseObjectUrl: licenseObjectUrl,
+                licenseAuthor: licenseAuthor,
+                licenseAuthorUrl: licenseAuthorUrl,
+                licenseDerivativeSourceUrl: licenseDerivativeSourceUrl,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -12753,6 +13844,7 @@ typedef $$ExerciseVideoTableTableCreateCompanionBuilder =
       required int id,
       required String uuid,
       required int exerciseId,
+      required bool isMain,
       required String url,
       required int size,
       required int duration,
@@ -12760,8 +13852,14 @@ typedef $$ExerciseVideoTableTableCreateCompanionBuilder =
       required int height,
       required String codec,
       required String codecLong,
+      required DateTime created,
+      required DateTime lastUpdate,
       required int licenseId,
-      required String licenseAuthor,
+      required String licenseTitle,
+      required String licenseObjectUrl,
+      Value<String?> licenseAuthor,
+      required String licenseAuthorUrl,
+      required String licenseDerivativeSourceUrl,
       Value<int> rowid,
     });
 typedef $$ExerciseVideoTableTableUpdateCompanionBuilder =
@@ -12769,6 +13867,7 @@ typedef $$ExerciseVideoTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> uuid,
       Value<int> exerciseId,
+      Value<bool> isMain,
       Value<String> url,
       Value<int> size,
       Value<int> duration,
@@ -12776,8 +13875,14 @@ typedef $$ExerciseVideoTableTableUpdateCompanionBuilder =
       Value<int> height,
       Value<String> codec,
       Value<String> codecLong,
+      Value<DateTime> created,
+      Value<DateTime> lastUpdate,
       Value<int> licenseId,
-      Value<String> licenseAuthor,
+      Value<String> licenseTitle,
+      Value<String> licenseObjectUrl,
+      Value<String?> licenseAuthor,
+      Value<String> licenseAuthorUrl,
+      Value<String> licenseDerivativeSourceUrl,
       Value<int> rowid,
     });
 
@@ -12831,6 +13936,11 @@ class $$ExerciseVideoTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get isMain => $composableBuilder(
+    column: $table.isMain,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get url => $composableBuilder(
     column: $table.url,
     builder: (column) => ColumnFilters(column),
@@ -12866,13 +13976,43 @@ class $$ExerciseVideoTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get licenseId => $composableBuilder(
     column: $table.licenseId,
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get licenseAuthor => $composableBuilder(
     column: $table.licenseAuthor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12918,6 +14058,11 @@ class $$ExerciseVideoTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isMain => $composableBuilder(
+    column: $table.isMain,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get url => $composableBuilder(
     column: $table.url,
     builder: (column) => ColumnOrderings(column),
@@ -12953,13 +14098,43 @@ class $$ExerciseVideoTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get licenseId => $composableBuilder(
     column: $table.licenseId,
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get licenseAuthor => $composableBuilder(
     column: $table.licenseAuthor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -13000,6 +14175,9 @@ class $$ExerciseVideoTableTableAnnotationComposer
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
 
+  GeneratedColumn<bool> get isMain =>
+      $composableBuilder(column: $table.isMain, builder: (column) => column);
+
   GeneratedColumn<String> get url =>
       $composableBuilder(column: $table.url, builder: (column) => column);
 
@@ -13021,11 +14199,39 @@ class $$ExerciseVideoTableTableAnnotationComposer
   GeneratedColumn<String> get codecLong =>
       $composableBuilder(column: $table.codecLong, builder: (column) => column);
 
+  GeneratedColumn<DateTime> get created =>
+      $composableBuilder(column: $table.created, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<int> get licenseId =>
       $composableBuilder(column: $table.licenseId, builder: (column) => column);
 
+  GeneratedColumn<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get licenseAuthor => $composableBuilder(
     column: $table.licenseAuthor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
     builder: (column) => column,
   );
 
@@ -13087,6 +14293,7 @@ class $$ExerciseVideoTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> uuid = const Value.absent(),
                 Value<int> exerciseId = const Value.absent(),
+                Value<bool> isMain = const Value.absent(),
                 Value<String> url = const Value.absent(),
                 Value<int> size = const Value.absent(),
                 Value<int> duration = const Value.absent(),
@@ -13094,13 +14301,20 @@ class $$ExerciseVideoTableTableTableManager
                 Value<int> height = const Value.absent(),
                 Value<String> codec = const Value.absent(),
                 Value<String> codecLong = const Value.absent(),
+                Value<DateTime> created = const Value.absent(),
+                Value<DateTime> lastUpdate = const Value.absent(),
                 Value<int> licenseId = const Value.absent(),
-                Value<String> licenseAuthor = const Value.absent(),
+                Value<String> licenseTitle = const Value.absent(),
+                Value<String> licenseObjectUrl = const Value.absent(),
+                Value<String?> licenseAuthor = const Value.absent(),
+                Value<String> licenseAuthorUrl = const Value.absent(),
+                Value<String> licenseDerivativeSourceUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseVideoTableCompanion(
                 id: id,
                 uuid: uuid,
                 exerciseId: exerciseId,
+                isMain: isMain,
                 url: url,
                 size: size,
                 duration: duration,
@@ -13108,8 +14322,14 @@ class $$ExerciseVideoTableTableTableManager
                 height: height,
                 codec: codec,
                 codecLong: codecLong,
+                created: created,
+                lastUpdate: lastUpdate,
                 licenseId: licenseId,
+                licenseTitle: licenseTitle,
+                licenseObjectUrl: licenseObjectUrl,
                 licenseAuthor: licenseAuthor,
+                licenseAuthorUrl: licenseAuthorUrl,
+                licenseDerivativeSourceUrl: licenseDerivativeSourceUrl,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -13117,6 +14337,7 @@ class $$ExerciseVideoTableTableTableManager
                 required int id,
                 required String uuid,
                 required int exerciseId,
+                required bool isMain,
                 required String url,
                 required int size,
                 required int duration,
@@ -13124,13 +14345,20 @@ class $$ExerciseVideoTableTableTableManager
                 required int height,
                 required String codec,
                 required String codecLong,
+                required DateTime created,
+                required DateTime lastUpdate,
                 required int licenseId,
-                required String licenseAuthor,
+                required String licenseTitle,
+                required String licenseObjectUrl,
+                Value<String?> licenseAuthor = const Value.absent(),
+                required String licenseAuthorUrl,
+                required String licenseDerivativeSourceUrl,
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseVideoTableCompanion.insert(
                 id: id,
                 uuid: uuid,
                 exerciseId: exerciseId,
+                isMain: isMain,
                 url: url,
                 size: size,
                 duration: duration,
@@ -13138,8 +14366,14 @@ class $$ExerciseVideoTableTableTableManager
                 height: height,
                 codec: codec,
                 codecLong: codecLong,
+                created: created,
+                lastUpdate: lastUpdate,
                 licenseId: licenseId,
+                licenseTitle: licenseTitle,
+                licenseObjectUrl: licenseObjectUrl,
                 licenseAuthor: licenseAuthor,
+                licenseAuthorUrl: licenseAuthorUrl,
+                licenseDerivativeSourceUrl: licenseDerivativeSourceUrl,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -16711,8 +17945,12 @@ typedef $$IngredientImageTableTableCreateCompanionBuilder =
       required int ingredientId,
       required String image,
       required int size,
+      required int width,
+      required int height,
+      required DateTime created,
+      required DateTime lastUpdate,
       required int licenseId,
-      required String author,
+      Value<String?> author,
       required String authorUrl,
       required String title,
       required String objectUrl,
@@ -16726,8 +17964,12 @@ typedef $$IngredientImageTableTableUpdateCompanionBuilder =
       Value<int> ingredientId,
       Value<String> image,
       Value<int> size,
+      Value<int> width,
+      Value<int> height,
+      Value<DateTime> created,
+      Value<DateTime> lastUpdate,
       Value<int> licenseId,
-      Value<String> author,
+      Value<String?> author,
       Value<String> authorUrl,
       Value<String> title,
       Value<String> objectUrl,
@@ -16793,6 +18035,26 @@ class $$IngredientImageTableTableFilterComposer
 
   ColumnFilters<int> get size => $composableBuilder(
     column: $table.size,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -16878,6 +18140,26 @@ class $$IngredientImageTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get licenseId => $composableBuilder(
     column: $table.licenseId,
     builder: (column) => ColumnOrderings(column),
@@ -16950,6 +18232,20 @@ class $$IngredientImageTableTableAnnotationComposer
 
   GeneratedColumn<int> get size =>
       $composableBuilder(column: $table.size, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get created =>
+      $composableBuilder(column: $table.created, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get licenseId =>
       $composableBuilder(column: $table.licenseId, builder: (column) => column);
@@ -17033,8 +18329,12 @@ class $$IngredientImageTableTableTableManager
                 Value<int> ingredientId = const Value.absent(),
                 Value<String> image = const Value.absent(),
                 Value<int> size = const Value.absent(),
+                Value<int> width = const Value.absent(),
+                Value<int> height = const Value.absent(),
+                Value<DateTime> created = const Value.absent(),
+                Value<DateTime> lastUpdate = const Value.absent(),
                 Value<int> licenseId = const Value.absent(),
-                Value<String> author = const Value.absent(),
+                Value<String?> author = const Value.absent(),
                 Value<String> authorUrl = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> objectUrl = const Value.absent(),
@@ -17046,6 +18346,10 @@ class $$IngredientImageTableTableTableManager
                 ingredientId: ingredientId,
                 image: image,
                 size: size,
+                width: width,
+                height: height,
+                created: created,
+                lastUpdate: lastUpdate,
                 licenseId: licenseId,
                 author: author,
                 authorUrl: authorUrl,
@@ -17061,8 +18365,12 @@ class $$IngredientImageTableTableTableManager
                 required int ingredientId,
                 required String image,
                 required int size,
+                required int width,
+                required int height,
+                required DateTime created,
+                required DateTime lastUpdate,
                 required int licenseId,
-                required String author,
+                Value<String?> author = const Value.absent(),
                 required String authorUrl,
                 required String title,
                 required String objectUrl,
@@ -17074,6 +18382,10 @@ class $$IngredientImageTableTableTableManager
                 ingredientId: ingredientId,
                 image: image,
                 size: size,
+                width: width,
+                height: height,
+                created: created,
+                lastUpdate: lastUpdate,
                 licenseId: licenseId,
                 author: author,
                 authorUrl: authorUrl,

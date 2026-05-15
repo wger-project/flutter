@@ -40,15 +40,31 @@ class IngredientImage {
   @JsonKey(required: true)
   final int size;
 
+  /// Image width in pixels
+  @JsonKey(required: true)
+  final int width;
+
+  /// Image height in pixels
+  @JsonKey(required: true)
+  final int height;
+
+  /// Server creation timestamp
+  @JsonKey(required: true)
+  final DateTime created;
+
+  /// Server last-modification timestamp
+  @JsonKey(required: true, name: 'last_update')
+  final DateTime lastUpdate;
+
   // License information
 
   /// License ID
   @JsonKey(required: true, name: 'license')
   final int licenseId;
 
-  /// Author(s)
+  /// Author(s) — may be null on the server (`TextField(null=True)`)
   @JsonKey(required: true, name: 'license_author')
-  final String author;
+  final String? author;
 
   /// Author profile, if available
   @JsonKey(required: true, name: 'license_author_url')
@@ -72,6 +88,10 @@ class IngredientImage {
     required this.ingredientId,
     required this.image,
     required this.size,
+    required this.width,
+    required this.height,
+    required this.created,
+    required this.lastUpdate,
     required this.licenseId,
     required this.author,
     required this.authorUrl,

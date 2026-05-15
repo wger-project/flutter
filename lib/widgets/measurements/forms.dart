@@ -111,8 +111,7 @@ class MeasurementEntryForm extends ConsumerStatefulWidget {
   final String _categoryId;
   final MeasurementEntry? _entry;
 
-  const MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry])
-    : _entry = entry;
+  const MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry]) : _entry = entry;
 
   @override
   ConsumerState<MeasurementEntryForm> createState() => _MeasurementEntryFormState();

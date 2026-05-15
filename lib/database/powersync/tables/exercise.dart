@@ -18,6 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/exercise_image_style_converter.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
@@ -215,6 +216,22 @@ class ExerciseImageTable extends Table {
   // Relative path under MEDIA_ROOT (Django's ImageField stores this)
   TextColumn get image => text()();
   BoolColumn get isMain => boolean().named('is_main')();
+  BoolColumn get isAiGenerated => boolean().named('is_ai_generated')();
+  TextColumn get style => text().map(const ExerciseImageStyleConverter())();
+  IntColumn get width => integer().nullable()();
+  IntColumn get height => integer().nullable()();
+  DateTimeColumn get created => dateTime()();
+  DateTimeColumn get lastUpdate => dateTime().named('last_update')();
+
+  // License (TASL — Title / Author / Source / License). license_author may be
+  // null on the server (TextField with null=True); the others are not-null
+  // strings (possibly empty) on the server.
+  IntColumn get licenseId => integer().named('license_id')();
+  TextColumn get licenseTitle => text().named('license_title')();
+  TextColumn get licenseObjectUrl => text().named('license_object_url')();
+  TextColumn get licenseAuthor => text().named('license_author').nullable()();
+  TextColumn get licenseAuthorUrl => text().named('license_author_url')();
+  TextColumn get licenseDerivativeSourceUrl => text().named('license_derivative_source_url')();
 }
 
 const PowersyncExerciseImageTable = ps.Table(
@@ -224,9 +241,22 @@ const PowersyncExerciseImageTable = ps.Table(
     ps.Column.integer('exercise_id'),
     ps.Column.text('image'),
     ps.Column.integer('is_main'),
+    ps.Column.integer('is_ai_generated'),
+    ps.Column.text('style'),
+    ps.Column.integer('width'),
+    ps.Column.integer('height'),
+    ps.Column.text('created'),
+    ps.Column.text('last_update'),
+    ps.Column.integer('license_id'),
+    ps.Column.text('license_title'),
+    ps.Column.text('license_object_url'),
+    ps.Column.text('license_author'),
+    ps.Column.text('license_author_url'),
+    ps.Column.text('license_derivative_source_url'),
   ],
   indexes: [
     ps.Index('exercise', [ps.IndexedColumn('exercise_id')]),
+    ps.Index('license', [ps.IndexedColumn('license_id')]),
   ],
 );
 
@@ -238,6 +268,7 @@ class ExerciseVideoTable extends Table {
   IntColumn get id => integer()();
   TextColumn get uuid => text()();
   IntColumn get exerciseId => integer().named('exercise_id').references(ExerciseTable, #id)();
+  BoolColumn get isMain => boolean().named('is_main')();
   TextColumn get url => text()();
   IntColumn get size => integer()();
   IntColumn get duration => integer()();
@@ -245,8 +276,18 @@ class ExerciseVideoTable extends Table {
   IntColumn get height => integer()();
   TextColumn get codec => text()();
   TextColumn get codecLong => text().named('codec_long')();
+  DateTimeColumn get created => dateTime()();
+  DateTimeColumn get lastUpdate => dateTime().named('last_update')();
+
+  // License (TASL — Title / Author / Source / License). license_author may be
+  // null on the server (TextField with null=True); the others are not-null
+  // strings (possibly empty) on the server.
   IntColumn get licenseId => integer().named('license_id')();
-  TextColumn get licenseAuthor => text().named('license_author')();
+  TextColumn get licenseTitle => text().named('license_title')();
+  TextColumn get licenseObjectUrl => text().named('license_object_url')();
+  TextColumn get licenseAuthor => text().named('license_author').nullable()();
+  TextColumn get licenseAuthorUrl => text().named('license_author_url')();
+  TextColumn get licenseDerivativeSourceUrl => text().named('license_derivative_source_url')();
 }
 
 const PowersyncExerciseVideoTable = ps.Table(
@@ -254,6 +295,7 @@ const PowersyncExerciseVideoTable = ps.Table(
   [
     ps.Column.text('uuid'),
     ps.Column.integer('exercise_id'),
+    ps.Column.integer('is_main'),
     ps.Column.text('url'),
     ps.Column.integer('size'),
     ps.Column.integer('duration'),
@@ -261,10 +303,17 @@ const PowersyncExerciseVideoTable = ps.Table(
     ps.Column.integer('height'),
     ps.Column.text('codec'),
     ps.Column.text('codec_long'),
+    ps.Column.text('created'),
+    ps.Column.text('last_update'),
     ps.Column.integer('license_id'),
+    ps.Column.text('license_title'),
+    ps.Column.text('license_object_url'),
     ps.Column.text('license_author'),
+    ps.Column.text('license_author_url'),
+    ps.Column.text('license_derivative_source_url'),
   ],
   indexes: [
     ps.Index('exercise', [ps.IndexedColumn('exercise_id')]),
+    ps.Index('license', [ps.IndexedColumn('license_id')]),
   ],
 );

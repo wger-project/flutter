@@ -19,32 +19,51 @@
 class Video {
   final int id;
   final String uuid;
+  final int exerciseId;
+  final bool isMain;
+
   final String url;
 
   Uri get uri => Uri.parse(url);
 
-  final int exerciseId;
   final int size;
   final num duration;
   final int width;
   final int height;
   final String codec;
   final String codecLong;
+  final DateTime created;
+  final DateTime lastUpdate;
+
+  /// FK to the `License` row.
   final int licenseId;
+  final String licenseTitle;
+  final String licenseObjectUrl;
+
+  /// Author may be null on the server (`TextField(null=True)`).
   final String? licenseAuthor;
+  final String licenseAuthorUrl;
+  final String licenseDerivativeSourceUrl;
 
   const Video({
     required this.id,
     required this.uuid,
     required this.exerciseId,
-    required this.size,
+    required this.isMain,
     required this.url,
+    required this.size,
     required this.duration,
     required this.width,
     required this.height,
     required this.codec,
     required this.codecLong,
+    required this.created,
+    required this.lastUpdate,
     required this.licenseId,
+    required this.licenseTitle,
+    required this.licenseObjectUrl,
     required this.licenseAuthor,
+    required this.licenseAuthorUrl,
+    required this.licenseDerivativeSourceUrl,
   });
 }

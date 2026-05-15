@@ -20,6 +20,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/models/exercises/image.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercise_repository.dart';
 
@@ -153,6 +154,15 @@ void main() {
             exerciseId: exerciseId,
             image: path ?? 'images/$id.jpg',
             isMain: false,
+            isAiGenerated: false,
+            style: ExerciseImageStyle.photo,
+            created: DateTime.utc(2024),
+            lastUpdate: DateTime.utc(2024),
+            licenseId: 1,
+            licenseTitle: '',
+            licenseObjectUrl: '',
+            licenseAuthorUrl: '',
+            licenseDerivativeSourceUrl: '',
           ),
         );
   }
