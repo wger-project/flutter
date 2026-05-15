@@ -71,15 +71,9 @@ class MockWgerBaseProvider extends _i1.Mock implements _i3.WgerBaseProvider {
           as String);
 
   @override
-  Map<String, String> getDefaultHeaders({
-    bool? includeAuth = false,
-    String? language,
-  }) =>
+  Map<String, String> getDefaultHeaders({String? language}) =>
       (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {
-              #includeAuth: includeAuth,
-              #language: language,
-            }),
+            Invocation.method(#getDefaultHeaders, [], {#language: language}),
             returnValue: <String, String>{},
           )
           as Map<String, String>);

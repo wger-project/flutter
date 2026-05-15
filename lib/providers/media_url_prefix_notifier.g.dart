@@ -78,7 +78,7 @@ final class MediaUrlPrefixNotifierProvider
   MediaUrlPrefixNotifier create() => MediaUrlPrefixNotifier();
 }
 
-String _$mediaUrlPrefixNotifierHash() => r'ecf75672fed14eeba32b38928f040de573ff9c34';
+String _$mediaUrlPrefixNotifierHash() => r'a152afb08fc3ce66e92d9a7872010f84f43002f2';
 
 /// Detects and caches the absolute URL prefix for server-side media
 /// files (e.g. `https://wger.de/media/`, or for CDN-fronted deployments

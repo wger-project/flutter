@@ -44,19 +44,15 @@ void main() {
   final uri = Uri.https('localhost', '/api/v2/endpoint/');
 
   group('getDefaultHeaders', () {
-    test('omits Authorization by default and includes Content-Type + User-Agent', () {
+    test('returns Content-Type + User-Agent and never sets Authorization', () {
       final headers = repo.getDefaultHeaders();
 
       expect(headers[HttpHeaders.contentTypeHeader], contains('application/json'));
       expect(headers[HttpHeaders.userAgentHeader], isNotNull);
+      // The Authorization header is injected by the AuthHttpClient layer,
+      // not built here.
       expect(headers.containsKey(HttpHeaders.authorizationHeader), isFalse);
       expect(headers.containsKey(HttpHeaders.acceptLanguageHeader), isFalse);
-    });
-
-    test('includeAuth=true adds Token header', () {
-      final headers = repo.getDefaultHeaders(includeAuth: true);
-
-      expect(headers[HttpHeaders.authorizationHeader], 'Token FooBar');
     });
 
     test('language sets Accept-Language', () {

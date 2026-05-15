@@ -148,7 +148,6 @@ void main() {
       when(mockPrefs.setString(any, any)).thenAnswer((_) async {});
       when(mockPrefs.remove(any)).thenAnswer((_) async {});
       when(mockBase.serverUrl).thenReturn('https://example');
-      when(mockBase.token).thenReturn('token-xyz');
       // Default fetch — empty response so the auto-probe in build is
       // a harmless no-op for tests that don't care about it.
       stubFetch(responseBody: {'results': []});

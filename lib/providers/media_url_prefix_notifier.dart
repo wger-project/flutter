@@ -119,7 +119,7 @@ class MediaUrlPrefixNotifier extends _$MediaUrlPrefixNotifier {
   @visibleForTesting
   Future<void> probe() async {
     final base = ref.read(wgerBaseProvider);
-    if (base.serverUrl == null || base.token == null) {
+    if (base.serverUrl == null) {
       return;
     }
 

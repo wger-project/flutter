@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/providers/auth_http_client.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/helpers.dart';
@@ -34,8 +35,8 @@ final wgerBaseProvider = Provider<WgerBaseProvider>((ref) {
   final auth = ref.watch(authProvider).value;
   return WgerBaseProvider(
     serverUrl: auth?.serverUrl,
-    token: auth?.token,
     applicationVersion: auth?.applicationVersion,
+    client: ref.watch(authenticatedHttpClientProvider),
   );
 });
 
