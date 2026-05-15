@@ -317,6 +317,105 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get mfaChallengeTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaChallengeTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaChallengeTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaChallengeTotpPrompt =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaChallengeTotpPrompt),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaChallengeTotpPrompt),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaChallengeRecoveryPrompt =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaChallengeRecoveryPrompt),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaChallengeRecoveryPrompt),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaCodeLabel =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaCodeLabel),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaCodeLabel),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaInvalidCode =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaInvalidCode),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaInvalidCode),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaUseRecoveryCode =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaUseRecoveryCode),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaUseRecoveryCode),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaUseTotpCode =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaUseTotpCode),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaUseTotpCode),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaSubmit =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaSubmit),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaSubmit),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaUnsupportedFactor =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaUnsupportedFactor),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaUnsupportedFactor),
+            ),
+          )
+          as String);
+
+  @override
   String get customServerUrl =>
       (super.noSuchMethod(
             Invocation.getter(#customServerUrl),

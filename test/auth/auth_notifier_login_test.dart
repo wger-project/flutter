@@ -367,4 +367,109 @@ void main() {
       verify(mockSecureStorage.writeRefreshToken('r')).called(1);
     });
   });
+
+  group('completeMfa', () {
+    final tMfa = Uri.parse('$serverUrl/_allauth/app/v1/auth/2fa/authenticate');
+
+    test('200 persists tokens and reaches loggedIn', () async {
+      final accessJwt = makeJwt({'exp': 1900000000});
+      when(
+        mockClient.post(tMfa, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {},
+            'meta': {'access_token': accessJwt, 'refresh_token': 'mfa-refresh'},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      final result = await container
+          .read(authProvider.notifier)
+          .completeMfa(
+            sessionToken: 'flow-handle-xyz',
+            code: '123456',
+            serverUrl: serverUrl,
+          );
+
+      expect(result, LoginActions.proceed);
+      final state = container.read(authProvider).value!;
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.tokenType, AuthTokenType.headlessJwt);
+      expect(state.accessToken, accessJwt);
+      verify(mockSecureStorage.writeRefreshToken('mfa-refresh')).called(1);
+    });
+
+    test('passes the session_token as X-Session-Token header and the code in the body', () async {
+      final accessJwt = makeJwt({'exp': 1900000000});
+      when(
+        mockClient.post(tMfa, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {},
+            'meta': {'access_token': accessJwt, 'refresh_token': 'r'},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container
+          .read(authProvider.notifier)
+          .completeMfa(
+            sessionToken: 'flow-handle-xyz',
+            code: '123456',
+            serverUrl: serverUrl,
+          );
+
+      final captured = verify(
+        mockClient.post(
+          tMfa,
+          headers: captureAnyNamed('headers'),
+          body: captureAnyNamed('body'),
+        ),
+      ).captured;
+      final headers = captured[0] as Map<String, String>;
+      final body = jsonDecode(captured[1] as String) as Map<String, dynamic>;
+      expect(headers['X-Session-Token'], 'flow-handle-xyz');
+      expect(body, {'code': '123456'});
+      // Must not have set an Authorization header (no access token yet).
+      expect(headers.containsKey('authorization'), false);
+    });
+
+    test('400 with bad-code body surfaces as WgerHttpException', () async {
+      when(
+        mockClient.post(tMfa, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'code': ['Incorrect code.'],
+          }),
+          400,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      expect(
+        container
+            .read(authProvider.notifier)
+            .completeMfa(
+              sessionToken: 'flow-handle-xyz',
+              code: 'wrong',
+              serverUrl: serverUrl,
+            ),
+        throwsA(isA<WgerHttpException>()),
+      );
+    });
+  });
 }

@@ -72,6 +72,42 @@
   "@refreshTokenHelperText": {
     "description": "Helper text on the refresh-token paste field"
   },
+  "mfaChallengeTitle": "Two-factor authentication",
+  "@mfaChallengeTitle": {
+    "description": "App bar title on the 2FA challenge screen"
+  },
+  "mfaChallengeTotpPrompt": "Enter the 6-digit code from your authenticator app",
+  "@mfaChallengeTotpPrompt": {
+    "description": "Helper text above the TOTP input field"
+  },
+  "mfaChallengeRecoveryPrompt": "Enter one of your recovery codes",
+  "@mfaChallengeRecoveryPrompt": {
+    "description": "Helper text above the recovery-code input field"
+  },
+  "mfaCodeLabel": "Code",
+  "@mfaCodeLabel": {
+    "description": "Label on the 2FA code input field"
+  },
+  "mfaInvalidCode": "Please enter a code",
+  "@mfaInvalidCode": {
+    "description": "Validation error when the 2FA code field is empty"
+  },
+  "mfaUseRecoveryCode": "Use a recovery code instead",
+  "@mfaUseRecoveryCode": {
+    "description": "Button that switches the 2FA challenge to recovery-code mode"
+  },
+  "mfaUseTotpCode": "Use an authenticator app code",
+  "@mfaUseTotpCode": {
+    "description": "Button that switches the 2FA challenge back to TOTP mode"
+  },
+  "mfaSubmit": "Verify",
+  "@mfaSubmit": {
+    "description": "Submit button on the 2FA challenge screen"
+  },
+  "mfaUnsupportedFactor": "Your account is set up with a second factor this app does not support yet. Please sign in on the website.",
+  "@mfaUnsupportedFactor": {
+    "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+  },
   "customServerUrl": "URL of the wger instance",
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"

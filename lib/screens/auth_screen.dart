@@ -26,6 +26,7 @@ import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
+import 'package:wger/screens/mfa_challenge_screen.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/update_server_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -234,20 +235,17 @@ class _AuthCardState extends ConsumerState<AuthCard> {
           _isLoading = false;
         });
       }
-    } on MfaRequiredException {
-      // TODO: route to a dedicated 2FA challenge screen. For now show a
-      // friendly fallback in the existing error slot so users on 2FA-enabled
-      // accounts get a readable message instead of an unhandled exception.
+    } on MfaRequiredException catch (e) {
       if (context.mounted) {
-        setState(() {
-          errorMessage = FormHttpErrorsWidget(
-            WgerHttpException.fromMap({
-              'mfa_required':
-                  'Two-factor authentication is enabled for this account. '
-                  'Please sign in via the website for now, native 2FA support is coming.',
-            }),
-          );
-        });
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => MfaChallengeScreen(
+              sessionToken: e.sessionToken,
+              serverUrl: _authData['serverUrl']!,
+              availableFactors: e.availableFactors,
+            ),
+          ),
+        );
       }
     } on WgerHttpException catch (error) {
       if (context.mounted) {

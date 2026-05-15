@@ -52,6 +52,11 @@ const SERVER_VERSION_URL = 'version';
 const HEADLESS_TOKENS_REFRESH_PATH = 'tokens/refresh';
 const HEADLESS_AUTH_LOGIN_PATH = 'auth/login';
 const HEADLESS_AUTH_SIGNUP_PATH = 'auth/signup';
+const HEADLESS_AUTH_MFA_AUTHENTICATE_PATH = 'auth/2fa/authenticate';
+
+/// Header that carries the short-lived `session_token` returned by
+/// `auth/login` when a follow-up step (currently only 2FA) is still pending.
+const HEADLESS_SESSION_TOKEN_HEADER = 'X-Session-Token';
 
 /// HTTP client used by the auth notifier. Override in tests.
 final authHttpClientProvider = Provider<http.Client>((ref) => http.Client());
@@ -128,6 +133,35 @@ class AuthNotifier extends _$AuthNotifier {
       refreshToken,
       appVersion,
     );
+    return _completeLogin(creds, serverUrl, appVersion);
+  }
+
+  /// Completes a pending second-factor challenge started by [login].
+  ///
+  /// Sends [code] (a TOTP code or a recovery code) plus the [sessionToken]
+  /// returned by the prior 401 to `auth/2fa/authenticate`. On success the
+  /// server issues the access + refresh tokens and the rest of the login
+  /// flow (persist, gating chain, PowerSync reconnect) runs unchanged.
+  ///
+  /// The caller is expected to have an active [AuthState.serverUrl] from
+  /// the preceding login attempt; pass it explicitly so the call works
+  /// even before any state has been written.
+  Future<LoginActions> completeMfa({
+    required String sessionToken,
+    required String code,
+    required String serverUrl,
+  }) async {
+    final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
+    final response = await _client.post(
+      makeHeadlessUri(serverUrl, HEADLESS_AUTH_MFA_AUTHENTICATE_PATH),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
+        HEADLESS_SESSION_TOKEN_HEADER: sessionToken,
+      },
+      body: json.encode({'code': code}),
+    );
+    final creds = _consumeHeadlessAuthResponse(response);
     return _completeLogin(creds, serverUrl, appVersion);
   }
 
