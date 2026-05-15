@@ -30,6 +30,7 @@ import 'package:version/version.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/jwt.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/gallery_notifier.dart';
@@ -48,6 +49,10 @@ const REGISTRATION_URL = 'register';
 const LOGIN_URL = 'login';
 const USERPROFILE_URL = 'userprofile';
 
+/// `allauth.headless` `app` client refresh endpoint, relative to the
+/// `/_allauth/app/v1/` base.
+const HEADLESS_TOKENS_REFRESH_PATH = 'tokens/refresh';
+
 /// HTTP client used by the auth notifier. Override in tests.
 final authHttpClientProvider = Provider<http.Client>((ref) => http.Client());
 
@@ -55,6 +60,11 @@ final authHttpClientProvider = Provider<http.Client>((ref) => http.Client());
 class AuthNotifier extends _$AuthNotifier {
   final _logger = Logger('AuthNotifier');
   late http.Client _client;
+
+  /// Holds the in-flight refresh future so concurrent callers share a single
+  /// network roundtrip. Cleared in `whenComplete` so the next refresh starts
+  /// a fresh request.
+  Future<void>? _refreshInFlight;
 
   @override
   Future<AuthState> build() async {
@@ -528,6 +538,89 @@ class AuthNotifier extends _$AuthNotifier {
     ref.invalidate(nutritionProvider);
     ref.invalidate(trophyStateProvider);
     ref.invalidate(galleryProvider);
+  }
+
+  /// Exchanges the persisted refresh token for a fresh access/refresh pair.
+  ///
+  /// Single-flight: concurrent callers share one HTTP request. On any
+  /// failure (missing refresh token, missing serverUrl, network error,
+  /// non-200 response, malformed body) the user is logged out — there is
+  /// no usable session to fall back to once the refresh token is gone.
+  ///
+  /// On success: `state.accessToken` / `state.accessExpiresAt` are updated,
+  /// the rotated refresh token (when present) is written to secure storage,
+  /// and the new access token + its expiry are written to shared preferences.
+  Future<void> refreshAccessToken() {
+    return _refreshInFlight ??= _runRefresh().whenComplete(() {
+      _refreshInFlight = null;
+    });
+  }
+
+  Future<void> _runRefresh() async {
+    final current = _currentOrBlank();
+    final serverUrl = current.serverUrl;
+    if (serverUrl == null) {
+      _logger.warning('refreshAccessToken: no serverUrl in state, logging out');
+      await logout();
+      return;
+    }
+
+    final secureStorage = ref.read(secureTokenStorageProvider);
+    final refreshToken = await secureStorage.readRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) {
+      _logger.warning('refreshAccessToken: no refresh token in secure storage, logging out');
+      await logout();
+      return;
+    }
+
+    final http.Response response;
+    try {
+      response = await _client.post(
+        makeHeadlessUri(serverUrl, HEADLESS_TOKENS_REFRESH_PATH),
+        headers: {HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'},
+        body: json.encode({'refresh_token': refreshToken}),
+      );
+    } on Exception catch (e, s) {
+      _logger.warning('refreshAccessToken: network error, logging out', e, s);
+      await logout();
+      return;
+    }
+
+    if (response.statusCode != 200) {
+      _logger.warning('refreshAccessToken: status ${response.statusCode}, logging out');
+      await logout();
+      return;
+    }
+
+    final String newAccess;
+    final String? newRefresh;
+    final DateTime? newExp;
+    try {
+      final body = json.decode(response.body) as Map<String, dynamic>;
+      final meta = body['meta'] as Map<String, dynamic>;
+      newAccess = meta['access_token'] as String;
+      newRefresh = meta['refresh_token'] as String?;
+      newExp = jwtExp(decodeJwtPayload(newAccess));
+    } catch (e, s) {
+      _logger.warning('refreshAccessToken: malformed response body, logging out', e, s);
+      await logout();
+      return;
+    }
+
+    // Persist before mutating state so a crash mid-refresh leaves disk and
+    // state consistent: the next auto-login will read what we wrote here.
+    final prefs = PreferenceHelper.asyncPref;
+    await prefs.setString(PREFS_ACCESS_TOKEN, newAccess);
+    if (newExp != null) {
+      await prefs.setInt(PREFS_ACCESS_EXPIRES_AT, newExp.millisecondsSinceEpoch);
+    } else {
+      await prefs.remove(PREFS_ACCESS_EXPIRES_AT);
+    }
+    if (newRefresh != null) {
+      await secureStorage.writeRefreshToken(newRefresh);
+    }
+
+    state = AsyncData(current.copyWith(accessToken: newAccess, accessExpiresAt: newExp));
   }
 
   Future<void> logout() async {

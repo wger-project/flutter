@@ -88,6 +88,20 @@ Uri makeUri(
   return uri;
 }
 
+/// Builds a URL for the `allauth.headless` `app` client API at
+/// `/_allauth/app/v1/<path>`. Used by the auth notifier for login,
+/// signup, MFA, refresh, etc. The headless API does not use a trailing
+/// slash and lives on a separate URL prefix from the DRF data API.
+Uri makeHeadlessUri(String serverUrl, String path) {
+  final Uri uriServer = Uri.parse(serverUrl);
+  return Uri(
+    scheme: uriServer.scheme,
+    host: uriServer.host,
+    port: uriServer.port,
+    path: [uriServer.path, '_allauth', 'app', 'v1', path].join('/'),
+  );
+}
+
 /// Builds the absolute URL for a server-side media file given its
 /// [relativePath] (the raw value of a Django `ImageField` / `FileField`
 /// as stored in the DB, e.g. `ingredients/42/foo.jpg`).
