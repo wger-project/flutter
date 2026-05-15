@@ -251,8 +251,13 @@ class AuthNotifier extends _$AuthNotifier {
       throw WgerHttpException(response);
     }
 
+    // auth/login and auth/signup return the tokens under `meta`, while
+    // tokens/refresh returns them under `data` (see allauth.headless source:
+    // base/response.py vs tokens/response.py). Read both so this parser
+    // works for either response shape.
     final meta = body['meta'] as Map<String, dynamic>?;
-    final accessToken = meta?['access_token'] as String?;
+    final data = body['data'] as Map<String, dynamic>?;
+    final accessToken = (meta?['access_token'] ?? data?['access_token']) as String?;
     if (accessToken == null || accessToken.isEmpty) {
       // 200 without tokens, likely a still-pending flow we don't know how
       // to drive. Surface as an HTTP error so the caller renders something.
@@ -261,7 +266,7 @@ class AuthNotifier extends _$AuthNotifier {
     return _FreshCredentials(
       token: accessToken,
       tokenType: AuthTokenType.headlessJwt,
-      refreshToken: meta?['refresh_token'] as String?,
+      refreshToken: (meta?['refresh_token'] ?? data?['refresh_token']) as String?,
       accessExpiresAt: jwtExp(decodeJwtPayload(accessToken)),
     );
   }
@@ -704,6 +709,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> _runRefresh() async {
+    _logger.fine('refreshAccessToken: starting');
     final current = _currentOrBlank();
     final serverUrl = current.serverUrl;
     if (serverUrl == null) {
@@ -734,7 +740,12 @@ class AuthNotifier extends _$AuthNotifier {
     }
 
     if (response.statusCode != 200) {
-      _logger.warning('refreshAccessToken: status ${response.statusCode}, logging out');
+      final bodySnippet = response.body.length > 200
+          ? '${response.body.substring(0, 200)}...'
+          : response.body;
+      _logger.warning(
+        'refreshAccessToken: status ${response.statusCode}, body: $bodySnippet, logging out',
+      );
       await logout();
       return;
     }
@@ -744,15 +755,31 @@ class AuthNotifier extends _$AuthNotifier {
     final DateTime? newExp;
     try {
       final body = json.decode(response.body) as Map<String, dynamic>;
-      final meta = body['meta'] as Map<String, dynamic>;
-      newAccess = meta['access_token'] as String;
-      newRefresh = meta['refresh_token'] as String?;
+      // tokens/refresh returns the new tokens under `data` (see
+      // allauth.headless.tokens.response.RefreshTokenResponse); auth/login
+      // returns them under `meta`. Read whichever is present so this code
+      // keeps working if either response shape changes.
+      final data = body['data'] as Map<String, dynamic>?;
+      final meta = body['meta'] as Map<String, dynamic>?;
+      newAccess = (data?['access_token'] ?? meta?['access_token']) as String;
+      newRefresh = (data?['refresh_token'] ?? meta?['refresh_token']) as String?;
       newExp = jwtExp(decodeJwtPayload(newAccess));
     } catch (e, s) {
-      _logger.warning('refreshAccessToken: malformed response body, logging out', e, s);
+      final bodySnippet = response.body.length > 500
+          ? '${response.body.substring(0, 500)}...'
+          : response.body;
+      _logger.warning(
+        'refreshAccessToken: malformed response body, logging out. Body: $bodySnippet',
+        e,
+        s,
+      );
       await logout();
       return;
     }
+    _logger.fine(
+      'refreshAccessToken: success, new expiry $newExp, '
+      'rotated refresh token: ${newRefresh != null}',
+    );
 
     // Persist before mutating state so a crash mid-refresh leaves disk and
     // state consistent: the next auto-login will read what we wrote here.

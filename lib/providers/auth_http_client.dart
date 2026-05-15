@@ -88,15 +88,16 @@ class AuthHttpClient extends http.BaseClient {
     await _refresh();
     final fresh = _readAuth();
     if (fresh?.tokenType != AuthTokenType.headlessJwt || fresh?.accessToken == null) {
-      // Refresh failed → caller already logged the user out. Surface a
-      // 401 to the request issuer so its error handling fires.
       return _syntheticUnauthorized();
     }
 
     final retry = _cloneRequest(request, fresh);
     final retryResponse = await _inner.send(retry);
     if (retryResponse.statusCode == 401) {
-      _logger.warning('Retry after refresh still returned 401, logging out');
+      _logger.warning(
+        'Retry after refresh still returned 401 for '
+        '${request.method} ${request.url.path}, logging out',
+      );
       await retryResponse.stream.drain<void>();
       await _logout();
       return _syntheticUnauthorized();

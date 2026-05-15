@@ -549,8 +549,8 @@ void main() {
         (_) async => Response(
           jsonEncode({
             'status': 200,
-            'data': {},
-            'meta': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
+            'data': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
+            'meta': {'is_authenticated': true},
           }),
           200,
         ),
@@ -572,6 +572,32 @@ void main() {
       );
     });
 
+    test('parses access_token from data', () async {
+      await seedHeadlessBundle();
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+
+      final newAccess = makeJwt({'exp': 1900000000});
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess, 'refresh_token': 'rotated-refresh'},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      expect(container.read(authProvider).value!.accessToken, newAccess);
+      verify(mockSecureStorage.writeRefreshToken('rotated-refresh')).called(1);
+    });
+
     test('response without rotated refresh leaves the stored refresh token alone', () async {
       await seedHeadlessBundle();
       when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
@@ -583,8 +609,8 @@ void main() {
         (_) async => Response(
           jsonEncode({
             'status': 200,
-            'data': {},
-            'meta': {'access_token': newAccess},
+            'data': {'access_token': newAccess},
+            'meta': {'is_authenticated': true},
           }),
           200,
         ),
@@ -634,7 +660,7 @@ void main() {
       expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
     });
 
-    test('malformed body (no meta) → logout', () async {
+    test('malformed body (no tokens) → logout', () async {
       when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
       when(
         mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
@@ -669,8 +695,8 @@ void main() {
         Response(
           jsonEncode({
             'status': 200,
-            'data': {},
-            'meta': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
+            'data': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
+            'meta': {'is_authenticated': true},
           }),
           200,
         ),

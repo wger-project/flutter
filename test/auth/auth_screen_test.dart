@@ -220,8 +220,8 @@ void main() {
           () => Response(
             json.encode({
               'status': 200,
-              'data': {},
-              'meta': {'access_token': otherJwt, 'refresh_token': 'rotated'},
+              'data': {'access_token': otherJwt, 'refresh_token': 'rotated'},
+              'meta': {'is_authenticated': true},
             }),
             200,
           ),

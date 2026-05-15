@@ -282,8 +282,8 @@ void main() {
         (_) async => Response(
           jsonEncode({
             'status': 200,
-            'data': {},
-            'meta': {'access_token': newAccess, 'refresh_token': 'rotated-refresh'},
+            'data': {'access_token': newAccess, 'refresh_token': 'rotated-refresh'},
+            'meta': {'is_authenticated': true},
           }),
           200,
         ),
