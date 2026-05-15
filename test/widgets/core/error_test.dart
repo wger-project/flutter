@@ -128,7 +128,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // The body is wrapped in a ConstrainedBox(maxHeight: 280). Pull it out
-      // of the tree and assert the cap is in place — this is what stops the
+      // of the tree and assert the cap is in place, this is what stops the
       // dashboard cards from growing unbounded.
       final constrained = tester
           .widgetList<ConstrainedBox>(find.byType(ConstrainedBox))

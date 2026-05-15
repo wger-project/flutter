@@ -40,7 +40,7 @@ final galleryRepositoryProvider = Provider<GalleryRepository>((ref) {
 ///
 /// REST handles anything that involves the binary file (create, edit-with-
 /// new-file). Reads, metadata edits and deletes go through the local
-/// PowerSync-backed Drift table — see [watchAllDrift], [editLocalDrift]
+/// PowerSync-backed Drift table, see [watchAllDrift], [editLocalDrift]
 /// and [deleteLocalDrift].
 class GalleryRepository {
   static const _galleryUrlPath = 'gallery';

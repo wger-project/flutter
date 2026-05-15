@@ -70,7 +70,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('en'),
         // logout buttons in the recovery screens navigate to '/' after
-        // calling the notifier — register both the entry route and a
+        // calling the notifier, register both the entry route and a
         // stub for '/' so the navigation succeeds in tests. We can't
         // use `home` here since that conflicts with a routes['/'] entry.
         initialRoute: '/test',

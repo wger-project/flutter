@@ -56,17 +56,21 @@
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
-  "useApiToken": "Use API Token",
+  "useRefreshToken": "Use refresh token",
   "useUsernameAndPassword": "Use username and password",
-  "apiToken": "API Token",
-  "@apiToken": {},
-  "invalidApiToken": "Please enter a valid API key",
-  "@invalidApiToken": {
-    "description": "Error message when the user enters an invalid API key"
+  "refreshToken": "Refresh token",
+  "@refreshToken": {},
+  "invalidRefreshToken": "Please enter a valid refresh token",
+  "@invalidRefreshToken": {
+    "description": "Error message when the user enters an invalid refresh token"
   },
-  "apiTokenValidChars": "An API key may only contain the letters a-f, numbers 0-9 and be exactly 40 characters long",
-  "@apiTokenValidChars": {
-    "description": "Error message when the user tries to input a API key with forbidden characters"
+  "refreshTokenValidChars": "A refresh token has three dot-separated segments (header.payload.signature), each made of letters, digits, '-' and '_'",
+  "@refreshTokenValidChars": {
+    "description": "Error message when the user pastes a string that does not match the JWT shape"
+  },
+  "refreshTokenHelperText": "Generate a JWT refresh token on the wger website and paste it here. Useful when your server sits behind an auth proxy or when you want to skip the regular login flow.",
+  "@refreshTokenHelperText": {
+    "description": "Helper text on the refresh-token paste field"
   },
   "customServerUrl": "URL of the wger instance",
   "@customServerUrl": {

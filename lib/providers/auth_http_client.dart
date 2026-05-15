@@ -39,7 +39,7 @@ const _refreshLeeway = Duration(seconds: 30);
 ///   stored `accessExpiresAt` is within [_refreshLeeway] of now.
 /// - On a 401 reply for a *replayable* `http.Request` body, refresh once
 ///   and retry. If the retry also returns 401, the user is logged out.
-///   Non-replayable bodies (multipart / streamed) are not retried — the
+///   Non-replayable bodies (multipart / streamed) are not retried; the
 ///   pre-emptive refresh in the happy path is the primary safeguard.
 ///
 /// Wrapped behind [authenticatedHttpClientProvider] so consumers
@@ -157,8 +157,8 @@ class AuthHttpClient extends http.BaseClient {
 
 /// Provider of the authenticated HTTP client used by every data-API call.
 /// Wraps the raw client from [authHttpClientProvider] (kept separate so the
-/// notifier itself can issue unauthenticated requests — login, refresh,
-/// version probe — without recursing through this wrapper).
+/// notifier itself can issue unauthenticated requests (login, refresh,
+/// version probe) without recursing through this wrapper).
 final authenticatedHttpClientProvider = Provider<http.Client>(
   (ref) => AuthHttpClient(
     inner: ref.watch(authHttpClientProvider),

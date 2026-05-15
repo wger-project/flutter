@@ -104,7 +104,7 @@ void main() {
       final container = await primedContainer();
       final state = container.read(exerciseListFiltersProvider);
 
-      // 1-char search term is below the threshold — should return all.
+      // 1-char search term is below the threshold, should return all.
       container
           .read(exerciseListFiltersProvider.notifier)
           .setFilters(state.filters.copyWith(searchTerm: 'D'));

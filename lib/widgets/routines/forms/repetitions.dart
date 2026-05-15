@@ -133,7 +133,7 @@ class _RepetitionInputWidgetState extends ConsumerState<RepetitionInputWidget> {
     }
     // Setting `controller.text` notifies its listeners synchronously,
     // which in turn calls `setState` on the surrounding Form/TextField
-    // state — and `didUpdateWidget` runs *during* the build cycle, so
+    // state, and `didUpdateWidget` runs *during* the build cycle, so
     // that's illegal. Defer the assignment to after the current frame.
     final text = widget.value == null ? '' : _numberFormat.format(widget.value);
     WidgetsBinding.instance.addPostFrameCallback((_) {

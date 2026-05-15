@@ -57,7 +57,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     final Color weightChangeColor;
     final profile = ref.watch(userProfileProvider).value;
     if (profile == null) {
-      // Profile not yet loaded — skip the weight-change row entirely. The
+      // Profile not yet loaded, skip the weight-change row entirely. The
       // widget will rebuild with the value once available.
       return const SizedBox.shrink();
     }

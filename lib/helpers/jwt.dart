@@ -26,8 +26,8 @@ final _logger = Logger('jwt');
 ///
 /// Returns null when the input is not a three-segment token, when the middle
 /// segment is not valid base64-url, or when the decoded bytes are not a JSON
-/// object. The signature is not verified — callers must treat the result as
-/// untrusted data.
+/// object. The signature is not verified, so callers must treat the result
+/// as untrusted data.
 Map<String, dynamic>? decodeJwtPayload(String jwt) {
   try {
     final parts = jwt.split('.');

@@ -30,7 +30,7 @@ import 'package:wger/providers/wger_base.dart';
 part 'media_url_prefix_notifier.g.dart';
 
 /// Marker from the `upload_to` field on the Django `Image` model.
-/// Stable in practice — changing it would require a Django data
+/// Stable in practice, changing it would require a Django data
 /// migration and break existing image references.
 const _exerciseImagesMarker = 'exercise-images/';
 
@@ -74,9 +74,9 @@ String? extractMediaPrefix(dynamic responseBody) {
 /// the first result's `image` URL.
 ///
 /// State semantics:
-///   - `null` — not yet detected; consumers should fall back to the
+///   - `null`, not yet detected; consumers should fall back to the
 ///     default prefix
-///   - non-null — full URL prefix
+///   - non-null, full URL prefix
 ///
 /// Cleared on logout.
 @Riverpod(keepAlive: true)

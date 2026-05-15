@@ -28,6 +28,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:version/version.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/jwt.dart';
@@ -45,13 +46,12 @@ part 'auth_notifier.g.dart';
 
 const MIN_APP_VERSION_URL = 'min-app-version';
 const SERVER_VERSION_URL = 'version';
-const REGISTRATION_URL = 'register';
-const LOGIN_URL = 'login';
-const USERPROFILE_URL = 'userprofile';
 
-/// `allauth.headless` `app` client refresh endpoint, relative to the
+/// `allauth.headless` `app` client endpoints, relative to the
 /// `/_allauth/app/v1/` base.
 const HEADLESS_TOKENS_REFRESH_PATH = 'tokens/refresh';
+const HEADLESS_AUTH_LOGIN_PATH = 'auth/login';
+const HEADLESS_AUTH_SIGNUP_PATH = 'auth/signup';
 
 /// HTTP client used by the auth notifier. Override in tests.
 final authHttpClientProvider = Provider<http.Client>((ref) => http.Client());
@@ -72,7 +72,9 @@ class AuthNotifier extends _$AuthNotifier {
     return _tryAutoLogin();
   }
 
-  /// Registers a new user and logs in.
+  /// Registers a new user and logs in via the `allauth.headless` signup
+  /// endpoint. The response already carries the access + refresh tokens,
+  /// so no separate login call is needed.
   Future<LoginActions> register({
     required String username,
     required String password,
@@ -81,103 +83,180 @@ class AuthNotifier extends _$AuthNotifier {
     String locale = 'en',
   }) async {
     final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
-    final data = <String, String>{
-      'username': username,
-      'password': password,
-    };
+    final body = <String, String>{'username': username, 'password': password};
     if (email.isNotEmpty) {
-      data['email'] = email;
+      body['email'] = email;
     }
+
     final response = await _client.post(
-      makeUri(serverUrl, REGISTRATION_URL),
+      makeHeadlessUri(serverUrl, HEADLESS_AUTH_SIGNUP_PATH),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
         HttpHeaders.acceptLanguageHeader: locale,
       },
-      body: json.encode(data),
+      body: json.encode(body),
     );
-
-    if (response.statusCode >= 400) {
-      throw WgerHttpException(response);
-    }
-
-    return login(username, password, serverUrl, null);
+    final creds = _consumeHeadlessAuthResponse(response);
+    return _completeLogin(creds, serverUrl, appVersion);
   }
 
-  /// Authenticates a user (by password or API token).
+  /// Authenticates a user.
+  ///
+  /// Two modes:
+  /// 1. [refreshToken] is non-empty → treated as a refresh token the user
+  ///    minted on the wger website. Exchanged immediately for a fresh
+  ///    access token via the `allauth.headless` `tokens/refresh` endpoint;
+  ///    the rotated bundle is persisted as [AuthTokenType.headlessJwt].
+  ///    Useful when the server sits behind an auth proxy that breaks the
+  ///    interactive login flow.
+  /// 2. Otherwise the `auth/login` endpoint is used with username +
+  ///    password. A pending second-factor flow surfaces as
+  ///    [MfaRequiredException] for the caller to route to the 2FA
+  ///    challenge screen.
   Future<LoginActions> login(
     String username,
     String password,
     String serverUrl,
-    String? apiToken,
+    String? refreshToken,
   ) async {
     final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
-    final String token;
+    final creds = await _obtainCredentials(
+      username,
+      password,
+      serverUrl,
+      refreshToken,
+      appVersion,
+    );
+    return _completeLogin(creds, serverUrl, appVersion);
+  }
 
-    if (apiToken != null && apiToken.isNotEmpty) {
-      final response = await _client.get(
-        makeUri(serverUrl, USERPROFILE_URL),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-          HttpHeaders.authorizationHeader: 'Token $apiToken',
-        },
-      );
-
-      if (response.statusCode >= 400) {
-        throw WgerHttpException(response);
-      }
-      token = apiToken;
-    } else {
-      final response = await _client.post(
-        makeUri(serverUrl, LOGIN_URL),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
-          HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-        },
-        body: json.encode({'username': username, 'password': password}),
-      );
-
-      if (response.statusCode >= 400) {
-        throw WgerHttpException(response);
-      }
-
-      token = json.decode(response.body)['token'];
+  Future<_FreshCredentials> _obtainCredentials(
+    String username,
+    String password,
+    String serverUrl,
+    String? pastedRefreshToken,
+    PackageInfo appVersion,
+  ) async {
+    if (pastedRefreshToken != null && pastedRefreshToken.isNotEmpty) {
+      return _exchangePastedRefreshToken(pastedRefreshToken, serverUrl, appVersion);
     }
 
-    // Persist login before the update-gate checks, matching legacy behavior.
-    final prefs = PreferenceHelper.asyncPref;
-    await prefs.setString(
-      PREFS_USER,
-      json.encode({'token': token, 'serverUrl': serverUrl}),
+    final response = await _client.post(
+      makeHeadlessUri(serverUrl, HEADLESS_AUTH_LOGIN_PATH),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
+      },
+      body: json.encode({'username': username, 'password': password}),
     );
-    await prefs.setString(
-      PREFS_LAST_SERVER,
-      json.encode({'serverUrl': serverUrl}),
-    );
+    return _consumeHeadlessAuthResponse(response);
+  }
 
-    // Both branches above produce a legacy permanent DRF token; the headless
-    // JWT login path is added in a later step.
-    const tokenType = AuthTokenType.legacyApiToken;
+  /// Exchanges a manually-pasted refresh token for a fresh access + refresh
+  /// bundle. Rotation is on by default server-side, so the pasted token is
+  /// invalidated as part of this call and the new refresh token is what
+  /// ends up persisted in secure storage. Throws [WgerHttpException] when
+  /// the server rejects the pasted token.
+  Future<_FreshCredentials> _exchangePastedRefreshToken(
+    String refreshToken,
+    String serverUrl,
+    PackageInfo appVersion,
+  ) async {
+    final response = await _client.post(
+      makeHeadlessUri(serverUrl, HEADLESS_TOKENS_REFRESH_PATH),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
+      },
+      body: json.encode({'refresh_token': refreshToken}),
+    );
+    return _consumeHeadlessAuthResponse(response);
+  }
+
+  /// Parses the standard `allauth.headless` auth response envelope.
+  ///
+  /// Returns a populated [_FreshCredentials] on 200 (tokens carried in
+  /// `meta`).
+  ///
+  /// Throws:
+  /// - [MfaRequiredException] on a 401 that carries `meta.session_token`,
+  ///   signalling that the user must complete a second factor before tokens
+  ///   are issued.
+  /// - [WgerHttpException] for any other status, or for malformed / partial
+  ///   bodies on otherwise-successful responses.
+  _FreshCredentials _consumeHeadlessAuthResponse(http.Response response) {
+    final Map<String, dynamic> body;
+    try {
+      body = json.decode(response.body) as Map<String, dynamic>;
+    } catch (_) {
+      throw WgerHttpException(response);
+    }
+
+    if (response.statusCode == 401) {
+      final meta = body['meta'] as Map<String, dynamic>?;
+      final sessionToken = meta?['session_token'] as String?;
+      if (sessionToken != null && sessionToken.isNotEmpty) {
+        final flows = (body['data'] as Map<String, dynamic>?)?['flows'] as List<dynamic>?;
+        final factors =
+            flows
+                ?.whereType<Map<String, dynamic>>()
+                .where(
+                  (f) => f['id'] == 'mfa_authenticate' && (f['is_pending'] as bool? ?? false),
+                )
+                .expand((f) => (f['types'] as List<dynamic>?)?.cast<String>() ?? const <String>[])
+                .toList() ??
+            const <String>[];
+        throw MfaRequiredException(sessionToken: sessionToken, availableFactors: factors);
+      }
+      throw WgerHttpException(response);
+    }
+
+    if (response.statusCode != 200) {
+      throw WgerHttpException(response);
+    }
+
+    final meta = body['meta'] as Map<String, dynamic>?;
+    final accessToken = meta?['access_token'] as String?;
+    if (accessToken == null || accessToken.isEmpty) {
+      // 200 without tokens, likely a still-pending flow we don't know how
+      // to drive. Surface as an HTTP error so the caller renders something.
+      throw WgerHttpException(response);
+    }
+    return _FreshCredentials(
+      token: accessToken,
+      tokenType: AuthTokenType.headlessJwt,
+      refreshToken: meta?['refresh_token'] as String?,
+      accessExpiresAt: jwtExp(decodeJwtPayload(accessToken)),
+    );
+  }
+
+  /// Shared post-credentials path: persist the new bundle, run the gating
+  /// chain, swap PowerSync's connector if it was already up, invalidate the
+  /// data providers so they refetch with the new auth.
+  Future<LoginActions> _completeLogin(
+    _FreshCredentials creds,
+    String serverUrl,
+    PackageInfo appVersion,
+  ) async {
+    await _persistCredentials(creds, serverUrl);
 
     var newState = await _resolveAuthState(
-      token: token,
-      tokenType: tokenType,
+      token: creds.token,
+      tokenType: creds.tokenType,
       serverUrl: serverUrl,
       appVersion: appVersion,
+      accessExpiresAt: creds.accessExpiresAt,
     );
 
     if (newState.status == AuthStatus.loggedIn &&
-        !await _serverConfigSane(serverUrl, token, tokenType)) {
+        !await _serverConfigSane(serverUrl, creds.token, creds.tokenType)) {
       newState = newState.copyWith(serverConfigWarning: true);
     }
 
     state = AsyncData(newState);
 
     if (newState.status == AuthStatus.loggedIn) {
-      // If PowerSync was already running from a previous session, swap its
-      // connector so it picks up the new user's credentials.
       await _reconnectPowerSyncIfBuilt(serverUrl);
       _invalidatePostLoginProviders();
     }
@@ -188,7 +267,40 @@ class AuthNotifier extends _$AuthNotifier {
     };
   }
 
-  /// Clears the server config warning flag — called from the auth screen after
+  /// Writes a fresh credential bundle to disk and wipes the *other* token
+  /// format, so a re-login under a different mode (e.g. headless → API key)
+  /// does not leave stale credentials behind.
+  Future<void> _persistCredentials(_FreshCredentials creds, String serverUrl) async {
+    final prefs = PreferenceHelper.asyncPref;
+    await prefs.setString(PREFS_LAST_SERVER, json.encode({'serverUrl': serverUrl}));
+
+    switch (creds.tokenType) {
+      case AuthTokenType.legacyApiToken:
+        await prefs.setString(
+          PREFS_USER,
+          json.encode({'token': creds.token, 'serverUrl': serverUrl}),
+        );
+        await _wipeStoredCredentials(AuthTokenType.headlessJwt);
+      case AuthTokenType.headlessJwt:
+        await prefs.setString(PREFS_ACCESS_TOKEN, creds.token);
+        if (creds.accessExpiresAt != null) {
+          await prefs.setInt(
+            PREFS_ACCESS_EXPIRES_AT,
+            creds.accessExpiresAt!.millisecondsSinceEpoch,
+          );
+        } else {
+          await prefs.remove(PREFS_ACCESS_EXPIRES_AT);
+        }
+        await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+        await prefs.setString(PREFS_SERVER_URL, serverUrl);
+        if (creds.refreshToken != null) {
+          await ref.read(secureTokenStorageProvider).writeRefreshToken(creds.refreshToken!);
+        }
+        await _wipeStoredCredentials(AuthTokenType.legacyApiToken);
+    }
+  }
+
+  /// Clears the server config warning flag, called from the auth screen after
   /// the corresponding warning dialog has been shown to the user, so it doesn't
   /// re-appear on the next state read.
   void clearServerConfigWarning() {
@@ -544,7 +656,7 @@ class AuthNotifier extends _$AuthNotifier {
   ///
   /// Single-flight: concurrent callers share one HTTP request. On any
   /// failure (missing refresh token, missing serverUrl, network error,
-  /// non-200 response, malformed body) the user is logged out — there is
+  /// non-200 response, malformed body) the user is logged out. There is
   /// no usable session to fall back to once the refresh token is gone.
   ///
   /// On success: `state.accessToken` / `state.accessExpiresAt` are updated,
@@ -768,9 +880,26 @@ bool _isNetworkError(Object e) {
       e is TimeoutException;
 }
 
+/// In-memory credential bundle returned by the login / signup flows. The
+/// `refreshToken` and `accessExpiresAt` fields are only populated for the
+/// headless JWT path; the legacy DRF token path leaves them null.
+class _FreshCredentials {
+  final String token;
+  final AuthTokenType tokenType;
+  final String? refreshToken;
+  final DateTime? accessExpiresAt;
+
+  const _FreshCredentials({
+    required this.token,
+    required this.tokenType,
+    this.refreshToken,
+    this.accessExpiresAt,
+  });
+}
+
 /// Headless-JWT credential bundle as read from shared preferences during
-/// auto-login. The refresh token is intentionally absent — it lives in
-/// secure storage and is only fetched when a refresh actually runs.
+/// auto-login. The refresh token is intentionally absent (it lives in
+/// secure storage and is only fetched when a refresh actually runs).
 class _HeadlessAuthBundle {
   final String accessToken;
   final String serverUrl;

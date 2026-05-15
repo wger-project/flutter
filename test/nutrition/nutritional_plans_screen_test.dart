@@ -130,7 +130,7 @@ void main() {
     // Confirmation dialog
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    // Confirm tap — actual delete now goes through Drift + PowerSync (not
+    // Confirm tap, actual delete now goes through Drift + PowerSync (not
     // REST), so we don't assert on the REST mock here.
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();

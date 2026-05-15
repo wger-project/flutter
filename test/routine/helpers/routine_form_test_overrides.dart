@@ -41,7 +41,7 @@ export 'routine_form_test_overrides.mocks.dart'
 /// without this stub.
 ///
 /// When [exercise] / [session] are passed in by the caller they are used
-/// as-is — the caller owns the stubbing. Only the locally-created fallback
+/// as-is, the caller owns the stubbing. Only the locally-created fallback
 /// mocks get a default empty-stream stub here.
 List<Override> exerciseAndSessionRepoOverrides({
   MockExerciseRepository? exercise,
@@ -73,7 +73,7 @@ MockWorkoutSessionRepository _emptySessionRepoMock() {
 /// Use this in widget tests that don't override the reference-data streams
 /// themselves; otherwise mix in [exerciseAndSessionRepoOverrides] alone.
 ///
-/// [repetitionUnits] / [weightUnits] default to empty lists — sufficient for
+/// [repetitionUnits] / [weightUnits] default to empty lists, sufficient for
 /// most form widget tests where the units only need to satisfy the
 /// `awaitFirstValue` step. Pass real fixtures when the test exercises
 /// hydration logic that looks units up by id.

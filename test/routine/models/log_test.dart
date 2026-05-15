@@ -145,7 +145,7 @@ void main() {
       //
       // When the user taps "+" in gym mode to add an extra exercise,
       // addExerciseAfterPage() creates a SetConfigData with only exerciseId and
-      // slotEntryId — no unit objects. The default constructor sets
+      // slotEntryId, no unit objects. The default constructor sets
       // weightUnitId=WEIGHT_UNIT_KG and repetitionsUnitId=REP_UNIT_REPETITIONS_ID,
       // but Log.fromSetConfigData was using the object setters which overwrite
       // those IDs with null when the objects are null, causing the server to
@@ -154,7 +154,7 @@ void main() {
         exerciseId: 1,
         slotEntryId: 1,
         exercise: exercise,
-        // no weightUnit or repetitionsUnit objects — mirrors addExerciseAfterPage()
+        // no weightUnit or repetitionsUnit objects, mirrors addExerciseAfterPage()
       );
 
       final log = Log.fromSetConfigData(setConfig);

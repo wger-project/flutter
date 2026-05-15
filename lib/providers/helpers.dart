@@ -24,7 +24,7 @@ import 'package:flutter_riverpod/misc.dart' show ProviderListenable;
 /// Awaits the first value of [provider] by explicitly subscribing via
 /// [Ref.listen]. Use this in notifier methods (outside of `build()`)
 /// instead of `ref.read(streamProvider.future)`, which can hang
-/// indefinitely if no other consumer is `ref.watch`-ing the provider —
+/// indefinitely if no other consumer is `ref.watch`-ing the provider:
 /// Riverpod's internal subscription for `.future` doesn't always trigger
 /// the underlying stream's first emission in that scenario.
 ///
@@ -115,7 +115,7 @@ Uri makeHeadlessUri(String serverUrl, String path) {
 /// detected once via the REST API), so deployments with a non-default
 /// `MEDIA_URL` or a CDN in front of the media files work transparently.
 /// When omitted, the function falls back to the assumption that media
-/// is served from `<serverUrl>/media/` — Django's default.
+/// is served from `<serverUrl>/media/`, Django's default.
 Uri? mediaUri(String serverUrl, String? relativePath, {String? absolutePrefix}) {
   if (relativePath == null || relativePath.isEmpty) {
     return null;

@@ -59,7 +59,7 @@ class GalleryNotifier extends _$GalleryNotifier {
       if (newPath != null) {
         image.imagePath = newPath;
       }
-      // [image] is a shared reference held by the synced list — the path
+      // [image] is a shared reference held by the synced list, the path
       // mutation above is visible immediately. Notify listeners so widgets
       // pick up the new image bytes.
       state = AsyncData(List.of(_current));

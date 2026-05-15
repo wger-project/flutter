@@ -27,7 +27,7 @@ import 'package:wger/providers/media_url_prefix_notifier.dart';
 /// [AuthNotifier] state. Consumers read this to make authenticated HTTP
 /// requests. Rebuilds whenever the auth state changes.
 ///
-/// Deliberately does *not* depend on [mediaUrlPrefixProvider] — that
+/// Deliberately does *not* depend on [mediaUrlPrefixProvider], that
 /// would create a cycle, since the prefix notifier reads
 /// [wgerBaseProvider] when probing. Consumers that need the resolved
 /// media URL go through [mediaUrlBuilderProvider] instead.

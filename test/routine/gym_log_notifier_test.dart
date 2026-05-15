@@ -68,7 +68,7 @@ void main() {
       expect(state.exerciseId, source.exerciseId);
       expect(state.weight, source.weight);
       expect(state.date, fixed);
-      // setLog must clear the id — the source log is a template, the new
+      // setLog must clear the id, the source log is a template, the new
       // state is a separate entry that will get its own UUID from Drift on
       // insert.
       expect(state.id, isNull);

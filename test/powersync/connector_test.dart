@@ -124,7 +124,7 @@ void main() {
       test('does not touch DateTimeField columns even on registered tables', () {
         // `manager_workoutlog.date` is a DateTimeField on Django (not a
         // DateField), and `manager_workoutlog` isn't in the date-only
-        // registry — the timestamp must round-trip unchanged.
+        // registry, the timestamp must round-trip unchanged.
         final out = connector.genericTransform(
           'manager_workoutlog',
           {'date': '2024-11-01T17:30:00.000Z'},

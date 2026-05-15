@@ -62,7 +62,7 @@ class IngredientImage {
   @JsonKey(required: true, name: 'license')
   final int licenseId;
 
-  /// Author(s) — may be null on the server (`TextField(null=True)`)
+  /// Author(s), may be null on the server (`TextField(null=True)`)
   @JsonKey(required: true, name: 'license_author')
   final String? author;
 

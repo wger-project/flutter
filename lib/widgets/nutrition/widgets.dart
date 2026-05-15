@@ -274,14 +274,14 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
     );
   }
 
-  /// The filter icon button — shows an active-filter badge and opens
+  /// The filter icon button, shows an active-filter badge and opens
   /// [IngredientFilterDialog] on tap.
   Widget filterButton() {
     final filters = ref.watch(ingredientFiltersSyncProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
     // Auto-correct: in an English locale "current + English" collapses to
-    // "current" — fix it once if a stored preference landed on the
+    // "current", fix it once if a stored preference landed on the
     // non-locale-aware default.
     if (languageCode == LANGUAGE_SHORT_ENGLISH &&
         filters.searchLanguage == SearchLanguage.currentAndEnglish) {

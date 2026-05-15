@@ -59,7 +59,7 @@ const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_USER_LOCALE = 'userLocale';
 const PREFS_LAST_SERVER = 'lastServer';
 
-/// Headless JWT auth — SharedPreferences keys.
+/// Headless JWT auth: SharedPreferences keys.
 ///
 /// Read in parallel with the legacy `PREFS_USER` blob during the migration
 /// window; once a user logs in via the headless flow these supersede it.

@@ -64,7 +64,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// permanent-failure op would re-pop the dialog on every sync tick
   /// (PowerSync keeps re-driving `uploadData` until the transaction
   /// is completed, and our `transaction.complete()` only fires once
-  /// the loop finishes — so we'd see the dialog at every iteration).
+  /// the loop finishes, so we'd see the dialog at every iteration).
   /// Resets on app restart.
   final Set<String> _reportedFailedOps = {};
 
@@ -222,7 +222,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
     try {
       decoded = json.decode(response.body);
     } on FormatException {
-      // Non-JSON response on a 200 — uncommon but harmless to ignore.
+      // Non-JSON response on a 200, uncommon but harmless to ignore.
       return;
     }
     if (decoded is! Map<String, dynamic> || !decoded.containsKey('error')) {

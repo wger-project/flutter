@@ -55,7 +55,7 @@ final class IngredientNotifier extends _$IngredientNotifier {
   /// returned immediately without a DB read. Simultaneous calls for the
   /// same id are deduplicated. The provider `state` is used only as a
   /// status signal (loading/done/error) and does not carry the Ingredient
-  /// itself — consumers should read the data from the notifier's cache.
+  /// itself, consumers should read the data from the notifier's cache.
   Future<Ingredient?> fetch(int id) async {
     _logger.finer('Fetching ingredient id: $id');
 

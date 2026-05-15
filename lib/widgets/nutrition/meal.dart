@@ -249,7 +249,7 @@ class MealItemEditableFullTile extends ConsumerWidget {
               tooltip: i18n.delete,
               iconSize: ICON_SIZE_SMALL,
               onPressed: () {
-                // Delete the meal item — goes through PowerSync, so offline is fine.
+                // Delete the meal item, goes through PowerSync, so offline is fine.
                 ref.read(nutritionProvider.notifier).deleteMealItem(_item);
 
                 // and inform the user

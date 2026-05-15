@@ -101,7 +101,7 @@ Widget getMealItemForm(
   bool? test,
 ]) {
   return IngredientForm(
-    // The recent list is ephemeral display data — planId isn't used for
+    // The recent list is ephemeral display data, planId isn't used for
     // persistence, so an empty sentinel is fine.
     recent: recent.map((e) => LogItem.fromMealItem(e, '', e.mealId)).toList(),
     onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) {

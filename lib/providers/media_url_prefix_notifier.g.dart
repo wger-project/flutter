@@ -18,9 +18,9 @@ part of 'media_url_prefix_notifier.dart';
 /// the first result's `image` URL.
 ///
 /// State semantics:
-///   - `null` — not yet detected; consumers should fall back to the
+///   - `null`, not yet detected; consumers should fall back to the
 ///     default prefix
-///   - non-null — full URL prefix
+///   - non-null, full URL prefix
 ///
 /// Cleared on logout.
 
@@ -37,9 +37,9 @@ final mediaUrlPrefixProvider = MediaUrlPrefixNotifierProvider._();
 /// the first result's `image` URL.
 ///
 /// State semantics:
-///   - `null` — not yet detected; consumers should fall back to the
+///   - `null`, not yet detected; consumers should fall back to the
 ///     default prefix
-///   - non-null — full URL prefix
+///   - non-null, full URL prefix
 ///
 /// Cleared on logout.
 final class MediaUrlPrefixNotifierProvider
@@ -54,9 +54,9 @@ final class MediaUrlPrefixNotifierProvider
   /// the first result's `image` URL.
   ///
   /// State semantics:
-  ///   - `null` — not yet detected; consumers should fall back to the
+  ///   - `null`, not yet detected; consumers should fall back to the
   ///     default prefix
-  ///   - non-null — full URL prefix
+  ///   - non-null, full URL prefix
   ///
   /// Cleared on logout.
   MediaUrlPrefixNotifierProvider._()
@@ -90,9 +90,9 @@ String _$mediaUrlPrefixNotifierHash() => r'a152afb08fc3ce66e92d9a7872010f84f4300
 /// the first result's `image` URL.
 ///
 /// State semantics:
-///   - `null` — not yet detected; consumers should fall back to the
+///   - `null`, not yet detected; consumers should fall back to the
 ///     default prefix
-///   - non-null — full URL prefix
+///   - non-null, full URL prefix
 ///
 /// Cleared on logout.
 

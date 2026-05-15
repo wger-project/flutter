@@ -103,7 +103,7 @@ void main() {
       });
 
       test('does not prepend the server URL for absolute URLs on different hosts', () {
-        // Useful when the REST API has already absolutised the URL — we must
+        // Useful when the REST API has already absolutised the URL, we must
         // not double-prefix with the local server.
         final result = mediaUri('https://wger.de', 'https://other.example.com/x.jpg');
         expect(result?.host, 'other.example.com');

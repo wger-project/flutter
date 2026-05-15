@@ -251,12 +251,12 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get useApiToken =>
+  String get useRefreshToken =>
       (super.noSuchMethod(
-            Invocation.getter(#useApiToken),
+            Invocation.getter(#useRefreshToken),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#useApiToken),
+              Invocation.getter(#useRefreshToken),
             ),
           )
           as String);
@@ -273,34 +273,45 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get apiToken =>
+  String get refreshToken =>
       (super.noSuchMethod(
-            Invocation.getter(#apiToken),
+            Invocation.getter(#refreshToken),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#apiToken),
+              Invocation.getter(#refreshToken),
             ),
           )
           as String);
 
   @override
-  String get invalidApiToken =>
+  String get invalidRefreshToken =>
       (super.noSuchMethod(
-            Invocation.getter(#invalidApiToken),
+            Invocation.getter(#invalidRefreshToken),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#invalidApiToken),
+              Invocation.getter(#invalidRefreshToken),
             ),
           )
           as String);
 
   @override
-  String get apiTokenValidChars =>
+  String get refreshTokenValidChars =>
       (super.noSuchMethod(
-            Invocation.getter(#apiTokenValidChars),
+            Invocation.getter(#refreshTokenValidChars),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#apiTokenValidChars),
+              Invocation.getter(#refreshTokenValidChars),
+            ),
+          )
+          as String);
+
+  @override
+  String get refreshTokenHelperText =>
+      (super.noSuchMethod(
+            Invocation.getter(#refreshTokenHelperText),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#refreshTokenHelperText),
             ),
           )
           as String);

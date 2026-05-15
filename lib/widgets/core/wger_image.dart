@@ -31,7 +31,7 @@ import 'package:wger/widgets/core/progress_indicator.dart';
 /// the [errorWidget] (or a default broken-image icon) is shown.
 ///
 /// [cacheWidth] / [cacheHeight] are passed to the underlying decoder
-/// so the cached bytes are scaled to display size — use this for
+/// so the cached bytes are scaled to display size, use this for
 /// avatars and thumbnails to avoid keeping multi-megapixel originals
 /// in the cache. Both are pixel values, not logical pixels.
 ///

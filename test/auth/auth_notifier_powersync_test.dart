@@ -440,7 +440,7 @@ void main() {
       final prefs = PreferenceHelper.asyncPref;
       await prefs.remove(PREFS_USER);
       await prefs.setString(PREFS_ACCESS_TOKEN, accessToken);
-      // Far in the future so we don't trip on expiry — refresh isn't wired yet.
+      // Far in the future so we don't trip on expiry, refresh isn't wired yet.
       await prefs.setInt(
         PREFS_ACCESS_EXPIRES_AT,
         DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
@@ -450,7 +450,7 @@ void main() {
     }
 
     test('prefers the headless bundle over PREFS_USER and probes with Bearer', () async {
-      // Both formats present — headless must win.
+      // Both formats present, headless must win.
       await seedHeadlessBundle(accessToken: 'jwt-access');
       await PreferenceHelper.asyncPref.setString(
         PREFS_USER,

@@ -163,7 +163,7 @@ void main() {
   const planUuid2 = 'cc000000-0000-4000-8000-000000000002';
   const planUuid3 = 'cc000000-0000-4000-8000-000000000003';
 
-  group('Plans — Drift', () {
+  group('Plans, Drift', () {
     test('watchAllDrift emits an empty list when no plans exist', () async {
       expect(await repo.watchAllDrift().first, isEmpty);
     });
@@ -374,7 +374,7 @@ void main() {
     });
   });
 
-  group('Meals — watchAllMealsHydrated', () {
+  group('Meals, watchAllMealsHydrated', () {
     const mealUuid1 = 'aa000000-0000-4000-8000-000000000001';
     const mealUuid2 = 'aa000000-0000-4000-8000-000000000002';
     const itemUuid1 = 'bb000000-0000-4000-8000-000000000001';

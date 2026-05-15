@@ -19,8 +19,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -29,9 +29,9 @@ import 'package:wger/providers/auth_state.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/update_server_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/auth/api_token_field.dart';
 import 'package:wger/widgets/auth/email_field.dart';
 import 'package:wger/widgets/auth/password_field.dart';
+import 'package:wger/widgets/auth/refresh_token_field.dart';
 import 'package:wger/widgets/auth/server_field.dart';
 import 'package:wger/widgets/auth/username_field.dart';
 import 'package:wger/widgets/core/server_config_warning_dialog.dart';
@@ -123,7 +123,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     'email': '',
     'password': '',
     'serverUrl': '',
-    'apiToken': '',
+    'refreshToken': '',
   };
   var _isLoading = false;
   final _usernameController = TextEditingController();
@@ -133,7 +133,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   final _serverUrlController = TextEditingController(
     text: kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD,
   );
-  final _apiTokenController = TextEditingController();
+  final _refreshTokenController = TextEditingController();
 
   @override
   void dispose() {
@@ -142,7 +142,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     _password2Controller.dispose();
     _emailController.dispose();
     _serverUrlController.dispose();
-    _apiTokenController.dispose();
+    _refreshTokenController.dispose();
     super.dispose();
   }
 
@@ -170,7 +170,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   void _resetTextfields() {
     _usernameController.clear();
     _passwordController.clear();
-    _apiTokenController.clear();
+    _refreshTokenController.clear();
   }
 
   void _submit(BuildContext context) async {
@@ -191,7 +191,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
           _authData['username']!,
           _authData['password']!,
           _authData['serverUrl']!,
-          _authData['apiToken'],
+          _authData['refreshToken'],
         );
 
         // Register new user
@@ -228,28 +228,32 @@ class _AuthCardState extends ConsumerState<AuthCard> {
           ref.read(authProvider.notifier).clearServerConfigWarning();
         }
       }
+
+      if (context.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } on MfaRequiredException {
+      // TODO: route to a dedicated 2FA challenge screen. For now show a
+      // friendly fallback in the existing error slot so users on 2FA-enabled
+      // accounts get a readable message instead of an unhandled exception.
+      if (context.mounted) {
+        setState(() {
+          errorMessage = FormHttpErrorsWidget(
+            WgerHttpException.fromMap({
+              'mfa_required':
+                  'Two-factor authentication is enabled for this account. '
+                  'Please sign in via the website for now, native 2FA support is coming.',
+            }),
+          );
+        });
+      }
     } on WgerHttpException catch (error) {
       if (context.mounted) {
         setState(() {
           errorMessage = FormHttpErrorsWidget(error);
         });
-      }
-    } catch (error) {
-      // Login is inherently online, but surface an unreachable server as a
-      // friendly message instead of crashing to the red error screen.
-      if (isNetworkError(error) && context.mounted) {
-        setState(() {
-          errorMessage = Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Text(
-              AppLocalizations.of(context).errorCouldNotConnectToServer,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          );
-        });
-      } else {
-        rethrow;
       }
     } finally {
       if (mounted) {
@@ -349,9 +353,9 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                   // Off-stage widgets are kept in the tree, otherwise the server URL
                   // would not be saved to _authData
                   if (_authMode == AuthMode.Login && !_useUsernameAndPassword)
-                    ApiTokenField(
-                      controller: _apiTokenController,
-                      onSaved: (value) => _authData['apiToken'] = value!,
+                    RefreshTokenField(
+                      controller: _refreshTokenController,
+                      onSaved: (value) => _authData['refreshToken'] = value!,
                     ),
                   Offstage(
                     offstage: _hideCustomServer,
@@ -368,12 +372,14 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                   ),
                   if (!_hideCustomServer)
                     TextButton(
-                      key: const ValueKey('toggleApiTokenButton'),
+                      key: const ValueKey('toggleRefreshTokenButton'),
                       onPressed: _authMode == AuthMode.Login
                           ? () => setState(() => _useUsernameAndPassword = !_useUsernameAndPassword)
                           : null,
                       child: Text(
-                        _useUsernameAndPassword ? i18n.useApiToken : i18n.useUsernameAndPassword,
+                        _useUsernameAndPassword
+                            ? i18n.useRefreshToken
+                            : i18n.useUsernameAndPassword,
                       ),
                     ),
 

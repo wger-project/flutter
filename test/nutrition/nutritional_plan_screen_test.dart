@@ -78,7 +78,7 @@ void main() {
       mockNutritionRepo.watchAllLogsHydrated(),
     ).thenAnswer((_) => Stream.value(getTestNutritionLogs()));
 
-    // Ingredient lookups now go through PowerSync — stub the local repo.
+    // Ingredient lookups now go through PowerSync, stub the local repo.
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => fetchedIngredient);
     when(mockIngredientRepo.watchById(any)).thenAnswer((_) => Stream.value(fetchedIngredient));
   });
