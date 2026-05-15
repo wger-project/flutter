@@ -108,6 +108,14 @@
   "@mfaUnsupportedFactor": {
     "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
   },
+  "manageAccountOnWeb": "Manage account on the web",
+  "@manageAccountOnWeb": {
+    "description": "Label on a button that opens the user's preferences page on the wger website"
+  },
+  "manageAccountOnWebSubtitle": "Change your password, set up two-factor authentication, manage API tokens, or delete your account.",
+  "@manageAccountOnWebSubtitle": {
+    "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+  },
   "customServerUrl": "URL of the wger instance",
   "@customServerUrl": {
     "description": "Label in the form where the users can enter their own wger instance"
