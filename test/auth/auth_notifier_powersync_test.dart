@@ -33,11 +33,12 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
+import 'package:wger/providers/secure_token_storage.dart';
 
 import '../fake_connectivity.dart';
 import 'auth_notifier_powersync_test.mocks.dart';
 
-@GenerateMocks([http.Client])
+@GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
   // Replacement for SharedPreferences.setMockInitialValues() for the
   // async API used by the auth notifier.
@@ -48,6 +49,7 @@ void main() {
   installFakeConnectivity();
 
   late MockClient mockClient;
+  late MockSecureTokenStorage mockSecureStorage;
 
   const serverUrl = 'https://wger.example';
   const token = 'token-12345';
@@ -67,6 +69,7 @@ void main() {
     final c = ProviderContainer(
       overrides: [
         authHttpClientProvider.overrideWithValue(mockClient),
+        secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
       ],
     );
     addTearDown(c.dispose);
@@ -75,6 +78,10 @@ void main() {
 
   setUp(() async {
     mockClient = MockClient();
+    mockSecureStorage = MockSecureTokenStorage();
+    when(mockSecureStorage.deleteRefreshToken()).thenAnswer((_) async {});
+    when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => null);
+    when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
 
     SharedPreferences.setMockInitialValues({});
     PackageInfo.setMockInitialValues(
@@ -403,6 +410,105 @@ void main() {
 
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_HAS_EVER_SYNCED), false);
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
+    });
+
+    test('wipes the headless-JWT prefs bundle and the secure-storage refresh token', () async {
+      // Seed both formats so we can assert each gets removed.
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setString(PREFS_ACCESS_TOKEN, 'jwt-access');
+      await prefs.setInt(PREFS_ACCESS_EXPIRES_AT, 1700000000);
+      await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+      await prefs.setString(PREFS_SERVER_URL, serverUrl);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      await container.read(authProvider.notifier).logout();
+
+      expect(await prefs.containsKey(PREFS_ACCESS_TOKEN), false);
+      expect(await prefs.containsKey(PREFS_ACCESS_EXPIRES_AT), false);
+      expect(await prefs.containsKey(PREFS_TOKEN_TYPE), false);
+      expect(await prefs.containsKey(PREFS_SERVER_URL), false);
+      verify(mockSecureStorage.deleteRefreshToken()).called(1);
+    });
+  });
+
+  group('_tryAutoLogin: headless-JWT migration', () {
+    /// Replaces the legacy seed from setUp with the headless-JWT bundle.
+    Future<void> seedHeadlessBundle({String accessToken = 'jwt-access'}) async {
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.remove(PREFS_USER);
+      await prefs.setString(PREFS_ACCESS_TOKEN, accessToken);
+      // Far in the future so we don't trip on expiry — refresh isn't wired yet.
+      await prefs.setInt(
+        PREFS_ACCESS_EXPIRES_AT,
+        DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
+      );
+      await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+      await prefs.setString(PREFS_SERVER_URL, serverUrl);
+    }
+
+    test('prefers the headless bundle over PREFS_USER and probes with Bearer', () async {
+      // Both formats present — headless must win.
+      await seedHeadlessBundle(accessToken: 'jwt-access');
+      await PreferenceHelper.asyncPref.setString(
+        PREFS_USER,
+        json.encode({'token': 'legacy-token', 'serverUrl': serverUrl}),
+      );
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.tokenType, AuthTokenType.headlessJwt);
+      expect(state.accessToken, 'jwt-access');
+      expect(state.token, isNull, reason: 'legacy `token` must stay empty on the headless path');
+
+      final captured =
+          verify(
+                mockClient.head(tProbe, headers: captureAnyNamed('headers')),
+              ).captured.single
+              as Map<String, String>;
+      expect(captured[HttpHeaders.authorizationHeader], 'Bearer jwt-access');
+    });
+
+    test('headless 401 wipes the new prefs keys and the secure-storage refresh token', () async {
+      await seedHeadlessBundle();
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Unauthorized', 401));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedOut);
+      final prefs = PreferenceHelper.asyncPref;
+      expect(await prefs.containsKey(PREFS_ACCESS_TOKEN), false);
+      expect(await prefs.containsKey(PREFS_ACCESS_EXPIRES_AT), false);
+      expect(await prefs.containsKey(PREFS_TOKEN_TYPE), false);
+      expect(await prefs.containsKey(PREFS_SERVER_URL), false);
+      verify(mockSecureStorage.deleteRefreshToken()).called(1);
+    });
+
+    test('missing required headless keys fall through to the legacy PREFS_USER path', () async {
+      // PREFS_TOKEN_TYPE set, but PREFS_ACCESS_TOKEN missing → fall through.
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+      // PREFS_USER seeded by setUp.
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.tokenType, AuthTokenType.legacyApiToken);
+      expect(state.token, token);
+
+      final captured =
+          verify(
+                mockClient.head(tProbe, headers: captureAnyNamed('headers')),
+              ).captured.single
+              as Map<String, String>;
+      expect(captured[HttpHeaders.authorizationHeader], 'Token $token');
     });
   });
 }
