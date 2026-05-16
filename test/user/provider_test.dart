@@ -18,12 +18,14 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/user.dart';
 
@@ -162,25 +164,178 @@ void main() {
 
       // act
       final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
-      await Future.delayed(const Duration(milliseconds: 100)); // wait for async prefs load
+      await Future.delayed(const Duration(milliseconds: 100));
 
       // assert
-      // Loaded: [nutrition, routines]
-      // Missing: trophies (0), weight (3), measurements (4), calendar (5)
-      // 1. trophies (index 0) inserted at 0 -> [trophies, nutrition, routines]
-      // 2. weight (index 3) inserted at 3 -> [trophies, nutrition, routines, weight]
       expect(newProvider.allDashboardWidgets[0], DashboardWidget.trophies);
       expect(newProvider.allDashboardWidgets[1], DashboardWidget.nutrition);
       expect(newProvider.allDashboardWidgets[2], DashboardWidget.routines);
       expect(newProvider.allDashboardWidgets[3], DashboardWidget.weight);
 
-      // Check visibility
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.nutrition), true);
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.routines), false);
 
-      // Missing items should be visible by default
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.weight), true);
       expect(newProvider.isDashboardWidgetVisible(DashboardWidget.trophies), true);
     });
   });
+
+  group('user locale', () {
+    test('defaults to null when no override saved', () async {
+      // act
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // assert: null means "follow system locale"
+      expect(userProvider.userLocale, null);
+    });
+
+    test('setUserLocale persists language-only code to prefs', () async {
+      // act
+      await userProvider.setUserLocale(const Locale('pl'));
+
+      // assert
+      expect(userProvider.userLocale, const Locale('pl'));
+      final stored = await SharedPreferencesAsync().getString(PREFS_USER_LOCALE);
+      expect(stored, 'pl');
+    });
+
+    test('setUserLocale persists country-coded locale (pt_BR)', () async {
+      // act
+      await userProvider.setUserLocale(const Locale('pt', 'BR'));
+
+      // assert
+      final stored = await SharedPreferencesAsync().getString(PREFS_USER_LOCALE);
+      expect(stored, 'pt_BR');
+    });
+
+    test('setUserLocale persists script-coded locale (zh_Hant)', () async {
+      // act
+      await userProvider.setUserLocale(const Locale.fromSubtags(
+        languageCode: 'zh',
+        scriptCode: 'Hant',
+      ));
+
+      // assert
+      final stored = await SharedPreferencesAsync().getString(PREFS_USER_LOCALE);
+      expect(stored, 'zh_Hant');
+    });
+
+    test('setUserLocale(null) clears the stored override', () async {
+      // arrange
+      await userProvider.setUserLocale(const Locale('de'));
+      expect(await SharedPreferencesAsync().getString(PREFS_USER_LOCALE), 'de');
+
+      // act
+      await userProvider.setUserLocale(null);
+
+      // assert
+      expect(userProvider.userLocale, null);
+      expect(await SharedPreferencesAsync().getString(PREFS_USER_LOCALE), null);
+    });
+
+    test('setUserLocale notifies listeners', () async {
+      // arrange
+      var notifyCount = 0;
+      userProvider.addListener(() => notifyCount++);
+
+      // act
+      await userProvider.setUserLocale(const Locale('fr'));
+
+      // assert
+      expect(notifyCount, greaterThanOrEqualTo(1));
+    });
+
+    test('loads previously stored language-only locale on construction', () async {
+      // arrange
+      final prefs = SharedPreferencesAsync();
+      await prefs.setString(PREFS_USER_LOCALE, 'de');
+
+      // act
+      final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // assert
+      expect(newProvider.userLocale, const Locale('de'));
+    });
+
+    test('loads previously stored country-coded locale (pt_BR)', () async {
+      // arrange
+      final prefs = SharedPreferencesAsync();
+      await prefs.setString(PREFS_USER_LOCALE, 'pt_BR');
+
+      // act
+      final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // assert
+      expect(newProvider.userLocale?.languageCode, 'pt');
+      expect(newProvider.userLocale?.countryCode, 'BR');
+    });
+
+    test('loads previously stored script-coded locale (zh_Hant)', () async {
+      // arrange
+      final prefs = SharedPreferencesAsync();
+      await prefs.setString(PREFS_USER_LOCALE, 'zh_Hant');
+
+      // act
+      final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // assert
+      expect(newProvider.userLocale?.languageCode, 'zh');
+      expect(newProvider.userLocale?.scriptCode, 'Hant');
+    });
+
+    test('falls back to language-only match for unknown country code', () async {
+      // arrange: "pl_XX" is not a supported subtag; should fall back to "pl"
+      final prefs = SharedPreferencesAsync();
+      await prefs.setString(PREFS_USER_LOCALE, 'pl_XX');
+
+      // act
+      final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // assert
+      expect(newProvider.userLocale, const Locale('pl'));
+    });
+
+    test('returns null for completely unsupported locale tag', () async {
+      // arrange
+      final prefs = SharedPreferencesAsync();
+      await prefs.setString(PREFS_USER_LOCALE, 'xx_YY');
+
+      // act
+      final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // assert
+      expect(newProvider.userLocale, null);
+    });
+
+    test('returns null for empty stored value', () async {
+      // arrange
+      final prefs = SharedPreferencesAsync();
+      await prefs.setString(PREFS_USER_LOCALE, '');
+
+      // act
+      final newProvider = UserProvider(mockWgerBaseProvider, prefs: prefs);
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // assert
+      expect(newProvider.userLocale, null);
+    });
+
+    test('clear() does NOT reset the user locale (preference survives logout)', () async {
+      // arrange
+      await userProvider.setUserLocale(const Locale('it'));
+      expect(userProvider.userLocale, const Locale('it'));
+
+      // act
+      userProvider.clear();
+
+      // assert: clear() resets profile but locale preference is intentionally kept
+      expect(userProvider.userLocale, const Locale('it'));
+    });
+  });
+
 }

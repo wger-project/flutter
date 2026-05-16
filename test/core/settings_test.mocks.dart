@@ -1015,6 +1015,12 @@ class MockUserProvider extends _i1.Mock implements _i24.UserProvider {
   );
 
   @override
+  set userLocale(_i21.Locale? value) => super.noSuchMethod(
+    Invocation.setter(#userLocale, value),
+    returnValueForMissingStub: null,
+  );
+
+  @override
   set prefs(_i14.SharedPreferencesAsync? value) => super.noSuchMethod(
     Invocation.setter(#prefs, value),
     returnValueForMissingStub: null,
@@ -1070,6 +1076,15 @@ class MockUserProvider extends _i1.Mock implements _i24.UserProvider {
     Invocation.method(#setThemeMode, [mode]),
     returnValueForMissingStub: null,
   );
+
+  @override
+  _i18.Future<void> setUserLocale(_i21.Locale? locale) =>
+      (super.noSuchMethod(
+            Invocation.method(#setUserLocale, [locale]),
+            returnValue: _i18.Future<void>.value(),
+            returnValueForMissingStub: _i18.Future<void>.value(),
+          )
+          as _i18.Future<void>);
 
   @override
   _i18.Future<void> fetchAndSetProfile() =>
