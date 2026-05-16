@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/base_provider.dart';
 
@@ -63,12 +64,14 @@ class DashboardItem {
 
 class UserProvider with ChangeNotifier {
   ThemeMode themeMode = ThemeMode.system;
+  Locale? userLocale;
   final WgerBaseProvider baseProvider;
   late SharedPreferencesAsync prefs;
 
   UserProvider(this.baseProvider, {SharedPreferencesAsync? prefs}) {
     this.prefs = prefs ?? PreferenceHelper.asyncPref;
     _loadThemeMode();
+    _loadUserLocale();
     _loadDashboardConfig();
   }
 
@@ -94,6 +97,52 @@ class UserProvider with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  /// Load saved user locale override from SharedPreferences. A null value means
+  /// the app should follow the system locale.
+  Future<void> _loadUserLocale() async {
+    final raw = await prefs.getString(PREFS_USER_LOCALE);
+    userLocale = _matchSupportedLocale(raw);
+    notifyListeners();
+  }
+
+  /// Match a stored locale tag (`languageCode` or `languageCode_subtag`) against
+  /// the app's [AppLocalizations.supportedLocales]. Returns the exact supported
+  /// instance to keep dropdown identity stable, or null when no match is found.
+  static Locale? _matchSupportedLocale(String? raw) {
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+    for (final locale in AppLocalizations.supportedLocales) {
+      if (_encodeLocale(locale) == raw) {
+        return locale;
+      }
+    }
+    // Fallback: match by language only (e.g. stored "pl" picks the only pl).
+    final lang = raw.split('_').first;
+    for (final locale in AppLocalizations.supportedLocales) {
+      if (locale.languageCode == lang &&
+          (locale.countryCode == null || locale.countryCode!.isEmpty) &&
+          (locale.scriptCode == null || locale.scriptCode!.isEmpty)) {
+        return locale;
+      }
+    }
+    return null;
+  }
+
+  /// Stable string encoding for a [Locale]. Mirrors the format used when
+  /// generating Flutter's AppLocalizations entries (e.g. `pt_BR`, `zh_Hant`).
+  static String _encodeLocale(Locale locale) {
+    final script = locale.scriptCode;
+    if (script != null && script.isNotEmpty) {
+      return '${locale.languageCode}_$script';
+    }
+    final country = locale.countryCode;
+    if (country != null && country.isNotEmpty) {
+      return '${locale.languageCode}_$country';
+    }
+    return locale.languageCode;
   }
 
   // Dashboard configuration
@@ -188,6 +237,20 @@ class UserProvider with ChangeNotifier {
       await prefs.remove(PREFS_USER_DARK_THEME);
     } else {
       await prefs.setBool(PREFS_USER_DARK_THEME, themeMode == ThemeMode.dark);
+    }
+
+    notifyListeners();
+  }
+
+  /// Override the app locale. Passing `null` clears the override and falls
+  /// back to the system locale via `localeListResolutionCallback`.
+  Future<void> setUserLocale(Locale? locale) async {
+    userLocale = locale;
+
+    if (locale == null) {
+      await prefs.remove(PREFS_USER_LOCALE);
+    } else {
+      await prefs.setString(PREFS_USER_LOCALE, _encodeLocale(locale));
     }
 
     notifyListeners();

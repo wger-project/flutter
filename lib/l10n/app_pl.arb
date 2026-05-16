@@ -833,6 +833,8 @@
     "darkMode": "Zawsze używaj trybu ciemnego",
     "lightMode": "Zawsze używaj trybu jasnego",
     "systemMode": "Ustawienia systemu",
+    "appLanguage": "Język aplikacji",
+    "appLanguageSystem": "Domyślny systemu",
     "fitInWeek": "Dopasuj w tygodniu",
     "dayTypeAmrap": "Tak dużo rund jak to możliwe",
     "trophies": "Trofea",

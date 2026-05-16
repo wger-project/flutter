@@ -249,6 +249,7 @@ class MainApp extends StatelessWidget {
                     highContrastTheme: wgerLightThemeHc,
                     highContrastDarkTheme: wgerDarkThemeHc,
                     themeMode: user.themeMode,
+                    locale: user.userLocale,
                     home: _getHomeScreen(auth),
                     routes: {
                       DashboardScreen.routeName: (ctx) => const DashboardScreen(),
