@@ -25,10 +25,18 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/categories.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
-class MeasurementCategoriesScreen extends StatelessWidget {
+class MeasurementCategoriesScreen extends StatefulWidget {
+
   const MeasurementCategoriesScreen();
 
   static const routeName = '/measurement-categories';
+
+  @override
+  State<MeasurementCategoriesScreen> createState() => _MeasurementCategoriesScreenState();
+}
+
+class _MeasurementCategoriesScreenState extends State<MeasurementCategoriesScreen> {
+  int? _selectedGroupId;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +57,42 @@ class MeasurementCategoriesScreen extends StatelessWidget {
       ),
       body: WidescreenWrapper(
         child: Consumer<MeasurementProvider>(
-          builder: (context, provider, child) => const CategoriesList(),
+          builder: (context, provider, child) {
+            
+    final groups = provider.groups;
+    if (groups.isEmpty) return const SizedBox.shrink();
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Row(
+        children: [
+          // clears group filter
+          FilterChip(
+            label: const Text('All'),
+            selected: _selectedGroupId == null,
+            onSelected: (_) => setState(() => _selectedGroupId = null),
+          ),
+          const SizedBox(width: 6),
+          // One chip per group
+          ...groups.map(
+            (group) => Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: FilterChip(
+                label: Text(group.name),
+                selected: _selectedGroupId == group.id,
+                onSelected: (_) => setState(
+                  () => _selectedGroupId =
+                      _selectedGroupId == group.id ? null : group.id,
+                ),
+              ),
+            ),
+          ),
+          CategoriesList(_selectedGroupId),
+        ],
+      ),
+    );
+          }
         ),
       ),
     );

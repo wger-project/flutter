@@ -23,33 +23,66 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
+import 'package:wger/models/measurements/measurement_group.dart';
 import 'package:wger/providers/measurement.dart';
 
-class MeasurementCategoryForm extends StatelessWidget {
-  final _form = GlobalKey<FormState>();
-  final nameController = TextEditingController();
-  final unitController = TextEditingController();
+class MeasurementCategoryForm extends StatefulWidget {
+  final MeasurementCategory? category;
 
-  final Map<String, dynamic> categoryData = {
-    'id': null,
-    'name': '',
-    'unit': '',
+  const MeasurementCategoryForm({
+    super.key,
+    this.category,
+  });
+
+  @override
+  State<MeasurementCategoryForm> createState() => _MeasurementCategoryFormState();
+}
+
+class _MeasurementCategoryFormState extends State<MeasurementCategoryForm> {
+  final List<MeasurementGroup> _dummyGroups = [
+    const MeasurementGroup(uuid: '1', id: 1, name: 'Dummy: Bodyweight'),
+    const MeasurementGroup(uuid: '2', id: 2, name: 'Dummy: Strength'),
+  ];
+
+  final _form = GlobalKey<FormState>();
+  late final TextEditingController nameController;
+  late final TextEditingController unitController;
+
+  int? _categoryId;
+
+  int? _selectedGroupId;
+  String? _selectedFormula;
+  bool _isSubmitting = false;
+
+  static const Map<String, String> _formulaLabels = {
+    'bmi': 'Body Mass Index (BMI)',
+    'lbm': 'Lean Body Mass',
+    '1rm_epley': '1RM — Epley formula',
   };
 
-  MeasurementCategoryForm([MeasurementCategory? category]) {
-    //this._category = category ?? MeasurementCategory();
-    if (category != null) {
-      categoryData['id'] = category.id;
-      categoryData['unit'] = category.unit;
-      categoryData['name'] = category.name;
-    }
+  @override
+  void initState() {
+    super.initState();
+    final cat = widget.category;
+    _categoryId = cat?.id;
+    nameController = TextEditingController(text: cat?.name ?? '');
+    unitController = TextEditingController(text: cat?.unit ?? '');
 
-    unitController.text = categoryData['unit']!;
-    nameController.text = categoryData['name']!;
+    _selectedGroupId = cat?.groupId;
+    _selectedFormula = cat?.formula;
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    unitController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final groups = Provider.of<MeasurementProvider>(context, listen: false).groups;
     return Form(
       key: _form,
       child: Column(
@@ -57,16 +90,13 @@ class MeasurementCategoryForm extends StatelessWidget {
           // Name
           TextFormField(
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).name,
-              helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
+              labelText: i18n.name,
+              helperText: i18n.measurementCategoriesHelpText,
             ),
             controller: nameController,
-            onSaved: (newValue) {
-              categoryData['name'] = newValue;
-            },
             validator: (value) {
-              if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
+              if (value == null || value.trim().isEmpty) {
+                return i18n.enterValue;
               }
               return null;
             },
@@ -75,53 +105,106 @@ class MeasurementCategoryForm extends StatelessWidget {
           // Unit
           TextFormField(
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).unit,
-              helperText: AppLocalizations.of(context).measurementEntriesHelpText,
+              labelText: i18n.unit,
+              helperText: i18n.measurementEntriesHelpText,
             ),
             controller: unitController,
-            onSaved: (newValue) {
-              categoryData['unit'] = newValue;
-            },
             validator: (value) {
-              if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
+              if (value == null || value.trim().isEmpty) {
+                return i18n.enterValue;
               }
               return null;
             },
           ),
+
+          // Group dropdown
+          const SizedBox(height: 12),
+          DropdownButtonFormField<int?>(
+            initialValue: _selectedGroupId,
+            decoration: const InputDecoration(
+              labelText: 'Group (optional)',
+              helperText: 'Link this category to a group e.g. "Blood Pressure"',
+            ),
+            items: [
+              const DropdownMenuItem<int?>(
+                value: null,
+                child: Text('- No group -'),
+              ),
+              ...groups.map(
+                (g) => DropdownMenuItem<int?>(
+                  value: g.id,
+                  child: Text(g.name),
+                ),
+              ),
+            ],
+            onChanged: (val) => setState(() => _selectedGroupId = val),
+          ),
+
+          // Formula dropdown
+          const SizedBox(height: 12),
+          DropdownButtonFormField<String?>(
+            initialValue: _selectedFormula,
+            decoration: const InputDecoration(
+              labelText: 'Auto-calculate from formula (optional)',
+              helperText: 'values are computed automatically, no entry needed.',
+            ),
+            items: [
+              const DropdownMenuItem<String?>(
+                value: null,
+                child: Text('- Manual entry -'),
+              ),
+              ..._formulaLabels.entries.map(
+                (e) => DropdownMenuItem<String?>(
+                  value: e.key,
+                  child: Text(e.value),
+                ),
+              ),
+            ],
+            onChanged: (val) => setState(() => _selectedFormula = val),
+          ),
+
+          const SizedBox(height: 16),
           ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
+            child: Text(i18n.save),
             onPressed: () async {
               // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState!.validate();
+              final isValid = _form.currentState?.validate() ?? false;
               if (!isValid) {
                 return;
               }
               _form.currentState!.save();
+              setState(() => _isSubmitting = true);
+              final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
 
               // Save the entry on the server
-              categoryData['id'] == null
-                  ? await Provider.of<MeasurementProvider>(
-                      context,
-                      listen: false,
-                    ).addCategory(
-                      MeasurementCategory(
-                        id: categoryData['id'],
-                        name: categoryData['name'],
-                        unit: categoryData['unit'],
-                      ),
-                    )
-                  : await Provider.of<MeasurementProvider>(
-                      context,
-                      listen: false,
-                    ).editCategory(
-                      categoryData['id'],
-                      categoryData['name'],
-                      categoryData['unit'],
-                    );
+              try {
+                if (_categoryId == null) {
+                  await measurementProvider.addCategory(
+                    MeasurementCategory(
+                      id: null,
+                      name: nameController.text.trim(),
+                      unit: unitController.text.trim(),
+                      groupId: _selectedGroupId,
+                      formula: _selectedFormula,
+                    ),
+                  );
+                } else {
+                  await measurementProvider.editCategory(
+                    _categoryId!,
+                    nameController.text.trim(),
+                    unitController.text.trim(),
+                    _selectedGroupId,
+                    _selectedFormula,
+                    clearGroup: _selectedGroupId == null,
+                    clearFormula: _selectedFormula == null,
+                  );
+                }
 
-              if (context.mounted) {
-                Navigator.of(context).pop();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              } catch (e) {
+                setState(() => _isSubmitting = false);
               }
             },
           ),
@@ -131,41 +214,62 @@ class MeasurementCategoryForm extends StatelessWidget {
   }
 }
 
-class MeasurementEntryForm extends StatelessWidget {
+class MeasurementEntryForm extends StatefulWidget {
+  final int categoryId;
+  final MeasurementEntry? entry;
+
+  const MeasurementEntryForm({
+    super.key,
+    required this.categoryId,
+    this.entry,
+  });
+
+  @override
+  State<MeasurementEntryForm> createState() => _MeasurementEntryFormState();
+}
+
+class _MeasurementEntryFormState extends State<MeasurementEntryForm> {
   final _form = GlobalKey<FormState>();
-  final int _categoryId;
-  final _valueController = TextEditingController();
-  final _dateController = TextEditingController(text: '');
-  final _timeController = TextEditingController(text: '');
-  final _notesController = TextEditingController();
+  late final int _categoryId;
+  late final TextEditingController _valueController;
+  late final TextEditingController _dateController;
+  late final TextEditingController _timeController;
+  late final TextEditingController _notesController;
 
-  late final Map<String, dynamic> _entryData;
+  late DateTime _selectedDateTime;
+  late num _selectedValue;
+  late String _selectedNotes;
+  bool _isSubmitting = false;
 
-  MeasurementEntryForm(this._categoryId, [MeasurementEntry? entry]) {
-    _entryData = {
-      'id': null,
-      'category': _categoryId,
-      'date': DateTime.now(),
-      'value': '',
-      'notes': '',
-    };
+  @override
+  void initState() {
+    super.initState();
+    _categoryId = widget.categoryId;
+    _selectedDateTime = widget.entry?.date ?? DateTime.now();
+    _selectedValue = widget.entry?.value ?? 0;
+    _selectedNotes = widget.entry?.notes ?? '';
+    _dateController = TextEditingController();
+    _timeController = TextEditingController();
+    _valueController = TextEditingController();
+    _notesController = TextEditingController(text: widget.entry?.notes ?? '');
+  }
 
-    if (entry != null) {
-      _entryData['id'] = entry.id;
-      _entryData['category'] = entry.category;
-      _entryData['value'] = entry.value;
-      _entryData['date'] = entry.date;
-      _entryData['notes'] = entry.notes;
-    }
-
-    _valueController.text = '';
-    _notesController.text = _entryData['notes']!;
+  @override
+  void dispose() {
+    _valueController.dispose();
+    _dateController.dispose();
+    _timeController.dispose();
+    _notesController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
+    final i18n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+
+    final dateFormat = DateFormat.yMd(locale);
+    final timeFormat = DateFormat.Hm(locale);
 
     final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
     final measurementCategory = measurementProvider.categories.firstWhere(
@@ -173,17 +277,45 @@ class MeasurementEntryForm extends StatelessWidget {
     );
 
     if (_dateController.text.isEmpty) {
-      _dateController.text = dateFormat.format(_entryData['date']);
+      _dateController.text = dateFormat.format(_selectedDateTime);
     }
     if (_timeController.text.isEmpty) {
-      _timeController.text = timeFormat.format(_entryData['date']);
+      _timeController.text = timeFormat.format(_selectedDateTime);
     }
 
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = NumberFormat.decimalPattern(locale);
 
     // If the value is not empty, format it
-    if (_valueController.text.isEmpty && _entryData['value'] != null && _entryData['value'] != '') {
-      _valueController.text = numberFormat.format(_entryData['value']);
+    if (_valueController.text.isEmpty && widget.entry?.value != null) {
+      _valueController.text = numberFormat.format(widget.entry!.value);
+    }
+
+    if (measurementCategory.isDynamic) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.auto_graph, size: 48, color: Colors.blue),
+            const SizedBox(height: 12),
+            Text(
+              'This measurement is calculated automatically.', // TODO: i18n
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Formula: ${measurementCategory.formula ?? ''}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'To see computed values, open the category detail page.',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
     }
 
     return Form(
@@ -193,7 +325,7 @@ class MeasurementEntryForm extends StatelessWidget {
           // Date
           TextFormField(
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).date,
+              labelText: i18n.date,
               suffixIcon: const Icon(
                 Icons.calendar_today,
                 key: Key('calendarIcon'),
@@ -209,7 +341,7 @@ class MeasurementEntryForm extends StatelessWidget {
               // Show Date Picker Here
               final pickedDate = await showDatePicker(
                 context: context,
-                initialDate: _entryData['date'],
+                initialDate: _selectedDateTime,
                 firstDate: DateTime(DateTime.now().year - 10),
                 lastDate: DateTime.now(),
               );
@@ -220,15 +352,15 @@ class MeasurementEntryForm extends StatelessWidget {
             },
             onSaved: (newValue) {
               final date = dateFormat.parse(newValue!);
-              _entryData['date'] = (_entryData['date'] as DateTime).copyWith(
+              _selectedDateTime = (_selectedDateTime as DateTime).copyWith(
                 year: date.year,
                 month: date.month,
                 day: date.day,
               );
             },
             validator: (value) {
-              if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
+              if (value == null || value.isEmpty) {
+                return i18n.enterValue;
               }
               return null;
             },
@@ -237,7 +369,7 @@ class MeasurementEntryForm extends StatelessWidget {
           // Time
           TextFormField(
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).time,
+              labelText: i18n.time,
               suffixIcon: const Icon(
                 Icons.access_time_outlined,
                 key: Key('clockIcon'),
@@ -248,7 +380,7 @@ class MeasurementEntryForm extends StatelessWidget {
             onTap: () async {
               final pickedTime = await showTimePicker(
                 context: context,
-                initialTime: TimeOfDay.fromDateTime(_entryData['date']),
+                initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
               );
 
               if (pickedTime != null) {
@@ -266,7 +398,7 @@ class MeasurementEntryForm extends StatelessWidget {
             },
             onSaved: (newValue) {
               final time = timeFormat.parse(newValue!);
-              _entryData['date'] = (_entryData['date'] as DateTime).copyWith(
+              _selectedDateTime = (_selectedDateTime as DateTime).copyWith(
                 hour: time.hour,
                 minute: time.minute,
                 second: time.second,
@@ -277,39 +409,39 @@ class MeasurementEntryForm extends StatelessWidget {
           // Value
           TextFormField(
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).value,
+              labelText: i18n.value,
               suffixIcon: Text(measurementCategory.unit),
               suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
             ),
             controller: _valueController,
             keyboardType: textInputTypeDecimal,
             validator: (value) {
-              if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
+              if (value == null || value.isEmpty) {
+                return i18n.enterValue;
               }
               try {
                 numberFormat.parse(value);
               } catch (error) {
-                return AppLocalizations.of(context).enterValidNumber;
+                return i18n.enterValidNumber;
               }
               return null;
             },
             onSaved: (newValue) {
-              _entryData['value'] = numberFormat.parse(newValue!);
+              _selectedValue = numberFormat.parse(newValue!);
             },
           ),
           // Notes
           TextFormField(
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
+            decoration: InputDecoration(labelText: i18n.notes),
             controller: _notesController,
             onSaved: (newValue) {
-              _entryData['notes'] = newValue;
+              _selectedNotes = newValue!;
             },
             validator: (value) {
               const minLength = 0;
               const maxLength = 100;
               if (value!.isNotEmpty && (value.length < minLength || value.length > maxLength)) {
-                return AppLocalizations.of(context).enterCharacters(
+                return i18n.enterCharacters(
                   minLength.toString(),
                   maxLength.toString(),
                 );
@@ -319,44 +451,48 @@ class MeasurementEntryForm extends StatelessWidget {
           ),
 
           ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
-            onPressed: () async {
-              // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
+            onPressed: _isSubmitting
+                ? null
+                : () async {
+                    // Validate and save the current values to the weightEntry
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    setState(() => _isSubmitting = true);
+                    _form.currentState!.save();
 
-              // Save the entry on the server
-              _entryData['id'] == null
-                  ? await Provider.of<MeasurementProvider>(
-                      context,
-                      listen: false,
-                    ).addEntry(
-                      MeasurementEntry(
-                        id: _entryData['id'],
-                        category: _entryData['category'],
-                        date: _entryData['date'],
-                        value: _entryData['value'],
-                        notes: _entryData['notes'],
-                      ),
-                    )
-                  : await Provider.of<MeasurementProvider>(
-                      context,
-                      listen: false,
-                    ).editEntry(
-                      _entryData['id'],
-                      _entryData['category'],
-                      _entryData['value'],
-                      _entryData['notes'],
-                      _entryData['date'],
-                    );
+                    final provider = Provider.of<MeasurementProvider>(context, listen: false);
+                    try {
+                      // Save the entry on the server
+                      widget.entry == null
+                          ? await provider.addEntry(
+                              MeasurementEntry(
+                                id: null,
+                                category: _categoryId,
+                                date: _selectedDateTime,
+                                value: _selectedValue,
+                                notes: _selectedNotes,
+                              ),
+                            )
+                          : await provider.editEntry(
+                              widget.entry!.id!,
+                              _categoryId,
+                              _selectedValue,
+                              _selectedNotes,
+                              _selectedDateTime,
+                            );
 
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    } catch (e) {
+                      debugPrint('Save failed: $e');
+                    } finally {
+                      setState(() => _isSubmitting = false);
+                    }
+                  },
+            child: Text(i18n.save),
           ),
         ],
       ),

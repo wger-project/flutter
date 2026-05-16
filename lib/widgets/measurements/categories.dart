@@ -23,17 +23,23 @@ import 'package:wger/providers/measurement.dart';
 import 'categories_card.dart';
 
 class CategoriesList extends StatelessWidget {
-  const CategoriesList();
+  final int? _selectedGrouptID;
+  const CategoriesList(this._selectedGrouptID);
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
+    final categories = provider.categories.where((cat) {
+      if (_selectedGrouptID == null) return true;
+      return cat.groupId == _selectedGrouptID;
+    }).toList();
 
     return RefreshIndicator(
       onRefresh: () => provider.fetchAndSetAllCategoriesAndEntries(),
       child: ListView.builder(
         padding: const EdgeInsets.all(10.0),
-        itemCount: provider.categories.length,
-        itemBuilder: (context, index) => CategoriesCard(provider.categories[index]),
+        itemCount: categories.length,
+        itemBuilder: (context, index) => CategoriesCard(categories[index]),
       ),
     );
   }

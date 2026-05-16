@@ -80,8 +80,8 @@ class EntriesList extends StatelessWidget {
                             arguments: FormScreenArguments(
                               AppLocalizations.of(context).edit,
                               MeasurementEntryForm(
-                                currentEntry.category,
-                                currentEntry,
+                                categoryId: currentEntry.category,
+                                entry: currentEntry,
                               ),
                             ),
                           ),

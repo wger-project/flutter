@@ -54,6 +54,32 @@ class MeasurementEntriesScreen extends StatelessWidget {
       return const SizedBox(); // Return empty widget until pop happens
     }
 
+    if (category.isDynamic) {
+     return  Container(
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.blue.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.auto_graph, color: Colors.blue, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Values for this category are calculated automatically '
+                'using the "${category.formula}" formula. '
+                'You cannot add entries manually.',
+                style: const TextStyle(fontSize: 13),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(category.name),
@@ -68,7 +94,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
                     FormScreen.routeName,
                     arguments: FormScreenArguments(
                       AppLocalizations.of(context).edit,
-                      MeasurementCategoryForm(category),
+                      MeasurementCategoryForm(),
                     ),
                   );
                   break;
@@ -145,7 +171,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newEntry,
-              MeasurementEntryForm(categoryId),
+              MeasurementEntryForm(categoryId: categoryId),
             ),
           );
         },
