@@ -1185,5 +1185,13 @@
     "viewDocumentation": "Ver documentação",
     "@viewDocumentation": {
         "description": "Button label to open the documentation about server configuration"
+    },
+    "appLanguage": "Idioma do aplicativo",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Padrão do sistema",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
     }
 }
