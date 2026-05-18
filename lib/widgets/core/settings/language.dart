@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,52 +20,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/locale.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/language_native_names.dart';
 import 'package:wger/providers/user.dart';
 
-/// Native language names for each supported locale. Keys are produced by
-/// [encodeLocale] (e.g. `pl`, `pt_BR`, `zh_Hant`).
-const Map<String, String> _languageNativeNames = {
-  'am': 'አማርኛ',
-  'ar': 'العربية',
-  'ca': 'Català',
-  'cs': 'Čeština',
-  'de': 'Deutsch',
-  'el': 'Ελληνικά',
-  'en': 'English',
-  'es': 'Español',
-  'fa': 'فارسی',
-  'fil': 'Filipino',
-  'fr': 'Français',
-  'he': 'עברית',
-  'hi': 'हिन्दी',
-  'hr': 'Hrvatski',
-  'hu': 'Magyar',
-  'id': 'Bahasa Indonesia',
-  'it': 'Italiano',
-  'ja': '日本語',
-  'ko': '한국어',
-  'mk': 'Македонски',
-  'nb': 'Norsk bokmål',
-  'nl': 'Nederlands',
-  'pl': 'Polski',
-  'pt': 'Português',
-  'pt_BR': 'Português (Brasil)',
-  'pt_PT': 'Português (Portugal)',
-  'ro': 'Română',
-  'ru': 'Русский',
-  'sk': 'Slovenčina',
-  'ta': 'தமிழ்',
-  'th': 'ไทย',
-  'tr': 'Türkçe',
-  'uk': 'Українська',
-  'ur': 'اردو',
-  'zh': '中文',
-  'zh_Hant': '繁體中文',
-};
-
 String _displayNameFor(Locale locale) {
-  return _languageNativeNames[encodeLocale(locale)] ??
-      _languageNativeNames[locale.languageCode] ??
+  return languageNativeNames[encodeLocale(locale)] ??
+      languageNativeNames[locale.languageCode] ??
       encodeLocale(locale);
 }
 
