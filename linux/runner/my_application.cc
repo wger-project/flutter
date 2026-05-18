@@ -17,6 +17,18 @@ G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 // Implements GApplication::activate.
 static void my_application_activate(GApplication* application) {
   MyApplication* self = MY_APPLICATION(application);
+
+  // Second-instance dispatch path: when the browser opens a wger://app-auth
+  // link while the app is already running, GApplication forwards the call
+  // to the primary instance (via D-Bus) and that instance's activate fires.
+  // Present the existing window instead of spawning a second one; the deep
+  // link itself flows separately through command_line → gtk plugin → app_links.
+  GtkWindow* existing = gtk_application_get_active_window(GTK_APPLICATION(application));
+  if (existing != nullptr) {
+    gtk_window_present(existing);
+    return;
+  }
+
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
 
@@ -62,23 +74,27 @@ static void my_application_activate(GApplication* application) {
   gtk_widget_grab_focus(GTK_WIDGET(view));
 }
 
-// Implements GApplication::local_command_line.
-static gboolean my_application_local_command_line(GApplication* application, gchar*** arguments, int* exit_status) {
+// Implements GApplication::command_line.
+//
+// Called on the primary instance for both the initial launch (with the
+// process's own argv) and any subsequent launch dispatched here via
+// D-Bus single-instance activation (with that second invocation's argv).
+// The gtk plugin separately forwards the args to Dart via the
+// `gtk/application` method channel, which is what app_links_linux listens
+// on — so a wger://app-auth URI from xdg-open arrives at the Dart side
+// regardless of whether we were cold- or warm-started.
+static int my_application_command_line(GApplication* application,
+                                       GApplicationCommandLine* command_line) {
   MyApplication* self = MY_APPLICATION(application);
+  gchar** arguments =
+      g_application_command_line_get_arguments(command_line, nullptr);
   // Strip out the first argument as it is the binary name.
-  self->dart_entrypoint_arguments = g_strdupv(*arguments + 1);
-
-  g_autoptr(GError) error = nullptr;
-  if (!g_application_register(application, nullptr, &error)) {
-     g_warning("Failed to register: %s", error->message);
-     *exit_status = 1;
-     return TRUE;
-  }
+  g_strfreev(self->dart_entrypoint_arguments);
+  self->dart_entrypoint_arguments = g_strdupv(arguments + 1);
+  g_strfreev(arguments);
 
   g_application_activate(application);
-  *exit_status = 0;
-
-  return TRUE;
+  return 0;
 }
 
 // Implements GApplication::startup.
@@ -108,7 +124,7 @@ static void my_application_dispose(GObject* object) {
 
 static void my_application_class_init(MyApplicationClass* klass) {
   G_APPLICATION_CLASS(klass)->activate = my_application_activate;
-  G_APPLICATION_CLASS(klass)->local_command_line = my_application_local_command_line;
+  G_APPLICATION_CLASS(klass)->command_line = my_application_command_line;
   G_APPLICATION_CLASS(klass)->startup = my_application_startup;
   G_APPLICATION_CLASS(klass)->shutdown = my_application_shutdown;
   G_OBJECT_CLASS(klass)->dispose = my_application_dispose;
@@ -123,8 +139,13 @@ MyApplication* my_application_new() {
   // the application to be recognized beyond its binary name.
   g_set_prgname(APPLICATION_ID);
 
+  // Single-instance: the application-id namespaces us on the user's session
+  // bus, so subsequent launches dispatch to the running primary instead of
+  // forking a second window. HANDLES_COMMAND_LINE forwards their argv to
+  // the primary's `command-line` signal, which the bundled gtk plugin
+  // relays to Dart for app_links to consume as a deep-link URI.
   return MY_APPLICATION(g_object_new(my_application_get_type(),
                                      "application-id", APPLICATION_ID,
-                                     "flags", G_APPLICATION_NON_UNIQUE,
+                                     "flags", G_APPLICATION_HANDLES_COMMAND_LINE,
                                      nullptr));
 }
