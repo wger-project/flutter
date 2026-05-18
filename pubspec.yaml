@@ -32,6 +32,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  app_links: ^6.3.2
   carousel_slider: ^5.1.2
   clock: ^1.1.2
   collection: ^1.18.0

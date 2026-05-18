@@ -58,6 +58,10 @@
   },
   "useRefreshToken": "Use refresh token",
   "useUsernameAndPassword": "Use username and password",
+  "loginViaWeb": "Log in via web",
+  "@loginViaWeb": {
+    "description": "Button that opens the system browser so the user authenticates on the server (including social or SSO providers) and is handed back to the app via a deep link"
+  },
   "refreshToken": "Refresh token",
   "@refreshToken": {},
   "invalidRefreshToken": "Please enter a valid refresh token",

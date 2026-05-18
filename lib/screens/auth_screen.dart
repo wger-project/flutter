@@ -19,11 +19,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/app_link_router.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/screens/mfa_challenge_screen.dart';
@@ -157,6 +159,25 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     });
 
     _preFillTextfields();
+  }
+
+  /// Opens the server's web-handoff page in the system browser. The user
+  /// authenticates there (password, social, SSO, …) and the server redirects
+  /// back via `wger://app-auth#token=…`, which the app_link_router picks up
+  /// and feeds into the existing refresh-token login path.
+  Future<void> _launchWebHandoff() async {
+    var serverUrl = _serverUrlController.text.trim();
+    if (serverUrl.endsWith('/')) {
+      serverUrl = serverUrl.substring(0, serverUrl.length - 1);
+    }
+    if (serverUrl.isEmpty) {
+      serverUrl = kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD;
+    }
+    final state = await issueAppAuthState();
+    await launchUrl(
+      Uri.parse('$serverUrl/user/app-auth/?state=$state'),
+      mode: LaunchMode.externalApplication,
+    );
   }
 
   void _preFillTextfields() {
@@ -379,6 +400,14 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                             ? i18n.useRefreshToken
                             : i18n.useUsernameAndPassword,
                       ),
+                    ),
+
+                  if (_authMode == AuthMode.Login)
+                    TextButton.icon(
+                      key: const Key('loginViaWebButton'),
+                      onPressed: _isLoading ? null : _launchWebHandoff,
+                      icon: const Icon(Icons.open_in_browser),
+                      label: Text(i18n.loginViaWeb),
                     ),
 
                   const SizedBox(height: 20),

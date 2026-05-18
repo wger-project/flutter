@@ -73,6 +73,11 @@ const PREFS_SERVER_URL = 'serverUrl';
 /// Secure-storage key for the headless refresh token.
 const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';
 
+/// Login-CSRF defence for the web-handoff flow. Stored in SharedPreferences
+/// (not a secret, just a one-shot nonce echoed back by the server).
+const PREFS_APP_AUTH_STATE = 'appAuthState';
+const PREFS_APP_AUTH_STATE_AT = 'appAuthStateAt';
+
 /// True once PowerSync has been reachable for this user at least once
 /// (i.e. its liveness probe returned 200).
 const PREFS_HAS_EVER_SYNCED = 'hasEverSynced';
