@@ -18,12 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wger/helpers/locale.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/user.dart';
 
-/// Native language names for each supported locale. Keys are encoded as
-/// `languageCode` or `languageCode_countryCode` (matching how a locale is
-/// serialized in [UserProvider.setUserLocale]).
+/// Native language names for each supported locale. Keys are produced by
+/// [encodeLocale] (e.g. `pl`, `pt_BR`, `zh_Hant`).
 const Map<String, String> _languageNativeNames = {
   'am': 'አማርኛ',
   'ar': 'العربية',
@@ -63,17 +63,10 @@ const Map<String, String> _languageNativeNames = {
   'zh_Hant': '繁體中文',
 };
 
-String _localeKey(Locale locale) {
-  if (locale.countryCode == null || locale.countryCode!.isEmpty) {
-    return locale.languageCode;
-  }
-  return '${locale.languageCode}_${locale.countryCode}';
-}
-
 String _displayNameFor(Locale locale) {
-  return _languageNativeNames[_localeKey(locale)] ??
+  return _languageNativeNames[encodeLocale(locale)] ??
       _languageNativeNames[locale.languageCode] ??
-      _localeKey(locale);
+      encodeLocale(locale);
 }
 
 class SettingsLanguage extends StatelessWidget {

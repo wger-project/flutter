@@ -23,6 +23,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/locale.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/user/profile.dart';
@@ -115,7 +116,7 @@ class UserProvider with ChangeNotifier {
       return null;
     }
     for (final locale in AppLocalizations.supportedLocales) {
-      if (_encodeLocale(locale) == raw) {
+      if (encodeLocale(locale) == raw) {
         return locale;
       }
     }
@@ -129,20 +130,6 @@ class UserProvider with ChangeNotifier {
       }
     }
     return null;
-  }
-
-  /// Stable string encoding for a [Locale]. Mirrors the format used when
-  /// generating Flutter's AppLocalizations entries (e.g. `pt_BR`, `zh_Hant`).
-  static String _encodeLocale(Locale locale) {
-    final script = locale.scriptCode;
-    if (script != null && script.isNotEmpty) {
-      return '${locale.languageCode}_$script';
-    }
-    final country = locale.countryCode;
-    if (country != null && country.isNotEmpty) {
-      return '${locale.languageCode}_$country';
-    }
-    return locale.languageCode;
   }
 
   // Dashboard configuration
@@ -250,7 +237,7 @@ class UserProvider with ChangeNotifier {
     if (locale == null) {
       await prefs.remove(PREFS_USER_LOCALE);
     } else {
-      await prefs.setString(PREFS_USER_LOCALE, _encodeLocale(locale));
+      await prefs.setString(PREFS_USER_LOCALE, encodeLocale(locale));
     }
 
     notifyListeners();
