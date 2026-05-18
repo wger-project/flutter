@@ -22,6 +22,7 @@ import 'package:wger/screens/settings_plates_screen.dart';
 
 import './settings/exercise_cache.dart';
 import './settings/ingredient_cache.dart';
+import './settings/language.dart';
 import './settings/theme.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -44,6 +45,7 @@ class SettingsPage extends StatelessWidget {
           const SettingsIngredientCache(),
           ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
           const SettingsTheme(),
+          const SettingsLanguage(),
           ListTile(
             title: Text(i18n.selectAvailablePlates),
             onTap: () {

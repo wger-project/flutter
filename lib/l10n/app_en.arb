@@ -1160,6 +1160,14 @@
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
   "systemMode": "System settings",
+  "appLanguage": "App language",
+  "@appLanguage": {
+    "description": "Label for the in-app language selector in settings"
+  },
+  "appLanguageSystem": "System default",
+  "@appLanguageSystem": {
+    "description": "Dropdown entry that follows the device system language"
+  },
   "productNotFoundOpenFoodFacts": "You can add this product to Open Food Facts to help the community!",
   "@productNotFoundOpenFoodFacts": {
   "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
