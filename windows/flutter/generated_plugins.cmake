@@ -5,8 +5,6 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
   file_selector_windows
-  powersync_flutter_libs
-  sqlite3_flutter_libs
   url_launcher_windows
 )
 

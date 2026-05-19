@@ -14,6 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MeasurementEntry {
 
+/// Client-generated UUID, is `null` only before the first persist
  String? get id; String get categoryId; DateTime get date; num get value; String get notes;
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
