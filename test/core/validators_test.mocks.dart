@@ -273,6 +273,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get loginViaWeb =>
+      (super.noSuchMethod(
+            Invocation.getter(#loginViaWeb),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#loginViaWeb),
+            ),
+          )
+          as String);
+
+  @override
   String get refreshToken =>
       (super.noSuchMethod(
             Invocation.getter(#refreshToken),
@@ -411,6 +422,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#mfaUnsupportedFactor),
+            ),
+          )
+          as String);
+
+  @override
+  String get manageAccountOnWeb =>
+      (super.noSuchMethod(
+            Invocation.getter(#manageAccountOnWeb),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#manageAccountOnWeb),
+            ),
+          )
+          as String);
+
+  @override
+  String get manageAccountOnWebSubtitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#manageAccountOnWebSubtitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#manageAccountOnWebSubtitle),
             ),
           )
           as String);
