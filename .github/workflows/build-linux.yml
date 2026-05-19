@@ -61,7 +61,7 @@ jobs:
       - name: Build application for linux
         run: |
           sudo apt update
-          sudo apt install -y pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev --no-install-recommends
+          sudo apt install -y pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev libjsoncpp-dev --no-install-recommends
           flutter build linux --release
           tar -zcvf linux-${{ matrix.platform }}.tar.gz build/linux/${{ matrix.platform }}/release/bundle
       - uses: actions/upload-artifact@v7
