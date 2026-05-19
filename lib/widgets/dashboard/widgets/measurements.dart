@@ -40,105 +40,107 @@ class _DashboardMeasurementWidgetState extends State<DashboardMeasurementWidget>
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<MeasurementProvider>(context, listen: false);
+    // final provider = Provider.of<MeasurementProvider>(context, listen: false);
 
-    final items = provider.categories
-        .map<Widget>((item) => CategoriesCard(item, elevation: 0))
-        .toList();
-    if (items.isNotEmpty) {
-      items.add(
-        NothingFound(
-          AppLocalizations.of(context).moreMeasurementEntries,
-          AppLocalizations.of(context).newEntry,
-          MeasurementCategoryForm(),
-        ),
-      );
-    }
     return Consumer<MeasurementProvider>(
-      builder: (context, _, _) => Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(
-                AppLocalizations.of(context).measurements,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              leading: FaIcon(
-                FontAwesomeIcons.chartLine,
-                color: Theme.of(context).textTheme.headlineSmall!.color,
-              ),
-              // TODO: this icon feels out of place and inconsistent with all
-              // other dashboard widgets.
-              // maybe we should just add a "Go to all" at the bottom of the widget
-              trailing: IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  MeasurementCategoriesScreen.routeName,
+      builder: (context, provider, _) {
+        final items = provider.categories
+            .map<Widget>((item) => CategoriesCard(item, elevation: 0))
+            .toList();
+        if (items.isNotEmpty) {
+          items.add(
+            NothingFound(
+              AppLocalizations.of(context).moreMeasurementEntries,
+              AppLocalizations.of(context).newEntry,
+              MeasurementCategoryForm(),
+            ),
+          );
+        }
+        return Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(
+                  AppLocalizations.of(context).measurements,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                leading: FaIcon(
+                  FontAwesomeIcons.chartLine,
+                  color: Theme.of(context).textTheme.headlineSmall!.color,
+                ),
+                // TODO: this icon feels out of place and inconsistent with all
+                // other dashboard widgets.
+                // maybe we should just add a "Go to all" at the bottom of the widget
+                trailing: IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  onPressed: () => Navigator.pushNamed(
+                    context,
+                    MeasurementCategoriesScreen.routeName,
+                  ),
                 ),
               ),
-            ),
-            Column(
-              children: [
-                if (items.isNotEmpty)
-                  Column(
-                    children: [
-                      CarouselSlider(
-                        items: items,
-                        carouselController: _controller,
-                        options: CarouselOptions(
-                          autoPlay: false,
-                          enlargeCenterPage: false,
-                          viewportFraction: 1,
-                          enableInfiniteScroll: false,
-                          aspectRatio: 1.1,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _current = index;
-                            });
-                          },
+              Column(
+                children: [
+                  if (items.isNotEmpty)
+                    Column(
+                      children: [
+                        CarouselSlider(
+                          items: items,
+                          carouselController: _controller,
+                          options: CarouselOptions(
+                            autoPlay: false,
+                            enlargeCenterPage: false,
+                            viewportFraction: 1,
+                            enableInfiniteScroll: false,
+                            aspectRatio: 1.1,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _current = index;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: items.asMap().entries.map((entry) {
-                            return GestureDetector(
-                              onTap: () => _controller.animateToPage(entry.key),
-                              child: Container(
-                                width: 12.0,
-                                height: 12.0,
-                                margin: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 4.0,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: items.asMap().entries.map((entry) {
+                              return GestureDetector(
+                                onTap: () => _controller.animateToPage(entry.key),
+                                child: Container(
+                                  width: 12.0,
+                                  height: 12.0,
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 8.0,
+                                    horizontal: 4.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context).textTheme.headlineSmall!.color!
+                                        .withValues(
+                                          alpha: _current == entry.key ? 0.9 : 0.4,
+                                        ),
+                                  ),
                                 ),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Theme.of(context).textTheme.headlineSmall!.color!
-                                      .withValues(
-                                        alpha: _current == entry.key ? 0.9 : 0.4,
-                                      ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                              );
+                            }).toList(),
+                          ),
                         ),
-                      ),
-                    ],
-                  )
-                else
-                  NothingFound(
-                    AppLocalizations.of(context).noMeasurementEntries,
-                    AppLocalizations.of(context).newEntry,
-                    MeasurementCategoryForm(),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
+                      ],
+                    )
+                  else
+                    NothingFound(
+                      AppLocalizations.of(context).noMeasurementEntries,
+                      AppLocalizations.of(context).newEntry,
+                      MeasurementCategoryForm(),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

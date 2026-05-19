@@ -24,6 +24,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/models/measurements/measurement_group.dart';
+import 'package:wger/models/measurements/mock_measurement_data.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class MeasurementProvider with ChangeNotifier {
@@ -32,13 +33,16 @@ class MeasurementProvider with ChangeNotifier {
   static const _categoryUrl = 'measurement-category';
   static const _entryUrl = 'measurement';
   static const _groupUrl = 'measurement-group';
-  static const _dynamicValuesAction = 'dynamic-values';
   final WgerBaseProvider baseProvider;
 
   List<MeasurementCategory> _categories = [];
   List<MeasurementGroup> _groups = [];
 
-  MeasurementProvider(this.baseProvider);
+  MeasurementProvider(this.baseProvider) {
+    // TODO: REMOVE before merge — loads mock data for UI development
+    _groups = MeasurementMockData.dummyGroups;
+    _categories = MeasurementMockData.dummyCategories;
+  }
 
   List<MeasurementCategory> get categories => _categories;
   List<MeasurementGroup> get groups => _groups;
@@ -75,11 +79,6 @@ class MeasurementProvider with ChangeNotifier {
   Future<void> fetchAndSetCategoryEntries(int id) async {
     final category = findCategoryById(id);
 
-    if (category.isDynamic) {
-      await fetchDynamicCategoryEntries(id);
-      return;
-    }
-
     final categoryIndex = _categories.indexOf(category);
 
     // Process the response
@@ -93,34 +92,6 @@ class MeasurementProvider with ChangeNotifier {
       loadedEntries.add(MeasurementEntry.fromJson(entry));
     }
     final MeasurementCategory editedCategory = category.copyWith(entries: loadedEntries);
-    _categories.removeAt(categoryIndex);
-    _categories.insert(categoryIndex, editedCategory);
-    notifyListeners();
-  }
-
-  /// Fetches computed values for a dynamic (formula-based) category
-  /// and sets the measurement entries
-  Future<void> fetchDynamicCategoryEntries(int categoryId) async {
-    final category = findCategoryById(categoryId);
-    if (!category.isDynamic) return;
-
-    final categoryIndex = _categories.indexOf(category);
-
-    final requestUrl = baseProvider.makeUrl(
-      '$_categoryUrl/$categoryId/$_dynamicValuesAction',
-    );
-
-    // The dynamic-values endpoint returns a plain list, not paginated.
-    final dynamic rawData = await baseProvider.fetch(requestUrl);
-    final List<dynamic> data = rawData is List ? rawData : (rawData['results'] ?? []);
-
-    final List<MeasurementEntry> computedEntries = data
-        .map((e) => MeasurementEntry.fromJson(e as Map<String, dynamic>))
-        .toList();
-
-    final MeasurementCategory editedCategory = category.copyWith(
-      entries: computedEntries,
-    );
     _categories.removeAt(categoryIndex);
     _categories.insert(categoryIndex, editedCategory);
     notifyListeners();
@@ -175,8 +146,13 @@ class MeasurementProvider with ChangeNotifier {
   }) async {
     final MeasurementCategory oldCategory = findCategoryById(id);
     final int categoryIndex = _categories.indexOf(oldCategory);
-    final MeasurementCategory tempNewCategory = oldCategory.copyWith(name: newName, unit: newUnit);
-
+    final MeasurementCategory tempNewCategory = oldCategory.copyWith(
+      name: newName,
+      unit: newUnit,
+      groupId: newGroupId,
+      clearGroup: clearGroup,
+      formula: newFormula,
+    );
     final Map<String, dynamic> response = await baseProvider.patch(
       tempNewCategory.toJson(),
       baseProvider.makeUrl(_categoryUrl, id: id),
@@ -288,8 +264,6 @@ class MeasurementProvider with ChangeNotifier {
   }
 
   /// Edits a measurement entry
-  /// Currently there isn't any fallback if the call to the api is unsuccessful, as
-  /// WgerBaseProvider.patch only returns the response body and not the whole response
   Future<void> editEntry(
     int id,
     int categoryId,
@@ -298,6 +272,7 @@ class MeasurementProvider with ChangeNotifier {
     DateTime? newDate,
   ) async {
     final MeasurementCategory category = findCategoryById(categoryId);
+
     final MeasurementEntry oldEntry = category.findEntryById(id);
     final int entryIndex = category.entries.indexOf(oldEntry);
     final MeasurementEntry tempNewEntry = oldEntry.copyWith(

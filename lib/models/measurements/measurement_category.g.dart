@@ -18,8 +18,8 @@ MeasurementCategory _$MeasurementCategoryFromJson(Map<String, dynamic> json) {
         : MeasurementGroup.fromJson(
             json['group_detail'] as Map<String, dynamic>,
           ),
-    formula: json['formula'] as String?,
-    isDynamic: json['is_dynamic'] as bool? ?? false,
+    formula: json['dynamic_type'] as String?,
+    dynamicParams: json['dynamic_params'] as Map<String, dynamic>? ?? {},
     entries:
         (json['entries'] as List<dynamic>?)
             ?.map((e) => MeasurementEntry.fromJson(e as Map<String, dynamic>))
@@ -35,6 +35,7 @@ Map<String, dynamic> _$MeasurementCategoryToJson(
   'name': instance.name,
   'unit': instance.unit,
   'group': instance.groupId,
-  'formula': instance.formula,
+  'dynamic_type': instance.formula,
+  'dynamic_params': instance.dynamicParams,
   'entries': MeasurementCategory._nullValue(instance.entries),
 };

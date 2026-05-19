@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -22,13 +21,12 @@ class MeasurementGroup extends Equatable {
 
   const MeasurementGroup({
     required this.id,
-    required this.uuid,
+    this.uuid = '',
     required this.name,
     this.description = '',
   });
 
-  factory MeasurementGroup.fromJson(Map<String, dynamic> json) =>
-      _$MeasurementGroupFromJson(json);
+  factory MeasurementGroup.fromJson(Map<String, dynamic> json) => _$MeasurementGroupFromJson(json);
 
   Map<String, dynamic> toJson() => _$MeasurementGroupToJson(this);
 

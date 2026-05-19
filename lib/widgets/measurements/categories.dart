@@ -23,24 +23,31 @@ import 'package:wger/providers/measurement.dart';
 import 'categories_card.dart';
 
 class CategoriesList extends StatelessWidget {
-  final int? _selectedGrouptID;
-  const CategoriesList(this._selectedGrouptID);
+  final int? _selectedGroupID;
+  const CategoriesList([this._selectedGroupID]);
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<MeasurementProvider>(context, listen: false);
-    final categories = provider.categories.where((cat) {
-      if (_selectedGrouptID == null) return true;
-      return cat.groupId == _selectedGrouptID;
-    }).toList();
+    // Filter by group if a chip is selected
+    final visibleCategories = _selectedGroupID == null
+        ? provider.categories
+        : provider.categories.where((c) => c.groupId == _selectedGroupID).toList();
 
     return RefreshIndicator(
       onRefresh: () => provider.fetchAndSetAllCategoriesAndEntries(),
-      child: ListView.builder(
-        padding: const EdgeInsets.all(10.0),
-        itemCount: categories.length,
-        itemBuilder: (context, index) => CategoriesCard(categories[index]),
-      ),
+      child: visibleCategories.isEmpty
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(32),
+                child: Text('No categories found.'),
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(10.0),
+              itemCount: visibleCategories.length,
+              itemBuilder: (context, index) => CategoriesCard(visibleCategories[index]),
+            ),
     );
   }
 }

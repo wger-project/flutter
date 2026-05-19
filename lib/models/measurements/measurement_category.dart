@@ -23,11 +23,11 @@ class MeasurementCategory extends Equatable {
   @JsonKey(name: 'group_detail', includeToJson: false)
   final MeasurementGroup? groupDetail;
 
-  @JsonKey(name: 'formula', includeToJson: true)
+  @JsonKey(name: 'dynamic_type', includeToJson: true)
   final String? formula;
 
-  @JsonKey(name: 'is_dynamic', includeToJson: false, defaultValue: false)
-  final bool isDynamic;
+  @JsonKey(name: 'dynamic_params', includeToJson: true, defaultValue: <String, dynamic>{})
+  final Map<String, dynamic> dynamicParams;
 
   @JsonKey(defaultValue: [], toJson: _nullValue)
   final List<MeasurementEntry> entries;
@@ -39,28 +39,32 @@ class MeasurementCategory extends Equatable {
     this.groupId,
     this.groupDetail,
     this.formula,
-    this.isDynamic = false,
+    this.dynamicParams = const {},
     this.entries = const [],
   });
+
+  bool get isDynamic => formula != null && formula != 'NONE';
 
   MeasurementCategory copyWith({
     int? id,
     String? name,
     String? unit,
     int? groupId,
+    bool clearGroup = false,
     MeasurementGroup? groupDetail,
+    bool clearGroupDetail = false,
     String? formula,
-    bool? isDynamic,
+    Map<String, dynamic>? dynamicParams,
     List<MeasurementEntry>? entries,
   }) {
     return MeasurementCategory(
       id: id ?? this.id,
       name: name ?? this.name,
       unit: unit ?? this.unit,
-      groupId: groupId ?? this.groupId,
-      groupDetail: groupDetail ?? this.groupDetail,
+      groupId: clearGroup ? null : (groupId ?? this.groupId),
+      groupDetail: clearGroupDetail ? null : (groupDetail ?? this.groupDetail),
       formula: formula ?? this.formula,
-      isDynamic: isDynamic ?? this.isDynamic,
+      dynamicParams: dynamicParams ?? this.dynamicParams,
       entries: entries ?? this.entries,
     );
   }
@@ -79,7 +83,7 @@ class MeasurementCategory extends Equatable {
   Map<String, dynamic> toJson() => _$MeasurementCategoryToJson(this);
 
   @override
-  List<Object?> get props => [id, name, unit, groupId, formula, isDynamic, entries];
+  List<Object?> get props => [id, name, unit, groupId, formula, dynamicParams, entries];
 
   // Helper function which makes the entries list of the toJson output null, as it isn't needed
   static Null _nullValue(List<MeasurementEntry> _) => null;

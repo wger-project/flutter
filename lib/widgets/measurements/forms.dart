@@ -39,11 +39,6 @@ class MeasurementCategoryForm extends StatefulWidget {
 }
 
 class _MeasurementCategoryFormState extends State<MeasurementCategoryForm> {
-  final List<MeasurementGroup> _dummyGroups = [
-    const MeasurementGroup(uuid: '1', id: 1, name: 'Dummy: Bodyweight'),
-    const MeasurementGroup(uuid: '2', id: 2, name: 'Dummy: Strength'),
-  ];
-
   final _form = GlobalKey<FormState>();
   late final TextEditingController nameController;
   late final TextEditingController unitController;
@@ -55,9 +50,9 @@ class _MeasurementCategoryFormState extends State<MeasurementCategoryForm> {
   bool _isSubmitting = false;
 
   static const Map<String, String> _formulaLabels = {
-    'bmi': 'Body Mass Index (BMI)',
-    'lbm': 'Lean Body Mass',
-    '1rm_epley': '1RM — Epley formula',
+    'BMI': 'Body Mass Index (BMI)',
+    // 'LBM': 'Lean Body Mass',
+    // '1RM_EPLEY': '1RM — Epley formula',
   };
 
   @override
@@ -69,7 +64,7 @@ class _MeasurementCategoryFormState extends State<MeasurementCategoryForm> {
     unitController = TextEditingController(text: cat?.unit ?? '');
 
     _selectedGroupId = cat?.groupId;
-    _selectedFormula = cat?.formula;
+    _selectedFormula = (cat?.formula == null || cat?.formula == 'NONE') ? null : cat?.formula;
   }
 
   @override
@@ -177,6 +172,7 @@ class _MeasurementCategoryFormState extends State<MeasurementCategoryForm> {
               final measurementProvider = Provider.of<MeasurementProvider>(context, listen: false);
 
               // Save the entry on the server
+              final formulaToSave = _selectedFormula ?? 'NONE';
               try {
                 if (_categoryId == null) {
                   await measurementProvider.addCategory(
@@ -185,7 +181,7 @@ class _MeasurementCategoryFormState extends State<MeasurementCategoryForm> {
                       name: nameController.text.trim(),
                       unit: unitController.text.trim(),
                       groupId: _selectedGroupId,
-                      formula: _selectedFormula,
+                      formula: formulaToSave,
                     ),
                   );
                 } else {
@@ -194,7 +190,7 @@ class _MeasurementCategoryFormState extends State<MeasurementCategoryForm> {
                     nameController.text.trim(),
                     unitController.text.trim(),
                     _selectedGroupId,
-                    _selectedFormula,
+                    formulaToSave,
                     clearGroup: _selectedGroupId == null,
                     clearFormula: _selectedFormula == null,
                   );
@@ -290,34 +286,6 @@ class _MeasurementEntryFormState extends State<MeasurementEntryForm> {
       _valueController.text = numberFormat.format(widget.entry!.value);
     }
 
-    if (measurementCategory.isDynamic) {
-      return Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.auto_graph, size: 48, color: Colors.blue),
-            const SizedBox(height: 12),
-            Text(
-              'This measurement is calculated automatically.', // TODO: i18n
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Formula: ${measurementCategory.formula ?? ''}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'To see computed values, open the category detail page.',
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      );
-    }
-
     return Form(
       key: _form,
       child: Column(
@@ -352,7 +320,7 @@ class _MeasurementEntryFormState extends State<MeasurementEntryForm> {
             },
             onSaved: (newValue) {
               final date = dateFormat.parse(newValue!);
-              _selectedDateTime = (_selectedDateTime as DateTime).copyWith(
+              _selectedDateTime = _selectedDateTime.copyWith(
                 year: date.year,
                 month: date.month,
                 day: date.day,
@@ -398,7 +366,7 @@ class _MeasurementEntryFormState extends State<MeasurementEntryForm> {
             },
             onSaved: (newValue) {
               final time = timeFormat.parse(newValue!);
-              _selectedDateTime = (_selectedDateTime as DateTime).copyWith(
+              _selectedDateTime = _selectedDateTime.copyWith(
                 hour: time.hour,
                 minute: time.minute,
                 second: time.second,
