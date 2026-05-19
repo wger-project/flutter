@@ -25,7 +25,12 @@ static void my_application_activate(GApplication* application) {
   // link itself flows separately through command_line → gtk plugin → app_links.
   GtkWindow* existing = gtk_application_get_active_window(GTK_APPLICATION(application));
   if (existing != nullptr) {
-    gtk_window_present(existing);
+    gtk_window_present_with_time(existing, GDK_CURRENT_TIME);
+
+    // Modern Wayland compositors routinely refuse the present() under
+    // focus-stealing prevention, mark the window as needing attention so
+    // the taskbar/dock highlights it and the user can click over.
+    gtk_window_set_urgency_hint(existing, TRUE);
     return;
   }
 
