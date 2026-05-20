@@ -27,79 +27,77 @@ import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 
 class Exercise extends Equatable {
-  final _logger = Logger('ExerciseModel');
+  static final _logger = Logger('ExerciseModel');
 
-  late final int id;
-  late final String uuid;
-  late final String? variationGroup;
-  late final DateTime? created;
-  late final DateTime? lastUpdate;
-  late final DateTime? lastUpdateGlobal;
-  late int categoryId;
+  final int id;
+  final String uuid;
+  final String? variationGroup;
+  final DateTime? created;
+  final DateTime? lastUpdate;
+  final ExerciseCategory category;
+  final List<Muscle> muscles;
+  final List<Muscle> musclesSecondary;
+  final List<Equipment> equipment;
+  final List<ExerciseImage> images;
+  final List<Translation> translations;
+  final List<Video> videos;
+  final List<String> authors;
+  final List<String> authorsGlobal;
 
-  ExerciseCategory? category;
-  List<int> musclesIds = [];
-  List<Muscle> muscles = [];
-  List<int> musclesSecondaryIds = [];
-  List<Muscle> musclesSecondary = [];
-  List<int> equipmentIds = [];
-  List<Equipment> equipment = [];
-  List<ExerciseImage> images = [];
-  List<Translation> translations = [];
-  List<Video> videos = [];
-  List<String> authors = [];
-  List<String> authorsGlobal = [];
+  int get categoryId => category.id;
+  List<int> get musclesIds => muscles.map((e) => e.id).toList();
+  List<int> get musclesSecondaryIds => musclesSecondary.map((e) => e.id).toList();
+  List<int> get equipmentIds => equipment.map((e) => e.id).toList();
 
-  Exercise({
+  const Exercise({
     required this.id,
     required this.uuid,
     this.created,
     this.lastUpdate,
     this.variationGroup,
-    required this.categoryId,
+    required this.category,
+    this.muscles = const [],
+    this.musclesSecondary = const [],
+    this.equipment = const [],
+    this.images = const [],
+    this.translations = const [],
+    this.videos = const [],
+    this.authors = const [],
+    this.authorsGlobal = const [],
+  });
+
+  Exercise copyWith({
+    int? id,
+    String? uuid,
+    DateTime? created,
+    DateTime? lastUpdate,
+    String? variationGroup,
+    ExerciseCategory? category,
     List<Muscle>? muscles,
     List<Muscle>? musclesSecondary,
     List<Equipment>? equipment,
     List<ExerciseImage>? images,
     List<Translation>? translations,
-    ExerciseCategory? category,
     List<Video>? videos,
     List<String>? authors,
     List<String>? authorsGlobal,
   }) {
-    this.images = images ?? [];
-    this.equipment = equipment ?? [];
-    if (category != null) {
-      this.category = category;
-      categoryId = category.id;
-    }
-
-    if (muscles != null) {
-      this.muscles = muscles;
-      musclesIds = muscles.map((e) => e.id).toList();
-    }
-
-    if (musclesSecondary != null) {
-      this.musclesSecondary = musclesSecondary;
-      musclesSecondaryIds = musclesSecondary.map((e) => e.id).toList();
-    }
-
-    if (equipment != null) {
-      this.equipment = equipment;
-      equipmentIds = equipment.map((e) => e.id).toList();
-    }
-
-    if (translations != null) {
-      this.translations = translations;
-    }
-
-    if (videos != null) {
-      this.videos = videos;
-    }
-    this.authors = authors ?? [];
-    this.authorsGlobal = authorsGlobal ?? [];
-
-    lastUpdateGlobal = DateTime.now();
+    return Exercise(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      created: created ?? this.created,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
+      variationGroup: variationGroup ?? this.variationGroup,
+      category: category ?? this.category,
+      muscles: muscles ?? this.muscles,
+      musclesSecondary: musclesSecondary ?? this.musclesSecondary,
+      equipment: equipment ?? this.equipment,
+      images: images ?? this.images,
+      translations: translations ?? this.translations,
+      videos: videos ?? this.videos,
+      authors: authors ?? this.authors,
+      authorsGlobal: authorsGlobal ?? this.authorsGlobal,
+    );
   }
 
   bool get showPlateCalculator => equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL);
@@ -117,13 +115,13 @@ class Exercise extends Equatable {
     final languageCode = language.split('-')[0];
 
     return translations.firstWhere(
-      (e) => e.languageObj.shortName == languageCode,
+      (e) => e.language.shortName == languageCode,
       orElse: () => translations.firstWhere(
-        (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
+        (e) => e.language.shortName == LANGUAGE_SHORT_ENGLISH,
         orElse: () {
           _logger.info(
             'Could not find fallback english translation for exercise-ID $id, returning '
-            'first language (${translations.first.languageObj.shortName}) instead.',
+            'first language (${translations.first.language.shortName}) instead.',
           );
           return translations.first;
         },
@@ -133,11 +131,6 @@ class Exercise extends Equatable {
 
   ExerciseImage? get getMainImage {
     return images.firstWhereOrNull((image) => image.isMain);
-  }
-
-  set setCategory(ExerciseCategory category) {
-    categoryId = category.id;
-    this.category = category;
   }
 
   @override

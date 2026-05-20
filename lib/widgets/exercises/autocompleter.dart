@@ -106,7 +106,7 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                   exercise.getTranslation(languageCode).name,
                 ),
                 subtitle: Text(
-                  '${exercise.category!.name} / ${exercise.equipment.map((e) => e.name).join(', ')}',
+                  '${exercise.category.name} / ${exercise.equipment.map((e) => e.name).join(', ')}',
                 ),
               ),
           emptyBuilder: (context) {

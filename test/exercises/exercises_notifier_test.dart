@@ -57,19 +57,19 @@ void main() {
     final benchPress = Exercise(
       id: 100,
       uuid: 'bench-uuid',
-      categoryId: 1,
+      category: testCategoryArms,
       variationGroup: 'chest',
     );
     final inclineBench = Exercise(
       id: 101,
       uuid: 'incline-uuid',
-      categoryId: 1,
+      category: testCategoryArms,
       variationGroup: 'chest',
     );
     final squat = Exercise(
       id: 200,
       uuid: 'squat-uuid',
-      categoryId: 2,
+      category: testCategoryLegs,
       variationGroup: 'legs',
     );
     final variationExercises = [benchPress, inclineBench, squat, testCrunches];

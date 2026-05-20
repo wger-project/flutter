@@ -194,10 +194,10 @@ void main() {
         expect(state.exercises, hasLength(1));
         final ex = state.exercises.single;
         expect(ex.id, 1);
-        expect(ex.category?.name, 'Arms');
+        expect(ex.category.name, 'Arms');
         expect(ex.translations, hasLength(1));
         expect(ex.translations.single.name, 'Bench Press');
-        expect(ex.translations.single.languageObj.shortName, 'en');
+        expect(ex.translations.single.language.shortName, 'en');
         expect(ex.muscles.map((m) => m.id), [tMuscle1.id]);
         expect(ex.equipment.map((e) => e.id), [testEquipmentBench.id]);
         expect(ex.images, hasLength(1));

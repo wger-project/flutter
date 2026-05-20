@@ -534,7 +534,7 @@ class ExerciseCategoryTableCompanion extends UpdateCompanion<ExerciseCategory> {
   }
 }
 
-class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTable, Exercise> {
+class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTable, ExerciseRow> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -620,7 +620,7 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
   static const String $name = 'exercises_exercise';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Exercise> instance, {
+    Insertable<ExerciseRow> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -677,9 +677,9 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
-  Exercise map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ExerciseRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Exercise(
+    return ExerciseRow(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -688,14 +688,6 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
         DriftSqlType.string,
         data['${effectivePrefix}uuid'],
       )!,
-      created: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created'],
-      )!,
-      lastUpdate: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_update'],
-      )!,
       variationGroup: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}variation_group'],
@@ -703,6 +695,14 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
       categoryId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}category_id'],
+      )!,
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
       )!,
     );
   }
@@ -713,7 +713,129 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
   }
 }
 
-class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
+class ExerciseRow extends DataClass implements Insertable<ExerciseRow> {
+  final int id;
+  final String uuid;
+  final String? variationGroup;
+  final int categoryId;
+  final DateTime created;
+  final DateTime lastUpdate;
+  const ExerciseRow({
+    required this.id,
+    required this.uuid,
+    this.variationGroup,
+    required this.categoryId,
+    required this.created,
+    required this.lastUpdate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['uuid'] = Variable<String>(uuid);
+    if (!nullToAbsent || variationGroup != null) {
+      map['variation_group'] = Variable<String>(variationGroup);
+    }
+    map['category_id'] = Variable<int>(categoryId);
+    map['created'] = Variable<DateTime>(created);
+    map['last_update'] = Variable<DateTime>(lastUpdate);
+    return map;
+  }
+
+  ExerciseTableCompanion toCompanion(bool nullToAbsent) {
+    return ExerciseTableCompanion(
+      id: Value(id),
+      uuid: Value(uuid),
+      variationGroup: variationGroup == null && nullToAbsent
+          ? const Value.absent()
+          : Value(variationGroup),
+      categoryId: Value(categoryId),
+      created: Value(created),
+      lastUpdate: Value(lastUpdate),
+    );
+  }
+
+  factory ExerciseRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExerciseRow(
+      id: serializer.fromJson<int>(json['id']),
+      uuid: serializer.fromJson<String>(json['uuid']),
+      variationGroup: serializer.fromJson<String?>(json['variationGroup']),
+      categoryId: serializer.fromJson<int>(json['categoryId']),
+      created: serializer.fromJson<DateTime>(json['created']),
+      lastUpdate: serializer.fromJson<DateTime>(json['lastUpdate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'uuid': serializer.toJson<String>(uuid),
+      'variationGroup': serializer.toJson<String?>(variationGroup),
+      'categoryId': serializer.toJson<int>(categoryId),
+      'created': serializer.toJson<DateTime>(created),
+      'lastUpdate': serializer.toJson<DateTime>(lastUpdate),
+    };
+  }
+
+  ExerciseRow copyWith({
+    int? id,
+    String? uuid,
+    Value<String?> variationGroup = const Value.absent(),
+    int? categoryId,
+    DateTime? created,
+    DateTime? lastUpdate,
+  }) => ExerciseRow(
+    id: id ?? this.id,
+    uuid: uuid ?? this.uuid,
+    variationGroup: variationGroup.present ? variationGroup.value : this.variationGroup,
+    categoryId: categoryId ?? this.categoryId,
+    created: created ?? this.created,
+    lastUpdate: lastUpdate ?? this.lastUpdate,
+  );
+  ExerciseRow copyWithCompanion(ExerciseTableCompanion data) {
+    return ExerciseRow(
+      id: data.id.present ? data.id.value : this.id,
+      uuid: data.uuid.present ? data.uuid.value : this.uuid,
+      variationGroup: data.variationGroup.present ? data.variationGroup.value : this.variationGroup,
+      categoryId: data.categoryId.present ? data.categoryId.value : this.categoryId,
+      created: data.created.present ? data.created.value : this.created,
+      lastUpdate: data.lastUpdate.present ? data.lastUpdate.value : this.lastUpdate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseRow(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('variationGroup: $variationGroup, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, uuid, variationGroup, categoryId, created, lastUpdate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExerciseRow &&
+          other.id == this.id &&
+          other.uuid == this.uuid &&
+          other.variationGroup == this.variationGroup &&
+          other.categoryId == this.categoryId &&
+          other.created == this.created &&
+          other.lastUpdate == this.lastUpdate);
+}
+
+class ExerciseTableCompanion extends UpdateCompanion<ExerciseRow> {
   final Value<int> id;
   final Value<String> uuid;
   final Value<String?> variationGroup;
@@ -743,7 +865,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
        categoryId = Value(categoryId),
        created = Value(created),
        lastUpdate = Value(lastUpdate);
-  static Insertable<Exercise> custom({
+  static Insertable<ExerciseRow> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<String>? variationGroup,
@@ -826,7 +948,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
 }
 
 class $ExerciseTranslationTableTable extends ExerciseTranslationTable
-    with TableInfo<$ExerciseTranslationTableTable, Translation> {
+    with TableInfo<$ExerciseTranslationTableTable, ExerciseTranslationRow> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -937,7 +1059,7 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
   static const String $name = 'exercises_translation';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Translation> instance, {
+    Insertable<ExerciseTranslationRow> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1012,9 +1134,9 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
-  Translation map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ExerciseTranslationRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Translation(
+    return ExerciseTranslationRow(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -1023,9 +1145,13 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
         DriftSqlType.string,
         data['${effectivePrefix}uuid'],
       )!,
-      created: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created'],
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      languageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}language_id'],
       )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -1035,9 +1161,13 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       )!,
-      exerciseId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}exercise_id'],
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
       )!,
     );
   }
@@ -1048,7 +1178,158 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
   }
 }
 
-class ExerciseTranslationTableCompanion extends UpdateCompanion<Translation> {
+class ExerciseTranslationRow extends DataClass implements Insertable<ExerciseTranslationRow> {
+  final int id;
+  final String uuid;
+  final int exerciseId;
+  final int languageId;
+  final String name;
+  final String description;
+  final DateTime created;
+  final DateTime lastUpdate;
+  const ExerciseTranslationRow({
+    required this.id,
+    required this.uuid,
+    required this.exerciseId,
+    required this.languageId,
+    required this.name,
+    required this.description,
+    required this.created,
+    required this.lastUpdate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['uuid'] = Variable<String>(uuid);
+    map['exercise_id'] = Variable<int>(exerciseId);
+    map['language_id'] = Variable<int>(languageId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['created'] = Variable<DateTime>(created);
+    map['last_update'] = Variable<DateTime>(lastUpdate);
+    return map;
+  }
+
+  ExerciseTranslationTableCompanion toCompanion(bool nullToAbsent) {
+    return ExerciseTranslationTableCompanion(
+      id: Value(id),
+      uuid: Value(uuid),
+      exerciseId: Value(exerciseId),
+      languageId: Value(languageId),
+      name: Value(name),
+      description: Value(description),
+      created: Value(created),
+      lastUpdate: Value(lastUpdate),
+    );
+  }
+
+  factory ExerciseTranslationRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExerciseTranslationRow(
+      id: serializer.fromJson<int>(json['id']),
+      uuid: serializer.fromJson<String>(json['uuid']),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      languageId: serializer.fromJson<int>(json['languageId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      created: serializer.fromJson<DateTime>(json['created']),
+      lastUpdate: serializer.fromJson<DateTime>(json['lastUpdate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'uuid': serializer.toJson<String>(uuid),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'languageId': serializer.toJson<int>(languageId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'created': serializer.toJson<DateTime>(created),
+      'lastUpdate': serializer.toJson<DateTime>(lastUpdate),
+    };
+  }
+
+  ExerciseTranslationRow copyWith({
+    int? id,
+    String? uuid,
+    int? exerciseId,
+    int? languageId,
+    String? name,
+    String? description,
+    DateTime? created,
+    DateTime? lastUpdate,
+  }) => ExerciseTranslationRow(
+    id: id ?? this.id,
+    uuid: uuid ?? this.uuid,
+    exerciseId: exerciseId ?? this.exerciseId,
+    languageId: languageId ?? this.languageId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    created: created ?? this.created,
+    lastUpdate: lastUpdate ?? this.lastUpdate,
+  );
+  ExerciseTranslationRow copyWithCompanion(
+    ExerciseTranslationTableCompanion data,
+  ) {
+    return ExerciseTranslationRow(
+      id: data.id.present ? data.id.value : this.id,
+      uuid: data.uuid.present ? data.uuid.value : this.uuid,
+      exerciseId: data.exerciseId.present ? data.exerciseId.value : this.exerciseId,
+      languageId: data.languageId.present ? data.languageId.value : this.languageId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present ? data.description.value : this.description,
+      created: data.created.present ? data.created.value : this.created,
+      lastUpdate: data.lastUpdate.present ? data.lastUpdate.value : this.lastUpdate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseTranslationRow(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('languageId: $languageId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    uuid,
+    exerciseId,
+    languageId,
+    name,
+    description,
+    created,
+    lastUpdate,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExerciseTranslationRow &&
+          other.id == this.id &&
+          other.uuid == this.uuid &&
+          other.exerciseId == this.exerciseId &&
+          other.languageId == this.languageId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.created == this.created &&
+          other.lastUpdate == this.lastUpdate);
+}
+
+class ExerciseTranslationTableCompanion extends UpdateCompanion<ExerciseTranslationRow> {
   final Value<int> id;
   final Value<String> uuid;
   final Value<int> exerciseId;
@@ -1087,7 +1368,7 @@ class ExerciseTranslationTableCompanion extends UpdateCompanion<Translation> {
        description = Value(description),
        created = Value(created),
        lastUpdate = Value(lastUpdate);
-  static Insertable<Translation> custom({
+  static Insertable<ExerciseTranslationRow> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<int>? exerciseId,
@@ -9400,7 +9681,7 @@ final class $$LanguageTableTableReferences
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<Translation>>
+  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<ExerciseTranslationRow>>
   _exerciseTranslationTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseTranslationTable,
     aliasName: $_aliasNameGenerator(
@@ -9609,7 +9890,11 @@ class $$LanguageTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (exerciseTranslationTableRefs)
-                    await $_getPrefetchedData<Language, $LanguageTableTable, Translation>(
+                    await $_getPrefetchedData<
+                      Language,
+                      $LanguageTableTable,
+                      ExerciseTranslationRow
+                    >(
                       currentTable: table,
                       referencedTable: $$LanguageTableTableReferences
                           ._exerciseTranslationTableRefsTable(db),
@@ -9845,7 +10130,7 @@ final class $$ExerciseCategoryTableTableReferences
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$ExerciseTableTable, List<Exercise>> _exerciseTableRefsTable(
+  static MultiTypedResultKey<$ExerciseTableTable, List<ExerciseRow>> _exerciseTableRefsTable(
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.exerciseTable,
@@ -10046,7 +10331,7 @@ class $$ExerciseCategoryTableTableTableManager
                     await $_getPrefetchedData<
                       ExerciseCategory,
                       $ExerciseCategoryTableTable,
-                      Exercise
+                      ExerciseRow
                     >(
                       currentTable: table,
                       referencedTable: $$ExerciseCategoryTableTableReferences
@@ -10104,7 +10389,7 @@ typedef $$ExerciseTableTableUpdateCompanionBuilder =
     });
 
 final class $$ExerciseTableTableReferences
-    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseTableTable, Exercise> {
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseTableTable, ExerciseRow> {
   $$ExerciseTableTableReferences(
     super.$_db,
     super.$_table,
@@ -10134,7 +10419,7 @@ final class $$ExerciseTableTableReferences
     );
   }
 
-  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<Translation>>
+  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<ExerciseTranslationRow>>
   _exerciseTranslationTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseTranslationTable,
     aliasName: $_aliasNameGenerator(
@@ -10735,14 +11020,14 @@ class $$ExerciseTableTableTableManager
         RootTableManager<
           _$DriftPowersyncDatabase,
           $ExerciseTableTable,
-          Exercise,
+          ExerciseRow,
           $$ExerciseTableTableFilterComposer,
           $$ExerciseTableTableOrderingComposer,
           $$ExerciseTableTableAnnotationComposer,
           $$ExerciseTableTableCreateCompanionBuilder,
           $$ExerciseTableTableUpdateCompanionBuilder,
-          (Exercise, $$ExerciseTableTableReferences),
-          Exercise,
+          (ExerciseRow, $$ExerciseTableTableReferences),
+          ExerciseRow,
           PrefetchHooks Function({
             bool categoryId,
             bool exerciseTranslationTableRefs,
@@ -10864,7 +11149,11 @@ class $$ExerciseTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (exerciseTranslationTableRefs)
-                        await $_getPrefetchedData<Exercise, $ExerciseTableTable, Translation>(
+                        await $_getPrefetchedData<
+                          ExerciseRow,
+                          $ExerciseTableTable,
+                          ExerciseTranslationRow
+                        >(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
                               ._exerciseTranslationTableRefsTable(db),
@@ -10881,7 +11170,7 @@ class $$ExerciseTableTableTableManager
                         ),
                       if (exerciseMuscleM2NRefs)
                         await $_getPrefetchedData<
-                          Exercise,
+                          ExerciseRow,
                           $ExerciseTableTable,
                           ExerciseMuscleM2NData
                         >(
@@ -10901,7 +11190,7 @@ class $$ExerciseTableTableTableManager
                         ),
                       if (exerciseSecondaryMuscleM2NRefs)
                         await $_getPrefetchedData<
-                          Exercise,
+                          ExerciseRow,
                           $ExerciseTableTable,
                           ExerciseSecondaryMuscleM2NData
                         >(
@@ -10921,7 +11210,7 @@ class $$ExerciseTableTableTableManager
                         ),
                       if (exerciseEquipmentM2NRefs)
                         await $_getPrefetchedData<
-                          Exercise,
+                          ExerciseRow,
                           $ExerciseTableTable,
                           ExerciseEquipmentM2NData
                         >(
@@ -10940,7 +11229,7 @@ class $$ExerciseTableTableTableManager
                           typedResults: items,
                         ),
                       if (exerciseImageTableRefs)
-                        await $_getPrefetchedData<Exercise, $ExerciseTableTable, ExerciseImage>(
+                        await $_getPrefetchedData<ExerciseRow, $ExerciseTableTable, ExerciseImage>(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
                               ._exerciseImageTableRefsTable(db),
@@ -10956,7 +11245,7 @@ class $$ExerciseTableTableTableManager
                           typedResults: items,
                         ),
                       if (exerciseVideoTableRefs)
-                        await $_getPrefetchedData<Exercise, $ExerciseTableTable, Video>(
+                        await $_getPrefetchedData<ExerciseRow, $ExerciseTableTable, Video>(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
                               ._exerciseVideoTableRefsTable(db),
@@ -10983,14 +11272,14 @@ typedef $$ExerciseTableTableProcessedTableManager =
     ProcessedTableManager<
       _$DriftPowersyncDatabase,
       $ExerciseTableTable,
-      Exercise,
+      ExerciseRow,
       $$ExerciseTableTableFilterComposer,
       $$ExerciseTableTableOrderingComposer,
       $$ExerciseTableTableAnnotationComposer,
       $$ExerciseTableTableCreateCompanionBuilder,
       $$ExerciseTableTableUpdateCompanionBuilder,
-      (Exercise, $$ExerciseTableTableReferences),
-      Exercise,
+      (ExerciseRow, $$ExerciseTableTableReferences),
+      ExerciseRow,
       PrefetchHooks Function({
         bool categoryId,
         bool exerciseTranslationTableRefs,
@@ -11027,7 +11316,12 @@ typedef $$ExerciseTranslationTableTableUpdateCompanionBuilder =
     });
 
 final class $$ExerciseTranslationTableTableReferences
-    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseTranslationTableTable, Translation> {
+    extends
+        BaseReferences<
+          _$DriftPowersyncDatabase,
+          $ExerciseTranslationTableTable,
+          ExerciseTranslationRow
+        > {
   $$ExerciseTranslationTableTableReferences(
     super.$_db,
     super.$_table,
@@ -11327,14 +11621,14 @@ class $$ExerciseTranslationTableTableTableManager
         RootTableManager<
           _$DriftPowersyncDatabase,
           $ExerciseTranslationTableTable,
-          Translation,
+          ExerciseTranslationRow,
           $$ExerciseTranslationTableTableFilterComposer,
           $$ExerciseTranslationTableTableOrderingComposer,
           $$ExerciseTranslationTableTableAnnotationComposer,
           $$ExerciseTranslationTableTableCreateCompanionBuilder,
           $$ExerciseTranslationTableTableUpdateCompanionBuilder,
-          (Translation, $$ExerciseTranslationTableTableReferences),
-          Translation,
+          (ExerciseTranslationRow, $$ExerciseTranslationTableTableReferences),
+          ExerciseTranslationRow,
           PrefetchHooks Function({bool exerciseId, bool languageId})
         > {
   $$ExerciseTranslationTableTableTableManager(
@@ -11470,14 +11764,14 @@ typedef $$ExerciseTranslationTableTableProcessedTableManager =
     ProcessedTableManager<
       _$DriftPowersyncDatabase,
       $ExerciseTranslationTableTable,
-      Translation,
+      ExerciseTranslationRow,
       $$ExerciseTranslationTableTableFilterComposer,
       $$ExerciseTranslationTableTableOrderingComposer,
       $$ExerciseTranslationTableTableAnnotationComposer,
       $$ExerciseTranslationTableTableCreateCompanionBuilder,
       $$ExerciseTranslationTableTableUpdateCompanionBuilder,
-      (Translation, $$ExerciseTranslationTableTableReferences),
-      Translation,
+      (ExerciseTranslationRow, $$ExerciseTranslationTableTableReferences),
+      ExerciseTranslationRow,
       PrefetchHooks Function({bool exerciseId, bool languageId})
     >;
 typedef $$MuscleTableTableCreateCompanionBuilder =

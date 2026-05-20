@@ -34,7 +34,7 @@ class CategoryEquipmentRow extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Chip(
-            label: Text(getServerStringTranslation(exercise.category!.name, context)),
+            label: Text(getServerStringTranslation(exercise.category.name, context)),
             padding: EdgeInsets.zero,
             backgroundColor: theme.splashColor,
           ),

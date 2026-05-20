@@ -20,51 +20,33 @@ import 'package:equatable/equatable.dart';
 import 'package:wger/models/core/language.dart';
 import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/comment.dart';
-import 'package:wger/models/exercises/exercise.dart';
 
 class Translation extends Equatable {
   final int? id;
   final String? uuid;
-  late final int languageId;
-  late final Language languageObj;
+  final Language language;
   final DateTime? created;
-  late final int? exerciseId;
+  final int? exerciseId;
   final String name;
   final String description;
-
   final String descriptionSource;
+  final List<Comment> notes;
+  final List<Alias> aliases;
 
-  List<Comment> notes = [];
-  List<Alias> aliases = [];
+  int get languageId => language.id;
 
-  Translation({
+  const Translation({
     this.id,
     this.uuid,
     this.created,
     required this.name,
     required this.description,
     this.descriptionSource = '',
-    int? exerciseId,
-    Language? language,
-  }) {
-    if (exerciseId != null) {
-      this.exerciseId = exerciseId;
-    }
-
-    if (language != null) {
-      languageObj = language;
-      languageId = language.id;
-    }
-  }
-
-  set exercise(Exercise exercise) {
-    exerciseId = exercise.id;
-  }
-
-  set language(Language language) {
-    languageObj = language;
-    languageId = language.id;
-  }
+    this.exerciseId,
+    required this.language,
+    this.notes = const [],
+    this.aliases = const [],
+  });
 
   @override
   List<Object?> get props => [

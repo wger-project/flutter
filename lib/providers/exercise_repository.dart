@@ -31,6 +31,7 @@ import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises_notifier.dart';
@@ -201,44 +202,80 @@ class ExerciseRepository {
         videosByExercise.putIfAbsent(v.exerciseId, () => []).add(v);
       }
 
-      final map = <int, Exercise>{};
+      // First pass over the exercise+translation JOIN: collect one row per
+      // exercise (the exercise side repeats per translation) and group the
+      // hydrated translations by exercise id.
+      final exerciseRowById = <int, ExerciseRow>{};
+      final translationsByExercise = <int, List<Translation>>{};
       for (final row in exerciseRows!) {
-        final exercise = row.readTable(_db.exerciseTable);
-        final translation = row.readTableOrNull(_db.exerciseTranslationTable);
-        final entry = map.putIfAbsent(exercise.id, () => exercise);
+        final exerciseRow = row.readTable(_db.exerciseTable);
+        exerciseRowById[exerciseRow.id] = exerciseRow;
 
-        if (translation != null && !entry.translations.any((t) => t.id == translation.id)) {
-          // Read languageId directly from the row: the Translation model
-          // declares it `late final` and only initialises it via the
-          // `language` setter, so we can't read it off the dart object.
-          final langId = row.read(_db.exerciseTranslationTable.languageId);
-          final language = langId == null ? null : languageById[langId];
-          if (language != null) {
-            translation.language = language;
-          }
-          entry.translations.add(translation);
+        final translationRow = row.readTableOrNull(_db.exerciseTranslationTable);
+        if (translationRow == null) {
+          continue;
         }
+        // Skip translations whose language has not synced yet: the language
+        // table catches up on a later emission, so the translation reappears
+        // then. This keeps Translation.language a non-null guarantee.
+        final language = languageById[translationRow.languageId];
+        if (language == null) {
+          continue;
+        }
+        final list = translationsByExercise.putIfAbsent(exerciseRow.id, () => []);
+        if (list.any((t) => t.id == translationRow.id)) {
+          continue;
+        }
+        list.add(
+          Translation(
+            id: translationRow.id,
+            uuid: translationRow.uuid,
+            created: translationRow.created,
+            name: translationRow.name,
+            description: translationRow.description,
+            exerciseId: translationRow.exerciseId,
+            language: language,
+          ),
+        );
       }
 
-      for (final ex in map.values) {
-        ex.category = categoryById[ex.categoryId];
-        ex.muscles = [
-          for (final id in primaryByExercise[ex.id] ?? const <int>[])
-            if (muscleById[id] != null) muscleById[id]!,
-        ];
-        ex.musclesSecondary = [
-          for (final id in secondaryByExercise[ex.id] ?? const <int>[])
-            if (muscleById[id] != null) muscleById[id]!,
-        ];
-        ex.equipment = [
-          for (final id in equipmentByExercise[ex.id] ?? const <int>[])
-            if (equipmentById[id] != null) equipmentById[id]!,
-        ];
-        ex.images = imagesByExercise[ex.id] ?? [];
-        ex.videos = videosByExercise[ex.id] ?? [];
+      // Second pass: assemble the immutable exercises. Skip any whose
+      // category has not synced yet (same transient-window argument as the
+      // translation language above).
+      final exercises = <Exercise>[];
+      for (final exerciseRow in exerciseRowById.values) {
+        final category = categoryById[exerciseRow.categoryId];
+        if (category == null) {
+          continue;
+        }
+        exercises.add(
+          Exercise(
+            id: exerciseRow.id,
+            uuid: exerciseRow.uuid,
+            created: exerciseRow.created,
+            lastUpdate: exerciseRow.lastUpdate,
+            variationGroup: exerciseRow.variationGroup,
+            category: category,
+            muscles: [
+              for (final id in primaryByExercise[exerciseRow.id] ?? const <int>[])
+                if (muscleById[id] != null) muscleById[id]!,
+            ],
+            musclesSecondary: [
+              for (final id in secondaryByExercise[exerciseRow.id] ?? const <int>[])
+                if (muscleById[id] != null) muscleById[id]!,
+            ],
+            equipment: [
+              for (final id in equipmentByExercise[exerciseRow.id] ?? const <int>[])
+                if (equipmentById[id] != null) equipmentById[id]!,
+            ],
+            images: imagesByExercise[exerciseRow.id] ?? const [],
+            videos: videosByExercise[exerciseRow.id] ?? const [],
+            translations: translationsByExercise[exerciseRow.id] ?? const [],
+          ),
+        );
       }
 
-      controller.add(ExerciseState(map.values.toList()));
+      controller.add(ExerciseState(exercises));
     }
 
     controller = StreamController<ExerciseState>(

@@ -61,7 +61,6 @@ final testBenchPress = Exercise(
   uuid: '364f196c-881b-4839-8bfc-9e8f651521b6',
   created: DateTime(2021, 09, 01),
   lastUpdate: DateTime(2021, 09, 10),
-  categoryId: 1,
   category: testCategoryArms,
   equipment: const [testEquipmentBench, testEquipmentDumbbell],
   muscles: const [tMuscle1, tMuscle2],
@@ -74,7 +73,6 @@ final testCrunches = Exercise(
   uuid: '82415754-fc4c-49ea-8ca7-1516dd36d5a0',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 10),
-  categoryId: 2,
   category: testCategoryLegs,
   equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
@@ -87,7 +85,6 @@ final testDeadLift = Exercise(
   uuid: 'ca84e2c5-5608-4d6d-ba57-6d4b6b5e7acd',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 01),
-  categoryId: 3,
   category: testCategoryAbs,
   equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
@@ -100,7 +97,6 @@ final testCurls = Exercise(
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 01),
-  categoryId: 3,
   category: testCategoryAbs,
   equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
@@ -113,7 +109,6 @@ final testSquats = Exercise(
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 01),
-  categoryId: 3,
   category: testCategoryAbs,
   equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
@@ -126,7 +121,6 @@ final testSideRaises = Exercise(
   uuid: '721ff972-c568-41e3-8cf5-cf1e5c5c801c',
   created: DateTime(2022, 11, 01),
   lastUpdate: DateTime(2022, 11, 01),
-  categoryId: 4,
   category: testCategoryShoulders,
   equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
@@ -238,12 +232,12 @@ List<Exercise> getTestExercises() {
 }
 
 List<Exercise> getScreenshotExercises() {
-  testBenchPress.translations = benchPressTranslations;
-  testCrunches.translations = crunchesTranslations;
-  testDeadLift.translations = deadLiftTranslations;
-  testCurls.translations = curlsTranslations;
-  testSquats.translations = squatsTranslations;
-  testSideRaises.translations = raisesTranslations;
-
-  return [testBenchPress, testCrunches, testDeadLift, testCurls, testSquats, testSideRaises];
+  return [
+    testBenchPress.copyWith(translations: benchPressTranslations),
+    testCrunches.copyWith(translations: crunchesTranslations),
+    testDeadLift.copyWith(translations: deadLiftTranslations),
+    testCurls.copyWith(translations: curlsTranslations),
+    testSquats.copyWith(translations: squatsTranslations),
+    testSideRaises.copyWith(translations: raisesTranslations),
+  ];
 }

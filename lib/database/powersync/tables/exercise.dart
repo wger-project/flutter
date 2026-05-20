@@ -21,15 +21,13 @@ import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/exercise_image_style_converter.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 
 import 'language.dart';
 
-@UseRowClass(Exercise)
+@DataClassName('ExerciseRow')
 class ExerciseTable extends Table {
   @override
   String get tableName => 'exercises_exercise';
@@ -53,7 +51,7 @@ const PowersyncExerciseTable = ps.RawTable.inferred(
   schema: ps.RawTableSchema(),
 );
 
-@UseRowClass(Translation)
+@DataClassName('ExerciseTranslationRow')
 class ExerciseTranslationTable extends Table {
   @override
   String get tableName => 'exercises_translation';
