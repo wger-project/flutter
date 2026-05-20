@@ -28,6 +28,7 @@ import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/widgets/core/decimal_input.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
@@ -54,10 +55,10 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
 
   double setsSliderValue = 1.0;
 
-  final weightController = TextEditingController();
-  final maxWeightController = TextEditingController();
-  final repetitionsController = TextEditingController();
-  final maxRepetitionsController = TextEditingController();
+  num? _weight;
+  num? _maxWeight;
+  num? _reps;
+  num? _maxReps;
   final restController = TextEditingController();
   final maxRestController = TextEditingController();
   final rirController = TextEditingController();
@@ -76,19 +77,16 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
     }
 
     if (widget.entry.weightConfigs.isNotEmpty) {
-      weightController.text = widget.entry.weightConfigs.first.value.toString();
+      _weight = widget.entry.weightConfigs.first.value;
     }
     if (widget.entry.maxWeightConfigs.isNotEmpty) {
-      maxWeightController.text = widget.entry.maxWeightConfigs.first.value.toString();
+      _maxWeight = widget.entry.maxWeightConfigs.first.value;
     }
-
     if (widget.entry.repetitionsConfigs.isNotEmpty) {
-      repetitionsController.text = widget.entry.repetitionsConfigs.first.value.round().toString();
+      _reps = widget.entry.repetitionsConfigs.first.value;
     }
     if (widget.entry.maxRepetitionsConfigs.isNotEmpty) {
-      maxRepetitionsController.text = widget.entry.maxRepetitionsConfigs.first.value
-          .round()
-          .toString();
+      _maxReps = widget.entry.maxRepetitionsConfigs.first.value;
     }
 
     if (widget.entry.restTimeConfigs.isNotEmpty) {
@@ -105,12 +103,6 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
 
   @override
   void dispose() {
-    weightController.dispose();
-    maxWeightController.dispose();
-
-    repetitionsController.dispose();
-    maxRepetitionsController.dispose();
-
     restController.dispose();
     maxRestController.dispose();
 
@@ -228,32 +220,20 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
             spacing: 10,
             children: [
               Flexible(
-                child: TextFormField(
+                child: DecimalInputWidget(
                   key: const ValueKey('field-weight'),
-                  controller: weightController,
-                  keyboardType: textInputTypeDecimal,
-                  decoration: InputDecoration(labelText: i18n.weight),
-                  validator: (value) {
-                    if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                      return i18n.enterValidNumber;
-                    }
-                    return null;
-                  },
+                  value: _weight,
+                  labelText: i18n.weight,
+                  onChanged: (v) => _weight = v,
                 ),
               ),
               if (!widget.simpleMode)
                 Flexible(
-                  child: TextFormField(
+                  child: DecimalInputWidget(
                     key: const ValueKey('field-max-weight'),
-                    controller: maxWeightController,
-                    keyboardType: textInputTypeDecimal,
-                    decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    value: _maxWeight,
+                    labelText: i18n.max,
+                    onChanged: (v) => _maxWeight = v,
                   ),
                 ),
             ],
@@ -270,32 +250,20 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
             spacing: 10,
             children: [
               Flexible(
-                child: TextFormField(
+                child: DecimalInputWidget(
                   key: const ValueKey('field-repetitions'),
-                  controller: repetitionsController,
-                  keyboardType: textInputTypeDecimal,
-                  decoration: InputDecoration(labelText: i18n.repetitions),
-                  validator: (value) {
-                    if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                      return i18n.enterValidNumber;
-                    }
-                    return null;
-                  },
+                  value: _reps,
+                  labelText: i18n.repetitions,
+                  onChanged: (v) => _reps = v,
                 ),
               ),
               if (!widget.simpleMode)
                 Flexible(
-                  child: TextFormField(
+                  child: DecimalInputWidget(
                     key: const ValueKey('field-max-repetitions'),
-                    controller: maxRepetitionsController,
-                    keyboardType: textInputTypeDecimal,
-                    decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    value: _maxReps,
+                    labelText: i18n.max,
+                    onChanged: (v) => _maxReps = v,
                   ),
                 ),
             ],
@@ -359,24 +327,20 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                           setsSliderValue == 0 ? null : setsSliderValue.round(),
                           ConfigType.sets,
                         ),
+                        provider.handleConfig(widget.entry, _weight, ConfigType.weight),
                         provider.handleConfig(
                           widget.entry,
-                          numberFormat.tryParse(weightController.text),
-                          ConfigType.weight,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(maxWeightController.text),
+                          _maxWeight,
                           ConfigType.maxWeight,
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          numberFormat.tryParse(repetitionsController.text),
+                          _reps,
                           ConfigType.repetitions,
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          numberFormat.tryParse(maxRepetitionsController.text),
+                          _maxReps,
                           ConfigType.maxRepetitions,
                         ),
                         provider.handleConfig(

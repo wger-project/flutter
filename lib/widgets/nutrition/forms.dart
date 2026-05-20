@@ -30,6 +30,7 @@ import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/datetime_input.dart';
+import 'package:wger/widgets/core/decimal_input.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
@@ -651,44 +652,44 @@ class _PlanFormState extends ConsumerState<PlanForm> {
           if (_goalType == GoalType.basic || _goalType == GoalType.advanced)
             Column(
               children: [
-                GoalMacros(
-                  val: widget._plan.goalEnergy?.toString(),
-                  label: AppLocalizations.of(context).goalEnergy,
-                  suffix: AppLocalizations.of(context).kcal,
-                  onSave: (double value) => widget._plan.goalEnergy = value,
+                DecimalInputWidget(
                   key: const Key('field-goal-energy'),
+                  value: widget._plan.goalEnergy,
+                  labelText: AppLocalizations.of(context).goalEnergy,
+                  suffixText: AppLocalizations.of(context).kcal,
+                  onChanged: (value) => widget._plan.goalEnergy = value,
                 ),
-                GoalMacros(
-                  val: widget._plan.goalProtein?.toString(),
-                  label: AppLocalizations.of(context).goalProtein,
-                  suffix: AppLocalizations.of(context).g,
-                  onSave: (double value) => widget._plan.goalProtein = value,
+                DecimalInputWidget(
                   key: const Key('field-goal-protein'),
+                  value: widget._plan.goalProtein,
+                  labelText: AppLocalizations.of(context).goalProtein,
+                  suffixText: AppLocalizations.of(context).g,
+                  onChanged: (value) => widget._plan.goalProtein = value,
                 ),
-                GoalMacros(
-                  val: widget._plan.goalCarbohydrates?.toString(),
-                  label: AppLocalizations.of(context).goalCarbohydrates,
-                  suffix: AppLocalizations.of(context).g,
-                  onSave: (double value) => widget._plan.goalCarbohydrates = value,
+                DecimalInputWidget(
                   key: const Key('field-goal-carbohydrates'),
+                  value: widget._plan.goalCarbohydrates,
+                  labelText: AppLocalizations.of(context).goalCarbohydrates,
+                  suffixText: AppLocalizations.of(context).g,
+                  onChanged: (value) => widget._plan.goalCarbohydrates = value,
                 ),
-                GoalMacros(
-                  val: widget._plan.goalFat?.toString(),
-                  label: AppLocalizations.of(context).goalFat,
-                  suffix: AppLocalizations.of(context).g,
-                  onSave: (double value) => widget._plan.goalFat = value,
+                DecimalInputWidget(
                   key: const Key('field-goal-fat'),
+                  value: widget._plan.goalFat,
+                  labelText: AppLocalizations.of(context).goalFat,
+                  suffixText: AppLocalizations.of(context).g,
+                  onChanged: (value) => widget._plan.goalFat = value,
                 ),
               ],
             ),
 
           if (_goalType == GoalType.advanced)
-            GoalMacros(
-              val: widget._plan.goalFiber?.toString(),
-              label: AppLocalizations.of(context).goalFiber,
-              suffix: AppLocalizations.of(context).g,
-              onSave: (double value) => widget._plan.goalFiber = value,
+            DecimalInputWidget(
               key: const Key('field-goal-fiber'),
+              value: widget._plan.goalFiber,
+              labelText: AppLocalizations.of(context).goalFiber,
+              suffixText: AppLocalizations.of(context).g,
+              onChanged: (value) => widget._plan.goalFiber = value,
             ),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
@@ -721,49 +722,6 @@ class _PlanFormState extends ConsumerState<PlanForm> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class GoalMacros extends StatelessWidget {
-  const GoalMacros({
-    super.key,
-    required this.label,
-    required this.suffix,
-    required this.onSave,
-    this.val,
-  });
-
-  final String label;
-  final String suffix;
-  final Function(double) onSave;
-  final String? val;
-
-  @override
-  Widget build(BuildContext context) {
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-
-    return TextFormField(
-      initialValue: val ?? '',
-      decoration: InputDecoration(labelText: label, suffixText: suffix),
-      keyboardType: textInputTypeDecimal,
-      onSaved: (newValue) {
-        if (newValue == null || newValue == '') {
-          return;
-        }
-        onSave(numberFormat.parse(newValue) as double);
-      },
-      validator: (value) {
-        if (value == '') {
-          return null;
-        }
-        try {
-          numberFormat.parse(value!);
-        } catch (error) {
-          return AppLocalizations.of(context).enterValidNumber;
-        }
-        return null;
-      },
     );
   }
 }

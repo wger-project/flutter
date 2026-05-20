@@ -18,13 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/widgets/core/datetime_input.dart';
+import 'package:wger/widgets/core/decimal_input.dart';
 import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
@@ -120,7 +119,6 @@ class MeasurementEntryForm extends ConsumerStatefulWidget {
 
 class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   final _form = GlobalKey<FormState>();
-  final _valueController = TextEditingController();
   final _notesController = TextEditingController();
 
   late final String? _existingId = widget._entry?.id;
@@ -138,7 +136,6 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
 
   @override
   void dispose() {
-    _valueController.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -149,13 +146,6 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
     final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(
       widget._categoryId,
     );
-
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-
-    // If the value is not empty, format it
-    if (_valueController.text.isEmpty && _value != null) {
-      _valueController.text = numberFormat.format(_value);
-    }
 
     return FutureBuilder(
       future: categoryFuture,
@@ -205,28 +195,12 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
               ),
 
               // Value
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).value,
-                  suffixIcon: Text(category.unit),
-                  suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                ),
-                controller: _valueController,
-                keyboardType: textInputTypeDecimal,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return AppLocalizations.of(context).enterValue;
-                  }
-                  try {
-                    numberFormat.parse(value);
-                  } catch (error) {
-                    return AppLocalizations.of(context).enterValidNumber;
-                  }
-                  return null;
-                },
-                onSaved: (newValue) {
-                  _value = numberFormat.parse(newValue!);
-                },
+              DecimalInputWidget(
+                value: _value,
+                labelText: AppLocalizations.of(context).value,
+                suffixText: category.unit,
+                isRequired: true,
+                onChanged: (value) => _value = value,
               ),
               // Notes
               TextFormField(
