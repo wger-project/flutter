@@ -28,20 +28,6 @@ import 'package:wger/powersync/api_client.dart';
 
 final logger = Logger('powersync-django');
 
-/// Postgres Response codes that we cannot recover from by retrying.
-final List<RegExp> fatalResponseCodes = [
-  // Class 22 — Data Exception
-  // Examples include data type mismatch.
-  RegExp(r'^22...$'),
-
-  // Class 23 — Integrity Constraint Violation.
-  // Examples include NOT NULL, FOREIGN KEY and UNIQUE violations.
-  RegExp(r'^23...$'),
-
-  // INSUFFICIENT PRIVILEGE - typically a row-level security violation
-  RegExp(r'^42501$'),
-];
-
 /// Exception thrown when the wger backend returned a 200 response whose
 /// body indicates that the operation was rejected (validation failure,
 /// missing object, ownership violation, unknown table…). Carries the
