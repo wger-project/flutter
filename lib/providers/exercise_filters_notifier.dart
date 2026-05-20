@@ -121,7 +121,7 @@ class ExerciseListFiltersNotifier extends _$ExerciseListFiltersNotifier {
       final term = filters.searchTerm.toLowerCase();
       items = items.where((e) {
         // TODO: FullTextSearch?
-        final title = (e.getTranslation(languageCode).name ?? '').toLowerCase();
+        final title = e.getTranslation(languageCode).name.toLowerCase();
         return title.contains(term);
       }).toList();
     }
