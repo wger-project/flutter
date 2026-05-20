@@ -19,7 +19,9 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/exercise_image_style_converter.dart';
+import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -71,6 +73,54 @@ class ExerciseTranslationTable extends Table {
 const PowersyncTranslationTable = ps.RawTable.inferred(
   name: 'exercises_translation',
   schema: ps.RawTableSchema(),
+);
+
+@UseRowClass(Alias)
+class ExerciseAliasTable extends Table {
+  @override
+  String get tableName => 'exercises_alias';
+
+  IntColumn get id => integer()();
+  TextColumn get uuid => text()();
+  IntColumn get translationId =>
+      integer().named('translation_id').references(ExerciseTranslationTable, #id)();
+  TextColumn get alias => text()();
+}
+
+const PowersyncExerciseAliasTable = ps.Table(
+  'exercises_alias',
+  [
+    ps.Column.text('uuid'),
+    ps.Column.integer('translation_id'),
+    ps.Column.text('alias'),
+  ],
+  indexes: [
+    ps.Index('translation', [ps.IndexedColumn('translation_id')]),
+  ],
+);
+
+@UseRowClass(Comment)
+class ExerciseCommentTable extends Table {
+  @override
+  String get tableName => 'exercises_exercisecomment';
+
+  IntColumn get id => integer()();
+  TextColumn get uuid => text()();
+  IntColumn get translationId =>
+      integer().named('translation_id').references(ExerciseTranslationTable, #id)();
+  TextColumn get comment => text()();
+}
+
+const PowersyncExerciseCommentTable = ps.Table(
+  'exercises_exercisecomment',
+  [
+    ps.Column.text('uuid'),
+    ps.Column.integer('translation_id'),
+    ps.Column.text('comment'),
+  ],
+  indexes: [
+    ps.Index('translation', [ps.IndexedColumn('translation_id')]),
+  ],
 );
 
 @UseRowClass(ExerciseCategory)

@@ -25,7 +25,9 @@ import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/core/language.dart';
 import 'package:wger/models/core/search_options.dart';
+import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_filters.dart';
@@ -158,6 +160,8 @@ class ExerciseRepository {
     List<ExerciseEquipmentM2NData>? equipmentM2N;
     List<ExerciseImage>? images;
     List<Video>? videos;
+    List<Alias>? aliases;
+    List<Comment>? comments;
 
     late StreamController<ExerciseState> controller;
     final subs = <StreamSubscription>[];
@@ -172,7 +176,9 @@ class ExerciseRepository {
           secondaryM2N == null ||
           equipmentM2N == null ||
           images == null ||
-          videos == null) {
+          videos == null ||
+          aliases == null ||
+          comments == null) {
         return;
       }
 
@@ -200,6 +206,16 @@ class ExerciseRepository {
       final videosByExercise = <int, List<Video>>{};
       for (final v in videos!) {
         videosByExercise.putIfAbsent(v.exerciseId, () => []).add(v);
+      }
+      final aliasesByTranslation = <int, List<Alias>>{};
+      for (final a in aliases!) {
+        if (a.translationId != null) {
+          aliasesByTranslation.putIfAbsent(a.translationId!, () => []).add(a);
+        }
+      }
+      final commentsByTranslation = <int, List<Comment>>{};
+      for (final c in comments!) {
+        commentsByTranslation.putIfAbsent(c.translationId, () => []).add(c);
       }
 
       // First pass over the exercise+translation JOIN: collect one row per
@@ -235,6 +251,8 @@ class ExerciseRepository {
             description: translationRow.description,
             exerciseId: translationRow.exerciseId,
             language: language,
+            aliases: aliasesByTranslation[translationRow.id] ?? const [],
+            notes: commentsByTranslation[translationRow.id] ?? const [],
           ),
         );
       }
@@ -305,6 +323,8 @@ class ExerciseRepository {
         addSub(_db.select(_db.exerciseEquipmentM2N).watch(), (v) => equipmentM2N = v);
         addSub(_db.select(_db.exerciseImageTable).watch(), (v) => images = v);
         addSub(_db.select(_db.exerciseVideoTable).watch(), (v) => videos = v);
+        addSub(_db.select(_db.exerciseAliasTable).watch(), (v) => aliases = v);
+        addSub(_db.select(_db.exerciseCommentTable).watch(), (v) => comments = v);
       },
       onCancel: () async {
         for (final s in subs) {

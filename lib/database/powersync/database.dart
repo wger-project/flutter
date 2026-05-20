@@ -27,7 +27,9 @@ import 'package:wger/database/converters/workout_impression_converter.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/models/core/language.dart';
 import 'package:wger/models/core/license.dart';
+import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/comment.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
@@ -70,6 +72,8 @@ part 'database.g.dart';
     // Exercises
     ExerciseTable,
     ExerciseTranslationTable,
+    ExerciseAliasTable,
+    ExerciseCommentTable,
     MuscleTable,
     ExerciseMuscleM2N,
     ExerciseSecondaryMuscleM2N,

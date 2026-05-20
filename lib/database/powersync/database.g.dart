@@ -1466,6 +1466,432 @@ class ExerciseTranslationTableCompanion extends UpdateCompanion<ExerciseTranslat
   }
 }
 
+class $ExerciseAliasTableTable extends ExerciseAliasTable
+    with TableInfo<$ExerciseAliasTableTable, Alias> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExerciseAliasTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _translationIdMeta = const VerificationMeta(
+    'translationId',
+  );
+  @override
+  late final GeneratedColumn<int> translationId = GeneratedColumn<int>(
+    'translation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_translation (id)',
+    ),
+  );
+  static const VerificationMeta _aliasMeta = const VerificationMeta('alias');
+  @override
+  late final GeneratedColumn<String> alias = GeneratedColumn<String>(
+    'alias',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, uuid, translationId, alias];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'exercises_alias';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Alias> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(
+        _uuidMeta,
+        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uuidMeta);
+    }
+    if (data.containsKey('translation_id')) {
+      context.handle(
+        _translationIdMeta,
+        translationId.isAcceptableOrUnknown(
+          data['translation_id']!,
+          _translationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_translationIdMeta);
+    }
+    if (data.containsKey('alias')) {
+      context.handle(
+        _aliasMeta,
+        alias.isAcceptableOrUnknown(data['alias']!, _aliasMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_aliasMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  Alias map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Alias(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      translationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}translation_id'],
+      )!,
+      alias: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}alias'],
+      )!,
+    );
+  }
+
+  @override
+  $ExerciseAliasTableTable createAlias(String alias) {
+    return $ExerciseAliasTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExerciseAliasTableCompanion extends UpdateCompanion<Alias> {
+  final Value<int> id;
+  final Value<String> uuid;
+  final Value<int> translationId;
+  final Value<String> alias;
+  final Value<int> rowid;
+  const ExerciseAliasTableCompanion({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    this.translationId = const Value.absent(),
+    this.alias = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExerciseAliasTableCompanion.insert({
+    required int id,
+    required String uuid,
+    required int translationId,
+    required String alias,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       uuid = Value(uuid),
+       translationId = Value(translationId),
+       alias = Value(alias);
+  static Insertable<Alias> custom({
+    Expression<int>? id,
+    Expression<String>? uuid,
+    Expression<int>? translationId,
+    Expression<String>? alias,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
+      if (translationId != null) 'translation_id': translationId,
+      if (alias != null) 'alias': alias,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExerciseAliasTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? uuid,
+    Value<int>? translationId,
+    Value<String>? alias,
+    Value<int>? rowid,
+  }) {
+    return ExerciseAliasTableCompanion(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      translationId: translationId ?? this.translationId,
+      alias: alias ?? this.alias,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
+    }
+    if (translationId.present) {
+      map['translation_id'] = Variable<int>(translationId.value);
+    }
+    if (alias.present) {
+      map['alias'] = Variable<String>(alias.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseAliasTableCompanion(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('translationId: $translationId, ')
+          ..write('alias: $alias, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ExerciseCommentTableTable extends ExerciseCommentTable
+    with TableInfo<$ExerciseCommentTableTable, Comment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExerciseCommentTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _translationIdMeta = const VerificationMeta(
+    'translationId',
+  );
+  @override
+  late final GeneratedColumn<int> translationId = GeneratedColumn<int>(
+    'translation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_translation (id)',
+    ),
+  );
+  static const VerificationMeta _commentMeta = const VerificationMeta(
+    'comment',
+  );
+  @override
+  late final GeneratedColumn<String> comment = GeneratedColumn<String>(
+    'comment',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, uuid, translationId, comment];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'exercises_exercisecomment';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Comment> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(
+        _uuidMeta,
+        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uuidMeta);
+    }
+    if (data.containsKey('translation_id')) {
+      context.handle(
+        _translationIdMeta,
+        translationId.isAcceptableOrUnknown(
+          data['translation_id']!,
+          _translationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_translationIdMeta);
+    }
+    if (data.containsKey('comment')) {
+      context.handle(
+        _commentMeta,
+        comment.isAcceptableOrUnknown(data['comment']!, _commentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_commentMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  Comment map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Comment(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      translationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}translation_id'],
+      )!,
+      comment: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}comment'],
+      )!,
+    );
+  }
+
+  @override
+  $ExerciseCommentTableTable createAlias(String alias) {
+    return $ExerciseCommentTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExerciseCommentTableCompanion extends UpdateCompanion<Comment> {
+  final Value<int> id;
+  final Value<String> uuid;
+  final Value<int> translationId;
+  final Value<String> comment;
+  final Value<int> rowid;
+  const ExerciseCommentTableCompanion({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    this.translationId = const Value.absent(),
+    this.comment = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExerciseCommentTableCompanion.insert({
+    required int id,
+    required String uuid,
+    required int translationId,
+    required String comment,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       uuid = Value(uuid),
+       translationId = Value(translationId),
+       comment = Value(comment);
+  static Insertable<Comment> custom({
+    Expression<int>? id,
+    Expression<String>? uuid,
+    Expression<int>? translationId,
+    Expression<String>? comment,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
+      if (translationId != null) 'translation_id': translationId,
+      if (comment != null) 'comment': comment,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExerciseCommentTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? uuid,
+    Value<int>? translationId,
+    Value<String>? comment,
+    Value<int>? rowid,
+  }) {
+    return ExerciseCommentTableCompanion(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      translationId: translationId ?? this.translationId,
+      comment: comment ?? this.comment,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
+    }
+    if (translationId.present) {
+      map['translation_id'] = Variable<int>(translationId.value);
+    }
+    if (comment.present) {
+      map['comment'] = Variable<String>(comment.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseCommentTableCompanion(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('translationId: $translationId, ')
+          ..write('comment: $comment, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $MuscleTableTable extends MuscleTable with TableInfo<$MuscleTableTable, Muscle> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -9585,6 +10011,8 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   late final $ExerciseTableTable exerciseTable = $ExerciseTableTable(this);
   late final $ExerciseTranslationTableTable exerciseTranslationTable =
       $ExerciseTranslationTableTable(this);
+  late final $ExerciseAliasTableTable exerciseAliasTable = $ExerciseAliasTableTable(this);
+  late final $ExerciseCommentTableTable exerciseCommentTable = $ExerciseCommentTableTable(this);
   late final $MuscleTableTable muscleTable = $MuscleTableTable(this);
   late final $ExerciseMuscleM2NTable exerciseMuscleM2N = $ExerciseMuscleM2NTable(this);
   late final $ExerciseSecondaryMuscleM2NTable exerciseSecondaryMuscleM2N =
@@ -9630,6 +10058,8 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     exerciseCategoryTable,
     exerciseTable,
     exerciseTranslationTable,
+    exerciseAliasTable,
+    exerciseCommentTable,
     muscleTable,
     exerciseMuscleM2N,
     exerciseSecondaryMuscleM2N,
@@ -11371,6 +11801,53 @@ final class $$ExerciseTranslationTableTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
+
+  static MultiTypedResultKey<$ExerciseAliasTableTable, List<Alias>> _exerciseAliasTableRefsTable(
+    _$DriftPowersyncDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.exerciseAliasTable,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseTranslationTable.id,
+      db.exerciseAliasTable.translationId,
+    ),
+  );
+
+  $$ExerciseAliasTableTableProcessedTableManager get exerciseAliasTableRefs {
+    final manager = $$ExerciseAliasTableTableTableManager(
+      $_db,
+      $_db.exerciseAliasTable,
+    ).filter((f) => f.translationId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseAliasTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseCommentTableTable, List<Comment>>
+  _exerciseCommentTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.exerciseCommentTable,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseTranslationTable.id,
+      db.exerciseCommentTable.translationId,
+    ),
+  );
+
+  $$ExerciseCommentTableTableProcessedTableManager get exerciseCommentTableRefs {
+    final manager = $$ExerciseCommentTableTableTableManager(
+      $_db,
+      $_db.exerciseCommentTable,
+    ).filter((f) => f.translationId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseCommentTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$ExerciseTranslationTableTableFilterComposer
@@ -11454,6 +11931,54 @@ class $$ExerciseTranslationTableTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> exerciseAliasTableRefs(
+    Expression<bool> Function($$ExerciseAliasTableTableFilterComposer f) f,
+  ) {
+    final $$ExerciseAliasTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseAliasTable,
+      getReferencedColumn: (t) => t.translationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseAliasTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseAliasTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> exerciseCommentTableRefs(
+    Expression<bool> Function($$ExerciseCommentTableTableFilterComposer f) f,
+  ) {
+    final $$ExerciseCommentTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseCommentTable,
+      getReferencedColumn: (t) => t.translationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseCommentTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseCommentTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 }
 
@@ -11614,6 +12139,54 @@ class $$ExerciseTranslationTableTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> exerciseAliasTableRefs<T extends Object>(
+    Expression<T> Function($$ExerciseAliasTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseAliasTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseAliasTable,
+      getReferencedColumn: (t) => t.translationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseAliasTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseAliasTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> exerciseCommentTableRefs<T extends Object>(
+    Expression<T> Function($$ExerciseCommentTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseCommentTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseCommentTable,
+      getReferencedColumn: (t) => t.translationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseCommentTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseCommentTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ExerciseTranslationTableTableTableManager
@@ -11629,7 +12202,12 @@ class $$ExerciseTranslationTableTableTableManager
           $$ExerciseTranslationTableTableUpdateCompanionBuilder,
           (ExerciseTranslationRow, $$ExerciseTranslationTableTableReferences),
           ExerciseTranslationRow,
-          PrefetchHooks Function({bool exerciseId, bool languageId})
+          PrefetchHooks Function({
+            bool exerciseId,
+            bool languageId,
+            bool exerciseAliasTableRefs,
+            bool exerciseCommentTableRefs,
+          })
         > {
   $$ExerciseTranslationTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -11702,7 +12280,383 @@ class $$ExerciseTranslationTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({exerciseId = false, languageId = false}) {
+          prefetchHooksCallback:
+              ({
+                exerciseId = false,
+                languageId = false,
+                exerciseAliasTableRefs = false,
+                exerciseCommentTableRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (exerciseAliasTableRefs) db.exerciseAliasTable,
+                    if (exerciseCommentTableRefs) db.exerciseCommentTable,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (exerciseId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.exerciseId,
+                                    referencedTable: $$ExerciseTranslationTableTableReferences
+                                        ._exerciseIdTable(db),
+                                    referencedColumn: $$ExerciseTranslationTableTableReferences
+                                        ._exerciseIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+                        if (languageId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.languageId,
+                                    referencedTable: $$ExerciseTranslationTableTableReferences
+                                        ._languageIdTable(db),
+                                    referencedColumn: $$ExerciseTranslationTableTableReferences
+                                        ._languageIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (exerciseAliasTableRefs)
+                        await $_getPrefetchedData<
+                          ExerciseTranslationRow,
+                          $ExerciseTranslationTableTable,
+                          Alias
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTranslationTableTableReferences
+                              ._exerciseAliasTableRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTranslationTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseAliasTableRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.translationId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (exerciseCommentTableRefs)
+                        await $_getPrefetchedData<
+                          ExerciseTranslationRow,
+                          $ExerciseTranslationTableTable,
+                          Comment
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTranslationTableTableReferences
+                              ._exerciseCommentTableRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTranslationTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseCommentTableRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.translationId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ExerciseTranslationTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $ExerciseTranslationTableTable,
+      ExerciseTranslationRow,
+      $$ExerciseTranslationTableTableFilterComposer,
+      $$ExerciseTranslationTableTableOrderingComposer,
+      $$ExerciseTranslationTableTableAnnotationComposer,
+      $$ExerciseTranslationTableTableCreateCompanionBuilder,
+      $$ExerciseTranslationTableTableUpdateCompanionBuilder,
+      (ExerciseTranslationRow, $$ExerciseTranslationTableTableReferences),
+      ExerciseTranslationRow,
+      PrefetchHooks Function({
+        bool exerciseId,
+        bool languageId,
+        bool exerciseAliasTableRefs,
+        bool exerciseCommentTableRefs,
+      })
+    >;
+typedef $$ExerciseAliasTableTableCreateCompanionBuilder =
+    ExerciseAliasTableCompanion Function({
+      required int id,
+      required String uuid,
+      required int translationId,
+      required String alias,
+      Value<int> rowid,
+    });
+typedef $$ExerciseAliasTableTableUpdateCompanionBuilder =
+    ExerciseAliasTableCompanion Function({
+      Value<int> id,
+      Value<String> uuid,
+      Value<int> translationId,
+      Value<String> alias,
+      Value<int> rowid,
+    });
+
+final class $$ExerciseAliasTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseAliasTableTable, Alias> {
+  $$ExerciseAliasTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTranslationTableTable _translationIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.exerciseTranslationTable.createAlias(
+    $_aliasNameGenerator(
+      db.exerciseAliasTable.translationId,
+      db.exerciseTranslationTable.id,
+    ),
+  );
+
+  $$ExerciseTranslationTableTableProcessedTableManager get translationId {
+    final $_column = $_itemColumn<int>('translation_id')!;
+
+    final manager = $$ExerciseTranslationTableTableTableManager(
+      $_db,
+      $_db.exerciseTranslationTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_translationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ExerciseAliasTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseAliasTableTable> {
+  $$ExerciseAliasTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get alias => $composableBuilder(
+    column: $table.alias,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExerciseTranslationTableTableFilterComposer get translationId {
+    final $$ExerciseTranslationTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseAliasTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseAliasTableTable> {
+  $$ExerciseAliasTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get alias => $composableBuilder(
+    column: $table.alias,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExerciseTranslationTableTableOrderingComposer get translationId {
+    final $$ExerciseTranslationTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseAliasTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseAliasTableTable> {
+  $$ExerciseAliasTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => column);
+
+  GeneratedColumn<String> get alias =>
+      $composableBuilder(column: $table.alias, builder: (column) => column);
+
+  $$ExerciseTranslationTableTableAnnotationComposer get translationId {
+    final $$ExerciseTranslationTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseAliasTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $ExerciseAliasTableTable,
+          Alias,
+          $$ExerciseAliasTableTableFilterComposer,
+          $$ExerciseAliasTableTableOrderingComposer,
+          $$ExerciseAliasTableTableAnnotationComposer,
+          $$ExerciseAliasTableTableCreateCompanionBuilder,
+          $$ExerciseAliasTableTableUpdateCompanionBuilder,
+          (Alias, $$ExerciseAliasTableTableReferences),
+          Alias,
+          PrefetchHooks Function({bool translationId})
+        > {
+  $$ExerciseAliasTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $ExerciseAliasTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExerciseAliasTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExerciseAliasTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$ExerciseAliasTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                Value<int> translationId = const Value.absent(),
+                Value<String> alias = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseAliasTableCompanion(
+                id: id,
+                uuid: uuid,
+                translationId: translationId,
+                alias: alias,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String uuid,
+                required int translationId,
+                required String alias,
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseAliasTableCompanion.insert(
+                id: id,
+                uuid: uuid,
+                translationId: translationId,
+                alias: alias,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseAliasTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({translationId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -11722,28 +12676,15 @@ class $$ExerciseTranslationTableTableTableManager
                       dynamic
                     >
                   >(state) {
-                    if (exerciseId) {
+                    if (translationId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.exerciseId,
-                                referencedTable: $$ExerciseTranslationTableTableReferences
-                                    ._exerciseIdTable(db),
-                                referencedColumn: $$ExerciseTranslationTableTableReferences
-                                    ._exerciseIdTable(db)
-                                    .id,
-                              )
-                              as T;
-                    }
-                    if (languageId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.languageId,
-                                referencedTable: $$ExerciseTranslationTableTableReferences
-                                    ._languageIdTable(db),
-                                referencedColumn: $$ExerciseTranslationTableTableReferences
-                                    ._languageIdTable(db)
+                                currentColumn: table.translationId,
+                                referencedTable: $$ExerciseAliasTableTableReferences
+                                    ._translationIdTable(db),
+                                referencedColumn: $$ExerciseAliasTableTableReferences
+                                    ._translationIdTable(db)
                                     .id,
                               )
                               as T;
@@ -11760,19 +12701,329 @@ class $$ExerciseTranslationTableTableTableManager
       );
 }
 
-typedef $$ExerciseTranslationTableTableProcessedTableManager =
+typedef $$ExerciseAliasTableTableProcessedTableManager =
     ProcessedTableManager<
       _$DriftPowersyncDatabase,
-      $ExerciseTranslationTableTable,
-      ExerciseTranslationRow,
-      $$ExerciseTranslationTableTableFilterComposer,
-      $$ExerciseTranslationTableTableOrderingComposer,
-      $$ExerciseTranslationTableTableAnnotationComposer,
-      $$ExerciseTranslationTableTableCreateCompanionBuilder,
-      $$ExerciseTranslationTableTableUpdateCompanionBuilder,
-      (ExerciseTranslationRow, $$ExerciseTranslationTableTableReferences),
-      ExerciseTranslationRow,
-      PrefetchHooks Function({bool exerciseId, bool languageId})
+      $ExerciseAliasTableTable,
+      Alias,
+      $$ExerciseAliasTableTableFilterComposer,
+      $$ExerciseAliasTableTableOrderingComposer,
+      $$ExerciseAliasTableTableAnnotationComposer,
+      $$ExerciseAliasTableTableCreateCompanionBuilder,
+      $$ExerciseAliasTableTableUpdateCompanionBuilder,
+      (Alias, $$ExerciseAliasTableTableReferences),
+      Alias,
+      PrefetchHooks Function({bool translationId})
+    >;
+typedef $$ExerciseCommentTableTableCreateCompanionBuilder =
+    ExerciseCommentTableCompanion Function({
+      required int id,
+      required String uuid,
+      required int translationId,
+      required String comment,
+      Value<int> rowid,
+    });
+typedef $$ExerciseCommentTableTableUpdateCompanionBuilder =
+    ExerciseCommentTableCompanion Function({
+      Value<int> id,
+      Value<String> uuid,
+      Value<int> translationId,
+      Value<String> comment,
+      Value<int> rowid,
+    });
+
+final class $$ExerciseCommentTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseCommentTableTable, Comment> {
+  $$ExerciseCommentTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTranslationTableTable _translationIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.exerciseTranslationTable.createAlias(
+    $_aliasNameGenerator(
+      db.exerciseCommentTable.translationId,
+      db.exerciseTranslationTable.id,
+    ),
+  );
+
+  $$ExerciseTranslationTableTableProcessedTableManager get translationId {
+    final $_column = $_itemColumn<int>('translation_id')!;
+
+    final manager = $$ExerciseTranslationTableTableTableManager(
+      $_db,
+      $_db.exerciseTranslationTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_translationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ExerciseCommentTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseCommentTableTable> {
+  $$ExerciseCommentTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get comment => $composableBuilder(
+    column: $table.comment,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExerciseTranslationTableTableFilterComposer get translationId {
+    final $$ExerciseTranslationTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseCommentTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseCommentTableTable> {
+  $$ExerciseCommentTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get comment => $composableBuilder(
+    column: $table.comment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExerciseTranslationTableTableOrderingComposer get translationId {
+    final $$ExerciseTranslationTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseCommentTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseCommentTableTable> {
+  $$ExerciseCommentTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => column);
+
+  GeneratedColumn<String> get comment =>
+      $composableBuilder(column: $table.comment, builder: (column) => column);
+
+  $$ExerciseTranslationTableTableAnnotationComposer get translationId {
+    final $$ExerciseTranslationTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseCommentTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $ExerciseCommentTableTable,
+          Comment,
+          $$ExerciseCommentTableTableFilterComposer,
+          $$ExerciseCommentTableTableOrderingComposer,
+          $$ExerciseCommentTableTableAnnotationComposer,
+          $$ExerciseCommentTableTableCreateCompanionBuilder,
+          $$ExerciseCommentTableTableUpdateCompanionBuilder,
+          (Comment, $$ExerciseCommentTableTableReferences),
+          Comment,
+          PrefetchHooks Function({bool translationId})
+        > {
+  $$ExerciseCommentTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $ExerciseCommentTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExerciseCommentTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$ExerciseCommentTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$ExerciseCommentTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                Value<int> translationId = const Value.absent(),
+                Value<String> comment = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseCommentTableCompanion(
+                id: id,
+                uuid: uuid,
+                translationId: translationId,
+                comment: comment,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String uuid,
+                required int translationId,
+                required String comment,
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseCommentTableCompanion.insert(
+                id: id,
+                uuid: uuid,
+                translationId: translationId,
+                comment: comment,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseCommentTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({translationId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (translationId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.translationId,
+                                referencedTable: $$ExerciseCommentTableTableReferences
+                                    ._translationIdTable(db),
+                                referencedColumn: $$ExerciseCommentTableTableReferences
+                                    ._translationIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ExerciseCommentTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $ExerciseCommentTableTable,
+      Comment,
+      $$ExerciseCommentTableTableFilterComposer,
+      $$ExerciseCommentTableTableOrderingComposer,
+      $$ExerciseCommentTableTableAnnotationComposer,
+      $$ExerciseCommentTableTableCreateCompanionBuilder,
+      $$ExerciseCommentTableTableUpdateCompanionBuilder,
+      (Comment, $$ExerciseCommentTableTableReferences),
+      Comment,
+      PrefetchHooks Function({bool translationId})
     >;
 typedef $$MuscleTableTableCreateCompanionBuilder =
     MuscleTableCompanion Function({
@@ -20579,6 +21830,10 @@ class $DriftPowersyncDatabaseManager {
         _db,
         _db.exerciseTranslationTable,
       );
+  $$ExerciseAliasTableTableTableManager get exerciseAliasTable =>
+      $$ExerciseAliasTableTableTableManager(_db, _db.exerciseAliasTable);
+  $$ExerciseCommentTableTableTableManager get exerciseCommentTable =>
+      $$ExerciseCommentTableTableTableManager(_db, _db.exerciseCommentTable);
   $$MuscleTableTableTableManager get muscleTable =>
       $$MuscleTableTableTableManager(_db, _db.muscleTable);
   $$ExerciseMuscleM2NTableTableManager get exerciseMuscleM2N =>

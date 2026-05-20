@@ -34,6 +34,8 @@ Schema schema = const Schema(
     PowersyncLicenseTable,
 
     // Exercises (large or wide tables live in the rawTables slot below)
+    PowersyncExerciseAliasTable,
+    PowersyncExerciseCommentTable,
     PowersyncMuscleTable,
     PowersyncExerciseMuscleM2N,
     PowersyncExerciseSecondaryMuscleM2N,
