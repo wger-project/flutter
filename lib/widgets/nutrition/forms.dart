@@ -755,28 +755,28 @@ class _PlanFormState extends State<PlanForm> {
             Column(
               children: [
                 GoalMacros(
-                  val: widget._plan.goalEnergy?.toString(),
+                  val: widget._plan.goalEnergy,
                   label: AppLocalizations.of(context).goalEnergy,
                   suffix: AppLocalizations.of(context).kcal,
                   onSave: (double value) => widget._plan.goalEnergy = value,
                   key: const Key('field-goal-energy'),
                 ),
                 GoalMacros(
-                  val: widget._plan.goalProtein?.toString(),
+                  val: widget._plan.goalProtein,
                   label: AppLocalizations.of(context).goalProtein,
                   suffix: AppLocalizations.of(context).g,
                   onSave: (double value) => widget._plan.goalProtein = value,
                   key: const Key('field-goal-protein'),
                 ),
                 GoalMacros(
-                  val: widget._plan.goalCarbohydrates?.toString(),
+                  val: widget._plan.goalCarbohydrates,
                   label: AppLocalizations.of(context).goalCarbohydrates,
                   suffix: AppLocalizations.of(context).g,
                   onSave: (double value) => widget._plan.goalCarbohydrates = value,
                   key: const Key('field-goal-carbohydrates'),
                 ),
                 GoalMacros(
-                  val: widget._plan.goalFat?.toString(),
+                  val: widget._plan.goalFat,
                   label: AppLocalizations.of(context).goalFat,
                   suffix: AppLocalizations.of(context).g,
                   onSave: (double value) => widget._plan.goalFat = value,
@@ -787,7 +787,7 @@ class _PlanFormState extends State<PlanForm> {
 
           if (_goalType == GoalType.advanced)
             GoalMacros(
-              val: widget._plan.goalFiber?.toString(),
+              val: widget._plan.goalFiber,
               label: AppLocalizations.of(context).goalFiber,
               suffix: AppLocalizations.of(context).g,
               onSave: (double value) => widget._plan.goalFiber = value,
@@ -845,14 +845,14 @@ class GoalMacros extends StatelessWidget {
   final String label;
   final String suffix;
   final Function(double) onSave;
-  final String? val;
+  final num? val;
 
   @override
   Widget build(BuildContext context) {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     return TextFormField(
-      initialValue: val ?? '',
+      initialValue: val == null ? '' : numberFormat.format(val),
       decoration: InputDecoration(labelText: label, suffixText: suffix),
       keyboardType: textInputTypeDecimal,
       onSaved: (newValue) {
