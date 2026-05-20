@@ -22,11 +22,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/wger_image.dart';
 
 class ImageForm extends ConsumerStatefulWidget {
@@ -44,6 +47,7 @@ class _ImageFormState extends ConsumerState<ImageForm> {
   final _form = GlobalKey<FormState>();
 
   XFile? _file;
+  Widget errorMessage = const SizedBox.shrink();
 
   final dateController = TextEditingController(text: '');
   final TextEditingController descriptionController = TextEditingController();
@@ -201,27 +205,35 @@ class _ImageFormState extends ConsumerState<ImageForm> {
               widget._image.description = newValue!;
             },
           ),
-          ElevatedButton(
+          errorMessage,
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            onPressed: (requiresUpload && !isOnline)
-                ? null
-                : () async {
-                    // Validate and save
-                    final isValid = _form.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    _form.currentState!.save();
+            enabled: !(requiresUpload && !isOnline),
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              // Validate and save
+              final isValid = _form.currentState!.validate();
+              if (!isValid) {
+                return;
+              }
+              _form.currentState!.save();
 
-                    final notifier = ref.read(galleryProvider.notifier);
-                    if (widget._image.id == null) {
-                      notifier.addImage(widget._image, _file!);
-                    } else {
-                      notifier.editImage(widget._image, _file);
-                    }
-                    Navigator.of(context).pop();
-                  },
-            child: Text(AppLocalizations.of(context).save),
+              final notifier = ref.read(galleryProvider.notifier);
+              try {
+                if (widget._image.id == null) {
+                  await notifier.addImage(widget._image, _file!);
+                } else {
+                  await notifier.editImage(widget._image, _file);
+                }
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              } on WgerHttpException catch (error) {
+                setState(() {
+                  errorMessage = FormHttpErrorsWidget(error);
+                });
+              }
+            },
           ),
         ],
       ),

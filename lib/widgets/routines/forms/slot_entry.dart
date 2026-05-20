@@ -29,6 +29,7 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/widgets/core/decimal_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
@@ -48,7 +49,6 @@ class SlotEntryForm extends ConsumerStatefulWidget {
 }
 
 class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
-  bool isSaving = false;
   bool isDeleting = false;
 
   final iconSize = 18.0;
@@ -308,78 +308,57 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
               onChanged: (value) => rirController.text = value,
             ),
           const SizedBox(height: 5),
-          OutlinedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            onPressed: isSaving || !isOnline
-                ? null
-                : () async {
-                    if (!_form.currentState!.validate()) {
-                      return;
-                    }
-                    _form.currentState!.save();
-                    setState(() => isSaving = true);
+            enabled: isOnline,
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
 
-                    // Process new, edited or entries to be deleted
-                    try {
-                      await Future.wait([
-                        provider.handleConfig(
-                          widget.entry,
-                          setsSliderValue == 0 ? null : setsSliderValue.round(),
-                          ConfigType.sets,
-                        ),
-                        provider.handleConfig(widget.entry, _weight, ConfigType.weight),
-                        provider.handleConfig(
-                          widget.entry,
-                          _maxWeight,
-                          ConfigType.maxWeight,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          _reps,
-                          ConfigType.repetitions,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          _maxReps,
-                          ConfigType.maxRepetitions,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(restController.text),
-                          ConfigType.rest,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(maxRestController.text),
-                          ConfigType.maxRest,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(rirController.text),
-                          ConfigType.rir,
-                        ),
-                      ]);
+              // Process new, edited or entries to be deleted
+              try {
+                await Future.wait([
+                  provider.handleConfig(
+                    widget.entry,
+                    setsSliderValue == 0 ? null : setsSliderValue.round(),
+                    ConfigType.sets,
+                  ),
+                  provider.handleConfig(widget.entry, _weight, ConfigType.weight),
+                  provider.handleConfig(widget.entry, _maxWeight, ConfigType.maxWeight),
+                  provider.handleConfig(widget.entry, _reps, ConfigType.repetitions),
+                  provider.handleConfig(widget.entry, _maxReps, ConfigType.maxRepetitions),
+                  provider.handleConfig(
+                    widget.entry,
+                    numberFormat.tryParse(restController.text),
+                    ConfigType.rest,
+                  ),
+                  provider.handleConfig(
+                    widget.entry,
+                    numberFormat.tryParse(maxRestController.text),
+                    ConfigType.maxRest,
+                  ),
+                  provider.handleConfig(
+                    widget.entry,
+                    numberFormat.tryParse(rirController.text),
+                    ConfigType.rir,
+                  ),
+                ]);
 
-                      await provider.editSlotEntry(widget.entry, widget.routineId);
-                      if (mounted) {
-                        setState(() => isSaving = false);
-                        errorMessage = const SizedBox.shrink();
-                      }
-                    } on WgerHttpException catch (error) {
-                      if (context.mounted) {
-                        setState(() {
-                          errorMessage = FormHttpErrorsWidget(error);
-                        });
-                      }
-                    } finally {
-                      if (mounted) {
-                        setState(() => isSaving = false);
-                      }
-                    }
-                  },
-            child: isSaving
-                ? const FormProgressIndicator()
-                : Text(AppLocalizations.of(context).save),
+                await provider.editSlotEntry(widget.entry, widget.routineId);
+                if (mounted) {
+                  setState(() => errorMessage = const SizedBox.shrink());
+                }
+              } on WgerHttpException catch (error) {
+                if (context.mounted) {
+                  setState(() {
+                    errorMessage = FormHttpErrorsWidget(error);
+                  });
+                }
+              }
+            },
           ),
           const SizedBox(height: 10),
         ],

@@ -27,6 +27,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_repository.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/gallery/forms.dart';
 
 import '../../test_data/gallery.dart';
@@ -98,10 +99,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final button = tester.widget<ElevatedButton>(
+    final button = tester.widget<FormSubmitButton>(
       find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
     );
-    expect(button.onPressed, isNotNull);
+    expect(button.enabled, isTrue);
   });
 
   testWidgets('Submit is disabled offline for a new image', (WidgetTester tester) async {
@@ -111,9 +112,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final button = tester.widget<ElevatedButton>(
+    final button = tester.widget<FormSubmitButton>(
       find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
     );
-    expect(button.onPressed, isNull);
+    expect(button.enabled, isFalse);
   });
 }
