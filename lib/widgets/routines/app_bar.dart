@@ -108,7 +108,6 @@ class RoutineDetailAppBar extends ConsumerWidget implements PreferredSizeWidget 
               ),
               PopupMenuItem<_RoutineDetailBarOptions>(
                 value: _RoutineDetailBarOptions.delete,
-                enabled: isOnline,
                 child: Text(i18n.delete),
               ),
             ];

@@ -26,6 +26,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/widgets/gallery/forms.dart';
 
 import '../../test_data/gallery.dart';
@@ -43,9 +44,10 @@ void main() {
     when(mockGalleryRepository.editLocalDrift(any)).thenAnswer((_) async {});
   });
 
-  Widget createScreen({useImage = true, locale = 'en'}) {
+  Widget createScreen({useImage = true, locale = 'en', bool isOnline = true}) {
     return ProviderScope(
       overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
         galleryRepositoryProvider.overrideWithValue(mockGalleryRepository),
       ],
       child: MaterialApp(
@@ -84,5 +86,34 @@ void main() {
 
     expect(find.text('Please select an image'), findsOneWidget);
     expect(find.byIcon(Icons.photo_camera), findsOneWidget);
+  });
+
+  testWidgets('Submit stays enabled offline for a metadata-only edit', (
+    WidgetTester tester,
+  ) async {
+    // Editing an existing image without replacing the photo syncs through
+    // PowerSync, so it works offline.
+    await mockNetworkImagesFor(
+      () => tester.pumpWidget(createScreen(useImage: true, isOnline: false)),
+    );
+    await tester.pumpAndSettle();
+
+    final button = tester.widget<ElevatedButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(button.onPressed, isNotNull);
+  });
+
+  testWidgets('Submit is disabled offline for a new image', (WidgetTester tester) async {
+    // Creating an image is a binary REST upload and needs connectivity.
+    await mockNetworkImagesFor(
+      () => tester.pumpWidget(createScreen(useImage: false, isOnline: false)),
+    );
+    await tester.pumpAndSettle();
+
+    final button = tester.widget<ElevatedButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(button.onPressed, isNull);
   });
 }

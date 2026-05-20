@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
@@ -38,7 +37,6 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
 
   @override
   Widget build(BuildContext context) {
-    final isOnline = ref.watch(networkStatusProvider);
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final routineProvider = ref.read(routinesRiverpodProvider.notifier);
     final routinesAsync = ref.watch(routinesRiverpodProvider);
@@ -96,58 +94,56 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
                       IconButton(
                         icon: const Icon(Icons.delete),
                         tooltip: AppLocalizations.of(context).delete,
-                        onPressed: isOnline
-                            ? () async {
-                                // Delete workout from DB
-                                await showDialog(
-                                  context: context,
-                                  builder: (BuildContext contextDialog) {
-                                    return AlertDialog(
-                                      content: Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        ).confirmDelete(currentRoutine.name),
+                        onPressed: () async {
+                          // Delete workout from DB
+                          await showDialog(
+                            context: context,
+                            builder: (BuildContext contextDialog) {
+                              return AlertDialog(
+                                content: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  ).confirmDelete(currentRoutine.name),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    child: Text(
+                                      MaterialLocalizations.of(context).cancelButtonLabel,
+                                    ),
+                                    onPressed: () => Navigator.of(contextDialog).pop(),
+                                  ),
+                                  TextButton(
+                                    child: Text(
+                                      AppLocalizations.of(context).delete,
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.error,
                                       ),
-                                      actions: [
-                                        TextButton(
-                                          child: Text(
-                                            MaterialLocalizations.of(context).cancelButtonLabel,
-                                          ),
-                                          onPressed: () => Navigator.of(contextDialog).pop(),
-                                        ),
-                                        TextButton(
-                                          child: Text(
-                                            AppLocalizations.of(context).delete,
-                                            style: TextStyle(
-                                              color: Theme.of(context).colorScheme.error,
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            // Confirmed, delete the workout
-                                            routineProvider.deleteRoutine(currentRoutine.id!);
+                                    ),
+                                    onPressed: () {
+                                      // Confirmed, delete the workout
+                                      routineProvider.deleteRoutine(currentRoutine.id!);
 
-                                            // Close the popup
-                                            Navigator.of(contextDialog).pop();
+                                      // Close the popup
+                                      Navigator.of(contextDialog).pop();
 
-                                            // and inform the user
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  AppLocalizations.of(
-                                                    context,
-                                                  ).successfullyDeleted,
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            );
-                                          },
+                                      // and inform the user
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            ).successfullyDeleted,
+                                            textAlign: TextAlign.center,
+                                          ),
                                         ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            : null,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                       ),
                   ],
                 ),

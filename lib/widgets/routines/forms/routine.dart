@@ -219,9 +219,11 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
         },
       ),
       const SizedBox(height: 5),
+      // Creating a routine needs the server to assign an integer PK; editing an
+      // existing one syncs through PowerSync and works offline.
       ElevatedButton(
         key: const Key(SUBMIT_BUTTON_KEY_NAME),
-        onPressed: isSaving || !isOnline
+        onPressed: isSaving || (widget._routine.id == null && !isOnline)
             ? null
             : () async {
                 // Validate and save

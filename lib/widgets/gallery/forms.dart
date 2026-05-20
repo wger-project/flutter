@@ -103,6 +103,10 @@ class _ImageFormState extends ConsumerState<ImageForm> {
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final isOnline = ref.watch(networkStatusProvider);
+    // Creating an image or replacing its photo is a binary REST upload and
+    // needs connectivity. A metadata-only edit syncs through PowerSync and
+    // works offline.
+    final requiresUpload = widget._image.id == null || _file != null;
 
     if (dateController.text.isEmpty) {
       dateController.text = dateFormat.format(widget._image.date);
@@ -199,9 +203,9 @@ class _ImageFormState extends ConsumerState<ImageForm> {
           ),
           ElevatedButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
-            onPressed: isOnline
-                ? () async {
+            onPressed: (requiresUpload && !isOnline)
+                ? null
+                : () async {
                     // Validate and save
                     final isValid = _form.currentState!.validate();
                     if (!isValid) {
@@ -216,8 +220,8 @@ class _ImageFormState extends ConsumerState<ImageForm> {
                       notifier.editImage(widget._image, _file);
                     }
                     Navigator.of(context).pop();
-                  }
-                : null,
+                  },
+            child: Text(AppLocalizations.of(context).save),
           ),
         ],
       ),

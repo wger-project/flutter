@@ -150,19 +150,36 @@ void main() {
     expect(find.byType(PlanForm), findsOneWidget);
   });
 
-  testWidgets('Add-plan FAB is disabled when offline', (WidgetTester tester) async {
-    // Plan creation still goes through REST, so the FAB must not let users
-    // navigate into a form they can't submit.
+  testWidgets('Add-plan FAB stays enabled when offline', (WidgetTester tester) async {
+    // Plan creation goes through PowerSync, so it works offline.
     await tester.pumpWidget(createHomeScreen(isOnline: false));
     await tester.pumpAndSettle();
 
     final fab = tester.widget<FloatingActionButton>(find.byType(FloatingActionButton));
-    expect(fab.onPressed, isNull);
+    expect(fab.onPressed, isNotNull);
 
-    // Tapping must not push the form route.
-    await tester.tap(find.byType(FloatingActionButton), warnIfMissed: false);
+    // Tapping opens the form.
+    await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
-    expect(find.byType(PlanForm), findsNothing);
+    expect(find.byType(PlanForm), findsOneWidget);
+  });
+
+  testWidgets('Delete button stays enabled when offline', (WidgetTester tester) async {
+    // Plan deletion syncs through PowerSync, so it works offline.
+    await tester.pumpWidget(createHomeScreen(isOnline: false));
+    await tester.pumpAndSettle();
+
+    final deleteButton = tester.widget<IconButton>(
+      find.widgetWithIcon(IconButton, Icons.delete).first,
+    );
+    expect(deleteButton.onPressed, isNotNull);
+
+    await tester.tap(find.byIcon(Icons.delete).first);
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsOneWidget);
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    verify(mockNutritionRepo.deleteLocalDrift(any)).called(1);
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {

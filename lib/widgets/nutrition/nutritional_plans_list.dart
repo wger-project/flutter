@@ -22,7 +22,6 @@ import 'package:intl/intl.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight_notifier.dart';
-import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
@@ -100,7 +99,6 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final plansAsync = ref.watch(nutritionProvider);
     final notifier = ref.read(nutritionProvider.notifier);
-    final isOnline = ref.watch(networkStatusProvider);
 
     return AsyncValueWidget<NutritionState>(
       value: plansAsync,
@@ -153,56 +151,54 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
                     IconButton(
                       icon: const Icon(Icons.delete),
                       tooltip: AppLocalizations.of(context).delete,
-                      onPressed: isOnline
-                          ? () async {
-                              // Delete the plan from DB
-                              await showDialog(
-                                context: context,
-                                builder: (BuildContext contextDialog) {
-                                  return AlertDialog(
-                                    content: Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      ).confirmDelete(currentPlan.description),
+                      onPressed: () async {
+                        // Delete the plan from DB
+                        await showDialog(
+                          context: context,
+                          builder: (BuildContext contextDialog) {
+                            return AlertDialog(
+                              content: Text(
+                                AppLocalizations.of(
+                                  context,
+                                ).confirmDelete(currentPlan.description),
+                              ),
+                              actions: [
+                                TextButton(
+                                  child: Text(
+                                    MaterialLocalizations.of(context).cancelButtonLabel,
+                                  ),
+                                  onPressed: () => Navigator.of(contextDialog).pop(),
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    AppLocalizations.of(context).delete,
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.error,
                                     ),
-                                    actions: [
-                                      TextButton(
-                                        child: Text(
-                                          MaterialLocalizations.of(context).cancelButtonLabel,
-                                        ),
-                                        onPressed: () => Navigator.of(contextDialog).pop(),
-                                      ),
-                                      TextButton(
-                                        child: Text(
-                                          AppLocalizations.of(context).delete,
-                                          style: TextStyle(
-                                            color: Theme.of(context).colorScheme.error,
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          // Confirmed, delete the plan
-                                          notifier.deletePlan(currentPlan.id!);
+                                  ),
+                                  onPressed: () {
+                                    // Confirmed, delete the plan
+                                    notifier.deletePlan(currentPlan.id!);
 
-                                          // Close the popup
-                                          Navigator.of(contextDialog).pop();
+                                    // Close the popup
+                                    Navigator.of(contextDialog).pop();
 
-                                          // and inform the user
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                AppLocalizations.of(context).successfullyDeleted,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                          );
-                                        },
+                                    // and inform the user
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          AppLocalizations.of(context).successfullyDeleted,
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                          : null,
+                                    );
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),
