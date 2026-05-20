@@ -190,6 +190,9 @@ class MainApp extends ConsumerWidget {
         final themeMode = ref.watch(
           appSettingsProvider.select((s) => s.value?.themeMode ?? ThemeMode.system),
         );
+        final userLocale = ref.watch(
+          appSettingsProvider.select((s) => s.value?.userLocale),
+        );
 
         return MaterialApp(
           title: 'wger',
@@ -199,6 +202,7 @@ class MainApp extends ConsumerWidget {
           highContrastTheme: wgerLightThemeHc,
           highContrastDarkTheme: wgerDarkThemeHc,
           themeMode: themeMode,
+          locale: userLocale,
           home: _getHomeScreen(authState),
           routes: {
             DashboardScreen.routeName: (ctx) => const DashboardScreen(),

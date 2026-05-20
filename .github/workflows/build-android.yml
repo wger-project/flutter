@@ -16,6 +16,10 @@ on:
         required: true
       DECRYPTKEY_PROPERTIES:
         required: true
+
+permissions:
+  contents: read
+
 jobs:
   build_android_apk:
     name: APK file

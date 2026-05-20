@@ -56,6 +56,7 @@ const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
 const PREFS_USER = 'userData';
 const PREFS_USER_DARK_THEME = 'userDarkMode';
+const PREFS_USER_LOCALE = 'userLocale';
 const PREFS_LAST_SERVER = 'lastServer';
 
 /// True once PowerSync has been reachable for this user at least once

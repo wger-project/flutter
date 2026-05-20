@@ -25,7 +25,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/locale.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 part 'app_settings_notifier.freezed.dart';
 part 'app_settings_notifier.g.dart';
@@ -75,6 +77,9 @@ sealed class AppSettings with _$AppSettings {
   const factory AppSettings({
     @Default(ThemeMode.system) ThemeMode themeMode,
     @Default([]) List<DashboardItem> dashboardItems,
+
+    /// Locale override. Null means the app follows the system locale.
+    Locale? userLocale,
   }) = _AppSettings;
 }
 
@@ -91,8 +96,13 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   Future<AppSettings> build() async {
     _prefs = ref.read(appSettingsPrefsProvider);
     final themeMode = await _loadThemeMode();
+    final userLocale = await _loadUserLocale();
     final items = await _loadDashboardItems();
-    return AppSettings(themeMode: themeMode, dashboardItems: items);
+    return AppSettings(
+      themeMode: themeMode,
+      userLocale: userLocale,
+      dashboardItems: items,
+    );
   }
 
   //
@@ -115,6 +125,52 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
       await _prefs.remove(PREFS_USER_DARK_THEME);
     } else {
       await _prefs.setBool(PREFS_USER_DARK_THEME, mode == ThemeMode.dark);
+    }
+  }
+
+  //
+  // Locale override
+  //
+
+  Future<Locale?> _loadUserLocale() async {
+    final raw = await _prefs.getString(PREFS_USER_LOCALE);
+    return _matchSupportedLocale(raw);
+  }
+
+  /// Match a stored locale tag (`languageCode` or `languageCode_subtag`)
+  /// against [AppLocalizations.supportedLocales]. Returns the exact supported
+  /// instance to keep dropdown identity stable, or null when no match is found.
+  static Locale? _matchSupportedLocale(String? raw) {
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+    for (final locale in AppLocalizations.supportedLocales) {
+      if (encodeLocale(locale) == raw) {
+        return locale;
+      }
+    }
+    // Fallback: match by language only (e.g. stored "pl" picks the only pl).
+    final lang = raw.split('_').first;
+    for (final locale in AppLocalizations.supportedLocales) {
+      if (locale.languageCode == lang &&
+          (locale.countryCode == null || locale.countryCode!.isEmpty) &&
+          (locale.scriptCode == null || locale.scriptCode!.isEmpty)) {
+        return locale;
+      }
+    }
+    return null;
+  }
+
+  /// Override the app locale. Passing `null` clears the override and falls
+  /// back to the system locale.
+  Future<void> setUserLocale(Locale? locale) async {
+    final current = state.asData?.value ?? const AppSettings();
+    state = AsyncData(current.copyWith(userLocale: locale));
+
+    if (locale == null) {
+      await _prefs.remove(PREFS_USER_LOCALE);
+    } else {
+      await _prefs.setString(PREFS_USER_LOCALE, encodeLocale(locale));
     }
   }
 

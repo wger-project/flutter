@@ -11,6 +11,10 @@ on:
       ref:
         required: true
         type: string
+
+permissions:
+  contents: read
+
 jobs:
   # TODO: we currently upload the release folder as a ZIP, which works as a
   #       portable version. For a proper installer (e.g. via Inno Setup or MSIX),
