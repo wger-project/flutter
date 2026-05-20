@@ -24,6 +24,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 import 'package:wger/providers/measurement_notifier.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
@@ -120,8 +121,6 @@ class MeasurementEntryForm extends ConsumerStatefulWidget {
 class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   final _form = GlobalKey<FormState>();
   final _valueController = TextEditingController();
-  final _dateController = TextEditingController();
-  final _timeController = TextEditingController();
   final _notesController = TextEditingController();
 
   late final String? _existingId = widget._entry?.id;
@@ -140,28 +139,16 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   @override
   void dispose() {
     _valueController.dispose();
-    _dateController.dispose();
-    _timeController.dispose();
     _notesController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
-
     final notifier = ref.read(measurementProvider.notifier);
     final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(
       widget._categoryId,
     );
-
-    if (_dateController.text.isEmpty) {
-      _dateController.text = dateFormat.format(_date);
-    }
-    if (_timeController.text.isEmpty) {
-      _timeController.text = timeFormat.format(_date);
-    }
 
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
@@ -190,77 +177,29 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
           child: Column(
             children: [
               // Date
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).date,
-                  suffixIcon: const Icon(
-                    Icons.calendar_today,
-                    key: Key('calendarIcon'),
-                  ),
-                ),
-                readOnly: true,
-                controller: _dateController,
-                onTap: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());
-
-                  final pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: _date,
-                    firstDate: DateTime(DateTime.now().year - 10),
-                    lastDate: DateTime.now(),
+              DateInputWidget(
+                value: _date,
+                labelText: AppLocalizations.of(context).date,
+                firstDate: DateTime(DateTime.now().year - 10),
+                lastDate: DateTime.now(),
+                onChanged: (date) {
+                  _date = _date.copyWith(
+                    year: date.year,
+                    month: date.month,
+                    day: date.day,
                   );
-
-                  if (pickedDate != null) {
-                    _dateController.text = dateFormat.format(pickedDate);
-                  }
-                },
-                onSaved: (newValue) {
-                  final date = dateFormat.parse(newValue!);
-                  _date = _date.copyWith(year: date.year, month: date.month, day: date.day);
-                },
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return AppLocalizations.of(context).enterValue;
-                  }
-                  return null;
                 },
               ),
 
               // Time
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).time,
-                  suffixIcon: const Icon(
-                    Icons.access_time_outlined,
-                    key: Key('clockIcon'),
-                  ),
-                ),
-                readOnly: true,
-                controller: _timeController,
-                onTap: () async {
-                  final pickedTime = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.fromDateTime(_date),
-                  );
-
-                  if (pickedTime != null) {
-                    final now = DateTime.now();
-                    final dt = DateTime(
-                      now.year,
-                      now.month,
-                      now.day,
-                      pickedTime.hour,
-                      pickedTime.minute,
-                    );
-                    _timeController.text = timeFormat.format(dt);
-                  }
-                },
-                onSaved: (newValue) {
-                  final time = timeFormat.parse(newValue!);
+              TimeInputWidget(
+                value: TimeOfDay.fromDateTime(_date),
+                labelText: AppLocalizations.of(context).time,
+                onChanged: (time) {
                   _date = _date.copyWith(
                     hour: time.hour,
                     minute: time.minute,
-                    second: time.second,
+                    second: 0,
                   );
                 },
               ),

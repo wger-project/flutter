@@ -302,7 +302,7 @@ void main() {
         expect(find.byIcon(Icons.sentiment_neutral), findsOneWidget);
         expect(find.byIcon(Icons.sentiment_very_satisfied), findsOneWidget);
         expect(
-          find.text('14:33'),
+          find.text('2:33 PM'),
           findsNWidgets(2),
           reason: 'start and end time are the same',
         );

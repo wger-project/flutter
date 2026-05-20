@@ -22,10 +22,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/errors.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/workout_session_notifier.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
 
 class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');
@@ -55,27 +55,16 @@ class _SessionFormState extends ConsumerState<SessionForm> {
   final _form = GlobalKey<FormState>();
 
   final notesController = TextEditingController();
-  final timeStartController = TextEditingController();
-  final timeEndController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
-    timeStartController.text = widget._session.timeStart == null
-        ? ''
-        : timeToString(widget._session.timeStart)!;
-    timeEndController.text = widget._session.timeEnd == null
-        ? ''
-        : timeToString(widget._session.timeEnd)!;
     notesController.text = widget._session.notes ?? '';
   }
 
   @override
   void dispose() {
     notesController.dispose();
-    timeStartController.dispose();
-    timeEndController.dispose();
     super.dispose();
   }
 
@@ -122,97 +111,29 @@ class _SessionFormState extends ConsumerState<SessionForm> {
             spacing: 10,
             children: [
               Flexible(
-                child: TextFormField(
+                child: TimeInputWidget(
                   key: const ValueKey('time-start'),
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).timeStart,
-                    errorMaxLines: 2,
-                    suffix: IconButton(
-                      onPressed: () => {
-                        setState(() {
-                          timeStartController.text = '';
-                          widget._session.timeStart = null;
-                        }),
-                      },
-                      icon: const Icon(Icons.clear),
-                    ),
-                  ),
-                  controller: timeStartController,
-                  onFieldSubmitted: (_) {},
-                  onTap: () async {
-                    // Stop keyboard from appearing
-                    FocusScope.of(context).requestFocus(FocusNode());
-
-                    // Open time picker
-                    final pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: widget._session.timeStart ?? TimeOfDay.now(),
-                    );
-
-                    if (pickedTime != null) {
-                      timeStartController.text = timeToString(pickedTime)!;
-                      widget._session.timeStart = pickedTime;
-                    }
-                  },
-                  onSaved: (newValue) {
-                    if (newValue != null && newValue.isNotEmpty) {
-                      widget._session.timeStart = stringToTime(newValue);
-                    }
-                  },
+                  value: widget._session.timeStart,
+                  labelText: AppLocalizations.of(context).timeStart,
+                  onCleared: () => widget._session.timeStart = null,
+                  onChanged: (time) => widget._session.timeStart = time,
                   validator: (_) {
-                    if (timeStartController.text.isEmpty && timeEndController.text.isEmpty) {
-                      return null;
+                    final start = widget._session.timeStart;
+                    final end = widget._session.timeEnd;
+                    if (start != null && end != null && start.isAfter(end)) {
+                      return AppLocalizations.of(context).timeStartAhead;
                     }
-
-                    if (timeStartController.text.isNotEmpty && timeEndController.text.isNotEmpty) {
-                      final TimeOfDay startTime = stringToTime(timeStartController.text);
-                      final TimeOfDay endTime = stringToTime(timeEndController.text);
-                      if (startTime.isAfter(endTime)) {
-                        return AppLocalizations.of(context).timeStartAhead;
-                      }
-                    }
-
                     return null;
                   },
                 ),
               ),
               Flexible(
-                child: TextFormField(
+                child: TimeInputWidget(
                   key: const ValueKey('time-end'),
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).timeEnd,
-                    suffix: IconButton(
-                      onPressed: () => {
-                        setState(() {
-                          timeEndController.text = '';
-                          widget._session.timeEnd = null;
-                        }),
-                      },
-                      icon: const Icon(Icons.clear),
-                    ),
-                  ),
-                  controller: timeEndController,
-                  onFieldSubmitted: (_) {},
-                  onTap: () async {
-                    // Stop keyboard from appearing
-                    FocusScope.of(context).requestFocus(FocusNode());
-
-                    // Open time picker
-                    final pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: widget._session.timeEnd ?? TimeOfDay.now(),
-                    );
-
-                    if (pickedTime != null) {
-                      timeEndController.text = timeToString(pickedTime)!;
-                      widget._session.timeEnd = pickedTime;
-                    }
-                  },
-                  onSaved: (newValue) {
-                    if (newValue != null && newValue.isNotEmpty) {
-                      widget._session.timeEnd = stringToTime(newValue);
-                    }
-                  },
+                  value: widget._session.timeEnd,
+                  labelText: AppLocalizations.of(context).timeEnd,
+                  onCleared: () => widget._session.timeEnd = null,
+                  onChanged: (time) => widget._session.timeEnd = time,
                 ),
               ),
             ],

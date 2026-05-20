@@ -22,7 +22,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
@@ -111,7 +110,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('17:00'),
+      find.text('5:00 PM'),
       findsOneWidget,
       reason: 'Time of existing meal is filled in',
     );
@@ -122,7 +121,6 @@ void main() {
       reason: 'Time of existing meal is filled in',
     );
 
-    await tester.enterText(find.byKey(const Key('field-time')), '12:34');
     await tester.enterText(find.byKey(const Key('field-name')), 'test meal');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
@@ -156,12 +154,11 @@ void main() {
       );
 
       expect(
-        find.text(timeToString(TimeOfDay.fromDateTime(clock.now()))!),
+        find.text('1:01 AM'),
         findsOneWidget,
         reason: 'Current time is filled in',
       );
 
-      await tester.enterText(find.byKey(const Key('field-time')), '08:00');
       await tester.enterText(find.byKey(const Key('field-name')), 'test meal');
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 

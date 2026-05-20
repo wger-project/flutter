@@ -22,12 +22,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/workout_session_repository.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 
 import '../../../test_data/routines.dart';
@@ -98,8 +98,8 @@ void main() {
       await tester.pumpWidget(renderSessionPage());
       await tester.pumpAndSettle();
 
-      expect(find.text('10:00'), findsOneWidget);
-      expect(find.text('12:34'), findsOneWidget);
+      expect(find.text('10:00 AM'), findsOneWidget);
+      expect(find.text('12:34 PM'), findsOneWidget);
       expect(find.text('This is a note'), findsOneWidget);
       final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
       expect(toggleButtons.isSelected[2], isTrue);
@@ -119,18 +119,17 @@ void main() {
 
       final startTimeField = find.byKey(const ValueKey('time-start'));
       expect(startTimeField, findsOneWidget);
-      expect(tester.widget<TextFormField>(startTimeField).controller!.text, '');
+      expect(tester.widget<TimeInputWidget>(startTimeField).value, isNull);
 
       final endTimeField = find.byKey(const ValueKey('time-end'));
       expect(endTimeField, findsOneWidget);
-      expect(tester.widget<TextFormField>(endTimeField).controller!.text, '');
+      expect(tester.widget<TimeInputWidget>(endTimeField).value, isNull);
     });
   });
 
   testWidgets('Test correct default data (no existing session)', (WidgetTester tester) async {
     // Arrange
     testRoutine.sessions = [];
-    final timeNow = timeToString(TimeOfDay.now())!;
     notifier.state = notifier.state.copyWith(
       startTime: const TimeOfDay(hour: 13, minute: 35),
     );
@@ -140,7 +139,8 @@ void main() {
     await tester.pumpAndSettle();
 
     // Assert
-    expect(find.text('13:35'), findsOneWidget);
+    final timeNow = TimeOfDay.now().format(tester.element(find.byType(TextFormField).first));
+    expect(find.text('1:35 PM'), findsOneWidget);
     expect(find.text(timeNow), findsOneWidget);
     final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
     expect(toggleButtons.isSelected[1], isTrue);

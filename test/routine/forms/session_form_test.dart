@@ -67,8 +67,8 @@ void main() {
       expect(find.widgetWithText(TextFormField, 'Existing notes'), findsOneWidget);
       final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
       expect(toggleButtons.isSelected, [true, false, false]); // Bad impression
-      expect(find.widgetWithText(TextFormField, '10:00'), findsOneWidget);
-      expect(find.widgetWithText(TextFormField, '11:00'), findsOneWidget);
+      expect(find.widgetWithText(TextFormField, '10:00 AM'), findsOneWidget);
+      expect(find.widgetWithText(TextFormField, '11:00 AM'), findsOneWidget);
     });
 
     testWidgets('saves a new session', (WidgetTester tester) async {

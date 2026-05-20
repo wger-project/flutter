@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
@@ -30,6 +29,7 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
@@ -39,44 +39,28 @@ class MealForm extends ConsumerWidget {
   final String _planId;
 
   final _form = GlobalKey<FormState>();
-  final _timeController = TextEditingController();
   final _nameController = TextEditingController();
 
   MealForm(this._planId, [meal]) {
     _meal = meal ?? Meal(plan: _planId, time: TimeOfDay.fromDateTime(DateTime.now()));
-    _timeController.text = timeToString(_meal.time)!;
     _nameController.text = _meal.name;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isCreating = _meal.id == null;
+
     return Container(
       margin: const EdgeInsets.all(20),
       child: Form(
         key: _form,
         child: Column(
           children: [
-            TextFormField(
+            TimeInputWidget(
               key: const Key('field-time'),
-              decoration: InputDecoration(labelText: AppLocalizations.of(context).time),
-              controller: _timeController,
-              onTap: () async {
-                // Stop keyboard from appearing
-                FocusScope.of(context).requestFocus(FocusNode());
-
-                // Open time picker
-                final pickedTime = await showTimePicker(
-                  context: context,
-                  initialTime: _meal.time!,
-                );
-                if (pickedTime != null) {
-                  _timeController.text = timeToString(pickedTime)!;
-                }
-              },
-              onSaved: (newValue) {
-                _meal.time = stringToTimeNull(newValue);
-              },
+              value: _meal.time,
+              labelText: AppLocalizations.of(context).time,
+              onChanged: (time) => _meal.time = time,
             ),
             TextFormField(
               maxLength: 25,
@@ -173,8 +157,8 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
   final _ingredientController = TextEditingController();
   final _ingredientIdController = TextEditingController();
   final _amountController = TextEditingController();
-  final _dateController = TextEditingController(); // optional
-  final _timeController = TextEditingController(text: ''); // optional
+  DateTime _date = DateTime.now();
+  TimeOfDay _time = TimeOfDay.now();
   final _mealItem = MealItem.empty();
   var _searchQuery = ''; // copy from typeahead. for filtering suggestions
   List<IngredientWeightUnit> _weightUnits = [];
@@ -185,8 +169,6 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
     _ingredientController.dispose();
     _ingredientIdController.dispose();
     _amountController.dispose();
-    _dateController.dispose();
-    _timeController.dispose();
     super.dispose();
   }
 
@@ -227,19 +209,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
 
   @override
   Widget build(BuildContext context) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    final dateFormat = DateFormat.yMd(languageCode);
-    final timeFormat = DateFormat.Hm(languageCode);
-    final dateTimeFormat = DateFormat.yMd(languageCode).add_Hm();
     final i18n = AppLocalizations.of(context);
-
-    if (_dateController.text.isEmpty) {
-      _dateController.text = dateFormat.format(DateTime.now());
-    }
-
-    if (_timeController.text.isEmpty) {
-      _timeController.text = timeFormat.format(DateTime.now());
-    }
 
     final String unit = i18n.g;
     final queryLower = _searchQuery.toLowerCase();
@@ -337,58 +307,21 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                 ),
                 if (widget.withDate)
                   Expanded(
-                    child: TextFormField(
-                      readOnly: true,
-                      // Stop keyboard from appearing
-                      decoration: InputDecoration(
-                        labelText: i18n.date,
-                        // suffixIcon: const Icon(Icons.calendar_today),
-                      ),
-                      enableInteractiveSelection: false,
-                      controller: _dateController,
-                      onTap: () async {
-                        // Show Date Picker Here
-                        final pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(DateTime.now().year - 10),
-                          lastDate: DateTime.now(),
-                        );
-
-                        if (pickedDate != null) {
-                          _dateController.text = dateFormat.format(pickedDate);
-                        }
-                      },
-                      onSaved: (newValue) {
-                        _dateController.text = newValue!;
-                      },
+                    child: DateInputWidget(
+                      value: _date,
+                      labelText: i18n.date,
+                      firstDate: DateTime(DateTime.now().year - 10),
+                      lastDate: DateTime.now(),
+                      onChanged: (date) => _date = date,
                     ),
                   ),
                 if (widget.withDate)
                   Expanded(
-                    child: TextFormField(
+                    child: TimeInputWidget(
                       key: const Key('field-time'),
-                      decoration: InputDecoration(
-                        labelText: i18n.time,
-                        //suffixIcon: const Icon(Icons.punch_clock)
-                      ),
-                      controller: _timeController,
-                      onTap: () async {
-                        // Stop keyboard from appearing
-                        FocusScope.of(context).requestFocus(FocusNode());
-
-                        // Open time picker
-                        final pickedTime = await showTimePicker(
-                          context: context,
-                          initialTime: stringToTime(_timeController.text),
-                        );
-                        if (pickedTime != null) {
-                          _timeController.text = timeToString(pickedTime)!;
-                        }
-                      },
-                      onSaved: (newValue) {
-                        _timeController.text = newValue!;
-                      },
+                      value: _time,
+                      labelText: i18n.time,
+                      onChanged: (time) => _time = time,
                     ),
                   ),
               ],
@@ -419,8 +352,12 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                 _form.currentState!.save();
                 _mealItem.ingredientId = int.parse(_ingredientIdController.text);
 
-                final loggedDate = dateTimeFormat.parse(
-                  '${_dateController.text} ${_timeController.text}',
+                final loggedDate = DateTime(
+                  _date.year,
+                  _date.month,
+                  _date.day,
+                  _time.hour,
+                  _time.minute,
                 );
                 widget.onSave(context, ref, _mealItem, loggedDate);
 

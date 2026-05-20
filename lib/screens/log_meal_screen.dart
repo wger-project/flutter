@@ -18,11 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 
@@ -44,27 +43,11 @@ class LogMealScreen extends ConsumerStatefulWidget {
 
 class _LogMealScreenState extends ConsumerState<LogMealScreen> {
   double portionPct = 100;
-  final _dateController = TextEditingController(text: '');
-  final _timeController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _timeController.text = timeToString(TimeOfDay.now())!;
-  }
-
-  @override
-  void dispose() {
-    _dateController.dispose();
-    _timeController.dispose();
-    super.dispose();
-  }
+  DateTime _date = DateTime.now();
+  TimeOfDay _time = TimeOfDay.now();
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    final dateTimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode).add_Hm();
     final i18n = AppLocalizations.of(context);
 
     final args = ModalRoute.of(context)!.settings.arguments as LogMealArguments;
@@ -73,10 +56,6 @@ class _LogMealScreenState extends ConsumerState<LogMealScreen> {
           .map((mealItem) => mealItem.copyWith(amount: mealItem.amount * portionPct / 100))
           .toList(),
     );
-
-    if (_dateController.text.isEmpty) {
-      _dateController.text = dateFormat.format(DateTime.now());
-    }
 
     return Scaffold(
       appBar: AppBar(title: Text(i18n.logMeal)),
@@ -120,50 +99,22 @@ class _LogMealScreenState extends ConsumerState<LogMealScreen> {
                     children: [
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
                       Expanded(
-                        child: TextFormField(
+                        child: DateInputWidget(
                           key: const ValueKey('field-date'),
-                          readOnly: true,
-                          decoration: InputDecoration(labelText: i18n.date),
-                          enableInteractiveSelection: false,
-                          controller: _dateController,
-                          onTap: () async {
-                            final pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime.now().subtract(const Duration(days: 3000)),
-                              lastDate: DateTime.now(),
-                            );
-
-                            if (pickedDate != null) {
-                              _dateController.text = dateFormat.format(pickedDate);
-                            }
-                          },
-                          onSaved: (newValue) {
-                            _dateController.text = newValue!;
-                          },
+                          value: _date,
+                          labelText: i18n.date,
+                          firstDate: DateTime.now().subtract(const Duration(days: 3000)),
+                          lastDate: DateTime.now(),
+                          onChanged: (date) => _date = date,
                         ),
                       ),
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
                       Expanded(
-                        child: TextFormField(
+                        child: TimeInputWidget(
                           key: const ValueKey('field-time'),
-                          readOnly: true,
-                          decoration: InputDecoration(labelText: i18n.time),
-                          controller: _timeController,
-                          onTap: () async {
-                            // Open time picker
-                            final pickedTime = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay.fromDateTime(DateTime.now()),
-                            );
-
-                            if (pickedTime != null) {
-                              _timeController.text = timeToString(pickedTime)!;
-                            }
-                          },
-                          onSaved: (newValue) {
-                            _timeController.text = newValue!;
-                          },
+                          value: _time,
+                          labelText: i18n.time,
+                          onChanged: (time) => _time = time,
                         ),
                       ),
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
@@ -177,8 +128,12 @@ class _LogMealScreenState extends ConsumerState<LogMealScreen> {
                         TextButton(
                           child: Text(i18n.save),
                           onPressed: () async {
-                            final loggedDate = dateTimeFormat.parse(
-                              '${_dateController.text} ${_timeController.text}',
+                            final loggedDate = DateTime(
+                              _date.year,
+                              _date.month,
+                              _date.day,
+                              _time.hour,
+                              _time.minute,
                             );
                             await ref
                                 .read(nutritionProvider.notifier)
