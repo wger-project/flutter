@@ -23,6 +23,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
@@ -47,7 +48,7 @@ void main() {
     when(mockRoutinesProvider.findRepetitionUnitById(any)).thenReturn(testRepetitionUnit1);
   });
 
-  Widget renderWidget({simpleMode = true, locale = 'en'}) {
+  Widget renderWidget({simpleMode = true, locale = 'en', SlotEntry? entry}) {
     final key = GlobalKey<NavigatorState>();
 
     return ChangeNotifierProvider<RoutinesProvider>(
@@ -57,7 +58,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
-        home: Scaffold(body: SlotEntryForm(slotEntry, 1, simpleMode: simpleMode)),
+        home: Scaffold(body: SlotEntryForm(entry ?? slotEntry, 1, simpleMode: simpleMode)),
       ),
     );
   }
@@ -155,5 +156,48 @@ void main() {
     expect(capturedArgs[(5 * 3) + 2], ConfigType.rest);
     expect(capturedArgs[(6 * 3) + 1], 100);
     expect(capturedArgs[(6 * 3) + 2], ConfigType.maxRest);
+  });
+
+  testWidgets('Fractional weight survives a no-op save in a comma-decimal locale', (
+    WidgetTester tester,
+  ) async {
+    final entry = getTestRoutine().days[0].slots[0].entries[0];
+    entry.weightConfigs.first.value = 2.5;
+
+    await tester.pumpWidget(renderWidget(simpleMode: false, locale: 'de', entry: entry));
+    await tester.pumpAndSettle();
+
+    // The field shows the locale-formatted value, not the invariant "2.5"
+    expect(find.text('2,5'), findsOneWidget);
+
+    // Save without touching anything
+    await tester.tap(find.byKey(const ValueKey(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pumpAndSettle();
+
+    final capturedArgs = verify(
+      mockRoutinesProvider.handleConfig(captureAny, captureAny, captureAny),
+    ).captured;
+
+    expect(capturedArgs[(1 * 3) + 2], ConfigType.weight);
+    expect(capturedArgs[(1 * 3) + 1], 2.5);
+  });
+
+  testWidgets('Fractional RiR survives a no-op save', (WidgetTester tester) async {
+    final entry = getTestRoutine().days[0].slots[0].entries[0];
+    entry.rirConfigs = [BaseConfig.firstIteration(2.5, 1)];
+
+    await tester.pumpWidget(renderWidget(simpleMode: false, entry: entry));
+    await tester.pumpAndSettle();
+
+    // Save without touching anything
+    await tester.tap(find.byKey(const ValueKey(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pumpAndSettle();
+
+    final capturedArgs = verify(
+      mockRoutinesProvider.handleConfig(captureAny, captureAny, captureAny),
+    ).captured;
+
+    expect(capturedArgs[(7 * 3) + 2], ConfigType.rir);
+    expect(capturedArgs[(7 * 3) + 1], 2.5);
   });
 }

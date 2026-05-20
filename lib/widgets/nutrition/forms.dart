@@ -322,7 +322,7 @@ class IngredientFormState extends State<IngredientForm> {
                     keyboardType: textInputTypeDecimal,
                     onChanged: (value) {
                       setState(() {
-                        final v = double.tryParse(value);
+                        final v = numberFormat.tryParse(value);
                         if (v != null) {
                           _mealItem.amount = v;
                         }
@@ -336,7 +336,7 @@ class IngredientFormState extends State<IngredientForm> {
                       if (text.isEmpty) {
                         return i18n.enterValue;
                       }
-                      final parsed = double.tryParse(text);
+                      final parsed = numberFormat.tryParse(text);
                       if (parsed == null) {
                         return i18n.enterValidNumber;
                       }

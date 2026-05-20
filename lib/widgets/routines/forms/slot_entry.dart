@@ -67,18 +67,33 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
 
   var _edit = false;
 
+  bool _controllersInitialized = false;
+
   @override
   void initState() {
     super.initState();
     if (widget.entry.nrOfSetsConfigs.isNotEmpty) {
       setsSliderValue = widget.entry.nrOfSetsConfigs.first.value.toDouble();
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_controllersInitialized) {
+      return;
+    }
+    _controllersInitialized = true;
+
+    // Weights can be fractional, so they are rendered with the active locale's
+    // decimal separator to round-trip through numberFormat when the form is saved.
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     if (widget.entry.weightConfigs.isNotEmpty) {
-      weightController.text = widget.entry.weightConfigs.first.value.toString();
+      weightController.text = numberFormat.format(widget.entry.weightConfigs.first.value);
     }
     if (widget.entry.maxWeightConfigs.isNotEmpty) {
-      maxWeightController.text = widget.entry.maxWeightConfigs.first.value.toString();
+      maxWeightController.text = numberFormat.format(widget.entry.maxWeightConfigs.first.value);
     }
 
     if (widget.entry.repetitionsConfigs.isNotEmpty) {
@@ -98,7 +113,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
     }
 
     if (widget.entry.rirConfigs.isNotEmpty) {
-      rirController.text = widget.entry.rirConfigs.first.value.round().toString();
+      // RiR uses 0.5 steps, so the fractional part must be kept
+      rirController.text = widget.entry.rirConfigs.first.value.toString();
     }
   }
 
@@ -389,7 +405,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                         ),
                         provider.handleConfig(
                           widget.entry,
-                          numberFormat.tryParse(rirController.text),
+                          // RiR is slider-driven and held as an invariant string
+                          num.tryParse(rirController.text),
                           ConfigType.rir,
                         ),
                       ]);
