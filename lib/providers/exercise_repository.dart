@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
@@ -27,7 +29,9 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/exercise_filters.dart';
+import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/video.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/wger_base.dart';
@@ -127,119 +131,152 @@ class ExerciseRepository {
 
   /// Streams the full exercise catalogue, hydrated with translations,
   /// muscles, equipment, category, images and videos.
+  ///
+  /// Only the exercise + translation (+ translation language) part runs as
+  /// a SQL JOIN. The reference tables (muscles, equipment, categories) and
+  /// the fan-out tables (M2N relations, images, videos) are streamed
+  /// separately and joined in Dart. This is more effective and we don't have to
+  /// pay drift's per-row mapping for every joined column.
   Stream<ExerciseState> watchAllDrift() {
     _logger.finer('Watching all local exercises');
 
-    final primaryMuscleTable = _db.alias(_db.muscleTable, 'pm');
-    final secondaryMuscleTable = _db.alias(_db.muscleTable, 'sm');
-
-    final joined = _db.select(_db.exerciseTable).join([
-      // Translations
+    final exerciseTranslationStream = _db.select(_db.exerciseTable).join([
       leftOuterJoin(
         _db.exerciseTranslationTable,
         _db.exerciseTranslationTable.exerciseId.equalsExp(_db.exerciseTable.id),
       ),
+    ]).watch();
 
-      // Language
-      leftOuterJoin(
-        _db.languageTable,
-        _db.languageTable.id.equalsExp(_db.exerciseTranslationTable.languageId),
-      ),
+    List<TypedResult>? exerciseRows;
+    List<Muscle>? muscles;
+    List<Equipment>? equipment;
+    List<ExerciseCategory>? categories;
+    List<Language>? languages;
+    List<ExerciseMuscleM2NData>? primaryM2N;
+    List<ExerciseSecondaryMuscleM2NData>? secondaryM2N;
+    List<ExerciseEquipmentM2NData>? equipmentM2N;
+    List<ExerciseImage>? images;
+    List<Video>? videos;
 
-      // Exercise <-> Muscle
-      leftOuterJoin(
-        _db.exerciseMuscleM2N,
-        _db.exerciseMuscleM2N.exerciseId.equalsExp(_db.exerciseTable.id),
-      ),
-      leftOuterJoin(
-        primaryMuscleTable,
-        primaryMuscleTable.id.equalsExp(_db.exerciseMuscleM2N.muscleId),
-      ),
+    late StreamController<ExerciseState> controller;
+    final subs = <StreamSubscription>[];
 
-      // Exercise <-> Secondary Muscle
-      leftOuterJoin(
-        _db.exerciseSecondaryMuscleM2N,
-        _db.exerciseSecondaryMuscleM2N.exerciseId.equalsExp(_db.exerciseTable.id),
-      ),
-      leftOuterJoin(
-        secondaryMuscleTable,
-        secondaryMuscleTable.id.equalsExp(_db.exerciseSecondaryMuscleM2N.muscleId),
-      ),
+    void emit() {
+      if (exerciseRows == null ||
+          muscles == null ||
+          equipment == null ||
+          categories == null ||
+          languages == null ||
+          primaryM2N == null ||
+          secondaryM2N == null ||
+          equipmentM2N == null ||
+          images == null ||
+          videos == null) {
+        return;
+      }
 
-      // Exercise <-> Equipment
-      leftOuterJoin(
-        _db.exerciseEquipmentM2N,
-        _db.exerciseEquipmentM2N.exerciseId.equalsExp(_db.exerciseTable.id),
-      ),
-      leftOuterJoin(
-        _db.equipmentTable,
-        _db.equipmentTable.id.equalsExp(_db.exerciseEquipmentM2N.equipmentId),
-      ),
+      final muscleById = {for (final m in muscles!) m.id: m};
+      final equipmentById = {for (final e in equipment!) e.id: e};
+      final categoryById = {for (final c in categories!) c.id: c};
+      final languageById = {for (final l in languages!) l.id: l};
 
-      // Category
-      leftOuterJoin(
-        _db.exerciseCategoryTable,
-        _db.exerciseCategoryTable.id.equalsExp(_db.exerciseTable.categoryId),
-      ),
+      final primaryByExercise = <int, List<int>>{};
+      for (final row in primaryM2N!) {
+        primaryByExercise.putIfAbsent(row.exerciseId, () => []).add(row.muscleId);
+      }
+      final secondaryByExercise = <int, List<int>>{};
+      for (final row in secondaryM2N!) {
+        secondaryByExercise.putIfAbsent(row.exerciseId, () => []).add(row.muscleId);
+      }
+      final equipmentByExercise = <int, List<int>>{};
+      for (final row in equipmentM2N!) {
+        equipmentByExercise.putIfAbsent(row.exerciseId, () => []).add(row.equipmentId);
+      }
+      final imagesByExercise = <int, List<ExerciseImage>>{};
+      for (final img in images!) {
+        imagesByExercise.putIfAbsent(img.exerciseId, () => []).add(img);
+      }
+      final videosByExercise = <int, List<Video>>{};
+      for (final v in videos!) {
+        videosByExercise.putIfAbsent(v.exerciseId, () => []).add(v);
+      }
 
-      // Images
-      leftOuterJoin(
-        _db.exerciseImageTable,
-        _db.exerciseImageTable.exerciseId.equalsExp(_db.exerciseTable.id),
-      ),
-    ]);
-
-    return joined.watch().map((rows) {
-      final Map<int, Exercise> map = {};
-
-      for (final row in rows) {
+      final map = <int, Exercise>{};
+      for (final row in exerciseRows!) {
         final exercise = row.readTable(_db.exerciseTable);
-        final primaryMuscle = row.readTableOrNull(primaryMuscleTable);
-        final secondaryMuscle = row.readTableOrNull(secondaryMuscleTable);
-        final equipment = row.readTableOrNull(_db.equipmentTable);
-        final image = row.readTableOrNull(_db.exerciseImageTable);
-        final video = row.readTableOrNull(_db.exerciseVideoTable);
         final translation = row.readTableOrNull(_db.exerciseTranslationTable);
-        final category = row.readTableOrNull(_db.exerciseCategoryTable);
-
-        final entry = map.putIfAbsent(
-          exercise.id,
-          () => exercise,
-        );
-
-        if (category != null) {
-          entry.category = category;
-        }
+        final entry = map.putIfAbsent(exercise.id, () => exercise);
 
         if (translation != null && !entry.translations.any((t) => t.id == translation.id)) {
-          translation.language = row.readTable(_db.languageTable);
+          // Read languageId directly from the row: the Translation model
+          // declares it `late final` and only initialises it via the
+          // `language` setter, so we can't read it off the dart object.
+          final langId = row.read(_db.exerciseTranslationTable.languageId);
+          final language = langId == null ? null : languageById[langId];
+          if (language != null) {
+            translation.language = language;
+          }
           entry.translations.add(translation);
-        }
-
-        if (image != null && !entry.images.any((t) => t.id == image.id)) {
-          entry.images.add(image);
-        }
-
-        if (video != null && !entry.videos.any((t) => t.id == video.id)) {
-          entry.videos.add(video);
-        }
-
-        if (equipment != null && !entry.equipment.any((e) => e.id == equipment.id)) {
-          entry.equipment.add(equipment);
-        }
-
-        if (primaryMuscle != null && !entry.muscles.any((m) => m.id == primaryMuscle.id)) {
-          entry.muscles.add(primaryMuscle);
-        }
-
-        if (secondaryMuscle != null &&
-            !entry.musclesSecondary.any((m) => m.id == secondaryMuscle.id)) {
-          entry.musclesSecondary.add(secondaryMuscle);
         }
       }
 
-      return ExerciseState(map.values.toList());
-    });
+      for (final ex in map.values) {
+        ex.category = categoryById[ex.categoryId];
+        ex.muscles = [
+          for (final id in primaryByExercise[ex.id] ?? const <int>[])
+            if (muscleById[id] != null) muscleById[id]!,
+        ];
+        ex.musclesSecondary = [
+          for (final id in secondaryByExercise[ex.id] ?? const <int>[])
+            if (muscleById[id] != null) muscleById[id]!,
+        ];
+        ex.equipment = [
+          for (final id in equipmentByExercise[ex.id] ?? const <int>[])
+            if (equipmentById[id] != null) equipmentById[id]!,
+        ];
+        ex.images = imagesByExercise[ex.id] ?? [];
+        ex.videos = videosByExercise[ex.id] ?? [];
+      }
+
+      controller.add(ExerciseState(map.values.toList()));
+    }
+
+    controller = StreamController<ExerciseState>(
+      onListen: () {
+        void addSub<T>(Stream<T> source, void Function(T) assign) {
+          subs.add(
+            source.listen(
+              (value) {
+                assign(value);
+                emit();
+              },
+              onError: controller.addError,
+            ),
+          );
+        }
+
+        addSub(exerciseTranslationStream, (v) => exerciseRows = v);
+        addSub(_db.select(_db.muscleTable).watch(), (v) => muscles = v);
+        addSub(_db.select(_db.equipmentTable).watch(), (v) => equipment = v);
+        addSub(_db.select(_db.exerciseCategoryTable).watch(), (v) => categories = v);
+        addSub(_db.select(_db.languageTable).watch(), (v) => languages = v);
+        addSub(_db.select(_db.exerciseMuscleM2N).watch(), (v) => primaryM2N = v);
+        addSub(
+          _db.select(_db.exerciseSecondaryMuscleM2N).watch(),
+          (v) => secondaryM2N = v,
+        );
+        addSub(_db.select(_db.exerciseEquipmentM2N).watch(), (v) => equipmentM2N = v);
+        addSub(_db.select(_db.exerciseImageTable).watch(), (v) => images = v);
+        addSub(_db.select(_db.exerciseVideoTable).watch(), (v) => videos = v);
+      },
+      onCancel: () async {
+        for (final s in subs) {
+          await s.cancel();
+        }
+      },
+    );
+
+    return controller.stream;
   }
 
   /// Streams all exercise categories.

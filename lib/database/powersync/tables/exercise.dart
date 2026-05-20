@@ -43,19 +43,14 @@ class ExerciseTable extends Table {
   DateTimeColumn get lastUpdate => dateTime().named('last_update')();
 }
 
-const PowersyncExerciseTable = ps.Table(
-  'exercises_exercise',
-  [
-    ps.Column.text('uuid'),
-    ps.Column.integer('category_id'),
-    ps.Column.text('variation_group'),
-    ps.Column.text('created'),
-    ps.Column.text('last_update'),
-  ],
-  indexes: [
-    ps.Index('category', [ps.IndexedColumn('category_id')]),
-    ps.Index('variation', [ps.IndexedColumn('variation_group')]),
-  ],
+/// Raw table: native SQLite storage instead of the default JSON-view layer.
+/// Exercises are server-owned (read-only on the client) and dominate the
+/// per-row JSON decode cost, so bypassing the view layer is the lever with
+/// the biggest impact. The actual `CREATE TABLE` + `CREATE INDEX` statements
+/// live next to `PowerSyncDatabase.initialize()` in `database/powersync/powersync.dart`.
+const PowersyncExerciseTable = ps.RawTable.inferred(
+  name: 'exercises_exercise',
+  schema: ps.RawTableSchema(),
 );
 
 @UseRowClass(Translation)
@@ -73,21 +68,11 @@ class ExerciseTranslationTable extends Table {
   DateTimeColumn get lastUpdate => dateTime().named('last_update')();
 }
 
-const PowersyncTranslationTable = ps.Table(
-  'exercises_translation',
-  [
-    ps.Column.text('uuid'),
-    ps.Column.integer('language_id'),
-    ps.Column.integer('exercise_id'),
-    ps.Column.text('description'),
-    ps.Column.text('name'),
-    ps.Column.text('created'),
-    ps.Column.text('last_update'),
-  ],
-  indexes: [
-    ps.Index('language', [ps.IndexedColumn('language_id')]),
-    ps.Index('exercise', [ps.IndexedColumn('exercise_id')]),
-  ],
+/// See [PowersyncExerciseTable]: translations live in the same raw-table
+/// store for the same reason (2k+ rows, wide text columns).
+const PowersyncTranslationTable = ps.RawTable.inferred(
+  name: 'exercises_translation',
+  schema: ps.RawTableSchema(),
 );
 
 @UseRowClass(ExerciseCategory)
