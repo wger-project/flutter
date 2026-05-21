@@ -69,12 +69,23 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
 
   var _edit = false;
 
+  bool _controllersInitialized = false;
+
   @override
   void initState() {
     super.initState();
     if (widget.entry.nrOfSetsConfigs.isNotEmpty) {
       setsSliderValue = widget.entry.nrOfSetsConfigs.first.value.toDouble();
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_controllersInitialized) {
+      return;
+    }
+    _controllersInitialized = true;
 
     if (widget.entry.weightConfigs.isNotEmpty) {
       _weight = widget.entry.weightConfigs.first.value;
@@ -97,7 +108,8 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
     }
 
     if (widget.entry.rirConfigs.isNotEmpty) {
-      rirController.text = widget.entry.rirConfigs.first.value.round().toString();
+      // RiR uses 0.5 steps, so the fractional part must be kept
+      rirController.text = widget.entry.rirConfigs.first.value.toString();
     }
   }
 
@@ -341,7 +353,8 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                 ),
                 provider.handleConfig(
                   widget.entry,
-                  numberFormat.tryParse(rirController.text),
+                  // RiR is slider-driven and held as an invariant string
+                  num.tryParse(rirController.text),
                   ConfigType.rir,
                 ),
               ]);

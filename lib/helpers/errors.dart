@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,6 +36,24 @@ import 'package:wger/providers/workout_logs_notifier.dart';
 
 import 'consts.dart';
 import 'logs.dart';
+
+/// Whether an error dialog is currently on screen.
+///
+/// Errors can fire in quick succession; this guards against stacking several
+/// modal dialogs on top of each other.
+bool _errorDialogVisible = false;
+
+/// How an error should be surfaced to the user.
+enum ErrorSeverity {
+  /// Logged only; not worth interrupting the user (e.g. layout overflows).
+  cosmetic,
+
+  /// A brief, non-blocking snackbar (e.g. transient connectivity problems).
+  transient,
+
+  /// A blocking error dialog.
+  fatal,
+}
 
 void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? context}) {
   final logger = Logger('showHttpExceptionErrorDialog');
@@ -50,6 +69,12 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? co
     }
     return;
   }
+
+  if (_errorDialogVisible) {
+    logger.info('Suppressing error dialog, one is already visible: $exception');
+    return;
+  }
+  _errorDialogVisible = true;
 
   showDialog(
     context: dialogContext,
@@ -76,7 +101,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? co
         ),
       ],
     ),
-  );
+  ).whenComplete(() => _errorDialogVisible = false);
 }
 
 void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext? context}) {
@@ -85,7 +110,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
   // of a widget's build method.
   final BuildContext? dialogContext = context ?? navigatorKey.currentContext;
 
-  final logger = Logger('showHttpExceptionErrorDialog');
+  final logger = Logger('showGeneralErrorDialog');
 
   if (dialogContext == null) {
     if (kDebugMode) {
@@ -94,32 +119,24 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
     return;
   }
 
+  if (_errorDialogVisible) {
+    logger.info('Suppressing error dialog, one is already visible: $error');
+    return;
+  }
+  _errorDialogVisible = true;
+
   final i18n = AppLocalizations.of(dialogContext);
 
-  // If possible, determine the error title and message based on the error type.
+  // If possible, determine the issue title and message based on the error type.
   // (Note that issue titles and error messages are not localized)
-  bool allowReportIssue = true;
   String issueTitle = 'An error occurred';
   String issueErrorMessage = error.toString();
-  String errorTitle = i18n.anErrorOccurred;
-  String errorDescription = i18n.errorInfoDescription;
-  var icon = Icons.error;
 
-  if (error is TimeoutException) {
-    issueTitle = 'Network Timeout';
-    issueErrorMessage =
-        'The connection to the server timed out. Please check your '
-        'internet connection and try again.';
-  } else if (error is FlutterErrorDetails) {
+  if (error is FlutterErrorDetails) {
     issueTitle = 'Application Error';
     issueErrorMessage = error.exceptionAsString();
   } else if (error is MissingRequiredKeysException) {
     issueTitle = 'Missing Required Key';
-  } else if (error is SocketException) {
-    allowReportIssue = false;
-    icon = Icons.signal_wifi_connected_no_internet_4_outlined;
-    errorTitle = i18n.errorCouldNotConnectToServer;
-    errorDescription = i18n.errorCouldNotConnectToServerDetails;
   }
 
   final String fullStackTrace = stackTrace?.toString() ?? 'No stack trace available.';
@@ -134,16 +151,19 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
           spacing: 8,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Theme.of(context).colorScheme.error),
+            Icon(Icons.error, color: Theme.of(context).colorScheme.error),
             Expanded(
-              child: Text(errorTitle, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              child: Text(
+                i18n.anErrorOccurred,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
             ),
           ],
         ),
         content: SingleChildScrollView(
           child: ListBody(
             children: [
-              Text(errorDescription),
+              Text(i18n.errorInfoDescription),
               const SizedBox(height: 8),
               Text(i18n.errorInfoDescription2),
               const SizedBox(height: 10),
@@ -198,42 +218,29 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
           ),
         ),
         actions: [
-          if (allowReportIssue)
-            TextButton(
-              child: const Text('Report issue'),
-              onPressed: () async {
-                final logText = applicationLogs.isEmpty
-                    ? '-- No logs available --'
-                    : applicationLogs.join('\n');
-                final description = Uri.encodeComponent(
-                  '## Description\n\n'
-                  '[Please describe what you were doing when the error occurred.]\n\n'
-                  '## Error details\n\n'
-                  'Error title: $issueTitle\n'
-                  'Error message: $issueErrorMessage\n'
-                  'Stack trace:\n'
-                  '```\n$stackTrace\n```\n\n'
-                  'App logs (last ${applicationLogs.length} entries):\n'
-                  '```\n$logText\n```',
-                );
-                final githubIssueUrl =
-                    '$GITHUB_ISSUES_BUG_URL'
-                    '&title=$issueTitle'
-                    '&description=$description';
-                final Uri reportUri = Uri.parse(githubIssueUrl);
+          TextButton(
+            child: const Text('Report issue'),
+            onPressed: () async {
+              final githubIssueUrl = buildGithubIssueUrl(
+                issueTitle: issueTitle,
+                issueErrorMessage: issueErrorMessage,
+                stackTrace: fullStackTrace,
+                applicationLogs: applicationLogs,
+              );
+              final Uri reportUri = Uri.parse(githubIssueUrl);
 
-                try {
-                  await launchUrl(reportUri, mode: LaunchMode.externalApplication);
-                } catch (e) {
-                  if (kDebugMode) {
-                    logger.warning('Error launching URL: $e');
-                  }
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Error opening issue tracker: $e')));
+              try {
+                await launchUrl(reportUri, mode: LaunchMode.externalApplication);
+              } catch (e) {
+                if (kDebugMode) {
+                  logger.warning('Error launching URL: $e');
                 }
-              },
-            ),
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('Error opening issue tracker: $e')));
+              }
+            },
+          ),
           FilledButton(
             child: Text(MaterialLocalizations.of(context).okButtonLabel),
             onPressed: () {
@@ -243,7 +250,101 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
         ],
       );
     },
-  );
+  ).whenComplete(() => _errorDialogVisible = false);
+}
+
+/// Classifies [error] to decide how it should be surfaced.
+ErrorSeverity classifyError(Object? error) {
+  // Flutter reports layout overflows as a plain FlutterError without a
+  // dedicated type, so matching the message is the only option.
+  final isLayoutOverflow = error is FlutterError && error.toString().contains('overflowed');
+
+  if (error is NetworkImageLoadException || isLayoutOverflow) {
+    return ErrorSeverity.cosmetic;
+  }
+  if (error is SocketException || error is http.ClientException || error is TimeoutException) {
+    return ErrorSeverity.transient;
+  }
+  return ErrorSeverity.fatal;
+}
+
+/// Routes [error] to the appropriate UI based on its [ErrorSeverity].
+///
+/// The caller is responsible for logging the error beforehand.
+void handleError(Object? error, StackTrace? stackTrace) {
+  switch (classifyError(error)) {
+    case ErrorSeverity.cosmetic:
+      break;
+    case ErrorSeverity.transient:
+      showTransientErrorSnackbar();
+    case ErrorSeverity.fatal:
+      if (error is WgerHttpException) {
+        showHttpExceptionErrorDialog(error);
+      } else {
+        showGeneralErrorDialog(error, stackTrace);
+      }
+  }
+}
+
+/// Shows a brief, non-blocking snackbar telling the user about a (hopefully)
+/// transient error such as network problems, etc.
+void showTransientErrorSnackbar() {
+  final messenger = scaffoldMessengerKey.currentState;
+  final context = navigatorKey.currentContext;
+
+  if (messenger == null || context == null) {
+    if (kDebugMode) {
+      Logger(
+        'showNetworkErrorSnackbar',
+      ).warning('Could not show snackbar: no messenger or context available.');
+    }
+    return;
+  }
+
+  messenger
+    ..clearSnackBars()
+    ..showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context).errorCouldNotConnectToServer)),
+    );
+}
+
+/// Builds the URL that opens a pre-filled GitHub bug report.
+///
+/// The error details are passed to GitHub as query parameters and since
+/// GitHub rejects URLs longer than [GITHUB_ISSUES_MAX_URL_LENGTH], when
+/// the report would exceed that limit, the oldest log entries are pruned
+/// until the URL fits.
+String buildGithubIssueUrl({
+  required String issueTitle,
+  required String issueErrorMessage,
+  required String stackTrace,
+  required List<String> applicationLogs,
+}) {
+  String composeUrl(List<String> logs) {
+    final logText = logs.isEmpty ? '-- No logs available --' : logs.join('\n');
+    final description =
+        '## Description\n\n'
+        '[Please describe what you were doing when the error occurred.]\n\n'
+        '## Error details\n\n'
+        'Error title: $issueTitle\n'
+        'Error message: $issueErrorMessage\n'
+        'Stack trace:\n```\n$stackTrace\n```\n\n'
+        'App logs (last ${logs.length} entries):\n```\n$logText\n```';
+    return '$GITHUB_ISSUES_BUG_URL'
+        '&title=${Uri.encodeComponent(issueTitle)}'
+        '&description=${Uri.encodeComponent(description)}';
+  }
+
+  // The logs come newest-first, so the oldest entry is the last one. Drop it
+  // and retry until the URL fits within the limit.
+  var logs = applicationLogs;
+  while (true) {
+    final url = composeUrl(logs);
+    if (url.length <= GITHUB_ISSUES_MAX_URL_LENGTH || logs.isEmpty) {
+      return url;
+    }
+    logs = logs.sublist(0, logs.length - 1);
+  }
 }
 
 /// A widget to render HTML errors returned by the server

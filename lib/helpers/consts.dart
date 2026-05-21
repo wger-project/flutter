@@ -129,6 +129,9 @@ const GITHUB_REPO_URL = '$GITHUB_PROJECT_URL/flutter';
 const GITHUB_ISSUES_URL = '$GITHUB_REPO_URL/issues/new/choose';
 const GITHUB_ISSUES_BUG_URL = '$GITHUB_REPO_URL/issues/new?template=1_bug.yml';
 const GITHUB_SPONSORS_URL = 'https://github.com/sponsors/wger-project';
+
+/// Maximum length for a pre-filled GitHub issue URL
+const GITHUB_ISSUES_MAX_URL_LENGTH = 8000;
 const DISCORD_URL = 'https://discord.gg/rPWFv6W';
 const MASTODON_URL = 'https://fosstodon.org/@wger';
 const READTHEDOCS_URL = 'https://wger.readthedocs.io';
