@@ -48,12 +48,6 @@ Future<bool> _defaultReachabilityCheck(Duration timeout) async {
 class NetworkStatus extends _$NetworkStatus {
   final _logger = Logger('NetworkStatus');
 
-  static const allowed = {
-    ConnectivityResult.mobile,
-    ConnectivityResult.wifi,
-    ConnectivityResult.ethernet,
-  };
-
   StreamSubscription<List<ConnectivityResult>>? _sub;
 
   @override
@@ -88,7 +82,11 @@ class NetworkStatus extends _$NetworkStatus {
     List<ConnectivityResult> conn, {
     Duration timeout = const Duration(seconds: 1),
   }) async {
-    if (!conn.any((c) => allowed.contains(c))) {
+    // Only short-circuit when there's clearly no network adapter at all. Any
+    // other connectivity type (wifi, ethernet, mobile, vpn, other, ...) still
+    // has to prove real reachability via the DNS check below. An empty list
+    // counts as "no connection" too.
+    if (conn.every((c) => c == ConnectivityResult.none)) {
       return false;
     }
     return reachabilityCheck(timeout);
