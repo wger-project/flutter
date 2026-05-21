@@ -36,6 +36,12 @@ import 'package:wger/providers/routines.dart';
 import 'consts.dart';
 import 'logs.dart';
 
+/// Whether an error dialog is currently on screen.
+///
+/// Errors can fire in quick succession; this guards against stacking several
+/// modal dialogs on top of each other.
+bool _errorDialogVisible = false;
+
 void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? context}) {
   final logger = Logger('showHttpExceptionErrorDialog');
 
@@ -50,6 +56,12 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? co
     }
     return;
   }
+
+  if (_errorDialogVisible) {
+    logger.info('Suppressing error dialog, one is already visible: $exception');
+    return;
+  }
+  _errorDialogVisible = true;
 
   showDialog(
     context: dialogContext,
@@ -76,7 +88,7 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? co
         ),
       ],
     ),
-  );
+  ).whenComplete(() => _errorDialogVisible = false);
 }
 
 void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext? context}) {
@@ -93,6 +105,12 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
     }
     return;
   }
+
+  if (_errorDialogVisible) {
+    logger.info('Suppressing error dialog, one is already visible: $error');
+    return;
+  }
+  _errorDialogVisible = true;
 
   final i18n = AppLocalizations.of(dialogContext);
 
@@ -231,7 +249,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
         ],
       );
     },
-  );
+  ).whenComplete(() => _errorDialogVisible = false);
 }
 
 /// Builds the URL that opens a pre-filled GitHub bug report.
