@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
+import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/routines_notifier.dart';
@@ -210,6 +211,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
               isDense: true,
             ),
             keyboardType: textInputTypeDecimal,
+            inputFormatters: [LocalizedDecimalInputFormatter(_numberFormat.symbols.DECIMAL_SEP)],
             onChanged: (text) {
               if (text.isEmpty) {
                 widget.onChanged(null);

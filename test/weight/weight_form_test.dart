@@ -84,22 +84,28 @@ void main() {
     expect(find.text('80'), findsOneWidget);
   });
 
-  testWidgets("Entering garbage doesn't break the quick-change", (WidgetTester tester) async {
+  testWidgets('Non-numeric input never reaches the field', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1));
     await tester.pumpAndSettle();
+
     await tester.enterText(find.byKey(const Key('weightInput')), 'shiba inu');
+    await tester.pumpAndSettle();
+    expect(find.text('shiba inu'), findsNothing);
 
+    // Quick-change still works on the now-empty field
     await tester.tap(find.byKey(const Key('quickMinus')));
-    expect(find.text('shiba inu'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('shiba inu'), findsNothing);
+  });
 
-    await tester.tap(find.byKey(const Key('quickMinusSmall')));
-    expect(find.text('shiba inu'), findsOneWidget);
+  testWidgets('Accepts a dot as decimal separator in the de locale', (WidgetTester tester) async {
+    await tester.pumpWidget(createWeightForm(weightEntry: null, locale: 'de'));
+    await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('quickPlus')));
-    expect(find.text('shiba inu'), findsOneWidget);
+    await tester.enterText(find.byKey(const Key('weightInput')), '81.5');
+    await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('quickPlusSmall')));
-    expect(find.text('shiba inu'), findsOneWidget);
+    expect(find.text('81,5'), findsOneWidget);
   });
 
   testWidgets('Widget works if there is no last entry', (WidgetTester tester) async {

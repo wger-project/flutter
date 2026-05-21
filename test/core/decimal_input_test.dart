@@ -67,6 +67,22 @@ void main() {
     expect(captured, 7.5);
   });
 
+  testWidgets('accepts a dot typed on a comma-decimal keyboard', (WidgetTester tester) async {
+    num? captured = 0;
+    await tester.pumpWidget(
+      wrap(
+        DecimalInputWidget(value: null, labelText: 'X', onChanged: (v) => captured = v),
+        locale: 'de',
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField), '7.5');
+
+    expect(find.text('7,5'), findsOneWidget);
+    expect(captured, 7.5);
+  });
+
   testWidgets('reports null when the field is cleared', (WidgetTester tester) async {
     num? captured = 1;
     await tester.pumpWidget(

@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight_notifier.dart';
@@ -132,6 +133,7 @@ class WeightForm extends riverpod.ConsumerWidget {
             ),
             controller: weightController,
             keyboardType: textInputTypeDecimal,
+            inputFormatters: [LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP)],
             onSaved: (newValue) {
               _weightEntry.weight = numberFormat.parse(newValue!);
             },

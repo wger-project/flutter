@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Locale-aware decimal text field.
@@ -60,6 +61,7 @@ class DecimalInputWidget extends StatelessWidget {
       initialValue: value == null ? '' : numberFormat.format(value),
       decoration: InputDecoration(labelText: labelText, suffixText: suffixText),
       keyboardType: textInputTypeDecimal,
+      inputFormatters: [LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP)],
       onChanged: (text) {
         final trimmed = text.trim();
         onChanged(trimmed.isEmpty ? null : numberFormat.tryParse(trimmed));
