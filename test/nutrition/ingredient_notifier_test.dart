@@ -36,6 +36,10 @@ void main() {
 
   setUp(() {
     mockRepo = MockIngredientRepository();
+    // build() subscribes to this stream. The fetch/searchIngredient tests
+    // only need _repo, which build() assigns synchronously, so the stream
+    // contents are irrelevant here.
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const []));
   });
 
   ProviderContainer makeContainer({bool isOnline = true}) {
@@ -69,8 +73,6 @@ void main() {
       final apple = makeIngredient(1, 'Apple');
       when(mockRepo.getById(1)).thenAnswer((_) async => apple);
       final container = makeContainer();
-      // build() must complete before we can call methods on the notifier.
-      await container.read(ingredientProvider.future);
 
       final result = await container.read(ingredientProvider.notifier).fetch(1);
 
@@ -81,7 +83,6 @@ void main() {
     test('returns null and caches when the repo returns null', () async {
       when(mockRepo.getById(99)).thenAnswer((_) async => null);
       final container = makeContainer();
-      await container.read(ingredientProvider.future);
       final notifier = container.read(ingredientProvider.notifier);
 
       expect(await notifier.fetch(99), isNull);
@@ -94,7 +95,6 @@ void main() {
       final apple = makeIngredient(1, 'Apple');
       when(mockRepo.getById(1)).thenAnswer((_) async => apple);
       final container = makeContainer();
-      await container.read(ingredientProvider.future);
       final notifier = container.read(ingredientProvider.notifier);
 
       await notifier.fetch(1);
@@ -109,7 +109,6 @@ void main() {
       final completer = Completer<Ingredient?>();
       when(mockRepo.getById(1)).thenAnswer((_) => completer.future);
       final container = makeContainer();
-      await container.read(ingredientProvider.future);
       final notifier = container.read(ingredientProvider.notifier);
 
       final f1 = notifier.fetch(1);
@@ -136,8 +135,6 @@ void main() {
         ),
       ).thenAnswer((_) async => [makeIngredient(1, 'Apple')]);
       final container = makeContainer(isOnline: true);
-      await container.read(ingredientProvider.future);
-
       final result = await container
           .read(ingredientProvider.notifier)
           .searchIngredient(
@@ -180,8 +177,6 @@ void main() {
         ),
       ).thenAnswer((_) async => [makeIngredient(2, 'Tofu')]);
       final container = makeContainer(isOnline: false);
-      await container.read(ingredientProvider.future);
-
       final result = await container
           .read(ingredientProvider.notifier)
           .searchIngredient(
