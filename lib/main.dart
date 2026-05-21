@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/locator.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/locale.dart';
@@ -82,6 +81,7 @@ void _setupLogging() {
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   // Needs to be called before runApp
@@ -97,26 +97,14 @@ void main() async {
 
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
+
   // Catch errors from Flutter itself (widget build, layout, paint, etc.)
-  //
-  // NOTE: it seems this sometimes makes problems and even freezes the flutter
-  //       process when widgets overflow, so it is disabled in dev mode.
-  if (!kDebugMode) {
-    FlutterError.onError = (FlutterErrorDetails details) {
-      final stack = details.stack ?? StackTrace.empty;
-      logger.severe('Error caught by FlutterError.onError: ${details.exception}');
-
-      FlutterError.dumpErrorToConsole(details);
-
-      // Don't show the full error dialog for network image loading errors.
-      if (details.exception is NetworkImageLoadException) {
-        return;
-      }
-
-      showGeneralErrorDialog(details.exception, stack);
-      // throw details.exception;
-    };
-  }
+  FlutterError.onError = (FlutterErrorDetails details) {
+    final stack = details.stack ?? StackTrace.empty;
+    logger.severe('Error caught by FlutterError.onError: ${details.exception}');
+    FlutterError.dumpErrorToConsole(details);
+    handleError(details.exception, stack);
+  };
 
   // Catch errors that happen outside of the Flutter framework (e.g., in async operations)
   PlatformDispatcher.instance.onError = (error, stack) {
@@ -131,11 +119,7 @@ void main() async {
     logger.severe('Error caught by PlatformDispatcher.instance.onError: $error');
     logger.severe('Stack trace: $stack');
 
-    if (error is WgerHttpException) {
-      showHttpExceptionErrorDialog(error);
-    } else {
-      showGeneralErrorDialog(error, stack);
-    }
+    handleError(error, stack);
 
     // Return true to indicate that the error has been handled.
     return true;
@@ -244,6 +228,7 @@ class MainApp extends StatelessWidget {
                   return MaterialApp(
                     title: 'wger',
                     navigatorKey: navigatorKey,
+                    scaffoldMessengerKey: scaffoldMessengerKey,
                     theme: wgerLightTheme,
                     darkTheme: wgerDarkTheme,
                     highContrastTheme: wgerLightThemeHc,

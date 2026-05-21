@@ -16,7 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 
@@ -176,6 +182,40 @@ void main() {
       // The stack trace is never trimmed: first and last frame survive.
       expect(description, contains('#0 SomeClass.someMethod'));
       expect(description, contains('#79 SomeClass.someMethod'));
+    });
+  });
+
+  group('classifyError', () {
+    test('Connectivity errors are transient', () {
+      expect(
+        classifyError(const SocketException('no route to host')),
+        ErrorSeverity.transient,
+      );
+      expect(
+        classifyError(http.ClientException('connection refused')),
+        ErrorSeverity.transient,
+      );
+      expect(classifyError(TimeoutException('request timed out')), ErrorSeverity.transient);
+    });
+
+    test('Network image and layout overflow errors are cosmetic', () {
+      expect(
+        classifyError(
+          NetworkImageLoadException(statusCode: 404, uri: Uri.parse('https://x/y.png')),
+        ),
+        ErrorSeverity.cosmetic,
+      );
+      expect(
+        classifyError(FlutterError('A RenderFlex overflowed by 99 pixels on the right.')),
+        ErrorSeverity.cosmetic,
+      );
+    });
+
+    test('Other errors are fatal', () {
+      expect(classifyError(WgerHttpException.fromMap({'detail': 'invalid'})), ErrorSeverity.fatal);
+      expect(classifyError(Exception('boom')), ErrorSeverity.fatal);
+      expect(classifyError(StateError('bad state')), ErrorSeverity.fatal);
+      expect(classifyError(null), ErrorSeverity.fatal);
     });
   });
 }
