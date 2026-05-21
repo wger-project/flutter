@@ -42,6 +42,9 @@ void main() {
       mockSharedPreferences.setBool(any, any),
     ).thenAnswer((_) async {});
     when(
+      mockSharedPreferences.setString(any, any),
+    ).thenAnswer((_) async {});
+    when(
       mockSharedPreferences.remove(any),
     ).thenAnswer((_) async {});
   });
@@ -118,6 +121,80 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, false)).called(1);
+    });
+  });
+
+  group('Language switcher', () {
+    testWidgets('shows system option when no override set', (WidgetTester tester) async {
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.pumpAndSettle();
+
+      // The dropdown is built; tap to open it.
+      final dropdown = find.byKey(const ValueKey('appLanguageDropdown'));
+      expect(dropdown, findsOneWidget);
+
+      await tester.ensureVisible(dropdown);
+      await tester.pumpAndSettle();
+      await tester.tap(dropdown);
+      await tester.pumpAndSettle();
+
+      // "System language" option exists in the open menu.
+      expect(find.text('System default'), findsWidgets);
+    });
+
+    testWidgets('selecting a language persists the override', (WidgetTester tester) async {
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.pumpAndSettle();
+
+      final dropdown = find.byKey(const ValueKey('appLanguageDropdown'));
+      await tester.ensureVisible(dropdown);
+      await tester.pumpAndSettle();
+      await tester.tap(dropdown);
+      await tester.pumpAndSettle();
+
+      // German is rendered in its native name ("Deutsch") in the menu.
+      await tester.tap(find.text('Deutsch').last);
+      await tester.pumpAndSettle();
+
+      verify(mockSharedPreferences.setString(PREFS_USER_LOCALE, 'de')).called(1);
+    });
+
+    testWidgets('selecting "System language" clears the override', (WidgetTester tester) async {
+      // Start with a stored override so the dropdown opens on German.
+      when(
+        mockSharedPreferences.getString(PREFS_USER_LOCALE),
+      ).thenAnswer((_) async => 'de');
+
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.pumpAndSettle();
+
+      final dropdown = find.byKey(const ValueKey('appLanguageDropdown'));
+      await tester.ensureVisible(dropdown);
+      await tester.pumpAndSettle();
+      await tester.tap(dropdown);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('System default').last);
+      await tester.pumpAndSettle();
+
+      verify(mockSharedPreferences.remove(PREFS_USER_LOCALE)).called(1);
+    });
+
+    testWidgets('renders supported locales in native script', (WidgetTester tester) async {
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.pumpAndSettle();
+
+      final dropdown = find.byKey(const ValueKey('appLanguageDropdown'));
+      await tester.ensureVisible(dropdown);
+      await tester.pumpAndSettle();
+      await tester.tap(dropdown);
+      await tester.pumpAndSettle();
+
+      // Spot-check native names that sort near the top of the menu and are
+      // therefore visible without scrolling the (large) dropdown overlay.
+      expect(find.text('Deutsch'), findsWidgets);
+      expect(find.text('English'), findsWidgets);
+      expect(find.text('Català'), findsWidgets);
     });
   });
 }

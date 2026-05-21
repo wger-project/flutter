@@ -18,6 +18,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
@@ -132,7 +133,11 @@ void main() {
     late Exercise exercise;
 
     setUp(() {
-      exercise = Exercise(id: 1, uuid: 'test-uuid', categoryId: 1);
+      exercise = Exercise(
+        id: 1,
+        uuid: 'test-uuid',
+        category: const ExerciseCategory(id: 1, name: 'Test'),
+      );
     });
 
     test('uses default unit IDs when unit objects are not loaded', () {

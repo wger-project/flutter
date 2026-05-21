@@ -115,14 +115,22 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('Handle offline status', (WidgetTester tester) async {
+  testWidgets('Delete button stays enabled when offline', (WidgetTester tester) async {
+    // Routine deletion syncs through PowerSync, so it must work offline.
     await tester.pumpWidget(renderWidget(isOnline: false));
     await tester.pumpAndSettle();
 
     final deleteButton = tester.widget<IconButton>(
       find.widgetWithIcon(IconButton, Icons.delete).first,
     );
-    expect(deleteButton.onPressed, isNull);
+    expect(deleteButton.onPressed, isNotNull);
+
+    // The confirmation dialog opens and the delete flow runs through.
+    await tester.tap(find.byIcon(Icons.delete).first);
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsOneWidget);
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
   });
 
   testWidgets('Test the form on the workout plan screen', (WidgetTester tester) async {

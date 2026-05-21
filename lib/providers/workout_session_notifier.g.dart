@@ -33,7 +33,7 @@ final class WorkoutSessionNotifierProvider
   WorkoutSessionNotifier create() => WorkoutSessionNotifier();
 }
 
-String _$workoutSessionNotifierHash() => r'4ca757bd63400433d86d3d597ee6cf1718246dcb';
+String _$workoutSessionNotifierHash() => r'82394a22af6348c7a228d757b7757a8d394e91a4';
 
 abstract class _$WorkoutSessionNotifier extends $StreamNotifier<List<WorkoutSession>> {
   Stream<List<WorkoutSession>> build();

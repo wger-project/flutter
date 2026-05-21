@@ -16,6 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// Art style of an [ExerciseImage].
+///
+/// The wire values mirror Django's `ExerciseImage.STYLE` choices (`CharField`
+/// with `'1'`–`'5'`), so the same string round-trips through PowerSync
+/// without any extra mapping on the connector.
+enum ExerciseImageStyle {
+  lineArt('1'),
+  threeD('2'),
+  lowPoly('3'),
+  photo('4'),
+  other('5')
+  ;
+
+  final String wireValue;
+  const ExerciseImageStyle(this.wireValue);
+
+  /// Looks up an enum case by its Django wire value.
+  static ExerciseImageStyle fromWire(String value) =>
+      ExerciseImageStyle.values.firstWhere((e) => e.wireValue == value);
+}
+
 class ExerciseImage {
   final int id;
   final String uuid;
@@ -26,6 +47,23 @@ class ExerciseImage {
   final String image;
 
   final bool isMain;
+  final bool isAiGenerated;
+  final ExerciseImageStyle style;
+
+  final int? width;
+  final int? height;
+  final DateTime created;
+  final DateTime lastUpdate;
+
+  /// FK to the `License` row.
+  final int licenseId;
+  final String licenseTitle;
+  final String licenseObjectUrl;
+
+  /// Author may be null on the server (`TextField(null=True)`).
+  final String? licenseAuthor;
+  final String licenseAuthorUrl;
+  final String licenseDerivativeSourceUrl;
 
   const ExerciseImage({
     required this.id,
@@ -33,6 +71,18 @@ class ExerciseImage {
     required this.exerciseId,
     required this.image,
     required this.isMain,
+    required this.isAiGenerated,
+    required this.style,
+    required this.width,
+    required this.height,
+    required this.created,
+    required this.lastUpdate,
+    required this.licenseId,
+    required this.licenseTitle,
+    required this.licenseObjectUrl,
+    required this.licenseAuthor,
+    required this.licenseAuthorUrl,
+    required this.licenseDerivativeSourceUrl,
   });
 
   @override

@@ -1,15 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../test_data/exercises.dart';
-import '../fixtures/fixture_reader.dart';
 
 void main() {
-  final Map<String, dynamic> tExerciseInfoMap = jsonDecode(
-    fixture('exercises/exerciseinfo_response.json'),
-  );
-
   group('Model tests', () {
     test('test getExercise', () {
       // arrange and act

@@ -29,6 +29,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 
@@ -82,9 +83,10 @@ void main() {
     when(mockIngredientRepo.watchById(any)).thenAnswer((_) => Stream.value(fetchedIngredient));
   });
 
-  ProviderContainer makeContainer() {
+  ProviderContainer makeContainer({bool isOnline = true}) {
     final container = ProviderContainer(
       overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
         bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
@@ -195,6 +197,40 @@ void main() {
     },
     tags: ['golden'],
   );
+
+  testWidgets('Logging and meal actions stay enabled when offline', (tester) async {
+    tester.view.physicalSize = const Size(500, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    final container = makeContainer(isOnline: false);
+    await tester.pumpWidget(createNutritionalPlan(container: container));
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+
+    // Diary logging and meal management all sync through PowerSync.
+    final fabs = tester.widgetList<FloatingActionButton>(
+      find.byType(FloatingActionButton),
+    );
+    expect(fabs, isNotEmpty);
+    for (final fab in fabs) {
+      expect(fab.onPressed, isNotNull);
+    }
+
+    // The plan edit/delete actions in the app bar menu.
+    await tester.tap(find.byIcon(Icons.more_vert));
+    await tester.pumpAndSettle();
+    final menuItems = tester.widgetList<PopupMenuItem<NutritionalPlanOptions>>(
+      find.byType(PopupMenuItem<NutritionalPlanOptions>),
+    );
+    expect(menuItems, hasLength(2));
+    for (final item in menuItems) {
+      expect(item.enabled, isTrue);
+    }
+  });
 
   testWidgets('Tests the localization of times - EN', (WidgetTester tester) async {
     final container = makeContainer();

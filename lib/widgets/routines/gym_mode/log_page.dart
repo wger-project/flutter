@@ -251,12 +251,10 @@ class LogsPastLogsWidget extends ConsumerWidget {
 }
 
 class LogFormWidget extends ConsumerStatefulWidget {
-  final _logger = Logger('LogFormWidget');
-
   final PageController controller;
   final SetConfigData configData;
 
-  LogFormWidget({
+  const LogFormWidget({
     super.key,
     required this.controller,
     required this.configData,

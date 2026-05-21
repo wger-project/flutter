@@ -941,5 +941,8 @@
     "applicationLogs": "Registri dell'applicazione",
     "dayTypeCustom": "Personalizzato",
     "dayTypeAfap": "Più velocemente possibile",
-    "dayTypeHiit": "Allenamento a intervalli ad alta intensità"
+    "dayTypeHiit": "Allenamento a intervalli ad alta intensità",
+    "workoutCompleted": "Allenamento Completato",
+    "noTrophies": "Non ci sono trofei",
+    "preview": "Anteprima"
 }

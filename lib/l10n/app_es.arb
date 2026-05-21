@@ -994,5 +994,8 @@
     "dashboardWidgets": "Widgets del panel",
     "trophies": "Trofeos",
     "personalRecords": "Registros personales",
-    "noTrophies": "No tienes trofeos todavía"
+    "noTrophies": "No tienes trofeos todavía",
+    "slotEntryTypeWarmup": "Calentamiento",
+    "preview": "Vista previa",
+    "serverUpdateTitle": "Actualización de servidor requerida"
 }

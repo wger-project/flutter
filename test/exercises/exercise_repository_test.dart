@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,6 +20,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/models/exercises/image.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercise_repository.dart';
 
@@ -153,6 +154,41 @@ void main() {
             exerciseId: exerciseId,
             image: path ?? 'images/$id.jpg',
             isMain: false,
+            isAiGenerated: false,
+            style: ExerciseImageStyle.photo,
+            created: DateTime.utc(2024),
+            lastUpdate: DateTime.utc(2024),
+            licenseId: 1,
+            licenseTitle: '',
+            licenseObjectUrl: '',
+            licenseAuthorUrl: '',
+            licenseDerivativeSourceUrl: '',
+          ),
+        );
+  }
+
+  Future<void> seedAlias(int id, {required int translationId, required String alias}) async {
+    await db
+        .into(db.exerciseAliasTable)
+        .insert(
+          ExerciseAliasTableCompanion.insert(
+            id: id,
+            uuid: 'alias-$id',
+            translationId: translationId,
+            alias: alias,
+          ),
+        );
+  }
+
+  Future<void> seedComment(int id, {required int translationId, required String comment}) async {
+    await db
+        .into(db.exerciseCommentTable)
+        .insert(
+          ExerciseCommentTableCompanion.insert(
+            id: id,
+            uuid: 'comment-$id',
+            translationId: translationId,
+            comment: comment,
           ),
         );
   }
@@ -167,7 +203,7 @@ void main() {
     });
 
     test(
-      'hydrates a single exercise with category, translation, muscle, equipment, image',
+      'hydrates a single exercise',
       () async {
         await seedLanguage(testEnglish.id, 'en', 'English');
         await seedCategory(testCategoryArms.id, 'Arms');
@@ -178,16 +214,20 @@ void main() {
         await linkPrimaryMuscle(1, tMuscle1.id, linkId: 1);
         await linkEquipment(1, testEquipmentBench.id, linkId: 1);
         await seedImage(1, exerciseId: 1);
+        await seedAlias(1, translationId: 101, alias: 'Chest Press');
+        await seedComment(1, translationId: 101, comment: 'Keep your back flat');
 
         final state = await repo.watchAllDrift().first;
 
         expect(state.exercises, hasLength(1));
         final ex = state.exercises.single;
         expect(ex.id, 1);
-        expect(ex.category?.name, 'Arms');
+        expect(ex.category.name, 'Arms');
         expect(ex.translations, hasLength(1));
         expect(ex.translations.single.name, 'Bench Press');
-        expect(ex.translations.single.languageObj.shortName, 'en');
+        expect(ex.translations.single.language.shortName, 'en');
+        expect(ex.translations.single.aliases.map((a) => a.alias), ['Chest Press']);
+        expect(ex.translations.single.notes.map((c) => c.comment), ['Keep your back flat']);
         expect(ex.muscles.map((m) => m.id), [tMuscle1.id]);
         expect(ex.equipment.map((e) => e.id), [testEquipmentBench.id]);
         expect(ex.images, hasLength(1));

@@ -28,6 +28,8 @@ import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/widgets/core/decimal_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
@@ -47,17 +49,16 @@ class SlotEntryForm extends ConsumerStatefulWidget {
 }
 
 class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
-  bool isSaving = false;
   bool isDeleting = false;
 
   final iconSize = 18.0;
 
   double setsSliderValue = 1.0;
 
-  final weightController = TextEditingController();
-  final maxWeightController = TextEditingController();
-  final repetitionsController = TextEditingController();
-  final maxRepetitionsController = TextEditingController();
+  num? _weight;
+  num? _maxWeight;
+  num? _reps;
+  num? _maxReps;
   final restController = TextEditingController();
   final maxRestController = TextEditingController();
   final rirController = TextEditingController();
@@ -68,27 +69,35 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
 
   var _edit = false;
 
+  bool _controllersInitialized = false;
+
   @override
   void initState() {
     super.initState();
     if (widget.entry.nrOfSetsConfigs.isNotEmpty) {
       setsSliderValue = widget.entry.nrOfSetsConfigs.first.value.toDouble();
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_controllersInitialized) {
+      return;
+    }
+    _controllersInitialized = true;
 
     if (widget.entry.weightConfigs.isNotEmpty) {
-      weightController.text = widget.entry.weightConfigs.first.value.toString();
+      _weight = widget.entry.weightConfigs.first.value;
     }
     if (widget.entry.maxWeightConfigs.isNotEmpty) {
-      maxWeightController.text = widget.entry.maxWeightConfigs.first.value.toString();
+      _maxWeight = widget.entry.maxWeightConfigs.first.value;
     }
-
     if (widget.entry.repetitionsConfigs.isNotEmpty) {
-      repetitionsController.text = widget.entry.repetitionsConfigs.first.value.round().toString();
+      _reps = widget.entry.repetitionsConfigs.first.value;
     }
     if (widget.entry.maxRepetitionsConfigs.isNotEmpty) {
-      maxRepetitionsController.text = widget.entry.maxRepetitionsConfigs.first.value
-          .round()
-          .toString();
+      _maxReps = widget.entry.maxRepetitionsConfigs.first.value;
     }
 
     if (widget.entry.restTimeConfigs.isNotEmpty) {
@@ -99,18 +108,13 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
     }
 
     if (widget.entry.rirConfigs.isNotEmpty) {
-      rirController.text = widget.entry.rirConfigs.first.value.round().toString();
+      // RiR uses 0.5 steps, so the fractional part must be kept
+      rirController.text = widget.entry.rirConfigs.first.value.toString();
     }
   }
 
   @override
   void dispose() {
-    weightController.dispose();
-    maxWeightController.dispose();
-
-    repetitionsController.dispose();
-    maxRepetitionsController.dispose();
-
     restController.dispose();
     maxRestController.dispose();
 
@@ -228,32 +232,20 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
             spacing: 10,
             children: [
               Flexible(
-                child: TextFormField(
+                child: DecimalInputWidget(
                   key: const ValueKey('field-weight'),
-                  controller: weightController,
-                  keyboardType: textInputTypeDecimal,
-                  decoration: InputDecoration(labelText: i18n.weight),
-                  validator: (value) {
-                    if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                      return i18n.enterValidNumber;
-                    }
-                    return null;
-                  },
+                  value: _weight,
+                  labelText: i18n.weight,
+                  onChanged: (v) => _weight = v,
                 ),
               ),
               if (!widget.simpleMode)
                 Flexible(
-                  child: TextFormField(
+                  child: DecimalInputWidget(
                     key: const ValueKey('field-max-weight'),
-                    controller: maxWeightController,
-                    keyboardType: textInputTypeDecimal,
-                    decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    value: _maxWeight,
+                    labelText: i18n.max,
+                    onChanged: (v) => _maxWeight = v,
                   ),
                 ),
             ],
@@ -270,32 +262,20 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
             spacing: 10,
             children: [
               Flexible(
-                child: TextFormField(
+                child: DecimalInputWidget(
                   key: const ValueKey('field-repetitions'),
-                  controller: repetitionsController,
-                  keyboardType: textInputTypeDecimal,
-                  decoration: InputDecoration(labelText: i18n.repetitions),
-                  validator: (value) {
-                    if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                      return i18n.enterValidNumber;
-                    }
-                    return null;
-                  },
+                  value: _reps,
+                  labelText: i18n.repetitions,
+                  onChanged: (v) => _reps = v,
                 ),
               ),
               if (!widget.simpleMode)
                 Flexible(
-                  child: TextFormField(
+                  child: DecimalInputWidget(
                     key: const ValueKey('field-max-repetitions'),
-                    controller: maxRepetitionsController,
-                    keyboardType: textInputTypeDecimal,
-                    decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    value: _maxReps,
+                    labelText: i18n.max,
+                    onChanged: (v) => _maxReps = v,
                   ),
                 ),
             ],
@@ -340,82 +320,46 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
               onChanged: (value) => rirController.text = value,
             ),
           const SizedBox(height: 5),
-          OutlinedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            onPressed: isSaving || !isOnline
-                ? null
-                : () async {
-                    if (!_form.currentState!.validate()) {
-                      return;
-                    }
-                    _form.currentState!.save();
-                    setState(() => isSaving = true);
+            enabled: isOnline,
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
 
-                    // Process new, edited or entries to be deleted
-                    try {
-                      await Future.wait([
-                        provider.handleConfig(
-                          widget.entry,
-                          setsSliderValue == 0 ? null : setsSliderValue.round(),
-                          ConfigType.sets,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(weightController.text),
-                          ConfigType.weight,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(maxWeightController.text),
-                          ConfigType.maxWeight,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(repetitionsController.text),
-                          ConfigType.repetitions,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(maxRepetitionsController.text),
-                          ConfigType.maxRepetitions,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(restController.text),
-                          ConfigType.rest,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(maxRestController.text),
-                          ConfigType.maxRest,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(rirController.text),
-                          ConfigType.rir,
-                        ),
-                      ]);
-
-                      await provider.editSlotEntry(widget.entry, widget.routineId);
-                      if (mounted) {
-                        setState(() => isSaving = false);
-                        errorMessage = const SizedBox.shrink();
-                      }
-                    } on WgerHttpException catch (error) {
-                      if (context.mounted) {
-                        setState(() {
-                          errorMessage = FormHttpErrorsWidget(error);
-                        });
-                      }
-                    } finally {
-                      if (mounted) {
-                        setState(() => isSaving = false);
-                      }
-                    }
-                  },
-            child: isSaving
-                ? const FormProgressIndicator()
-                : Text(AppLocalizations.of(context).save),
+              // Process new, edited or entries to be deleted
+              await Future.wait([
+                provider.handleConfig(
+                  widget.entry,
+                  setsSliderValue == 0 ? null : setsSliderValue.round(),
+                  ConfigType.sets,
+                ),
+                provider.handleConfig(widget.entry, _weight, ConfigType.weight),
+                provider.handleConfig(widget.entry, _maxWeight, ConfigType.maxWeight),
+                provider.handleConfig(widget.entry, _reps, ConfigType.repetitions),
+                provider.handleConfig(widget.entry, _maxReps, ConfigType.maxRepetitions),
+                provider.handleConfig(
+                  widget.entry,
+                  numberFormat.tryParse(restController.text),
+                  ConfigType.rest,
+                ),
+                provider.handleConfig(
+                  widget.entry,
+                  numberFormat.tryParse(maxRestController.text),
+                  ConfigType.maxRest,
+                ),
+                provider.handleConfig(
+                  widget.entry,
+                  // RiR is slider-driven and held as an invariant string
+                  num.tryParse(rirController.text),
+                  ConfigType.rir,
+                ),
+              ]);
+              await provider.editSlotEntry(widget.entry, widget.routineId);
+            },
           ),
           const SizedBox(height: 10),
         ],

@@ -24,11 +24,10 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight_notifier.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
 
 class WeightForm extends riverpod.ConsumerWidget {
   final _form = GlobalKey<FormState>();
-  final dateController = TextEditingController(text: '');
-  final timeController = TextEditingController(text: '');
   final weightController = TextEditingController(text: '');
 
   final WeightEntry _weightEntry;
@@ -39,50 +38,22 @@ class WeightForm extends riverpod.ConsumerWidget {
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
 
     if (weightController.text.isEmpty && _weightEntry.weight != 0) {
       weightController.text = numberFormat.format(_weightEntry.weight);
-    }
-    if (dateController.text.isEmpty) {
-      dateController.text = dateFormat.format(_weightEntry.date);
-    }
-    if (timeController.text.isEmpty) {
-      timeController.text = TimeOfDay.fromDateTime(_weightEntry.date).format(context);
     }
 
     return Form(
       key: _form,
       child: Column(
         children: [
-          TextFormField(
+          DateInputWidget(
             key: const Key('dateInput'),
-            // Stop keyboard from appearing
-            readOnly: true,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).date,
-              suffixIcon: const Icon(
-                Icons.calendar_today,
-                key: Key('calendarIcon'),
-              ),
-            ),
-            enableInteractiveSelection: false,
-            controller: dateController,
-            onTap: () async {
-              final pickedDate = await showDatePicker(
-                context: context,
-                initialDate: _weightEntry.date,
-                firstDate: DateTime(DateTime.now().year - 10),
-                lastDate: DateTime.now(),
-              );
-
-              if (pickedDate != null) {
-                dateController.text = dateFormat.format(pickedDate);
-              }
-            },
-            onSaved: (newValue) {
-              final date = dateFormat.parse(newValue!);
+            value: _weightEntry.date,
+            labelText: AppLocalizations.of(context).date,
+            firstDate: DateTime(DateTime.now().year - 10),
+            lastDate: DateTime.now(),
+            onChanged: (date) {
               _weightEntry.date = _weightEntry.date.copyWith(
                 year: date.year,
                 month: date.month,
@@ -90,35 +61,15 @@ class WeightForm extends riverpod.ConsumerWidget {
               );
             },
           ),
-          TextFormField(
+          TimeInputWidget(
             key: const Key('timeInput'),
-            // Stop keyboard from appearing
-            readOnly: true,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).time,
-              suffixIcon: const Icon(
-                Icons.access_time_outlined,
-                key: Key('clockIcon'),
-              ),
-            ),
-            enableInteractiveSelection: false,
-            controller: timeController,
-            onTap: () async {
-              final pickedTime = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.fromDateTime(_weightEntry.date),
-              );
-
-              if (pickedTime != null) {
-                timeController.text = pickedTime.format(context);
-              }
-            },
-            onSaved: (newValue) {
-              final time = timeFormat.parse(newValue!);
+            value: TimeOfDay.fromDateTime(_weightEntry.date),
+            labelText: AppLocalizations.of(context).time,
+            onChanged: (time) {
               _weightEntry.date = _weightEntry.date.copyWith(
                 hour: time.hour,
                 minute: time.minute,
-                second: time.second,
+                second: 0,
               );
             },
           ),

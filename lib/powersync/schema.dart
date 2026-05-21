@@ -27,46 +27,55 @@ import 'package:wger/database/powersync/tables/nutrition.dart';
 import 'package:wger/database/powersync/tables/routines.dart';
 import 'package:wger/database/powersync/tables/weight.dart';
 
-Schema schema = const Schema([
-  // Core
-  PowersyncLanguageTable,
-  PowersyncLicenseTable,
+Schema schema = const Schema(
+  [
+    // Core
+    PowersyncLanguageTable,
+    PowersyncLicenseTable,
 
-  // Exercises
-  PowersyncExerciseTable,
-  PowersyncTranslationTable,
-  PowersyncMuscleTable,
-  PowersyncExerciseMuscleM2N,
-  PowersyncExerciseSecondaryMuscleM2N,
-  PowersyncEquipmentTable,
-  PowersyncExerciseEquipmentM2N,
-  PowersyncExerciseCategoryTable,
-  PowersyncExerciseImageTable,
-  PowersyncExerciseVideoTable,
+    // Exercises (large or wide tables live in the rawTables slot below)
+    PowersyncExerciseAliasTable,
+    PowersyncExerciseCommentTable,
+    PowersyncMuscleTable,
+    PowersyncExerciseMuscleM2N,
+    PowersyncExerciseSecondaryMuscleM2N,
+    PowersyncEquipmentTable,
+    PowersyncExerciseEquipmentM2N,
+    PowersyncExerciseCategoryTable,
+    PowersyncExerciseImageTable,
+    PowersyncExerciseVideoTable,
 
-  // Nutrition
-  PowersyncIngredientTable,
-  PowersyncIngredientImageTable,
-  PowersyncIngredientWeightUnitTable,
-  PowersyncNutritionalPlanTable,
-  PowersyncMealTable,
-  PowersyncMealItemTable,
-  PowersyncLogItemTable,
+    // Nutrition
+    PowersyncIngredientTable,
+    PowersyncIngredientImageTable,
+    PowersyncIngredientWeightUnitTable,
+    PowersyncNutritionalPlanTable,
+    PowersyncMealTable,
+    PowersyncMealItemTable,
+    PowersyncLogItemTable,
 
-  // Body weight
-  PowersyncWeightEntryTable,
+    // Body weight
+    PowersyncWeightEntryTable,
 
-  // Measurements
-  PowersyncMeasurementCategoryTable,
-  PowersyncMeasurementEntryTable,
+    // Measurements
+    PowersyncMeasurementCategoryTable,
+    PowersyncMeasurementEntryTable,
 
-  // Routines
-  PowersyncRoutineTable,
-  PowersyncWorkoutLogTable,
-  PowersyncWorkoutSessionTable,
-  PowersyncRoutineRepetitionUnitTable,
-  PowersyncRoutineWeightUnitTable,
+    // Routines
+    PowersyncRoutineTable,
+    PowersyncWorkoutLogTable,
+    PowersyncWorkoutSessionTable,
+    PowersyncRoutineRepetitionUnitTable,
+    PowersyncRoutineWeightUnitTable,
 
-  // Gallery
-  PowersyncGalleryImageTable,
-]);
+    // Gallery
+    PowersyncGalleryImageTable,
+  ],
+  // Raw (native SQLite) tables bypass the JSON-view layer for big read-only
+  // catalogue tables. The matching CREATE TABLE/INDEX statements live in
+  // `database/powersync/powersync.dart`.
+  rawTables: [
+    PowersyncExerciseTable,
+    PowersyncTranslationTable,
+  ],
+);

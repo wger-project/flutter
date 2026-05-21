@@ -25,6 +25,7 @@ import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gallery_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/widgets/gallery/overview.dart';
 
 import '../../test_data/gallery.dart';
@@ -55,9 +56,10 @@ void main() {
     );
   }
 
-  Widget renderDetail({locale = 'en'}) {
+  Widget renderDetail({locale = 'en', bool isOnline = true}) {
     return ProviderScope(
       overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
         galleryRepositoryProvider.overrideWithValue(mockGalleryRepository),
       ],
       child: MaterialApp(
@@ -91,5 +93,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('30.5.2021'), findsOneWidget);
+  });
+
+  testWidgets('Delete stays enabled when offline', (WidgetTester tester) async {
+    // Image deletion syncs through PowerSync, so it works offline.
+    await mockNetworkImagesFor(() => tester.pumpWidget(renderDetail(isOnline: false)));
+    await tester.pumpAndSettle();
+
+    final deleteButton = tester.widget<IconButton>(
+      find.widgetWithIcon(IconButton, Icons.delete),
+    );
+    expect(deleteButton.onPressed, isNotNull);
   });
 }

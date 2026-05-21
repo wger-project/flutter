@@ -7,6 +7,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read
+
 jobs:
 
   ci:
@@ -16,6 +19,8 @@ jobs:
   determine_version:
     needs: ci
     name: Prepare
+    permissions:
+      contents: write
     uses: ./.github/workflows/bump-version.yml
     with:
       app_version: ${{ github.event.inputs.version }}
@@ -126,6 +131,8 @@ jobs:
   make_gh_release:
     name: Make Github Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - upload_play_store
       - build_linux

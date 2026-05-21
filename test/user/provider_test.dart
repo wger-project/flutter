@@ -18,6 +18,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -25,6 +26,7 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/app_settings_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
@@ -194,6 +196,125 @@ void main() {
       expect(items.isWidgetVisible(DashboardWidget.networkInfo), true);
       expect(items.isWidgetVisible(DashboardWidget.weight), true);
       expect(items.isWidgetVisible(DashboardWidget.trophies), true);
+    });
+  });
+
+  group('user locale', () {
+    /// Rebuilds [container] with an explicit prefs instance so the provider
+    /// under test and the test assertions share the same storage. Returns
+    /// that prefs instance.
+    SharedPreferencesAsync freshContainerWithPrefs() {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [
+          userProfileRepositoryProvider.overrideWithValue(mockRepo),
+          appSettingsPrefsProvider.overrideWithValue(prefs),
+        ],
+      );
+      return prefs;
+    }
+
+    /// Builds a fresh container whose [appSettingsProvider] loads from a prefs
+    /// instance pre-seeded with [stored] under `PREFS_USER_LOCALE`.
+    Future<AppSettings> loadWithStoredLocale(String stored) async {
+      final prefs = freshContainerWithPrefs();
+      await prefs.setString(PREFS_USER_LOCALE, stored);
+      return container.read(appSettingsProvider.future);
+    }
+
+    test('defaults to null when no override saved', () async {
+      final settings = await container.read(appSettingsProvider.future);
+
+      // null means "follow system locale"
+      expect(settings.userLocale, null);
+    });
+
+    test('setUserLocale persists language-only code to prefs', () async {
+      final prefs = freshContainerWithPrefs();
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setUserLocale(const Locale('pl'));
+
+      expect(
+        container.read(appSettingsProvider).requireValue.userLocale,
+        const Locale('pl'),
+      );
+      expect(await prefs.getString(PREFS_USER_LOCALE), 'pl');
+    });
+
+    test('setUserLocale persists country-coded locale (pt_BR)', () async {
+      final prefs = freshContainerWithPrefs();
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setUserLocale(const Locale('pt', 'BR'));
+
+      expect(await prefs.getString(PREFS_USER_LOCALE), 'pt_BR');
+    });
+
+    test('setUserLocale persists script-coded locale (zh_Hant)', () async {
+      final prefs = freshContainerWithPrefs();
+      await container.read(appSettingsProvider.future);
+      await container
+          .read(appSettingsProvider.notifier)
+          .setUserLocale(
+            const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+          );
+
+      expect(await prefs.getString(PREFS_USER_LOCALE), 'zh_Hant');
+    });
+
+    test('setUserLocale(null) clears the stored override', () async {
+      final prefs = freshContainerWithPrefs();
+      await container.read(appSettingsProvider.future);
+      final notifier = container.read(appSettingsProvider.notifier);
+
+      await notifier.setUserLocale(const Locale('de'));
+      expect(await prefs.getString(PREFS_USER_LOCALE), 'de');
+
+      await notifier.setUserLocale(null);
+
+      expect(container.read(appSettingsProvider).requireValue.userLocale, null);
+      expect(await prefs.getString(PREFS_USER_LOCALE), null);
+    });
+
+    test('loads previously stored language-only locale on build', () async {
+      final settings = await loadWithStoredLocale('de');
+
+      expect(settings.userLocale, const Locale('de'));
+    });
+
+    test('loads previously stored country-coded locale (pt_BR)', () async {
+      final settings = await loadWithStoredLocale('pt_BR');
+
+      expect(settings.userLocale?.languageCode, 'pt');
+      expect(settings.userLocale?.countryCode, 'BR');
+    });
+
+    test('loads previously stored script-coded locale (zh_Hant)', () async {
+      final settings = await loadWithStoredLocale('zh_Hant');
+
+      expect(settings.userLocale?.languageCode, 'zh');
+      expect(settings.userLocale?.scriptCode, 'Hant');
+    });
+
+    test('falls back to language-only match for unknown country code', () async {
+      // "pl_XX" is not a supported subtag; should fall back to "pl"
+      final settings = await loadWithStoredLocale('pl_XX');
+
+      expect(settings.userLocale, const Locale('pl'));
+    });
+
+    test('returns null for completely unsupported locale tag', () async {
+      final settings = await loadWithStoredLocale('xx_YY');
+
+      expect(settings.userLocale, null);
+    });
+
+    test('returns null for empty stored value', () async {
+      final settings = await loadWithStoredLocale('');
+
+      expect(settings.userLocale, null);
     });
   });
 }

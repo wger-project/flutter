@@ -7,6 +7,9 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: read
+
 jobs:
   screenshots_apple:
     name: 'iOS'
@@ -16,12 +19,6 @@ jobs:
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
-
-      - name: Install CocoaPods
-        run: |
-          cd ios
-          pod install || true
-          cd ..
 
       - name: Boot iOS simulator
         id: boot
@@ -131,6 +128,8 @@ jobs:
       - screenshots_android
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
 

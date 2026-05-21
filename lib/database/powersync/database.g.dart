@@ -534,7 +534,7 @@ class ExerciseCategoryTableCompanion extends UpdateCompanion<ExerciseCategory> {
   }
 }
 
-class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTable, Exercise> {
+class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTable, ExerciseRow> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -620,7 +620,7 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
   static const String $name = 'exercises_exercise';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Exercise> instance, {
+    Insertable<ExerciseRow> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -677,9 +677,9 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
-  Exercise map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ExerciseRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Exercise(
+    return ExerciseRow(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -688,14 +688,6 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
         DriftSqlType.string,
         data['${effectivePrefix}uuid'],
       )!,
-      created: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created'],
-      )!,
-      lastUpdate: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_update'],
-      )!,
       variationGroup: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}variation_group'],
@@ -703,6 +695,14 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
       categoryId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}category_id'],
+      )!,
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
       )!,
     );
   }
@@ -713,7 +713,129 @@ class $ExerciseTableTable extends ExerciseTable with TableInfo<$ExerciseTableTab
   }
 }
 
-class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
+class ExerciseRow extends DataClass implements Insertable<ExerciseRow> {
+  final int id;
+  final String uuid;
+  final String? variationGroup;
+  final int categoryId;
+  final DateTime created;
+  final DateTime lastUpdate;
+  const ExerciseRow({
+    required this.id,
+    required this.uuid,
+    this.variationGroup,
+    required this.categoryId,
+    required this.created,
+    required this.lastUpdate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['uuid'] = Variable<String>(uuid);
+    if (!nullToAbsent || variationGroup != null) {
+      map['variation_group'] = Variable<String>(variationGroup);
+    }
+    map['category_id'] = Variable<int>(categoryId);
+    map['created'] = Variable<DateTime>(created);
+    map['last_update'] = Variable<DateTime>(lastUpdate);
+    return map;
+  }
+
+  ExerciseTableCompanion toCompanion(bool nullToAbsent) {
+    return ExerciseTableCompanion(
+      id: Value(id),
+      uuid: Value(uuid),
+      variationGroup: variationGroup == null && nullToAbsent
+          ? const Value.absent()
+          : Value(variationGroup),
+      categoryId: Value(categoryId),
+      created: Value(created),
+      lastUpdate: Value(lastUpdate),
+    );
+  }
+
+  factory ExerciseRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExerciseRow(
+      id: serializer.fromJson<int>(json['id']),
+      uuid: serializer.fromJson<String>(json['uuid']),
+      variationGroup: serializer.fromJson<String?>(json['variationGroup']),
+      categoryId: serializer.fromJson<int>(json['categoryId']),
+      created: serializer.fromJson<DateTime>(json['created']),
+      lastUpdate: serializer.fromJson<DateTime>(json['lastUpdate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'uuid': serializer.toJson<String>(uuid),
+      'variationGroup': serializer.toJson<String?>(variationGroup),
+      'categoryId': serializer.toJson<int>(categoryId),
+      'created': serializer.toJson<DateTime>(created),
+      'lastUpdate': serializer.toJson<DateTime>(lastUpdate),
+    };
+  }
+
+  ExerciseRow copyWith({
+    int? id,
+    String? uuid,
+    Value<String?> variationGroup = const Value.absent(),
+    int? categoryId,
+    DateTime? created,
+    DateTime? lastUpdate,
+  }) => ExerciseRow(
+    id: id ?? this.id,
+    uuid: uuid ?? this.uuid,
+    variationGroup: variationGroup.present ? variationGroup.value : this.variationGroup,
+    categoryId: categoryId ?? this.categoryId,
+    created: created ?? this.created,
+    lastUpdate: lastUpdate ?? this.lastUpdate,
+  );
+  ExerciseRow copyWithCompanion(ExerciseTableCompanion data) {
+    return ExerciseRow(
+      id: data.id.present ? data.id.value : this.id,
+      uuid: data.uuid.present ? data.uuid.value : this.uuid,
+      variationGroup: data.variationGroup.present ? data.variationGroup.value : this.variationGroup,
+      categoryId: data.categoryId.present ? data.categoryId.value : this.categoryId,
+      created: data.created.present ? data.created.value : this.created,
+      lastUpdate: data.lastUpdate.present ? data.lastUpdate.value : this.lastUpdate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseRow(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('variationGroup: $variationGroup, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, uuid, variationGroup, categoryId, created, lastUpdate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExerciseRow &&
+          other.id == this.id &&
+          other.uuid == this.uuid &&
+          other.variationGroup == this.variationGroup &&
+          other.categoryId == this.categoryId &&
+          other.created == this.created &&
+          other.lastUpdate == this.lastUpdate);
+}
+
+class ExerciseTableCompanion extends UpdateCompanion<ExerciseRow> {
   final Value<int> id;
   final Value<String> uuid;
   final Value<String?> variationGroup;
@@ -743,7 +865,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
        categoryId = Value(categoryId),
        created = Value(created),
        lastUpdate = Value(lastUpdate);
-  static Insertable<Exercise> custom({
+  static Insertable<ExerciseRow> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<String>? variationGroup,
@@ -826,7 +948,7 @@ class ExerciseTableCompanion extends UpdateCompanion<Exercise> {
 }
 
 class $ExerciseTranslationTableTable extends ExerciseTranslationTable
-    with TableInfo<$ExerciseTranslationTableTable, Translation> {
+    with TableInfo<$ExerciseTranslationTableTable, ExerciseTranslationRow> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -937,7 +1059,7 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
   static const String $name = 'exercises_translation';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Translation> instance, {
+    Insertable<ExerciseTranslationRow> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1012,9 +1134,9 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
-  Translation map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ExerciseTranslationRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Translation(
+    return ExerciseTranslationRow(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -1023,9 +1145,13 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
         DriftSqlType.string,
         data['${effectivePrefix}uuid'],
       )!,
-      created: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created'],
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      languageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}language_id'],
       )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -1035,9 +1161,13 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       )!,
-      exerciseId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}exercise_id'],
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
       )!,
     );
   }
@@ -1048,7 +1178,158 @@ class $ExerciseTranslationTableTable extends ExerciseTranslationTable
   }
 }
 
-class ExerciseTranslationTableCompanion extends UpdateCompanion<Translation> {
+class ExerciseTranslationRow extends DataClass implements Insertable<ExerciseTranslationRow> {
+  final int id;
+  final String uuid;
+  final int exerciseId;
+  final int languageId;
+  final String name;
+  final String description;
+  final DateTime created;
+  final DateTime lastUpdate;
+  const ExerciseTranslationRow({
+    required this.id,
+    required this.uuid,
+    required this.exerciseId,
+    required this.languageId,
+    required this.name,
+    required this.description,
+    required this.created,
+    required this.lastUpdate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['uuid'] = Variable<String>(uuid);
+    map['exercise_id'] = Variable<int>(exerciseId);
+    map['language_id'] = Variable<int>(languageId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['created'] = Variable<DateTime>(created);
+    map['last_update'] = Variable<DateTime>(lastUpdate);
+    return map;
+  }
+
+  ExerciseTranslationTableCompanion toCompanion(bool nullToAbsent) {
+    return ExerciseTranslationTableCompanion(
+      id: Value(id),
+      uuid: Value(uuid),
+      exerciseId: Value(exerciseId),
+      languageId: Value(languageId),
+      name: Value(name),
+      description: Value(description),
+      created: Value(created),
+      lastUpdate: Value(lastUpdate),
+    );
+  }
+
+  factory ExerciseTranslationRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExerciseTranslationRow(
+      id: serializer.fromJson<int>(json['id']),
+      uuid: serializer.fromJson<String>(json['uuid']),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      languageId: serializer.fromJson<int>(json['languageId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      created: serializer.fromJson<DateTime>(json['created']),
+      lastUpdate: serializer.fromJson<DateTime>(json['lastUpdate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'uuid': serializer.toJson<String>(uuid),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'languageId': serializer.toJson<int>(languageId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'created': serializer.toJson<DateTime>(created),
+      'lastUpdate': serializer.toJson<DateTime>(lastUpdate),
+    };
+  }
+
+  ExerciseTranslationRow copyWith({
+    int? id,
+    String? uuid,
+    int? exerciseId,
+    int? languageId,
+    String? name,
+    String? description,
+    DateTime? created,
+    DateTime? lastUpdate,
+  }) => ExerciseTranslationRow(
+    id: id ?? this.id,
+    uuid: uuid ?? this.uuid,
+    exerciseId: exerciseId ?? this.exerciseId,
+    languageId: languageId ?? this.languageId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    created: created ?? this.created,
+    lastUpdate: lastUpdate ?? this.lastUpdate,
+  );
+  ExerciseTranslationRow copyWithCompanion(
+    ExerciseTranslationTableCompanion data,
+  ) {
+    return ExerciseTranslationRow(
+      id: data.id.present ? data.id.value : this.id,
+      uuid: data.uuid.present ? data.uuid.value : this.uuid,
+      exerciseId: data.exerciseId.present ? data.exerciseId.value : this.exerciseId,
+      languageId: data.languageId.present ? data.languageId.value : this.languageId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present ? data.description.value : this.description,
+      created: data.created.present ? data.created.value : this.created,
+      lastUpdate: data.lastUpdate.present ? data.lastUpdate.value : this.lastUpdate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseTranslationRow(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('languageId: $languageId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    uuid,
+    exerciseId,
+    languageId,
+    name,
+    description,
+    created,
+    lastUpdate,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExerciseTranslationRow &&
+          other.id == this.id &&
+          other.uuid == this.uuid &&
+          other.exerciseId == this.exerciseId &&
+          other.languageId == this.languageId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.created == this.created &&
+          other.lastUpdate == this.lastUpdate);
+}
+
+class ExerciseTranslationTableCompanion extends UpdateCompanion<ExerciseTranslationRow> {
   final Value<int> id;
   final Value<String> uuid;
   final Value<int> exerciseId;
@@ -1087,7 +1368,7 @@ class ExerciseTranslationTableCompanion extends UpdateCompanion<Translation> {
        description = Value(description),
        created = Value(created),
        lastUpdate = Value(lastUpdate);
-  static Insertable<Translation> custom({
+  static Insertable<ExerciseTranslationRow> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<int>? exerciseId,
@@ -1179,6 +1460,432 @@ class ExerciseTranslationTableCompanion extends UpdateCompanion<Translation> {
           ..write('description: $description, ')
           ..write('created: $created, ')
           ..write('lastUpdate: $lastUpdate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ExerciseAliasTableTable extends ExerciseAliasTable
+    with TableInfo<$ExerciseAliasTableTable, Alias> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExerciseAliasTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _translationIdMeta = const VerificationMeta(
+    'translationId',
+  );
+  @override
+  late final GeneratedColumn<int> translationId = GeneratedColumn<int>(
+    'translation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_translation (id)',
+    ),
+  );
+  static const VerificationMeta _aliasMeta = const VerificationMeta('alias');
+  @override
+  late final GeneratedColumn<String> alias = GeneratedColumn<String>(
+    'alias',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, uuid, translationId, alias];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'exercises_alias';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Alias> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(
+        _uuidMeta,
+        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uuidMeta);
+    }
+    if (data.containsKey('translation_id')) {
+      context.handle(
+        _translationIdMeta,
+        translationId.isAcceptableOrUnknown(
+          data['translation_id']!,
+          _translationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_translationIdMeta);
+    }
+    if (data.containsKey('alias')) {
+      context.handle(
+        _aliasMeta,
+        alias.isAcceptableOrUnknown(data['alias']!, _aliasMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_aliasMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  Alias map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Alias(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      translationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}translation_id'],
+      )!,
+      alias: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}alias'],
+      )!,
+    );
+  }
+
+  @override
+  $ExerciseAliasTableTable createAlias(String alias) {
+    return $ExerciseAliasTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExerciseAliasTableCompanion extends UpdateCompanion<Alias> {
+  final Value<int> id;
+  final Value<String> uuid;
+  final Value<int> translationId;
+  final Value<String> alias;
+  final Value<int> rowid;
+  const ExerciseAliasTableCompanion({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    this.translationId = const Value.absent(),
+    this.alias = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExerciseAliasTableCompanion.insert({
+    required int id,
+    required String uuid,
+    required int translationId,
+    required String alias,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       uuid = Value(uuid),
+       translationId = Value(translationId),
+       alias = Value(alias);
+  static Insertable<Alias> custom({
+    Expression<int>? id,
+    Expression<String>? uuid,
+    Expression<int>? translationId,
+    Expression<String>? alias,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
+      if (translationId != null) 'translation_id': translationId,
+      if (alias != null) 'alias': alias,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExerciseAliasTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? uuid,
+    Value<int>? translationId,
+    Value<String>? alias,
+    Value<int>? rowid,
+  }) {
+    return ExerciseAliasTableCompanion(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      translationId: translationId ?? this.translationId,
+      alias: alias ?? this.alias,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
+    }
+    if (translationId.present) {
+      map['translation_id'] = Variable<int>(translationId.value);
+    }
+    if (alias.present) {
+      map['alias'] = Variable<String>(alias.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseAliasTableCompanion(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('translationId: $translationId, ')
+          ..write('alias: $alias, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ExerciseCommentTableTable extends ExerciseCommentTable
+    with TableInfo<$ExerciseCommentTableTable, Comment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExerciseCommentTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _translationIdMeta = const VerificationMeta(
+    'translationId',
+  );
+  @override
+  late final GeneratedColumn<int> translationId = GeneratedColumn<int>(
+    'translation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES exercises_translation (id)',
+    ),
+  );
+  static const VerificationMeta _commentMeta = const VerificationMeta(
+    'comment',
+  );
+  @override
+  late final GeneratedColumn<String> comment = GeneratedColumn<String>(
+    'comment',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, uuid, translationId, comment];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'exercises_exercisecomment';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Comment> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(
+        _uuidMeta,
+        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uuidMeta);
+    }
+    if (data.containsKey('translation_id')) {
+      context.handle(
+        _translationIdMeta,
+        translationId.isAcceptableOrUnknown(
+          data['translation_id']!,
+          _translationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_translationIdMeta);
+    }
+    if (data.containsKey('comment')) {
+      context.handle(
+        _commentMeta,
+        comment.isAcceptableOrUnknown(data['comment']!, _commentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_commentMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  Comment map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Comment(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      translationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}translation_id'],
+      )!,
+      comment: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}comment'],
+      )!,
+    );
+  }
+
+  @override
+  $ExerciseCommentTableTable createAlias(String alias) {
+    return $ExerciseCommentTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExerciseCommentTableCompanion extends UpdateCompanion<Comment> {
+  final Value<int> id;
+  final Value<String> uuid;
+  final Value<int> translationId;
+  final Value<String> comment;
+  final Value<int> rowid;
+  const ExerciseCommentTableCompanion({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    this.translationId = const Value.absent(),
+    this.comment = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExerciseCommentTableCompanion.insert({
+    required int id,
+    required String uuid,
+    required int translationId,
+    required String comment,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       uuid = Value(uuid),
+       translationId = Value(translationId),
+       comment = Value(comment);
+  static Insertable<Comment> custom({
+    Expression<int>? id,
+    Expression<String>? uuid,
+    Expression<int>? translationId,
+    Expression<String>? comment,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
+      if (translationId != null) 'translation_id': translationId,
+      if (comment != null) 'comment': comment,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExerciseCommentTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? uuid,
+    Value<int>? translationId,
+    Value<String>? comment,
+    Value<int>? rowid,
+  }) {
+    return ExerciseCommentTableCompanion(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      translationId: translationId ?? this.translationId,
+      comment: comment ?? this.comment,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
+    }
+    if (translationId.present) {
+      map['translation_id'] = Variable<int>(translationId.value);
+    }
+    if (comment.present) {
+      map['comment'] = Variable<String>(comment.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseCommentTableCompanion(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('translationId: $translationId, ')
+          ..write('comment: $comment, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2418,8 +3125,155 @@ class $ExerciseImageTableTable extends ExerciseImageTable
       'CHECK ("is_main" IN (0, 1))',
     ),
   );
+  static const VerificationMeta _isAiGeneratedMeta = const VerificationMeta(
+    'isAiGenerated',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, uuid, exerciseId, image, isMain];
+  late final GeneratedColumn<bool> isAiGenerated = GeneratedColumn<bool>(
+    'is_ai_generated',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_ai_generated" IN (0, 1))',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<ExerciseImageStyle, String> style =
+      GeneratedColumn<String>(
+        'style',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<ExerciseImageStyle>($ExerciseImageTableTable.$converterstyle);
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdMeta = const VerificationMeta(
+    'created',
+  );
+  @override
+  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
+    'created',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdateMeta = const VerificationMeta(
+    'lastUpdate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUpdate = GeneratedColumn<DateTime>(
+    'last_update',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseIdMeta = const VerificationMeta(
+    'licenseId',
+  );
+  @override
+  late final GeneratedColumn<int> licenseId = GeneratedColumn<int>(
+    'license_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseTitleMeta = const VerificationMeta(
+    'licenseTitle',
+  );
+  @override
+  late final GeneratedColumn<String> licenseTitle = GeneratedColumn<String>(
+    'license_title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseObjectUrlMeta = const VerificationMeta(
+    'licenseObjectUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseObjectUrl = GeneratedColumn<String>(
+    'license_object_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseAuthorMeta = const VerificationMeta(
+    'licenseAuthor',
+  );
+  @override
+  late final GeneratedColumn<String> licenseAuthor = GeneratedColumn<String>(
+    'license_author',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _licenseAuthorUrlMeta = const VerificationMeta(
+    'licenseAuthorUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseAuthorUrl = GeneratedColumn<String>(
+    'license_author_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseDerivativeSourceUrlMeta = const VerificationMeta(
+    'licenseDerivativeSourceUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseDerivativeSourceUrl = GeneratedColumn<String>(
+    'license_derivative_source_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    uuid,
+    exerciseId,
+    image,
+    isMain,
+    isAiGenerated,
+    style,
+    width,
+    height,
+    created,
+    lastUpdate,
+    licenseId,
+    licenseTitle,
+    licenseObjectUrl,
+    licenseAuthor,
+    licenseAuthorUrl,
+    licenseDerivativeSourceUrl,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2469,6 +3323,106 @@ class $ExerciseImageTableTable extends ExerciseImageTable
     } else if (isInserting) {
       context.missing(_isMainMeta);
     }
+    if (data.containsKey('is_ai_generated')) {
+      context.handle(
+        _isAiGeneratedMeta,
+        isAiGenerated.isAcceptableOrUnknown(
+          data['is_ai_generated']!,
+          _isAiGeneratedMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_isAiGeneratedMeta);
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    }
+    if (data.containsKey('created')) {
+      context.handle(
+        _createdMeta,
+        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdMeta);
+    }
+    if (data.containsKey('last_update')) {
+      context.handle(
+        _lastUpdateMeta,
+        lastUpdate.isAcceptableOrUnknown(data['last_update']!, _lastUpdateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUpdateMeta);
+    }
+    if (data.containsKey('license_id')) {
+      context.handle(
+        _licenseIdMeta,
+        licenseId.isAcceptableOrUnknown(data['license_id']!, _licenseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseIdMeta);
+    }
+    if (data.containsKey('license_title')) {
+      context.handle(
+        _licenseTitleMeta,
+        licenseTitle.isAcceptableOrUnknown(
+          data['license_title']!,
+          _licenseTitleMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseTitleMeta);
+    }
+    if (data.containsKey('license_object_url')) {
+      context.handle(
+        _licenseObjectUrlMeta,
+        licenseObjectUrl.isAcceptableOrUnknown(
+          data['license_object_url']!,
+          _licenseObjectUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseObjectUrlMeta);
+    }
+    if (data.containsKey('license_author')) {
+      context.handle(
+        _licenseAuthorMeta,
+        licenseAuthor.isAcceptableOrUnknown(
+          data['license_author']!,
+          _licenseAuthorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('license_author_url')) {
+      context.handle(
+        _licenseAuthorUrlMeta,
+        licenseAuthorUrl.isAcceptableOrUnknown(
+          data['license_author_url']!,
+          _licenseAuthorUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseAuthorUrlMeta);
+    }
+    if (data.containsKey('license_derivative_source_url')) {
+      context.handle(
+        _licenseDerivativeSourceUrlMeta,
+        licenseDerivativeSourceUrl.isAcceptableOrUnknown(
+          data['license_derivative_source_url']!,
+          _licenseDerivativeSourceUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseDerivativeSourceUrlMeta);
+    }
     return context;
   }
 
@@ -2498,6 +3452,56 @@ class $ExerciseImageTableTable extends ExerciseImageTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_main'],
       )!,
+      isAiGenerated: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_ai_generated'],
+      )!,
+      style: $ExerciseImageTableTable.$converterstyle.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}style'],
+        )!,
+      ),
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      ),
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      ),
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
+      )!,
+      licenseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}license_id'],
+      )!,
+      licenseTitle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_title'],
+      )!,
+      licenseObjectUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_object_url'],
+      )!,
+      licenseAuthor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_author'],
+      ),
+      licenseAuthorUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_author_url'],
+      )!,
+      licenseDerivativeSourceUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_derivative_source_url'],
+      )!,
     );
   }
 
@@ -2505,6 +3509,9 @@ class $ExerciseImageTableTable extends ExerciseImageTable
   $ExerciseImageTableTable createAlias(String alias) {
     return $ExerciseImageTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<ExerciseImageStyle, String> $converterstyle =
+      const ExerciseImageStyleConverter();
 }
 
 class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
@@ -2513,6 +3520,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
   final Value<int> exerciseId;
   final Value<String> image;
   final Value<bool> isMain;
+  final Value<bool> isAiGenerated;
+  final Value<ExerciseImageStyle> style;
+  final Value<int?> width;
+  final Value<int?> height;
+  final Value<DateTime> created;
+  final Value<DateTime> lastUpdate;
+  final Value<int> licenseId;
+  final Value<String> licenseTitle;
+  final Value<String> licenseObjectUrl;
+  final Value<String?> licenseAuthor;
+  final Value<String> licenseAuthorUrl;
+  final Value<String> licenseDerivativeSourceUrl;
   final Value<int> rowid;
   const ExerciseImageTableCompanion({
     this.id = const Value.absent(),
@@ -2520,6 +3539,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     this.exerciseId = const Value.absent(),
     this.image = const Value.absent(),
     this.isMain = const Value.absent(),
+    this.isAiGenerated = const Value.absent(),
+    this.style = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.created = const Value.absent(),
+    this.lastUpdate = const Value.absent(),
+    this.licenseId = const Value.absent(),
+    this.licenseTitle = const Value.absent(),
+    this.licenseObjectUrl = const Value.absent(),
+    this.licenseAuthor = const Value.absent(),
+    this.licenseAuthorUrl = const Value.absent(),
+    this.licenseDerivativeSourceUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ExerciseImageTableCompanion.insert({
@@ -2528,18 +3559,51 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     required int exerciseId,
     required String image,
     required bool isMain,
+    required bool isAiGenerated,
+    required ExerciseImageStyle style,
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    required DateTime created,
+    required DateTime lastUpdate,
+    required int licenseId,
+    required String licenseTitle,
+    required String licenseObjectUrl,
+    this.licenseAuthor = const Value.absent(),
+    required String licenseAuthorUrl,
+    required String licenseDerivativeSourceUrl,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        uuid = Value(uuid),
        exerciseId = Value(exerciseId),
        image = Value(image),
-       isMain = Value(isMain);
+       isMain = Value(isMain),
+       isAiGenerated = Value(isAiGenerated),
+       style = Value(style),
+       created = Value(created),
+       lastUpdate = Value(lastUpdate),
+       licenseId = Value(licenseId),
+       licenseTitle = Value(licenseTitle),
+       licenseObjectUrl = Value(licenseObjectUrl),
+       licenseAuthorUrl = Value(licenseAuthorUrl),
+       licenseDerivativeSourceUrl = Value(licenseDerivativeSourceUrl);
   static Insertable<ExerciseImage> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<int>? exerciseId,
     Expression<String>? image,
     Expression<bool>? isMain,
+    Expression<bool>? isAiGenerated,
+    Expression<String>? style,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<DateTime>? created,
+    Expression<DateTime>? lastUpdate,
+    Expression<int>? licenseId,
+    Expression<String>? licenseTitle,
+    Expression<String>? licenseObjectUrl,
+    Expression<String>? licenseAuthor,
+    Expression<String>? licenseAuthorUrl,
+    Expression<String>? licenseDerivativeSourceUrl,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2548,6 +3612,19 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
       if (exerciseId != null) 'exercise_id': exerciseId,
       if (image != null) 'image': image,
       if (isMain != null) 'is_main': isMain,
+      if (isAiGenerated != null) 'is_ai_generated': isAiGenerated,
+      if (style != null) 'style': style,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (created != null) 'created': created,
+      if (lastUpdate != null) 'last_update': lastUpdate,
+      if (licenseId != null) 'license_id': licenseId,
+      if (licenseTitle != null) 'license_title': licenseTitle,
+      if (licenseObjectUrl != null) 'license_object_url': licenseObjectUrl,
+      if (licenseAuthor != null) 'license_author': licenseAuthor,
+      if (licenseAuthorUrl != null) 'license_author_url': licenseAuthorUrl,
+      if (licenseDerivativeSourceUrl != null)
+        'license_derivative_source_url': licenseDerivativeSourceUrl,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2558,6 +3635,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     Value<int>? exerciseId,
     Value<String>? image,
     Value<bool>? isMain,
+    Value<bool>? isAiGenerated,
+    Value<ExerciseImageStyle>? style,
+    Value<int?>? width,
+    Value<int?>? height,
+    Value<DateTime>? created,
+    Value<DateTime>? lastUpdate,
+    Value<int>? licenseId,
+    Value<String>? licenseTitle,
+    Value<String>? licenseObjectUrl,
+    Value<String?>? licenseAuthor,
+    Value<String>? licenseAuthorUrl,
+    Value<String>? licenseDerivativeSourceUrl,
     Value<int>? rowid,
   }) {
     return ExerciseImageTableCompanion(
@@ -2566,6 +3655,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
       exerciseId: exerciseId ?? this.exerciseId,
       image: image ?? this.image,
       isMain: isMain ?? this.isMain,
+      isAiGenerated: isAiGenerated ?? this.isAiGenerated,
+      style: style ?? this.style,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      created: created ?? this.created,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
+      licenseId: licenseId ?? this.licenseId,
+      licenseTitle: licenseTitle ?? this.licenseTitle,
+      licenseObjectUrl: licenseObjectUrl ?? this.licenseObjectUrl,
+      licenseAuthor: licenseAuthor ?? this.licenseAuthor,
+      licenseAuthorUrl: licenseAuthorUrl ?? this.licenseAuthorUrl,
+      licenseDerivativeSourceUrl: licenseDerivativeSourceUrl ?? this.licenseDerivativeSourceUrl,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2588,6 +3689,46 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
     if (isMain.present) {
       map['is_main'] = Variable<bool>(isMain.value);
     }
+    if (isAiGenerated.present) {
+      map['is_ai_generated'] = Variable<bool>(isAiGenerated.value);
+    }
+    if (style.present) {
+      map['style'] = Variable<String>(
+        $ExerciseImageTableTable.$converterstyle.toSql(style.value),
+      );
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (created.present) {
+      map['created'] = Variable<DateTime>(created.value);
+    }
+    if (lastUpdate.present) {
+      map['last_update'] = Variable<DateTime>(lastUpdate.value);
+    }
+    if (licenseId.present) {
+      map['license_id'] = Variable<int>(licenseId.value);
+    }
+    if (licenseTitle.present) {
+      map['license_title'] = Variable<String>(licenseTitle.value);
+    }
+    if (licenseObjectUrl.present) {
+      map['license_object_url'] = Variable<String>(licenseObjectUrl.value);
+    }
+    if (licenseAuthor.present) {
+      map['license_author'] = Variable<String>(licenseAuthor.value);
+    }
+    if (licenseAuthorUrl.present) {
+      map['license_author_url'] = Variable<String>(licenseAuthorUrl.value);
+    }
+    if (licenseDerivativeSourceUrl.present) {
+      map['license_derivative_source_url'] = Variable<String>(
+        licenseDerivativeSourceUrl.value,
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2602,6 +3743,18 @@ class ExerciseImageTableCompanion extends UpdateCompanion<ExerciseImage> {
           ..write('exerciseId: $exerciseId, ')
           ..write('image: $image, ')
           ..write('isMain: $isMain, ')
+          ..write('isAiGenerated: $isAiGenerated, ')
+          ..write('style: $style, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate, ')
+          ..write('licenseId: $licenseId, ')
+          ..write('licenseTitle: $licenseTitle, ')
+          ..write('licenseObjectUrl: $licenseObjectUrl, ')
+          ..write('licenseAuthor: $licenseAuthor, ')
+          ..write('licenseAuthorUrl: $licenseAuthorUrl, ')
+          ..write('licenseDerivativeSourceUrl: $licenseDerivativeSourceUrl, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2644,6 +3797,18 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES exercises_exercise (id)',
+    ),
+  );
+  static const VerificationMeta _isMainMeta = const VerificationMeta('isMain');
+  @override
+  late final GeneratedColumn<bool> isMain = GeneratedColumn<bool>(
+    'is_main',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_main" IN (0, 1))',
     ),
   );
   static const VerificationMeta _urlMeta = const VerificationMeta('url');
@@ -2713,6 +3878,28 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _createdMeta = const VerificationMeta(
+    'created',
+  );
+  @override
+  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
+    'created',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdateMeta = const VerificationMeta(
+    'lastUpdate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUpdate = GeneratedColumn<DateTime>(
+    'last_update',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _licenseIdMeta = const VerificationMeta(
     'licenseId',
   );
@@ -2724,12 +3911,56 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _licenseTitleMeta = const VerificationMeta(
+    'licenseTitle',
+  );
+  @override
+  late final GeneratedColumn<String> licenseTitle = GeneratedColumn<String>(
+    'license_title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseObjectUrlMeta = const VerificationMeta(
+    'licenseObjectUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseObjectUrl = GeneratedColumn<String>(
+    'license_object_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _licenseAuthorMeta = const VerificationMeta(
     'licenseAuthor',
   );
   @override
   late final GeneratedColumn<String> licenseAuthor = GeneratedColumn<String>(
     'license_author',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _licenseAuthorUrlMeta = const VerificationMeta(
+    'licenseAuthorUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseAuthorUrl = GeneratedColumn<String>(
+    'license_author_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _licenseDerivativeSourceUrlMeta = const VerificationMeta(
+    'licenseDerivativeSourceUrl',
+  );
+  @override
+  late final GeneratedColumn<String> licenseDerivativeSourceUrl = GeneratedColumn<String>(
+    'license_derivative_source_url',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -2740,6 +3971,7 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     id,
     uuid,
     exerciseId,
+    isMain,
     url,
     size,
     duration,
@@ -2747,8 +3979,14 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     height,
     codec,
     codecLong,
+    created,
+    lastUpdate,
     licenseId,
+    licenseTitle,
+    licenseObjectUrl,
     licenseAuthor,
+    licenseAuthorUrl,
+    licenseDerivativeSourceUrl,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2782,6 +4020,14 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
       );
     } else if (isInserting) {
       context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('is_main')) {
+      context.handle(
+        _isMainMeta,
+        isMain.isAcceptableOrUnknown(data['is_main']!, _isMainMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isMainMeta);
     }
     if (data.containsKey('url')) {
       context.handle(
@@ -2839,6 +4085,22 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     } else if (isInserting) {
       context.missing(_codecLongMeta);
     }
+    if (data.containsKey('created')) {
+      context.handle(
+        _createdMeta,
+        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdMeta);
+    }
+    if (data.containsKey('last_update')) {
+      context.handle(
+        _lastUpdateMeta,
+        lastUpdate.isAcceptableOrUnknown(data['last_update']!, _lastUpdateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUpdateMeta);
+    }
     if (data.containsKey('license_id')) {
       context.handle(
         _licenseIdMeta,
@@ -2846,6 +4108,28 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
       );
     } else if (isInserting) {
       context.missing(_licenseIdMeta);
+    }
+    if (data.containsKey('license_title')) {
+      context.handle(
+        _licenseTitleMeta,
+        licenseTitle.isAcceptableOrUnknown(
+          data['license_title']!,
+          _licenseTitleMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseTitleMeta);
+    }
+    if (data.containsKey('license_object_url')) {
+      context.handle(
+        _licenseObjectUrlMeta,
+        licenseObjectUrl.isAcceptableOrUnknown(
+          data['license_object_url']!,
+          _licenseObjectUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseObjectUrlMeta);
     }
     if (data.containsKey('license_author')) {
       context.handle(
@@ -2855,8 +4139,28 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
           _licenseAuthorMeta,
         ),
       );
+    }
+    if (data.containsKey('license_author_url')) {
+      context.handle(
+        _licenseAuthorUrlMeta,
+        licenseAuthorUrl.isAcceptableOrUnknown(
+          data['license_author_url']!,
+          _licenseAuthorUrlMeta,
+        ),
+      );
     } else if (isInserting) {
-      context.missing(_licenseAuthorMeta);
+      context.missing(_licenseAuthorUrlMeta);
+    }
+    if (data.containsKey('license_derivative_source_url')) {
+      context.handle(
+        _licenseDerivativeSourceUrlMeta,
+        licenseDerivativeSourceUrl.isAcceptableOrUnknown(
+          data['license_derivative_source_url']!,
+          _licenseDerivativeSourceUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_licenseDerivativeSourceUrlMeta);
     }
     return context;
   }
@@ -2879,13 +4183,17 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
         DriftSqlType.int,
         data['${effectivePrefix}exercise_id'],
       )!,
-      size: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}size'],
+      isMain: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_main'],
       )!,
       url: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}url'],
+      )!,
+      size: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size'],
       )!,
       duration: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -2907,13 +4215,37 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
         DriftSqlType.string,
         data['${effectivePrefix}codec_long'],
       )!,
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
+      )!,
       licenseId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}license_id'],
       )!,
+      licenseTitle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_title'],
+      )!,
+      licenseObjectUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_object_url'],
+      )!,
       licenseAuthor: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}license_author'],
+      ),
+      licenseAuthorUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_author_url'],
+      )!,
+      licenseDerivativeSourceUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license_derivative_source_url'],
       )!,
     );
   }
@@ -2928,6 +4260,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
   final Value<int> id;
   final Value<String> uuid;
   final Value<int> exerciseId;
+  final Value<bool> isMain;
   final Value<String> url;
   final Value<int> size;
   final Value<int> duration;
@@ -2935,13 +4268,20 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
   final Value<int> height;
   final Value<String> codec;
   final Value<String> codecLong;
+  final Value<DateTime> created;
+  final Value<DateTime> lastUpdate;
   final Value<int> licenseId;
-  final Value<String> licenseAuthor;
+  final Value<String> licenseTitle;
+  final Value<String> licenseObjectUrl;
+  final Value<String?> licenseAuthor;
+  final Value<String> licenseAuthorUrl;
+  final Value<String> licenseDerivativeSourceUrl;
   final Value<int> rowid;
   const ExerciseVideoTableCompanion({
     this.id = const Value.absent(),
     this.uuid = const Value.absent(),
     this.exerciseId = const Value.absent(),
+    this.isMain = const Value.absent(),
     this.url = const Value.absent(),
     this.size = const Value.absent(),
     this.duration = const Value.absent(),
@@ -2949,14 +4289,21 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     this.height = const Value.absent(),
     this.codec = const Value.absent(),
     this.codecLong = const Value.absent(),
+    this.created = const Value.absent(),
+    this.lastUpdate = const Value.absent(),
     this.licenseId = const Value.absent(),
+    this.licenseTitle = const Value.absent(),
+    this.licenseObjectUrl = const Value.absent(),
     this.licenseAuthor = const Value.absent(),
+    this.licenseAuthorUrl = const Value.absent(),
+    this.licenseDerivativeSourceUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ExerciseVideoTableCompanion.insert({
     required int id,
     required String uuid,
     required int exerciseId,
+    required bool isMain,
     required String url,
     required int size,
     required int duration,
@@ -2964,12 +4311,19 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     required int height,
     required String codec,
     required String codecLong,
+    required DateTime created,
+    required DateTime lastUpdate,
     required int licenseId,
-    required String licenseAuthor,
+    required String licenseTitle,
+    required String licenseObjectUrl,
+    this.licenseAuthor = const Value.absent(),
+    required String licenseAuthorUrl,
+    required String licenseDerivativeSourceUrl,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        uuid = Value(uuid),
        exerciseId = Value(exerciseId),
+       isMain = Value(isMain),
        url = Value(url),
        size = Value(size),
        duration = Value(duration),
@@ -2977,12 +4331,18 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
        height = Value(height),
        codec = Value(codec),
        codecLong = Value(codecLong),
+       created = Value(created),
+       lastUpdate = Value(lastUpdate),
        licenseId = Value(licenseId),
-       licenseAuthor = Value(licenseAuthor);
+       licenseTitle = Value(licenseTitle),
+       licenseObjectUrl = Value(licenseObjectUrl),
+       licenseAuthorUrl = Value(licenseAuthorUrl),
+       licenseDerivativeSourceUrl = Value(licenseDerivativeSourceUrl);
   static Insertable<Video> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<int>? exerciseId,
+    Expression<bool>? isMain,
     Expression<String>? url,
     Expression<int>? size,
     Expression<int>? duration,
@@ -2990,14 +4350,21 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     Expression<int>? height,
     Expression<String>? codec,
     Expression<String>? codecLong,
+    Expression<DateTime>? created,
+    Expression<DateTime>? lastUpdate,
     Expression<int>? licenseId,
+    Expression<String>? licenseTitle,
+    Expression<String>? licenseObjectUrl,
     Expression<String>? licenseAuthor,
+    Expression<String>? licenseAuthorUrl,
+    Expression<String>? licenseDerivativeSourceUrl,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (uuid != null) 'uuid': uuid,
       if (exerciseId != null) 'exercise_id': exerciseId,
+      if (isMain != null) 'is_main': isMain,
       if (url != null) 'url': url,
       if (size != null) 'size': size,
       if (duration != null) 'duration': duration,
@@ -3005,8 +4372,15 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
       if (height != null) 'height': height,
       if (codec != null) 'codec': codec,
       if (codecLong != null) 'codec_long': codecLong,
+      if (created != null) 'created': created,
+      if (lastUpdate != null) 'last_update': lastUpdate,
       if (licenseId != null) 'license_id': licenseId,
+      if (licenseTitle != null) 'license_title': licenseTitle,
+      if (licenseObjectUrl != null) 'license_object_url': licenseObjectUrl,
       if (licenseAuthor != null) 'license_author': licenseAuthor,
+      if (licenseAuthorUrl != null) 'license_author_url': licenseAuthorUrl,
+      if (licenseDerivativeSourceUrl != null)
+        'license_derivative_source_url': licenseDerivativeSourceUrl,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3015,6 +4389,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     Value<int>? id,
     Value<String>? uuid,
     Value<int>? exerciseId,
+    Value<bool>? isMain,
     Value<String>? url,
     Value<int>? size,
     Value<int>? duration,
@@ -3022,14 +4397,21 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     Value<int>? height,
     Value<String>? codec,
     Value<String>? codecLong,
+    Value<DateTime>? created,
+    Value<DateTime>? lastUpdate,
     Value<int>? licenseId,
-    Value<String>? licenseAuthor,
+    Value<String>? licenseTitle,
+    Value<String>? licenseObjectUrl,
+    Value<String?>? licenseAuthor,
+    Value<String>? licenseAuthorUrl,
+    Value<String>? licenseDerivativeSourceUrl,
     Value<int>? rowid,
   }) {
     return ExerciseVideoTableCompanion(
       id: id ?? this.id,
       uuid: uuid ?? this.uuid,
       exerciseId: exerciseId ?? this.exerciseId,
+      isMain: isMain ?? this.isMain,
       url: url ?? this.url,
       size: size ?? this.size,
       duration: duration ?? this.duration,
@@ -3037,8 +4419,14 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
       height: height ?? this.height,
       codec: codec ?? this.codec,
       codecLong: codecLong ?? this.codecLong,
+      created: created ?? this.created,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
       licenseId: licenseId ?? this.licenseId,
+      licenseTitle: licenseTitle ?? this.licenseTitle,
+      licenseObjectUrl: licenseObjectUrl ?? this.licenseObjectUrl,
       licenseAuthor: licenseAuthor ?? this.licenseAuthor,
+      licenseAuthorUrl: licenseAuthorUrl ?? this.licenseAuthorUrl,
+      licenseDerivativeSourceUrl: licenseDerivativeSourceUrl ?? this.licenseDerivativeSourceUrl,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3054,6 +4442,9 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     }
     if (exerciseId.present) {
       map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (isMain.present) {
+      map['is_main'] = Variable<bool>(isMain.value);
     }
     if (url.present) {
       map['url'] = Variable<String>(url.value);
@@ -3076,11 +4467,31 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     if (codecLong.present) {
       map['codec_long'] = Variable<String>(codecLong.value);
     }
+    if (created.present) {
+      map['created'] = Variable<DateTime>(created.value);
+    }
+    if (lastUpdate.present) {
+      map['last_update'] = Variable<DateTime>(lastUpdate.value);
+    }
     if (licenseId.present) {
       map['license_id'] = Variable<int>(licenseId.value);
     }
+    if (licenseTitle.present) {
+      map['license_title'] = Variable<String>(licenseTitle.value);
+    }
+    if (licenseObjectUrl.present) {
+      map['license_object_url'] = Variable<String>(licenseObjectUrl.value);
+    }
     if (licenseAuthor.present) {
       map['license_author'] = Variable<String>(licenseAuthor.value);
+    }
+    if (licenseAuthorUrl.present) {
+      map['license_author_url'] = Variable<String>(licenseAuthorUrl.value);
+    }
+    if (licenseDerivativeSourceUrl.present) {
+      map['license_derivative_source_url'] = Variable<String>(
+        licenseDerivativeSourceUrl.value,
+      );
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -3094,6 +4505,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
           ..write('id: $id, ')
           ..write('uuid: $uuid, ')
           ..write('exerciseId: $exerciseId, ')
+          ..write('isMain: $isMain, ')
           ..write('url: $url, ')
           ..write('size: $size, ')
           ..write('duration: $duration, ')
@@ -3101,8 +4513,14 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
           ..write('height: $height, ')
           ..write('codec: $codec, ')
           ..write('codecLong: $codecLong, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate, ')
           ..write('licenseId: $licenseId, ')
+          ..write('licenseTitle: $licenseTitle, ')
+          ..write('licenseObjectUrl: $licenseObjectUrl, ')
           ..write('licenseAuthor: $licenseAuthor, ')
+          ..write('licenseAuthorUrl: $licenseAuthorUrl, ')
+          ..write('licenseDerivativeSourceUrl: $licenseDerivativeSourceUrl, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6679,6 +8097,46 @@ class $IngredientImageTableTable extends IngredientImageTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdMeta = const VerificationMeta(
+    'created',
+  );
+  @override
+  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
+    'created',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdateMeta = const VerificationMeta(
+    'lastUpdate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUpdate = GeneratedColumn<DateTime>(
+    'last_update',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _licenseIdMeta = const VerificationMeta(
     'licenseId',
   );
@@ -6695,9 +8153,9 @@ class $IngredientImageTableTable extends IngredientImageTable
   late final GeneratedColumn<String> author = GeneratedColumn<String>(
     'license_author',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _authorUrlMeta = const VerificationMeta(
     'authorUrl',
@@ -6748,6 +8206,10 @@ class $IngredientImageTableTable extends IngredientImageTable
     ingredientId,
     image,
     size,
+    width,
+    height,
+    created,
+    lastUpdate,
     licenseId,
     author,
     authorUrl,
@@ -6807,6 +8269,38 @@ class $IngredientImageTableTable extends IngredientImageTable
     } else if (isInserting) {
       context.missing(_sizeMeta);
     }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_widthMeta);
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_heightMeta);
+    }
+    if (data.containsKey('created')) {
+      context.handle(
+        _createdMeta,
+        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdMeta);
+    }
+    if (data.containsKey('last_update')) {
+      context.handle(
+        _lastUpdateMeta,
+        lastUpdate.isAcceptableOrUnknown(data['last_update']!, _lastUpdateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUpdateMeta);
+    }
     if (data.containsKey('license_id')) {
       context.handle(
         _licenseIdMeta,
@@ -6820,8 +8314,6 @@ class $IngredientImageTableTable extends IngredientImageTable
         _authorMeta,
         author.isAcceptableOrUnknown(data['license_author']!, _authorMeta),
       );
-    } else if (isInserting) {
-      context.missing(_authorMeta);
     }
     if (data.containsKey('license_author_url')) {
       context.handle(
@@ -6893,6 +8385,22 @@ class $IngredientImageTableTable extends IngredientImageTable
         DriftSqlType.int,
         data['${effectivePrefix}size'],
       )!,
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      )!,
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      )!,
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      )!,
+      lastUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update'],
+      )!,
       licenseId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}license_id'],
@@ -6900,7 +8408,7 @@ class $IngredientImageTableTable extends IngredientImageTable
       author: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}license_author'],
-      )!,
+      ),
       authorUrl: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}license_author_url'],
@@ -6932,8 +8440,12 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
   final Value<int> ingredientId;
   final Value<String> image;
   final Value<int> size;
+  final Value<int> width;
+  final Value<int> height;
+  final Value<DateTime> created;
+  final Value<DateTime> lastUpdate;
   final Value<int> licenseId;
-  final Value<String> author;
+  final Value<String?> author;
   final Value<String> authorUrl;
   final Value<String> title;
   final Value<String> objectUrl;
@@ -6945,6 +8457,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     this.ingredientId = const Value.absent(),
     this.image = const Value.absent(),
     this.size = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.created = const Value.absent(),
+    this.lastUpdate = const Value.absent(),
     this.licenseId = const Value.absent(),
     this.author = const Value.absent(),
     this.authorUrl = const Value.absent(),
@@ -6959,8 +8475,12 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     required int ingredientId,
     required String image,
     required int size,
+    required int width,
+    required int height,
+    required DateTime created,
+    required DateTime lastUpdate,
     required int licenseId,
-    required String author,
+    this.author = const Value.absent(),
     required String authorUrl,
     required String title,
     required String objectUrl,
@@ -6971,8 +8491,11 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
        ingredientId = Value(ingredientId),
        image = Value(image),
        size = Value(size),
+       width = Value(width),
+       height = Value(height),
+       created = Value(created),
+       lastUpdate = Value(lastUpdate),
        licenseId = Value(licenseId),
-       author = Value(author),
        authorUrl = Value(authorUrl),
        title = Value(title),
        objectUrl = Value(objectUrl),
@@ -6983,6 +8506,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     Expression<int>? ingredientId,
     Expression<String>? image,
     Expression<int>? size,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<DateTime>? created,
+    Expression<DateTime>? lastUpdate,
     Expression<int>? licenseId,
     Expression<String>? author,
     Expression<String>? authorUrl,
@@ -6997,6 +8524,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
       if (ingredientId != null) 'ingredient_id': ingredientId,
       if (image != null) 'image': image,
       if (size != null) 'size': size,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (created != null) 'created': created,
+      if (lastUpdate != null) 'last_update': lastUpdate,
       if (licenseId != null) 'license_id': licenseId,
       if (author != null) 'license_author': author,
       if (authorUrl != null) 'license_author_url': authorUrl,
@@ -7013,8 +8544,12 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     Value<int>? ingredientId,
     Value<String>? image,
     Value<int>? size,
+    Value<int>? width,
+    Value<int>? height,
+    Value<DateTime>? created,
+    Value<DateTime>? lastUpdate,
     Value<int>? licenseId,
-    Value<String>? author,
+    Value<String?>? author,
     Value<String>? authorUrl,
     Value<String>? title,
     Value<String>? objectUrl,
@@ -7027,6 +8562,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
       ingredientId: ingredientId ?? this.ingredientId,
       image: image ?? this.image,
       size: size ?? this.size,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      created: created ?? this.created,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
       licenseId: licenseId ?? this.licenseId,
       author: author ?? this.author,
       authorUrl: authorUrl ?? this.authorUrl,
@@ -7054,6 +8593,18 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
     }
     if (size.present) {
       map['size'] = Variable<int>(size.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (created.present) {
+      map['created'] = Variable<DateTime>(created.value);
+    }
+    if (lastUpdate.present) {
+      map['last_update'] = Variable<DateTime>(lastUpdate.value);
     }
     if (licenseId.present) {
       map['license_id'] = Variable<int>(licenseId.value);
@@ -7089,6 +8640,10 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
           ..write('ingredientId: $ingredientId, ')
           ..write('image: $image, ')
           ..write('size: $size, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('created: $created, ')
+          ..write('lastUpdate: $lastUpdate, ')
           ..write('licenseId: $licenseId, ')
           ..write('author: $author, ')
           ..write('authorUrl: $authorUrl, ')
@@ -8456,6 +10011,8 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   late final $ExerciseTableTable exerciseTable = $ExerciseTableTable(this);
   late final $ExerciseTranslationTableTable exerciseTranslationTable =
       $ExerciseTranslationTableTable(this);
+  late final $ExerciseAliasTableTable exerciseAliasTable = $ExerciseAliasTableTable(this);
+  late final $ExerciseCommentTableTable exerciseCommentTable = $ExerciseCommentTableTable(this);
   late final $MuscleTableTable muscleTable = $MuscleTableTable(this);
   late final $ExerciseMuscleM2NTable exerciseMuscleM2N = $ExerciseMuscleM2NTable(this);
   late final $ExerciseSecondaryMuscleM2NTable exerciseSecondaryMuscleM2N =
@@ -8501,6 +10058,8 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     exerciseCategoryTable,
     exerciseTable,
     exerciseTranslationTable,
+    exerciseAliasTable,
+    exerciseCommentTable,
     muscleTable,
     exerciseMuscleM2N,
     exerciseSecondaryMuscleM2N,
@@ -8552,7 +10111,7 @@ final class $$LanguageTableTableReferences
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<Translation>>
+  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<ExerciseTranslationRow>>
   _exerciseTranslationTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseTranslationTable,
     aliasName: $_aliasNameGenerator(
@@ -8761,7 +10320,11 @@ class $$LanguageTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (exerciseTranslationTableRefs)
-                    await $_getPrefetchedData<Language, $LanguageTableTable, Translation>(
+                    await $_getPrefetchedData<
+                      Language,
+                      $LanguageTableTable,
+                      ExerciseTranslationRow
+                    >(
                       currentTable: table,
                       referencedTable: $$LanguageTableTableReferences
                           ._exerciseTranslationTableRefsTable(db),
@@ -8997,7 +10560,7 @@ final class $$ExerciseCategoryTableTableReferences
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$ExerciseTableTable, List<Exercise>> _exerciseTableRefsTable(
+  static MultiTypedResultKey<$ExerciseTableTable, List<ExerciseRow>> _exerciseTableRefsTable(
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.exerciseTable,
@@ -9198,7 +10761,7 @@ class $$ExerciseCategoryTableTableTableManager
                     await $_getPrefetchedData<
                       ExerciseCategory,
                       $ExerciseCategoryTableTable,
-                      Exercise
+                      ExerciseRow
                     >(
                       currentTable: table,
                       referencedTable: $$ExerciseCategoryTableTableReferences
@@ -9256,7 +10819,7 @@ typedef $$ExerciseTableTableUpdateCompanionBuilder =
     });
 
 final class $$ExerciseTableTableReferences
-    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseTableTable, Exercise> {
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseTableTable, ExerciseRow> {
   $$ExerciseTableTableReferences(
     super.$_db,
     super.$_table,
@@ -9286,7 +10849,7 @@ final class $$ExerciseTableTableReferences
     );
   }
 
-  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<Translation>>
+  static MultiTypedResultKey<$ExerciseTranslationTableTable, List<ExerciseTranslationRow>>
   _exerciseTranslationTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseTranslationTable,
     aliasName: $_aliasNameGenerator(
@@ -9887,14 +11450,14 @@ class $$ExerciseTableTableTableManager
         RootTableManager<
           _$DriftPowersyncDatabase,
           $ExerciseTableTable,
-          Exercise,
+          ExerciseRow,
           $$ExerciseTableTableFilterComposer,
           $$ExerciseTableTableOrderingComposer,
           $$ExerciseTableTableAnnotationComposer,
           $$ExerciseTableTableCreateCompanionBuilder,
           $$ExerciseTableTableUpdateCompanionBuilder,
-          (Exercise, $$ExerciseTableTableReferences),
-          Exercise,
+          (ExerciseRow, $$ExerciseTableTableReferences),
+          ExerciseRow,
           PrefetchHooks Function({
             bool categoryId,
             bool exerciseTranslationTableRefs,
@@ -10016,7 +11579,11 @@ class $$ExerciseTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (exerciseTranslationTableRefs)
-                        await $_getPrefetchedData<Exercise, $ExerciseTableTable, Translation>(
+                        await $_getPrefetchedData<
+                          ExerciseRow,
+                          $ExerciseTableTable,
+                          ExerciseTranslationRow
+                        >(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
                               ._exerciseTranslationTableRefsTable(db),
@@ -10033,7 +11600,7 @@ class $$ExerciseTableTableTableManager
                         ),
                       if (exerciseMuscleM2NRefs)
                         await $_getPrefetchedData<
-                          Exercise,
+                          ExerciseRow,
                           $ExerciseTableTable,
                           ExerciseMuscleM2NData
                         >(
@@ -10053,7 +11620,7 @@ class $$ExerciseTableTableTableManager
                         ),
                       if (exerciseSecondaryMuscleM2NRefs)
                         await $_getPrefetchedData<
-                          Exercise,
+                          ExerciseRow,
                           $ExerciseTableTable,
                           ExerciseSecondaryMuscleM2NData
                         >(
@@ -10073,7 +11640,7 @@ class $$ExerciseTableTableTableManager
                         ),
                       if (exerciseEquipmentM2NRefs)
                         await $_getPrefetchedData<
-                          Exercise,
+                          ExerciseRow,
                           $ExerciseTableTable,
                           ExerciseEquipmentM2NData
                         >(
@@ -10092,7 +11659,7 @@ class $$ExerciseTableTableTableManager
                           typedResults: items,
                         ),
                       if (exerciseImageTableRefs)
-                        await $_getPrefetchedData<Exercise, $ExerciseTableTable, ExerciseImage>(
+                        await $_getPrefetchedData<ExerciseRow, $ExerciseTableTable, ExerciseImage>(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
                               ._exerciseImageTableRefsTable(db),
@@ -10108,7 +11675,7 @@ class $$ExerciseTableTableTableManager
                           typedResults: items,
                         ),
                       if (exerciseVideoTableRefs)
-                        await $_getPrefetchedData<Exercise, $ExerciseTableTable, Video>(
+                        await $_getPrefetchedData<ExerciseRow, $ExerciseTableTable, Video>(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
                               ._exerciseVideoTableRefsTable(db),
@@ -10135,14 +11702,14 @@ typedef $$ExerciseTableTableProcessedTableManager =
     ProcessedTableManager<
       _$DriftPowersyncDatabase,
       $ExerciseTableTable,
-      Exercise,
+      ExerciseRow,
       $$ExerciseTableTableFilterComposer,
       $$ExerciseTableTableOrderingComposer,
       $$ExerciseTableTableAnnotationComposer,
       $$ExerciseTableTableCreateCompanionBuilder,
       $$ExerciseTableTableUpdateCompanionBuilder,
-      (Exercise, $$ExerciseTableTableReferences),
-      Exercise,
+      (ExerciseRow, $$ExerciseTableTableReferences),
+      ExerciseRow,
       PrefetchHooks Function({
         bool categoryId,
         bool exerciseTranslationTableRefs,
@@ -10179,7 +11746,12 @@ typedef $$ExerciseTranslationTableTableUpdateCompanionBuilder =
     });
 
 final class $$ExerciseTranslationTableTableReferences
-    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseTranslationTableTable, Translation> {
+    extends
+        BaseReferences<
+          _$DriftPowersyncDatabase,
+          $ExerciseTranslationTableTable,
+          ExerciseTranslationRow
+        > {
   $$ExerciseTranslationTableTableReferences(
     super.$_db,
     super.$_table,
@@ -10227,6 +11799,53 @@ final class $$ExerciseTranslationTableTableReferences
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseAliasTableTable, List<Alias>> _exerciseAliasTableRefsTable(
+    _$DriftPowersyncDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.exerciseAliasTable,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseTranslationTable.id,
+      db.exerciseAliasTable.translationId,
+    ),
+  );
+
+  $$ExerciseAliasTableTableProcessedTableManager get exerciseAliasTableRefs {
+    final manager = $$ExerciseAliasTableTableTableManager(
+      $_db,
+      $_db.exerciseAliasTable,
+    ).filter((f) => f.translationId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseAliasTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ExerciseCommentTableTable, List<Comment>>
+  _exerciseCommentTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+    db.exerciseCommentTable,
+    aliasName: $_aliasNameGenerator(
+      db.exerciseTranslationTable.id,
+      db.exerciseCommentTable.translationId,
+    ),
+  );
+
+  $$ExerciseCommentTableTableProcessedTableManager get exerciseCommentTableRefs {
+    final manager = $$ExerciseCommentTableTableTableManager(
+      $_db,
+      $_db.exerciseCommentTable,
+    ).filter((f) => f.translationId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _exerciseCommentTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
     );
   }
 }
@@ -10312,6 +11931,54 @@ class $$ExerciseTranslationTableTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> exerciseAliasTableRefs(
+    Expression<bool> Function($$ExerciseAliasTableTableFilterComposer f) f,
+  ) {
+    final $$ExerciseAliasTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseAliasTable,
+      getReferencedColumn: (t) => t.translationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseAliasTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseAliasTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> exerciseCommentTableRefs(
+    Expression<bool> Function($$ExerciseCommentTableTableFilterComposer f) f,
+  ) {
+    final $$ExerciseCommentTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseCommentTable,
+      getReferencedColumn: (t) => t.translationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseCommentTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseCommentTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 }
 
@@ -10472,6 +12139,54 @@ class $$ExerciseTranslationTableTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> exerciseAliasTableRefs<T extends Object>(
+    Expression<T> Function($$ExerciseAliasTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseAliasTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseAliasTable,
+      getReferencedColumn: (t) => t.translationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseAliasTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseAliasTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> exerciseCommentTableRefs<T extends Object>(
+    Expression<T> Function($$ExerciseCommentTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExerciseCommentTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.exerciseCommentTable,
+      getReferencedColumn: (t) => t.translationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseCommentTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseCommentTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ExerciseTranslationTableTableTableManager
@@ -10479,15 +12194,20 @@ class $$ExerciseTranslationTableTableTableManager
         RootTableManager<
           _$DriftPowersyncDatabase,
           $ExerciseTranslationTableTable,
-          Translation,
+          ExerciseTranslationRow,
           $$ExerciseTranslationTableTableFilterComposer,
           $$ExerciseTranslationTableTableOrderingComposer,
           $$ExerciseTranslationTableTableAnnotationComposer,
           $$ExerciseTranslationTableTableCreateCompanionBuilder,
           $$ExerciseTranslationTableTableUpdateCompanionBuilder,
-          (Translation, $$ExerciseTranslationTableTableReferences),
-          Translation,
-          PrefetchHooks Function({bool exerciseId, bool languageId})
+          (ExerciseTranslationRow, $$ExerciseTranslationTableTableReferences),
+          ExerciseTranslationRow,
+          PrefetchHooks Function({
+            bool exerciseId,
+            bool languageId,
+            bool exerciseAliasTableRefs,
+            bool exerciseCommentTableRefs,
+          })
         > {
   $$ExerciseTranslationTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -10560,7 +12280,383 @@ class $$ExerciseTranslationTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({exerciseId = false, languageId = false}) {
+          prefetchHooksCallback:
+              ({
+                exerciseId = false,
+                languageId = false,
+                exerciseAliasTableRefs = false,
+                exerciseCommentTableRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (exerciseAliasTableRefs) db.exerciseAliasTable,
+                    if (exerciseCommentTableRefs) db.exerciseCommentTable,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (exerciseId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.exerciseId,
+                                    referencedTable: $$ExerciseTranslationTableTableReferences
+                                        ._exerciseIdTable(db),
+                                    referencedColumn: $$ExerciseTranslationTableTableReferences
+                                        ._exerciseIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+                        if (languageId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.languageId,
+                                    referencedTable: $$ExerciseTranslationTableTableReferences
+                                        ._languageIdTable(db),
+                                    referencedColumn: $$ExerciseTranslationTableTableReferences
+                                        ._languageIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (exerciseAliasTableRefs)
+                        await $_getPrefetchedData<
+                          ExerciseTranslationRow,
+                          $ExerciseTranslationTableTable,
+                          Alias
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTranslationTableTableReferences
+                              ._exerciseAliasTableRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTranslationTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseAliasTableRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.translationId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (exerciseCommentTableRefs)
+                        await $_getPrefetchedData<
+                          ExerciseTranslationRow,
+                          $ExerciseTranslationTableTable,
+                          Comment
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ExerciseTranslationTableTableReferences
+                              ._exerciseCommentTableRefsTable(db),
+                          managerFromTypedResult: (p0) => $$ExerciseTranslationTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).exerciseCommentTableRefs,
+                          referencedItemsForCurrentItem: (item, referencedItems) =>
+                              referencedItems.where(
+                                (e) => e.translationId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ExerciseTranslationTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $ExerciseTranslationTableTable,
+      ExerciseTranslationRow,
+      $$ExerciseTranslationTableTableFilterComposer,
+      $$ExerciseTranslationTableTableOrderingComposer,
+      $$ExerciseTranslationTableTableAnnotationComposer,
+      $$ExerciseTranslationTableTableCreateCompanionBuilder,
+      $$ExerciseTranslationTableTableUpdateCompanionBuilder,
+      (ExerciseTranslationRow, $$ExerciseTranslationTableTableReferences),
+      ExerciseTranslationRow,
+      PrefetchHooks Function({
+        bool exerciseId,
+        bool languageId,
+        bool exerciseAliasTableRefs,
+        bool exerciseCommentTableRefs,
+      })
+    >;
+typedef $$ExerciseAliasTableTableCreateCompanionBuilder =
+    ExerciseAliasTableCompanion Function({
+      required int id,
+      required String uuid,
+      required int translationId,
+      required String alias,
+      Value<int> rowid,
+    });
+typedef $$ExerciseAliasTableTableUpdateCompanionBuilder =
+    ExerciseAliasTableCompanion Function({
+      Value<int> id,
+      Value<String> uuid,
+      Value<int> translationId,
+      Value<String> alias,
+      Value<int> rowid,
+    });
+
+final class $$ExerciseAliasTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseAliasTableTable, Alias> {
+  $$ExerciseAliasTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTranslationTableTable _translationIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.exerciseTranslationTable.createAlias(
+    $_aliasNameGenerator(
+      db.exerciseAliasTable.translationId,
+      db.exerciseTranslationTable.id,
+    ),
+  );
+
+  $$ExerciseTranslationTableTableProcessedTableManager get translationId {
+    final $_column = $_itemColumn<int>('translation_id')!;
+
+    final manager = $$ExerciseTranslationTableTableTableManager(
+      $_db,
+      $_db.exerciseTranslationTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_translationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ExerciseAliasTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseAliasTableTable> {
+  $$ExerciseAliasTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get alias => $composableBuilder(
+    column: $table.alias,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExerciseTranslationTableTableFilterComposer get translationId {
+    final $$ExerciseTranslationTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseAliasTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseAliasTableTable> {
+  $$ExerciseAliasTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get alias => $composableBuilder(
+    column: $table.alias,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExerciseTranslationTableTableOrderingComposer get translationId {
+    final $$ExerciseTranslationTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseAliasTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseAliasTableTable> {
+  $$ExerciseAliasTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => column);
+
+  GeneratedColumn<String> get alias =>
+      $composableBuilder(column: $table.alias, builder: (column) => column);
+
+  $$ExerciseTranslationTableTableAnnotationComposer get translationId {
+    final $$ExerciseTranslationTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseAliasTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $ExerciseAliasTableTable,
+          Alias,
+          $$ExerciseAliasTableTableFilterComposer,
+          $$ExerciseAliasTableTableOrderingComposer,
+          $$ExerciseAliasTableTableAnnotationComposer,
+          $$ExerciseAliasTableTableCreateCompanionBuilder,
+          $$ExerciseAliasTableTableUpdateCompanionBuilder,
+          (Alias, $$ExerciseAliasTableTableReferences),
+          Alias,
+          PrefetchHooks Function({bool translationId})
+        > {
+  $$ExerciseAliasTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $ExerciseAliasTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExerciseAliasTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExerciseAliasTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$ExerciseAliasTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                Value<int> translationId = const Value.absent(),
+                Value<String> alias = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseAliasTableCompanion(
+                id: id,
+                uuid: uuid,
+                translationId: translationId,
+                alias: alias,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String uuid,
+                required int translationId,
+                required String alias,
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseAliasTableCompanion.insert(
+                id: id,
+                uuid: uuid,
+                translationId: translationId,
+                alias: alias,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseAliasTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({translationId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -10580,28 +12676,15 @@ class $$ExerciseTranslationTableTableTableManager
                       dynamic
                     >
                   >(state) {
-                    if (exerciseId) {
+                    if (translationId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.exerciseId,
-                                referencedTable: $$ExerciseTranslationTableTableReferences
-                                    ._exerciseIdTable(db),
-                                referencedColumn: $$ExerciseTranslationTableTableReferences
-                                    ._exerciseIdTable(db)
-                                    .id,
-                              )
-                              as T;
-                    }
-                    if (languageId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.languageId,
-                                referencedTable: $$ExerciseTranslationTableTableReferences
-                                    ._languageIdTable(db),
-                                referencedColumn: $$ExerciseTranslationTableTableReferences
-                                    ._languageIdTable(db)
+                                currentColumn: table.translationId,
+                                referencedTable: $$ExerciseAliasTableTableReferences
+                                    ._translationIdTable(db),
+                                referencedColumn: $$ExerciseAliasTableTableReferences
+                                    ._translationIdTable(db)
                                     .id,
                               )
                               as T;
@@ -10618,19 +12701,329 @@ class $$ExerciseTranslationTableTableTableManager
       );
 }
 
-typedef $$ExerciseTranslationTableTableProcessedTableManager =
+typedef $$ExerciseAliasTableTableProcessedTableManager =
     ProcessedTableManager<
       _$DriftPowersyncDatabase,
-      $ExerciseTranslationTableTable,
-      Translation,
-      $$ExerciseTranslationTableTableFilterComposer,
-      $$ExerciseTranslationTableTableOrderingComposer,
-      $$ExerciseTranslationTableTableAnnotationComposer,
-      $$ExerciseTranslationTableTableCreateCompanionBuilder,
-      $$ExerciseTranslationTableTableUpdateCompanionBuilder,
-      (Translation, $$ExerciseTranslationTableTableReferences),
-      Translation,
-      PrefetchHooks Function({bool exerciseId, bool languageId})
+      $ExerciseAliasTableTable,
+      Alias,
+      $$ExerciseAliasTableTableFilterComposer,
+      $$ExerciseAliasTableTableOrderingComposer,
+      $$ExerciseAliasTableTableAnnotationComposer,
+      $$ExerciseAliasTableTableCreateCompanionBuilder,
+      $$ExerciseAliasTableTableUpdateCompanionBuilder,
+      (Alias, $$ExerciseAliasTableTableReferences),
+      Alias,
+      PrefetchHooks Function({bool translationId})
+    >;
+typedef $$ExerciseCommentTableTableCreateCompanionBuilder =
+    ExerciseCommentTableCompanion Function({
+      required int id,
+      required String uuid,
+      required int translationId,
+      required String comment,
+      Value<int> rowid,
+    });
+typedef $$ExerciseCommentTableTableUpdateCompanionBuilder =
+    ExerciseCommentTableCompanion Function({
+      Value<int> id,
+      Value<String> uuid,
+      Value<int> translationId,
+      Value<String> comment,
+      Value<int> rowid,
+    });
+
+final class $$ExerciseCommentTableTableReferences
+    extends BaseReferences<_$DriftPowersyncDatabase, $ExerciseCommentTableTable, Comment> {
+  $$ExerciseCommentTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExerciseTranslationTableTable _translationIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.exerciseTranslationTable.createAlias(
+    $_aliasNameGenerator(
+      db.exerciseCommentTable.translationId,
+      db.exerciseTranslationTable.id,
+    ),
+  );
+
+  $$ExerciseTranslationTableTableProcessedTableManager get translationId {
+    final $_column = $_itemColumn<int>('translation_id')!;
+
+    final manager = $$ExerciseTranslationTableTableTableManager(
+      $_db,
+      $_db.exerciseTranslationTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_translationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ExerciseCommentTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseCommentTableTable> {
+  $$ExerciseCommentTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get comment => $composableBuilder(
+    column: $table.comment,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExerciseTranslationTableTableFilterComposer get translationId {
+    final $$ExerciseTranslationTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableFilterComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseCommentTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseCommentTableTable> {
+  $$ExerciseCommentTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get comment => $composableBuilder(
+    column: $table.comment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExerciseTranslationTableTableOrderingComposer get translationId {
+    final $$ExerciseTranslationTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseCommentTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $ExerciseCommentTableTable> {
+  $$ExerciseCommentTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => column);
+
+  GeneratedColumn<String> get comment =>
+      $composableBuilder(column: $table.comment, builder: (column) => column);
+
+  $$ExerciseTranslationTableTableAnnotationComposer get translationId {
+    final $$ExerciseTranslationTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.translationId,
+      referencedTable: $db.exerciseTranslationTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExerciseTranslationTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.exerciseTranslationTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExerciseCommentTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $ExerciseCommentTableTable,
+          Comment,
+          $$ExerciseCommentTableTableFilterComposer,
+          $$ExerciseCommentTableTableOrderingComposer,
+          $$ExerciseCommentTableTableAnnotationComposer,
+          $$ExerciseCommentTableTableCreateCompanionBuilder,
+          $$ExerciseCommentTableTableUpdateCompanionBuilder,
+          (Comment, $$ExerciseCommentTableTableReferences),
+          Comment,
+          PrefetchHooks Function({bool translationId})
+        > {
+  $$ExerciseCommentTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $ExerciseCommentTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExerciseCommentTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$ExerciseCommentTableTableOrderingComposer(
+            $db: db,
+            $table: table,
+          ),
+          createComputedFieldComposer: () => $$ExerciseCommentTableTableAnnotationComposer(
+            $db: db,
+            $table: table,
+          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                Value<int> translationId = const Value.absent(),
+                Value<String> comment = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseCommentTableCompanion(
+                id: id,
+                uuid: uuid,
+                translationId: translationId,
+                comment: comment,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String uuid,
+                required int translationId,
+                required String comment,
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseCommentTableCompanion.insert(
+                id: id,
+                uuid: uuid,
+                translationId: translationId,
+                comment: comment,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ExerciseCommentTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({translationId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (translationId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.translationId,
+                                referencedTable: $$ExerciseCommentTableTableReferences
+                                    ._translationIdTable(db),
+                                referencedColumn: $$ExerciseCommentTableTableReferences
+                                    ._translationIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ExerciseCommentTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $ExerciseCommentTableTable,
+      Comment,
+      $$ExerciseCommentTableTableFilterComposer,
+      $$ExerciseCommentTableTableOrderingComposer,
+      $$ExerciseCommentTableTableAnnotationComposer,
+      $$ExerciseCommentTableTableCreateCompanionBuilder,
+      $$ExerciseCommentTableTableUpdateCompanionBuilder,
+      (Comment, $$ExerciseCommentTableTableReferences),
+      Comment,
+      PrefetchHooks Function({bool translationId})
     >;
 typedef $$MuscleTableTableCreateCompanionBuilder =
     MuscleTableCompanion Function({
@@ -12429,6 +14822,18 @@ typedef $$ExerciseImageTableTableCreateCompanionBuilder =
       required int exerciseId,
       required String image,
       required bool isMain,
+      required bool isAiGenerated,
+      required ExerciseImageStyle style,
+      Value<int?> width,
+      Value<int?> height,
+      required DateTime created,
+      required DateTime lastUpdate,
+      required int licenseId,
+      required String licenseTitle,
+      required String licenseObjectUrl,
+      Value<String?> licenseAuthor,
+      required String licenseAuthorUrl,
+      required String licenseDerivativeSourceUrl,
       Value<int> rowid,
     });
 typedef $$ExerciseImageTableTableUpdateCompanionBuilder =
@@ -12438,6 +14843,18 @@ typedef $$ExerciseImageTableTableUpdateCompanionBuilder =
       Value<int> exerciseId,
       Value<String> image,
       Value<bool> isMain,
+      Value<bool> isAiGenerated,
+      Value<ExerciseImageStyle> style,
+      Value<int?> width,
+      Value<int?> height,
+      Value<DateTime> created,
+      Value<DateTime> lastUpdate,
+      Value<int> licenseId,
+      Value<String> licenseTitle,
+      Value<String> licenseObjectUrl,
+      Value<String?> licenseAuthor,
+      Value<String> licenseAuthorUrl,
+      Value<String> licenseDerivativeSourceUrl,
       Value<int> rowid,
     });
 
@@ -12501,6 +14918,67 @@ class $$ExerciseImageTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get isAiGenerated => $composableBuilder(
+    column: $table.isAiGenerated,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ExerciseImageStyle, ExerciseImageStyle, String> get style =>
+      $composableBuilder(
+        column: $table.style,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get licenseId => $composableBuilder(
+    column: $table.licenseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseAuthor => $composableBuilder(
+    column: $table.licenseAuthor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$ExerciseTableTableFilterComposer get exerciseId {
     final $$ExerciseTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -12553,6 +15031,66 @@ class $$ExerciseImageTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isAiGenerated => $composableBuilder(
+    column: $table.isAiGenerated,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get style => $composableBuilder(
+    column: $table.style,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get licenseId => $composableBuilder(
+    column: $table.licenseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseAuthor => $composableBuilder(
+    column: $table.licenseAuthor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$ExerciseTableTableOrderingComposer get exerciseId {
     final $$ExerciseTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -12595,6 +15133,56 @@ class $$ExerciseImageTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isMain =>
       $composableBuilder(column: $table.isMain, builder: (column) => column);
+
+  GeneratedColumn<bool> get isAiGenerated => $composableBuilder(
+    column: $table.isAiGenerated,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<ExerciseImageStyle, String> get style =>
+      $composableBuilder(column: $table.style, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get created =>
+      $composableBuilder(column: $table.created, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get licenseId =>
+      $composableBuilder(column: $table.licenseId, builder: (column) => column);
+
+  GeneratedColumn<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseAuthor => $composableBuilder(
+    column: $table.licenseAuthor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
+    builder: (column) => column,
+  );
 
   $$ExerciseTableTableAnnotationComposer get exerciseId {
     final $$ExerciseTableTableAnnotationComposer composer = $composerBuilder(
@@ -12656,6 +15244,18 @@ class $$ExerciseImageTableTableTableManager
                 Value<int> exerciseId = const Value.absent(),
                 Value<String> image = const Value.absent(),
                 Value<bool> isMain = const Value.absent(),
+                Value<bool> isAiGenerated = const Value.absent(),
+                Value<ExerciseImageStyle> style = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<DateTime> created = const Value.absent(),
+                Value<DateTime> lastUpdate = const Value.absent(),
+                Value<int> licenseId = const Value.absent(),
+                Value<String> licenseTitle = const Value.absent(),
+                Value<String> licenseObjectUrl = const Value.absent(),
+                Value<String?> licenseAuthor = const Value.absent(),
+                Value<String> licenseAuthorUrl = const Value.absent(),
+                Value<String> licenseDerivativeSourceUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseImageTableCompanion(
                 id: id,
@@ -12663,6 +15263,18 @@ class $$ExerciseImageTableTableTableManager
                 exerciseId: exerciseId,
                 image: image,
                 isMain: isMain,
+                isAiGenerated: isAiGenerated,
+                style: style,
+                width: width,
+                height: height,
+                created: created,
+                lastUpdate: lastUpdate,
+                licenseId: licenseId,
+                licenseTitle: licenseTitle,
+                licenseObjectUrl: licenseObjectUrl,
+                licenseAuthor: licenseAuthor,
+                licenseAuthorUrl: licenseAuthorUrl,
+                licenseDerivativeSourceUrl: licenseDerivativeSourceUrl,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -12672,6 +15284,18 @@ class $$ExerciseImageTableTableTableManager
                 required int exerciseId,
                 required String image,
                 required bool isMain,
+                required bool isAiGenerated,
+                required ExerciseImageStyle style,
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                required DateTime created,
+                required DateTime lastUpdate,
+                required int licenseId,
+                required String licenseTitle,
+                required String licenseObjectUrl,
+                Value<String?> licenseAuthor = const Value.absent(),
+                required String licenseAuthorUrl,
+                required String licenseDerivativeSourceUrl,
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseImageTableCompanion.insert(
                 id: id,
@@ -12679,6 +15303,18 @@ class $$ExerciseImageTableTableTableManager
                 exerciseId: exerciseId,
                 image: image,
                 isMain: isMain,
+                isAiGenerated: isAiGenerated,
+                style: style,
+                width: width,
+                height: height,
+                created: created,
+                lastUpdate: lastUpdate,
+                licenseId: licenseId,
+                licenseTitle: licenseTitle,
+                licenseObjectUrl: licenseObjectUrl,
+                licenseAuthor: licenseAuthor,
+                licenseAuthorUrl: licenseAuthorUrl,
+                licenseDerivativeSourceUrl: licenseDerivativeSourceUrl,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -12753,6 +15389,7 @@ typedef $$ExerciseVideoTableTableCreateCompanionBuilder =
       required int id,
       required String uuid,
       required int exerciseId,
+      required bool isMain,
       required String url,
       required int size,
       required int duration,
@@ -12760,8 +15397,14 @@ typedef $$ExerciseVideoTableTableCreateCompanionBuilder =
       required int height,
       required String codec,
       required String codecLong,
+      required DateTime created,
+      required DateTime lastUpdate,
       required int licenseId,
-      required String licenseAuthor,
+      required String licenseTitle,
+      required String licenseObjectUrl,
+      Value<String?> licenseAuthor,
+      required String licenseAuthorUrl,
+      required String licenseDerivativeSourceUrl,
       Value<int> rowid,
     });
 typedef $$ExerciseVideoTableTableUpdateCompanionBuilder =
@@ -12769,6 +15412,7 @@ typedef $$ExerciseVideoTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> uuid,
       Value<int> exerciseId,
+      Value<bool> isMain,
       Value<String> url,
       Value<int> size,
       Value<int> duration,
@@ -12776,8 +15420,14 @@ typedef $$ExerciseVideoTableTableUpdateCompanionBuilder =
       Value<int> height,
       Value<String> codec,
       Value<String> codecLong,
+      Value<DateTime> created,
+      Value<DateTime> lastUpdate,
       Value<int> licenseId,
-      Value<String> licenseAuthor,
+      Value<String> licenseTitle,
+      Value<String> licenseObjectUrl,
+      Value<String?> licenseAuthor,
+      Value<String> licenseAuthorUrl,
+      Value<String> licenseDerivativeSourceUrl,
       Value<int> rowid,
     });
 
@@ -12831,6 +15481,11 @@ class $$ExerciseVideoTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get isMain => $composableBuilder(
+    column: $table.isMain,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get url => $composableBuilder(
     column: $table.url,
     builder: (column) => ColumnFilters(column),
@@ -12866,13 +15521,43 @@ class $$ExerciseVideoTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get licenseId => $composableBuilder(
     column: $table.licenseId,
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get licenseAuthor => $composableBuilder(
     column: $table.licenseAuthor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12918,6 +15603,11 @@ class $$ExerciseVideoTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isMain => $composableBuilder(
+    column: $table.isMain,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get url => $composableBuilder(
     column: $table.url,
     builder: (column) => ColumnOrderings(column),
@@ -12953,13 +15643,43 @@ class $$ExerciseVideoTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get licenseId => $composableBuilder(
     column: $table.licenseId,
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get licenseAuthor => $composableBuilder(
     column: $table.licenseAuthor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -13000,6 +15720,9 @@ class $$ExerciseVideoTableTableAnnotationComposer
   GeneratedColumn<String> get uuid =>
       $composableBuilder(column: $table.uuid, builder: (column) => column);
 
+  GeneratedColumn<bool> get isMain =>
+      $composableBuilder(column: $table.isMain, builder: (column) => column);
+
   GeneratedColumn<String> get url =>
       $composableBuilder(column: $table.url, builder: (column) => column);
 
@@ -13021,11 +15744,39 @@ class $$ExerciseVideoTableTableAnnotationComposer
   GeneratedColumn<String> get codecLong =>
       $composableBuilder(column: $table.codecLong, builder: (column) => column);
 
+  GeneratedColumn<DateTime> get created =>
+      $composableBuilder(column: $table.created, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<int> get licenseId =>
       $composableBuilder(column: $table.licenseId, builder: (column) => column);
 
+  GeneratedColumn<String> get licenseTitle => $composableBuilder(
+    column: $table.licenseTitle,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseObjectUrl => $composableBuilder(
+    column: $table.licenseObjectUrl,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get licenseAuthor => $composableBuilder(
     column: $table.licenseAuthor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseAuthorUrl => $composableBuilder(
+    column: $table.licenseAuthorUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get licenseDerivativeSourceUrl => $composableBuilder(
+    column: $table.licenseDerivativeSourceUrl,
     builder: (column) => column,
   );
 
@@ -13087,6 +15838,7 @@ class $$ExerciseVideoTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> uuid = const Value.absent(),
                 Value<int> exerciseId = const Value.absent(),
+                Value<bool> isMain = const Value.absent(),
                 Value<String> url = const Value.absent(),
                 Value<int> size = const Value.absent(),
                 Value<int> duration = const Value.absent(),
@@ -13094,13 +15846,20 @@ class $$ExerciseVideoTableTableTableManager
                 Value<int> height = const Value.absent(),
                 Value<String> codec = const Value.absent(),
                 Value<String> codecLong = const Value.absent(),
+                Value<DateTime> created = const Value.absent(),
+                Value<DateTime> lastUpdate = const Value.absent(),
                 Value<int> licenseId = const Value.absent(),
-                Value<String> licenseAuthor = const Value.absent(),
+                Value<String> licenseTitle = const Value.absent(),
+                Value<String> licenseObjectUrl = const Value.absent(),
+                Value<String?> licenseAuthor = const Value.absent(),
+                Value<String> licenseAuthorUrl = const Value.absent(),
+                Value<String> licenseDerivativeSourceUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseVideoTableCompanion(
                 id: id,
                 uuid: uuid,
                 exerciseId: exerciseId,
+                isMain: isMain,
                 url: url,
                 size: size,
                 duration: duration,
@@ -13108,8 +15867,14 @@ class $$ExerciseVideoTableTableTableManager
                 height: height,
                 codec: codec,
                 codecLong: codecLong,
+                created: created,
+                lastUpdate: lastUpdate,
                 licenseId: licenseId,
+                licenseTitle: licenseTitle,
+                licenseObjectUrl: licenseObjectUrl,
                 licenseAuthor: licenseAuthor,
+                licenseAuthorUrl: licenseAuthorUrl,
+                licenseDerivativeSourceUrl: licenseDerivativeSourceUrl,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -13117,6 +15882,7 @@ class $$ExerciseVideoTableTableTableManager
                 required int id,
                 required String uuid,
                 required int exerciseId,
+                required bool isMain,
                 required String url,
                 required int size,
                 required int duration,
@@ -13124,13 +15890,20 @@ class $$ExerciseVideoTableTableTableManager
                 required int height,
                 required String codec,
                 required String codecLong,
+                required DateTime created,
+                required DateTime lastUpdate,
                 required int licenseId,
-                required String licenseAuthor,
+                required String licenseTitle,
+                required String licenseObjectUrl,
+                Value<String?> licenseAuthor = const Value.absent(),
+                required String licenseAuthorUrl,
+                required String licenseDerivativeSourceUrl,
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseVideoTableCompanion.insert(
                 id: id,
                 uuid: uuid,
                 exerciseId: exerciseId,
+                isMain: isMain,
                 url: url,
                 size: size,
                 duration: duration,
@@ -13138,8 +15911,14 @@ class $$ExerciseVideoTableTableTableManager
                 height: height,
                 codec: codec,
                 codecLong: codecLong,
+                created: created,
+                lastUpdate: lastUpdate,
                 licenseId: licenseId,
+                licenseTitle: licenseTitle,
+                licenseObjectUrl: licenseObjectUrl,
                 licenseAuthor: licenseAuthor,
+                licenseAuthorUrl: licenseAuthorUrl,
+                licenseDerivativeSourceUrl: licenseDerivativeSourceUrl,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -16711,8 +19490,12 @@ typedef $$IngredientImageTableTableCreateCompanionBuilder =
       required int ingredientId,
       required String image,
       required int size,
+      required int width,
+      required int height,
+      required DateTime created,
+      required DateTime lastUpdate,
       required int licenseId,
-      required String author,
+      Value<String?> author,
       required String authorUrl,
       required String title,
       required String objectUrl,
@@ -16726,8 +19509,12 @@ typedef $$IngredientImageTableTableUpdateCompanionBuilder =
       Value<int> ingredientId,
       Value<String> image,
       Value<int> size,
+      Value<int> width,
+      Value<int> height,
+      Value<DateTime> created,
+      Value<DateTime> lastUpdate,
       Value<int> licenseId,
-      Value<String> author,
+      Value<String?> author,
       Value<String> authorUrl,
       Value<String> title,
       Value<String> objectUrl,
@@ -16793,6 +19580,26 @@ class $$IngredientImageTableTableFilterComposer
 
   ColumnFilters<int> get size => $composableBuilder(
     column: $table.size,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -16878,6 +19685,26 @@ class $$IngredientImageTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get licenseId => $composableBuilder(
     column: $table.licenseId,
     builder: (column) => ColumnOrderings(column),
@@ -16950,6 +19777,20 @@ class $$IngredientImageTableTableAnnotationComposer
 
   GeneratedColumn<int> get size =>
       $composableBuilder(column: $table.size, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get created =>
+      $composableBuilder(column: $table.created, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdate => $composableBuilder(
+    column: $table.lastUpdate,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get licenseId =>
       $composableBuilder(column: $table.licenseId, builder: (column) => column);
@@ -17033,8 +19874,12 @@ class $$IngredientImageTableTableTableManager
                 Value<int> ingredientId = const Value.absent(),
                 Value<String> image = const Value.absent(),
                 Value<int> size = const Value.absent(),
+                Value<int> width = const Value.absent(),
+                Value<int> height = const Value.absent(),
+                Value<DateTime> created = const Value.absent(),
+                Value<DateTime> lastUpdate = const Value.absent(),
                 Value<int> licenseId = const Value.absent(),
-                Value<String> author = const Value.absent(),
+                Value<String?> author = const Value.absent(),
                 Value<String> authorUrl = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> objectUrl = const Value.absent(),
@@ -17046,6 +19891,10 @@ class $$IngredientImageTableTableTableManager
                 ingredientId: ingredientId,
                 image: image,
                 size: size,
+                width: width,
+                height: height,
+                created: created,
+                lastUpdate: lastUpdate,
                 licenseId: licenseId,
                 author: author,
                 authorUrl: authorUrl,
@@ -17061,8 +19910,12 @@ class $$IngredientImageTableTableTableManager
                 required int ingredientId,
                 required String image,
                 required int size,
+                required int width,
+                required int height,
+                required DateTime created,
+                required DateTime lastUpdate,
                 required int licenseId,
-                required String author,
+                Value<String?> author = const Value.absent(),
                 required String authorUrl,
                 required String title,
                 required String objectUrl,
@@ -17074,6 +19927,10 @@ class $$IngredientImageTableTableTableManager
                 ingredientId: ingredientId,
                 image: image,
                 size: size,
+                width: width,
+                height: height,
+                created: created,
+                lastUpdate: lastUpdate,
                 licenseId: licenseId,
                 author: author,
                 authorUrl: authorUrl,
@@ -18973,6 +21830,10 @@ class $DriftPowersyncDatabaseManager {
         _db,
         _db.exerciseTranslationTable,
       );
+  $$ExerciseAliasTableTableTableManager get exerciseAliasTable =>
+      $$ExerciseAliasTableTableTableManager(_db, _db.exerciseAliasTable);
+  $$ExerciseCommentTableTableTableManager get exerciseCommentTable =>
+      $$ExerciseCommentTableTableTableManager(_db, _db.exerciseCommentTable);
   $$MuscleTableTableTableManager get muscleTable =>
       $$MuscleTableTableTableManager(_db, _db.muscleTable);
   $$ExerciseMuscleM2NTableTableManager get exerciseMuscleM2N =>

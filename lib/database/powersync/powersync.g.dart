@@ -46,7 +46,7 @@ final class PowerSyncInstanceProvider
   }
 }
 
-String _$powerSyncInstanceHash() => r'25fdd0cce6fad18d2859035f1d5475caac992dfb';
+String _$powerSyncInstanceHash() => r'308719fe4d1af01353373f8dac86a2b64da840a7';
 
 @ProviderFor(didCompleteSync)
 final didCompleteSyncProvider = DidCompleteSyncFamily._();

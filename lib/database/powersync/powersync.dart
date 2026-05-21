@@ -37,12 +37,78 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
     logger: attachedLogger,
   );
   await db.initialize();
+  await _createRawTables(db);
 
   final baseProvider = ref.read(wgerBaseProvider);
   connectPowerSync(db, baseProvider.serverUrl!);
   ref.onDispose(db.close);
 
   return db;
+}
+
+/// Materialise the native SQLite tables for the raw entries declared in
+/// [schema]. PowerSync only manages the JSON view tables itself, so any
+/// `RawTable` entry must have its `CREATE TABLE`/`CREATE INDEX` statements
+/// applied by us.
+///
+/// Skips all work when the raw tables already exist, so warm restarts don't
+/// take a write lock on the DB.
+Future<void> _createRawTables(PowerSyncDatabase db) async {
+  // Not STRICT: keep SQLite's type affinity behaviour so PowerSync's
+  // inferred inserts can bind values as they arrive from the JSON wire
+  // protocol without us having to coerce types up front.
+  const rawTables = ['exercises_exercise', 'exercises_translation'];
+  final existing = await db.getAll(
+    'SELECT name FROM sqlite_master '
+    'WHERE type = ? AND name IN (${rawTables.map((_) => '?').join(', ')})',
+    ['table', ...rawTables],
+  );
+
+  if (existing.length == rawTables.length) {
+    return;
+  }
+
+  await db.writeTransaction((tx) async {
+    await tx.execute('''
+      CREATE TABLE IF NOT EXISTS exercises_exercise(
+        id TEXT NOT NULL PRIMARY KEY,
+        uuid TEXT,
+        category_id INTEGER,
+        variation_group TEXT,
+        created TEXT,
+        last_update TEXT
+      )
+    ''');
+    await tx.execute(
+      'CREATE INDEX IF NOT EXISTS exercises_exercise__category '
+      'ON exercises_exercise(category_id)',
+    );
+    await tx.execute(
+      'CREATE INDEX IF NOT EXISTS exercises_exercise__variation '
+      'ON exercises_exercise(variation_group)',
+    );
+
+    await tx.execute('''
+      CREATE TABLE IF NOT EXISTS exercises_translation(
+        id TEXT NOT NULL PRIMARY KEY,
+        uuid TEXT,
+        language_id INTEGER,
+        exercise_id INTEGER,
+        description TEXT,
+        name TEXT,
+        created TEXT,
+        last_update TEXT
+      )
+    ''');
+    await tx.execute(
+      'CREATE INDEX IF NOT EXISTS exercises_translation__language '
+      'ON exercises_translation(language_id)',
+    );
+    await tx.execute(
+      'CREATE INDEX IF NOT EXISTS exercises_translation__exercise '
+      'ON exercises_translation(exercise_id)',
+    );
+  });
 }
 
 /// Creates a fresh [DjangoConnector] for [baseUrl] and connects [db] to it.

@@ -22,6 +22,8 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/trophies/trophy.dart';
 import 'package:wger/providers/trophy_notifier.dart';
 import 'package:wger/screens/trophy_screen.dart';
+import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/wger_image.dart';
 
 class DashboardTrophiesWidget extends ConsumerWidget {
   const DashboardTrophiesWidget();
@@ -105,9 +107,16 @@ class TrophyCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(trophy.image),
+                  WgerImage(
+                    mediaPath: trophy.image,
+                    width: 60,
+                    height: 60,
+                    cacheWidth: 180,
+                    borderRadius: BorderRadius.circular(30),
+                    errorWidget: const CircleIconAvatar(
+                      Icon(Icons.emoji_events, color: Colors.grey),
+                      radius: 30,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(

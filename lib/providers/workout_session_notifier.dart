@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/workout_session_repository.dart';
@@ -25,7 +24,6 @@ part 'workout_session_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 final class WorkoutSessionNotifier extends _$WorkoutSessionNotifier {
-  final _logger = Logger('WorkoutSessionNotifier');
   late WorkoutSessionRepository _repo;
 
   @override

@@ -18,28 +18,22 @@
 
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 
 import '../helpers/in_memory_drift.dart';
-import 'nutrition_repository_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
 void main() {
   late DriftPowersyncDatabase db;
-  late MockWgerBaseProvider mockBase;
   late NutritionRepository repo;
 
   setUp(() async {
     db = await openTestDatabase();
-    mockBase = MockWgerBaseProvider();
-    repo = NutritionRepository(mockBase, db);
+    repo = NutritionRepository(db);
   });
 
   tearDown(() async {
@@ -94,8 +88,11 @@ void main() {
             ingredientId: ingredientId,
             image: 'images/$id.jpg',
             size: 1024,
+            width: 100,
+            height: 100,
+            created: DateTime.utc(2024),
+            lastUpdate: DateTime.utc(2024),
             licenseId: 1,
-            author: '',
             authorUrl: '',
             title: '',
             objectUrl: '',

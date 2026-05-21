@@ -11,6 +11,10 @@ on:
       ref:
         required: true
         type: string
+
+permissions:
+  contents: read
+
 jobs:
   build_ios:
     name: iOS

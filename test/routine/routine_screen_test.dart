@@ -38,12 +38,12 @@ class _StubRoutinesRiverpod extends RoutinesRiverpod {
 }
 
 void main() {
-  Widget renderWidget({locale = 'en'}) {
+  Widget renderWidget({locale = 'en', bool isOnline = true}) {
     final key = GlobalKey<NavigatorState>();
 
     final container = ProviderContainer.test(
       overrides: [
-        networkStatusProvider.overrideWithValue(true),
+        networkStatusProvider.overrideWithValue(isOnline),
         routinesRiverpodProvider.overrideWith(
           () => _StubRoutinesRiverpod([getTestRoutine()]),
         ),
@@ -101,4 +101,45 @@ void main() {
     },
     tags: ['golden'],
   );
+
+  testWidgets('App bar menu: delete works offline, edit needs online', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(500, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(renderWidget(isOnline: false));
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+
+    // Open the routine detail app bar menu.
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.byWidgetPredicate((w) => w is PopupMenuButton),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // itemBuilder order: workout logs, edit, delete.
+    final items = tester
+        .widgetList(find.byWidgetPredicate((w) => w is PopupMenuItem))
+        .cast<PopupMenuItem>()
+        .toList();
+    expect(items, hasLength(3));
+    expect(
+      items[1].enabled,
+      isFalse,
+      reason: 'Edit opens the structure editor (REST), needs connectivity',
+    );
+    expect(
+      items[2].enabled,
+      isTrue,
+      reason: 'Delete syncs through PowerSync and works offline',
+    );
+  });
 }

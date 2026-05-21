@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/ingredients_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -37,8 +36,6 @@ class NutritionalPlansScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOnline = ref.watch(networkStatusProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).nutritionalPlans),
@@ -63,20 +60,17 @@ class NutritionalPlansScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: isOnline ? null : Colors.grey,
-        onPressed: isOnline
-            ? () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).newNutritionalPlan,
-                    hasListView: true,
-                    PlanForm(),
-                  ),
-                );
-              }
-            : null,
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            FormScreen.routeName,
+            arguments: FormScreenArguments(
+              AppLocalizations.of(context).newNutritionalPlan,
+              hasListView: true,
+              PlanForm(),
+            ),
+          );
+        },
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: const WidescreenWrapper(child: NutritionalPlansList()),

@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
@@ -55,7 +54,6 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
   @override
   Widget build(BuildContext context) {
     const appBarForeground = Colors.white;
-    final isOnline = ref.watch(networkStatusProvider);
     // Resolve the freshest plan from state so meal/diary edits reflect
     // immediately. Falls back to the route argument if state hasn't streamed
     // yet (e.g. cold open, deep link).
@@ -70,20 +68,17 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
           FloatingActionButton(
             heroTag: null,
             tooltip: AppLocalizations.of(context).logIngredient,
-            backgroundColor: isOnline ? null : Colors.grey,
-            onPressed: isOnline
-                ? () {
-                    Navigator.pushNamed(
-                      context,
-                      FormScreen.routeName,
-                      arguments: FormScreenArguments(
-                        AppLocalizations.of(context).logIngredient,
-                        getIngredientLogForm(_nutritionalPlan),
-                        hasListView: true,
-                      ),
-                    );
-                  }
-                : null,
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  AppLocalizations.of(context).logIngredient,
+                  getIngredientLogForm(_nutritionalPlan),
+                  hasListView: true,
+                ),
+              );
+            },
             child: const SvgIcon(
               icon: SvgIconData('assets/icons/ingredient-diary.svg'),
               color: Colors.white,
@@ -93,15 +88,12 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
           FloatingActionButton(
             heroTag: null,
             tooltip: AppLocalizations.of(context).logMeal,
-            backgroundColor: isOnline ? null : Colors.grey,
-            onPressed: isOnline
-                ? () {
-                    Navigator.of(context).pushNamed(
-                      LogMealsScreen.routeName,
-                      arguments: _nutritionalPlan,
-                    );
-                  }
-                : null,
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                LogMealsScreen.routeName,
+                arguments: _nutritionalPlan,
+              );
+            },
             child: const SvgIcon(
               icon: SvgIconData('assets/icons/meal-diary.svg'),
               color: Colors.white,
@@ -121,18 +113,16 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
                   icon: const SvgIcon(
                     icon: SvgIconData('assets/icons/meal-add.svg'),
                   ),
-                  onPressed: isOnline
-                      ? () {
-                          Navigator.pushNamed(
-                            context,
-                            FormScreen.routeName,
-                            arguments: FormScreenArguments(
-                              AppLocalizations.of(context).addMeal,
-                              MealForm(_nutritionalPlan.id!),
-                            ),
-                          );
-                        }
-                      : null,
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context).addMeal,
+                        MealForm(_nutritionalPlan.id!),
+                      ),
+                    );
+                  },
                 ),
               PopupMenuButton<NutritionalPlanOptions>(
                 icon: const Icon(Icons.more_vert, color: appBarForeground),
@@ -159,7 +149,6 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
                   return [
                     PopupMenuItem<NutritionalPlanOptions>(
                       value: NutritionalPlanOptions.edit,
-                      enabled: isOnline,
                       child: ListTile(
                         leading: const Icon(Icons.edit),
                         title: Text(AppLocalizations.of(context).edit),
@@ -168,7 +157,6 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
                     const PopupMenuDivider(),
                     PopupMenuItem<NutritionalPlanOptions>(
                       value: NutritionalPlanOptions.delete,
-                      enabled: isOnline,
                       child: ListTile(
                         leading: const Icon(Icons.delete),
                         title: Text(AppLocalizations.of(context).delete),

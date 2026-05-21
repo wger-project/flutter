@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppSettings {
 
- ThemeMode get themeMode; List<DashboardItem> get dashboardItems;
+ ThemeMode get themeMode; List<DashboardItem> get dashboardItems;/// Locale override. Null means the app follows the system locale.
+ Locale? get userLocale;
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,16 @@ $AppSettingsCopyWith<AppSettings> get copyWith => _$AppSettingsCopyWithImpl<AppS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other.dashboardItems, dashboardItems));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other.dashboardItems, dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(dashboardItems));
+int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(dashboardItems),userLocale);
 
 @override
 String toString() {
-  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems)';
+  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale)';
 }
 
 
@@ -45,7 +46,7 @@ abstract mixin class $AppSettingsCopyWith<$Res>  {
   factory $AppSettingsCopyWith(AppSettings value, $Res Function(AppSettings) _then) = _$AppSettingsCopyWithImpl;
 @useResult
 $Res call({
- ThemeMode themeMode, List<DashboardItem> dashboardItems
+ ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale
 });
 
 
@@ -62,11 +63,12 @@ class _$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? dashboardItems = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,}) {
   return _then(_self.copyWith(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,dashboardItems: null == dashboardItems ? _self.dashboardItems : dashboardItems // ignore: cast_nullable_to_non_nullable
-as List<DashboardItem>,
+as List<DashboardItem>,userLocale: freezed == userLocale ? _self.userLocale : userLocale // ignore: cast_nullable_to_non_nullable
+as Locale?,
   ));
 }
 
@@ -148,10 +150,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.themeMode,_that.dashboardItems);case _:
+return $default(_that.themeMode,_that.dashboardItems,_that.userLocale);case _:
   return orElse();
 
 }
@@ -169,10 +171,10 @@ return $default(_that.themeMode,_that.dashboardItems);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings():
-return $default(_that.themeMode,_that.dashboardItems);}
+return $default(_that.themeMode,_that.dashboardItems,_that.userLocale);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -186,10 +188,10 @@ return $default(_that.themeMode,_that.dashboardItems);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.themeMode,_that.dashboardItems);case _:
+return $default(_that.themeMode,_that.dashboardItems,_that.userLocale);case _:
   return null;
 
 }
@@ -201,7 +203,7 @@ return $default(_that.themeMode,_that.dashboardItems);case _:
 
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({this.themeMode = ThemeMode.system, final  List<DashboardItem> dashboardItems = const []}): _dashboardItems = dashboardItems;
+  const _AppSettings({this.themeMode = ThemeMode.system, final  List<DashboardItem> dashboardItems = const [], this.userLocale}): _dashboardItems = dashboardItems;
   
 
 @override@JsonKey() final  ThemeMode themeMode;
@@ -212,6 +214,8 @@ class _AppSettings implements AppSettings {
   return EqualUnmodifiableListView(_dashboardItems);
 }
 
+/// Locale override. Null means the app follows the system locale.
+@override final  Locale? userLocale;
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
@@ -223,16 +227,16 @@ _$AppSettingsCopyWith<_AppSettings> get copyWith => __$AppSettingsCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other._dashboardItems, _dashboardItems));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other._dashboardItems, _dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(_dashboardItems));
+int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(_dashboardItems),userLocale);
 
 @override
 String toString() {
-  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems)';
+  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale)';
 }
 
 
@@ -243,7 +247,7 @@ abstract mixin class _$AppSettingsCopyWith<$Res> implements $AppSettingsCopyWith
   factory _$AppSettingsCopyWith(_AppSettings value, $Res Function(_AppSettings) _then) = __$AppSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- ThemeMode themeMode, List<DashboardItem> dashboardItems
+ ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale
 });
 
 
@@ -260,11 +264,12 @@ class __$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? dashboardItems = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,}) {
   return _then(_AppSettings(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,dashboardItems: null == dashboardItems ? _self._dashboardItems : dashboardItems // ignore: cast_nullable_to_non_nullable
-as List<DashboardItem>,
+as List<DashboardItem>,userLocale: freezed == userLocale ? _self.userLocale : userLocale // ignore: cast_nullable_to_non_nullable
+as Locale?,
   ));
 }
 

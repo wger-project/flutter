@@ -7,7 +7,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/routines/forms/slot.dart';
 
 class ReorderableDaysList extends ConsumerStatefulWidget {
@@ -183,11 +183,8 @@ class DayFormWidget extends ConsumerStatefulWidget {
 }
 
 class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
-  Widget errorMessage = const SizedBox.shrink();
-
   final descriptionController = TextEditingController();
   final nameController = TextEditingController();
-  bool isSaving = false;
 
   final _form = GlobalKey<FormState>();
 
@@ -214,7 +211,6 @@ class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
       key: _form,
       child: Column(
         children: [
-          errorMessage,
           Text(
             widget.day.isRest ? i18n.restDay : widget.day.name,
             style: Theme.of(context).textTheme.titleLarge,
@@ -319,41 +315,18 @@ class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
                   },
           ),
           const SizedBox(height: 5),
-          ElevatedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            onPressed: isSaving || !isOnline
-                ? null
-                : () async {
-                    if (!_form.currentState!.validate()) {
-                      return;
-                    }
-                    _form.currentState!.save();
-                    setState(() => isSaving = true);
+            enabled: isOnline,
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
 
-                    try {
-                      await ref.read(routinesRiverpodProvider.notifier).editDay(widget.day);
-                      if (context.mounted) {
-                        setState(() {
-                          errorMessage = const SizedBox.shrink();
-                        });
-                      }
-                    } on WgerHttpException catch (error) {
-                      if (context.mounted) {
-                        setState(() {
-                          errorMessage = FormHttpErrorsWidget(error);
-                        });
-                      }
-                    } finally {
-                      if (mounted) {
-                        setState(() {
-                          isSaving = false;
-                        });
-                      }
-                    }
-                  },
-            child: isSaving
-                ? const FormProgressIndicator()
-                : Text(AppLocalizations.of(context).save),
+              await ref.read(routinesRiverpodProvider.notifier).editDay(widget.day);
+            },
           ),
           const SizedBox(height: 5),
           ReorderableSlotList(widget.day.slots, widget.day),

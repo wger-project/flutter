@@ -39,6 +39,7 @@ import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
 import '../../test_data/routines.dart';
@@ -253,18 +254,35 @@ void main() {
     expect(find.text('The name is not valid'), findsOneWidget, reason: 'Error message is shown');
   });
 
-  testWidgets('Submit button is disabled when offline', (WidgetTester tester) async {
+  testWidgets('Submit stays enabled offline when editing a routine', (WidgetTester tester) async {
+    // Editing a routine syncs through PowerSync and works offline.
     await tester.pumpWidget(renderWidget(existingRoutine, isOnline: false));
     await tester.pumpAndSettle();
 
-    final button = tester.widget<ElevatedButton>(
+    final button = tester.widget<FormSubmitButton>(
       find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
     );
-    expect(button.onPressed, isNull);
+    expect(button.enabled, isTrue);
 
-    // And tapping it must not trigger the edit request.
+    await tester.enterText(find.byKey(const Key('field-name')), 'New name');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pump();
+    verify(mockRoutinesRepository.editLocalDrift(any));
+  });
+
+  testWidgets('Submit is disabled offline when creating a routine', (WidgetTester tester) async {
+    // Creating a routine needs the server to assign the integer PK.
+    await tester.pumpWidget(renderWidget(newRoutine, isOnline: false));
+    await tester.pumpAndSettle();
+
+    final button = tester.widget<FormSubmitButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(button.enabled, isFalse);
+
+    // And tapping it must not trigger the create request.
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
     await tester.pump();
-    verifyNever(mockRoutinesRepository.editLocalDrift(any));
+    verifyNever(mockRoutinesRepository.addRoutineServer(any));
   });
 }

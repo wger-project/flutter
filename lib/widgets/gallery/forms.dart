@@ -27,6 +27,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/wger_image.dart';
 
 class ImageForm extends ConsumerStatefulWidget {
@@ -103,6 +104,10 @@ class _ImageFormState extends ConsumerState<ImageForm> {
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final isOnline = ref.watch(networkStatusProvider);
+    // Creating an image or replacing its photo is a binary REST upload and
+    // needs connectivity. A metadata-only edit syncs through PowerSync and
+    // works offline.
+    final requiresUpload = widget._image.id == null || _file != null;
 
     if (dateController.text.isEmpty) {
       dateController.text = dateFormat.format(widget._image.date);
@@ -197,27 +202,28 @@ class _ImageFormState extends ConsumerState<ImageForm> {
               widget._image.description = newValue!;
             },
           ),
-          ElevatedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
-            onPressed: isOnline
-                ? () async {
-                    // Validate and save
-                    final isValid = _form.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    _form.currentState!.save();
+            enabled: !(requiresUpload && !isOnline),
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              // Validate and save
+              final isValid = _form.currentState!.validate();
+              if (!isValid) {
+                return;
+              }
+              _form.currentState!.save();
 
-                    final notifier = ref.read(galleryProvider.notifier);
-                    if (widget._image.id == null) {
-                      notifier.addImage(widget._image, _file!);
-                    } else {
-                      notifier.editImage(widget._image, _file);
-                    }
-                    Navigator.of(context).pop();
-                  }
-                : null,
+              final notifier = ref.read(galleryProvider.notifier);
+              if (widget._image.id == null) {
+                await notifier.addImage(widget._image, _file!);
+              } else {
+                await notifier.editImage(widget._image, _file);
+              }
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            },
           ),
         ],
       ),

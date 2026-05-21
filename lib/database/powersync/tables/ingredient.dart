@@ -106,10 +106,15 @@ class IngredientImageTable extends Table {
   // Relative path under MEDIA_ROOT (Django's ImageField stores this)
   TextColumn get image => text()();
   IntColumn get size => integer()();
+  IntColumn get width => integer()();
+  IntColumn get height => integer()();
+  DateTimeColumn get created => dateTime()();
+  DateTimeColumn get lastUpdate => dateTime().named('last_update')();
 
-  // License information
+  // License (TASL). license_author may be null on the server (TextField with
+  // null=True); the others are not-null strings (possibly empty).
   IntColumn get licenseId => integer().named('license_id')();
-  TextColumn get author => text().named('license_author')();
+  TextColumn get author => text().named('license_author').nullable()();
   TextColumn get authorUrl => text().named('license_author_url')();
   TextColumn get title => text().named('license_title')();
   TextColumn get objectUrl => text().named('license_object_url')();
@@ -123,6 +128,10 @@ const PowersyncIngredientImageTable = ps.Table(
     ps.Column.integer('ingredient_id'),
     ps.Column.text('image'),
     ps.Column.integer('size'),
+    ps.Column.integer('width'),
+    ps.Column.integer('height'),
+    ps.Column.text('created'),
+    ps.Column.text('last_update'),
     ps.Column.integer('license_id'),
     ps.Column.text('license_author'),
     ps.Column.text('license_author_url'),

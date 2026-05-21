@@ -11,6 +11,7 @@
     <locale android:name="fa"/>
     <locale android:name="fil"/>
     <locale android:name="fr"/>
+    <locale android:name="gl"/>
     <locale android:name="he"/>
     <locale android:name="hi"/>
     <locale android:name="hr"/>
@@ -29,6 +30,7 @@
     <locale android:name="ro"/>
     <locale android:name="ru"/>
     <locale android:name="sk"/>
+    <locale android:name="sn"/>
     <locale android:name="ta"/>
     <locale android:name="th"/>
     <locale android:name="tr"/>

@@ -105,11 +105,10 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
 }
 
 class WorkoutSessionStats extends ConsumerWidget {
-  final _logger = Logger('WorkoutSessionStats');
   final WorkoutSession? _session;
   final List<UserTrophy> _userPrTrophies;
 
-  WorkoutSessionStats(this._session, this._userPrTrophies, {super.key});
+  const WorkoutSessionStats(this._session, this._userPrTrophies, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

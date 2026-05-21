@@ -27,22 +27,18 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base.dart';
 
 final nutritionRepositoryProvider = Provider<NutritionRepository>((ref) {
-  final base = ref.read(wgerBaseProvider);
   final db = ref.read(driftPowerSyncDatabase);
-  return NutritionRepository(base, db);
+  return NutritionRepository(db);
 });
 
 /// Data access for nutrition-related entities.
 class NutritionRepository {
   final _logger = Logger('NutritionRepository');
-  final WgerBaseProvider _base;
   final DriftPowersyncDatabase _db;
 
-  NutritionRepository(this._base, this._db);
+  NutritionRepository(this._db);
 
   // --- Plans ---
 

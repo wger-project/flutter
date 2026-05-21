@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/gallery/image.dart';
@@ -67,9 +68,11 @@ class GalleryRepository {
       ..fields['date'] = dateToYYYYMMDD(image.date)!
       ..fields['description'] = image.description;
 
-    final res = await request.send();
-    final respStr = await res.stream.bytesToString();
-    return GalleryImage.fromJson(json.decode(respStr) as Map<String, dynamic>);
+    final response = await http.Response.fromStream(await request.send());
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response);
+    }
+    return GalleryImage.fromJson(json.decode(response.body) as Map<String, dynamic>);
   }
 
   /// PATCHes an image whose binary file has changed. Returns the new
@@ -82,9 +85,11 @@ class GalleryRepository {
       ..fields['date'] = dateToYYYYMMDD(image.date)!
       ..fields['description'] = image.description;
 
-    final res = await request.send();
-    final respStr = await res.stream.bytesToString();
-    final responseData = json.decode(respStr);
+    final response = await http.Response.fromStream(await request.send());
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response);
+    }
+    final responseData = json.decode(response.body);
     return responseData['image'] as String?;
   }
 

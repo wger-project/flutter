@@ -4020,6 +4020,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get appLanguage =>
+      (super.noSuchMethod(
+            Invocation.getter(#appLanguage),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#appLanguage),
+            ),
+          )
+          as String);
+
+  @override
+  String get appLanguageSystem =>
+      (super.noSuchMethod(
+            Invocation.getter(#appLanguageSystem),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#appLanguageSystem),
+            ),
+          )
+          as String);
+
+  @override
   String get productNotFoundOpenFoodFacts =>
       (super.noSuchMethod(
             Invocation.getter(#productNotFoundOpenFoodFacts),

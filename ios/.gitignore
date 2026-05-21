@@ -11,6 +11,7 @@
 Icon?
 **/Pods/
 **/.symlinks/
+**/Flutter/ephemeral/
 profile
 xcuserdata
 **/.generated/
