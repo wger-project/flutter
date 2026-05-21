@@ -24,7 +24,6 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/workout_logs_notifier.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight.dart';
@@ -167,7 +166,7 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
         FilledButton(
           key: const ValueKey('edit-save-button'),
           onPressed: _saving ? null : _onSave,
-          child: _saving ? const FormProgressIndicator() : Text(i18n.save),
+          child: Text(i18n.save),
         ),
       ],
     );
