@@ -17,13 +17,18 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
-/// Submit button that shows a spinner while its async action runs.
+/// Submit button that owns the saving and error state of an async form action.
 ///
 /// While [onPressed] is in flight the button is disabled and renders a
-/// [FormProgressIndicator], which also prevents a double submit. Set [enabled]
-/// to false to disable the button for other reasons, e.g. while offline.
+/// [FormProgressIndicator], which also prevents a double submit. A
+/// [WgerHttpException] thrown by [onPressed] is caught and rendered as a
+/// [FormHttpErrorsWidget] directly above the button, other errors propagate
+/// to the global error handler. Set [enabled] to false to disable the button
+/// for other reasons, e.g. while offline.
 class FormSubmitButton extends StatefulWidget {
   const FormSubmitButton({
     required this.onPressed,
@@ -33,7 +38,8 @@ class FormSubmitButton extends StatefulWidget {
   });
 
   /// Async submit action. The spinner is shown until the returned future
-  /// completes.
+  /// completes. A [WgerHttpException] is rendered inline; any other error is
+  /// left to propagate.
   final Future<void> Function() onPressed;
 
   final String label;
@@ -47,11 +53,19 @@ class FormSubmitButton extends StatefulWidget {
 
 class _FormSubmitButtonState extends State<FormSubmitButton> {
   bool _isSaving = false;
+  WgerHttpException? _error;
 
   Future<void> _handlePressed() async {
-    setState(() => _isSaving = true);
+    setState(() {
+      _isSaving = true;
+      _error = null;
+    });
     try {
       await widget.onPressed();
+    } on WgerHttpException catch (error) {
+      if (mounted) {
+        setState(() => _error = error);
+      }
     } finally {
       if (mounted) {
         setState(() => _isSaving = false);
@@ -61,9 +75,15 @@ class _FormSubmitButtonState extends State<FormSubmitButton> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: _isSaving || !widget.enabled ? null : _handlePressed,
-      child: _isSaving ? const FormProgressIndicator() : Text(widget.label),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (_error != null) FormHttpErrorsWidget(_error!),
+        ElevatedButton(
+          onPressed: _isSaving || !widget.enabled ? null : _handlePressed,
+          child: _isSaving ? const FormProgressIndicator() : Text(widget.label),
+        ),
+      ],
     );
   }
 }

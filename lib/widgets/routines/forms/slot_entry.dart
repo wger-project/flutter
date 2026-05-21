@@ -319,45 +319,33 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
               _form.currentState!.save();
 
               // Process new, edited or entries to be deleted
-              try {
-                await Future.wait([
-                  provider.handleConfig(
-                    widget.entry,
-                    setsSliderValue == 0 ? null : setsSliderValue.round(),
-                    ConfigType.sets,
-                  ),
-                  provider.handleConfig(widget.entry, _weight, ConfigType.weight),
-                  provider.handleConfig(widget.entry, _maxWeight, ConfigType.maxWeight),
-                  provider.handleConfig(widget.entry, _reps, ConfigType.repetitions),
-                  provider.handleConfig(widget.entry, _maxReps, ConfigType.maxRepetitions),
-                  provider.handleConfig(
-                    widget.entry,
-                    numberFormat.tryParse(restController.text),
-                    ConfigType.rest,
-                  ),
-                  provider.handleConfig(
-                    widget.entry,
-                    numberFormat.tryParse(maxRestController.text),
-                    ConfigType.maxRest,
-                  ),
-                  provider.handleConfig(
-                    widget.entry,
-                    numberFormat.tryParse(rirController.text),
-                    ConfigType.rir,
-                  ),
-                ]);
-
-                await provider.editSlotEntry(widget.entry, widget.routineId);
-                if (mounted) {
-                  setState(() => errorMessage = const SizedBox.shrink());
-                }
-              } on WgerHttpException catch (error) {
-                if (context.mounted) {
-                  setState(() {
-                    errorMessage = FormHttpErrorsWidget(error);
-                  });
-                }
-              }
+              await Future.wait([
+                provider.handleConfig(
+                  widget.entry,
+                  setsSliderValue == 0 ? null : setsSliderValue.round(),
+                  ConfigType.sets,
+                ),
+                provider.handleConfig(widget.entry, _weight, ConfigType.weight),
+                provider.handleConfig(widget.entry, _maxWeight, ConfigType.maxWeight),
+                provider.handleConfig(widget.entry, _reps, ConfigType.repetitions),
+                provider.handleConfig(widget.entry, _maxReps, ConfigType.maxRepetitions),
+                provider.handleConfig(
+                  widget.entry,
+                  numberFormat.tryParse(restController.text),
+                  ConfigType.rest,
+                ),
+                provider.handleConfig(
+                  widget.entry,
+                  numberFormat.tryParse(maxRestController.text),
+                  ConfigType.maxRest,
+                ),
+                provider.handleConfig(
+                  widget.entry,
+                  numberFormat.tryParse(rirController.text),
+                  ConfigType.rir,
+                ),
+              ]);
+              await provider.editSlotEntry(widget.entry, widget.routineId);
             },
           ),
           const SizedBox(height: 10),

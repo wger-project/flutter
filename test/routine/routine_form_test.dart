@@ -39,6 +39,7 @@ import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
 import '../../test_data/routines.dart';
@@ -258,10 +259,10 @@ void main() {
     await tester.pumpWidget(renderWidget(existingRoutine, isOnline: false));
     await tester.pumpAndSettle();
 
-    final button = tester.widget<ElevatedButton>(
+    final button = tester.widget<FormSubmitButton>(
       find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
     );
-    expect(button.onPressed, isNotNull);
+    expect(button.enabled, isTrue);
 
     await tester.enterText(find.byKey(const Key('field-name')), 'New name');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
@@ -274,10 +275,10 @@ void main() {
     await tester.pumpWidget(renderWidget(newRoutine, isOnline: false));
     await tester.pumpAndSettle();
 
-    final button = tester.widget<ElevatedButton>(
+    final button = tester.widget<FormSubmitButton>(
       find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
     );
-    expect(button.onPressed, isNull);
+    expect(button.enabled, isFalse);
 
     // And tapping it must not trigger the create request.
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);

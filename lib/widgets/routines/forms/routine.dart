@@ -19,15 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 
 class RoutineForm extends ConsumerStatefulWidget {
   final Routine _routine;
@@ -41,9 +39,7 @@ class RoutineForm extends ConsumerStatefulWidget {
 
 class _RoutineFormState extends ConsumerState<RoutineForm> {
   final _form = GlobalKey<FormState>();
-  Widget errorMessage = const SizedBox.shrink();
 
-  bool isSaving = false;
   late bool fitInWeek;
   late DateTime startDate;
   late DateTime endDate;
@@ -73,7 +69,6 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
     final isOnline = ref.watch(networkStatusProvider);
 
     final children = [
-      errorMessage,
       TextFormField(
         key: const Key('field-name'),
         decoration: InputDecoration(labelText: i18n.name),
@@ -221,54 +216,31 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
       const SizedBox(height: 5),
       // Creating a routine needs the server to assign an integer PK; editing an
       // existing one syncs through PowerSync and works offline.
-      ElevatedButton(
+      FormSubmitButton(
         key: const Key(SUBMIT_BUTTON_KEY_NAME),
-        onPressed: isSaving || (widget._routine.id == null && !isOnline)
-            ? null
-            : () async {
-                // Validate and save
-                final isValid = _form.currentState!.validate();
-                if (!isValid) {
-                  return;
-                }
-                _form.currentState!.save();
-                setState(() {
-                  isSaving = true;
-                });
+        enabled: !(widget._routine.id == null && !isOnline),
+        label: AppLocalizations.of(context).save,
+        onPressed: () async {
+          // Validate and save
+          final isValid = _form.currentState!.validate();
+          if (!isValid) {
+            return;
+          }
+          _form.currentState!.save();
 
-                // Save to DB
-                try {
-                  final routinesProvider = ref.read(routinesRiverpodProvider.notifier);
-
-                  if (widget._routine.id != null) {
-                    await routinesProvider.editRoutine(widget._routine);
-                  } else {
-                    final routine = await routinesProvider.addRoutine(widget._routine);
-                    if (context.mounted) {
-                      Navigator.of(context).pushReplacementNamed(
-                        RoutineEditScreen.routeName,
-                        arguments: routine.id,
-                      );
-                    }
-                  }
-                  setState(() {
-                    errorMessage = const SizedBox.shrink();
-                  });
-                } on WgerHttpException catch (error) {
-                  if (context.mounted) {
-                    setState(() {
-                      errorMessage = FormHttpErrorsWidget(error);
-                    });
-                  }
-                } finally {
-                  if (mounted) {
-                    setState(() {
-                      isSaving = false;
-                    });
-                  }
-                }
-              },
-        child: isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
+          final routinesProvider = ref.read(routinesRiverpodProvider.notifier);
+          if (widget._routine.id != null) {
+            await routinesProvider.editRoutine(widget._routine);
+          } else {
+            final routine = await routinesProvider.addRoutine(widget._routine);
+            if (context.mounted) {
+              Navigator.of(context).pushReplacementNamed(
+                RoutineEditScreen.routeName,
+                arguments: routine.id,
+              );
+            }
+          }
+        },
       ),
     ];
     return Form(

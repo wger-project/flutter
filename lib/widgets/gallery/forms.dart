@@ -22,9 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_notifier.dart';
@@ -47,7 +45,6 @@ class _ImageFormState extends ConsumerState<ImageForm> {
   final _form = GlobalKey<FormState>();
 
   XFile? _file;
-  Widget errorMessage = const SizedBox.shrink();
 
   final dateController = TextEditingController(text: '');
   final TextEditingController descriptionController = TextEditingController();
@@ -205,7 +202,6 @@ class _ImageFormState extends ConsumerState<ImageForm> {
               widget._image.description = newValue!;
             },
           ),
-          errorMessage,
           FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             enabled: !(requiresUpload && !isOnline),
@@ -219,19 +215,13 @@ class _ImageFormState extends ConsumerState<ImageForm> {
               _form.currentState!.save();
 
               final notifier = ref.read(galleryProvider.notifier);
-              try {
-                if (widget._image.id == null) {
-                  await notifier.addImage(widget._image, _file!);
-                } else {
-                  await notifier.editImage(widget._image, _file);
-                }
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              } on WgerHttpException catch (error) {
-                setState(() {
-                  errorMessage = FormHttpErrorsWidget(error);
-                });
+              if (widget._image.id == null) {
+                await notifier.addImage(widget._image, _file!);
+              } else {
+                await notifier.editImage(widget._image, _file);
+              }
+              if (context.mounted) {
+                Navigator.of(context).pop();
               }
             },
           ),

@@ -26,6 +26,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/routines/forms/day.dart';
 
 import '../../test_data/routines.dart';
@@ -122,10 +123,10 @@ void main() {
       await tester.pumpWidget(renderWidget(isOnline: false));
       await tester.pumpAndSettle();
 
-      final button = tester.widget<ElevatedButton>(
+      final button = tester.widget<FormSubmitButton>(
         find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
       );
-      expect(button.onPressed, isNull);
+      expect(button.enabled, isFalse);
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
       await tester.pump();

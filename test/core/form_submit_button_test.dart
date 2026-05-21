@@ -20,6 +20,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
@@ -85,6 +87,27 @@ void main() {
 
     completer.complete();
     await tester.pumpAndSettle();
+  });
+
+  testWidgets('renders the error widget when onPressed throws WgerHttpException', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      wrap(
+        FormSubmitButton(
+          label: 'Save',
+          onPressed: () async => throw WgerHttpException.fromMap({'detail': 'nope'}),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(FormSubmitButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FormHttpErrorsWidget), findsOneWidget);
+    // The button returns to its normal state after the failure.
+    expect(find.byType(FormProgressIndicator), findsNothing);
+    expect(find.text('Save'), findsOneWidget);
   });
 
   testWidgets('is disabled when enabled is false', (WidgetTester tester) async {
