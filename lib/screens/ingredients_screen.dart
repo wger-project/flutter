@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/providers/ingredient_filters_notifier.dart';
 import 'package:wger/providers/ingredient_notifier.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/nutrition/ingredient_filter_row.dart';
@@ -38,7 +39,15 @@ class IngredientsScreen extends ConsumerStatefulWidget {
 class _IngredientsScreenState extends ConsumerState<IngredientsScreen> {
   @override
   Widget build(BuildContext context) {
-    final ingredientsAsync = ref.watch(searchedIngredientsProvider);
+    // With no search term the overview shows the full locally-synced list
+    // (reactive Drift stream); once the user types, it switches to the
+    // online/offline search results.
+    final hasSearchTerm = ref.watch(
+      ingredientFiltersSyncProvider.select((f) => f.searchTerm.isNotEmpty),
+    );
+    final AsyncValue<List<Ingredient>> ingredientsAsync = hasSearchTerm
+        ? ref.watch(searchedIngredientsProvider)
+        : ref.watch(ingredientProvider);
     final i18n = AppLocalizations.of(context);
 
     return Scaffold(
