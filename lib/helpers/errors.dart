@@ -202,24 +202,12 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
             TextButton(
               child: const Text('Report issue'),
               onPressed: () async {
-                final logText = applicationLogs.isEmpty
-                    ? '-- No logs available --'
-                    : applicationLogs.join('\n');
-                final description = Uri.encodeComponent(
-                  '## Description\n\n'
-                  '[Please describe what you were doing when the error occurred.]\n\n'
-                  '## Error details\n\n'
-                  'Error title: $issueTitle\n'
-                  'Error message: $issueErrorMessage\n'
-                  'Stack trace:\n'
-                  '```\n$stackTrace\n```\n\n'
-                  'App logs (last ${applicationLogs.length} entries):\n'
-                  '```\n$logText\n```',
+                final githubIssueUrl = buildGithubIssueUrl(
+                  issueTitle: issueTitle,
+                  issueErrorMessage: issueErrorMessage,
+                  stackTrace: fullStackTrace,
+                  applicationLogs: applicationLogs,
                 );
-                final githubIssueUrl =
-                    '$GITHUB_ISSUES_BUG_URL'
-                    '&title=$issueTitle'
-                    '&description=$description';
                 final Uri reportUri = Uri.parse(githubIssueUrl);
 
                 try {
@@ -244,6 +232,45 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
       );
     },
   );
+}
+
+/// Builds the URL that opens a pre-filled GitHub bug report.
+///
+/// The error details are passed to GitHub as query parameters and since
+/// GitHub rejects URLs longer than [GITHUB_ISSUES_MAX_URL_LENGTH], when
+/// the report would exceed that limit, the oldest log entries are pruned
+/// until the URL fits.
+String buildGithubIssueUrl({
+  required String issueTitle,
+  required String issueErrorMessage,
+  required String stackTrace,
+  required List<String> applicationLogs,
+}) {
+  String composeUrl(List<String> logs) {
+    final logText = logs.isEmpty ? '-- No logs available --' : logs.join('\n');
+    final description =
+        '## Description\n\n'
+        '[Please describe what you were doing when the error occurred.]\n\n'
+        '## Error details\n\n'
+        'Error title: $issueTitle\n'
+        'Error message: $issueErrorMessage\n'
+        'Stack trace:\n```\n$stackTrace\n```\n\n'
+        'App logs (last ${logs.length} entries):\n```\n$logText\n```';
+    return '$GITHUB_ISSUES_BUG_URL'
+        '&title=${Uri.encodeComponent(issueTitle)}'
+        '&description=${Uri.encodeComponent(description)}';
+  }
+
+  // The logs come newest-first, so the oldest entry is the last one. Drop it
+  // and retry until the URL fits within the limit.
+  var logs = applicationLogs;
+  while (true) {
+    final url = composeUrl(logs);
+    if (url.length <= GITHUB_ISSUES_MAX_URL_LENGTH || logs.isEmpty) {
+      return url;
+    }
+    logs = logs.sublist(0, logs.length - 1);
+  }
 }
 
 /// A widget to render HTML errors returned by the server

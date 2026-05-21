@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 
 void main() {
@@ -118,6 +119,63 @@ void main() {
       expect(error2.key, 'Password');
       expect(error2.errorMessages.length, 1);
       expect(error2.errorMessages[0], 'Password does not match');
+    });
+  });
+
+  group('buildGithubIssueUrl', () {
+    test('Encodes the title and pre-fills the description', () {
+      final url = buildGithubIssueUrl(
+        issueTitle: 'An error occurred',
+        issueErrorMessage: 'Something broke',
+        stackTrace: '#0 main (file.dart:1)',
+        applicationLogs: ['log line 1', 'log line 2'],
+      );
+
+      expect(url, startsWith(GITHUB_ISSUES_BUG_URL));
+      expect(url, contains('&title=An%20error%20occurred'));
+      expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
+
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, contains('Error message: Something broke'));
+      expect(description, contains('#0 main (file.dart:1)'));
+      expect(description, contains('log line 1'));
+    });
+
+    test('Drops the oldest log entries, keeps the newest', () {
+      // Logs come newest-first, so index 0 is the most recent entry.
+      final logs = List.generate(3000, (i) => 'log entry $i');
+
+      final url = buildGithubIssueUrl(
+        issueTitle: 'Application Error',
+        issueErrorMessage: 'boom',
+        stackTrace: 'short trace',
+        applicationLogs: logs,
+      );
+
+      expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, contains('log entry 0\n')); // newest kept
+      expect(description, isNot(contains('log entry 2999'))); // oldest dropped
+    });
+
+    test('Keeps the full stack trace and drops logs instead', () {
+      final longTrace = List.generate(
+        80,
+        (i) => '#$i SomeClass.someMethod (package:wger/some/file.dart:$i:11)',
+      ).join('\n');
+
+      final url = buildGithubIssueUrl(
+        issueTitle: 'Application Error',
+        issueErrorMessage: 'boom',
+        stackTrace: longTrace,
+        applicationLogs: List.generate(3000, (i) => 'log entry number $i'),
+      );
+
+      expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
+      final description = Uri.parse(url).queryParameters['description']!;
+      // The stack trace is never trimmed: first and last frame survive.
+      expect(description, contains('#0 SomeClass.someMethod'));
+      expect(description, contains('#79 SomeClass.someMethod'));
     });
   });
 }
