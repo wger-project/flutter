@@ -31,7 +31,6 @@ import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/workout_logs_notifier.dart';
 import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/widgets/core/core.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight.dart';
@@ -266,7 +265,6 @@ class LogFormWidget extends ConsumerStatefulWidget {
 
 class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   final _form = GlobalKey<FormState>();
-  bool _isSaving = false;
 
   @override
   Widget build(BuildContext context) {
@@ -334,45 +332,40 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
           ),
           FilledButton(
             key: const ValueKey('save-log-button'),
-            onPressed: _isSaving
-                ? null
-                : () async {
-                    final isValid = _form.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    setState(() {
-                      _isSaving = true;
-                    });
-                    _form.currentState!.save();
+            onPressed: () async {
+              final isValid = _form.currentState!.validate();
+              if (!isValid) {
+                return;
+              }
+              _form.currentState!.save();
 
-                    final gymState = ref.read(gymStateProvider);
-                    final gymProvider = ref.read(gymStateProvider.notifier);
+              final gymState = ref.read(gymStateProvider);
+              final gymProvider = ref.read(gymStateProvider.notifier);
+              final page = gymState.getSlotEntryPageByIndex()!;
 
-                    logProvider.addEntry(log);
-                    final page = gymState.getSlotEntryPageByIndex()!;
-                    gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
+              // A failed write is intentionally left to propagate to the global
+              // error handler; the success path below is then skipped.
+              await logProvider.addEntry(log);
+              if (!context.mounted) {
+                return;
+              }
 
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: const Duration(seconds: 2),
-                          content: Text(
-                            i18n.successfullySaved,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      );
-                    }
-                    widget.controller.nextPage(
-                      duration: DEFAULT_ANIMATION_DURATION,
-                      curve: DEFAULT_ANIMATION_CURVE,
-                    );
-                    setState(() {
-                      _isSaving = false;
-                    });
-                  },
-            child: _isSaving ? const FormProgressIndicator() : Text(i18n.save),
+              gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: const Duration(seconds: 2),
+                  content: Text(
+                    i18n.successfullySaved,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+              widget.controller.nextPage(
+                duration: DEFAULT_ANIMATION_DURATION,
+                curve: DEFAULT_ANIMATION_CURVE,
+              );
+            },
+            child: Text(i18n.save),
           ),
         ],
       ),
