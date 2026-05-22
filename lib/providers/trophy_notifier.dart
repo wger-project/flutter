@@ -62,31 +62,28 @@ final class TrophyStateNotifier extends _$TrophyStateNotifier {
 
   @override
   TrophyState build() {
-    // Trophies are REST-only. Kick off the initial load, but skip it while
-    // offline and retry once connectivity returns. Sync notifier, so we
-    // can't await here — UI consumers rebuild via state mutation.
-    Future.microtask(_fetchIfOnline);
+    // Trophies are REST-only. Kick off the initial load when online, and
+    // (re)fetch once connectivity returns. Skipping the fetch while offline
+    // keeps the REST calls from hammering an unreachable server.
+    if (ref.read(networkStatusProvider)) {
+      Future.microtask(_fetchAllSafe);
+    }
     ref.listen(networkStatusProvider, (previous, next) {
       if (next && previous == false) {
-        Future.microtask(_fetchIfOnline);
+        Future.microtask(_fetchAllSafe);
       }
     });
 
     return TrophyState();
   }
 
-  /// Fetches all trophy data, but only when the backend is reachable.
-  /// Offline this is a no-op so the REST calls don't hammer an unreachable
-  /// server.
-  Future<void> _fetchIfOnline() async {
-    if (!await ref.read(networkStatusProvider.notifier).check()) {
-      _logger.fine('Skipping trophy fetch, device is offline');
-      return;
-    }
+  /// Runs [fetchAll], swallowing errors so a failed network load doesn't
+  /// surface as an uncaught provider exception.
+  Future<void> _fetchAllSafe() async {
     try {
       await fetchAll();
     } catch (e, s) {
-      _logger.warning('initial trophy fetch failed', e, s);
+      _logger.warning('trophy fetch failed', e, s);
     }
   }
 
