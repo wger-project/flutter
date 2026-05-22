@@ -26,7 +26,7 @@ enum AuthStatus {
   loggedIn,
 
   // The app used to connect to a wger instance is too old and must be updated
-  updateRequired,
+  appUpdateRequired,
 
   // The wger server the app is configured to connect to is too old and must be updated
   serverUpdateRequired,

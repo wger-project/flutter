@@ -85,7 +85,7 @@ class _MfaChallengeScreenState extends ConsumerState<MfaChallengeScreen> {
 
       if (res == LoginActions.update && mounted) {
         final status = ref.read(authProvider).value?.status;
-        if (status == AuthStatus.updateRequired) {
+        if (status == AuthStatus.appUpdateRequired) {
           await Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => const UpdateAppScreen()),
           );

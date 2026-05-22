@@ -310,7 +310,7 @@ class AuthNotifier extends _$AuthNotifier {
     }
 
     return switch (newState.status) {
-      AuthStatus.serverUpdateRequired || AuthStatus.updateRequired => LoginActions.update,
+      AuthStatus.serverUpdateRequired || AuthStatus.appUpdateRequired => LoginActions.update,
       _ => LoginActions.proceed,
     };
   }
@@ -651,7 +651,7 @@ class AuthNotifier extends _$AuthNotifier {
         _logger.info('revalidation: app update required');
         state = AsyncData(
           current.copyWith(
-            status: AuthStatus.updateRequired,
+            status: AuthStatus.appUpdateRequired,
             serverVersion: serverVersion,
           ),
         );
@@ -750,7 +750,7 @@ class AuthNotifier extends _$AuthNotifier {
     }
 
     if (await _applicationUpdateRequired(serverUrl, appVersion.version)) {
-      return withStatus(AuthStatus.updateRequired, serverVersion);
+      return withStatus(AuthStatus.appUpdateRequired, serverVersion);
     }
 
     if (!await _isPowerSyncReachable(serverUrl, token, tokenType)) {

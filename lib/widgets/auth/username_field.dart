@@ -48,7 +48,7 @@ class UsernameField extends StatelessWidget {
         return null;
       },
       inputFormatters: [
-        FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s')),
+        FilteringTextInputFormatter.deny(RegExp(r'\s')),
       ],
     );
   }

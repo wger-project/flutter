@@ -31,8 +31,6 @@ import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/mfa_challenge_screen.dart';
-import 'package:wger/screens/update_app_screen.dart';
-import 'package:wger/screens/update_server_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/auth/confirm_password_field.dart';
 import 'package:wger/widgets/auth/email_field.dart';
@@ -116,8 +114,8 @@ class AuthCard extends ConsumerStatefulWidget {
 }
 
 class _AuthCardState extends ConsumerState<AuthCard> {
-  bool isObscure = true;
-  Widget errorMessage = const SizedBox.shrink();
+  WgerHttpException? _httpError;
+  bool _showNetworkError = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.login;
@@ -190,7 +188,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     _refreshTokenController.clear();
   }
 
-  void _submit(BuildContext context) async {
+  Future<void> _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -226,34 +224,14 @@ class _AuthCardState extends ConsumerState<AuthCard> {
         );
       }
 
-      // Navigate to the appropriate "update required" screen.
-      if (res == LoginActions.update && mounted) {
-        final status = ref.read(authProvider).value?.status;
-        if (status == AuthStatus.updateRequired) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const UpdateAppScreen()),
-          );
-          return;
-        } else if (status == AuthStatus.serverUpdateRequired) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const UpdateServerScreen()),
-          );
-          return;
-        }
-      }
-
+      // The "update required" screens are handled reactively by main.dart's
+      // _getHomeScreen, which swaps the home screen on the auth status.
       if (context.mounted && res == LoginActions.proceed) {
         final showWarning = ref.read(authProvider).value?.serverConfigWarning ?? false;
         if (showWarning && context.mounted) {
           showServerConfigWarning(context);
           ref.read(authProvider.notifier).clearServerConfigWarning();
         }
-      }
-
-      if (context.mounted) {
-        setState(() {
-          _isLoading = false;
-        });
       }
     } on MfaRequiredException catch (e) {
       if (context.mounted) {
@@ -270,7 +248,8 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     } on WgerHttpException catch (error) {
       if (context.mounted) {
         setState(() {
-          errorMessage = FormHttpErrorsWidget(error);
+          _httpError = error;
+          _showNetworkError = false;
         });
       }
     } catch (error) {
@@ -278,14 +257,8 @@ class _AuthCardState extends ConsumerState<AuthCard> {
       // friendly message instead of crashing to the red error screen.
       if (isNetworkError(error) && context.mounted) {
         setState(() {
-          errorMessage = Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Text(
-              AppLocalizations.of(context).errorCouldNotConnectToServer,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          );
+          _showNetworkError = true;
+          _httpError = null;
         });
       } else {
         rethrow;
@@ -319,6 +292,20 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     // Login/registration both need the server, so disable the action while
     // there is no connectivity.
     final isOnline = ref.watch(networkStatusProvider);
+
+    Widget errorMessage = const SizedBox.shrink();
+    if (_httpError != null) {
+      errorMessage = FormHttpErrorsWidget(_httpError!);
+    } else if (_showNetworkError) {
+      errorMessage = Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Text(
+          i18n.errorCouldNotConnectToServer,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Theme.of(context).colorScheme.error),
+        ),
+      );
+    }
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -385,7 +372,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                       onPressed: isOnline
                           ? () {
                               if (!_isLoading) {
-                                return _submit(context);
+                                _submit(context);
                               }
                             }
                           : null,

@@ -155,7 +155,7 @@ class MainApp extends ConsumerWidget {
     switch (auth.status) {
       case AuthStatus.loggedIn:
         return const HomeTabsScreen();
-      case AuthStatus.updateRequired:
+      case AuthStatus.appUpdateRequired:
         return const UpdateAppScreen();
       case AuthStatus.serverUpdateRequired:
         return const UpdateServerScreen();
