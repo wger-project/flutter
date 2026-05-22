@@ -35,7 +35,6 @@ import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/screens/powersync_unreachable_screen.dart';
-import 'package:wger/screens/server_unreachable_screen.dart';
 
 import 'recovery_screens_test.mocks.dart';
 
@@ -125,53 +124,6 @@ void main() {
       ),
     );
     when(mockClient.get(tLiveness)).thenAnswer((_) async => Response('OK', 200));
-  });
-
-  group('ServerUnreachableScreen', () {
-    setUp(() {
-      // Drive auth notifier into AuthStatus.serverUnreachable.
-      when(mockClient.head(tProbe, headers: anyNamed('headers'))).thenThrow(
-        http.ClientException('SocketException: Connection refused'),
-      );
-    });
-
-    testWidgets('renders title, content, server URL and both action buttons', (tester) async {
-      await tester.pumpWidget(wrap(const ServerUnreachableScreen()));
-      await tester.pumpAndSettle();
-
-      expect(find.text("Couldn't connect to server"), findsOneWidget);
-      expect(find.textContaining('could not connect'), findsOneWidget);
-      // Server URL is shown so the user can sanity-check what we're trying.
-      expect(find.text(serverUrl), findsOneWidget);
-      expect(find.text('Try again'), findsOneWidget);
-      expect(find.text('Log out'), findsOneWidget);
-    });
-
-    testWidgets('"Try again" re-runs the auto-login probe', (tester) async {
-      await tester.pumpWidget(wrap(const ServerUnreachableScreen()));
-      await tester.pumpAndSettle();
-
-      // Initial autoLogin already called HEAD once.
-      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
-
-      await tester.tap(find.text('Try again'));
-      await tester.pumpAndSettle();
-
-      // Retry triggered another autoLogin → HEAD called again.
-      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
-    });
-
-    testWidgets('"Log out" wipes saved user and navigates to "/"', (tester) async {
-      await tester.pumpWidget(wrap(const ServerUnreachableScreen()));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Log out'));
-      await tester.pumpAndSettle();
-
-      // logout() removes both the user blob and the ever-synced flag.
-      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
-      expect(find.text('AUTH_SCREEN_STUB'), findsOneWidget);
-    });
   });
 
   group('PowerSyncUnreachableScreen', () {

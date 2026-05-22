@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -226,7 +226,7 @@ void main() {
   });
 
   group('_tryAutoLogin: server reachability', () {
-    test('Django HEAD throws SocketException → serverUnreachable', () async {
+    test('Django HEAD throws SocketException → logged in offline', () async {
       when(mockClient.head(tProbe, headers: anyNamed('headers'))).thenThrow(
         http.ClientException('SocketException: Connection refused'),
       );
@@ -234,11 +234,12 @@ void main() {
       final container = makeContainer();
       final state = await container.read(authProvider.future);
 
-      expect(state.status, AuthStatus.serverUnreachable);
-      // Token must be preserved so the recovery screen can retry.
+      // A saved session must carry the user straight into the app instead of
+      // stalling on a recovery screen.
+      expect(state.status, AuthStatus.loggedIn);
       expect(state.token, token);
       expect(state.serverUrl, serverUrl);
-      // PowerSync probe must NOT run when Django itself is unreachable.
+      // No further server calls when Django itself is unreachable.
       verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
     });
 

@@ -836,7 +836,6 @@
     "themeMode": "Theme Modus",
     "lightMode": "Immer Hellmodus",
     "systemMode": "Systemeinstellungen",
-    "errorCouldNotConnectToServerDetails": "Die Anwendung konnte keine Verbindung zum Server herstellen. Bitte überprüfen Sie Ihre Internetverbindung oder die Server-URL und versuchen Sie es erneut. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Serveradministrator.",
     "fitInWeek": "Fester Wochenrhythmus",
     "fitInWeekHelp": "Wenn diese Option aktiviert ist, wiederholen sich die Tage in einem wöchentlichen Zyklus, andernfalls folgen die Tage der Reihe nach, ohne Rücksicht auf den Beginn einer neuen Woche.",
     "aboutContributeText": "Beiträge aller Art sind willkommen. Egal, ob Sie Entwickler, Übersetzer oder einfach nur Fitnessbegeisterter sind – jede Unterstützung ist willkommen!",

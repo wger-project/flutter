@@ -434,7 +434,6 @@
     },
     "protein": "Proteína",
     "resultingRoutine": "Rotina resultante",
-    "errorCouldNotConnectToServerDetails": "A aplicação não conseguiu ligar ao servidor. Verifica a ligação à internet ou o URL do servidor e tenta outra vez. Se continuar, contacta o administrador do servidor.",
     "needsLogsToAdvanceHelp": "Seleciona se queres que a rotina avance para o próximo dia apenas se registares um treino",
     "start": "Início",
     "@start": {

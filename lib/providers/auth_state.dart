@@ -31,9 +31,6 @@ enum AuthStatus {
   // The wger server the app is configured to connect to is too old and must be updated
   serverUpdateRequired,
 
-  /// The wger instance can't be reached at the moment
-  serverUnreachable,
-
   /// The wger server is reachable, but the PowerSync service it points us
   /// at is not, and the user has never completed a full sync, so we have
   /// no local data to show.

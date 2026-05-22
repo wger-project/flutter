@@ -215,9 +215,9 @@ class AuthNotifier extends _$AuthNotifier {
     }
   }
 
-  /// Re-runs the auto-login flow. Used by the recovery screens
-  /// ([ServerUnreachableScreen], [PowerSyncUnreachableScreen]) so the user
-  /// can retry without restarting the app.
+  /// Re-runs the auto-login flow. Used by the recovery screen
+  /// ([PowerSyncUnreachableScreen]) so the user can retry without
+  /// restarting the app.
   Future<void> retryAutoLogin() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(_tryAutoLogin);
@@ -246,11 +246,12 @@ class AuthNotifier extends _$AuthNotifier {
     }
 
     final response = await _probeWgerServer(serverUrl, token, appVersion);
-    // Network error before any HTTP response. Keep the saved session so the
-    // user can retry from the recovery screen.
+    // Server unreachable at startup. The user already has a saved session, so
+    // let them in directly
     if (response == null) {
+      _logger.info('autologin: server unreachable, continuing offline');
       return AuthState(
-        status: AuthStatus.serverUnreachable,
+        status: AuthStatus.loggedIn,
         token: token,
         serverUrl: serverUrl,
         applicationVersion: appVersion,
