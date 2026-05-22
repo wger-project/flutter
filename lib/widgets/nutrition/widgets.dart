@@ -212,8 +212,19 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                   : const CircleIconAvatar(
                       Icon(Icons.image, color: Colors.grey),
                     ),
-              title: Text(
-                ingredient.name,
+              title: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(text: ingredient.name),
+                    if (ingredient.brand != null && ingredient.brand!.isNotEmpty)
+                      TextSpan(
+                        text: '  ${ingredient.brand}',
+                        style: TextStyle(
+                          color: DefaultTextStyle.of(context).style.color?.withValues(alpha: 0.6),
+                        ),
+                      ),
+                  ],
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
