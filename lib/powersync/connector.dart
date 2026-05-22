@@ -25,6 +25,7 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
 import 'package:wger/core/error_dialogs.dart';
+import 'package:wger/helpers/jwt.dart';
 import 'package:wger/powersync/api_client.dart';
 
 final logger = Logger('powersync-django');
@@ -62,12 +63,11 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// permanent-failure op would re-pop the dialog on every sync tick
   /// (PowerSync keeps re-driving `uploadData` until the transaction
   /// is completed, and our `transaction.complete()` only fires once
-  /// the loop finishes — so we'd see the dialog at every iteration).
+  /// the loop finishes, so we'd see the dialog at every iteration).
   /// Resets on app restart.
   final Set<String> _reportedFailedOps = {};
 
-  DjangoConnector({required this.baseUrl, ApiClient? apiClient})
-    : apiClient = apiClient ?? ApiClient(baseUrl);
+  DjangoConnector({required this.baseUrl, required this.apiClient});
 
   /// Get a token to authenticate against the PowerSync instance.
   @override
@@ -96,32 +96,6 @@ class DjangoConnector extends PowerSyncBackendConnector {
       userId: payload?['sub']?.toString(),
       expiresAt: jwtExp(payload),
     );
-  }
-
-  /// Decodes the JWT payload (middle segment). Returns null on malformed input.
-  @visibleForTesting
-  static Map<String, dynamic>? decodeJwtPayload(String jwt) {
-    try {
-      final parts = jwt.split('.');
-      if (parts.length != 3) {
-        return null;
-      }
-      return json.decode(utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))))
-          as Map<String, dynamic>;
-    } catch (e) {
-      logger.warning('Could not decode PowerSync JWT payload', e);
-      return null;
-    }
-  }
-
-  /// Extracts the `exp` claim (unix seconds) as a UTC DateTime.
-  @visibleForTesting
-  static DateTime? jwtExp(Map<String, dynamic>? payload) {
-    final exp = payload?['exp'];
-    if (exp is! num) {
-      return null;
-    }
-    return DateTime.fromMillisecondsSinceEpoch(exp.toInt() * 1000, isUtc: true);
   }
 
   /// Date-only fields per table.
@@ -246,7 +220,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
     try {
       decoded = json.decode(response.body);
     } on FormatException {
-      // Non-JSON response on a 200 — uncommon but harmless to ignore.
+      // Non-JSON response on a 200, uncommon but harmless to ignore.
       return;
     }
     if (decoded is! Map<String, dynamic> || !decoded.containsKey('error')) {

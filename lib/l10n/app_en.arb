@@ -56,17 +56,69 @@
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
-  "useApiToken": "Use API Token",
+  "useRefreshToken": "Use refresh token",
   "useUsernameAndPassword": "Use username and password",
-  "apiToken": "API Token",
-  "@apiToken": {},
-  "invalidApiToken": "Please enter a valid API key",
-  "@invalidApiToken": {
-    "description": "Error message when the user enters an invalid API key"
+  "loginViaWeb": "Log in via web",
+  "@loginViaWeb": {
+    "description": "Button that opens the system browser so the user authenticates on the server (including social or SSO providers) and is handed back to the app via a deep link"
   },
-  "apiTokenValidChars": "An API key may only contain the letters a-f, numbers 0-9 and be exactly 40 characters long",
-  "@apiTokenValidChars": {
-    "description": "Error message when the user tries to input a API key with forbidden characters"
+  "refreshToken": "Refresh token",
+  "@refreshToken": {},
+  "invalidRefreshToken": "Please enter a valid refresh token",
+  "@invalidRefreshToken": {
+    "description": "Error message when the user enters an invalid refresh token"
+  },
+  "refreshTokenValidChars": "A refresh token has three dot-separated segments (header.payload.signature), each made of letters, digits, '-' and '_'",
+  "@refreshTokenValidChars": {
+    "description": "Error message when the user pastes a string that does not match the JWT shape"
+  },
+  "refreshTokenHelperText": "Generate a JWT refresh token on the wger website and paste it here. Useful when your server sits behind an auth proxy or when you want to skip the regular login flow.",
+  "@refreshTokenHelperText": {
+    "description": "Helper text on the refresh-token paste field"
+  },
+  "mfaChallengeTitle": "Two-factor authentication",
+  "@mfaChallengeTitle": {
+    "description": "App bar title on the 2FA challenge screen"
+  },
+  "mfaChallengeTotpPrompt": "Enter the 6-digit code from your authenticator app",
+  "@mfaChallengeTotpPrompt": {
+    "description": "Helper text above the TOTP input field"
+  },
+  "mfaChallengeRecoveryPrompt": "Enter one of your recovery codes",
+  "@mfaChallengeRecoveryPrompt": {
+    "description": "Helper text above the recovery-code input field"
+  },
+  "mfaCodeLabel": "Code",
+  "@mfaCodeLabel": {
+    "description": "Label on the 2FA code input field"
+  },
+  "mfaInvalidCode": "Please enter a code",
+  "@mfaInvalidCode": {
+    "description": "Validation error when the 2FA code field is empty"
+  },
+  "mfaUseRecoveryCode": "Use a recovery code instead",
+  "@mfaUseRecoveryCode": {
+    "description": "Button that switches the 2FA challenge to recovery-code mode"
+  },
+  "mfaUseTotpCode": "Use an authenticator app code",
+  "@mfaUseTotpCode": {
+    "description": "Button that switches the 2FA challenge back to TOTP mode"
+  },
+  "mfaSubmit": "Verify",
+  "@mfaSubmit": {
+    "description": "Submit button on the 2FA challenge screen"
+  },
+  "mfaUnsupportedFactor": "Your account is set up with a second factor this app does not support yet. Please sign in on the website.",
+  "@mfaUnsupportedFactor": {
+    "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+  },
+  "manageAccountOnWeb": "Manage account on the web",
+  "@manageAccountOnWeb": {
+    "description": "Label on a button that opens the user's preferences page on the wger website"
+  },
+  "manageAccountOnWebSubtitle": "Change your password, set up two-factor authentication, manage API tokens, or delete your account.",
+  "@manageAccountOnWebSubtitle": {
+    "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
   },
   "customServerUrl": "URL of the wger instance",
   "@customServerUrl": {

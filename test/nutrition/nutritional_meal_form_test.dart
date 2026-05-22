@@ -55,7 +55,7 @@ void main() {
     when(mockRepo.addMealLocalDrift(any)).thenAnswer((_) async => Future.value());
     when(mockRepo.editMealLocalDrift(any)).thenAnswer((_) async => Future.value());
     // NutritionNotifier.build() subscribes to three Drift streams (plans,
-    // meals, diary entries) — emit the seed plan and empty meals/diary so the
+    // meals, diary entries), emit the seed plan and empty meals/diary so the
     // combined stream produces a value.
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value([plan1]));
     when(mockRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(plan1.meals));

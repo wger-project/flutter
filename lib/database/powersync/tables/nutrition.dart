@@ -134,7 +134,7 @@ const PowersyncMealTable = ps.Table(
 /// Identified by uuid client-side; the `meal_id` FK is the parent meal's
 /// uuid (not the server-side integer PK). `amount` is a
 /// `DecimalField(decimal_places=2, max_digits=6)` server-side, stored here
-/// as REAL — the rounding happens implicitly when DRF coerces back.
+/// as REAL, the rounding happens implicitly when DRF coerces back.
 @UseRowClass(MealItem, constructor: 'fromDrift')
 class MealItemTable extends Table {
   @override

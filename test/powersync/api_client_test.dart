@@ -24,10 +24,6 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
-import 'package:shared_preferences_platform_interface/types.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/powersync/api_client.dart';
 
 import 'api_client_test.mocks.dart';
@@ -40,25 +36,15 @@ void main() {
   late ApiClient apiClient;
   const baseUrl = 'https://server.example';
 
-  setUp(() async {
+  setUp(() {
     mockClient = MockClient();
     apiClient = ApiClient(baseUrl, client: mockClient);
-    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
   });
-
-  Future<void> seedUserPrefs(Map<String, dynamic> apiData) async {
-    await SharedPreferencesAsyncPlatform.instance!.setString(
-      PREFS_USER,
-      jsonEncode(apiData),
-      const SharedPreferencesOptions(),
-    );
-  }
 
   group('getPowersyncToken', () {
     final tokenUri = Uri.parse('$baseUrl/api/v2/powersync-token');
 
-    test('reads the API token from prefs and GETs the powersync-token endpoint', () async {
-      await seedUserPrefs({'token': 'abc123'});
+    test('GETs the powersync-token endpoint and returns the JSON body', () async {
       when(mockClient.get(tokenUri, headers: anyNamed('headers'))).thenAnswer(
         (_) async => Response(
           jsonEncode({'token': 'jwt-token', 'powersync_url': 'https://ps.example.com'}),
@@ -70,31 +56,25 @@ void main() {
 
       expect(result['token'], 'jwt-token');
       expect(result['powersync_url'], 'https://ps.example.com');
-      // The Token header must use the *user's* permanent API token, not the
-      // returned JWT, that's the auth model for the powersync-token endpoint.
-      final captured =
-          verify(
-                mockClient.get(tokenUri, headers: captureAnyNamed('headers')),
-              ).captured.single
-              as Map<String, String>;
-      expect(captured[HttpHeaders.authorizationHeader], 'Token abc123');
     });
 
-    test('caches the API token on the instance for subsequent CRUD ops', () async {
-      await seedUserPrefs({'token': 'abc123'});
+    test('does not set its own Authorization header (the auth client owns it)', () async {
       when(mockClient.get(tokenUri, headers: anyNamed('headers'))).thenAnswer(
         (_) async => Response(jsonEncode({'token': 'jwt'}), 200),
       );
 
       await apiClient.getPowersyncToken();
 
-      expect(apiClient.token, 'abc123');
-      // getHeaders() then uses the cached token.
-      expect(apiClient.getHeaders()[HttpHeaders.authorizationHeader], 'Token abc123');
+      final captured =
+          verify(
+                mockClient.get(tokenUri, headers: captureAnyNamed('headers')),
+              ).captured.single
+              as Map<String, String>;
+      expect(captured.containsKey(HttpHeaders.authorizationHeader), isFalse);
+      expect(captured[HttpHeaders.contentTypeHeader], contains('application/json'));
     });
 
     test('throws when the server responds non-200', () async {
-      await seedUserPrefs({'token': 'abc'});
       when(
         mockClient.get(tokenUri, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('forbidden', 403));
@@ -110,28 +90,23 @@ void main() {
       'data': {'id': '5', 'name': 'Push'},
     };
 
-    setUp(() {
-      // Pre-populate the token so getHeaders builds a complete Authorization.
-      apiClient.token = 'cached-token';
-    });
-
-    test('upsert PUTs the JSON-encoded record', () async {
+    test('upsert PUTs the JSON-encoded record, no Authorization built locally', () async {
       when(
         mockClient.put(uploadUri, headers: anyNamed('headers'), body: anyNamed('body')),
       ).thenAnswer((_) async => Response('', 200));
 
       await apiClient.upsert(record);
 
-      verify(
-        mockClient.put(
-          uploadUri,
-          headers: argThat(
-            containsPair(HttpHeaders.authorizationHeader, 'Token cached-token'),
-            named: 'headers',
-          ),
-          body: jsonEncode(record),
-        ),
-      ).called(1);
+      final captured =
+          verify(
+                mockClient.put(
+                  uploadUri,
+                  headers: captureAnyNamed('headers'),
+                  body: jsonEncode(record),
+                ),
+              ).captured.single
+              as Map<String, String>;
+      expect(captured.containsKey(HttpHeaders.authorizationHeader), isFalse);
     });
 
     test('update PATCHes the JSON-encoded record', () async {

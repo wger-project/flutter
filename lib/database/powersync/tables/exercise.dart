@@ -256,7 +256,7 @@ class ExerciseImageTable extends Table {
   DateTimeColumn get created => dateTime()();
   DateTimeColumn get lastUpdate => dateTime().named('last_update')();
 
-  // License (TASL — Title / Author / Source / License). license_author may be
+  // License (TASL, Title / Author / Source / License). license_author may be
   // null on the server (TextField with null=True); the others are not-null
   // strings (possibly empty) on the server.
   IntColumn get licenseId => integer().named('license_id')();
@@ -312,7 +312,7 @@ class ExerciseVideoTable extends Table {
   DateTimeColumn get created => dateTime()();
   DateTimeColumn get lastUpdate => dateTime().named('last_update')();
 
-  // License (TASL — Title / Author / Source / License). license_author may be
+  // License (TASL, Title / Author / Source / License). license_author may be
   // null on the server (TextField with null=True); the others are not-null
   // strings (possibly empty) on the server.
   IntColumn get licenseId => integer().named('license_id')();

@@ -61,23 +61,6 @@ class MockApiClient extends _i1.Mock implements _i3.ApiClient {
           as String);
 
   @override
-  String get token =>
-      (super.noSuchMethod(
-            Invocation.getter(#token),
-            returnValue: _i4.dummyValue<String>(
-              this,
-              Invocation.getter(#token),
-            ),
-          )
-          as String);
-
-  @override
-  set token(String? value) => super.noSuchMethod(
-    Invocation.setter(#token, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
   Map<String, String> getHeaders() =>
       (super.noSuchMethod(
             Invocation.method(#getHeaders, []),

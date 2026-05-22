@@ -47,9 +47,18 @@ class MockAccountRepository extends _i1.Mock implements _i3.AccountRepository {
           as _i4.Future<_i2.Account>);
 
   @override
-  _i4.Future<void> verifyEmail() =>
+  _i4.Future<void> requestEmailChange(String? newEmail) =>
       (super.noSuchMethod(
-            Invocation.method(#verifyEmail, []),
+            Invocation.method(#requestEmailChange, [newEmail]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> resendVerification(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#resendVerification, [email]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )

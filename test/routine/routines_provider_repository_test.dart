@@ -33,7 +33,7 @@ import 'routines_provider_repository_test.mocks.dart';
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
   // The repository now takes a Drift database in its constructor, but
-  // none of the REST methods exercised in this file touch it — a plain
+  // none of the REST methods exercised in this file touch it, a plain
   // mock instance is enough.
   final mockDb = MockDriftPowersyncDatabase();
 

@@ -18,13 +18,16 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:wger/powersync/api_client.dart';
 import 'package:wger/powersync/connector.dart';
 import 'package:wger/powersync/schema.dart';
+import 'package:wger/providers/auth_http_client.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
@@ -52,6 +55,8 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   await _createRawTables(db);
   _builtInstance = db;
 
+  final client = ref.read(authenticatedHttpClientProvider);
+
   // Connect to the sync service only while the device is online. PowerSync's
   // own retry loop would otherwise log a credential error on every iteration
   // against an unreachable backend
@@ -59,7 +64,7 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
     if (isOnline) {
       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
       if (serverUrl != null) {
-        connectPowerSync(db, serverUrl);
+        connectPowerSync(db, serverUrl, client);
       }
     } else {
       db.disconnect();
@@ -144,9 +149,17 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
 
 /// Creates a fresh [DjangoConnector] for [baseUrl] and connects [db] to it.
 /// Used both at initial creation and after a logout/login cycle to pick up
-/// the new user's server URL / credentials.
-void connectPowerSync(PowerSyncDatabase db, String baseUrl) {
-  db.connect(connector: DjangoConnector(baseUrl: baseUrl));
+/// the new user's server URL / credentials. [client] is the authenticated
+/// HTTP client (see [authenticatedHttpClientProvider]); the connector reuses
+/// it for its REST calls so the same `Authorization` injection and
+/// pre-emptive refresh apply.
+void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) {
+  db.connect(
+    connector: DjangoConnector(
+      baseUrl: baseUrl,
+      apiClient: ApiClient(baseUrl, client: client),
+    ),
+  );
 }
 
 final _syncStatusInternal = StreamProvider<SyncStatus?>((ref) {

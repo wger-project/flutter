@@ -74,7 +74,7 @@ void main() {
       mockExerciseRepo.watchAllDrift(),
     ).thenAnswer((_) => Stream.value(ExerciseState(testExercises)));
 
-    // Drift the test routine in via the routines repository — the real
+    // Drift the test routine in via the routines repository, the real
     // [RoutinesRiverpod] picks it up and exposes it through state.
     when(
       mockRoutinesRepo.watchAllDrift(),
@@ -95,7 +95,7 @@ void main() {
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
         // The repetition + weight unit catalogues are tiny direct-Drift
-        // stream providers — overriding them inline is the established
+        // stream providers, overriding them inline is the established
         // pattern (see also [exerciseCategoriesProvider] etc.).
         routineRepetitionUnitProvider.overrideWith(
           (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),
@@ -174,8 +174,8 @@ void main() {
         expect(find.byIcon(Icons.chevron_left), findsOneWidget);
         expect(find.byIcon(Icons.chevron_right), findsOneWidget);
 
-        // The form shows reps and weight — each with its own unit
-        // picker (PopupMenuButton<int>) — plus the RiR slider, all at
+        // The form shows reps and weight, each with its own unit
+        // picker (PopupMenuButton<int>), plus the RiR slider, all at
         // once. Scope the popup-menu lookup to the LogPage so other
         // popup menus elsewhere in the app shell don't interfere.
         expect(find.byType(TextFormField), findsNWidgets(2));
@@ -187,7 +187,7 @@ void main() {
           findsNWidgets(2),
         );
         expect(find.byType(RiRInputWidget), findsOneWidget);
-        // Advance to the next page via the chevron — the RiR slider
+        // Advance to the next page via the chevron, the RiR slider
         // would otherwise eat a horizontal-drag gesture started over
         // its track.
         await tester.tap(find.byIcon(Icons.chevron_right));

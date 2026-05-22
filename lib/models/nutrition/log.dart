@@ -23,7 +23,7 @@ import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-/// Diary log entry — one ingredient consumed at a point in time.
+/// Diary log entry, one ingredient consumed at a point in time.
 ///
 /// Lives entirely in PowerSync/Drift now: row IDs are client-generated UUIDs
 /// (so we can write before the server has assigned an integer PK), and the

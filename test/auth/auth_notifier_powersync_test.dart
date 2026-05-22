@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -33,11 +34,12 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
+import 'package:wger/providers/secure_token_storage.dart';
 
 import '../fake_connectivity.dart';
 import 'auth_notifier_powersync_test.mocks.dart';
 
-@GenerateMocks([http.Client])
+@GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
   // Replacement for SharedPreferences.setMockInitialValues() for the
   // async API used by the auth notifier.
@@ -48,6 +50,7 @@ void main() {
   installFakeConnectivity();
 
   late MockClient mockClient;
+  late MockSecureTokenStorage mockSecureStorage;
 
   const serverUrl = 'https://wger.example';
   const token = 'token-12345';
@@ -67,6 +70,7 @@ void main() {
     final c = ProviderContainer(
       overrides: [
         authHttpClientProvider.overrideWithValue(mockClient),
+        secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
       ],
     );
     addTearDown(c.dispose);
@@ -75,6 +79,10 @@ void main() {
 
   setUp(() async {
     mockClient = MockClient();
+    mockSecureStorage = MockSecureTokenStorage();
+    when(mockSecureStorage.deleteRefreshToken()).thenAnswer((_) async {});
+    when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => null);
+    when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
 
     SharedPreferences.setMockInitialValues({});
     PackageInfo.setMockInitialValues(
@@ -403,6 +411,301 @@ void main() {
 
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_HAS_EVER_SYNCED), false);
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
+    });
+
+    test('wipes the headless-JWT prefs bundle and the secure-storage refresh token', () async {
+      // Seed both formats so we can assert each gets removed.
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setString(PREFS_ACCESS_TOKEN, 'jwt-access');
+      await prefs.setInt(PREFS_ACCESS_EXPIRES_AT, 1700000000);
+      await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+      await prefs.setString(PREFS_SERVER_URL, serverUrl);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      await container.read(authProvider.notifier).logout();
+
+      expect(await prefs.containsKey(PREFS_ACCESS_TOKEN), false);
+      expect(await prefs.containsKey(PREFS_ACCESS_EXPIRES_AT), false);
+      expect(await prefs.containsKey(PREFS_TOKEN_TYPE), false);
+      expect(await prefs.containsKey(PREFS_SERVER_URL), false);
+      verify(mockSecureStorage.deleteRefreshToken()).called(1);
+    });
+  });
+
+  group('_tryAutoLogin: headless-JWT migration', () {
+    /// Replaces the legacy seed from setUp with the headless-JWT bundle.
+    Future<void> seedHeadlessBundle({String accessToken = 'jwt-access'}) async {
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.remove(PREFS_USER);
+      await prefs.setString(PREFS_ACCESS_TOKEN, accessToken);
+      // Far in the future so we don't trip on expiry, refresh isn't wired yet.
+      await prefs.setInt(
+        PREFS_ACCESS_EXPIRES_AT,
+        DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
+      );
+      await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+      await prefs.setString(PREFS_SERVER_URL, serverUrl);
+    }
+
+    test('prefers the headless bundle over PREFS_USER and probes with Bearer', () async {
+      // Both formats present, headless must win.
+      await seedHeadlessBundle(accessToken: 'jwt-access');
+      await PreferenceHelper.asyncPref.setString(
+        PREFS_USER,
+        json.encode({'token': 'legacy-token', 'serverUrl': serverUrl}),
+      );
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.tokenType, AuthTokenType.headlessJwt);
+      expect(state.accessToken, 'jwt-access');
+      expect(state.token, isNull, reason: 'legacy `token` must stay empty on the headless path');
+
+      final captured =
+          verify(
+                mockClient.head(tProbe, headers: captureAnyNamed('headers')),
+              ).captured.single
+              as Map<String, String>;
+      expect(captured[HttpHeaders.authorizationHeader], 'Bearer jwt-access');
+    });
+
+    test('headless 401 wipes the new prefs keys and the secure-storage refresh token', () async {
+      await seedHeadlessBundle();
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Unauthorized', 401));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedOut);
+      final prefs = PreferenceHelper.asyncPref;
+      expect(await prefs.containsKey(PREFS_ACCESS_TOKEN), false);
+      expect(await prefs.containsKey(PREFS_ACCESS_EXPIRES_AT), false);
+      expect(await prefs.containsKey(PREFS_TOKEN_TYPE), false);
+      expect(await prefs.containsKey(PREFS_SERVER_URL), false);
+      verify(mockSecureStorage.deleteRefreshToken()).called(1);
+    });
+
+    test('missing required headless keys fall through to the legacy PREFS_USER path', () async {
+      // PREFS_TOKEN_TYPE set, but PREFS_ACCESS_TOKEN missing → fall through.
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+      // PREFS_USER seeded by setUp.
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.tokenType, AuthTokenType.legacyApiToken);
+      expect(state.token, token);
+
+      final captured =
+          verify(
+                mockClient.head(tProbe, headers: captureAnyNamed('headers')),
+              ).captured.single
+              as Map<String, String>;
+      expect(captured[HttpHeaders.authorizationHeader], 'Token $token');
+    });
+  });
+
+  group('refreshAccessToken', () {
+    final tRefresh = Uri.parse('$serverUrl/_allauth/app/v1/tokens/refresh');
+
+    /// Builds a JWT-shaped string with the given payload (signature is a sham,
+    /// we only ever decode the middle segment).
+    String makeJwt(Map<String, dynamic> payload) {
+      String enc(Map<String, dynamic> m) =>
+          base64Url.encode(utf8.encode(jsonEncode(m))).replaceAll('=', '');
+      return '${enc({'alg': 'HS256', 'typ': 'JWT'})}.${enc(payload)}.signature';
+    }
+
+    Future<void> seedHeadlessBundle() async {
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.remove(PREFS_USER);
+      await prefs.setString(PREFS_ACCESS_TOKEN, 'old-access');
+      await prefs.setInt(
+        PREFS_ACCESS_EXPIRES_AT,
+        DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
+      );
+      await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+      await prefs.setString(PREFS_SERVER_URL, serverUrl);
+    }
+
+    test('happy path: persists rotated refresh + updates state with new access/exp', () async {
+      await seedHeadlessBundle();
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+
+      const expSeconds = 1900000000;
+      final expectedExp = DateTime.fromMillisecondsSinceEpoch(expSeconds * 1000, isUtc: true);
+      final newAccess = makeJwt({'sub': '42', 'exp': expSeconds});
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      final state = container.read(authProvider).value!;
+      expect(state.accessToken, newAccess);
+      expect(state.accessExpiresAt, expectedExp);
+
+      verify(mockSecureStorage.writeRefreshToken('new-refresh')).called(1);
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_ACCESS_TOKEN), newAccess);
+      expect(
+        await PreferenceHelper.asyncPref.getInt(PREFS_ACCESS_EXPIRES_AT),
+        expectedExp.millisecondsSinceEpoch,
+      );
+    });
+
+    test('parses access_token from data', () async {
+      await seedHeadlessBundle();
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+
+      final newAccess = makeJwt({'exp': 1900000000});
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess, 'refresh_token': 'rotated-refresh'},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      expect(container.read(authProvider).value!.accessToken, newAccess);
+      verify(mockSecureStorage.writeRefreshToken('rotated-refresh')).called(1);
+    });
+
+    test('response without rotated refresh leaves the stored refresh token alone', () async {
+      await seedHeadlessBundle();
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+
+      final newAccess = makeJwt({'exp': 1900000000});
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      verifyNever(mockSecureStorage.writeRefreshToken(any));
+    });
+
+    test('no refresh token in secure storage → logout', () async {
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => null);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
+      verifyNever(mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')));
+    });
+
+    test('non-200 response → logout', () async {
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) async => Response('Unauthorized', 401));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
+    });
+
+    test('network error → logout', () async {
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenThrow(http.ClientException('SocketException: connection refused'));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
+    });
+
+    test('malformed body (no tokens) → logout', () async {
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) async => Response(jsonEncode({'status': 200}), 200));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
+    });
+
+    test('single-flight: concurrent callers share one HTTP request', () async {
+      await seedHeadlessBundle();
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+
+      // Hold the response so both calls overlap.
+      final completer = Completer<Response>();
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) => completer.future);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      final notifier = container.read(authProvider.notifier);
+
+      final f1 = notifier.refreshAccessToken();
+      final f2 = notifier.refreshAccessToken();
+
+      final newAccess = makeJwt({'exp': 1900000000});
+      completer.complete(
+        Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+      await Future.wait([f1, f2]);
+
+      verify(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).called(1);
     });
   });
 }

@@ -34,18 +34,20 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/secure_token_storage.dart';
 import 'package:wger/screens/powersync_unreachable_screen.dart';
 
 import 'recovery_screens_test.mocks.dart';
 
 /// Widget tests for the recovery screens.
-@GenerateMocks([http.Client])
+@GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
   // Replacement for SharedPreferences.setMockInitialValues() for the
   // async API used by the auth notifier.
   SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
   late MockClient mockClient;
+  late MockSecureTokenStorage mockSecureStorage;
 
   const serverUrl = 'https://wger.example';
   const token = 'token-12345';
@@ -59,13 +61,16 @@ void main() {
 
   Widget wrap(Widget child) {
     return ProviderScope(
-      overrides: [authHttpClientProvider.overrideWithValue(mockClient)],
+      overrides: [
+        authHttpClientProvider.overrideWithValue(mockClient),
+        secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
+      ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('en'),
         // logout buttons in the recovery screens navigate to '/' after
-        // calling the notifier — register both the entry route and a
+        // calling the notifier, register both the entry route and a
         // stub for '/' so the navigation succeeds in tests. We can't
         // use `home` here since that conflicts with a routes['/'] entry.
         initialRoute: '/test',
@@ -88,6 +93,10 @@ void main() {
 
   setUp(() async {
     mockClient = MockClient();
+    mockSecureStorage = MockSecureTokenStorage();
+    when(mockSecureStorage.deleteRefreshToken()).thenAnswer((_) async {});
+    when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => null);
+    when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
 
     SharedPreferences.setMockInitialValues({});
     PackageInfo.setMockInitialValues(

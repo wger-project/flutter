@@ -28,6 +28,7 @@ import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/locale.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/app_link_router.dart';
 import 'package:wger/providers/app_settings_notifier.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
@@ -168,6 +169,9 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authAsync = ref.watch(authProvider);
+    // Instantiates the singleton on first build; the provider subscribes to
+    // incoming deep links as a side effect of being read.
+    ref.watch(appLinkRouterProvider);
 
     return authAsync.when(
       loading: () => const MaterialApp(home: SplashScreen()),

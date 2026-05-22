@@ -58,7 +58,7 @@ void main() {
   Future<List<dynamic>> readLogs() => db.select(db.workoutLogTable).get();
   Future<List<dynamic>> readSessions() => db.select(db.workoutSessionTable).get();
 
-  group('addLocalDrift — log already has a sessionId', () {
+  group('addLocalDrift, log already has a sessionId', () {
     test('inserts the log without touching the session table', () async {
       final log = makeLog(sessionId: 'existing-session');
 
@@ -71,7 +71,7 @@ void main() {
     });
   });
 
-  group('addLocalDrift — log without sessionId', () {
+  group('addLocalDrift, log without sessionId', () {
     test('reuses an existing session for the same routine and day', () async {
       final existingSession = WorkoutSession(
         id: 'existing-session-1',

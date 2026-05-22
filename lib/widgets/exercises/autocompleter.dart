@@ -143,14 +143,14 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
     );
   }
 
-  /// The filter icon button — shows an active-filter badge and opens
+  /// The filter icon button, shows an active-filter badge and opens
   /// [ExerciseFilterDialog] on tap.
   Widget _filterButton(BuildContext context) {
     final filters = ref.watch(exerciseFiltersSyncProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
     // Auto-correct: in an English locale "current + English" collapses to
-    // "current" — fix it once if a stored preference landed on the
+    // "current", fix it once if a stored preference landed on the
     // non-locale-aware default.
     if (languageCode == LANGUAGE_SHORT_ENGLISH &&
         filters.searchLanguage == SearchLanguage.currentAndEnglish) {

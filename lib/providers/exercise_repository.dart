@@ -48,7 +48,7 @@ final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
 /// Read access for the exercise catalogue.
 ///
 /// The catalogue is denormalised across many tables (translations, muscles,
-/// equipment, category, images, videos) — this repository owns the join +
+/// equipment, category, images, videos), this repository owns the join +
 /// assembly so the [Exercises] notifier stays focused on state-shape and
 /// search routing, and so tests can swap a single mock instead of stubbing
 /// the whole `DriftPowersyncDatabase`.
@@ -351,7 +351,7 @@ class ExerciseRepository {
     return _db.select(_db.muscleTable).watch();
   }
 
-  /// Streams the list of supported languages — reference data for exercise
+  /// Streams the list of supported languages, reference data for exercise
   /// translations.
   Stream<List<Language>> watchLanguagesDrift() {
     return _db.select(_db.languageTable).watch();

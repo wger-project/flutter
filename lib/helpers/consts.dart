@@ -59,6 +59,25 @@ const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_USER_LOCALE = 'userLocale';
 const PREFS_LAST_SERVER = 'lastServer';
 
+/// Headless JWT auth: SharedPreferences keys.
+///
+/// Read in parallel with the legacy `PREFS_USER` blob during the migration
+/// window; once a user logs in via the headless flow these supersede it.
+/// The refresh token is **not** stored here, it lives in secure storage
+/// (`SECURE_STORAGE_REFRESH_TOKEN`).
+const PREFS_ACCESS_TOKEN = 'accessToken';
+const PREFS_ACCESS_EXPIRES_AT = 'accessExpiresAt';
+const PREFS_TOKEN_TYPE = 'tokenType';
+const PREFS_SERVER_URL = 'serverUrl';
+
+/// Secure-storage key for the headless refresh token.
+const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';
+
+/// Login-CSRF defence for the web-handoff flow. Stored in SharedPreferences
+/// (not a secret, just a one-shot nonce echoed back by the server).
+const PREFS_APP_AUTH_STATE = 'appAuthState';
+const PREFS_APP_AUTH_STATE_AT = 'appAuthStateAt';
+
 /// True once PowerSync has been reachable for this user at least once
 /// (i.e. its liveness probe returned 200).
 const PREFS_HAS_EVER_SYNCED = 'hasEverSynced';

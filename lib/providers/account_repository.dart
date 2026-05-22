@@ -23,7 +23,7 @@ import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
 const _PROFILE_URL = 'userprofile';
-const _VERIFY_EMAIL = 'verify-email';
+const _HEADLESS_ACCOUNT_EMAIL = 'account/email';
 
 final accountRepositoryProvider = Provider<AccountRepository>((ref) {
   final base = ref.read(wgerBaseProvider);
@@ -46,9 +46,21 @@ class AccountRepository {
     return Account.fromJson(data);
   }
 
-  /// Triggers the server's verification email flow.
-  Future<void> verifyEmail() async {
-    _logger.finer('Requesting email verification');
-    await _base.fetch(_base.makeUrl(_PROFILE_URL, objectMethod: _VERIFY_EMAIL));
+  /// Starts an email-change flow against `allauth.headless`.
+  ///
+  /// Posting a new address queues it as a pending change: the server mails a
+  /// verification link to [newEmail], and the new address only replaces the
+  /// current one once the user clicks that link. Until then the account email
+  /// is unchanged.
+  Future<void> requestEmailChange(String newEmail) async {
+    _logger.finer('Requesting email change');
+    await _base.post({'email': newEmail}, _base.makeHeadlessUrl(_HEADLESS_ACCOUNT_EMAIL));
+  }
+
+  /// Asks the server to re-send the verification mail for [email]. Useful for
+  /// users who signed up but never clicked the original link.
+  Future<void> resendVerification(String email) async {
+    _logger.finer('Re-sending email verification');
+    await _base.put({'email': email}, _base.makeHeadlessUrl(_HEADLESS_ACCOUNT_EMAIL));
   }
 }

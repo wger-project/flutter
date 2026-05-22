@@ -159,7 +159,7 @@ class Ingredient {
   Map<String, dynamic> toJson() => _$IngredientToJson(this);
 
   NutritionalValues get nutritionalValues {
-    // Treat missing macronutrient data as zero — better to show "0 g
+    // Treat missing macronutrient data as zero, better to show "0 g
     // fiber" than to omit/explode for ingredients with sparse data.
     return NutritionalValues.values(
       energy * 1,

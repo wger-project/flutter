@@ -191,7 +191,7 @@ class IngredientScanResultDialog extends StatelessWidget {
 
     final ingredient = snapshot.data;
 
-    // No product matched the barcode — offer the user to add it to OFF.
+    // No product matched the barcode, offer the user to add it to OFF.
     if (ingredient == null) {
       return AlertDialog(
         key: const Key('ingredient-scan-result-dialog'),
@@ -222,7 +222,7 @@ class IngredientScanResultDialog extends StatelessWidget {
       );
     }
 
-    // Product found — render details + confirm button.
+    // Product found, render details + confirm button.
     final goals = ingredient.nutritionalValues.toGoals();
     final source = ingredient.sourceName ?? 'unknown';
     return AlertDialog(

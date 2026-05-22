@@ -42,7 +42,7 @@ class ExerciseImageWidget extends StatelessWidget {
     return WgerImage(
       mediaPath: image?.image,
       height: height,
-      // No width — let the parent decide, matching the previous Image.network
+      // No width, let the parent decide, matching the previous Image.network
       // behaviour where the natural aspect ratio drove sizing.
       fit: BoxFit.contain,
       errorWidget: _placeholder,

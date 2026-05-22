@@ -32,12 +32,13 @@ import 'package:shared_preferences_platform_interface/shared_preferences_async_p
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/secure_token_storage.dart';
 import 'package:wger/screens/auth_screen.dart';
 
 import '../fake_connectivity.dart';
 import 'auth_screen_test.mocks.dart';
 
-@GenerateMocks([http.Client])
+@GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
   /// Replacement for SharedPreferences.setMockInitialValues()
   SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
@@ -47,34 +48,43 @@ void main() {
   installFakeConnectivity();
 
   late MockClient mockClient;
+  late MockSecureTokenStorage mockSecureStorage;
 
-  final Uri tRegistration = Uri(
+  final Uri tHeadlessLogin = Uri(
     scheme: 'https',
     host: 'wger.de',
-    path: 'api/v2/register/',
+    path: '/_allauth/app/v1/auth/login',
   );
-
-  final Uri tLogin = Uri(
+  final Uri tHeadlessSignup = Uri(
     scheme: 'https',
     host: 'wger.de',
-    path: 'api/v2/login/',
+    path: '/_allauth/app/v1/auth/signup',
   );
-  final Uri tProfileCheck = Uri(
+  final Uri tHeadlessRefresh = Uri(
     scheme: 'https',
     host: 'wger.de',
-    path: 'api/v2/userprofile/',
+    path: '/_allauth/app/v1/tokens/refresh',
   );
-  final responseLoginOk = {'token': '1234567890abcdef1234567890abcdef12345678'};
 
-  final responseRegistrationOk = {
-    'message': 'api user successfully registered',
-    'token': '1234567890abcdef1234567890abcdef12345678',
+  const validJwt = 'header.payload.signature';
+  const otherJwt = 'header2.payload2.signature2';
+
+  /// Headless envelope carrying a sham JWT. The signature segment is not
+  /// validated client-side, so any three-dot string works.
+  Map<String, dynamic> headlessAuthOk() => {
+    'status': 200,
+    'data': {},
+    'meta': {
+      'access_token': 'header.payload.signature',
+      'refresh_token': 'refresh-token-${DateTime.now().microsecondsSinceEpoch}',
+    },
   };
 
   Widget getWidget() {
     return ProviderScope(
       overrides: [
         authHttpClientProvider.overrideWithValue(mockClient),
+        secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
       ],
       child: const MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -87,6 +97,10 @@ void main() {
 
   setUp(() {
     mockClient = MockClient();
+    mockSecureStorage = MockSecureTokenStorage();
+    when(mockSecureStorage.deleteRefreshToken()).thenAnswer((_) async {});
+    when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => null);
+    when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
 
     // Default: online. The offline test overrides this.
     reachabilityCheck = (_, _, _) async => true;
@@ -100,26 +114,27 @@ void main() {
       buildSignature: 'buildSignature',
     );
 
+    // Happy-path stubs for the headless login / signup endpoints; tests
+    // that exercise error responses override these as needed.
     when(
       mockClient.post(
-        tLogin,
+        tHeadlessLogin,
         headers: anyNamed('headers'),
         body: anyNamed('body'),
       ),
-    ).thenAnswer((_) => Future(() => Response(json.encode(responseLoginOk), 200)));
+    ).thenAnswer((_) => Future(() => Response(json.encode(headlessAuthOk()), 200)));
+    when(
+      mockClient.post(
+        tHeadlessSignup,
+        headers: anyNamed('headers'),
+        body: anyNamed('body'),
+      ),
+    ).thenAnswer((_) => Future(() => Response(json.encode(headlessAuthOk()), 200)));
 
     when(mockClient.get(any)).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
     when(
       mockClient.get(any, headers: anyNamed('headers')),
     ).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
-
-    when(
-      mockClient.post(
-        tRegistration,
-        headers: anyNamed('headers'),
-        body: anyNamed('body'),
-      ),
-    ).thenAnswer((_) => Future(() => Response(json.encode(responseRegistrationOk), 201)));
   });
 
   group('Login mode', () {
@@ -142,7 +157,7 @@ void main() {
       expect(find.byKey(const Key('actionButton')), findsOneWidget);
       expect(find.byKey(const Key('toggleActionButton')), findsOneWidget);
       expect(find.byKey(const Key('toggleCustomServerButton')), findsOneWidget);
-      expect(find.byKey(const ValueKey('toggleApiTokenButton')), findsNothing);
+      expect(find.byKey(const ValueKey('toggleRefreshTokenButton')), findsNothing);
     });
 
     testWidgets('Login - with username & password - happy path', (WidgetTester tester) async {
@@ -157,12 +172,12 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.byKey(const ValueKey('inputApiToken')), findsNothing);
+      expect(find.byKey(const ValueKey('inputRefreshToken')), findsNothing);
       expect(find.textContaining('An Error Occurred'), findsNothing);
       verify(mockClient.get(any));
       verify(
         mockClient.post(
-          tLogin,
+          tHeadlessLogin,
           headers: anyNamed('headers'),
           body: json.encode({'username': 'testuser', 'password': '123456789'}),
         ),
@@ -178,7 +193,7 @@ void main() {
       };
       when(
         mockClient.post(
-          tLogin,
+          tHeadlessLogin,
           headers: anyNamed('headers'),
           body: anyNamed('body'),
         ),
@@ -198,7 +213,7 @@ void main() {
       expect(find.textContaining('Username or password unknown'), findsOne);
       verify(
         mockClient.post(
-          tLogin,
+          tHeadlessLogin,
           headers: anyNamed('headers'),
           body: json.encode({'username': 'testuser', 'password': '123456789'}),
         ),
@@ -215,7 +230,7 @@ void main() {
       // message, not crash through to the red error screen.
       when(
         mockClient.post(
-          tLogin,
+          tHeadlessLogin,
           headers: anyNamed('headers'),
           body: anyNamed('body'),
         ),
@@ -235,7 +250,7 @@ void main() {
       expect(tester.takeException(), isNull);
       verify(
         mockClient.post(
-          tLogin,
+          tHeadlessLogin,
           headers: anyNamed('headers'),
           body: json.encode({'username': 'testuser', 'password': '123456789'}),
         ),
@@ -253,23 +268,34 @@ void main() {
       expect(button.onPressed, isNull);
     });
 
-    testWidgets('Login - with API token - happy path', (WidgetTester tester) async {
-      // Arrange
+    testWidgets('Login - with refresh token - happy path', (WidgetTester tester) async {
+      // Arrange: stub tokens/refresh to return a rotated bundle.
+      when(
+        mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) => Future(
+          () => Response(
+            json.encode({
+              'status': 200,
+              'data': {'access_token': otherJwt, 'refresh_token': 'rotated'},
+              'meta': {'is_authenticated': true},
+            }),
+            200,
+          ),
+        ),
+      );
       await tester.pumpWidget(getWidget());
       await tester.pumpAndSettle();
 
       // Act
       await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
       await tester.pump();
-      await tester.tap(find.byKey(const ValueKey('toggleApiTokenButton')));
+      await tester.tap(find.byKey(const ValueKey('toggleRefreshTokenButton')));
       await tester.pump();
-      await tester.enterText(
-        find.byKey(const ValueKey('inputApiToken')),
-        '1234567890abcdef1234567890abcdef12345678',
-      );
+      await tester.enterText(find.byKey(const ValueKey('inputRefreshToken')), validJwt);
 
-      // Assert that API token mode is active before submitting.
-      expect(find.byKey(const ValueKey('inputApiToken')), findsOne);
+      // Assert that refresh-token mode is active before submitting.
+      expect(find.byKey(const ValueKey('inputRefreshToken')), findsOne);
       expect(find.byKey(const Key('inputUsername')), findsNothing);
       expect(find.byKey(const Key('inputPassword')), findsNothing);
 
@@ -279,48 +305,40 @@ void main() {
       // Assert
       expect(find.textContaining('An Error Occurred'), findsNothing);
 
-      verify(
-        mockClient.get(
-          tProfileCheck,
-          headers: argThat(
-            predicate(
-              (headers) =>
-                  headers is Map<String, String> &&
-                  headers['authorization'] == 'Token 1234567890abcdef1234567890abcdef12345678',
-            ),
-            named: 'headers',
-          ),
-        ),
-      );
+      // The pasted token is sent in the body of tokens/refresh.
+      final captured =
+          verify(
+                mockClient.post(
+                  tHeadlessRefresh,
+                  headers: anyNamed('headers'),
+                  body: captureAnyNamed('body'),
+                ),
+              ).captured.single
+              as String;
+      expect(json.decode(captured)['refresh_token'], validJwt);
+      // The username/password endpoint must not be hit.
       verifyNever(
-        mockClient.post(
-          any,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        ),
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
       );
     });
 
-    testWidgets('Login - with API token - wrong key', (WidgetTester tester) async {
+    testWidgets('Login - with refresh token - server rejects it', (WidgetTester tester) async {
       // Arrange
       final response = {
         'detail': ['Invalid token'],
       };
       when(
-        mockClient.get(tProfileCheck, headers: anyNamed('headers')),
-      ).thenAnswer((_) => Future(() => Response(json.encode(response), 400)));
+        mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) => Future(() => Response(json.encode(response), 401)));
       await tester.pumpWidget(getWidget());
       await tester.pumpAndSettle();
 
       // Act
       await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
       await tester.pump();
-      await tester.tap(find.byKey(const ValueKey('toggleApiTokenButton')));
+      await tester.tap(find.byKey(const ValueKey('toggleRefreshTokenButton')));
       await tester.pump();
-      await tester.enterText(
-        find.byKey(const ValueKey('inputApiToken')),
-        '31e2ea0322c07b9df583a9b6d1e794f7139e78d4',
-      );
+      await tester.enterText(find.byKey(const ValueKey('inputRefreshToken')), validJwt);
       await tester.tap(find.byKey(const Key('actionButton')));
       await tester.pumpAndSettle();
 
@@ -328,24 +346,15 @@ void main() {
       expect(find.textContaining('Detail'), findsOne);
       expect(find.textContaining('Invalid token'), findsOne);
       verify(
-        mockClient.get(
-          tProfileCheck,
-          headers: argThat(
-            predicate(
-              (headers) =>
-                  headers is Map<String, String> &&
-                  headers['authorization'] == 'Token 31e2ea0322c07b9df583a9b6d1e794f7139e78d4',
-            ),
-            named: 'headers',
-          ),
-        ),
-      );
-      verifyNever(
         mockClient.post(
-          any,
+          tHeadlessRefresh,
           headers: anyNamed('headers'),
           body: anyNamed('body'),
         ),
+      );
+      // The username/password endpoint must not be hit.
+      verifyNever(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
       );
     });
   });
@@ -399,7 +408,7 @@ void main() {
       expect(find.textContaining('An Error Occurred'), findsNothing);
       verify(
         mockClient.post(
-          tRegistration,
+          tHeadlessSignup,
           headers: anyNamed('headers'),
           body: json.encode({'username': 'testuser', 'password': '123456789'}),
         ),
@@ -420,7 +429,7 @@ void main() {
 
       when(
         mockClient.post(
-          tRegistration,
+          tHeadlessSignup,
           headers: anyNamed('headers'),
           body: anyNamed('body'),
         ),
@@ -443,7 +452,7 @@ void main() {
 
       verify(
         mockClient.post(
-          tRegistration,
+          tHeadlessSignup,
           headers: anyNamed('headers'),
           body: json.encode({'username': 'testuser', 'password': '123456789'}),
         ),

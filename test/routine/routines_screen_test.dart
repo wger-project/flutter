@@ -108,7 +108,7 @@ void main() {
     // Confirmation dialog
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    // Confirm tap — note: the actual delete now goes through Drift +
+    // Confirm tap, note: the actual delete now goes through Drift +
     // PowerSync (not REST), so we don't verify a repository call here.
     // The UI flow up to dispatch is what's covered.
     await tester.tap(find.text('Delete'));

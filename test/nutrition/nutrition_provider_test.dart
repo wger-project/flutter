@@ -55,7 +55,7 @@ void main() {
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(plans));
     final container = makeContainer();
     // Explicit listener keeps the provider element alive while we wait for
-    // the Drift-stream emission to propagate — in unit tests there is no
+    // the Drift-stream emission to propagate, in unit tests there is no
     // widget pump that would do this for us.
     container.listen(nutritionProvider, (_, _) {});
     await pumpEventQueue();
@@ -227,7 +227,7 @@ void main() {
       final container = makeContainer();
       final result = await container.read(nutritionProvider.notifier).addPlan(toAdd);
 
-      // Notifier no longer mints — the repository (Drift's clientDefault)
+      // Notifier no longer mints, the repository (Drift's clientDefault)
       // does, on insert. The mock doesn't run that, so id stays null here.
       expect(identical(result, toAdd), isTrue);
       verify(mockRepo.addPlanLocalDrift(toAdd)).called(1);

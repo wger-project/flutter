@@ -137,7 +137,7 @@ void main() {
     // separate stub is needed.
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => ingredient);
     // NutritionNotifier.build() subscribes to three Drift streams (plans,
-    // meals, diary entries) — emit the seed plan and meals so the combined
+    // meals, diary entries), emit the seed plan and meals so the combined
     // stream produces a value.
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value([plan1]));
     when(mockRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(plan1.meals));

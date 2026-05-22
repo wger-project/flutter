@@ -51,7 +51,7 @@ void main() {
     mockRepo = MockRoutinesRepository();
     when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const <Routine>[]));
     // Mock repos for the two reference-data notifiers `fetchAndSetRoutineFull`
-    // awaits — kept locally so individual tests can re-stub them with
+    // awaits, kept locally so individual tests can re-stub them with
     // specific session/exercise data.
     mockSessionRepo = MockWorkoutSessionRepository();
     when(
@@ -178,7 +178,7 @@ void main() {
       verify(mockRepo.editDayServer(day1)).called(1);
       verify(mockRepo.editDayServer(day2)).called(1);
       // dayData/dayDataGym are server-computed, so we must refresh once after
-      // the batch — not once per edit.
+      // the batch, not once per edit.
       verify(mockRepo.fetchAndSetRoutineFullServer(101)).called(1);
     });
 

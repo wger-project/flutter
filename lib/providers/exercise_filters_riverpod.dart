@@ -32,7 +32,7 @@ class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
     final prefs = PreferenceHelper.instance;
     final searchLanguage = await prefs.getExerciseSearchLanguage();
     final searchMode = await prefs.getExerciseSearchMode();
-    // Note: we don't persist selectedCategories — they reset on app restart.
+    // Note: we don't persist selectedCategories, they reset on app restart.
     return ExerciseFilters(
       searchLanguage: searchLanguage,
       searchMode: searchMode,
@@ -77,7 +77,7 @@ class ExerciseFiltersNotifier extends _$ExerciseFiltersNotifier {
   }
 }
 
-/// Synchronous unwrapper — to avoid AsyncValue boilerplate
+/// Synchronous unwrapper, to avoid AsyncValue boilerplate
 final exerciseFiltersSyncProvider = Provider<ExerciseFilters>((ref) {
   return ref.watch(exerciseFiltersProvider).asData?.value ?? const ExerciseFilters();
 });
