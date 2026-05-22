@@ -184,6 +184,32 @@ void main() {
       );
     });
 
+    testWidgets('Login - short password is accepted (no min-length block)', (
+      WidgetTester tester,
+    ) async {
+      // Regression (bug #1): the login form must not enforce a minimum
+      // password length, otherwise existing accounts with shorter passwords
+      // are locked out.
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), 'short');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert: the form submitted instead of blocking on a length validator.
+      expect(find.text('The password is too short'), findsNothing);
+      verify(
+        mockClient.post(
+          tHeadlessLogin,
+          headers: anyNamed('headers'),
+          body: json.encode({'username': 'testuser', 'password': 'short'}),
+        ),
+      );
+    });
+
     testWidgets('Login - wrong username & password', (WidgetTester tester) async {
       // Arrange
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
@@ -412,6 +438,29 @@ void main() {
           headers: anyNamed('headers'),
           body: json.encode({'username': 'testuser', 'password': '123456789'}),
         ),
+      );
+    });
+
+    testWidgets('Registration - short password is rejected', (WidgetTester tester) async {
+      // Regression (bug #1): the registration form enforces a minimum
+      // password length and must block before submitting.
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.tap(find.byKey(const Key('toggleActionButton')));
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), 'short');
+      await tester.enterText(find.byKey(const Key('inputPassword2')), 'short');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert: the length validator blocks and signup is never hit.
+      expect(find.text('The password is too short'), findsOneWidget);
+      verifyNever(
+        mockClient.post(tHeadlessSignup, headers: anyNamed('headers'), body: anyNamed('body')),
       );
     });
 

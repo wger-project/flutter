@@ -17,39 +17,51 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-class UsernameField extends StatelessWidget {
+class ConfirmPasswordField extends StatefulWidget {
   final TextEditingController controller;
 
-  const UsernameField({required this.controller, super.key});
+  /// The password field this entry must match.
+  final TextEditingController passwordController;
+
+  const ConfirmPasswordField({
+    required this.controller,
+    required this.passwordController,
+    super.key,
+  });
+
+  @override
+  State<ConfirmPasswordField> createState() => _ConfirmPasswordFieldState();
+}
+
+class _ConfirmPasswordFieldState extends State<ConfirmPasswordField> {
+  bool isObscure = true;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      key: const Key('inputUsername'),
+      key: const Key('inputPassword2'),
       decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).username,
-        errorMaxLines: 2,
-        prefixIcon: const Icon(Icons.account_circle),
+        labelText: AppLocalizations.of(context).confirmPassword,
+        prefixIcon: const Icon(Icons.password),
+        suffixIcon: IconButton(
+          icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility),
+          onPressed: () {
+            setState(() {
+              isObscure = !isObscure;
+            });
+          },
+        ),
       ),
-      autofillHints: const [AutofillHints.username],
-      controller: controller,
-      textInputAction: TextInputAction.next,
-      keyboardType: TextInputType.emailAddress,
+      obscureText: isObscure,
+      controller: widget.controller,
       validator: (value) {
-        if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context).invalidUsername;
-        }
-        if (!RegExp(r'^[\w.@+-]+$').hasMatch(value)) {
-          return AppLocalizations.of(context).usernameValidChars;
+        if (value != widget.passwordController.text) {
+          return AppLocalizations.of(context).passwordsDontMatch;
         }
         return null;
       },
-      inputFormatters: [
-        FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s')),
-      ],
     );
   }
 }

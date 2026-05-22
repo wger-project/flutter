@@ -34,6 +34,7 @@ import 'package:wger/screens/mfa_challenge_screen.dart';
 import 'package:wger/screens/update_app_screen.dart';
 import 'package:wger/screens/update_server_screen.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/auth/confirm_password_field.dart';
 import 'package:wger/widgets/auth/email_field.dart';
 import 'package:wger/widgets/auth/password_field.dart';
 import 'package:wger/widgets/auth/refresh_token_field.dart';
@@ -42,8 +43,8 @@ import 'package:wger/widgets/auth/username_field.dart';
 import 'package:wger/widgets/core/server_config_warning_dialog.dart';
 
 enum AuthMode {
-  Register,
-  Login,
+  register,
+  login,
 }
 
 class AuthScreen extends StatelessWidget {
@@ -116,20 +117,12 @@ class AuthCard extends ConsumerStatefulWidget {
 
 class _AuthCardState extends ConsumerState<AuthCard> {
   bool isObscure = true;
-  bool confirmIsObscure = true;
   Widget errorMessage = const SizedBox.shrink();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.Login;
+  AuthMode _authMode = AuthMode.login;
   bool _hideCustomServer = true;
   bool _useUsernameAndPassword = true;
-  final Map<String, String> _authData = {
-    'username': '',
-    'email': '',
-    'password': '',
-    'serverUrl': '',
-    'refreshToken': '',
-  };
   var _isLoading = false;
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -183,7 +176,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   }
 
   void _preFillTextfields() {
-    if (kDebugMode && _authMode == AuthMode.Login) {
+    if (kDebugMode && _authMode == AuthMode.login) {
       setState(() {
         _usernameController.text = TESTSERVER_USER_NAME;
         _passwordController.text = TESTSERVER_PASSWORD;
@@ -201,30 +194,34 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    _formKey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
+
+    var serverUrl = _serverUrlController.text;
+    if (serverUrl.endsWith('/')) {
+      serverUrl = serverUrl.substring(0, serverUrl.length - 1);
+    }
 
     try {
       final authNotifier = ref.read(authProvider.notifier);
       // Login existing user
       late LoginActions res;
-      if (_authMode == AuthMode.Login) {
+      if (_authMode == AuthMode.login) {
         res = await authNotifier.login(
-          _authData['username']!,
-          _authData['password']!,
-          _authData['serverUrl']!,
-          _authData['refreshToken'],
+          _usernameController.text,
+          _passwordController.text,
+          serverUrl,
+          _refreshTokenController.text,
         );
 
         // Register new user
       } else {
         res = await authNotifier.register(
-          username: _authData['username']!,
-          password: _authData['password']!,
-          email: _authData['email']!,
-          serverUrl: _authData['serverUrl']!,
+          username: _usernameController.text,
+          password: _passwordController.text,
+          email: _emailController.text,
+          serverUrl: serverUrl,
           locale: Localizations.localeOf(context).languageCode,
         );
       }
@@ -264,7 +261,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
           MaterialPageRoute(
             builder: (_) => MfaChallengeScreen(
               sessionToken: e.sessionToken,
-              serverUrl: _authData['serverUrl']!,
+              serverUrl: serverUrl,
               availableFactors: e.availableFactors,
             ),
           ),
@@ -301,15 +298,15 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   }
 
   void _switchAuthMode() {
-    if (_authMode == AuthMode.Login) {
+    if (_authMode == AuthMode.login) {
       setState(() {
-        _authMode = AuthMode.Register;
+        _authMode = AuthMode.register;
         _useUsernameAndPassword = true;
       });
       _resetTextfields();
     } else {
       setState(() {
-        _authMode = AuthMode.Login;
+        _authMode = AuthMode.login;
       });
       _preFillTextfields();
     }
@@ -341,80 +338,27 @@ class _AuthCardState extends ConsumerState<AuthCard> {
               child: Column(
                 children: [
                   errorMessage,
-                  if (_useUsernameAndPassword)
-                    UsernameField(
-                      controller: _usernameController,
-                      onSaved: (value) => _authData['username'] = value!,
-                    ),
-                  if (_authMode == AuthMode.Register)
-                    EmailField(
-                      controller: _emailController,
-                      onSaved: (value) => _authData['email'] = value!,
-                    ),
+                  if (_useUsernameAndPassword) UsernameField(controller: _usernameController),
+                  if (_authMode == AuthMode.register) EmailField(controller: _emailController),
                   if (_useUsernameAndPassword)
                     PasswordField(
                       controller: _passwordController,
-                      onSaved: (value) => _authData['password'] = value!,
+                      enforceMinLength: _authMode == AuthMode.register,
                     ),
 
-                  if (_authMode == AuthMode.Register)
-                    StatefulBuilder(
-                      builder: (context, updateState) {
-                        return TextFormField(
-                          key: const Key('inputPassword2'),
-                          decoration: InputDecoration(
-                            labelText: i18n.confirmPassword,
-                            prefixIcon: const Icon(Icons.password),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                confirmIsObscure ? Icons.visibility_off : Icons.visibility,
-                              ),
-                              onPressed: () {
-                                updateState(() {
-                                  confirmIsObscure = !confirmIsObscure;
-                                });
-                              },
-                            ),
-                          ),
-                          controller: _password2Controller,
-                          enabled: _authMode == AuthMode.Register,
-                          obscureText: confirmIsObscure,
-                          validator: _authMode == AuthMode.Register
-                              ? (value) {
-                                  if (value != _passwordController.text) {
-                                    return i18n.passwordsDontMatch;
-                                  }
-                                  return null;
-                                }
-                              : null,
-                        );
-                      },
+                  if (_authMode == AuthMode.register)
+                    ConfirmPasswordField(
+                      controller: _password2Controller,
+                      passwordController: _passwordController,
                     ),
 
-                  // Off-stage widgets are kept in the tree, otherwise the server URL
-                  // would not be saved to _authData
-                  if (_authMode == AuthMode.Login && !_useUsernameAndPassword)
-                    RefreshTokenField(
-                      controller: _refreshTokenController,
-                      onSaved: (value) => _authData['refreshToken'] = value!,
-                    ),
-                  Offstage(
-                    offstage: _hideCustomServer,
-                    child: ServerField(
-                      controller: _serverUrlController,
-                      onSaved: (value) {
-                        // Remove any trailing slash
-                        if (value!.lastIndexOf('/') == (value.length - 1)) {
-                          value = value.substring(0, value.lastIndexOf('/'));
-                        }
-                        _authData['serverUrl'] = value;
-                      },
-                    ),
-                  ),
+                  if (_authMode == AuthMode.login && !_useUsernameAndPassword)
+                    RefreshTokenField(controller: _refreshTokenController),
+                  if (!_hideCustomServer) ServerField(controller: _serverUrlController),
                   if (!_hideCustomServer)
                     TextButton(
                       key: const ValueKey('toggleRefreshTokenButton'),
-                      onPressed: _authMode == AuthMode.Login
+                      onPressed: _authMode == AuthMode.login
                           ? () => setState(() => _useUsernameAndPassword = !_useUsernameAndPassword)
                           : null,
                       child: Text(
@@ -424,7 +368,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                       ),
                     ),
 
-                  if (_authMode == AuthMode.Login)
+                  if (_authMode == AuthMode.login)
                     TextButton.icon(
                       key: const Key('loginViaWebButton'),
                       onPressed: _isLoading ? null : _launchWebHandoff,
@@ -453,7 +397,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                               valueColor: AlwaysStoppedAnimation(Colors.white),
                             )
                           : Text(
-                              _authMode == AuthMode.Login ? i18n.login : i18n.register,
+                              _authMode == AuthMode.login ? i18n.login : i18n.register,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -466,7 +410,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                   Builder(
                     key: const Key('toggleActionButton'),
                     builder: (context) {
-                      final String text = _authMode != AuthMode.Register
+                      final String text = _authMode != AuthMode.register
                           ? i18n.registerInstead
                           : i18n.loginInstead;
 
