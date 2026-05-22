@@ -18,37 +18,32 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/models/user/profile.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base.dart';
-
-const _PROFILE_URL = 'userprofile';
-const _VERIFY_EMAIL = 'verify-email';
+import 'package:wger/database/powersync/database.dart';
+import 'package:wger/models/user/user_profile.dart';
 
 final userProfileRepositoryProvider = Provider<UserProfileRepository>((ref) {
-  final base = ref.read(wgerBaseProvider);
-  return UserProfileRepository(base);
+  final db = ref.read(driftPowerSyncDatabase);
+  return UserProfileRepository(db);
 });
 
+/// Local data access for the user's profile preferences
 class UserProfileRepository {
   final _logger = Logger('UserProfileRepository');
-  final WgerBaseProvider _base;
+  final DriftPowersyncDatabase _db;
 
-  UserProfileRepository(this._base);
+  UserProfileRepository(this._db);
 
-  Future<Profile> fetchProfile() async {
-    _logger.finer('Fetching user profile');
-    final data = await _base.fetch(_base.makeUrl(_PROFILE_URL));
-    return Profile.fromJson(data);
+  /// Streams the synced profile row, or null until it has synced down.
+  Stream<UserProfile?> watchDrift() {
+    _logger.finer('Watching local user profile');
+    return _db.select(_db.userProfileTable).watchSingleOrNull();
   }
 
-  Future<void> saveProfile(Profile profile) async {
-    _logger.finer('Saving user profile');
-    await _base.post(profile.toJson(), _base.makeUrl(_PROFILE_URL));
-  }
-
-  Future<void> verifyEmail() async {
-    _logger.finer('Requesting email verification');
-    await _base.fetch(_base.makeUrl(_PROFILE_URL, objectMethod: _VERIFY_EMAIL));
+  /// Writes the edited preferences locally; PowerSync pushes them upstream.
+  Future<void> editLocalDrift(UserProfile profile) async {
+    _logger.finer('Updating local user profile ${profile.id}');
+    await (_db.update(
+      _db.userProfileTable,
+    )..where((t) => t.id.equals(profile.id))).write(profile.toCompanion());
   }
 }

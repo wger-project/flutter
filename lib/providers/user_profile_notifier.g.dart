@@ -13,7 +13,7 @@ part of 'user_profile_notifier.dart';
 final userProfileProvider = UserProfileNotifierProvider._();
 
 final class UserProfileNotifierProvider
-    extends $AsyncNotifierProvider<UserProfileNotifier, Profile?> {
+    extends $StreamNotifierProvider<UserProfileNotifier, UserProfile?> {
   UserProfileNotifierProvider._()
     : super(
         from: null,
@@ -33,19 +33,19 @@ final class UserProfileNotifierProvider
   UserProfileNotifier create() => UserProfileNotifier();
 }
 
-String _$userProfileNotifierHash() => r'15c6c0cdfa0e32d173b5f2b136c95ce7e3d6e9c2';
+String _$userProfileNotifierHash() => r'897debe60867477af257a298ffb465da8fb54749';
 
-abstract class _$UserProfileNotifier extends $AsyncNotifier<Profile?> {
-  FutureOr<Profile?> build();
+abstract class _$UserProfileNotifier extends $StreamNotifier<UserProfile?> {
+  Stream<UserProfile?> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<Profile?>, Profile?>;
+    final ref = this.ref as $Ref<AsyncValue<UserProfile?>, UserProfile?>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<Profile?>, Profile?>,
-              AsyncValue<Profile?>,
+              AnyNotifier<AsyncValue<UserProfile?>, UserProfile?>,
+              AsyncValue<UserProfile?>,
               Object?,
               Object?
             >;

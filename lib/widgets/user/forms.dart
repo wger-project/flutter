@@ -19,136 +19,101 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/user/profile.dart';
+import 'package:wger/models/user/user_profile.dart';
+import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/theme/theme.dart';
 
+/// Shows the user's account data (read-only) and lets them edit the profile
+/// preferences. The weight-unit preference is persisted through PowerSync, so
+/// saving works offline; the e-mail verification action still needs the server.
 class UserProfileForm extends ConsumerStatefulWidget {
-  late final Profile _profile;
-
-  UserProfileForm(Profile profile) {
-    _profile = profile;
-  }
+  const UserProfileForm({super.key});
 
   @override
   ConsumerState<UserProfileForm> createState() => _UserProfileFormState();
 }
 
 class _UserProfileFormState extends ConsumerState<UserProfileForm> {
-  final _form = GlobalKey<FormState>();
-
-  final emailController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    emailController.text = widget._profile.email;
-  }
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    super.dispose();
-  }
+  /// Pending weight-unit edit, null while it still mirrors the synced value.
+  String? _weightUnitStr;
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     final isOnline = ref.watch(networkStatusProvider);
-    return Form(
-      key: _form,
-      child: Column(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.person, color: wgerPrimaryColor),
-            title: Text(AppLocalizations.of(context).username),
-            subtitle: Text(widget._profile.username),
-          ),
-          SwitchListTile(
-            title: Text(AppLocalizations.of(context).useMetric),
-            subtitle: Text(widget._profile.weightUnitStr),
-            value: widget._profile.isMetric,
-            onChanged: (_) {
-              setState(() {
-                widget._profile.weightUnitStr = widget._profile.isMetric
-                    ? AppLocalizations.of(context).lb
-                    : AppLocalizations.of(context).kg;
-              });
-            },
-            dense: true,
-          ),
-          ListTile(
-            leading: const Icon(Icons.email_rounded, color: wgerPrimaryColor),
-            title: TextFormField(
-              decoration: InputDecoration(
-                labelText: widget._profile.emailVerified
-                    ? AppLocalizations.of(context).verifiedEmail
-                    : AppLocalizations.of(context).unVerifiedEmail,
-                suffixIcon: widget._profile.emailVerified
-                    ? const Icon(Icons.check_circle, color: Colors.green)
-                    : null,
-              ),
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              onSaved: (newValue) {
-                widget._profile.email = newValue!;
-              },
-              validator: (value) {
-                if (value!.isNotEmpty && !value.contains('@')) {
-                  return AppLocalizations.of(context).invalidEmail;
-                }
-                return null;
-              },
-            ),
-          ),
-          if (!widget._profile.emailVerified)
-            OutlinedButton(
-              onPressed: isOnline
-                  ? () async {
-                      // Email is already verified
-                      if (widget._profile.emailVerified) {
-                        return;
-                      }
+    final account = ref.watch(accountProvider).value;
+    final profile = ref.watch(userProfileProvider).value;
 
-                      // Verify
-                      await ref.read(userProfileProvider.notifier).verifyEmail();
+    if (account == null || profile == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final weightUnitStr = _weightUnitStr ?? profile.weightUnitStr;
+    final isMetric = weightUnitStr == 'kg';
+
+    return Column(
+      children: [
+        ListTile(
+          leading: const Icon(Icons.person, color: wgerPrimaryColor),
+          title: Text(i18n.username),
+          subtitle: Text(account.username),
+        ),
+        ListTile(
+          leading: const Icon(Icons.email_rounded, color: wgerPrimaryColor),
+          title: Text(
+            account.emailVerified ? i18n.verifiedEmail : i18n.unVerifiedEmail,
+          ),
+          subtitle: Text(account.email),
+          trailing: account.emailVerified
+              ? const Icon(Icons.check_circle, color: Colors.green)
+              : null,
+        ),
+        SwitchListTile(
+          title: Text(i18n.useMetric),
+          subtitle: Text(weightUnitStr),
+          value: isMetric,
+          onChanged: (_) {
+            setState(() {
+              _weightUnitStr = isMetric ? i18n.lb : i18n.kg;
+            });
+          },
+          dense: true,
+        ),
+        if (!account.emailVerified)
+          OutlinedButton(
+            onPressed: isOnline
+                ? () async {
+                    await ref.read(accountProvider.notifier).verifyEmail();
+                    if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                            AppLocalizations.of(
-                              context,
-                            ).verifiedEmailInfo(widget._profile.email),
-                          ),
+                          content: Text(i18n.verifiedEmailInfo(account.email)),
                         ),
                       );
                     }
-                  : null,
-              child: Text(AppLocalizations.of(context).verify),
-            ),
-          ElevatedButton(
-            onPressed: isOnline
-                ? () async {
-                    // Validate and save the current values to the weightEntry
-                    final isValid = _form.currentState!.validate();
-                    if (!isValid) {
-                      return;
-                    }
-                    _form.currentState!.save();
-
-                    // Update profile
-                    ref.read(userProfileProvider.notifier).saveProfile();
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(AppLocalizations.of(context).successfullySaved),
-                      ),
-                    );
                   }
                 : null,
-            child: Text(AppLocalizations.of(context).save),
+            child: Text(i18n.verify),
           ),
-        ],
-      ),
+        ElevatedButton(
+          onPressed: () async {
+            await ref
+                .read(userProfileProvider.notifier)
+                .updateProfile(
+                  UserProfile(id: profile.id, weightUnitStr: weightUnitStr),
+                );
+            if (context.mounted) {
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(i18n.successfullySaved)),
+              );
+            }
+          },
+          child: Text(i18n.save),
+        ),
+      ],
     );
   }
 }

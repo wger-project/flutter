@@ -429,8 +429,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
 enum GoalType {
   meals('From meals'),
   basic('Basic'),
-  advanced('Advanced')
-  ;
+  advanced('Advanced');
 
   const GoalType(this.label);
 

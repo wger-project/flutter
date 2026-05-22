@@ -1,35 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'profile.dart';
+part of 'account.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Profile _$ProfileFromJson(Map<String, dynamic> json) {
+Account _$AccountFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
     requiredKeys: const [
       'username',
+      'email',
       'email_verified',
       'is_trustworthy',
-      'weight_unit',
-      'email',
     ],
   );
-  return Profile(
+  return Account(
     username: json['username'] as String,
+    email: json['email'] as String,
     emailVerified: json['email_verified'] as bool,
     isTrustworthy: json['is_trustworthy'] as bool,
-    email: json['email'] as String,
-    weightUnitStr: json['weight_unit'] as String,
   );
 }
-
-Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
-  'username': instance.username,
-  'email_verified': instance.emailVerified,
-  'is_trustworthy': instance.isTrustworthy,
-  'weight_unit': instance.weightUnitStr,
-  'email': instance.email,
-};

@@ -32,8 +32,7 @@ import 'package:wger/models/workouts/log.dart';
 enum WorkoutImpression {
   bad('1'),
   neutral('2'),
-  good('3')
-  ;
+  good('3');
 
   final String wireValue;
   const WorkoutImpression(this.wireValue);

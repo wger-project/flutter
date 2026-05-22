@@ -21,7 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/models/user/profile.dart';
+import 'package:wger/models/user/user_profile.dart';
 import 'package:wger/providers/body_weight_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -92,7 +92,11 @@ class DashboardWeightWidget extends ConsumerWidget {
     return _shell(context, _buildContent(context, entriesAsync.value!, profile));
   }
 
-  Widget _buildContent(BuildContext context, List<WeightEntry> entriesList, Profile profile) {
+  Widget _buildContent(
+    BuildContext context,
+    List<WeightEntry> entriesList,
+    UserProfile profile,
+  ) {
     if (entriesList.isEmpty) {
       return NothingFound(
         AppLocalizations.of(context).noWeightEntries,

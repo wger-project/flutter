@@ -21,84 +21,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/user/profile.dart';
 import 'package:wger/providers/app_settings_notifier.dart';
-import 'package:wger/providers/user_profile_notifier.dart';
-import 'package:wger/providers/user_profile_repository.dart';
 
-import '../fixtures/fixture_reader.dart';
-import 'provider_test.mocks.dart';
-
-@GenerateMocks([UserProfileRepository])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final Profile tProfile = Profile.fromJson(
-    jsonDecode(fixture('user/userprofile_response.json')) as Map<String, dynamic>,
-  );
-
-  late MockUserProfileRepository mockRepo;
   late ProviderContainer container;
 
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-    mockRepo = MockUserProfileRepository();
-    when(mockRepo.fetchProfile()).thenAnswer((_) async => tProfile);
-
-    container = ProviderContainer(
-      overrides: [
-        userProfileRepositoryProvider.overrideWithValue(mockRepo),
-      ],
-    );
+    container = ProviderContainer();
   });
 
   tearDown(() {
     container.dispose();
-  });
-
-  group('profile', () {
-    test('build fetches the profile from the repository', () async {
-      final profile = await container.read(userProfileProvider.future);
-
-      expect(profile, isNotNull);
-      expect(profile!.username, 'admin');
-      expect(profile.emailVerified, true);
-      expect(profile.email, 'me@example.com');
-      expect(profile.isTrustworthy, true);
-      verify(mockRepo.fetchProfile()).called(1);
-    });
-
-    test('clear() resets the profile to null', () async {
-      await container.read(userProfileProvider.future);
-      expect(container.read(userProfileProvider).value, isNotNull);
-
-      container.read(userProfileProvider.notifier).clear();
-      expect(container.read(userProfileProvider).value, isNull);
-    });
-
-    test('saveProfile delegates to the repository', () async {
-      await container.read(userProfileProvider.future);
-      when(mockRepo.saveProfile(any)).thenAnswer((_) async {});
-
-      await container.read(userProfileProvider.notifier).saveProfile();
-
-      verify(mockRepo.saveProfile(tProfile)).called(1);
-    });
-
-    test('verifyEmail delegates to the repository', () async {
-      await container.read(userProfileProvider.future);
-      when(mockRepo.verifyEmail()).thenAnswer((_) async {});
-
-      await container.read(userProfileProvider.notifier).verifyEmail();
-
-      verify(mockRepo.verifyEmail()).called(1);
-    });
   });
 
   group('dashboard config', () {
@@ -172,10 +112,7 @@ void main() {
       // Fresh container so the keepAlive notifier builds with the just-written prefs.
       container.dispose();
       container = ProviderContainer(
-        overrides: [
-          userProfileRepositoryProvider.overrideWithValue(mockRepo),
-          appSettingsPrefsProvider.overrideWithValue(prefs),
-        ],
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
       );
 
       final settings = await container.read(appSettingsProvider.future);
@@ -209,10 +146,7 @@ void main() {
 
       container.dispose();
       container = ProviderContainer(
-        overrides: [
-          userProfileRepositoryProvider.overrideWithValue(mockRepo),
-          appSettingsPrefsProvider.overrideWithValue(prefs),
-        ],
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
       );
       return prefs;
     }

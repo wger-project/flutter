@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2026 wger Team
+ * Copyright (c) 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,23 +17,28 @@
  */
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/user/user_profile.dart';
-import 'package:wger/providers/user_profile_repository.dart';
+import 'package:wger/models/user/account.dart';
+import 'package:wger/providers/account_repository.dart';
 
-part 'user_profile_notifier.g.dart';
+part 'account_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
-class UserProfileNotifier extends _$UserProfileNotifier {
-  late UserProfileRepository _repo;
+class AccountNotifier extends _$AccountNotifier {
+  late AccountRepository _repo;
 
   @override
-  Stream<UserProfile?> build() {
-    _repo = ref.read(userProfileRepositoryProvider);
-    return _repo.watchDrift();
+  Future<Account?> build() async {
+    _repo = ref.read(accountRepositoryProvider);
+    return _repo.fetchAccount();
   }
 
-  /// Persists the edited preferences locally; PowerSync syncs them upstream.
-  Future<void> updateProfile(UserProfile profile) async {
-    await _repo.editLocalDrift(profile);
+  /// Triggers the server's verification email flow.
+  Future<void> verifyEmail() async {
+    await _repo.verifyEmail();
+  }
+
+  /// Clears the cached account (e.g. on logout).
+  void clear() {
+    state = const AsyncData(null);
   }
 }

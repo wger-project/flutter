@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,24 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/user/user_profile.dart';
-import 'package:wger/providers/user_profile_repository.dart';
+import 'package:drift/drift.dart' as drift;
+import 'package:wger/database/powersync/database.dart';
 
-part 'user_profile_notifier.g.dart';
+/// The user's editable profile preferences.
+class UserProfile {
+  final int id;
+  String weightUnitStr;
 
-@Riverpod(keepAlive: true)
-class UserProfileNotifier extends _$UserProfileNotifier {
-  late UserProfileRepository _repo;
+  UserProfile({required this.id, required this.weightUnitStr});
 
-  @override
-  Stream<UserProfile?> build() {
-    _repo = ref.read(userProfileRepositoryProvider);
-    return _repo.watchDrift();
-  }
+  bool get isMetric => weightUnitStr == 'kg';
 
-  /// Persists the edited preferences locally; PowerSync syncs them upstream.
-  Future<void> updateProfile(UserProfile profile) async {
-    await _repo.editLocalDrift(profile);
+  /// Drift companion for local UPDATE writes routed through PowerSync.
+  UserProfileTableCompanion toCompanion() {
+    return UserProfileTableCompanion(
+      id: drift.Value(id),
+      weightUnitStr: drift.Value(weightUnitStr),
+    );
   }
 }

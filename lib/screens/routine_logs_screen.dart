@@ -38,8 +38,9 @@ class WorkoutLogsScreen extends ConsumerWidget {
       value: ref.watch(routinesRiverpodProvider),
       loggerName: 'WorkoutLogsScreen',
       loading: const Scaffold(body: Center(child: CircularProgressIndicator())),
-      errorBuilder: (e, st) =>
-          Scaffold(body: Center(child: StreamErrorIndicator(e, stacktrace: st))),
+      errorBuilder: (e, st) => Scaffold(
+        body: Center(child: StreamErrorIndicator(e, stacktrace: st)),
+      ),
       data: (state) {
         final routine = state.findById(routineId);
         return Scaffold(

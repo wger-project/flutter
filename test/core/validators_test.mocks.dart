@@ -1718,17 +1718,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get errorCouldNotConnectToServerDetails =>
-      (super.noSuchMethod(
-            Invocation.getter(#errorCouldNotConnectToServerDetails),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#errorCouldNotConnectToServerDetails),
-            ),
-          )
-          as String);
-
-  @override
   String get copyToClipboard =>
       (super.noSuchMethod(
             Invocation.getter(#copyToClipboard),
@@ -4323,6 +4312,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#viewDocumentation),
+            ),
+          )
+          as String);
+
+  @override
+  String get sessionExpired =>
+      (super.noSuchMethod(
+            Invocation.getter(#sessionExpired),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#sessionExpired),
             ),
           )
           as String);

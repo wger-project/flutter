@@ -16,62 +16,73 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:wger/providers/base_provider.dart';
+import 'package:wger/database/powersync/database.dart';
+import 'package:wger/models/user/user_profile.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 
-import '../../test_data/profile.dart';
-import 'user_profile_repository_test.mocks.dart';
+import '../helpers/in_memory_drift.dart';
 
-@GenerateMocks([WgerBaseProvider])
 void main() {
-  late MockWgerBaseProvider mockBase;
+  late DriftPowersyncDatabase db;
   late UserProfileRepository repo;
 
-  setUp(() {
-    mockBase = MockWgerBaseProvider();
-    repo = UserProfileRepository(mockBase);
+  setUp(() async {
+    db = await openTestDatabase();
+    repo = UserProfileRepository(db);
   });
 
-  group('fetchProfile', () {
-    test('parses the API response into a Profile', () async {
-      final uri = Uri.https('localhost', 'api/v2/userprofile/');
-      when(mockBase.makeUrl('userprofile')).thenReturn(uri);
-      when(mockBase.fetch(uri)).thenAnswer((_) async => tProfile1.toJson());
+  tearDown(() async {
+    await db.close();
+  });
 
-      final profile = await repo.fetchProfile();
+  Future<void> seed({int id = 1, String weightUnit = 'kg'}) async {
+    await db
+        .into(db.userProfileTable)
+        .insert(UserProfileTableCompanion.insert(id: id, weightUnitStr: weightUnit));
+  }
 
-      expect(profile.username, tProfile1.username);
-      expect(profile.email, tProfile1.email);
-      expect(profile.emailVerified, tProfile1.emailVerified);
+  group('watchDrift', () {
+    test('emits null until a row has synced down', () async {
+      expect(await repo.watchDrift().first, isNull);
+    });
+
+    test('emits the synced profile row', () async {
+      await seed(weightUnit: 'lb');
+
+      final profile = await repo.watchDrift().first;
+
+      expect(profile, isNotNull);
+      expect(profile!.id, 1);
+      expect(profile.weightUnitStr, 'lb');
+    });
+
+    test('re-emits after the row changes', () async {
+      await seed();
+      final iter = StreamIterator(repo.watchDrift());
+
+      await iter.moveNext();
+      expect(iter.current!.weightUnitStr, 'kg');
+
+      await repo.editLocalDrift(UserProfile(id: 1, weightUnitStr: 'lb'));
+
+      await iter.moveNext();
+      expect(iter.current!.weightUnitStr, 'lb');
+
+      await iter.cancel();
     });
   });
 
-  group('saveProfile', () {
-    test('POSTs the serialized profile to the userprofile endpoint', () async {
-      final uri = Uri.https('localhost', 'api/v2/userprofile/');
-      when(mockBase.makeUrl('userprofile')).thenReturn(uri);
-      when(mockBase.post(any, uri)).thenAnswer((_) async => {});
+  group('editLocalDrift', () {
+    test('overwrites the weight unit for the row with matching id', () async {
+      await seed();
 
-      await repo.saveProfile(tProfile1);
+      await repo.editLocalDrift(UserProfile(id: 1, weightUnitStr: 'lb'));
 
-      verify(mockBase.post(tProfile1.toJson(), uri)).called(1);
-    });
-  });
-
-  group('verifyEmail', () {
-    test('hits the verify-email subpath of userprofile', () async {
-      final uri = Uri.https('localhost', 'api/v2/userprofile/verify-email/');
-      when(
-        mockBase.makeUrl('userprofile', objectMethod: 'verify-email'),
-      ).thenReturn(uri);
-      when(mockBase.fetch(uri)).thenAnswer((_) async => {});
-
-      await repo.verifyEmail();
-
-      verify(mockBase.fetch(uri)).called(1);
+      final row = await db.select(db.userProfileTable).getSingle();
+      expect(row.weightUnitStr, 'lb');
     });
   });
 }

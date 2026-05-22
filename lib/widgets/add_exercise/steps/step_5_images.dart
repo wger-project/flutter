@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
+import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/add_exercise_notifier.dart';
-import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/widgets/add_exercise/image_details_form.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
@@ -76,7 +76,7 @@ class _Step5ImagesState extends ConsumerState<Step5Images> with ExerciseImagePic
   ///
   /// [pickFromCamera] - If true, opens camera; otherwise opens gallery
   void _pickAndShowImageDetails(BuildContext context, {bool pickFromCamera = false}) async {
-    final profile = ref.read(userProfileProvider).value;
+    final account = ref.read(accountProvider).value;
     final imagePicker = ImagePicker();
 
     XFile? selectedImage;
@@ -118,7 +118,7 @@ class _Step5ImagesState extends ConsumerState<Step5Images> with ExerciseImagePic
       setState(() {
         _currentImageToAdd = ExerciseSubmissionImage(
           imageFile: imageFile,
-          author: profile?.username ?? '',
+          author: account?.username ?? '',
         );
       });
     }

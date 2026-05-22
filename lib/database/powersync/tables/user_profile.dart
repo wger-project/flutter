@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2026 wger Team
+ * Copyright (c) 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,24 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:drift/drift.dart';
+import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/models/user/user_profile.dart';
-import 'package:wger/providers/user_profile_repository.dart';
 
-part 'user_profile_notifier.g.dart';
-
-@Riverpod(keepAlive: true)
-class UserProfileNotifier extends _$UserProfileNotifier {
-  late UserProfileRepository _repo;
-
+@UseRowClass(UserProfile)
+class UserProfileTable extends Table {
   @override
-  Stream<UserProfile?> build() {
-    _repo = ref.read(userProfileRepositoryProvider);
-    return _repo.watchDrift();
-  }
+  String get tableName => 'core_userprofile';
 
-  /// Persists the edited preferences locally; PowerSync syncs them upstream.
-  Future<void> updateProfile(UserProfile profile) async {
-    await _repo.editLocalDrift(profile);
-  }
+  IntColumn get id => integer()();
+  TextColumn get weightUnitStr => text().named('weight_unit')();
 }
+
+const PowersyncUserProfileTable = ps.Table(
+  'core_userprofile',
+  [
+    ps.Column.text('weight_unit'),
+  ],
+);

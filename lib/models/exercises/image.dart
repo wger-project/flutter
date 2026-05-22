@@ -26,8 +26,7 @@ enum ExerciseImageStyle {
   threeD('2'),
   lowPoly('3'),
   photo('4'),
-  other('5')
-  ;
+  other('5');
 
   final String wireValue;
   const ExerciseImageStyle(this.wireValue);

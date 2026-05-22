@@ -24,7 +24,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/models/user/profile.dart';
+import 'package:wger/models/user/user_profile.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -51,13 +51,7 @@ void main() {
   late MockIngredientRepository mockIngredientRepo;
   late MockUserProfileRepository mockUserProfileRepository;
 
-  final testProfile = Profile(
-    username: 'test',
-    emailVerified: true,
-    isTrustworthy: true,
-    email: 'test@example.com',
-    weightUnitStr: 'kg',
-  );
+  final testProfile = UserProfile(id: 1, weightUnitStr: 'kg');
 
   const planUuid1 = 'cc000000-0000-4000-8000-000000000001';
   const planUuid2 = 'cc000000-0000-4000-8000-000000000002';
@@ -82,7 +76,9 @@ void main() {
     mockIngredientRepo = MockIngredientRepository();
     mockUserProfileRepository = MockUserProfileRepository();
 
-    when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => testProfile);
+    when(
+      mockUserProfileRepository.watchDrift(),
+    ).thenAnswer((_) => Stream.value(testProfile));
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
     when(mockNutritionRepo.watchAllDrift()).thenAnswer((_) => Stream.value(plans));

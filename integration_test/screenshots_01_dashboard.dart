@@ -76,9 +76,11 @@ Widget createDashboardScreen({Locale? locale}) {
   ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
 
   final mockUserProfileRepo = weight.MockUserProfileRepository();
-  when(mockUserProfileRepo.fetchProfile()).thenAnswer((_) async => tProfile1);
+  when(
+    mockUserProfileRepo.watchDrift(),
+  ).thenAnswer((_) => Stream.value(tUserProfile1));
 
-  final loggedInAuth = const AuthState(
+  const loggedInAuth = AuthState(
     status: AuthStatus.loggedIn,
     token: 'test-token',
     serverUrl: 'http://localhost',
