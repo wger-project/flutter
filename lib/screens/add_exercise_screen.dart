@@ -18,10 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/add_exercise_notifier.dart';

@@ -20,8 +20,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 

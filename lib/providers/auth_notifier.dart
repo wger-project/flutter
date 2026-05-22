@@ -29,6 +29,7 @@ import 'package:version/version.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/gallery_notifier.dart';
@@ -340,7 +341,7 @@ class AuthNotifier extends _$AuthNotifier {
         },
       );
     } on Exception catch (e, s) {
-      if (_isNetworkError(e)) {
+      if (isNetworkError(e)) {
         _logger.warning('wger probe: server unreachable: $e', e, s);
         return null;
       }
@@ -535,20 +536,6 @@ bool serverUpdateRequired(String? rawVersion) {
     logger.fine('Server update required: server $current < minimum $required');
   }
   return needUpdate;
-}
-
-/// True if [e] is the kind of error we want to treat as "the server can't be
-/// reached right now" as opposed to an HTTP response we got but didn't like
-/// (e.g. 401 means the token is invalid and the user should be logged out).
-///
-/// We catch `http.ClientException` (which wraps `SocketException` etc. on most
-/// platforms) and the dart:io / dart:async exceptions directly for cases where
-/// the http package surfaces them unwrapped.
-bool _isNetworkError(Object e) {
-  return e is http.ClientException ||
-      e is SocketException ||
-      e is HandshakeException ||
-      e is TimeoutException;
 }
 
 /// User-agent header string identifying the app/version/platform.

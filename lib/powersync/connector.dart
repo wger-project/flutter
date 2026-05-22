@@ -23,7 +23,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
-import 'package:wger/helpers/errors.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/powersync/api_client.dart';
 
 final logger = Logger('powersync-django');

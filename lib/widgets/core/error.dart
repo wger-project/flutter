@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/error_dialogs.dart' show ServerHtmlError;
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/helpers/errors.dart' show ServerHtmlError;
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Maximum visible height for the inline error display. Long stack traces or
