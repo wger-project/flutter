@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/error_dialogs.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/locale.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -72,15 +73,21 @@ void _setupLogging() {
     // ignore: avoid_print
     print('${record.level.name}: ${record.time} [${record.loggerName}] ${record.message}');
 
+    // Network errors are expected in, and PowerSync logs one on every retry
+    // against an unreachable backend. Skip the error object and stack trace so
+    // they don't flood the console.
+    final isTransientNetwork = record.error != null && isNetworkError(record.error!);
+
     // The Logger API has dedicated error / stackTrace fields that can be populated
-    if (record.error != null) {
+    if (record.error != null && !isTransientNetwork) {
       // ignore: avoid_print
       print('  error: ${record.error}');
     }
-    if (record.stackTrace != null) {
+    if (record.stackTrace != null && !isTransientNetwork) {
       // ignore: avoid_print
       print(record.stackTrace);
     }
+
     InMemoryLogStore().add(record);
   });
 }
