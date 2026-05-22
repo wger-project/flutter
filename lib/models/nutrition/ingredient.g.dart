@@ -36,6 +36,7 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
     id: (json['id'] as num).toInt(),
     code: json['code'] as String?,
     name: json['name'] as String,
+    brand: json['brand'] as String?,
     created: DateTime.parse(json['created'] as String),
     energy: (json['energy'] as num).toInt(),
     carbohydrates: stringToNum(json['carbohydrates'] as String?),
@@ -59,29 +60,31 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic>{
-  'id': instance.id,
-  'remote_id': instance.remoteId,
-  'source_name': instance.sourceName,
-  'source_url': instance.sourceUrl,
-  'license_object_url': instance.licenseObjectURl,
-  'code': instance.code,
-  'name': instance.name,
-  'created': instance.created.toIso8601String(),
-  'energy': instance.energy,
-  'carbohydrates': numToString(instance.carbohydrates),
-  'carbohydrates_sugar': numToString(instance.carbohydratesSugar),
-  'protein': numToString(instance.protein),
-  'fat': numToString(instance.fat),
-  'fat_saturated': numToString(instance.fatSaturated),
-  'fiber': numToString(instance.fiber),
-  'sodium': numToString(instance.sodium),
-  'is_vegan': instance.isVegan,
-  'is_vegetarian': instance.isVegetarian,
-  'nutriscore': _$NutriScoreEnumMap[instance.nutriscore],
-  'image': instance.image,
-  'thumbnails': instance.thumbnails,
-};
+Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'remote_id': instance.remoteId,
+      'source_name': instance.sourceName,
+      'source_url': instance.sourceUrl,
+      'license_object_url': instance.licenseObjectURl,
+      'code': instance.code,
+      'name': instance.name,
+      'brand': instance.brand,
+      'created': instance.created.toIso8601String(),
+      'energy': instance.energy,
+      'carbohydrates': numToString(instance.carbohydrates),
+      'carbohydrates_sugar': numToString(instance.carbohydratesSugar),
+      'protein': numToString(instance.protein),
+      'fat': numToString(instance.fat),
+      'fat_saturated': numToString(instance.fatSaturated),
+      'fiber': numToString(instance.fiber),
+      'sodium': numToString(instance.sodium),
+      'is_vegan': instance.isVegan,
+      'is_vegetarian': instance.isVegetarian,
+      'nutriscore': _$NutriScoreEnumMap[instance.nutriscore],
+      'image': instance.image,
+      'thumbnails': instance.thumbnails,
+    };
 
 const _$NutriScoreEnumMap = {
   NutriScore.a: 'a',
