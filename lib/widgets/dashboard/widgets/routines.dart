@@ -172,7 +172,7 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : detailsLocked
-                    ? const Icon(Icons.cloud_off, color: Colors.grey)
+                    ? Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.outline)
                     : Tooltip(
                         message: i18n.toggleDetails,
                         child: _showDetail
