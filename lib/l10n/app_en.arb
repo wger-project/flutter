@@ -1314,5 +1314,9 @@
    "viewDocumentation": "View documentation",
    "@viewDocumentation": {
    "description": "Button label to open the documentation about server configuration"
-   }
+   },
+  "sessionExpired": "Your session has expired, please log in again",
+  "@sessionExpired": {
+    "description": "Snackbar message shown when the saved login token is no longer valid"
+  }
 }

@@ -276,6 +276,23 @@ void showTransientErrorSnackbar() {
     );
 }
 
+/// Shows a brief, non-blocking snackbar telling the user their session is no
+/// longer valid and they need to log in again.
+void showSessionExpiredSnackbar() {
+  final messenger = scaffoldMessengerKey.currentState;
+  final context = navigatorKey.currentContext;
+
+  if (messenger == null || context == null) {
+    return;
+  }
+
+  messenger
+    ..clearSnackBars()
+    ..showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context).sessionExpired)),
+    );
+}
+
 /// A widget to render HTML errors returned by the server
 ///
 /// This is a simple wrapper around the `Html` Widget, with some light changes

@@ -22,6 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
@@ -227,17 +228,28 @@ class _AuthCardState extends ConsumerState<AuthCard> {
           ref.read(authProvider.notifier).clearServerConfigWarning();
         }
       }
-
-      if (context.mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
     } on WgerHttpException catch (error) {
       if (context.mounted) {
         setState(() {
           errorMessage = FormHttpErrorsWidget(error);
         });
+      }
+    } catch (error) {
+      // Login is inherently online, but surface an unreachable server as a
+      // friendly message instead of crashing to the red error screen.
+      if (isNetworkError(error) && context.mounted) {
+        setState(() {
+          errorMessage = Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(
+              AppLocalizations.of(context).errorCouldNotConnectToServer,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          );
+        });
+      } else {
+        rethrow;
       }
     } finally {
       if (mounted) {

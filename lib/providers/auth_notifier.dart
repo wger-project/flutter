@@ -20,17 +20,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:version/version.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/helpers.dart';
@@ -54,6 +58,11 @@ final authHttpClientProvider = Provider<http.Client>((ref) => http.Client());
 class AuthNotifier extends _$AuthNotifier {
   final _logger = Logger('AuthNotifier');
   late http.Client _client;
+
+  /// Completes when the most recent background revalidation has finished.
+  /// Exposed so tests can deterministically await the fire-and-forget task.
+  @visibleForTesting
+  Future<void>? revalidationDone;
 
   @override
   Future<AuthState> build() async {
@@ -223,6 +232,13 @@ class AuthNotifier extends _$AuthNotifier {
     state = await AsyncValue.guard(_tryAutoLogin);
   }
 
+  /// Restores a saved session at app start.
+  ///
+  /// Returns [AuthStatus.loggedOut] when there is no usable saved session.
+  /// A session that has synced before is restored immediately from
+  /// preferences with no network access, and revalidated in the background.
+  /// A never-synced session has no local data to show, so it still goes
+  /// through the blocking server and PowerSync probe path.
   Future<AuthState> _tryAutoLogin() async {
     final prefs = PreferenceHelper.asyncPref;
     final appVersion = await PackageInfo.fromPlatform();
@@ -233,21 +249,48 @@ class AuthNotifier extends _$AuthNotifier {
     }
 
     final userData = json.decode((await prefs.getString(PREFS_USER))!);
-    if (!userData.containsKey('token') || !userData.containsKey('serverUrl')) {
+    final String? token = userData['token'];
+    final String? serverUrl = userData['serverUrl'];
+    if (token == null || serverUrl == null) {
       _logger.info('autologin failed, no token or serverUrl');
       return AuthState(applicationVersion: appVersion);
     }
 
-    final String? token = userData['token'];
-    final String? serverUrl = userData['serverUrl'];
-    if (token == null || serverUrl == null) {
-      _logger.info('autologin failed, token or serverUrl is null');
-      return AuthState(applicationVersion: appVersion);
+    final everSynced = (await prefs.getBool(PREFS_HAS_EVER_SYNCED)) ?? false;
+    if (!everSynced) {
+      return _resolveNeverSyncedSession(
+        token: token,
+        serverUrl: serverUrl,
+        appVersion: appVersion,
+      );
     }
 
+    // A previously synced session goes straight into the app, even with no
+    // network access. The server-dependent checks run afterwards in a
+    // background task.
+    _logger.info('autologin: session restored, revalidating in background');
+    _scheduleRevalidation();
+    return AuthState(
+      status: AuthStatus.loggedIn,
+      token: token,
+      serverUrl: serverUrl,
+      applicationVersion: appVersion,
+    );
+  }
+
+  /// Resolves a never-synced session through the blocking probe path. Such a
+  /// user has no local data, so the server must be reached before there is
+  /// anything useful to show.
+  Future<AuthState> _resolveNeverSyncedSession({
+    required String token,
+    required String serverUrl,
+    required PackageInfo appVersion,
+  }) async {
+    final prefs = PreferenceHelper.asyncPref;
     final response = await _probeWgerServer(serverUrl, token, appVersion);
+
     // Server unreachable at startup. The user already has a saved session, so
-    // let them in directly
+    // let them in directly.
     if (response == null) {
       _logger.info('autologin: server unreachable, continuing offline');
       return AuthState(
@@ -258,12 +301,25 @@ class AuthNotifier extends _$AuthNotifier {
       );
     }
 
-    // Got a response but the server didn't like our token (typically 401/403),
-    // wipe credentials and route to login.
-    if (response.statusCode != 200) {
-      _logger.info('autologin failed, statusCode: ${response.statusCode}');
+    // The server actively rejected our token: wipe credentials and route to
+    // login. Only 401/403 count, a transient 5xx doesn't log the user out.
+    if (_isAuthRejection(response.statusCode)) {
+      _logger.info('autologin failed, token rejected: ${response.statusCode}');
       await prefs.remove(PREFS_USER);
       return AuthState(applicationVersion: appVersion);
+    }
+
+    // Any other non-200 (5xx etc.) is transient: keep the saved session.
+    if (response.statusCode != 200) {
+      _logger.warning(
+        'autologin: probe returned ${response.statusCode}, keeping saved session',
+      );
+      return AuthState(
+        status: AuthStatus.loggedIn,
+        token: token,
+        serverUrl: serverUrl,
+        applicationVersion: appVersion,
+      );
     }
 
     final newState = await _resolveAuthState(
@@ -277,10 +333,94 @@ class AuthNotifier extends _$AuthNotifier {
     return newState;
   }
 
+  /// Whether [statusCode] means the server actively rejected our token, as
+  /// opposed to a transient error that must not invalidate the session.
+  bool _isAuthRejection(int statusCode) => statusCode == 401 || statusCode == 403;
+
+  /// Schedules a non-blocking revalidation of the restored session.
+  ///
+  /// The first run is deferred to a fresh event-loop task so [build] has
+  /// completed first. It then re-runs whenever connectivity is regained, so
+  /// a session restored while offline still gets validated without an app
+  /// restart. Connectivity is observed directly (not via networkStatusProvider)
+  /// to avoid a dependency cycle (auth -> networkStatus -> wgerBase -> auth).
+  void _scheduleRevalidation() {
+    revalidationDone = Future(_revalidate);
+
+    final sub = Connectivity().onConnectivityChanged.listen((results) {
+      final online = results.any((r) => r != ConnectivityResult.none);
+      if (online) {
+        revalidationDone = _revalidate();
+      }
+    });
+    ref.onDispose(sub.cancel);
+  }
+
+  /// Revalidates the restored session against the server. Fire-and-forget:
+  /// it never throws and only changes the state on a genuine problem (a
+  /// revoked token, or an outdated app/server). Transient failures (offline,
+  /// 5xx, network errors) leave the user logged in.
+  Future<void> _revalidate() async {
+    try {
+      final current = state.asData?.value;
+      if (current == null || current.status != AuthStatus.loggedIn) {
+        return;
+      }
+
+      final token = current.token!;
+      final serverUrl = current.serverUrl!;
+      final appVersion = current.applicationVersion ?? await PackageInfo.fromPlatform();
+
+      final response = await _probeWgerServer(serverUrl, token, appVersion);
+      if (response == null) {
+        _logger.fine('revalidation: server unreachable, keeping session');
+        return;
+      }
+      if (_isAuthRejection(response.statusCode)) {
+        _logger.info('revalidation: token rejected (${response.statusCode}), logging out');
+        await logout();
+        showSessionExpiredSnackbar();
+        return;
+      }
+      if (response.statusCode != 200) {
+        _logger.warning(
+          'revalidation: probe returned ${response.statusCode}, keeping session',
+        );
+        return;
+      }
+
+      final serverVersion = await _fetchServerVersion(serverUrl);
+      if (serverUpdateRequired(serverVersion)) {
+        _logger.info('revalidation: server update required');
+        state = AsyncData(
+          current.copyWith(
+            status: AuthStatus.serverUpdateRequired,
+            serverVersion: serverVersion,
+          ),
+        );
+        return;
+      }
+      if (await _applicationUpdateRequired(serverUrl, appVersion.version)) {
+        _logger.info('revalidation: app update required');
+        state = AsyncData(
+          current.copyWith(
+            status: AuthStatus.updateRequired,
+            serverVersion: serverVersion,
+          ),
+        );
+        return;
+      }
+
+      _logger.fine('revalidation: session still valid');
+    } catch (e, s) {
+      _logger.warning('revalidation failed', e, s);
+    }
+  }
+
   /// Runs the post-credentials gating chain (server version, min app
   /// version, PowerSync reachability) and returns the resulting
-  /// [AuthState]. Shared by [_tryAutoLogin] and [login] so the routing
-  /// rules live in exactly one place.
+  /// [AuthState]. Shared by [_resolveNeverSyncedSession] and [login] so the
+  /// routing rules live in exactly one place.
   Future<AuthState> _resolveAuthState({
     required String token,
     required String serverUrl,
@@ -409,6 +549,7 @@ class AuthNotifier extends _$AuthNotifier {
   /// with the new token instead of replaying their pre-login error state.
   void _invalidatePostLoginProviders() {
     _logger.fine('Invalidating data providers after login');
+    ref.invalidate(accountProvider);
     ref.invalidate(userProfileProvider);
     ref.invalidate(routinesRiverpodProvider);
     ref.invalidate(nutritionProvider);

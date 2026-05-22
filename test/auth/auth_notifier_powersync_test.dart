@@ -34,6 +34,7 @@ import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 
+import '../fake_connectivity.dart';
 import 'auth_notifier_powersync_test.mocks.dart';
 
 @GenerateMocks([http.Client])
@@ -41,6 +42,10 @@ void main() {
   // Replacement for SharedPreferences.setMockInitialValues() for the
   // async API used by the auth notifier.
   SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+
+  // The background revalidation observes connectivity to re-probe on
+  // reconnect; stub the connectivity platform so no real plugin is needed.
+  installFakeConnectivity();
 
   late MockClient mockClient;
 
@@ -84,8 +89,7 @@ void main() {
     final prefs = PreferenceHelper.asyncPref;
     await prefs.clear();
 
-    // Persist a logged-in user so _tryAutoLogin actually runs the full
-    // server + PowerSync probe path.
+    // Persist a logged-in user so auto-login actually runs.
     await prefs.setString(
       PREFS_USER,
       json.encode({'token': token, 'serverUrl': serverUrl}),
@@ -111,8 +115,130 @@ void main() {
     when(mockClient.get(tLiveness)).thenAnswer((_) async => Response('OK', 200));
   });
 
-  group('_tryAutoLogin: PowerSync reachability', () {
-    test('never-synced + probe succeeds → loggedIn + flag persisted', () async {
+  group('restored session (ever-synced)', () {
+    setUp(() async {
+      // A previous session completed at least one sync, so there is local
+      // data and the user can be let in offline-first.
+      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+    });
+
+    test('startup is immediate and makes no network calls', () async {
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.token, token);
+      expect(state.serverUrl, serverUrl);
+
+      // The startup path must not touch the network at all; every probe
+      // happens later, in the background revalidation.
+      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tVersion));
+      verifyNever(mockClient.get(tMinAppVersion));
+      verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tLiveness));
+
+      // Let the fire-and-forget revalidation settle so the test ends cleanly.
+      await container.read(authProvider.notifier).revalidationDone;
+    });
+
+    test('PowerSync endpoints are never probed, not even in revalidation', () async {
+      // Booby-trap the PowerSync probe stages: a restored session must never
+      // hit them, neither at startup nor during the background revalidation.
+      when(mockClient.get(tPowerSyncToken, headers: anyNamed('headers'))).thenThrow(
+        const SocketException('would fail if called'),
+      );
+      when(mockClient.get(tLiveness)).thenThrow(
+        const SocketException('would fail if called'),
+      );
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+      expect(state.status, AuthStatus.loggedIn);
+
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
+      verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tLiveness));
+    });
+  });
+
+  group('background revalidation', () {
+    setUp(() async {
+      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+    });
+
+    test('happy path leaves the user logged in', () async {
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+    });
+
+    test('token rejected (401) → logged out and saved user wiped', () async {
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Unauthorized', 401));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedOut);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
+    });
+
+    test('probe returns 500 → stays logged in', () async {
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Server Error', 500));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      await container.read(authProvider.notifier).revalidationDone;
+
+      // Regression (bug #2): a transient 5xx must not invalidate the session.
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+    });
+
+    test('probe returns 502 → stays logged in', () async {
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Bad Gateway', 502));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+    });
+
+    test('network error → stays logged in', () async {
+      when(mockClient.head(tProbe, headers: anyNamed('headers'))).thenThrow(
+        http.ClientException('SocketException: Connection refused'),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+    });
+  });
+
+  group('never-synced session: PowerSync reachability', () {
+    test('probe succeeds → loggedIn + flag persisted', () async {
       final container = makeContainer();
 
       final state = await container.read(authProvider.future);
@@ -135,7 +261,7 @@ void main() {
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_HAS_EVER_SYNCED), false);
     });
 
-    test('never-synced + liveness returns 502 → powerSyncUnreachable', () async {
+    test('liveness returns 502 → powerSyncUnreachable', () async {
       when(mockClient.get(tLiveness)).thenAnswer((_) async => Response('Bad Gateway', 502));
 
       final container = makeContainer();
@@ -148,7 +274,7 @@ void main() {
       expect(state.serverUrl, serverUrl);
     });
 
-    test('never-synced + liveness throws SocketException → powerSyncUnreachable', () async {
+    test('liveness throws SocketException → powerSyncUnreachable', () async {
       when(mockClient.get(tLiveness)).thenThrow(
         const SocketException('Connection refused'),
       );
@@ -159,7 +285,7 @@ void main() {
       expect(state.status, AuthStatus.powerSyncUnreachable);
     });
 
-    test('never-synced + liveness throws ClientException → powerSyncUnreachable', () async {
+    test('liveness throws ClientException → powerSyncUnreachable', () async {
       when(mockClient.get(tLiveness)).thenThrow(
         http.ClientException('SocketException: Connection refused'),
       );
@@ -171,7 +297,7 @@ void main() {
     });
 
     test(
-      'never-synced + token endpoint returns empty powersync_url → powerSyncUnreachable',
+      'token endpoint returns empty powersync_url → powerSyncUnreachable',
       () async {
         when(
           mockClient.get(tPowerSyncToken, headers: anyNamed('headers')),
@@ -191,7 +317,7 @@ void main() {
       },
     );
 
-    test('never-synced + token endpoint returns 500 → powerSyncUnreachable', () async {
+    test('token endpoint returns 500 → powerSyncUnreachable', () async {
       when(
         mockClient.get(tPowerSyncToken, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('error', 500));
@@ -202,30 +328,9 @@ void main() {
       expect(state.status, AuthStatus.powerSyncUnreachable);
       verifyNever(mockClient.get(tLiveness));
     });
-
-    test('ever-synced + probe would fail → loggedIn (probe skipped)', () async {
-      // Mark the user as having completed at least one sync in a previous
-      // session: the probe should NOT run.
-      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
-
-      // Booby-trap both probe stages to assert they're not called.
-      when(mockClient.get(tPowerSyncToken, headers: anyNamed('headers'))).thenThrow(
-        const SocketException('would fail if called'),
-      );
-      when(mockClient.get(tLiveness)).thenThrow(
-        const SocketException('would fail if called'),
-      );
-
-      final container = makeContainer();
-      final state = await container.read(authProvider.future);
-
-      expect(state.status, AuthStatus.loggedIn);
-      verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
-      verifyNever(mockClient.get(tLiveness));
-    });
   });
 
-  group('_tryAutoLogin: server reachability', () {
+  group('never-synced session: server reachability', () {
     test('Django HEAD throws SocketException → logged in offline', () async {
       when(mockClient.head(tProbe, headers: anyNamed('headers'))).thenThrow(
         http.ClientException('SocketException: Connection refused'),
@@ -254,6 +359,34 @@ void main() {
       expect(state.status, AuthStatus.loggedOut);
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
     });
+
+    test('Django HEAD returns 500 → stays logged in, session kept', () async {
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Server Error', 500));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      // Regression (bug #2): a transient 5xx must not log the user out.
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.token, token);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+      // A broken server means the rest of the gating chain is skipped.
+      verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
+    });
+
+    test('Django HEAD returns 503 → stays logged in, session kept', () async {
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Service Unavailable', 503));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+    });
   });
 
   group('logout', () {
@@ -263,6 +396,8 @@ void main() {
       final container = makeContainer();
       // Wait for auto-login to settle so the notifier exists.
       await container.read(authProvider.future);
+      // Drain the background revalidation before mutating state.
+      await container.read(authProvider.notifier).revalidationDone;
 
       await container.read(authProvider.notifier).logout();
 
