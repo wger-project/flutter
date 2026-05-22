@@ -519,6 +519,14 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
     ),
   );
 
+  double _safePercent(double logged, double planned) {
+    if (planned <= 0 || logged <= 0) return 0.0;
+    final percent = (logged / planned) * 100;
+
+    if (percent.isNaN || percent.isInfinite) return 0.0;
+    return percent;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -573,7 +581,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: widget._logged.energy / widget._planned.energy * 100,
+                        toY: _safePercent(widget._logged.energy, widget._planned.energy),
                         color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),
@@ -584,7 +592,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: widget._logged.protein / widget._planned.protein * 100,
+                        toY: _safePercent(widget._logged.protein, widget._planned.protein),
                         color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),
@@ -595,7 +603,10 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: widget._logged.carbohydrates / widget._planned.carbohydrates * 100,
+                        toY: _safePercent(
+                          widget._logged.carbohydrates,
+                          widget._planned.carbohydrates,
+                        ),
                         color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),
@@ -606,7 +617,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barsSpace: barsSpace,
                     barRods: [
                       BarChartRodData(
-                        toY: widget._logged.fat / widget._planned.fat * 100,
+                        toY: _safePercent(widget._logged.fat, widget._planned.fat),
                         color: LIST_OF_COLORS3.first,
                         width: barsWidth,
                       ),
