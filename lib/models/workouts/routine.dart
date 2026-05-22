@@ -82,6 +82,12 @@ class Routine {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<DayData> dayDataGym = [];
 
+  /// Whether the full structure (days, slots, configs and the server-computed
+  /// dayData) has been loaded from the REST api. This can't be a simple
+  /// len(days) since that would match new routines.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool isHydrated = false;
+
   @JsonKey(required: false, includeToJson: false, includeFromJson: false)
   List<WorkoutSession> sessions = [];
 
@@ -98,6 +104,7 @@ class Routine {
     this.days = const [],
     this.dayData = const [],
     this.dayDataGym = const [],
+    this.isHydrated = false,
     this.sessions = const [],
   }) {
     this.created = created ?? DateTime.now();
@@ -135,6 +142,7 @@ class Routine {
     List<Day>? days,
     List<DayData>? dayData,
     List<DayData>? dayDataGym,
+    bool? isHydrated,
     List<WorkoutSession>? sessions,
   }) {
     return Routine(
@@ -150,6 +158,7 @@ class Routine {
       days: days ?? this.days,
       dayData: dayData ?? this.dayData,
       dayDataGym: dayDataGym ?? this.dayDataGym,
+      isHydrated: isHydrated ?? this.isHydrated,
       sessions: sessions ?? this.sessions,
     );
   }

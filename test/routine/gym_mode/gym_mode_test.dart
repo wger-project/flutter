@@ -30,11 +30,13 @@ import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
@@ -85,9 +87,10 @@ void main() {
     ).thenAnswer((_) async => testRoutine);
   });
 
-  Widget renderGymMode({locale = 'en'}) {
+  Widget renderGymMode({locale = 'en', bool isOnline = true}) {
     return riverpod.ProviderScope(
       overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
@@ -326,4 +329,37 @@ void main() {
     tags: ['golden'],
     semanticsEnabled: false,
   );
+
+  testWidgets('loads offline from the cached routine', (WidgetTester tester) async {
+    // Offline, gym mode uses the already-downloaded (hydrated) routine.
+    when(mockRoutinesRepo.watchAllDrift()).thenAnswer(
+      (_) => Stream.value([testRoutine]),
+    );
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+      await tester.pumpWidget(renderGymMode(isOnline: false));
+      await tester.pumpAndSettle();
+
+      // Gym mode is always reached from a screen that has already populated
+      // data, build and settle it here too. A keepAlive stream notifier needs
+      // an explicit listener to emit its first value, a bare read leaves it
+      // stuck in loading.
+      final container = riverpod.ProviderScope.containerOf(
+        tester.element(find.byType(TextButton)),
+      );
+      container.listen(routinesRiverpodProvider, (_, _) {});
+      await tester.pumpAndSettle();
+
+      // The mock is shared across tests; only the gym-mode open below must
+      // stay clear of server calls.
+      clearInteractions(mockRoutinesRepo);
+
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(StreamErrorIndicator), findsNothing);
+      expect(find.byType(StartPage), findsOneWidget);
+      verifyNever(mockRoutinesRepo.fetchAndSetRoutineFullServer(any));
+    });
+  });
 }

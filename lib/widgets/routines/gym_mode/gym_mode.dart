@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -18,12 +18,16 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/gym_mode.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
 import 'exercise_overview.dart';
@@ -63,11 +67,32 @@ class _GymModeState extends ConsumerState<GymMode> {
 
   Future<int> _loadGymState() async {
     widget._logger.fine('Loading gym state');
-    final routine = await ref
-        .read(routinesRiverpodProvider.notifier)
-        .fetchAndSetRoutineFull(
-          widget._args.routineId,
-        );
+    // This runs from initState. Yield once so the body never executes
+    // synchronously inside the widget life-cycle: the offline branch reaches
+    // gym-state mutations with no await in between, and modifying a provider
+    // during a life-cycle is not allowed.
+    await Future<void>.delayed(Duration.zero);
+
+    final notifier = ref.read(routinesRiverpodProvider.notifier);
+    final routineId = widget._args.routineId;
+
+    final Routine routine;
+    if (ref.read(networkStatusProvider)) {
+      routine = await notifier.fetchAndSetRoutineFull(routineId);
+    } else {
+      // Offline: use the local routine data. Reaching the gym mode requires an
+      // already-downloaded routine, so the routine is normally present
+      final cached = ref
+          .read(routinesRiverpodProvider)
+          .value
+          ?.routines
+          .firstWhereOrNull((r) => r.id == routineId);
+      if (cached == null || !cached.isHydrated) {
+        throw StateError('Routine $routineId is not available offline');
+      }
+      routine = cached;
+    }
+
     final gymViewModel = ref.read(gymStateProvider.notifier);
     final initialPage = gymViewModel.initData(
       routine,
@@ -128,7 +153,9 @@ class _GymModeState extends ConsumerState<GymMode> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const BoxedProgressIndicator();
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}: ${snapshot.stackTrace}'));
+          return Center(
+            child: StreamErrorIndicator(snapshot.error!, stacktrace: snapshot.stackTrace),
+          );
         } else if (snapshot.connectionState == ConnectionState.done) {
           final initialPage = snapshot.data!;
 

@@ -43,7 +43,10 @@ ErrorSeverity classifyError(Object? error) {
   // dedicated type, so matching the message is the only option.
   final isLayoutOverflow = error is FlutterError && error.toString().contains('overflowed');
 
-  if (error is NetworkImageLoadException || isLayoutOverflow) {
+  // A failed network image load as a plain StateError
+  final isImageLoadFailure = error is StateError && error.toString().contains('Failed to load');
+
+  if (error is NetworkImageLoadException || isLayoutOverflow || isImageLoadFailure) {
     return ErrorSeverity.cosmetic;
   }
   if (error is SocketException || error is http.ClientException || error is TimeoutException) {

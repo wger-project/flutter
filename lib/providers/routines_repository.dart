@@ -105,6 +105,7 @@ class RoutinesRepository {
 
     routine.dayData = dayData.map((entry) => DayData.fromJson(entry)).toList();
     routine.dayDataGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
+    routine.isHydrated = true;
 
     return routine;
   }

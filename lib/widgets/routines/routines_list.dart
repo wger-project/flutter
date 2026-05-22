@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
@@ -40,6 +41,7 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final routineProvider = ref.read(routinesRiverpodProvider.notifier);
     final routinesAsync = ref.watch(routinesRiverpodProvider);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return AsyncValueWidget<RoutinesState>(
       value: routinesAsync,
@@ -54,28 +56,38 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
           itemCount: routines.length,
           itemBuilder: (context, index) {
             final currentRoutine = routines[index];
+            final routineId = currentRoutine.id!;
+
+            // The routine structure is fetched via REST. Offline it can only
+            // be opened if it was already loaded earlier
+            final canOpen = isOnline || currentRoutine.isHydrated;
 
             return Card(
               child: ListTile(
-                onTap: () async {
-                  setState(() {
-                    _loadingRoutine = currentRoutine.id;
-                  });
-                  try {
-                    await routineProvider.fetchAndSetRoutineFull(currentRoutine.id!);
-                  } finally {
-                    if (mounted) {
-                      setState(() => _loadingRoutine = null);
-                    }
-                  }
+                enabled: canOpen,
+                onTap: canOpen
+                    ? () async {
+                        if (isOnline) {
+                          setState(() {
+                            _loadingRoutine = routineId;
+                          });
+                          try {
+                            await routineProvider.fetchAndSetRoutineFull(routineId);
+                          } finally {
+                            if (mounted) {
+                              setState(() => _loadingRoutine = null);
+                            }
+                          }
+                        }
 
-                  if (context.mounted) {
-                    Navigator.of(context).pushNamed(
-                      RoutineScreen.routeName,
-                      arguments: currentRoutine.id,
-                    );
-                  }
-                },
+                        if (context.mounted) {
+                          Navigator.of(context).pushNamed(
+                            RoutineScreen.routeName,
+                            arguments: routineId,
+                          );
+                        }
+                      }
+                    : null,
                 title: Text(currentRoutine.name),
                 subtitle: Text(
                   '${dateFormat.format(currentRoutine.start)}'
@@ -84,6 +96,7 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    if (!canOpen) const Icon(Icons.cloud_off),
                     const VerticalDivider(),
                     if (_loadingRoutine == currentRoutine.id)
                       const IconButton(

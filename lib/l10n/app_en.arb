@@ -1175,7 +1175,7 @@
   "systemMode": "System settings",
   "networkInfo": "Network information",
   "youAreOffline": "You are offline",
-  "offlineModeInfo": "Some features are unavailable until you reconnect to the internet (buttons and menus will be disabled). Currently, this mainly affects editing routines and nutrition plans, but logging workouts and meals works offline. The data will be synced automatically once you are back online.",
+  "offlineModeInfo": "Some features are unavailable until you reconnect to the internet (buttons and menus will be disabled). Currently, this mainly affects editing routines, but logging workouts and meals works offline. The data will be synced automatically once you are back online.",
   "appLanguage": "App language",
   "@appLanguage": {
     "description": "Label for the in-app language selector in settings"

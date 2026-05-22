@@ -117,6 +117,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
           fresh.days = old.days;
           fresh.dayData = old.dayData;
           fresh.dayDataGym = old.dayDataGym;
+          fresh.isHydrated = old.isHydrated;
         }
       }
       freshRoutines.forEach(_hydrateRoutine);
