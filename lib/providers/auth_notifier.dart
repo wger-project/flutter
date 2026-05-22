@@ -579,11 +579,11 @@ class AuthNotifier extends _$AuthNotifier {
   /// No-op when PowerSync hasn't been initialised yet (e.g. during the
   /// pre-login reset on app start, before any data widgets have run).
   Future<void> _wipePowerSyncIfBuilt() async {
-    if (!ref.exists(powerSyncInstanceProvider)) {
+    final db = builtPowerSyncInstance;
+    if (db == null) {
       return;
     }
     try {
-      final db = await ref.read(powerSyncInstanceProvider.future);
       await db.disconnectAndClear();
     } catch (e, s) {
       _logger.warning('PowerSync wipe failed', e, s);
@@ -594,11 +594,11 @@ class AuthNotifier extends _$AuthNotifier {
   /// given [serverUrl]. No-op when PowerSync hasn't been built yet: the next
   /// access will build it with the current (post-login) auth state.
   Future<void> _reconnectPowerSyncIfBuilt(String serverUrl) async {
-    if (!ref.exists(powerSyncInstanceProvider)) {
+    final db = builtPowerSyncInstance;
+    if (db == null) {
       return;
     }
     try {
-      final db = await ref.read(powerSyncInstanceProvider.future);
       connectPowerSync(db, serverUrl);
     } catch (e, s) {
       _logger.warning('PowerSync reconnect failed', e, s);

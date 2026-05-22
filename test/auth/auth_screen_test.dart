@@ -31,14 +31,20 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/auth_screen.dart';
 
+import '../fake_connectivity.dart';
 import 'auth_screen_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
   /// Replacement for SharedPreferences.setMockInitialValues()
   SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+
+  // The auth screen watches networkStatusProvider to gate the action button.
+  // Stub connectivity so that probe is deterministic.
+  installFakeConnectivity();
 
   late MockClient mockClient;
 
@@ -81,6 +87,9 @@ void main() {
 
   setUp(() {
     mockClient = MockClient();
+
+    // Default: online. The offline test overrides this.
+    reachabilityCheck = (_, _, _) async => true;
 
     SharedPreferences.setMockInitialValues({});
     PackageInfo.setMockInitialValues(
@@ -194,6 +203,54 @@ void main() {
           body: json.encode({'username': 'testuser', 'password': '123456789'}),
         ),
       );
+    });
+
+    testWidgets('Login - server unreachable shows a friendly message', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      // Regression (bug #2): a network error during login must surface as a
+      // message, not crash through to the red error screen.
+      when(
+        mockClient.post(
+          tLogin,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      ).thenThrow(http.ClientException('SocketException: Connection refused'));
+
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text("Couldn't connect to server"), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      verify(
+        mockClient.post(
+          tLogin,
+          headers: anyNamed('headers'),
+          body: json.encode({'username': 'testuser', 'password': '123456789'}),
+        ),
+      );
+    });
+
+    testWidgets('Login button is disabled when offline', (WidgetTester tester) async {
+      // Arrange: no connectivity.
+      reachabilityCheck = (_, _, _) async => false;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Assert: the action button cannot be tapped.
+      final button = tester.widget<ElevatedButton>(find.byKey(const Key('actionButton')));
+      expect(button.onPressed, isNull);
     });
 
     testWidgets('Login - with API token - happy path', (WidgetTester tester) async {

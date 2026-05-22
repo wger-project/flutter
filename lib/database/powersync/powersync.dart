@@ -30,6 +30,17 @@ import 'package:wger/providers/wger_base.dart';
 
 part 'powersync.g.dart';
 
+PowerSyncDatabase? _builtInstance;
+
+/// The PowerSync database once [powerSyncInstanceProvider] has finished
+/// building, otherwise null.
+///
+/// Escape hatch for callers that must not take a Riverpod dependency on
+/// [powerSyncInstanceProvider]: that provider transitively depends on
+/// [authProvider] (via networkStatus and wgerBase), so the auth notifier
+/// reading the provider through `ref` would form a dependency cycle.
+PowerSyncDatabase? get builtPowerSyncInstance => _builtInstance;
+
 @Riverpod(keepAlive: true)
 Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   final db = PowerSyncDatabase(
@@ -39,6 +50,7 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   );
   await db.initialize();
   await _createRawTables(db);
+  _builtInstance = db;
 
   // Connect to the sync service only while the device is online. PowerSync's
   // own retry loop would otherwise log a credential error on every iteration
@@ -57,7 +69,10 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   syncConnection(ref.read(networkStatusProvider));
   ref.listen(networkStatusProvider, (_, isOnline) => syncConnection(isOnline));
 
-  ref.onDispose(db.close);
+  ref.onDispose(() {
+    _builtInstance = null;
+    db.close();
+  });
 
   return db;
 }
