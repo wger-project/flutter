@@ -21,6 +21,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/trophies/trophy.dart';
 import 'package:wger/models/trophies/user_trophy.dart';
 import 'package:wger/models/trophies/user_trophy_progression.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/trophy_repository.dart';
 
 part 'trophy_notifier.g.dart';
@@ -61,17 +62,32 @@ final class TrophyStateNotifier extends _$TrophyStateNotifier {
 
   @override
   TrophyState build() {
-    // Kick off the initial trophy load. Sync notifier, so we can't await
-    // here — UI consumers rebuild via state mutation when data arrives.
-    Future.microtask(() async {
-      try {
-        await fetchAll();
-      } catch (e, s) {
-        _logger.warning('initial trophy fetch failed', e, s);
+    // Trophies are REST-only. Kick off the initial load, but skip it while
+    // offline and retry once connectivity returns. Sync notifier, so we
+    // can't await here — UI consumers rebuild via state mutation.
+    Future.microtask(_fetchIfOnline);
+    ref.listen(networkStatusProvider, (previous, next) {
+      if (next && previous == false) {
+        Future.microtask(_fetchIfOnline);
       }
     });
 
     return TrophyState();
+  }
+
+  /// Fetches all trophy data, but only when the backend is reachable.
+  /// Offline this is a no-op so the REST calls don't hammer an unreachable
+  /// server.
+  Future<void> _fetchIfOnline() async {
+    if (!await ref.read(networkStatusProvider.notifier).check()) {
+      _logger.fine('Skipping trophy fetch, device is offline');
+      return;
+    }
+    try {
+      await fetchAll();
+    } catch (e, s) {
+      _logger.warning('initial trophy fetch failed', e, s);
+    }
   }
 
   Future<void> fetchAll({String? language}) async {
