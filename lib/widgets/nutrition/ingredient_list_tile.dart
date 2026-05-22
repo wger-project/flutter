@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/screens/ingredient_screen.dart';
+import 'package:wger/screens/ingredient_detail_screen.dart';
 import 'package:wger/widgets/nutrition/ingredient_images.dart';
 
 class IngredientListTile extends StatelessWidget {
@@ -53,7 +53,11 @@ class IngredientListTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       onTap: () {
-        Navigator.pushNamed(context, IngredientDetailScreen.routeName, arguments: ingredient);
+        Navigator.pushNamed(
+          context,
+          IngredientDetailScreen.routeName,
+          arguments: ingredient,
+        );
       },
     );
   }

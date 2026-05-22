@@ -39,7 +39,7 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
-import 'package:wger/screens/ingredient_screen.dart';
+import 'package:wger/screens/ingredient_detail_screen.dart';
 import 'package:wger/screens/ingredients_screen.dart';
 import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';

@@ -118,7 +118,7 @@ class IngredientDetails extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              _DietaryInfoSection(ingredient: ingredient),
+              DietaryInfoSection(ingredient: ingredient),
               if (ingredient.licenseObjectURl == null)
                 Text('Source: $source')
               else
@@ -283,10 +283,10 @@ class IngredientScanResultDialog extends StatelessWidget {
   );
 }
 
-class _DietaryInfoSection extends StatelessWidget {
+class DietaryInfoSection extends StatelessWidget {
   final Ingredient ingredient;
 
-  const _DietaryInfoSection({required this.ingredient});
+  const DietaryInfoSection({required this.ingredient});
 
   @override
   Widget build(BuildContext context) {

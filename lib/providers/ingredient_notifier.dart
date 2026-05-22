@@ -51,8 +51,6 @@ final class IngredientNotifier extends _$IngredientNotifier {
     ref.keepAlive();
     _logger.finer('Building ingredient stream');
     _repo = ref.watch(ingredientRepositoryProvider);
-    // Clear cache when the main list changes
-    // ref.onDispose(() => _cache.clear());
 
     return _repo.watchAllDrift();
   }
