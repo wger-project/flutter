@@ -19,6 +19,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/powersync/api_client.dart';
@@ -254,6 +255,16 @@ void main() {
       expect(creds.token, 'not.a.jwt');
       expect(creds.userId, isNull);
       expect(creds.expiresAt, isNull);
+    });
+
+    test('returns null when the backend is unreachable', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      when(
+        mockApi.getPowersyncToken(),
+      ).thenThrow(http.ClientException('Connection refused'));
+
+      expect(await connector.fetchCredentials(), isNull);
     });
   });
 }

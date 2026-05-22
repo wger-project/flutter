@@ -18,6 +18,7 @@
 
 // This file performs setup of the PowerSync database
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -71,11 +72,23 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// Get a token to authenticate against the PowerSync instance.
   @override
   Future<PowerSyncCredentials?> fetchCredentials() async {
-    // Somewhat contrived to illustrate usage, see auth docs here:
+    // See the auth docs here:
     // https://docs.powersync.com/usage/installation/authentication-setup/custom
-    final session = await apiClient.getPowersyncToken();
-    final token = session['token'] as String;
+    final Map<String, dynamic> session;
+    try {
+      session = await apiClient.getPowersyncToken();
+    } on http.ClientException catch (e) {
+      // Backend unreachable (offline). Returning null skips this attempt;
+      // PowerSync retries on its own schedule. Without this, the raw
+      // SocketException stack trace floods the logs on every retry.
+      logger.fine('PowerSync credential fetch skipped, backend unreachable: ${e.message}');
+      return null;
+    } on SocketException catch (e) {
+      logger.fine('PowerSync credential fetch skipped, backend unreachable: ${e.message}');
+      return null;
+    }
 
+    final token = session['token'] as String;
     final payload = decodeJwtPayload(token);
     return PowerSyncCredentials(
       endpoint: session['powersync_url'],
@@ -185,10 +198,9 @@ class DjangoConnector extends PowerSyncBackendConnector {
         final record = {
           'table': op.table,
           'data': _genericTransform(op.table, op.opData, op.id),
-          // 'data': {'id': op.id, ...?op.opData},
         };
 
-        logger.finer('Uploading record $record to server with operation ${op.op}');
+        // logger.finer('Uploading record $record to server with operation ${op.op}');
 
         final http.Response response;
         switch (op.op) {
@@ -206,6 +218,14 @@ class DjangoConnector extends PowerSyncBackendConnector {
         _handleUploadResponse(op, response);
       }
       await transaction.complete();
+    } on http.ClientException catch (e) {
+      // Backend unreachable (offline or down). The transaction stays queued;
+      // rethrowing lets PowerSync retry it once the backend is reachable.
+      logger.fine('Upload deferred, backend unreachable: ${e.message}');
+      rethrow;
+    } on SocketException catch (e) {
+      logger.fine('Upload deferred, backend unreachable: ${e.message}');
+      rethrow;
     } on Exception catch (e) {
       logger.severe('Error uploading data', e);
       // Error may be retryable - e.g. network error or temporary server error.

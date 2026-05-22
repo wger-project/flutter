@@ -37,7 +37,7 @@ import 'package:wger/providers/network_provider.dart';
 /// for the entire file).
 void installFakeConnectivity() {
   ConnectivityPlatform.instance = _FakeConnectivityPlatform();
-  reachabilityCheck = (_, _) async => true;
+  reachabilityCheck = (_, _, _) async => true;
 }
 
 class _FakeConnectivityPlatform extends ConnectivityPlatform with MockPlatformInterfaceMixin {

@@ -32,17 +32,22 @@ part 'network_provider.g.dart';
 /// Returns whether the wger backend is actually reachable.
 ///
 /// Given [probeUri] any HTTP response counts as reachable, only a
-/// network-level error or timeout counts as offline. When [probeUri] is null
-/// (no server configured yet, e.g. on the login screen) it falls back to a
-/// DNS lookup so there is still a sane online/offline signal.
+/// network-level error or timeout counts as offline. The request carries
+/// [userAgent] so the probe is identifiable in server logs. When [probeUri] is
+/// null (no server configured yet, e.g. on the login screen) it falls back to
+/// a DNS lookup so there is still a sane online/offline signal.
 ///
 /// Tests can swap this for a deterministic stub via `installFakeConnectivity()`
 /// so the test runner doesn't make real network calls.
 @visibleForTesting
-Future<bool> Function(Uri? probeUri, Duration timeout) reachabilityCheck =
+Future<bool> Function(Uri? probeUri, String? userAgent, Duration timeout) reachabilityCheck =
     _defaultReachabilityCheck;
 
-Future<bool> _defaultReachabilityCheck(Uri? probeUri, Duration timeout) async {
+Future<bool> _defaultReachabilityCheck(
+  Uri? probeUri,
+  String? userAgent,
+  Duration timeout,
+) async {
   // No server configured yet: fall back to a generic internet check.
   if (probeUri == null) {
     try {
@@ -57,7 +62,12 @@ Future<bool> _defaultReachabilityCheck(Uri? probeUri, Duration timeout) async {
   try {
     // Any response (even 401/403) proves the server answered. HEAD keeps it
     // cheap and the version endpoint does not hit the database.
-    await client.head(probeUri).timeout(timeout);
+    await client
+        .head(
+          probeUri,
+          headers: userAgent != null ? {HttpHeaders.userAgentHeader: userAgent} : null,
+        )
+        .timeout(timeout);
     return true;
   } catch (e) {
     if (isNetworkError(e)) {
@@ -69,11 +79,18 @@ Future<bool> _defaultReachabilityCheck(Uri? probeUri, Duration timeout) async {
   }
 }
 
+/// Interval for the active backend re-probe (see [NetworkStatus]). Tests set
+/// this to `null` to disable the periodic timer; a pending timer would
+/// otherwise fail the test runner.
+@visibleForTesting
+Duration? networkProbeInterval = const Duration(seconds: 30);
+
 @Riverpod(keepAlive: true)
 class NetworkStatus extends _$NetworkStatus {
   final _logger = Logger('NetworkStatus');
 
   StreamSubscription<List<ConnectivityResult>>? _sub;
+  Timer? _probeTimer;
 
   @override
   bool build() {
@@ -99,8 +116,17 @@ class NetworkStatus extends _$NetworkStatus {
       }
     });
 
+    // Connectivity events only fire on adapter changes, so an active re-probe
+    // is needed to notice a backend that goes down (or comes back) while the
+    // network stays up.
+    final probeInterval = networkProbeInterval;
+    if (probeInterval != null) {
+      _probeTimer = Timer.periodic(probeInterval, (_) => check());
+    }
+
     ref.onDispose(() {
       _sub?.cancel();
+      _probeTimer?.cancel();
     });
   }
 
@@ -122,8 +148,9 @@ class NetworkStatus extends _$NetworkStatus {
     if (conn.every((c) => c == ConnectivityResult.none)) {
       return false;
     }
+
     final base = ref.read(wgerBaseProvider);
     final probeUri = base.serverUrl != null ? base.makeUrl('version') : null;
-    return reachabilityCheck(probeUri, timeout);
+    return reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);
   }
 }

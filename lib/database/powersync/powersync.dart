@@ -25,6 +25,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:wger/powersync/connector.dart';
 import 'package:wger/powersync/schema.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
 part 'powersync.g.dart';
@@ -39,8 +40,23 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   await db.initialize();
   await _createRawTables(db);
 
-  final baseProvider = ref.read(wgerBaseProvider);
-  connectPowerSync(db, baseProvider.serverUrl!);
+  // Connect to the sync service only while the device is online. PowerSync's
+  // own retry loop would otherwise log a credential error on every iteration
+  // against an unreachable backend
+  void syncConnection(bool isOnline) {
+    if (isOnline) {
+      final serverUrl = ref.read(wgerBaseProvider).serverUrl;
+      if (serverUrl != null) {
+        connectPowerSync(db, serverUrl);
+      }
+    } else {
+      db.disconnect();
+    }
+  }
+
+  syncConnection(ref.read(networkStatusProvider));
+  ref.listen(networkStatusProvider, (_, isOnline) => syncConnection(isOnline));
+
   ref.onDispose(db.close);
 
   return db;
