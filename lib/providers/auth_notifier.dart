@@ -458,19 +458,20 @@ class AuthNotifier extends _$AuthNotifier {
     DateTime? accessExpiresAt,
   }) async {
     final response = await _probeWgerServer(serverUrl, token, tokenType, appVersion);
-    // Network error before any HTTP response. Keep the saved session so the
-    // user can retry from the recovery screen.
+    // Server unreachable at startup. The user already has a saved session, so
+    // let them straight in to keep working offline.
     if (response == null) {
+      _logger.info('autologin: server unreachable, continuing offline');
       return switch (tokenType) {
         AuthTokenType.legacyApiToken => AuthState(
-          status: AuthStatus.serverUnreachable,
+          status: AuthStatus.loggedIn,
           token: token,
           tokenType: tokenType,
           serverUrl: serverUrl,
           applicationVersion: appVersion,
         ),
         AuthTokenType.headlessJwt => AuthState(
-          status: AuthStatus.serverUnreachable,
+          status: AuthStatus.loggedIn,
           accessToken: token,
           accessExpiresAt: accessExpiresAt,
           tokenType: tokenType,

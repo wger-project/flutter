@@ -32,7 +32,7 @@ final class AccountNotifierProvider extends $AsyncNotifierProvider<AccountNotifi
   AccountNotifier create() => AccountNotifier();
 }
 
-String _$accountNotifierHash() => r'c7b8d7ff24bf27f3977f2796166a2f624f442159';
+String _$accountNotifierHash() => r'37b4d96a357da19a03e34b737a515781a9fdd01f';
 
 abstract class _$AccountNotifier extends $AsyncNotifier<Account?> {
   FutureOr<Account?> build();

@@ -4460,17 +4460,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get sessionExpired =>
-      (super.noSuchMethod(
-            Invocation.getter(#sessionExpired),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#sessionExpired),
-            ),
-          )
-          as String);
-
-  @override
   String exerciseNr(String? nr) =>
       (super.noSuchMethod(
             Invocation.method(#exerciseNr, [nr]),

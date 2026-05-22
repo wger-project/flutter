@@ -100,9 +100,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
             leading: const Icon(Icons.email_rounded, color: wgerPrimaryColor),
             title: TextFormField(
               decoration: InputDecoration(
-                labelText: account.emailVerified
-                    ? i18n.verifiedEmail
-                    : i18n.unVerifiedEmail,
+                labelText: account.emailVerified ? i18n.verifiedEmail : i18n.unVerifiedEmail,
                 suffixIcon: account.emailVerified
                     ? const Icon(Icons.check_circle, color: Colors.green)
                     : null,
@@ -123,9 +121,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
             OutlinedButton(
               onPressed: isOnline
                   ? () async {
-                      await ref
-                          .read(accountProvider.notifier)
-                          .resendVerification(account.email);
+                      await ref.read(accountProvider.notifier).resendVerification(account.email);
                       if (!context.mounted) {
                         return;
                       }
@@ -189,9 +185,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    emailChanged
-                        ? i18n.verifiedEmailInfo(newEmail)
-                        : i18n.successfullySaved,
+                    emailChanged ? i18n.verifiedEmailInfo(newEmail) : i18n.successfullySaved,
                   ),
                 ),
               );
