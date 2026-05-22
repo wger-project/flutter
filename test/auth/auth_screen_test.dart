@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -40,9 +40,6 @@ import 'auth_screen_test.mocks.dart';
 
 @GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
-  /// Replacement for SharedPreferences.setMockInitialValues()
-  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-
   // The auth screen watches networkStatusProvider to gate the action button.
   // Stub connectivity so that probe is deterministic.
   installFakeConnectivity();
@@ -106,6 +103,7 @@ void main() {
     reachabilityCheck = (_, _, _) async => true;
 
     SharedPreferences.setMockInitialValues({});
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     PackageInfo.setMockInitialValues(
       appName: 'wger',
       packageName: 'com.example.example',
@@ -383,6 +381,111 @@ void main() {
         mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
       );
     });
+
+    testWidgets('Login - custom server URL is used and trailing slash trimmed', (
+      WidgetTester tester,
+    ) async {
+      // A custom server URL with a trailing slash must be trimmed before the
+      // request is built, otherwise makeHeadlessUri produces a double slash.
+      // The login is stubbed to fail, so nothing is persisted and only the
+      // request URL is under test.
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      final tHeadlessLoginCustom = Uri(
+        scheme: 'https',
+        host: 'my.server',
+        path: '/_allauth/app/v1/auth/login',
+      );
+      when(
+        mockClient.post(
+          tHeadlessLoginCustom,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      ).thenAnswer((_) => Future(() => Response(json.encode({'detail': 'nope'}), 400)));
+
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.tap(find.byKey(const Key('toggleCustomServerButton')));
+      await tester.pump();
+      await tester.enterText(find.byKey(const Key('inputServer')), 'https://my.server/');
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert: the request hit the trimmed custom host, not the default.
+      verify(
+        mockClient.post(
+          tHeadlessLoginCustom,
+          headers: anyNamed('headers'),
+          body: json.encode({'username': 'testuser', 'password': '123456789'}),
+        ),
+      );
+      verifyNever(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      );
+    });
+
+    testWidgets('Login - server misconfiguration shows a warning dialog', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      // The config check only runs once login fully reaches loggedIn, so the
+      // version and PowerSync probes must all report a healthy server.
+      when(
+        mockClient.get(Uri.parse('https://wger.de/api/v2/version/')),
+      ).thenAnswer((_) => Future(() => Response('"99.99.99"', 200)));
+      when(
+        mockClient.get(Uri.parse('https://wger.de/api/v2/min-app-version/')),
+      ).thenAnswer((_) => Future(() => Response('"0.0.1"', 200)));
+      when(
+        mockClient.get(
+          Uri.parse('https://wger.de/api/v2/powersync-token'),
+          headers: anyNamed('headers'),
+        ),
+      ).thenAnswer(
+        (_) => Future(
+          () => Response(
+            json.encode({'token': 'ps-jwt', 'powersync_url': 'https://ps.example/'}),
+            200,
+          ),
+        ),
+      );
+      when(
+        mockClient.get(Uri.parse('https://ps.example/probes/liveness')),
+      ).thenAnswer((_) => Future(() => Response('OK', 200)));
+      // _serverConfigSane fetches the exercise list; a `next` URL on a
+      // different host than the server flags a reverse-proxy misconfiguration.
+      when(
+        mockClient.get(
+          Uri.parse('https://wger.de/api/v2/exercise/?limit=1'),
+          headers: anyNamed('headers'),
+        ),
+      ).thenAnswer(
+        (_) => Future(
+          () => Response(
+            json.encode({'next': 'https://internal.host/api/v2/exercise/?limit=1&offset=1'}),
+            200,
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('Server Configuration Issue'), findsOneWidget);
+    });
   });
 
   group('Registration mode', () {
@@ -505,6 +608,75 @@ void main() {
           headers: anyNamed('headers'),
           body: json.encode({'username': 'testuser', 'password': '123456789'}),
         ),
+      );
+    });
+
+    testWidgets('Registration - mismatched confirm password is rejected', (
+      WidgetTester tester,
+    ) async {
+      // The ConfirmPasswordField validator must block submit when the two
+      // password entries differ.
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.tap(find.byKey(const Key('toggleActionButton')));
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.enterText(find.byKey(const Key('inputPassword2')), '987654321');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert: the mismatch validator blocks and signup is never hit.
+      expect(find.text("The passwords don't match"), findsOneWidget);
+      verifyNever(
+        mockClient.post(tHeadlessSignup, headers: anyNamed('headers'), body: anyNamed('body')),
+      );
+    });
+
+    testWidgets('Registration - empty form blocks submit', (WidgetTester tester) async {
+      // Tapping the action button with empty fields must trip the validators
+      // and never reach the network.
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.tap(find.byKey(const Key('toggleActionButton')));
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('Please enter a valid username'), findsOneWidget);
+      verifyNever(
+        mockClient.post(tHeadlessSignup, headers: anyNamed('headers'), body: anyNamed('body')),
+      );
+    });
+
+    testWidgets('Registration - invalid email is rejected', (WidgetTester tester) async {
+      // A non-empty email without an '@' must trip the email validator.
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.tap(find.byKey(const Key('toggleActionButton')));
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputEmail')), 'notanemail');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.enterText(find.byKey(const Key('inputPassword2')), '123456789');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('Please enter a valid e-mail address'), findsOneWidget);
+      verifyNever(
+        mockClient.post(tHeadlessSignup, headers: anyNamed('headers'), body: anyNamed('body')),
       );
     });
   });
