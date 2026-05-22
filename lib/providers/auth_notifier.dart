@@ -20,6 +20,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -27,6 +29,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:version/version.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/database/powersync/powersync.dart';
@@ -71,6 +74,11 @@ class AuthNotifier extends _$AuthNotifier {
   /// network roundtrip. Cleared in `whenComplete` so the next refresh starts
   /// a fresh request.
   Future<void>? _refreshInFlight;
+
+  /// Completes when the most recent background revalidation has finished.
+  /// Exposed so tests can deterministically await the fire-and-forget task.
+  @visibleForTesting
+  Future<void>? revalidationDone;
 
   @override
   Future<AuthState> build() async {
@@ -412,7 +420,7 @@ class AuthNotifier extends _$AuthNotifier {
     // new flow.
     final headless = await _readHeadlessAuthFromPrefs(prefs);
     if (headless != null) {
-      return _autoLoginWith(
+      return _resolveStoredSession(
         token: headless.accessToken,
         tokenType: AuthTokenType.headlessJwt,
         serverUrl: headless.serverUrl,
@@ -439,7 +447,7 @@ class AuthNotifier extends _$AuthNotifier {
       return AuthState(applicationVersion: appVersion);
     }
 
-    return _autoLoginWith(
+    return _resolveStoredSession(
       token: token,
       tokenType: AuthTokenType.legacyApiToken,
       serverUrl: serverUrl,
@@ -462,31 +470,36 @@ class AuthNotifier extends _$AuthNotifier {
     // let them straight in to keep working offline.
     if (response == null) {
       _logger.info('autologin: server unreachable, continuing offline');
-      return switch (tokenType) {
-        AuthTokenType.legacyApiToken => AuthState(
-          status: AuthStatus.loggedIn,
-          token: token,
-          tokenType: tokenType,
-          serverUrl: serverUrl,
-          applicationVersion: appVersion,
-        ),
-        AuthTokenType.headlessJwt => AuthState(
-          status: AuthStatus.loggedIn,
-          accessToken: token,
-          accessExpiresAt: accessExpiresAt,
-          tokenType: tokenType,
-          serverUrl: serverUrl,
-          applicationVersion: appVersion,
-        ),
-      };
+      return _restoredSessionState(
+        token: token,
+        tokenType: tokenType,
+        serverUrl: serverUrl,
+        appVersion: appVersion,
+        accessExpiresAt: accessExpiresAt,
+      );
     }
 
-    // Got a response but the server didn't like our token (typically 401/403),
-    // wipe the matching credential bundle and route to login.
-    if (response.statusCode != 200) {
-      _logger.info('autologin failed, statusCode: ${response.statusCode}');
+    // The server actively rejected our token: wipe the matching credential
+    // bundle and route to login. Only 401/403 count, a transient 5xx must not
+    // log the user out.
+    if (_isAuthRejection(response.statusCode)) {
+      _logger.info('autologin failed, token rejected: ${response.statusCode}');
       await _wipeStoredCredentials(tokenType);
       return AuthState(applicationVersion: appVersion);
+    }
+
+    // Any other non-200 (5xx etc.) is transient: keep the saved session.
+    if (response.statusCode != 200) {
+      _logger.warning(
+        'autologin: probe returned ${response.statusCode}, keeping saved session',
+      );
+      return _restoredSessionState(
+        token: token,
+        tokenType: tokenType,
+        serverUrl: serverUrl,
+        appVersion: appVersion,
+        accessExpiresAt: accessExpiresAt,
+      );
     }
 
     final newState = await _resolveAuthState(
@@ -500,6 +513,155 @@ class AuthNotifier extends _$AuthNotifier {
       _logger.info('autologin successful');
     }
     return newState;
+  }
+
+  /// Decides how a stored session enters the app. A previously synced session
+  /// goes straight in (offline-capable) and is revalidated in the background;
+  /// a never-synced session has no local data yet, so the server must be
+  /// reached first through the blocking [_autoLoginWith] path.
+  Future<AuthState> _resolveStoredSession({
+    required String token,
+    required AuthTokenType tokenType,
+    required String serverUrl,
+    required PackageInfo appVersion,
+    DateTime? accessExpiresAt,
+  }) async {
+    final everSynced = (await PreferenceHelper.asyncPref.getBool(PREFS_HAS_EVER_SYNCED)) ?? false;
+    if (!everSynced) {
+      return _autoLoginWith(
+        token: token,
+        tokenType: tokenType,
+        serverUrl: serverUrl,
+        appVersion: appVersion,
+        accessExpiresAt: accessExpiresAt,
+      );
+    }
+
+    _logger.info('autologin: session restored, revalidating in background');
+    _scheduleRevalidation();
+    return _restoredSessionState(
+      token: token,
+      tokenType: tokenType,
+      serverUrl: serverUrl,
+      appVersion: appVersion,
+      accessExpiresAt: accessExpiresAt,
+    );
+  }
+
+  /// Builds a logged-in [AuthState] for a stored session, placing the
+  /// credential in the field that matches [tokenType].
+  AuthState _restoredSessionState({
+    required String token,
+    required AuthTokenType tokenType,
+    required String serverUrl,
+    required PackageInfo appVersion,
+    DateTime? accessExpiresAt,
+  }) {
+    return switch (tokenType) {
+      AuthTokenType.legacyApiToken => AuthState(
+        status: AuthStatus.loggedIn,
+        token: token,
+        tokenType: tokenType,
+        serverUrl: serverUrl,
+        applicationVersion: appVersion,
+      ),
+      AuthTokenType.headlessJwt => AuthState(
+        status: AuthStatus.loggedIn,
+        accessToken: token,
+        accessExpiresAt: accessExpiresAt,
+        tokenType: tokenType,
+        serverUrl: serverUrl,
+        applicationVersion: appVersion,
+      ),
+    };
+  }
+
+  /// Whether [statusCode] means the server actively rejected our token, as
+  /// opposed to a transient error that must not invalidate the session.
+  bool _isAuthRejection(int statusCode) => statusCode == 401 || statusCode == 403;
+
+  /// Schedules a non-blocking revalidation of the restored session.
+  ///
+  /// The first run is deferred to a fresh event-loop task so [build] has
+  /// completed first. It then re-runs whenever connectivity is regained, so a
+  /// session restored while offline still gets validated without an app
+  /// restart. Connectivity is observed directly (not via networkStatusProvider)
+  /// to avoid a dependency cycle (auth -> networkStatus -> wgerBase -> auth).
+  void _scheduleRevalidation() {
+    revalidationDone = Future(_revalidate);
+
+    final sub = Connectivity().onConnectivityChanged.listen((results) {
+      final online = results.any((r) => r != ConnectivityResult.none);
+      if (online) {
+        revalidationDone = _revalidate();
+      }
+    });
+    ref.onDispose(sub.cancel);
+  }
+
+  /// Revalidates the restored session against the server. Fire-and-forget: it
+  /// never throws and only changes the state on a genuine problem (a revoked
+  /// token, or an outdated app/server). Transient failures (offline, 5xx,
+  /// network errors) leave the user logged in.
+  Future<void> _revalidate() async {
+    try {
+      final current = state.asData?.value;
+      if (current == null || current.status != AuthStatus.loggedIn) {
+        return;
+      }
+
+      final tokenType = current.tokenType ?? AuthTokenType.legacyApiToken;
+      final token = current.accessToken ?? current.token;
+      final serverUrl = current.serverUrl;
+      if (token == null || serverUrl == null) {
+        return;
+      }
+      final appVersion = current.applicationVersion ?? await PackageInfo.fromPlatform();
+
+      final response = await _probeWgerServer(serverUrl, token, tokenType, appVersion);
+      if (response == null) {
+        _logger.fine('revalidation: server unreachable, keeping session');
+        return;
+      }
+      if (_isAuthRejection(response.statusCode)) {
+        _logger.info('revalidation: token rejected (${response.statusCode}), logging out');
+        await logout();
+        showSessionExpiredSnackbar();
+        return;
+      }
+      if (response.statusCode != 200) {
+        _logger.warning(
+          'revalidation: probe returned ${response.statusCode}, keeping session',
+        );
+        return;
+      }
+
+      final serverVersion = await _fetchServerVersion(serverUrl);
+      if (serverUpdateRequired(serverVersion)) {
+        _logger.info('revalidation: server update required');
+        state = AsyncData(
+          current.copyWith(
+            status: AuthStatus.serverUpdateRequired,
+            serverVersion: serverVersion,
+          ),
+        );
+        return;
+      }
+      if (await _applicationUpdateRequired(serverUrl, appVersion.version)) {
+        _logger.info('revalidation: app update required');
+        state = AsyncData(
+          current.copyWith(
+            status: AuthStatus.updateRequired,
+            serverVersion: serverVersion,
+          ),
+        );
+        return;
+      }
+
+      _logger.fine('revalidation: session still valid');
+    } catch (e, s) {
+      _logger.warning('revalidation failed', e, s);
+    }
   }
 
   /// Reads the persisted headless-JWT bundle from shared preferences. Returns
