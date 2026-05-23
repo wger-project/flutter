@@ -110,7 +110,7 @@ final milk = Ingredient(
   id: 1,
   code: '123456787',
   name: 'Milk',
-  brand: 'null',
+  brand: null,
   created: DateTime(2021, 5, 1),
   energy: 500,
   carbohydrates: 10,
