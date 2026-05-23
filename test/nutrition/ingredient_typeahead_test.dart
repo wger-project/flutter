@@ -174,6 +174,27 @@ void main() {
     expect(find.text('Vegan'), findsNothing);
   });
 
+  testWidgets('Shows brand inline in search result tile', (WidgetTester tester) async {
+    // ingredient3 (Broccoli cake) has brand 'Weightwatchers'
+    when(
+      mockNutrition.searchIngredient(
+        any,
+        languageCode: anyNamed('languageCode'),
+        searchLanguage: anyNamed('searchLanguage'),
+        isVegan: anyNamed('isVegan'),
+        isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
+      ),
+    ).thenAnswer((_) => Future.value([ingredient3]));
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.enterText(find.byType(TextFormField), 'Broccoli');
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Weightwatchers'), findsOneWidget);
+  });
+
   testWidgets('Shows no dietary chips when ingredient has no info', (WidgetTester tester) async {
     // ingredient2 (Burger soup) has no dietary info
     when(
