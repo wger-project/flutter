@@ -13,14 +13,6 @@
   "@register": {
     "description": "Text for registration button"
   },
-  "useDefaultServer": "Use default server",
-  "@useDefaultServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "useCustomServer": "Use custom server",
-  "@useCustomServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
   "invalidUrl": "Please enter a valid URL",
   "@invalidUrl": {
     "description": "Error message when the user enters an invalid URL, e.g. in the login form"
@@ -55,12 +47,6 @@
   "invalidUsername": "Please enter a valid username",
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
-  },
-  "useRefreshToken": "Use refresh token",
-  "useUsernameAndPassword": "Use username and password",
-  "loginViaWeb": "Log in via web",
-  "@loginViaWeb": {
-    "description": "Button that opens the system browser so the user authenticates on the server (including social or SSO providers) and is handed back to the app via a deep link"
   },
   "refreshToken": "Refresh token",
   "@refreshToken": {},
@@ -132,10 +118,36 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "registerInstead": "Don't have an account? Register now",
-  "@registerInstead": {},
-  "loginInstead": "Already have an account? Login",
-  "@loginInstead": {},
+  "advanced": "Advanced",
+  "@advanced": {},
+  "advancedSubtitle": "Server and authentication options",
+  "@advancedSubtitle": {},
+  "serverSectionLabel": "Server",
+  "@serverSectionLabel": {},
+  "signInMethodSectionLabel": "Sign-in method",
+  "@signInMethodSectionLabel": {},
+  "serverOptionDefaultDetail": "The official server",
+  "@serverOptionDefaultDetail": {},
+  "serverOptionSelfHostedTitle": "Self-hosted",
+  "@serverOptionSelfHostedTitle": {},
+  "serverOptionSelfHostedDetail": "Connect to your own instance",
+  "@serverOptionSelfHostedDetail": {},
+  "authOptionPasswordTitle": "Username and password",
+  "@authOptionPasswordTitle": {},
+  "signInWithToken": "Sign in with token",
+  "@signInWithToken": {},
+  "tokenSubtitle": "Generate one on the wger website",
+  "@tokenSubtitle": {},
+  "newToWger": "New to wger?",
+  "@newToWger": {},
+  "alreadyHaveAccount": "Already have an account?",
+  "@alreadyHaveAccount": {},
+  "tokenLabel": "Token",
+  "@tokenLabel": {},
+  "webHandoffLinkLabel": "Other sign-in options",
+  "@webHandoffLinkLabel": {},
+  "webHandoffLinkSubtitle": "Social login, passkey, SSO",
+  "@webHandoffLinkSubtitle": {},
   "labelBottomNavWorkout": "Workout",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"

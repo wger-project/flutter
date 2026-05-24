@@ -26,9 +26,11 @@ import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -37,6 +39,19 @@ import 'package:wger/screens/auth_screen.dart';
 
 import '../fake_connectivity.dart';
 import 'auth_screen_test.mocks.dart';
+
+/// Captures `launchUrl(...)` calls so the web-handoff test can inspect the
+/// URL the app would hand off to the system browser, without actually
+/// opening one.
+class _FakeUrlLauncher extends Fake with MockPlatformInterfaceMixin implements UrlLauncherPlatform {
+  String? launchedUrl;
+
+  @override
+  Future<bool> launchUrl(String url, LaunchOptions options) async {
+    launchedUrl = url;
+    return true;
+  }
+}
 
 @GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
@@ -144,7 +159,7 @@ void main() {
       // Assert
       expect(find.text('wger'), findsOneWidget);
 
-      expect(find.textContaining("Don't have an account?"), findsOneWidget);
+      expect(find.textContaining('New to wger?'), findsOneWidget);
       expect(find.textContaining('Already have an account?'), findsNothing);
 
       expect(find.byKey(const Key('inputUsername')), findsOneWidget);
@@ -154,8 +169,7 @@ void main() {
       expect(find.byKey(const Key('inputPassword2')), findsNothing);
       expect(find.byKey(const Key('actionButton')), findsOneWidget);
       expect(find.byKey(const Key('toggleActionButton')), findsOneWidget);
-      expect(find.byKey(const Key('toggleCustomServerButton')), findsOneWidget);
-      expect(find.byKey(const ValueKey('toggleRefreshTokenButton')), findsNothing);
+      expect(find.byKey(const Key('advancedButton')), findsOneWidget);
     });
 
     testWidgets('Login - with username & password - happy path', (WidgetTester tester) async {
@@ -312,10 +326,12 @@ void main() {
       await tester.pumpAndSettle();
 
       // Act
-      await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
-      await tester.pump();
-      await tester.tap(find.byKey(const ValueKey('toggleRefreshTokenButton')));
-      await tester.pump();
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Refresh token'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('advancedDoneButton')));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byKey(const ValueKey('inputRefreshToken')), validJwt);
 
       // Assert that refresh-token mode is active before submitting.
@@ -358,10 +374,12 @@ void main() {
       await tester.pumpAndSettle();
 
       // Act
-      await tester.tap(find.byKey(const ValueKey('toggleCustomServerButton')));
-      await tester.pump();
-      await tester.tap(find.byKey(const ValueKey('toggleRefreshTokenButton')));
-      await tester.pump();
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Refresh token'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('advancedDoneButton')));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byKey(const ValueKey('inputRefreshToken')), validJwt);
       await tester.tap(find.byKey(const Key('actionButton')));
       await tester.pumpAndSettle();
@@ -408,9 +426,13 @@ void main() {
       await tester.pumpAndSettle();
 
       // Act
-      await tester.tap(find.byKey(const Key('toggleCustomServerButton')));
-      await tester.pump();
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Self-hosted'));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byKey(const Key('inputServer')), 'https://my.server/');
+      await tester.tap(find.byKey(const Key('advancedDoneButton')));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
       await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
       await tester.tap(find.byKey(const Key('actionButton')));
@@ -486,6 +508,123 @@ void main() {
       // Assert
       expect(find.text('Server Configuration Issue'), findsOneWidget);
     });
+
+    testWidgets('Sheet round-trip: Self-hosted → default server', (WidgetTester tester) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+
+      // Self-hosted → server field appears in the sheet.
+      await tester.tap(find.text('Self-hosted'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('inputServer')), findsOneWidget);
+
+      // Back to wger.de → server field disappears again.
+      await tester.tap(find.text('wger.de'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('inputServer')), findsNothing);
+    });
+
+    testWidgets('Sheet round-trip: Refresh token → Username & password', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Refresh token → close → main screen shows JWT field.
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Refresh token'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('advancedDoneButton')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('inputRefreshToken')), findsOneWidget);
+      expect(find.byKey(const Key('inputUsername')), findsNothing);
+
+      // Re-open sheet, pick Username & password → close → username/password
+      // visible again, JWT field gone.
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Username and password'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('advancedDoneButton')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('inputRefreshToken')), findsNothing);
+      expect(find.byKey(const Key('inputUsername')), findsOneWidget);
+      expect(find.byKey(const Key('inputPassword')), findsOneWidget);
+    });
+
+    testWidgets('Web handoff link launches app-auth URL with state in prefs', (
+      WidgetTester tester,
+    ) async {
+      // Intercept url_launcher so no real browser opens.
+      final original = UrlLauncherPlatform.instance;
+      final fake = _FakeUrlLauncher();
+      UrlLauncherPlatform.instance = fake;
+      addTearDown(() => UrlLauncherPlatform.instance = original);
+
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('loginViaWebButton')));
+      await tester.pumpAndSettle();
+
+      // The handoff URL points at the configured server's app-auth page and
+      // carries a non-empty state nonce. State persistence to prefs is
+      // covered by issueAppAuthState's own tests in app_link_router_test.
+      expect(fake.launchedUrl, isNotNull);
+      final launched = Uri.parse(fake.launchedUrl!);
+      expect(launched.scheme, 'https');
+      expect(launched.host, 'wger.de');
+      expect(launched.path, '/user/app-auth/');
+      final state = launched.queryParameters['state'];
+      expect(state, isNotNull);
+      expect(state, isNotEmpty);
+    });
+
+    testWidgets('Advanced footer shows indicator suffix for custom server', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // No indicator while on the default server.
+      expect(find.textContaining('my.example.com'), findsNothing);
+
+      // Pick Self-hosted with a custom URL.
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Self-hosted'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('inputServer')),
+        'https://my.example.com',
+      );
+      await tester.tap(find.byKey(const Key('advancedDoneButton')));
+      await tester.pumpAndSettle();
+
+      // Footer now carries the scheme-stripped suffix.
+      expect(find.text('· my.example.com'), findsOneWidget);
+
+      // Reset to wger.de → suffix gone again.
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('wger.de'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('advancedDoneButton')));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('my.example.com'), findsNothing);
+    });
   });
 
   group('Registration mode', () {
@@ -501,7 +640,7 @@ void main() {
       await tester.pump();
 
       // Assert
-      expect(find.textContaining("Don't have an account?"), findsNothing);
+      expect(find.textContaining('New to wger?'), findsNothing);
       expect(find.textContaining('Already have an account?'), findsOneWidget);
 
       expect(find.byKey(const Key('inputUsername')), findsOneWidget);
@@ -512,9 +651,11 @@ void main() {
       expect(find.byKey(const Key('actionButton')), findsOneWidget);
       expect(find.byKey(const Key('toggleActionButton')), findsOneWidget);
 
-      // Act - show custom server
-      await tester.tap(find.byKey(const Key('toggleCustomServerButton')));
-      await tester.pump();
+      // Act - show advanced sheet, pick self-hosted, server field appears
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Self-hosted'));
+      await tester.pumpAndSettle();
       expect(find.byKey(const Key('inputServer')), findsOneWidget);
     });
 
@@ -678,6 +819,29 @@ void main() {
       verifyNever(
         mockClient.post(tHeadlessSignup, headers: anyNamed('headers'), body: anyNamed('body')),
       );
+    });
+
+    testWidgets('Mode switch round-trip: login → register → login', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      // Login → register.
+      await tester.tap(find.byKey(const Key('toggleActionButton')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('inputEmail')), findsOneWidget);
+      expect(find.byKey(const Key('inputPassword2')), findsOneWidget);
+      expect(find.textContaining('Already have an account?'), findsOneWidget);
+
+      // Register → login.
+      await tester.tap(find.byKey(const Key('toggleActionButton')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('inputEmail')), findsNothing);
+      expect(find.byKey(const Key('inputPassword2')), findsNothing);
+      expect(find.textContaining('New to wger?'), findsOneWidget);
     });
   });
 }

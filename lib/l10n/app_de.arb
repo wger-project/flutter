@@ -158,7 +158,7 @@
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
     },
-    "customServerHint": "Geben Sie die Adresse deines eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
+    "customServerHint": "Gebe die Adresse deines eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
     },

@@ -83,6 +83,8 @@ dev_dependencies:
   cider: ^0.2.9
   # Used to stub the connectivity_plus platform interface
   connectivity_plus_platform_interface: ^2.1.0
+  # Used to stub the url_launcher platform interface for the web-handoff test
+  url_launcher_platform_interface: ^2.3.2
   drift_dev: ^2.33.0
   xml: ^6.6.1
   flutter_lints: ^6.0.0
