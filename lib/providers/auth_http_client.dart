@@ -34,17 +34,17 @@ const _refreshLeeway = Duration(seconds: 30);
 /// authenticated request to the wger backend.
 ///
 /// Responsibilities:
-/// - Pick the right scheme per [AuthTokenType]: `Bearer <jwt>` for the
-///   `headlessJwt` flow, `Token <key>` for the legacy DRF token flow.
-/// - For `headlessJwt`, pre-emptively refresh the access token when the
-///   stored `accessExpiresAt` is within [_refreshLeeway] of now.
-/// - On a 401 reply for a *replayable* `http.Request` body, refresh once
-///   and retry. If the retry also returns 401 the session is treated as
-///   genuinely revoked: the [onSessionExpired] callback runs (used to
-///   log out and surface a snackbar) and a synthetic 401 is returned to
-///   the caller. Non-replayable bodies (multipart / streamed) are not
-///   retried; the pre-emptive refresh in the happy path is the primary
-///   safeguard.
+/// - Inject the right `Authorization` value for the current credential
+///   ([AuthCredential.authHeaderValue] does the dispatch).
+/// - For [JwtCredential], pre-emptively refresh when the stored expiry is
+///   within [_refreshLeeway] of now.
+/// - On a 401 reply for a *replayable* [http.Request] body that was sent
+///   with a JWT, refresh once and retry. If the retry also returns 401
+///   the session is treated as genuinely revoked: [onSessionExpired]
+///   runs (clear credentials + surface a snackbar) and a synthetic 401
+///   is returned to the caller. Non-replayable bodies (multipart /
+///   streamed) are not retried; the pre-emptive refresh in the happy
+///   path is the primary safeguard.
 ///
 /// Wrapped behind [authenticatedHttpClientProvider] so consumers
 /// ([WgerBaseProvider], PowerSync's connector) get the auth handling for
@@ -68,30 +68,28 @@ class AuthHttpClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    var auth = _readAuth();
+    var credential = _readAuth()?.credential;
 
-    if (_shouldPreemptivelyRefresh(auth)) {
+    if (credential?.needsRefresh(_refreshLeeway) ?? false) {
       _logger.fine('Pre-emptive refresh: access token within leeway window');
       await _refresh();
-      auth = _readAuth();
+      credential = _readAuth()?.credential;
     }
 
-    _applyAuthHeader(request, auth);
+    _applyAuthHeader(request, credential);
     final response = await _inner.send(request);
 
     final canRetry =
-        response.statusCode == 401 &&
-        auth?.tokenType == AuthTokenType.headlessJwt &&
-        request is http.Request;
+        response.statusCode == 401 && credential is JwtCredential && request is http.Request;
     if (!canRetry) {
       return response;
     }
 
-    _logger.fine('401 on headless JWT request, refreshing once and retrying');
+    _logger.fine('401 on JWT request, refreshing once and retrying');
     await response.stream.drain<void>();
     await _refresh();
-    final fresh = _readAuth();
-    if (fresh?.tokenType != AuthTokenType.headlessJwt || fresh?.accessToken == null) {
+    final fresh = _readAuth()?.credential;
+    if (fresh is! JwtCredential) {
       return _syntheticUnauthorized();
     }
 
@@ -112,36 +110,14 @@ class AuthHttpClient extends http.BaseClient {
   @override
   void close() => _inner.close();
 
-  bool _shouldPreemptivelyRefresh(AuthState? auth) {
-    if (auth?.tokenType != AuthTokenType.headlessJwt) {
-      return false;
-    }
-    final expiresAt = auth?.accessExpiresAt;
-    if (expiresAt == null) {
-      return false;
-    }
-    return expiresAt.isBefore(DateTime.now().toUtc().add(_refreshLeeway));
-  }
-
-  void _applyAuthHeader(http.BaseRequest req, AuthState? auth) {
-    if (auth == null) {
+  void _applyAuthHeader(http.BaseRequest req, AuthCredential? credential) {
+    if (credential == null) {
       return;
     }
-    final String? value;
-    switch (auth.tokenType) {
-      case AuthTokenType.headlessJwt:
-        value = auth.accessToken != null ? 'Bearer ${auth.accessToken}' : null;
-      case AuthTokenType.legacyApiToken:
-        value = auth.token != null ? 'Token ${auth.token}' : null;
-      case null:
-        value = null;
-    }
-    if (value != null) {
-      req.headers[HttpHeaders.authorizationHeader] = value;
-    }
+    req.headers[HttpHeaders.authorizationHeader] = credential.authHeaderValue;
   }
 
-  http.Request _cloneRequest(http.Request orig, AuthState? auth) {
+  http.Request _cloneRequest(http.Request orig, AuthCredential credential) {
     final retry = http.Request(orig.method, orig.url)
       ..bodyBytes = orig.bodyBytes
       ..encoding = orig.encoding
@@ -149,7 +125,7 @@ class AuthHttpClient extends http.BaseClient {
       ..maxRedirects = orig.maxRedirects
       ..persistentConnection = orig.persistentConnection;
     retry.headers.addAll(orig.headers);
-    _applyAuthHeader(retry, auth);
+    _applyAuthHeader(retry, credential);
     return retry;
   }
 

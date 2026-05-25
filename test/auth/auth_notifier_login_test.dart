@@ -158,9 +158,8 @@ void main() {
 
       expect(result, LoginActions.proceed);
       final state = container.read(authProvider).value!;
-      expect(state.tokenType, AuthTokenType.headlessJwt);
-      expect(state.accessToken, accessJwt);
-      expect(state.token, isNull);
+      expect(state.credential, isA<JwtCredential>());
+      expect((state.credential as JwtCredential).accessToken, accessJwt);
       expect(state.status, AuthStatus.loggedIn);
 
       // Refresh token in secure storage.
@@ -363,8 +362,8 @@ void main() {
 
       expect(result, LoginActions.proceed);
       final state = container.read(authProvider).value!;
-      expect(state.tokenType, AuthTokenType.headlessJwt);
-      expect(state.accessToken, newAccess);
+      expect(state.credential, isA<JwtCredential>());
+      expect((state.credential as JwtCredential).accessToken, newAccess);
 
       verify(mockSecureStorage.writeRefreshToken('rotated-refresh')).called(1);
       // Must not have hit the username/password endpoint.
@@ -428,7 +427,7 @@ void main() {
           );
 
       expect(result, LoginActions.proceed);
-      expect(container.read(authProvider).value!.tokenType, AuthTokenType.headlessJwt);
+      expect(container.read(authProvider).value!.credential, isA<JwtCredential>());
       verify(mockSecureStorage.writeRefreshToken('r')).called(1);
     });
   });
@@ -465,8 +464,8 @@ void main() {
       expect(result, LoginActions.proceed);
       final state = container.read(authProvider).value!;
       expect(state.status, AuthStatus.loggedIn);
-      expect(state.tokenType, AuthTokenType.headlessJwt);
-      expect(state.accessToken, accessJwt);
+      expect(state.credential, isA<JwtCredential>());
+      expect((state.credential as JwtCredential).accessToken, accessJwt);
       verify(mockSecureStorage.writeRefreshToken('mfa-refresh')).called(1);
     });
 

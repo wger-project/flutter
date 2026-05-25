@@ -18,6 +18,9 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:wger/providers/auth_credential.dart';
+
+export 'package:wger/providers/auth_credential.dart';
 
 part 'auth_state.freezed.dart';
 
@@ -42,18 +45,16 @@ enum LoginActions {
   proceed,
 }
 
-/// Distinguishes which auth credential is currently active.
-///
-/// The app supports two parallel auth surfaces during the headless-allauth
-/// migration: the legacy permanent DRF token (`/api/v2/login/` or pasted by
-/// hand) and the short-lived JWT issued by `allauth.headless`. The HTTP
-/// client branches on this to pick the right `Authorization` header.
+/// Storage-layer discriminator for the persisted credential bundle. Lives in
+/// `PREFS_TOKEN_TYPE` so auto-login can tell which set of preference keys to
+/// read on startup. Runtime code should branch on the [AuthCredential]
+/// subtype (`LegacyCredential` / `JwtCredential`) instead.
 enum AuthTokenType {
-  /// Permanent DRF token, sent as `Authorization: Token <token>`.
+  /// Permanent DRF token persisted under `PREFS_USER`.
   legacyApiToken,
 
-  /// Short-lived JWT from `allauth.headless`, sent as `Authorization: Bearer <jwt>`.
-  /// Refresh token lives in secure storage, not in state.
+  /// Headless JWT bundle persisted under the `PREFS_ACCESS_TOKEN` family of
+  /// keys; refresh token lives in secure storage.
   headlessJwt,
 }
 
@@ -61,10 +62,7 @@ enum AuthTokenType {
 sealed class AuthState with _$AuthState {
   const factory AuthState({
     @Default(AuthStatus.loggedOut) AuthStatus status,
-    String? token,
-    String? accessToken,
-    DateTime? accessExpiresAt,
-    AuthTokenType? tokenType,
+    AuthCredential? credential,
     String? serverUrl,
     String? serverVersion,
     PackageInfo? applicationVersion,
@@ -73,5 +71,5 @@ sealed class AuthState with _$AuthState {
 
   const AuthState._();
 
-  bool get isAuth => token != null || accessToken != null;
+  bool get isAuth => credential != null;
 }

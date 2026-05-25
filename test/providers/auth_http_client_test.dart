@@ -75,11 +75,12 @@ void main() {
   });
 
   group('header injection', () {
-    test('headlessJwt → Authorization: Bearer <access>', () async {
+    test('JWT credential → Authorization: Bearer <access>', () async {
       auth = AuthState(
-        tokenType: AuthTokenType.headlessJwt,
-        accessToken: 'jwt-access',
-        accessExpiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        credential: JwtCredential(
+          accessToken: 'jwt-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
       );
 
       final headers = await sendAndCapture(
@@ -90,8 +91,8 @@ void main() {
       expect(refreshCalls, 0);
     });
 
-    test('legacyApiToken → Authorization: Token <key>', () async {
-      auth = const AuthState(tokenType: AuthTokenType.legacyApiToken, token: 'legacy-key');
+    test('legacy credential → Authorization: Token <key>', () async {
+      auth = const AuthState(credential: LegacyCredential('legacy-key'));
 
       final headers = await sendAndCapture(
         http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
@@ -109,8 +110,8 @@ void main() {
       expect(headers.containsKey(HttpHeaders.authorizationHeader), isFalse);
     });
 
-    test('headlessJwt with null accessToken → no Authorization header set', () async {
-      auth = const AuthState(tokenType: AuthTokenType.headlessJwt);
+    test('logged-out state (no credential) → no Authorization header set', () async {
+      auth = const AuthState();
       final headers = await sendAndCapture(
         http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
       );
@@ -121,15 +122,17 @@ void main() {
   group('pre-emptive refresh', () {
     test('fires when accessExpiresAt is within the leeway window', () async {
       auth = AuthState(
-        tokenType: AuthTokenType.headlessJwt,
-        accessToken: 'old-access',
-        accessExpiresAt: DateTime.now().toUtc().add(const Duration(seconds: 5)),
+        credential: JwtCredential(
+          accessToken: 'old-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(seconds: 5)),
+        ),
       );
       onRefresh = () async {
         auth = AuthState(
-          tokenType: AuthTokenType.headlessJwt,
-          accessToken: 'new-access',
-          accessExpiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          credential: JwtCredential(
+            accessToken: 'new-access',
+            expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          ),
         );
       };
 
@@ -143,9 +146,10 @@ void main() {
 
     test('does not fire when accessExpiresAt is far in the future', () async {
       auth = AuthState(
-        tokenType: AuthTokenType.headlessJwt,
-        accessToken: 'fresh-access',
-        accessExpiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        credential: JwtCredential(
+          accessToken: 'fresh-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
       );
 
       await sendAndCapture(
@@ -156,7 +160,7 @@ void main() {
     });
 
     test('does not fire for the legacy permanent token', () async {
-      auth = const AuthState(tokenType: AuthTokenType.legacyApiToken, token: 'legacy-key');
+      auth = const AuthState(credential: LegacyCredential('legacy-key'));
 
       await sendAndCapture(
         http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
@@ -166,7 +170,7 @@ void main() {
     });
 
     test('does not fire when accessExpiresAt is null', () async {
-      auth = const AuthState(tokenType: AuthTokenType.headlessJwt, accessToken: 'opaque-jwt');
+      auth = const AuthState(credential: JwtCredential(accessToken: 'opaque-jwt'));
 
       await sendAndCapture(
         http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
@@ -191,15 +195,17 @@ void main() {
 
     test('replayable Request: refresh + retry succeeds → returns retry response', () async {
       auth = AuthState(
-        tokenType: AuthTokenType.headlessJwt,
-        accessToken: 'old-access',
-        accessExpiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        credential: JwtCredential(
+          accessToken: 'old-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
       );
       onRefresh = () async {
         auth = AuthState(
-          tokenType: AuthTokenType.headlessJwt,
-          accessToken: 'new-access',
-          accessExpiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          credential: JwtCredential(
+            accessToken: 'new-access',
+            expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          ),
         );
       };
       await stubTwoResponses(
@@ -228,15 +234,17 @@ void main() {
 
     test('replayable Request: retry also 401 → session expired + synthetic 401', () async {
       auth = AuthState(
-        tokenType: AuthTokenType.headlessJwt,
-        accessToken: 'old-access',
-        accessExpiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        credential: JwtCredential(
+          accessToken: 'old-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
       );
       onRefresh = () async {
         auth = AuthState(
-          tokenType: AuthTokenType.headlessJwt,
-          accessToken: 'new-access',
-          accessExpiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          credential: JwtCredential(
+            accessToken: 'new-access',
+            expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          ),
         );
       };
       await stubTwoResponses(
@@ -255,9 +263,10 @@ void main() {
 
     test('refresh that returns no fresh access token → synthetic 401, no retry', () async {
       auth = AuthState(
-        tokenType: AuthTokenType.headlessJwt,
-        accessToken: 'old-access',
-        accessExpiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        credential: JwtCredential(
+          accessToken: 'old-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
       );
       onRefresh = () async {
         // Simulates a refresh that gave up and logged out.
@@ -277,7 +286,7 @@ void main() {
     });
 
     test('legacy 401 → no retry, original 401 surfaces', () async {
-      auth = const AuthState(tokenType: AuthTokenType.legacyApiToken, token: 'legacy-key');
+      auth = const AuthState(credential: LegacyCredential('legacy-key'));
       when(inner.send(any)).thenAnswer(
         (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),
       );
@@ -292,9 +301,10 @@ void main() {
 
     test('MultipartRequest 401 → no retry (body not replayable)', () async {
       auth = AuthState(
-        tokenType: AuthTokenType.headlessJwt,
-        accessToken: 'old-access',
-        accessExpiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        credential: JwtCredential(
+          accessToken: 'old-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
       );
       when(inner.send(any)).thenAnswer(
         (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),

@@ -58,6 +58,7 @@ void main() {
   final tMinAppVersion = Uri.parse('$serverUrl/api/v2/min-app-version/');
   final tPowerSyncToken = Uri.parse('$serverUrl/api/v2/powersync-token');
   final tLiveness = Uri.parse('${powerSyncUrl}probes/liveness');
+  final tIssueRefresh = Uri.parse('$serverUrl/api/v2/issue-refresh-token');
 
   Widget wrap(Widget child) {
     return ProviderScope(
@@ -133,6 +134,14 @@ void main() {
       ),
     );
     when(mockClient.get(tLiveness)).thenAnswer((_) async => Response('OK', 200));
+
+    // Legacy → JWT auto-migration runs on every auto-login. These tests
+    // intentionally drive the *legacy* recovery flow, so stub the
+    // migration to a clean "offline" failure: the helper short-circuits
+    // and the rest of the auto-login proceeds against the DRF token.
+    when(
+      mockClient.post(tIssueRefresh, headers: anyNamed('headers')),
+    ).thenThrow(http.ClientException('SocketException: stub default'));
   });
 
   group('PowerSyncUnreachableScreen', () {

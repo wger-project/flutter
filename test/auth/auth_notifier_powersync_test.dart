@@ -62,13 +62,16 @@ void main() {
   const token = 'token-12345';
   const powerSyncUrl = 'https://ps.example/';
 
-  // makeUri() defaults to a trailing slash; powersync-token is the one
-  // endpoint registered without one on the Django side.
+  // makeUri() defaults to a trailing slash; powersync-token,
+  // issue-refresh-token are the endpoints registered without one on the
+  // Django side.
   final tProbe = Uri.parse('$serverUrl/api/v2/routine/');
   final tVersion = Uri.parse('$serverUrl/api/v2/version/');
   final tMinAppVersion = Uri.parse('$serverUrl/api/v2/min-app-version/');
   final tPowerSyncToken = Uri.parse('$serverUrl/api/v2/powersync-token');
   final tLiveness = Uri.parse('${powerSyncUrl}probes/liveness');
+  final tIssueRefresh = Uri.parse('$serverUrl/api/v2/issue-refresh-token');
+  final tHeadlessRefresh = Uri.parse('$serverUrl/_allauth/app/v1/tokens/refresh');
 
   /// Builds a fresh ProviderContainer with the mock HTTP client wired into
   /// the auth notifier. Auto-disposes after the test.
@@ -127,6 +130,13 @@ void main() {
     );
 
     when(mockClient.get(tLiveness)).thenAnswer((_) async => Response('OK', 200));
+
+    // Default: the legacy-DRF → JWT migration POST silently fails as
+    // "offline" so existing tests that seed PREFS_USER fall through to the
+    // legacy code path unchanged. Migration-specific tests override this.
+    when(
+      mockClient.post(tIssueRefresh, headers: anyNamed('headers')),
+    ).thenThrow(http.ClientException('SocketException: stub default'));
   });
 
   group('restored session (ever-synced)', () {
@@ -141,7 +151,7 @@ void main() {
       final state = await container.read(authProvider.future);
 
       expect(state.status, AuthStatus.loggedIn);
-      expect(state.token, token);
+      expect((state.credential as LegacyCredential).token, token);
       expect(state.serverUrl, serverUrl);
 
       // The startup path must not touch the network at all; every probe
@@ -368,7 +378,7 @@ void main() {
       expect(state.status, AuthStatus.powerSyncUnreachable);
       // Saved credentials must be preserved so the recovery screen's
       // "Try again" button can re-run the flow without a re-login.
-      expect(state.token, token);
+      expect((state.credential as LegacyCredential).token, token);
       expect(state.serverUrl, serverUrl);
     });
 
@@ -440,7 +450,7 @@ void main() {
       // A saved session must carry the user straight into the app instead of
       // stalling on a recovery screen.
       expect(state.status, AuthStatus.loggedIn);
-      expect(state.token, token);
+      expect((state.credential as LegacyCredential).token, token);
       expect(state.serverUrl, serverUrl);
       // No further server calls when Django itself is unreachable.
       verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
@@ -468,7 +478,7 @@ void main() {
 
       // Regression (bug #2): a transient 5xx must not log the user out.
       expect(state.status, AuthStatus.loggedIn);
-      expect(state.token, token);
+      expect((state.credential as LegacyCredential).token, token);
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
       // A broken server means the rest of the gating chain is skipped.
       verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
@@ -580,9 +590,8 @@ void main() {
       final state = await container.read(authProvider.future);
 
       expect(state.status, AuthStatus.loggedIn);
-      expect(state.tokenType, AuthTokenType.headlessJwt);
-      expect(state.accessToken, 'jwt-access');
-      expect(state.token, isNull, reason: 'legacy `token` must stay empty on the headless path');
+      expect(state.credential, isA<JwtCredential>());
+      expect((state.credential as JwtCredential).accessToken, 'jwt-access');
 
       final captured =
           verify(
@@ -620,8 +629,8 @@ void main() {
       final state = await container.read(authProvider.future);
 
       expect(state.status, AuthStatus.loggedIn);
-      expect(state.tokenType, AuthTokenType.legacyApiToken);
-      expect(state.token, token);
+      expect(state.credential, isA<LegacyCredential>());
+      expect((state.credential as LegacyCredential).token, token);
 
       final captured =
           verify(
@@ -629,6 +638,195 @@ void main() {
               ).captured.single
               as Map<String, String>;
       expect(captured[HttpHeaders.authorizationHeader], 'Token $token');
+    });
+  });
+
+  group('_tryAutoLogin: legacy-to-JWT migration', () {
+    String makeJwt(Map<String, dynamic> payload) {
+      String enc(Map<String, dynamic> m) =>
+          base64Url.encode(utf8.encode(jsonEncode(m))).replaceAll('=', '');
+      return '${enc({'alg': 'HS256', 'typ': 'JWT'})}.${enc(payload)}.signature';
+    }
+
+    /// Stubs the two-step migration: issue-refresh-token returns
+    /// [mintedRefresh], tokens/refresh returns [accessJwt] / [rotatedRefresh].
+    void stubMigrationSuccess({
+      required String mintedRefresh,
+      required String accessJwt,
+      String rotatedRefresh = 'rotated-refresh',
+    }) {
+      when(
+        mockClient.post(tIssueRefresh, headers: anyNamed('headers')),
+      ).thenAnswer(
+        (_) async => Response(jsonEncode({'refresh_token': mintedRefresh}), 200),
+      );
+      when(
+        mockClient.post(
+          tHeadlessRefresh,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': accessJwt, 'refresh_token': rotatedRefresh},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+    }
+
+    test('happy path: DRF token swapped for JWT bundle, PREFS_USER wiped', () async {
+      // Legacy blob is already seeded in the outer setUp. The migration
+      // round-trip must replace it with the headless-JWT bundle and the
+      // refresh token must land in secure storage.
+      final accessJwt = makeJwt({'sub': '42', 'exp': 1900000000});
+      stubMigrationSuccess(
+        mintedRefresh: 'minted-refresh',
+        accessJwt: accessJwt,
+        rotatedRefresh: 'rotated-refresh',
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      final state = container.read(authProvider).value!;
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.credential, isA<JwtCredential>());
+      expect((state.credential as JwtCredential).accessToken, accessJwt);
+
+      final prefs = PreferenceHelper.asyncPref;
+      expect(await prefs.containsKey(PREFS_USER), false);
+      expect(await prefs.getString(PREFS_ACCESS_TOKEN), accessJwt);
+      expect(await prefs.getString(PREFS_USER_ID), '42');
+      verify(mockSecureStorage.writeRefreshToken('rotated-refresh')).called(1);
+
+      // The migration POST must have been authenticated with the legacy
+      // header — otherwise the backend can't identify the user.
+      final captured =
+          verify(
+                mockClient.post(tIssueRefresh, headers: captureAnyNamed('headers')),
+              ).captured.single
+              as Map<String, String>;
+      expect(captured[HttpHeaders.authorizationHeader], 'Token $token');
+    });
+
+    test('network error keeps the legacy DRF token in place for the next start', () async {
+      // The outer setUp's default stub already throws ClientException.
+      // The user must end up logged in via the legacy code path so the
+      // app stays usable offline; PREFS_USER stays so the next start
+      // retries the migration.
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      final state = container.read(authProvider).value!;
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.credential, isA<LegacyCredential>());
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+      // No headless prefs must have been written.
+      verifyNever(mockSecureStorage.writeRefreshToken(any));
+    });
+
+    test('401 on the exchange endpoint wipes the legacy blob (token revoked)', () async {
+      // A 401 here is the unambiguous "this DRF token is no longer valid"
+      // signal: server-side revoked or user deleted. We wipe the blob so
+      // the next start drops to the login screen instead of looping.
+      when(
+        mockClient.post(tIssueRefresh, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Unauthorized', 401));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedOut);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
+      // tokens/refresh must not have been called: we never got a refresh
+      // token to exchange.
+      verifyNever(
+        mockClient.post(
+          tHeadlessRefresh,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      );
+    });
+
+    test('5xx on the exchange endpoint keeps the legacy blob for retry', () async {
+      // Transient server issue: must not invalidate the local session.
+      // The user keeps working with the DRF token; the next start retries.
+      when(
+        mockClient.post(tIssueRefresh, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Service Unavailable', 503));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.credential, isA<LegacyCredential>());
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+    });
+
+    test('malformed exchange response keeps the legacy blob for retry', () async {
+      // 200 but no refresh_token in the body. Treated like a transient
+      // failure: keep using the DRF token, retry next start.
+      when(
+        mockClient.post(tIssueRefresh, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('{}', 200));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.credential, isA<LegacyCredential>());
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+    });
+
+    test('refresh-exchange failure leaves the legacy blob intact', () async {
+      // issue-refresh-token succeeds, but the follow-up call to the
+      // headless tokens/refresh endpoint returns 5xx. We don't commit a
+      // half-migrated state: PREFS_USER stays, the user continues with
+      // DRF, the next start retries from step 1.
+      when(
+        mockClient.post(tIssueRefresh, headers: anyNamed('headers')),
+      ).thenAnswer(
+        (_) async => Response(jsonEncode({'refresh_token': 'minted'}), 200),
+      );
+      when(
+        mockClient.post(
+          tHeadlessRefresh,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
+      ).thenAnswer((_) async => Response('upstream error', 502));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.credential, isA<LegacyCredential>());
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+      verifyNever(mockSecureStorage.writeRefreshToken(any));
+    });
+
+    test('no legacy blob → migration is a no-op', () async {
+      // Existing headless-JWT user (or fresh install): the helper must
+      // not touch the network at all.
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.remove(PREFS_USER);
+      await prefs.setString(PREFS_ACCESS_TOKEN, 'existing-jwt');
+      await prefs.setInt(
+        PREFS_ACCESS_EXPIRES_AT,
+        DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
+      );
+      await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+      await prefs.setString(PREFS_SERVER_URL, serverUrl);
+      await prefs.setBool(PREFS_HAS_EVER_SYNCED, true);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      verifyNever(mockClient.post(tIssueRefresh, headers: anyNamed('headers')));
     });
   });
 
@@ -691,8 +889,9 @@ void main() {
         verify(mockSecureStorage.writeRefreshToken('new-refresh')).called(1);
 
         // No logout: session stays valid.
-        expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
-        expect(container.read(authProvider).value?.accessToken, newAccess);
+        final state = container.read(authProvider).value!;
+        expect(state.status, AuthStatus.loggedIn);
+        expect((state.credential as JwtCredential).accessToken, newAccess);
       },
     );
   });
@@ -744,9 +943,9 @@ void main() {
       await container.read(authProvider.future);
       await container.read(authProvider.notifier).refreshAccessToken();
 
-      final state = container.read(authProvider).value!;
-      expect(state.accessToken, newAccess);
-      expect(state.accessExpiresAt, expectedExp);
+      final cred = container.read(authProvider).value!.credential as JwtCredential;
+      expect(cred.accessToken, newAccess);
+      expect(cred.expiresAt, expectedExp);
 
       verify(mockSecureStorage.writeRefreshToken('new-refresh')).called(1);
       expect(await PreferenceHelper.asyncPref.getString(PREFS_ACCESS_TOKEN), newAccess);
@@ -812,7 +1011,10 @@ void main() {
       await container.read(authProvider.future);
       await container.read(authProvider.notifier).refreshAccessToken();
 
-      expect(container.read(authProvider).value!.accessToken, newAccess);
+      expect(
+        (container.read(authProvider).value!.credential as JwtCredential).accessToken,
+        newAccess,
+      );
       verify(mockSecureStorage.writeRefreshToken('rotated-refresh')).called(1);
     });
 

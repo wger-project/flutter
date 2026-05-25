@@ -82,7 +82,7 @@ Widget createDashboardScreen({Locale? locale}) {
 
   const loggedInAuth = AuthState(
     status: AuthStatus.loggedIn,
-    token: 'test-token',
+    credential: LegacyCredential('test-token'),
     serverUrl: 'http://localhost',
   );
   final container = ProviderContainer.test(
