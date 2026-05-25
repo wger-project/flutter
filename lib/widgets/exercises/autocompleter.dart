@@ -25,6 +25,7 @@ import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercise_filters_riverpod.dart';
 import 'package:wger/providers/exercises_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/widgets/exercises/exercise_filter_dialog.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -110,6 +111,7 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                 ),
               ),
           emptyBuilder: (context) {
+            final isOnline = ref.watch(networkStatusProvider);
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -118,10 +120,23 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                 ),
                 ListTile(
                   title: OutlinedButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
-                    },
-                    child: Text(AppLocalizations.of(context).contributeExercise),
+                    onPressed: isOnline
+                        ? () => Navigator.of(context).pushNamed(AddExerciseScreen.routeName)
+                        : null,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (!isOnline) ...[
+                          Icon(
+                            Icons.cloud_off,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                          const SizedBox(width: 6),
+                        ],
+                        Text(AppLocalizations.of(context).contributeExercise),
+                      ],
+                    ),
                   ),
                 ),
               ],

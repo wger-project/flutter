@@ -26,6 +26,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import 'log_overview.dart';
@@ -51,6 +52,7 @@ class AboutPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider).value;
+    final isOnline = ref.watch(networkStatusProvider);
     final i18n = AppLocalizations.of(context);
     final today = DateTime.now();
 
@@ -125,10 +127,16 @@ class AboutPage extends ConsumerWidget {
                 onTap: () => launchURL(GITHUB_PROJECT_URL, context),
               ),
               ListTile(
+                enabled: isOnline,
                 leading: const FaIcon(FontAwesomeIcons.dumbbell, size: 18),
                 title: Text(i18n.contributeExercise),
+                trailing: isOnline
+                    ? null
+                    : Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.outline),
                 contentPadding: EdgeInsets.zero,
-                onTap: () => Navigator.of(context).pushNamed(AddExerciseScreen.routeName),
+                onTap: isOnline
+                    ? () => Navigator.of(context).pushNamed(AddExerciseScreen.routeName)
+                    : null,
               ),
 
               // Don't show the donate section under iOS. The app was rejected once because

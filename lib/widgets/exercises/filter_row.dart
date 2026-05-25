@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/exercise_filters_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import 'filter_modal.dart';
@@ -57,6 +58,7 @@ class _FilterRowState extends ConsumerState<FilterRow> {
 
   @override
   Widget build(BuildContext context) {
+    final isOnline = ref.watch(networkStatusProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
       child: Row(
@@ -95,7 +97,21 @@ class _FilterRowState extends ConsumerState<FilterRow> {
                   return [
                     PopupMenuItem<ExerciseMoreOption>(
                       value: ExerciseMoreOption.ADD_EXERCISE,
-                      child: Text(AppLocalizations.of(context).contributeExercise),
+                      enabled: isOnline,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(AppLocalizations.of(context).contributeExercise),
+                          if (!isOnline) ...[
+                            const SizedBox(width: 8),
+                            Icon(
+                              Icons.cloud_off,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   ];
                 },

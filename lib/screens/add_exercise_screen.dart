@@ -48,11 +48,7 @@ class AddExerciseScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final account = ref.watch(accountProvider).value;
     final isOnline = ref.watch(networkStatusProvider);
-    if (account == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
     if (!isOnline) {
       return Scaffold(
         appBar: AppBar(
@@ -76,6 +72,10 @@ class AddExerciseScreen extends ConsumerWidget {
           ),
         ),
       );
+    }
+    final account = ref.watch(accountProvider).value;
+    if (account == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return account.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
   }

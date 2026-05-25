@@ -38,12 +38,13 @@ enum _RoutineDetailBarOptions {
   logs,
 }
 
-class RoutineListAppBar extends StatelessWidget implements PreferredSizeWidget {
+class RoutineListAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const RoutineListAppBar();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return AppBar(
       title: Text(i18n.routines),
@@ -57,7 +58,21 @@ class RoutineListAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               PopupMenuItem<_RoutineAppBarOptions>(
                 value: _RoutineAppBarOptions.contribute,
-                child: Text(i18n.contributeExercise),
+                enabled: isOnline,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(i18n.contributeExercise),
+                    if (!isOnline) ...[
+                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.cloud_off,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ];
           },
