@@ -27,11 +27,14 @@ part 'ingredient_notifier.g.dart';
 /// Debounce window applied to the search-term keystrokes
 const _searchDebounce = Duration(milliseconds: 350);
 
-/// Stream of all locally-synced ingredients, ordered by name. Only those
-/// ingredients used in a nutritional plan or log are synced for offline use.
+/// Stream of all locally-synced ingredients, ordered by name and narrowed
+/// by the active dietary/Nutri-Score filters. Only those ingredients used
+/// in a nutritional plan or log are synced for offline use, so the result
+/// is always a subset of the user's data.
 @riverpod
 Stream<List<Ingredient>> allLocalIngredients(Ref ref) {
-  return ref.watch(ingredientRepositoryProvider).watchAllDrift();
+  final filters = ref.watch(ingredientFiltersSyncProvider);
+  return ref.watch(ingredientRepositoryProvider).watchAllDrift(filters: filters);
 }
 
 /// Per-id lookup for a single ingredient from the local Drift database.

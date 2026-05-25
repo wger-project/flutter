@@ -25,6 +25,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/ingredient_filters.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 
@@ -137,6 +138,53 @@ void main() {
       expect(emitted.image?.id, 10);
       expect(emitted.weightUnits, hasLength(2));
       expect(emitted.weightUnits.map((w) => w.id).toSet(), {100, 101});
+    });
+  });
+
+  group('watchAllDrift', () {
+    test('with default (empty) filters emits every synced ingredient', () async {
+      await seedIngredient(id: 1, name: 'Apple');
+      await seedIngredient(id: 2, name: 'Beef');
+      await seedIngredient(id: 3, name: 'Carrot');
+
+      final emitted = await repo.watchAllDrift().first;
+
+      expect(emitted.map((i) => i.name), ['Apple', 'Beef', 'Carrot']);
+    });
+
+    test('filters.isVegan keeps only rows flagged as vegan', () async {
+      await seedIngredient(id: 1, name: 'Apple', isVegan: true);
+      await seedIngredient(id: 2, name: 'Beef', isVegan: false);
+      await seedIngredient(id: 3, name: 'Carrot', isVegan: true);
+
+      final emitted = await repo
+          .watchAllDrift(filters: const IngredientFilters(isVegan: true))
+          .first;
+
+      expect(emitted.map((i) => i.name), ['Apple', 'Carrot']);
+    });
+
+    test('filters.isVegetarian keeps only rows flagged as vegetarian', () async {
+      await seedIngredient(id: 1, name: 'Apple', isVegetarian: true);
+      await seedIngredient(id: 2, name: 'Beef', isVegetarian: false);
+
+      final emitted = await repo
+          .watchAllDrift(filters: const IngredientFilters(isVegetarian: true))
+          .first;
+
+      expect(emitted.map((i) => i.name), ['Apple']);
+    });
+
+    test('filters.nutriscoreMax keeps only rows at or below the cap', () async {
+      await seedIngredient(id: 1, name: 'Apple', nutriscore: NutriScore.a);
+      await seedIngredient(id: 2, name: 'Beef', nutriscore: NutriScore.c);
+      await seedIngredient(id: 3, name: 'Candy', nutriscore: NutriScore.e);
+
+      final emitted = await repo
+          .watchAllDrift(filters: const IngredientFilters(nutriscoreMax: NutriScore.b))
+          .first;
+
+      expect(emitted.map((i) => i.name), ['Apple']);
     });
   });
 

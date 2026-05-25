@@ -8,14 +8,18 @@ part of 'ingredient_notifier.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Stream of all locally-synced ingredients, ordered by name. Only those
-/// ingredients used in a nutritional plan or log are synced for offline use.
+/// Stream of all locally-synced ingredients, ordered by name and narrowed
+/// by the active dietary/Nutri-Score filters. Only those ingredients used
+/// in a nutritional plan or log are synced for offline use, so the result
+/// is always a subset of the user's data.
 
 @ProviderFor(allLocalIngredients)
 final allLocalIngredientsProvider = AllLocalIngredientsProvider._();
 
-/// Stream of all locally-synced ingredients, ordered by name. Only those
-/// ingredients used in a nutritional plan or log are synced for offline use.
+/// Stream of all locally-synced ingredients, ordered by name and narrowed
+/// by the active dietary/Nutri-Score filters. Only those ingredients used
+/// in a nutritional plan or log are synced for offline use, so the result
+/// is always a subset of the user's data.
 
 final class AllLocalIngredientsProvider
     extends
@@ -25,8 +29,10 @@ final class AllLocalIngredientsProvider
           Stream<List<Ingredient>>
         >
     with $FutureModifier<List<Ingredient>>, $StreamProvider<List<Ingredient>> {
-  /// Stream of all locally-synced ingredients, ordered by name. Only those
-  /// ingredients used in a nutritional plan or log are synced for offline use.
+  /// Stream of all locally-synced ingredients, ordered by name and narrowed
+  /// by the active dietary/Nutri-Score filters. Only those ingredients used
+  /// in a nutritional plan or log are synced for offline use, so the result
+  /// is always a subset of the user's data.
   AllLocalIngredientsProvider._()
     : super(
         from: null,
@@ -53,7 +59,7 @@ final class AllLocalIngredientsProvider
   }
 }
 
-String _$allLocalIngredientsHash() => r'fbc70303db57527d9b64540145f52bf5ffbd6808';
+String _$allLocalIngredientsHash() => r'e976af45df22069a256aa2987251732461f565c3';
 
 /// Per-id lookup for a single ingredient from the local Drift database.
 /// Riverpod caches per `id` while listeners exist and disposes otherwise,

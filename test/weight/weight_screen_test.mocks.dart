@@ -6,18 +6,19 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/body_weight/weight_entry.dart' as _i12;
-import 'package:wger/models/core/search_options.dart' as _i10;
+import 'package:wger/models/body_weight/weight_entry.dart' as _i13;
+import 'package:wger/models/core/search_options.dart' as _i11;
 import 'package:wger/models/nutrition/ingredient.dart' as _i9;
+import 'package:wger/models/nutrition/ingredient_filters.dart' as _i10;
 import 'package:wger/models/nutrition/log.dart' as _i7;
 import 'package:wger/models/nutrition/meal.dart' as _i5;
 import 'package:wger/models/nutrition/meal_item.dart' as _i6;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i4;
-import 'package:wger/models/user/user_profile.dart' as _i14;
-import 'package:wger/providers/body_weight_repository.dart' as _i11;
+import 'package:wger/models/user/user_profile.dart' as _i15;
+import 'package:wger/providers/body_weight_repository.dart' as _i12;
 import 'package:wger/providers/ingredient_repository.dart' as _i8;
 import 'package:wger/providers/nutrition_repository.dart' as _i2;
-import 'package:wger/providers/user_profile_repository.dart' as _i13;
+import 'package:wger/providers/user_profile_repository.dart' as _i14;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -183,9 +184,11 @@ class MockIngredientRepository extends _i1.Mock implements _i8.IngredientReposit
           as _i3.Stream<_i9.Ingredient?>);
 
   @override
-  _i3.Stream<List<_i9.Ingredient>> watchAllDrift() =>
+  _i3.Stream<List<_i9.Ingredient>> watchAllDrift({
+    _i10.IngredientFilters? filters = const _i10.IngredientFilters(),
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#watchAllDrift, []),
+            Invocation.method(#watchAllDrift, [], {#filters: filters}),
             returnValue: _i3.Stream<List<_i9.Ingredient>>.empty(),
           )
           as _i3.Stream<List<_i9.Ingredient>>);
@@ -227,7 +230,7 @@ class MockIngredientRepository extends _i1.Mock implements _i8.IngredientReposit
   _i3.Future<List<_i9.Ingredient>> searchIngredientServer(
     String? name, {
     String? languageCode = 'en',
-    _i10.SearchLanguage? searchLanguage = _i10.SearchLanguage.current,
+    _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i9.NutriScore? nutriscoreMax,
@@ -255,7 +258,7 @@ class MockIngredientRepository extends _i1.Mock implements _i8.IngredientReposit
     String? name, {
     required bool? isOnline,
     String? languageCode = 'en',
-    _i10.SearchLanguage? searchLanguage = _i10.SearchLanguage.current,
+    _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i9.NutriScore? nutriscoreMax,
@@ -291,18 +294,18 @@ class MockIngredientRepository extends _i1.Mock implements _i8.IngredientReposit
 /// A class which mocks [BodyWeightRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightRepository {
+class MockBodyWeightRepository extends _i1.Mock implements _i12.BodyWeightRepository {
   MockBodyWeightRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<List<_i12.WeightEntry>> watchAllDrift() =>
+  _i3.Stream<List<_i13.WeightEntry>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i3.Stream<List<_i12.WeightEntry>>.empty(),
+            returnValue: _i3.Stream<List<_i13.WeightEntry>>.empty(),
           )
-          as _i3.Stream<List<_i12.WeightEntry>>);
+          as _i3.Stream<List<_i13.WeightEntry>>);
 
   @override
   _i3.Future<void> deleteLocalDrift(String? id) =>
@@ -314,7 +317,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightReposi
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> updateLocalDrift(_i12.WeightEntry? entry) =>
+  _i3.Future<void> updateLocalDrift(_i13.WeightEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDrift, [entry]),
             returnValue: _i3.Future<void>.value(),
@@ -323,7 +326,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightReposi
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> addLocalDrift(_i12.WeightEntry? entry) =>
+  _i3.Future<void> addLocalDrift(_i13.WeightEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
             returnValue: _i3.Future<void>.value(),
@@ -335,21 +338,21 @@ class MockBodyWeightRepository extends _i1.Mock implements _i11.BodyWeightReposi
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i13.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock implements _i14.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<_i14.UserProfile?> watchDrift() =>
+  _i3.Stream<_i15.UserProfile?> watchDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchDrift, []),
-            returnValue: _i3.Stream<_i14.UserProfile?>.empty(),
+            returnValue: _i3.Stream<_i15.UserProfile?>.empty(),
           )
-          as _i3.Stream<_i14.UserProfile?>);
+          as _i3.Stream<_i15.UserProfile?>);
 
   @override
-  _i3.Future<void> editLocalDrift(_i14.UserProfile? profile) =>
+  _i3.Future<void> editLocalDrift(_i15.UserProfile? profile) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [profile]),
             returnValue: _i3.Future<void>.value(),

@@ -21,6 +21,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/ingredient_filters.dart';
+import 'package:wger/providers/ingredient_filters_notifier.dart';
 import 'package:wger/providers/ingredient_notifier.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 
@@ -62,7 +64,9 @@ void main() {
   group('allLocalIngredientsProvider', () {
     test('emits the repository stream', () async {
       final apple = makeIngredient(1, 'Apple');
-      when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value([apple]));
+      when(
+        mockRepo.watchAllDrift(filters: anyNamed('filters')),
+      ).thenAnswer((_) => Stream.value([apple]));
 
       final container = makeContainer();
       // Explicit listen() keeps the autoDispose provider alive long enough
@@ -72,7 +76,34 @@ void main() {
       final result = container.read(allLocalIngredientsProvider).requireValue;
 
       expect(result.single.id, 1);
-      verify(mockRepo.watchAllDrift()).called(1);
+      verify(mockRepo.watchAllDrift(filters: anyNamed('filters'))).called(1);
+    });
+
+    test('forwards the current filter state to the repository', () async {
+      when(
+        mockRepo.watchAllDrift(filters: anyNamed('filters')),
+      ).thenAnswer((_) => Stream.value(const []));
+
+      // Override the sync filter view directly so we don't have to spin up
+      // SharedPreferences just to flip one bool.
+      final container = ProviderContainer.test(
+        overrides: [
+          ingredientRepositoryProvider.overrideWithValue(mockRepo),
+          ingredientFiltersSyncProvider.overrideWithValue(
+            const IngredientFilters(isVegan: true),
+          ),
+        ],
+      );
+
+      container.listen(allLocalIngredientsProvider, (_, _) {});
+      await pumpEventQueue();
+
+      final captured =
+          verify(
+                mockRepo.watchAllDrift(filters: captureAnyNamed('filters')),
+              ).captured.single
+              as IngredientFilters;
+      expect(captured.isVegan, isTrue);
     });
   });
 

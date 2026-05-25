@@ -6,8 +6,9 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/core/search_options.dart' as _i5;
+import 'package:wger/models/core/search_options.dart' as _i6;
 import 'package:wger/models/nutrition/ingredient.dart' as _i4;
+import 'package:wger/models/nutrition/ingredient_filters.dart' as _i5;
 import 'package:wger/providers/ingredient_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -42,9 +43,11 @@ class MockIngredientRepository extends _i1.Mock implements _i2.IngredientReposit
           as _i3.Stream<_i4.Ingredient?>);
 
   @override
-  _i3.Stream<List<_i4.Ingredient>> watchAllDrift() =>
+  _i3.Stream<List<_i4.Ingredient>> watchAllDrift({
+    _i5.IngredientFilters? filters = const _i5.IngredientFilters(),
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#watchAllDrift, []),
+            Invocation.method(#watchAllDrift, [], {#filters: filters}),
             returnValue: _i3.Stream<List<_i4.Ingredient>>.empty(),
           )
           as _i3.Stream<List<_i4.Ingredient>>);
@@ -86,7 +89,7 @@ class MockIngredientRepository extends _i1.Mock implements _i2.IngredientReposit
   _i3.Future<List<_i4.Ingredient>> searchIngredientServer(
     String? name, {
     String? languageCode = 'en',
-    _i5.SearchLanguage? searchLanguage = _i5.SearchLanguage.current,
+    _i6.SearchLanguage? searchLanguage = _i6.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i4.NutriScore? nutriscoreMax,
@@ -114,7 +117,7 @@ class MockIngredientRepository extends _i1.Mock implements _i2.IngredientReposit
     String? name, {
     required bool? isOnline,
     String? languageCode = 'en',
-    _i5.SearchLanguage? searchLanguage = _i5.SearchLanguage.current,
+    _i6.SearchLanguage? searchLanguage = _i6.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i4.NutriScore? nutriscoreMax,

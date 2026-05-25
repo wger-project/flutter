@@ -6,8 +6,9 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/core/search_options.dart' as _i10;
+import 'package:wger/models/core/search_options.dart' as _i11;
 import 'package:wger/models/nutrition/ingredient.dart' as _i9;
+import 'package:wger/models/nutrition/ingredient_filters.dart' as _i10;
 import 'package:wger/models/nutrition/log.dart' as _i7;
 import 'package:wger/models/nutrition/meal.dart' as _i5;
 import 'package:wger/models/nutrition/meal_item.dart' as _i6;
@@ -179,9 +180,11 @@ class MockIngredientRepository extends _i1.Mock implements _i8.IngredientReposit
           as _i3.Stream<_i9.Ingredient?>);
 
   @override
-  _i3.Stream<List<_i9.Ingredient>> watchAllDrift() =>
+  _i3.Stream<List<_i9.Ingredient>> watchAllDrift({
+    _i10.IngredientFilters? filters = const _i10.IngredientFilters(),
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#watchAllDrift, []),
+            Invocation.method(#watchAllDrift, [], {#filters: filters}),
             returnValue: _i3.Stream<List<_i9.Ingredient>>.empty(),
           )
           as _i3.Stream<List<_i9.Ingredient>>);
@@ -223,7 +226,7 @@ class MockIngredientRepository extends _i1.Mock implements _i8.IngredientReposit
   _i3.Future<List<_i9.Ingredient>> searchIngredientServer(
     String? name, {
     String? languageCode = 'en',
-    _i10.SearchLanguage? searchLanguage = _i10.SearchLanguage.current,
+    _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i9.NutriScore? nutriscoreMax,
@@ -251,7 +254,7 @@ class MockIngredientRepository extends _i1.Mock implements _i8.IngredientReposit
     String? name, {
     required bool? isOnline,
     String? languageCode = 'en',
-    _i10.SearchLanguage? searchLanguage = _i10.SearchLanguage.current,
+    _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i9.NutriScore? nutriscoreMax,

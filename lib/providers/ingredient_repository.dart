@@ -22,6 +22,7 @@ import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/ingredient_filters.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
@@ -62,13 +63,30 @@ class IngredientRepository {
     });
   }
 
-  /// Watches all locally synced ingredients.
+  /// Watches all locally synced ingredients, narrowed by the dietary and
+  /// Nutri-Score predicates on [filters]. Defaults to "no filter".
   ///
-  /// Only ingredients that are used in a nutritional plan or log are
-  /// synced to the device for offline storage in the Drift database.
-  Stream<List<Ingredient>> watchAllDrift() {
+  /// `searchTerm` and `searchLanguage` from [filters] are intentionally
+  /// ignored here, those belong to the server-search path. Only ingredients
+  /// that are used in a nutritional plan or log get synced to the device in
+  /// the first place.
+  Stream<List<Ingredient>> watchAllDrift({
+    IngredientFilters filters = const IngredientFilters(),
+  }) {
     _logger.finer('Watching all synced ingredients');
-    final query = _baseJoinedQuery()..orderBy([OrderingTerm(expression: _db.ingredientTable.name)]);
+    final query = _baseJoinedQuery();
+    if (filters.isVegan) {
+      query.where(_db.ingredientTable.isVegan.equals(true));
+    }
+    if (filters.isVegetarian) {
+      query.where(_db.ingredientTable.isVegetarian.equals(true));
+    }
+    if (filters.nutriscoreMax != null) {
+      query.where(
+        _db.ingredientTable.nutriscore.isSmallerOrEqualValue(filters.nutriscoreMax!.name),
+      );
+    }
+    query.orderBy([OrderingTerm(expression: _db.ingredientTable.name)]);
     return query.watch().map((rows) {
       return _hydrate(rows);
     });

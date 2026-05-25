@@ -6,10 +6,11 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/core/search_options.dart' as _i13;
+import 'package:wger/models/core/search_options.dart' as _i14;
 import 'package:wger/models/measurements/measurement_category.dart' as _i4;
 import 'package:wger/models/measurements/measurement_entry.dart' as _i5;
 import 'package:wger/models/nutrition/ingredient.dart' as _i12;
+import 'package:wger/models/nutrition/ingredient_filters.dart' as _i13;
 import 'package:wger/models/nutrition/log.dart' as _i10;
 import 'package:wger/models/nutrition/meal.dart' as _i8;
 import 'package:wger/models/nutrition/meal_item.dart' as _i9;
@@ -265,9 +266,11 @@ class MockIngredientRepository extends _i1.Mock implements _i11.IngredientReposi
           as _i3.Stream<_i12.Ingredient?>);
 
   @override
-  _i3.Stream<List<_i12.Ingredient>> watchAllDrift() =>
+  _i3.Stream<List<_i12.Ingredient>> watchAllDrift({
+    _i13.IngredientFilters? filters = const _i13.IngredientFilters(),
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#watchAllDrift, []),
+            Invocation.method(#watchAllDrift, [], {#filters: filters}),
             returnValue: _i3.Stream<List<_i12.Ingredient>>.empty(),
           )
           as _i3.Stream<List<_i12.Ingredient>>);
@@ -309,7 +312,7 @@ class MockIngredientRepository extends _i1.Mock implements _i11.IngredientReposi
   _i3.Future<List<_i12.Ingredient>> searchIngredientServer(
     String? name, {
     String? languageCode = 'en',
-    _i13.SearchLanguage? searchLanguage = _i13.SearchLanguage.current,
+    _i14.SearchLanguage? searchLanguage = _i14.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i12.NutriScore? nutriscoreMax,
@@ -337,7 +340,7 @@ class MockIngredientRepository extends _i1.Mock implements _i11.IngredientReposi
     String? name, {
     required bool? isOnline,
     String? languageCode = 'en',
-    _i13.SearchLanguage? searchLanguage = _i13.SearchLanguage.current,
+    _i14.SearchLanguage? searchLanguage = _i14.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
     _i12.NutriScore? nutriscoreMax,
