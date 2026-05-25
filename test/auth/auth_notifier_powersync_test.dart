@@ -20,6 +20,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +28,7 @@ import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
@@ -41,6 +43,10 @@ import 'auth_notifier_powersync_test.mocks.dart';
 
 @GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
+  // Required so showSessionExpiredSnackbar can look up the global keys via
+  // WidgetsBinding without throwing in unit tests.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   // Replacement for SharedPreferences.setMockInitialValues() for the
   // async API used by the auth notifier.
   SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
@@ -188,6 +194,10 @@ void main() {
     });
 
     test('token rejected (401) → logged out and saved user wiped', () async {
+      // Server actively rejected the token (e.g. refresh token expired after a
+      // long offline period). We log out and the screen-level routing surfaces
+      // a snackbar via [showSessionExpiredSnackbar]. A pure network failure
+      // is handled by the separate 'network error' test below.
       when(
         mockClient.head(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Unauthorized', 401));
@@ -242,6 +252,82 @@ void main() {
 
       expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+    });
+
+    test('server version too old → state moves to serverUpdateRequired', () async {
+      // Probe succeeds but the server is older than MIN_SERVER_VERSION. The
+      // revalidation must surface the gate so the user sees the recovery
+      // screen the next time the route observes auth state.
+      when(mockClient.get(tVersion)).thenAnswer((_) async => Response('"1.0.0"', 200));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.serverUpdateRequired);
+      expect(container.read(authProvider).value?.serverVersion, '1.0.0');
+    });
+
+    test('app version too old → state moves to appUpdateRequired', () async {
+      // Server is recent enough but the server's min-app-version is newer
+      // than this build (1.2.3 from PackageInfo setUp), so the user must
+      // update the app.
+      when(mockClient.get(tMinAppVersion)).thenAnswer((_) async => Response('"99.0.0"', 200));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.appUpdateRequired);
+    });
+  });
+
+  group('background revalidation: connectivity reconnect', () {
+    late StreamController<List<ConnectivityResult>> connectivityStream;
+    late ConnectivityPlatform originalPlatform;
+
+    setUp(() async {
+      // Swap in a controllable stream so we can fire reconnect events.
+      originalPlatform = ConnectivityPlatform.instance;
+      connectivityStream = StreamController<List<ConnectivityResult>>.broadcast();
+      ConnectivityPlatform.instance = _StreamFakeConnectivity(connectivityStream.stream);
+      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+    });
+
+    tearDown(() async {
+      await connectivityStream.close();
+      ConnectivityPlatform.instance = originalPlatform;
+    });
+
+    test('reconnect event triggers a second revalidation probe', () async {
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      // Wait out the initial fire-and-forget revalidation.
+      await container.read(authProvider.notifier).revalidationDone;
+      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
+
+      // Simulate a reconnect (going from offline to wifi).
+      connectivityStream.add(const [ConnectivityResult.wifi]);
+      await pumpEventQueue();
+      await container.read(authProvider.notifier).revalidationDone;
+
+      // The HEAD probe must have run again.
+      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
+    });
+
+    test('offline-only event (none) does not trigger revalidation', () async {
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
+
+      connectivityStream.add(const [ConnectivityResult.none]);
+      await pumpEventQueue();
+
+      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
     });
   });
 
@@ -394,6 +480,35 @@ void main() {
 
       expect(state.status, AuthStatus.loggedIn);
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), true);
+    });
+  });
+
+  group('never-synced session: version gates', () {
+    test('server version too old → serverUpdateRequired', () async {
+      // Never-synced path runs the full gating chain. A server below
+      // MIN_SERVER_VERSION must route the user to the update screen
+      // instead of completing the login.
+      when(mockClient.get(tVersion)).thenAnswer((_) async => Response('"1.0.0"', 200));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.serverUpdateRequired);
+      expect(state.serverVersion, '1.0.0');
+      // PowerSync probe is gated behind the version checks.
+      verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
+    });
+
+    test('app version too old → appUpdateRequired', () async {
+      // Server is fine, but the server's min-app-version exceeds this
+      // build (1.2.3 from PackageInfo setUp).
+      when(mockClient.get(tMinAppVersion)).thenAnswer((_) async => Response('"99.0.0"', 200));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.appUpdateRequired);
+      verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
     });
   });
 
@@ -635,6 +750,9 @@ void main() {
     });
 
     test('non-200 response → logout', () async {
+      // Server reachable + non-200 means the refresh token is genuinely
+      // rejected (typical for a refresh token that expired server-side after
+      // a long offline period). Logout + snackbar is the right response.
       when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
       when(
         mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
@@ -647,7 +765,10 @@ void main() {
       expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
     });
 
-    test('network error → logout', () async {
+    test('network error → stays logged in', () async {
+      // Pure offline case: we cannot conclude anything about the validity of
+      // the refresh token, so keep the session intact and let the user keep
+      // accessing local data.
       when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
       when(
         mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
@@ -657,7 +778,7 @@ void main() {
       await container.read(authProvider.future);
       await container.read(authProvider.notifier).refreshAccessToken();
 
-      expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
+      expect(container.read(authProvider).value!.status, AuthStatus.loggedIn);
     });
 
     test('malformed body (no tokens) → logout', () async {
@@ -708,4 +829,18 @@ void main() {
       ).called(1);
     });
   });
+}
+
+/// Connectivity stub backed by a caller-controlled stream so reconnect events
+/// can be driven from inside a test.
+class _StreamFakeConnectivity extends ConnectivityPlatform with MockPlatformInterfaceMixin {
+  _StreamFakeConnectivity(this._stream);
+
+  final Stream<List<ConnectivityResult>> _stream;
+
+  @override
+  Future<List<ConnectivityResult>> checkConnectivity() async => const [ConnectivityResult.wifi];
+
+  @override
+  Stream<List<ConnectivityResult>> get onConnectivityChanged => _stream;
 }

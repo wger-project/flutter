@@ -32,7 +32,7 @@ void main() {
   late MockClient inner;
   late AuthState? auth;
   late int refreshCalls;
-  late int logoutCalls;
+  late int sessionExpiredCalls;
   Future<void> Function() onRefresh = () async {};
 
   AuthHttpClient buildClient() => AuthHttpClient(
@@ -42,8 +42,8 @@ void main() {
       refreshCalls++;
       await onRefresh();
     },
-    logout: () async {
-      logoutCalls++;
+    onSessionExpired: () async {
+      sessionExpiredCalls++;
       auth = const AuthState();
     },
   );
@@ -70,7 +70,7 @@ void main() {
     inner = MockClient();
     auth = null;
     refreshCalls = 0;
-    logoutCalls = 0;
+    sessionExpiredCalls = 0;
     onRefresh = () async {};
   });
 
@@ -213,7 +213,6 @@ void main() {
 
       expect(response.statusCode, 200);
       expect(refreshCalls, 1);
-      expect(logoutCalls, 0);
 
       final captured = verify(inner.send(captureAny)).captured;
       expect(captured.length, 2);
@@ -227,7 +226,7 @@ void main() {
       );
     });
 
-    test('replayable Request: retry also 401 → logout + synthetic 401', () async {
+    test('replayable Request: retry also 401 → session expired + synthetic 401', () async {
       auth = AuthState(
         tokenType: AuthTokenType.headlessJwt,
         accessToken: 'old-access',
@@ -251,7 +250,7 @@ void main() {
 
       expect(response.statusCode, 401);
       expect(refreshCalls, 1);
-      expect(logoutCalls, 1);
+      expect(sessionExpiredCalls, 1);
     });
 
     test('refresh that returns no fresh access token → synthetic 401, no retry', () async {
@@ -277,7 +276,7 @@ void main() {
       verify(inner.send(any)).called(1); // No retry attempted.
     });
 
-    test('legacy 401 → no retry, no logout, original 401 surfaces', () async {
+    test('legacy 401 → no retry, original 401 surfaces', () async {
       auth = const AuthState(tokenType: AuthTokenType.legacyApiToken, token: 'legacy-key');
       when(inner.send(any)).thenAnswer(
         (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),
@@ -289,7 +288,6 @@ void main() {
 
       expect(response.statusCode, 401);
       expect(refreshCalls, 0);
-      expect(logoutCalls, 0);
     });
 
     test('MultipartRequest 401 → no retry (body not replayable)', () async {
@@ -310,7 +308,6 @@ void main() {
 
       expect(response.statusCode, 401);
       expect(refreshCalls, 0);
-      expect(logoutCalls, 0);
       verify(inner.send(any)).called(1);
     });
   });

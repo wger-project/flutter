@@ -21,6 +21,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 
@@ -38,9 +39,12 @@ const _refreshLeeway = Duration(seconds: 30);
 /// - For `headlessJwt`, pre-emptively refresh the access token when the
 ///   stored `accessExpiresAt` is within [_refreshLeeway] of now.
 /// - On a 401 reply for a *replayable* `http.Request` body, refresh once
-///   and retry. If the retry also returns 401, the user is logged out.
-///   Non-replayable bodies (multipart / streamed) are not retried; the
-///   pre-emptive refresh in the happy path is the primary safeguard.
+///   and retry. If the retry also returns 401 the session is treated as
+///   genuinely revoked: the [onSessionExpired] callback runs (used to
+///   log out and surface a snackbar) and a synthetic 401 is returned to
+///   the caller. Non-replayable bodies (multipart / streamed) are not
+///   retried; the pre-emptive refresh in the happy path is the primary
+///   safeguard.
 ///
 /// Wrapped behind [authenticatedHttpClientProvider] so consumers
 /// ([WgerBaseProvider], PowerSync's connector) get the auth handling for
@@ -49,18 +53,18 @@ class AuthHttpClient extends http.BaseClient {
   final http.Client _inner;
   final AuthState? Function() _readAuth;
   final Future<void> Function() _refresh;
-  final Future<void> Function() _logout;
+  final Future<void> Function() _onSessionExpired;
   final _logger = Logger('AuthHttpClient');
 
   AuthHttpClient({
     required http.Client inner,
     required AuthState? Function() readAuth,
     required Future<void> Function() refresh,
-    required Future<void> Function() logout,
+    required Future<void> Function() onSessionExpired,
   }) : _inner = inner,
        _readAuth = readAuth,
        _refresh = refresh,
-       _logout = logout;
+       _onSessionExpired = onSessionExpired;
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
@@ -96,10 +100,10 @@ class AuthHttpClient extends http.BaseClient {
     if (retryResponse.statusCode == 401) {
       _logger.warning(
         'Retry after refresh still returned 401 for '
-        '${request.method} ${request.url.path}, logging out',
+        '${request.method} ${request.url.path}, treating session as revoked',
       );
       await retryResponse.stream.drain<void>();
-      await _logout();
+      await _onSessionExpired();
       return _syntheticUnauthorized();
     }
     return retryResponse;
@@ -165,6 +169,9 @@ final authenticatedHttpClientProvider = Provider<http.Client>(
     inner: ref.watch(authHttpClientProvider),
     readAuth: () => ref.read(authProvider).asData?.value,
     refresh: () => ref.read(authProvider.notifier).refreshAccessToken(),
-    logout: () => ref.read(authProvider.notifier).logout(),
+    onSessionExpired: () async {
+      await ref.read(authProvider.notifier).logout();
+      showSessionExpiredSnackbar();
+    },
   ),
 );

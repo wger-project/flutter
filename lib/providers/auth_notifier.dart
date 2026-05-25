@@ -624,7 +624,9 @@ class AuthNotifier extends _$AuthNotifier {
         return;
       }
       if (_isAuthRejection(response.statusCode)) {
-        _logger.info('revalidation: token rejected (${response.statusCode}), logging out');
+        _logger.info(
+          'revalidation: token rejected (${response.statusCode}), logging out',
+        );
         await logout();
         showSessionExpiredSnackbar();
         return;
@@ -897,8 +899,11 @@ class AuthNotifier extends _$AuthNotifier {
         body: json.encode({'refresh_token': refreshToken}),
       );
     } on Exception catch (e, s) {
-      _logger.warning('refreshAccessToken: network error, logging out', e, s);
-      await logout();
+      _logger.warning(
+        'refreshAccessToken: network error, keeping session so local data stays accessible',
+        e,
+        s,
+      );
       return;
     }
 
@@ -910,6 +915,7 @@ class AuthNotifier extends _$AuthNotifier {
         'refreshAccessToken: status ${response.statusCode}, body: $bodySnippet, logging out',
       );
       await logout();
+      showSessionExpiredSnackbar();
       return;
     }
 
@@ -937,6 +943,7 @@ class AuthNotifier extends _$AuthNotifier {
         s,
       );
       await logout();
+      showSessionExpiredSnackbar();
       return;
     }
     _logger.fine(
