@@ -576,6 +576,7 @@
   "@energyShort": {
     "description": "The first letter or short name of the word 'Energy', used in overviews"
   },
+  "dietaryInformation": "Dietary information",
   "macronutrients": "Macronutrients",
   "@macronutrients": {},
   "planned": "Planned",

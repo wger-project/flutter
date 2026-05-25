@@ -143,6 +143,100 @@ final class IngredientByIdFamily extends $Family
   String toString() => r'ingredientByIdProvider';
 }
 
+/// Reactive per-id watch for a single ingredient. Re-emits whenever the
+/// ingredient row, its image or any of its weight units changes locally
+/// (e.g. PowerSync just pulled an update). Emits `null` if no row with
+/// that id exists yet.
+
+@ProviderFor(ingredientByIdStream)
+final ingredientByIdStreamProvider = IngredientByIdStreamFamily._();
+
+/// Reactive per-id watch for a single ingredient. Re-emits whenever the
+/// ingredient row, its image or any of its weight units changes locally
+/// (e.g. PowerSync just pulled an update). Emits `null` if no row with
+/// that id exists yet.
+
+final class IngredientByIdStreamProvider
+    extends $FunctionalProvider<AsyncValue<Ingredient?>, Ingredient?, Stream<Ingredient?>>
+    with $FutureModifier<Ingredient?>, $StreamProvider<Ingredient?> {
+  /// Reactive per-id watch for a single ingredient. Re-emits whenever the
+  /// ingredient row, its image or any of its weight units changes locally
+  /// (e.g. PowerSync just pulled an update). Emits `null` if no row with
+  /// that id exists yet.
+  IngredientByIdStreamProvider._({
+    required IngredientByIdStreamFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'ingredientByIdStreamProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$ingredientByIdStreamHash();
+
+  @override
+  String toString() {
+    return r'ingredientByIdStreamProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<Ingredient?> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<Ingredient?> create(Ref ref) {
+    final argument = this.argument as int;
+    return ingredientByIdStream(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is IngredientByIdStreamProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$ingredientByIdStreamHash() => r'c98e915be80c4592803fd4d8ff70b89f79f02137';
+
+/// Reactive per-id watch for a single ingredient. Re-emits whenever the
+/// ingredient row, its image or any of its weight units changes locally
+/// (e.g. PowerSync just pulled an update). Emits `null` if no row with
+/// that id exists yet.
+
+final class IngredientByIdStreamFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<Ingredient?>, int> {
+  IngredientByIdStreamFamily._()
+    : super(
+        retry: null,
+        name: r'ingredientByIdStreamProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Reactive per-id watch for a single ingredient. Re-emits whenever the
+  /// ingredient row, its image or any of its weight units changes locally
+  /// (e.g. PowerSync just pulled an update). Emits `null` if no row with
+  /// that id exists yet.
+
+  IngredientByIdStreamProvider call(int id) =>
+      IngredientByIdStreamProvider._(argument: id, from: this);
+
+  @override
+  String toString() => r'ingredientByIdStreamProvider';
+}
+
 /// Triggers an ingredient search whenever the filter state changes, debounced
 /// to avoid one server request per keystroke. Routes to the REST API when
 /// online, to the local-DB subset when offline.

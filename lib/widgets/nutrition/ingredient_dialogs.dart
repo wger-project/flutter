@@ -28,71 +28,66 @@ import 'package:wger/widgets/core/wger_image.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
 import 'package:wger/widgets/nutrition/nutri_score_badge.dart';
 
-Widget ingredientImage(String? mediaPath, BuildContext context) {
-  var radius = 100.0;
-  final height = MediaQuery.sizeOf(context).height;
-  final width = MediaQuery.sizeOf(context).width;
-  final smallest = height < width ? height : width;
-  if (smallest > 400) {
-    radius = smallest / 2.5;
-  }
+class IngredientImageHeader extends StatelessWidget {
+  const IngredientImageHeader({super.key, required this.mediaPath});
 
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 12),
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: Container(
-        height: radius,
-        width: width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Stack(
-          children: [
-            WgerImage(
-              mediaPath: mediaPath,
-              height: radius,
-              width: width,
-              fit: BoxFit.cover,
-            ),
-            BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaY: 5,
-                sigmaX: 5,
-              ),
-              child: Container(
+  /// Path relative to MEDIA_ROOT (as stored on `IngredientImage.image`),
+  /// or `null` to render the placeholder `WgerImage` falls back to.
+  final String? mediaPath;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final smallest = size.shortestSide;
+    final radius = smallest > 400 ? smallest / 2.5 : 100.0;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: SizedBox(
+          height: radius,
+          width: size.width,
+          child: Stack(
+            children: [
+              WgerImage(
+                mediaPath: mediaPath,
                 height: radius,
-                width: width,
-                color: Colors.transparent,
+                width: size.width,
+                fit: BoxFit.cover,
               ),
-            ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Container(
-                  clipBehavior: Clip.hardEdge,
-                  decoration: const BoxDecoration(shape: BoxShape.circle),
-                  child: WgerImage(
-                    mediaPath: mediaPath,
-                    height: radius,
-                    width: width,
-                    fit: BoxFit.contain,
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
+                child: SizedBox(height: radius, width: size.width),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: WgerImage(
+                      mediaPath: mediaPath,
+                      height: radius,
+                      width: size.width,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
-class IngredientDetails extends StatelessWidget {
+class IngredientDetailsDialog extends StatelessWidget {
   final Ingredient ingredient;
   final void Function()? onSelect;
 
-  const IngredientDetails(this.ingredient, {super.key, this.onSelect});
+  const IngredientDetailsDialog(this.ingredient, {super.key, this.onSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -104,32 +99,9 @@ class IngredientDetails extends StatelessWidget {
       content: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (ingredient.image?.image != null)
-                ingredientImage(ingredient.image!.image, context),
-              ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 400),
-                child: MacronutrientsTable(
-                  nutritionalGoals: goals,
-                  plannedValuesPercentage: goals.energyPercentage(),
-                  showGperKg: false,
-                ),
-              ),
-              const SizedBox(height: 12),
-              DietaryInfoSection(ingredient: ingredient),
-              if (ingredient.licenseObjectURl == null)
-                Text('Source: $source')
-              else
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: InkWell(
-                    child: Text('Source: $source'),
-                    onTap: () => launchURL(ingredient.licenseObjectURl!, context),
-                  ),
-                ),
-            ],
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 400),
+            child: IngredientDetails(ingredient, onSelect: onSelect),
           ),
         ),
       ),
@@ -150,6 +122,57 @@ class IngredientDetails extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
+      ],
+    );
+  }
+}
+
+class IngredientDetails extends StatelessWidget {
+  final Ingredient ingredient;
+  final void Function()? onSelect;
+
+  const IngredientDetails(this.ingredient, {super.key, this.onSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    final goals = ingredient.nutritionalValues.toGoals();
+    final source = ingredient.sourceName ?? 'unknown';
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
+        if (ingredient.image?.image != null)
+          IngredientImageHeader(mediaPath: ingredient.image!.image),
+
+        Text(
+          AppLocalizations.of(context).macronutrients,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        MacronutrientsTable(
+          nutritionalGoals: goals,
+          plannedValuesPercentage: goals.energyPercentage(),
+          showGperKg: false,
+        ),
+
+        DietaryInfoSection(ingredient: ingredient),
+
+        if (ingredient.licenseObjectURl == null)
+          Center(child: Text('Source: $source'))
+        else
+          Center(
+            child: InkWell(
+              child: Text(
+                'Source: $source',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+              onTap: () => launchURL(ingredient.licenseObjectURl!, context),
+            ),
+          ),
       ],
     );
   }
@@ -239,7 +262,7 @@ class IngredientScanResultDialog extends StatelessWidget {
                 child: Text(i18n.productFoundDescription(ingredient.name)),
               ),
               if (ingredient.image?.image != null)
-                ingredientImage(ingredient.image!.image, context),
+                IngredientImageHeader(mediaPath: ingredient.image!.image),
               ConstrainedBox(
                 constraints: const BoxConstraints(minWidth: 400),
                 child: MacronutrientsTable(
@@ -295,6 +318,11 @@ class DietaryInfoSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          AppLocalizations.of(context).dietaryInformation,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

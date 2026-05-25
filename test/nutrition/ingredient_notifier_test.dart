@@ -112,4 +112,35 @@ void main() {
       verify(mockRepo.getById(1)).called(1);
     });
   });
+
+  group('ingredientByIdStreamProvider', () {
+    test('emits each value the repository stream emits', () async {
+      final apple = makeIngredient(1, 'Apple');
+      final appleRenamed = makeIngredient(1, 'Apple Renamed');
+      when(
+        mockRepo.watchById(1),
+      ).thenAnswer((_) => Stream<Ingredient?>.fromIterable([apple, appleRenamed]));
+
+      final container = makeContainer();
+      // Explicit listen() keeps the autoDispose stream alive long enough
+      // to drain.
+      container.listen(ingredientByIdStreamProvider(1), (_, _) {});
+      await pumpEventQueue();
+      final result = container.read(ingredientByIdStreamProvider(1)).requireValue;
+
+      expect(result?.name, 'Apple Renamed');
+      verify(mockRepo.watchById(1)).called(1);
+    });
+
+    test('emits null when no row with that id exists yet', () async {
+      when(mockRepo.watchById(99)).thenAnswer((_) => Stream.value(null));
+
+      final container = makeContainer();
+      container.listen(ingredientByIdStreamProvider(99), (_, _) {});
+      await pumpEventQueue();
+      final result = container.read(ingredientByIdStreamProvider(99)).requireValue;
+
+      expect(result, isNull);
+    });
+  });
 }

@@ -42,6 +42,15 @@ Future<Ingredient?> ingredientById(Ref ref, int id) {
   return ref.watch(ingredientRepositoryProvider).getById(id);
 }
 
+/// Reactive per-id watch for a single ingredient. Re-emits whenever the
+/// ingredient row, its image or any of its weight units changes locally
+/// (e.g. PowerSync just pulled an update). Emits `null` if no row with
+/// that id exists yet.
+@riverpod
+Stream<Ingredient?> ingredientByIdStream(Ref ref, int id) {
+  return ref.watch(ingredientRepositoryProvider).watchById(id);
+}
+
 /// Triggers an ingredient search whenever the filter state changes, debounced
 /// to avoid one server request per keystroke. Routes to the REST API when
 /// online, to the local-DB subset when offline.
