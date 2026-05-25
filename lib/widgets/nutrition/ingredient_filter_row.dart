@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,8 +51,12 @@ class _IngredientFilterRowState extends ConsumerState<IngredientFilterRow> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final currentFilters = ref.watch(ingredientFiltersSyncProvider);
 
+    // We intentionally don't watch the filters provider here: every keystroke
+    // pushes the new search term into that provider, and watching it would
+    // rebuild the TextFormField + its decoration on each character. Only the
+    // clear-icon's visibility depends on the search term, so it lives in
+    // its own Consumer
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
       child: Row(
@@ -67,20 +71,7 @@ class _IngredientFilterRowState extends ConsumerState<IngredientFilterRow> {
                 border: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
                 ),
-                suffixIcon: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (currentFilters.searchTerm.isNotEmpty)
-                      IconButton(
-                        icon: const Icon(Icons.clear),
-                        tooltip: i18n.clearSearchTerm,
-                        onPressed: () {
-                          ref.read(ingredientFiltersProvider.notifier).setSearchTerm('');
-                          _ingredientNameController.clear();
-                        },
-                      ),
-                  ],
-                ),
+                suffixIcon: _ClearSearchTermButton(controller: _ingredientNameController),
               ),
             ),
           ),
@@ -104,5 +95,32 @@ class _IngredientFilterRowState extends ConsumerState<IngredientFilterRow> {
   void dispose() {
     _ingredientNameController.dispose();
     super.dispose();
+  }
+}
+
+/// Suffix-area clear button. Lives in its own ConsumerWidget so it can watch
+/// `searchTerm.isNotEmpty` without dragging the parent TextFormField rebuild
+/// along on every keystroke.
+class _ClearSearchTermButton extends ConsumerWidget {
+  const _ClearSearchTermButton({required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasText = ref.watch(
+      ingredientFiltersSyncProvider.select((f) => f.searchTerm.isNotEmpty),
+    );
+    if (!hasText) {
+      return const SizedBox.shrink();
+    }
+    return IconButton(
+      icon: const Icon(Icons.clear),
+      tooltip: AppLocalizations.of(context).clearSearchTerm,
+      onPressed: () {
+        ref.read(ingredientFiltersProvider.notifier).setSearchTerm('');
+        controller.clear();
+      },
+    );
   }
 }
