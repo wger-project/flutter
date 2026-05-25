@@ -86,28 +86,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get useDefaultServer =>
-      (super.noSuchMethod(
-            Invocation.getter(#useDefaultServer),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#useDefaultServer),
-            ),
-          )
-          as String);
-
-  @override
-  String get useCustomServer =>
-      (super.noSuchMethod(
-            Invocation.getter(#useCustomServer),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#useCustomServer),
-            ),
-          )
-          as String);
-
-  @override
   String get invalidUrl =>
       (super.noSuchMethod(
             Invocation.getter(#invalidUrl),
@@ -246,39 +224,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#invalidUsername),
-            ),
-          )
-          as String);
-
-  @override
-  String get useRefreshToken =>
-      (super.noSuchMethod(
-            Invocation.getter(#useRefreshToken),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#useRefreshToken),
-            ),
-          )
-          as String);
-
-  @override
-  String get useUsernameAndPassword =>
-      (super.noSuchMethod(
-            Invocation.getter(#useUsernameAndPassword),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#useUsernameAndPassword),
-            ),
-          )
-          as String);
-
-  @override
-  String get loginViaWeb =>
-      (super.noSuchMethod(
-            Invocation.getter(#loginViaWeb),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#loginViaWeb),
             ),
           )
           as String);
@@ -482,23 +427,166 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get registerInstead =>
+  String get advanced =>
       (super.noSuchMethod(
-            Invocation.getter(#registerInstead),
+            Invocation.getter(#advanced),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#registerInstead),
+              Invocation.getter(#advanced),
             ),
           )
           as String);
 
   @override
-  String get loginInstead =>
+  String get advancedSubtitle =>
       (super.noSuchMethod(
-            Invocation.getter(#loginInstead),
+            Invocation.getter(#advancedSubtitle),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#loginInstead),
+              Invocation.getter(#advancedSubtitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverSectionLabel =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverSectionLabel),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverSectionLabel),
+            ),
+          )
+          as String);
+
+  @override
+  String get signInMethodSectionLabel =>
+      (super.noSuchMethod(
+            Invocation.getter(#signInMethodSectionLabel),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#signInMethodSectionLabel),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverOptionDefaultDetail =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverOptionDefaultDetail),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverOptionDefaultDetail),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverOptionSelfHostedTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverOptionSelfHostedTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverOptionSelfHostedTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get serverOptionSelfHostedDetail =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverOptionSelfHostedDetail),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#serverOptionSelfHostedDetail),
+            ),
+          )
+          as String);
+
+  @override
+  String get authOptionPasswordTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#authOptionPasswordTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#authOptionPasswordTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get signInWithToken =>
+      (super.noSuchMethod(
+            Invocation.getter(#signInWithToken),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#signInWithToken),
+            ),
+          )
+          as String);
+
+  @override
+  String get tokenSubtitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#tokenSubtitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#tokenSubtitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get newToWger =>
+      (super.noSuchMethod(
+            Invocation.getter(#newToWger),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#newToWger),
+            ),
+          )
+          as String);
+
+  @override
+  String get alreadyHaveAccount =>
+      (super.noSuchMethod(
+            Invocation.getter(#alreadyHaveAccount),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#alreadyHaveAccount),
+            ),
+          )
+          as String);
+
+  @override
+  String get tokenLabel =>
+      (super.noSuchMethod(
+            Invocation.getter(#tokenLabel),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#tokenLabel),
+            ),
+          )
+          as String);
+
+  @override
+  String get webHandoffLinkLabel =>
+      (super.noSuchMethod(
+            Invocation.getter(#webHandoffLinkLabel),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#webHandoffLinkLabel),
+            ),
+          )
+          as String);
+
+  @override
+  String get webHandoffLinkSubtitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#webHandoffLinkSubtitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#webHandoffLinkSubtitle),
             ),
           )
           as String);
@@ -1658,6 +1746,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#noNutritionalPlans),
+            ),
+          )
+          as String);
+
+  @override
+  String get clearSearchTerm =>
+      (super.noSuchMethod(
+            Invocation.getter(#clearSearchTerm),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#clearSearchTerm),
+            ),
+          )
+          as String);
+
+  @override
+  String get ingredients =>
+      (super.noSuchMethod(
+            Invocation.getter(#ingredients),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#ingredients),
             ),
           )
           as String);
@@ -4394,6 +4504,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get nutriscoreValue =>
+      (super.noSuchMethod(
+            Invocation.getter(#nutriscoreValue),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#nutriscoreValue),
+            ),
+          )
+          as String);
+
+  @override
   String get filterNutriscoreOff =>
       (super.noSuchMethod(
             Invocation.getter(#filterNutriscoreOff),
@@ -4466,6 +4587,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#sessionExpired),
+            ),
+          )
+          as String);
+
+  @override
+  String get weightOrRepsRequired =>
+      (super.noSuchMethod(
+            Invocation.getter(#weightOrRepsRequired),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#weightOrRepsRequired),
+            ),
+          )
+          as String);
+
+  @override
+  String get timeStartEndBothOrNeither =>
+      (super.noSuchMethod(
+            Invocation.getter(#timeStartEndBothOrNeither),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#timeStartEndBothOrNeither),
             ),
           )
           as String);
@@ -4631,6 +4774,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#enterMinCharacters, [min]),
+            ),
+          )
+          as String);
+
+  @override
+  String enterMaxCharacters(String? max) =>
+      (super.noSuchMethod(
+            Invocation.method(#enterMaxCharacters, [max]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#enterMaxCharacters, [max]),
             ),
           )
           as String);

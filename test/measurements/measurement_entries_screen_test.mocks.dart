@@ -265,6 +265,14 @@ class MockIngredientRepository extends _i1.Mock implements _i11.IngredientReposi
           as _i3.Stream<_i12.Ingredient?>);
 
   @override
+  _i3.Stream<List<_i12.Ingredient>> watchAllDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i3.Stream<List<_i12.Ingredient>>.empty(),
+          )
+          as _i3.Stream<List<_i12.Ingredient>>);
+
+  @override
   _i3.Future<_i12.Ingredient?> getById(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getById, [id]),

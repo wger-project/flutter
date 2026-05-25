@@ -26,7 +26,7 @@ class IngredientFilterRow extends ConsumerStatefulWidget {
   const IngredientFilterRow({super.key});
 
   @override
-  _IngredientFilterRowState createState() => _IngredientFilterRowState();
+  ConsumerState<IngredientFilterRow> createState() => _IngredientFilterRowState();
 }
 
 class _IngredientFilterRowState extends ConsumerState<IngredientFilterRow> {

@@ -84,22 +84,19 @@ class IngredientFiltersNotifier extends _$IngredientFiltersNotifier {
     }
   }
 
-  /// Resets all filters to their default values and clears persisted preferences.
-  Future<void> resetFilters() async {
-    state = const AsyncData(
-      IngredientFilters(
-        isVegan: false,
-        isVegetarian: false,
-        searchLanguage: SearchLanguage.current,
-        searchTerm: '',
-      ),
-    );
+  /// Resets all filters to the locale-aware defaults and clears persisted
+  /// preferences. [localeCode] is the active app locale (e.g. from
+  /// `Localizations.localeOf(context).languageCode`) so the reset matches
+  /// what `IngredientFilters.defaultFor` would produce on a fresh install.
+  Future<void> resetFilters(String localeCode) async {
+    final defaults = IngredientFilters.defaultFor(localeCode);
+    state = AsyncData(defaults);
 
     final pref = PreferenceHelper.instance;
-    await pref.saveIngredientVeganFilter(false);
-    await pref.saveIngredientVegetarianFilter(false);
-    await pref.saveIngredientSearchLanguage(SearchLanguage.current);
-    await pref.saveIngredientNutriscoreMax(null);
+    await pref.saveIngredientVeganFilter(defaults.isVegan);
+    await pref.saveIngredientVegetarianFilter(defaults.isVegetarian);
+    await pref.saveIngredientSearchLanguage(defaults.searchLanguage);
+    await pref.saveIngredientNutriscoreMax(defaults.nutriscoreMax);
   }
 }
 
