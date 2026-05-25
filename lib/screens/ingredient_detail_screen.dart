@@ -19,6 +19,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/providers/ingredient_notifier.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
 class IngredientDetailScreen extends ConsumerWidget {
@@ -28,15 +31,30 @@ class IngredientDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ingredient = ModalRoute.of(context)!.settings.arguments as Ingredient;
+    final id = ModalRoute.of(context)?.settings.arguments as int?;
+    if (id == null) {
+      return const Scaffold(body: Center(child: CenteredProgressIndicator()));
+    }
 
+    final async = ref.watch(ingredientByIdStreamProvider(id));
     return Scaffold(
-      appBar: AppBar(title: Text(ingredient.name)),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child: IngredientDetails(ingredient),
-        ),
+      appBar: AppBar(title: Text(async.value?.name ?? '')),
+      body: AsyncValueWidget<Ingredient?>(
+        value: async,
+        loggerName: 'IngredientDetailScreen',
+        data: (ingredient) {
+          if (ingredient == null) {
+            // No matching row yet (sync hasn't pulled it down, or the id
+            // points at something that has since been deleted upstream).
+            return const Center(child: Icon(Icons.help_outline, size: 48));
+          }
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: IngredientDetails(ingredient),
+            ),
+          );
+        },
       ),
     );
   }

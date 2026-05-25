@@ -56,7 +56,7 @@ class IngredientListTile extends StatelessWidget {
         Navigator.pushNamed(
           context,
           IngredientDetailScreen.routeName,
-          arguments: ingredient,
+          arguments: ingredient.id,
         );
       },
     );
