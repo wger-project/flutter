@@ -37,9 +37,9 @@ final ingredientRepositoryProvider = Provider<IngredientRepository>((ref) {
 /// Data access for ingredient lookups and searches.
 ///
 /// Exposes both transport paths ([searchIngredientServer], [searchIngredientLocal])
-/// as pure data-access primitives. Connectivity-aware routing between them lives
-/// on [IngredientNotifier.searchIngredient] (lib/providers/ingredient_notifier.dart),
-/// where `ref` is at hand.
+/// as pure data-access primitives, and a thin connectivity-aware dispatcher
+/// ([search]) for callers that just want "search; pick the right transport
+/// for the current network state".
 class IngredientRepository {
   final _logger = Logger('IngredientRepository');
   final WgerBaseProvider _base;
@@ -166,6 +166,36 @@ class IngredientRepository {
     return (response['results'] as List)
         .map((data) => Ingredient.fromJson(data as Map<String, dynamic>))
         .toList();
+  }
+
+  /// Searches for ingredients on the transport implied by [isOnline]:
+  /// REST when online, the locally-synced subset when offline. [languageCode]
+  /// is only forwarded to the server path.
+  Future<List<Ingredient>> search(
+    String name, {
+    required bool isOnline,
+    String languageCode = 'en',
+    SearchLanguage searchLanguage = SearchLanguage.current,
+    bool isVegan = false,
+    bool isVegetarian = false,
+    NutriScore? nutriscoreMax,
+  }) {
+    if (isOnline) {
+      return searchIngredientServer(
+        name,
+        languageCode: languageCode,
+        searchLanguage: searchLanguage,
+        isVegan: isVegan,
+        isVegetarian: isVegetarian,
+        nutriscoreMax: nutriscoreMax,
+      );
+    }
+    return searchIngredientLocal(
+      name,
+      isVegan: isVegan,
+      isVegetarian: isVegetarian,
+      nutriscoreMax: nutriscoreMax,
+    );
   }
 
   /// Looks up an ingredient by its product barcode via the REST API.

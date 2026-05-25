@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -47,7 +47,7 @@ class _IngredientsScreenState extends ConsumerState<IngredientsScreen> {
     );
     final AsyncValue<List<Ingredient>> ingredientsAsync = hasSearchTerm
         ? ref.watch(searchedIngredientsProvider)
-        : ref.watch(ingredientProvider);
+        : ref.watch(allLocalIngredientsProvider);
     final i18n = AppLocalizations.of(context);
 
     return Scaffold(

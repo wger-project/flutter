@@ -16,123 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * AsyncNotifier for on-demand ingredient lookups (one-shot reads).
- */
-
-import 'dart:async';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/ingredient_filters_notifier.dart';
+import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/network_provider.dart';
 
-import 'ingredient_repository.dart';
-
 part 'ingredient_notifier.g.dart';
-
-@Riverpod(keepAlive: true)
-final class IngredientNotifier extends _$IngredientNotifier {
-  final _logger = Logger('IngredientProvider');
-
-  late IngredientRepository _repo;
-
-  // Cache for fetched ingredients keyed by id. Stores null when DB had no row.
-  final Map<int, Ingredient?> _cache = {};
-
-  // Deduplicate simultaneous fetches for the same id.
-  final Map<int, Future<Ingredient?>> _inflight = {};
-
-  @override
-  Stream<List<Ingredient>> build() {
-    ref.keepAlive();
-    _logger.finer('Building ingredient stream');
-    _repo = ref.watch(ingredientRepositoryProvider);
-
-    return _repo.watchAllDrift();
-  }
-
-  /// Fetch ingredient by [id] from the DB (one-shot) and update state.
-  /// If the id is present in the in-memory cache, the cached value is
-  /// returned immediately without a DB read. Simultaneous calls for the
-  /// same id are deduplicated.
-  Future<Ingredient?> fetch(int id) async {
-    _logger.finer('Fetching ingredient id: $id');
-
-    // Return cached result if present (could be null meaning 'not found').
-    if (_cache.containsKey(id)) {
-      return _cache[id];
-    }
-
-    // If a fetch for this id is already ongoing, await it.
-    if (_inflight.containsKey(id)) {
-      _logger.finer('Awaiting in-flight fetch for id: $id');
-      return await _inflight[id];
-    }
-
-    // Start a new DB read and store the future in _inflight to dedupe.
-    final future = _doFetch(id);
-    _inflight[id] = future;
-    try {
-      final item = await future;
-      return item;
-    } finally {
-      // ensure inflight entry removed regardless of success/error
-      _inflight.remove(id);
-    }
-  }
-
-  Future<Ingredient?> _doFetch(int id) async {
-    final item = await _repo.getById(id);
-    _cache[id] = item; // store null as 'not found' as well
-    return item;
-  }
-
-  /// Searches for ingredients
-  ///
-  /// Routes to the REST API when the device is online, or to the locally-
-  /// synced subset when offline.
-  Future<List<Ingredient>> searchIngredient(
-    String name, {
-    String languageCode = 'en',
-    SearchLanguage searchLanguage = SearchLanguage.current,
-    bool isVegan = false,
-    bool isVegetarian = false,
-    NutriScore? nutriscoreMax,
-  }) {
-    if (ref.read(networkStatusProvider)) {
-      return _repo.searchIngredientServer(
-        name,
-        languageCode: languageCode,
-        searchLanguage: searchLanguage,
-        isVegan: isVegan,
-        isVegetarian: isVegetarian,
-        nutriscoreMax: nutriscoreMax,
-      );
-    }
-    return _repo.searchIngredientLocal(
-      name,
-      isVegan: isVegan,
-      isVegetarian: isVegetarian,
-      nutriscoreMax: nutriscoreMax,
-    );
-  }
-}
 
 /// Debounce window applied to the search-term keystrokes
 const _searchDebounce = Duration(milliseconds: 350);
 
+/// Stream of all locally-synced ingredients, ordered by name. Only those
+/// ingredients used in a nutritional plan or log are synced for offline use.
+@riverpod
+Stream<List<Ingredient>> allLocalIngredients(Ref ref) {
+  return ref.watch(ingredientRepositoryProvider).watchAllDrift();
+}
+
+/// Per-id lookup for a single ingredient from the local Drift database.
+/// Riverpod caches per `id` while listeners exist and disposes otherwise,
+/// and concurrent reads of the same id share the same future automatically.
+@riverpod
+Future<Ingredient?> ingredientById(Ref ref, int id) {
+  return ref.watch(ingredientRepositoryProvider).getById(id);
+}
+
 /// Triggers an ingredient search whenever the filter state changes, debounced
-/// to avoid one server request per keystroke.
-final searchedIngredientsProvider = FutureProvider.autoDispose<List<Ingredient>>((ref) async {
+/// to avoid one server request per keystroke. Routes to the REST API when
+/// online, to the local-DB subset when offline.
+@riverpod
+Future<List<Ingredient>> searchedIngredients(Ref ref) async {
   final filters = ref.watch(ingredientFiltersSyncProvider);
 
-  // Wait for the debounce window. If the filters change again (or the
-  // provider is disposed) before the delay elapses, abort this run so we
-  // don't fire a request for an intermediate keystroke.
+  // If the filters change again (or the provider is disposed) before the
+  // delay elapses, abort this run so we don't fire a request for an
+  // intermediate keystroke.
   var disposed = false;
   ref.onDispose(() => disposed = true);
   await Future.delayed(_searchDebounce);
@@ -140,14 +59,14 @@ final searchedIngredientsProvider = FutureProvider.autoDispose<List<Ingredient>>
     throw StateError('search debounced');
   }
 
-  // search logic handles the Online/Offline routing
-  return ref
-      .read(ingredientProvider.notifier)
-      .searchIngredient(
-        filters.searchTerm,
-        searchLanguage: filters.searchLanguage,
-        isVegan: filters.isVegan,
-        isVegetarian: filters.isVegetarian,
-        nutriscoreMax: filters.nutriscoreMax,
-      );
-});
+  final repo = ref.read(ingredientRepositoryProvider);
+  final isOnline = ref.read(networkStatusProvider);
+  return repo.search(
+    filters.searchTerm,
+    isOnline: isOnline,
+    searchLanguage: filters.searchLanguage,
+    isVegan: filters.isVegan,
+    isVegetarian: filters.isVegetarian,
+    nutriscoreMax: filters.nutriscoreMax,
+  );
+}

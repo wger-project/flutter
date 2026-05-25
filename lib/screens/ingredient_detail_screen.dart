@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,7 +34,7 @@ class IngredientDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ingredient = ModalRoute.of(context)!.settings.arguments as Ingredient;
     final goals = ingredient.nutritionalValues.toGoals();
-    final source = ingredient.sourceName ?? 'unknown';
+    final source = ingredient.sourceName ?? '-/-';
 
     const placeholder = Image(
       image: AssetImage('assets/images/placeholder.png'),
