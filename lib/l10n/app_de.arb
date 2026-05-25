@@ -1002,5 +1002,6 @@
             }
         }
     },
-    "weightOrRepsRequired": "Bitte Gewicht, Wiederholungen oder beides eingeben"
+    "weightOrRepsRequired": "Bitte Gewicht, Wiederholungen oder beides eingeben",
+    "timeStartEndBothOrNeither": "Entweder Start- und Endzeit beide setzen oder beide leer lassen"
 }

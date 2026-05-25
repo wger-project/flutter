@@ -1386,5 +1386,9 @@
   "weightOrRepsRequired": "Please enter a weight, repetitions, or both",
   "@weightOrRepsRequired": {
     "description": "Validation error when both weight and repetitions are empty in a workout log"
+  },
+  "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
+  "@timeStartEndBothOrNeither": {
+    "description": "Validation error when only one of start/end time is set on a workout session"
   }
 }
