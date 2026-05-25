@@ -282,7 +282,7 @@ class AuthNotifier extends _$AuthNotifier {
       // to drive. Surface as an HTTP error so the caller renders something.
       throw WgerHttpException(response);
     }
-    return _FreshCredentials(
+    return (
       credential: JwtCredential(
         accessToken: accessToken,
         expiresAt: jwtExp(decodeJwtPayload(accessToken)),
@@ -610,7 +610,7 @@ class AuthNotifier extends _$AuthNotifier {
       // clear the session if the refresh token is also dead. Legacy
       // credentials are no-op here ([AuthCredential.needsRefresh] returns
       // false for them).
-      if (current.credential?.needsRefresh(const Duration(seconds: 30)) ?? false) {
+      if (current.credential?.needsRefresh(refreshLeeway) ?? false) {
         _logger.fine('revalidation: access token within leeway, refreshing first');
         await refreshAccessToken();
         current = state.asData?.value;
@@ -799,17 +799,7 @@ class AuthNotifier extends _$AuthNotifier {
   /// session loss (refresh-token expired, repeated 401, etc.) call
   /// [clearSessionOnly] instead, which keeps the local DB so the user can
   /// re-authenticate without losing queued writes or cached read data.
-  Future<void> logout() async {
-    _logger.fine('logging out');
-    // Wipe PowerSync before clearing creds. We only do this if the DB has
-    // actually been built; reading the provider here would otherwise
-    // force-build it (which needs credentials we're about to remove). On
-    // the next login, [_reconnectPowerSyncIfBuilt] picks up the fresh
-    // credentials.
-    await _wipePowerSyncIfBuilt();
-    state = AsyncData(AuthState(applicationVersion: _currentOrBlank().applicationVersion));
-    await _storage.clearAll();
-  }
+  Future<void> logout() => _resetSession(wipeLocalData: true);
 
   /// Involuntary session loss: clears credentials but **keeps** the local
   /// PowerSync DB so the user can sign back in without losing queued
@@ -820,15 +810,16 @@ class AuthNotifier extends _$AuthNotifier {
   /// Called from refresh-token failures, repeated 401s on the HTTP
   /// client, and revalidation rejections. The UI logout button must use
   /// [logout] instead, which performs a full wipe.
-  Future<void> clearSessionOnly() async {
-    _logger.fine('clearing session, keeping local DB');
-    await _disconnectPowerSyncIfBuilt();
+  Future<void> clearSessionOnly() => _resetSession(wipeLocalData: false);
+
+  /// Shared body for [logout] and [clearSessionOnly]. PowerSync is touched
+  /// before the state mutation so a reader observing the post-reset state
+  /// can never race ahead and re-attach to a DB we're about to wipe.
+  Future<void> _resetSession({required bool wipeLocalData}) async {
+    _logger.fine(wipeLocalData ? 'logging out' : 'clearing session, keeping local DB');
+    await (wipeLocalData ? _wipePowerSyncIfBuilt() : _disconnectPowerSyncIfBuilt());
     state = AsyncData(AuthState(applicationVersion: _currentOrBlank().applicationVersion));
-    // Both credential shapes are wiped here (a stale legacy blob shouldn't
-    // outlive an involuntary clear either), but PREFS_HAS_EVER_SYNCED
-    // stays so the cached DB remains usable on the next login.
-    await _storage.clearLegacy();
-    await _storage.clearJwt();
+    await (wipeLocalData ? _storage.clearAll() : _storage.clearCredentials());
   }
 
   /// Wipes the local PowerSync database if it has already been built.
@@ -923,12 +914,7 @@ class AuthNotifier extends _$AuthNotifier {
 /// In-memory bundle returned by the login / signup flows. Always carries a
 /// [JwtCredential] (fresh logins go through `allauth.headless`); the refresh
 /// token is the one the caller still needs to write to secure storage.
-class _FreshCredentials {
-  final JwtCredential credential;
-  final String? refreshToken;
-
-  const _FreshCredentials({required this.credential, this.refreshToken});
-}
+typedef _FreshCredentials = ({JwtCredential credential, String? refreshToken});
 
 /// User-agent header string identifying the app/version/platform.
 String getAppNameHeader(PackageInfo? applicationVersion) {

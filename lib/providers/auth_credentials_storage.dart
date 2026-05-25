@@ -174,12 +174,20 @@ class AuthCredentialsStorage {
     await _prefs.remove(PREFS_USER);
   }
 
-  /// Manual-logout wipe: clears both credential shapes plus the
-  /// "has ever synced" flag, so the next login takes the full first-run
-  /// gating path (PowerSync reachability probe etc.) again.
-  Future<void> clearAll() async {
+  /// Wipes both credential shapes but keeps the "has ever synced" flag,
+  /// so the next login takes the offline-friendly restored-session path.
+  /// Used for involuntary session loss (refresh token expired, 401
+  /// retries exhausted) where the local PowerSync DB is preserved.
+  Future<void> clearCredentials() async {
     await clearLegacy();
     await clearJwt();
+  }
+
+  /// Manual-logout wipe: clears credentials plus the "has ever synced"
+  /// flag, so the next login takes the full first-run gating path
+  /// (PowerSync reachability probe etc.) again.
+  Future<void> clearAll() async {
+    await clearCredentials();
     await _prefs.remove(PREFS_HAS_EVER_SYNCED);
   }
 

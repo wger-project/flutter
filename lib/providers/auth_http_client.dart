@@ -28,7 +28,7 @@ import 'package:wger/providers/auth_state.dart';
 /// Pre-emptive refresh leeway: if the access JWT will expire within this
 /// window we refresh before sending the request. Chosen to absorb mild
 /// client/server clock skew without burning a refresh on every call.
-const _refreshLeeway = Duration(seconds: 30);
+const refreshLeeway = Duration(seconds: 30);
 
 /// HTTP client that owns the `Authorization` header for every outgoing
 /// authenticated request to the wger backend.
@@ -37,7 +37,7 @@ const _refreshLeeway = Duration(seconds: 30);
 /// - Inject the right `Authorization` value for the current credential
 ///   ([AuthCredential.authHeaderValue] does the dispatch).
 /// - For [JwtCredential], pre-emptively refresh when the stored expiry is
-///   within [_refreshLeeway] of now.
+///   within [refreshLeeway] of now.
 /// - On a 401 reply for a *replayable* [http.Request] body that was sent
 ///   with a JWT, refresh once and retry. If the retry also returns 401
 ///   the session is treated as genuinely revoked: [onSessionExpired]
@@ -70,7 +70,7 @@ class AuthHttpClient extends http.BaseClient {
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     var credential = _readAuth()?.credential;
 
-    if (credential?.needsRefresh(_refreshLeeway) ?? false) {
+    if (credential?.needsRefresh(refreshLeeway) ?? false) {
       _logger.fine('Pre-emptive refresh: access token within leeway window');
       await _refresh();
       credential = _readAuth()?.credential;
