@@ -558,6 +558,7 @@
             }
         }
     },
+    "enterMaxCharacters": "Bitte gebe höchstens {max} Zeichen ein",
     "baseNameEnglish": "Alle Übungen brauchen einen Basisnamen in Englisch",
     "contributeExerciseWarning": "Sie können nur Übungen beitragen, wenn Ihr Konto älter als {days} Tage ist und Sie Ihre E-Mail verifiziert haben",
     "@contributeExerciseWarning": {

@@ -33,18 +33,36 @@ enum MeasurementOptions {
   delete,
 }
 
-class MeasurementEntriesScreen extends ConsumerWidget {
+class MeasurementEntriesScreen extends ConsumerStatefulWidget {
   const MeasurementEntriesScreen();
 
   static const routeName = '/measurement-entries';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final categoryId = ModalRoute.of(context)!.settings.arguments as String;
-    final notifier = ref.read(measurementProvider.notifier);
+  ConsumerState<MeasurementEntriesScreen> createState() => _MeasurementEntriesScreenState();
+}
 
+class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScreen> {
+  late final String _categoryId;
+  late final Stream<MeasurementCategory?> _categoryStream;
+  bool _initialised = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialise once, the route argument and notifier don't change for the
+    // lifetime of this screen, so we must not recreate the stream on every build
+    if (!_initialised) {
+      _categoryId = ModalRoute.of(context)!.settings.arguments as String;
+      _categoryStream = ref.read(measurementProvider.notifier).watchCategoryById(_categoryId);
+      _initialised = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return StreamBuilder<MeasurementCategory?>(
-      stream: notifier.watchCategoryById(categoryId),
+      stream: _categoryStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const BoxedProgressIndicator();
@@ -53,11 +71,16 @@ class MeasurementEntriesScreen extends ConsumerWidget {
           return StreamErrorIndicator(snapshot.error.toString());
         }
 
-        // Category might just have been deleted
+        // Category was deleted (locally or via PowerSync from another device).
+        // Pop back to the categories list, but only if this screen is the
+        // topmost route, otherwise we'd pop a child route (open form,
+        // dialog, …) instead.
         final category = snapshot.data;
         if (category == null) {
           Future.microtask(() {
-            if (context.mounted && Navigator.of(context).canPop()) {
+            if (!context.mounted) return;
+            final route = ModalRoute.of(context);
+            if (route != null && route.isCurrent) {
               Navigator.of(context).pop();
             }
           });
@@ -105,7 +128,9 @@ class MeasurementEntriesScreen extends ConsumerWidget {
                                 ),
                                 onPressed: () {
                                   // Confirmed, delete the category
-                                  notifier.deleteCategory(category.id!);
+                                  ref
+                                      .read(measurementProvider.notifier)
+                                      .deleteCategory(category.id!);
 
                                   // Close the popup
                                   Navigator.of(contextDialog).pop();
@@ -154,7 +179,7 @@ class MeasurementEntriesScreen extends ConsumerWidget {
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   AppLocalizations.of(context).newEntry,
-                  MeasurementEntryForm(categoryId),
+                  MeasurementEntryForm(_categoryId),
                 ),
               );
             },

@@ -791,6 +791,16 @@
       }
     }
   },
+  "enterMaxCharacters": "Please enter at most {max} characters",
+  "@enterMaxCharacters": {
+    "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
   "baseNameEnglish": "All exercises need a base name in English",
   "nrOfSets": "Sets per exercise: {nrOfSets}",
   "@nrOfSets": {
