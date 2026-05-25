@@ -47,8 +47,12 @@ class LogItem {
   late num amount;
   String? comment;
 
-  /// Hydrated by the repository after a Drift JOIN.
-  late Ingredient ingredient;
+  /// Nullable because of the way powersync works. This will be only the case
+  /// in the time between setting the ingredient ID (e.g. while editing a meal)
+  /// and when the sync comes from the server and the provider can load the
+  /// ingredient.Callers must treat null as "data still arriving" rather than
+  /// as an error.
+  Ingredient? ingredient;
 
   /// Optional weight unit reference; `null` means the amount is in grams.
   IngredientWeightUnit? weightUnitObj;
@@ -96,8 +100,16 @@ class LogItem {
 
   /// Total nutritional contribution of this entry. Server pre-computes the
   /// same value, but doing it locally keeps offline mode honest.
+  ///
+  /// Returns all-zero values while [ingredient] is still being hydrated
+  /// (see the field doc) so totals and renderers keep working through the
+  /// brief sync gap.
   NutritionalValues get nutritionalValues {
+    final ing = ingredient;
+    if (ing == null) {
+      return NutritionalValues();
+    }
     final weight = weightUnitObj == null ? amount : amount * weightUnitObj!.grams;
-    return ingredient.nutritionalValues / (100 / weight);
+    return ing.nutritionalValues / (100 / weight);
   }
 }

@@ -397,9 +397,26 @@ void main() {
       expect(emitted, hasLength(2));
       final breakfast = emitted.firstWhere((m) => m.id == mealUuid1);
       expect(breakfast.mealItems, hasLength(2));
-      expect(breakfast.mealItems.first.ingredient.name, 'Apple');
+      expect(breakfast.mealItems.first.ingredient?.name, 'Apple');
       final lunch = emitted.firstWhere((m) => m.id == mealUuid2);
       expect(lunch.mealItems, isEmpty);
+    });
+
+    test('meal item without a matching ingredient row hydrates with null', () async {
+      // Models the window between addMealItemLocalDrift and PowerSync pulling
+      // the referenced ingredient down: the meal item is visible but the
+      // ingredient row is not yet local. The watcher must surface that as a
+      // null ingredient rather than crash on a late field.
+      await seedPlan(id: planUuid1);
+      await seedMeal(id: mealUuid1, planId: planUuid1, name: 'breakfast');
+      await seedMealItem(id: itemUuid1, mealId: mealUuid1, ingredientId: 42, amount: 100);
+
+      final emitted = await repo.watchAllMealsHydrated().first;
+
+      final item = emitted.single.mealItems.single;
+      expect(item.ingredient, isNull);
+      // nutritionalValues stays addressable (zeroed) so totals don't blow up.
+      expect(item.nutritionalValues.energy, 0);
     });
   });
 
@@ -423,7 +440,7 @@ void main() {
       final emitted = await repo.watchAllLogsHydrated().first;
       expect(emitted, hasLength(1));
       expect(emitted.single.amount, 100);
-      expect(emitted.single.ingredient.name, 'Apple');
+      expect(emitted.single.ingredient?.name, 'Apple');
     });
 
     test('watchAllLogsHydrated attaches image and weight units to each ingredient', () async {
@@ -442,8 +459,8 @@ void main() {
 
       final emitted = await repo.watchAllLogsHydrated().first;
 
-      expect(emitted.single.ingredient.image?.id, 10);
-      expect(emitted.single.ingredient.weightUnits.single.id, 100);
+      expect(emitted.single.ingredient?.image?.id, 10);
+      expect(emitted.single.ingredient?.weightUnits.single.id, 100);
     });
 
     test('watchAllLogsHydrated resolves weightUnitObj on the log when set', () async {

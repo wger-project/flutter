@@ -26,6 +26,7 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meal_screen.dart';
+import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -233,10 +234,15 @@ class MealItemEditableFullTile extends ConsumerWidget {
         ? '${_item.amount.toStringAsFixed(0)} × ${_item.weightUnitObj!.name}'
         : i18n.gValue(_item.amount.toStringAsFixed(0));
 
+    // ingredient is null briefly between local insert and PowerSync
+    // downloading the row, show a placeholder rather than crashing.
+    final ingredient = _item.ingredient;
     return NutritionTile(
-      leading: IngredientAvatar(ingredient: _item.ingredient),
+      leading: ingredient != null
+          ? IngredientAvatar(ingredient: ingredient)
+          : const CircleIconAvatar(Icon(Icons.hourglass_empty, color: Colors.grey)),
       title: Text(
-        '$amountText ${_item.ingredient.name}',
+        '$amountText ${ingredient?.name ?? '…'}',
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.left,
       ),

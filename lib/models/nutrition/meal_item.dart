@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,7 +31,12 @@ class MealItem {
 
   late int ingredientId;
 
-  late Ingredient ingredient;
+  /// Nullable because of the way powersync works. This will be only the case
+  /// in the time between setting the ingredient ID (e.g. while editing a meal)
+  /// and when the sync comes from the server and the provider can load the
+  /// ingredient.Callers must treat null as "data still arriving" rather than
+  /// as an error.
+  Ingredient? ingredient;
 
   int? weightUnitId;
 
@@ -96,10 +101,18 @@ class MealItem {
   }
 
   /// Calculations
+  ///
+  /// Returns all-zero values while [ingredient] is still being hydrated
+  /// (see the field doc) so totals and renderers keep working through the
+  /// brief sync gap; the watcher will re-emit with real values once the
+  /// ingredient row arrives.
   NutritionalValues get nutritionalValues {
+    final ing = ingredient;
+    if (ing == null) {
+      return NutritionalValues();
+    }
     final weight = weightUnitObj == null ? amount : amount * weightUnitObj!.grams;
-
-    return ingredient.nutritionalValues / (100 / weight);
+    return ing.nutritionalValues / (100 / weight);
   }
 
   MealItem copyWith({

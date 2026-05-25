@@ -49,8 +49,9 @@ void main() {
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
     when(
-      mockIngredientRepo.searchIngredientServer(
+      mockIngredientRepo.search(
         any,
+        isOnline: anyNamed('isOnline'),
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
@@ -133,8 +134,9 @@ void main() {
   testWidgets('Shows only Vegan chip when ingredient is vegan', (WidgetTester tester) async {
     // ingredient1 (Water) is vegan + vegetarian
     when(
-      mockIngredientRepo.searchIngredientServer(
+      mockIngredientRepo.search(
         any,
+        isOnline: anyNamed('isOnline'),
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
@@ -157,8 +159,9 @@ void main() {
   ) async {
     // milk is vegetarian but not vegan
     when(
-      mockIngredientRepo.searchIngredientServer(
+      mockIngredientRepo.search(
         any,
+        isOnline: anyNamed('isOnline'),
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
@@ -179,8 +182,9 @@ void main() {
   testWidgets('Shows no dietary chips when ingredient has no info', (WidgetTester tester) async {
     // ingredient2 (Burger soup) has no dietary info
     when(
-      mockIngredientRepo.searchIngredientServer(
+      mockIngredientRepo.search(
         any,
+        isOnline: anyNamed('isOnline'),
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
@@ -223,8 +227,9 @@ void main() {
 
     // Assert
     verify(
-      mockIngredientRepo.searchIngredientServer(
+      mockIngredientRepo.search(
         'Apple',
+        isOnline: true,
         languageCode: 'en',
         searchLanguage: SearchLanguage.current,
         isVegan: true,
@@ -274,8 +279,9 @@ void main() {
 
     // Assert, index 1 maps to NutriScore.a
     verify(
-      mockIngredientRepo.searchIngredientServer(
+      mockIngredientRepo.search(
         'Apple',
+        isOnline: true,
         languageCode: 'en',
         searchLanguage: SearchLanguage.current,
         isVegan: false,
@@ -294,8 +300,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 600));
 
     verify(
-      mockIngredientRepo.searchIngredientServer(
+      mockIngredientRepo.search(
         'Apple',
+        isOnline: true,
         languageCode: 'en',
         searchLanguage: SearchLanguage.current,
         isVegan: false,

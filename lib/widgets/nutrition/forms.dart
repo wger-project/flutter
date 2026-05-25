@@ -214,8 +214,10 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
 
     final String unit = i18n.g;
     final queryLower = _searchQuery.toLowerCase();
+    // Drop suggestions whose ingredient is still being hydrated by PowerSync.
+    // Without the row they would only render as "…", which is useless to pick.
     final suggestions = widget.recent
-        .where((e) => e.ingredient.name.toLowerCase().contains(queryLower))
+        .where((e) => e.ingredient?.name.toLowerCase().contains(queryLower) ?? false)
         .toList();
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
@@ -327,7 +329,9 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                   ),
               ],
             ),
-            if (ingredientIdController.text.isNotEmpty && _amountController.text.isNotEmpty)
+            if (ingredientIdController.text.isNotEmpty &&
+                _amountController.text.isNotEmpty &&
+                _mealItem.ingredient != null)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -337,7 +341,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     MealItemValuesTile(
-                      ingredient: _mealItem.ingredient,
+                      ingredient: _mealItem.ingredient!,
                       nutritionalValues: _mealItem.nutritionalValues,
                     ),
                   ],
@@ -375,9 +379,12 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                 itemCount: suggestions.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
+                  // ingredient is non-null here, the suggestions list above
+                  // filters out items whose ingredient hasn't been hydrated.
+                  final ingredient = suggestions[index].ingredient!;
                   void select() {
                     selectIngredient(
-                      suggestions[index].ingredient,
+                      ingredient,
                       suggestions[index].amount,
                     );
                   }
@@ -387,12 +394,12 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                       onTap: select,
                       title: Text(
                         suggestions[index].weightUnitObj != null
-                            ? '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)} × ${suggestions[index].weightUnitObj!.name})'
-                            : '${suggestions[index].ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
+                            ? '${ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)} × ${suggestions[index].weightUnitObj!.name})'
+                            : '${ingredient.name} (${suggestions[index].amount.toStringAsFixed(0)}$unit)',
                       ),
                       subtitle: Text(
                         getShortNutritionValues(
-                          suggestions[index].ingredient.nutritionalValues,
+                          ingredient.nutritionalValues,
                           context,
                         ),
                       ),
@@ -405,7 +412,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                               showIngredientDetails(
                                 context,
                                 ref,
-                                suggestions[index].ingredient,
+                                ingredient,
                                 select: select,
                               );
                             },

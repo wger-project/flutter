@@ -70,9 +70,11 @@ class DiaryEntryTile extends ConsumerWidget {
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       title: Text(
+        // Ingredient is null briefly between local insert and PowerSync
+        // pulling the row down, show an ellipsis placeholder.
         diaryEntry.weightUnitObj != null
-            ? '${diaryEntry.amount.toStringAsFixed(0)} × ${diaryEntry.weightUnitObj!.name} ${diaryEntry.ingredient.name}'
-            : '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient.name}',
+            ? '${diaryEntry.amount.toStringAsFixed(0)} × ${diaryEntry.weightUnitObj!.name} ${diaryEntry.ingredient?.name ?? '…'}'
+            : '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient?.name ?? '…'}',
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: getNutritionRow(

@@ -348,6 +348,30 @@ void main() {
     });
   });
 
+  group('search (online/offline dispatch)', () {
+    final uri = Uri.https('localhost', 'api/v2/ingredientinfo/');
+
+    test('online: hits the server endpoint', () async {
+      when(mockBase.makeUrl('ingredientinfo', query: anyNamed('query'))).thenReturn(uri);
+      when(
+        mockBase.fetch(uri, timeout: anyNamed('timeout')),
+      ).thenAnswer((_) async => {'results': []});
+
+      await repo.search('apple', isOnline: true);
+
+      verify(mockBase.makeUrl('ingredientinfo', query: anyNamed('query'))).called(1);
+    });
+
+    test('offline: does not touch the network', () async {
+      // Empty Drift DB is fine — we only assert no network call.
+      final result = await repo.search('apple', isOnline: false);
+
+      expect(result, isEmpty);
+      verifyNever(mockBase.fetch(any, timeout: anyNamed('timeout')));
+      verifyNever(mockBase.makeUrl(any, query: anyNamed('query')));
+    });
+  });
+
   group('searchIngredientByBarcode', () {
     final uri = Uri.https('localhost', 'api/v2/ingredientinfo/');
 

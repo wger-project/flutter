@@ -29,8 +29,8 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/ingredient_filters_notifier.dart';
-import 'package:wger/providers/ingredient_notifier.dart';
 import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/wger_image.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -156,12 +156,13 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             widget.onUpdateSearchQuery(pattern);
             widget.onDeselectIngredient();
 
-            // The notifier picks the REST or the local-DB path based on
+            // The repository picks the REST or the local-DB path based on
             // current connectivity.
             return ref
-                .read(ingredientProvider.notifier)
-                .searchIngredient(
+                .read(ingredientRepositoryProvider)
+                .search(
                   pattern,
+                  isOnline: ref.read(networkStatusProvider),
                   languageCode: Localizations.localeOf(context).languageCode,
                   searchLanguage: filters.searchLanguage,
                   isVegan: filters.isVegan,

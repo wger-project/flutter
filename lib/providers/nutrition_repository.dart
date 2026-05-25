@@ -157,14 +157,14 @@ class NutritionRepository {
       final meal = meals[entry.key]!;
       meal.mealItems = entry.value.values.toList()..sort((a, b) => a.order.compareTo(b.order));
       for (final item in meal.mealItems) {
+        // Ingredient stays null when the JOIN found no matching row,
+        // PowerSync will pull it down and the watcher will re-emit.
         final ing = ingredients[item.ingredientId];
-        if (ing != null) {
-          item.ingredient = ing;
-          if (item.weightUnitId != null) {
-            item.weightUnitObj = ing.weightUnits.firstWhereOrNull(
-              (w) => w.id == item.weightUnitId,
-            );
-          }
+        item.ingredient = ing;
+        if (ing != null && item.weightUnitId != null) {
+          item.weightUnitObj = ing.weightUnits.firstWhereOrNull(
+            (w) => w.id == item.weightUnitId,
+          );
         }
       }
     }
@@ -299,9 +299,12 @@ class NutritionRepository {
       ing.weightUnits = weightUnitsByIngredient[ing.id] ?? const [];
     }
     for (final log in logs.values) {
-      log.ingredient = ingredients[log.ingredientId]!;
-      if (log.weightUnitId != null) {
-        log.weightUnitObj = log.ingredient.weightUnits.firstWhereOrNull(
+      // Ingredient stays null when the JOIN found no matching row,
+      // PowerSync will pull it down and the watcher will re-emit.
+      final ing = ingredients[log.ingredientId];
+      log.ingredient = ing;
+      if (ing != null && log.weightUnitId != null) {
+        log.weightUnitObj = ing.weightUnits.firstWhereOrNull(
           (w) => w.id == log.weightUnitId,
         );
       }

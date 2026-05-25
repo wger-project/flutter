@@ -110,6 +110,35 @@ class MockIngredientRepository extends _i1.Mock implements _i2.IngredientReposit
           as _i3.Future<List<_i4.Ingredient>>);
 
   @override
+  _i3.Future<List<_i4.Ingredient>> search(
+    String? name, {
+    required bool? isOnline,
+    String? languageCode = 'en',
+    _i5.SearchLanguage? searchLanguage = _i5.SearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
+    _i4.NutriScore? nutriscoreMax,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #search,
+              [name],
+              {
+                #isOnline: isOnline,
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
+              },
+            ),
+            returnValue: _i3.Future<List<_i4.Ingredient>>.value(
+              <_i4.Ingredient>[],
+            ),
+          )
+          as _i3.Future<List<_i4.Ingredient>>);
+
+  @override
   _i3.Future<_i4.Ingredient?> searchIngredientByBarcode(String? barcode) =>
       (super.noSuchMethod(
             Invocation.method(#searchIngredientByBarcode, [barcode]),
