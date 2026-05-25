@@ -122,9 +122,23 @@ final class IngredientNotifier extends _$IngredientNotifier {
   }
 }
 
-/// Trigger ingredient search flow by reacting to filter changes.
-final searchedIngredientsProvider = FutureProvider<List<Ingredient>>((ref) async {
+/// Debounce window applied to the search-term keystrokes
+const _searchDebounce = Duration(milliseconds: 350);
+
+/// Triggers an ingredient search whenever the filter state changes, debounced
+/// to avoid one server request per keystroke.
+final searchedIngredientsProvider = FutureProvider.autoDispose<List<Ingredient>>((ref) async {
   final filters = ref.watch(ingredientFiltersSyncProvider);
+
+  // Wait for the debounce window. If the filters change again (or the
+  // provider is disposed) before the delay elapses, abort this run so we
+  // don't fire a request for an intermediate keystroke.
+  var disposed = false;
+  ref.onDispose(() => disposed = true);
+  await Future.delayed(_searchDebounce);
+  if (disposed) {
+    throw StateError('search debounced');
+  }
 
   // search logic handles the Online/Offline routing
   return ref

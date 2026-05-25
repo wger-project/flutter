@@ -52,10 +52,7 @@ class _IngredientsScreenState extends ConsumerState<IngredientsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          '${i18n.ingredient}'
-          's',
-        ),
+        title: Text(i18n.ingredients),
       ),
       body: WidescreenWrapper(
         child: Column(

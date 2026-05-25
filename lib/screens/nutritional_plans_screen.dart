@@ -36,16 +36,17 @@ class NutritionalPlansScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).nutritionalPlans),
+        title: Text(i18n.nutritionalPlans),
         actions: [
-          PopupMenuButton(
+          PopupMenuButton<_NutritionalPlansAppBarOptions>(
             itemBuilder: (context) {
               return [
-              const  PopupMenuItem<_NutritionalPlansAppBarOptions>(
+                PopupMenuItem<_NutritionalPlansAppBarOptions>(
                   value: _NutritionalPlansAppBarOptions.list,
-                  child: Text('ingredient list'), // TODO: i10n
+                  child: Text(i18n.ingredients),
                 ),
               ];
             },
