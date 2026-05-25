@@ -18,7 +18,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/widgets/exercises/exercises.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 

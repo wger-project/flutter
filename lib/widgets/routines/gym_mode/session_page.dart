@@ -23,7 +23,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/providers/workout_session_notifier.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/routines/forms/session.dart';

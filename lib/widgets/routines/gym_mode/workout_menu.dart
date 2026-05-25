@@ -22,6 +22,7 @@ import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
 
 class WorkoutMenu extends StatelessWidget {

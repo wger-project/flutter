@@ -24,6 +24,7 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/exercise_filter_state.dart';
 import 'package:wger/providers/exercise_filters_notifier.dart';
 import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';

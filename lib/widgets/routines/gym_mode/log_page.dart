@@ -28,6 +28,7 @@ import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/gym_log_notifier.dart';
 import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/workout_logs_notifier.dart';
 import 'package:wger/screens/settings_plates_screen.dart';
