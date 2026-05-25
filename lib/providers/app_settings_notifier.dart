@@ -35,7 +35,6 @@ part 'app_settings_notifier.g.dart';
 const PREFS_DASHBOARD_CONFIG = 'dashboardConfig';
 
 enum DashboardWidget {
-  networkInfo('networkInfo'),
   trophies('trophies'),
   routines('routines'),
   nutrition('nutrition'),

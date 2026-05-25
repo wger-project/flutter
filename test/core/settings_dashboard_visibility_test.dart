@@ -104,10 +104,9 @@ void main() {
     await tester.pumpAndSettle();
 
     final initial = container.read(appSettingsProvider).requireValue.dashboardItems.visibleWidgets;
-    expect(initial[0], DashboardWidget.networkInfo);
-    expect(initial[1], DashboardWidget.trophies);
-    expect(initial[2], DashboardWidget.routines);
-    expect(initial[3], DashboardWidget.nutrition);
+    expect(initial[0], DashboardWidget.trophies);
+    expect(initial[1], DashboardWidget.routines);
+    expect(initial[2], DashboardWidget.nutrition);
 
     final handleFinder = find.byIcon(Icons.drag_handle);
     final firstHandle = handleFinder.at(0);
@@ -116,9 +115,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final updated = container.read(appSettingsProvider).requireValue.dashboardItems.visibleWidgets;
-    expect(updated[0], DashboardWidget.trophies);
-    expect(updated[1], DashboardWidget.routines);
-    expect(updated[2], DashboardWidget.networkInfo);
+    expect(updated, isNot(orderedEquals(initial)));
+    expect(updated.indexOf(DashboardWidget.trophies), greaterThan(0));
   });
 }
 

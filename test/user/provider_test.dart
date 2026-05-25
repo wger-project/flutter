@@ -50,7 +50,6 @@ void main() {
       expect(
         items.allWidgets,
         orderedEquals([
-          DashboardWidget.networkInfo,
           DashboardWidget.trophies,
           DashboardWidget.routines,
           DashboardWidget.nutrition,
@@ -119,18 +118,16 @@ void main() {
       final items = settings.dashboardItems;
 
       // Loaded: [nutrition, routines], then defaults insert around:
-      // networkInfo (0) → 0, trophies (1) → 1, weight (4), measurements (5), calendar (6)
-      expect(items.allWidgets[0], DashboardWidget.networkInfo);
-      expect(items.allWidgets[1], DashboardWidget.trophies);
-      expect(items.allWidgets[2], DashboardWidget.nutrition);
-      expect(items.allWidgets[3], DashboardWidget.routines);
-      expect(items.allWidgets[4], DashboardWidget.weight);
+      // trophies (0) → 0, weight (3), measurements (4), calendar (5)
+      expect(items.allWidgets[0], DashboardWidget.trophies);
+      expect(items.allWidgets[1], DashboardWidget.nutrition);
+      expect(items.allWidgets[2], DashboardWidget.routines);
+      expect(items.allWidgets[3], DashboardWidget.weight);
 
       expect(items.isWidgetVisible(DashboardWidget.nutrition), true);
       expect(items.isWidgetVisible(DashboardWidget.routines), false);
 
       // Missing items default to visible
-      expect(items.isWidgetVisible(DashboardWidget.networkInfo), true);
       expect(items.isWidgetVisible(DashboardWidget.weight), true);
       expect(items.isWidgetVisible(DashboardWidget.trophies), true);
     });

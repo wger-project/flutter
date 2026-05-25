@@ -30,8 +30,6 @@ class SettingsDashboardVisibility extends ConsumerWidget {
 
     String getTitle(DashboardWidget w) {
       switch (w) {
-        case DashboardWidget.networkInfo:
-          return i18n.networkInfo;
         case DashboardWidget.routines:
           return i18n.routines;
         case DashboardWidget.weight:

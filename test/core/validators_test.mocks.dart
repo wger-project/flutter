@@ -4240,34 +4240,12 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get networkInfo =>
-      (super.noSuchMethod(
-            Invocation.getter(#networkInfo),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#networkInfo),
-            ),
-          )
-          as String);
-
-  @override
   String get youAreOffline =>
       (super.noSuchMethod(
             Invocation.getter(#youAreOffline),
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#youAreOffline),
-            ),
-          )
-          as String);
-
-  @override
-  String get offlineModeInfo =>
-      (super.noSuchMethod(
-            Invocation.getter(#offlineModeInfo),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#offlineModeInfo),
             ),
           )
           as String);
