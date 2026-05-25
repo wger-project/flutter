@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
@@ -32,6 +35,8 @@ import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
 part 'powersync.g.dart';
+
+final _logger = Logger('powersync');
 
 PowerSyncDatabase? _builtInstance;
 
@@ -192,4 +197,31 @@ Future<String> _getDatabasePath() async {
   }
   final dir = await getApplicationSupportDirectory();
   return join(dir.path, dbFilename);
+}
+
+/// Deletes the on-disk PowerSync SQLite files (main DB plus WAL/SHM/journal
+/// sidecars). Used to purge a previous user's data on login as a different
+/// user when [powerSyncInstanceProvider] has not been built yet, so the
+/// usual `disconnectAndClear()` route is unavailable.
+///
+/// Best-effort: missing files are treated as success, individual delete
+/// failures are logged and swallowed so a single locked sidecar doesn't
+/// block the rest. On web the database is backed by IndexedDB rather than
+/// a real file, so this is a no-op there.
+Future<void> deletePowerSyncDatabaseFile() async {
+  if (kIsWeb) {
+    _logger.warning('deletePowerSyncDatabaseFile: not supported on web, skipping');
+    return;
+  }
+  final path = await _getDatabasePath();
+  for (final suffix in ['', '-wal', '-shm', '-journal']) {
+    final file = File('$path$suffix');
+    try {
+      if (await file.exists()) {
+        await file.delete();
+      }
+    } catch (e, s) {
+      _logger.warning('deletePowerSyncDatabaseFile: failed to delete ${file.path}', e, s);
+    }
+  }
 }

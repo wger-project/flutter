@@ -70,6 +70,11 @@ const PREFS_ACCESS_EXPIRES_AT = 'accessExpiresAt';
 const PREFS_TOKEN_TYPE = 'tokenType';
 const PREFS_SERVER_URL = 'serverUrl';
 
+/// JWT `sub` claim of the logged-in user. Compared on next login to decide
+/// whether the local PowerSync DB belongs to the same user (keep it) or a
+/// different one (wipe it). Only written for the headless-JWT flow.
+const PREFS_USER_ID = 'userId';
+
 /// Secure-storage key for the headless refresh token.
 const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';
 

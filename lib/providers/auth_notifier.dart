@@ -80,6 +80,12 @@ class AuthNotifier extends _$AuthNotifier {
   @visibleForTesting
   Future<void>? revalidationDone;
 
+  /// Number of times the user-switch DB wipe has fired since the notifier
+  /// was built. Exposed so tests can assert the user-mismatch path ran
+  /// without having to instrument PowerSync or the filesystem.
+  @visibleForTesting
+  int userSwitchWipeCount = 0;
+
   @override
   Future<AuthState> build() async {
     _client = ref.read(authHttpClientProvider);
@@ -282,11 +288,25 @@ class AuthNotifier extends _$AuthNotifier {
   /// Shared post-credentials path: persist the new bundle, run the gating
   /// chain, swap PowerSync's connector if it was already up, invalidate the
   /// data providers so they refetch with the new auth.
+  ///
+  /// When the incoming JWT belongs to a different user than the one whose
+  /// data sits in the local PowerSync DB, the DB is wiped before
+  /// reconnecting. Otherwise queued CRUD ops from the previous user would
+  /// be uploaded under the new user's credentials, which is both a leak
+  /// and would corrupt data ownership server-side.
   Future<LoginActions> _completeLogin(
     _FreshCredentials creds,
     String serverUrl,
     PackageInfo appVersion,
   ) async {
+    // Capture the previous user-id BEFORE _persistCredentials overwrites it.
+    // null on the previous side means "no prior session" (fresh install,
+    // post-logout); we only wipe on a confirmed mismatch.
+    final prefs = PreferenceHelper.asyncPref;
+    final prevUserId = await prefs.getString(PREFS_USER_ID);
+    final newUserId = decodeJwtPayload(creds.token)?['sub']?.toString();
+    final userChanged = prevUserId != null && newUserId != null && prevUserId != newUserId;
+
     await _persistCredentials(creds, serverUrl);
 
     var newState = await _resolveAuthState(
@@ -305,6 +325,12 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(newState);
 
     if (newState.status == AuthStatus.loggedIn) {
+      if (userChanged) {
+        _logger.info(
+          'different user logging in (was $prevUserId, now $newUserId), wiping local DB',
+        );
+        await _wipeOnUserSwitch();
+      }
       await _reconnectPowerSyncIfBuilt(serverUrl);
       _invalidatePostLoginProviders();
     }
@@ -341,6 +367,16 @@ class AuthNotifier extends _$AuthNotifier {
         }
         await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
         await prefs.setString(PREFS_SERVER_URL, serverUrl);
+        // Persist the JWT subject so the next login can detect a user
+        // switch and wipe the local DB (otherwise the new user would see
+        // the previous user's queued CRUD ops uploaded under their own
+        // credentials).
+        final userId = decodeJwtPayload(creds.token)?['sub']?.toString();
+        if (userId != null) {
+          await prefs.setString(PREFS_USER_ID, userId);
+        } else {
+          await prefs.remove(PREFS_USER_ID);
+        }
         if (creds.refreshToken != null) {
           await ref.read(secureTokenStorageProvider).writeRefreshToken(creds.refreshToken!);
         }
@@ -605,9 +641,25 @@ class AuthNotifier extends _$AuthNotifier {
   /// network errors) leave the user logged in.
   Future<void> _revalidate() async {
     try {
-      final current = state.asData?.value;
+      var current = state.asData?.value;
       if (current == null || current.status != AuthStatus.loggedIn) {
         return;
+      }
+
+      // If the access token has expired (typical after a longer offline
+      // period) refresh first, so a still-valid refresh token isn't wasted
+      // by a 401 on the probe below. The refresh's own failure paths will
+      // clear the session if the refresh token is also dead.
+      if (current.tokenType == AuthTokenType.headlessJwt) {
+        final exp = current.accessExpiresAt;
+        if (exp != null && exp.isBefore(DateTime.now().toUtc().add(const Duration(seconds: 30)))) {
+          _logger.fine('revalidation: access token within leeway, refreshing first');
+          await refreshAccessToken();
+          current = state.asData?.value;
+          if (current == null || current.status != AuthStatus.loggedIn) {
+            return;
+          }
+        }
       }
 
       final tokenType = current.tokenType ?? AuthTokenType.legacyApiToken;
@@ -625,9 +677,9 @@ class AuthNotifier extends _$AuthNotifier {
       }
       if (_isAuthRejection(response.statusCode)) {
         _logger.info(
-          'revalidation: token rejected (${response.statusCode}), logging out',
+          'revalidation: token rejected (${response.statusCode}), clearing session',
         );
-        await logout();
+        await clearSessionOnly();
         showSessionExpiredSnackbar();
         return;
       }
@@ -706,6 +758,7 @@ class AuthNotifier extends _$AuthNotifier {
         await prefs.remove(PREFS_ACCESS_EXPIRES_AT);
         await prefs.remove(PREFS_TOKEN_TYPE);
         await prefs.remove(PREFS_SERVER_URL);
+        await prefs.remove(PREFS_USER_ID);
         await ref.read(secureTokenStorageProvider).deleteRefreshToken();
     }
   }
@@ -878,16 +931,16 @@ class AuthNotifier extends _$AuthNotifier {
     final current = _currentOrBlank();
     final serverUrl = current.serverUrl;
     if (serverUrl == null) {
-      _logger.warning('refreshAccessToken: no serverUrl in state, logging out');
-      await logout();
+      _logger.warning('refreshAccessToken: no serverUrl in state, clearing session');
+      await clearSessionOnly();
       return;
     }
 
     final secureStorage = ref.read(secureTokenStorageProvider);
     final refreshToken = await secureStorage.readRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) {
-      _logger.warning('refreshAccessToken: no refresh token in secure storage, logging out');
-      await logout();
+      _logger.warning('refreshAccessToken: no refresh token in secure storage, clearing session');
+      await clearSessionOnly();
       return;
     }
 
@@ -912,9 +965,9 @@ class AuthNotifier extends _$AuthNotifier {
           ? '${response.body.substring(0, 200)}...'
           : response.body;
       _logger.warning(
-        'refreshAccessToken: status ${response.statusCode}, body: $bodySnippet, logging out',
+        'refreshAccessToken: status ${response.statusCode}, body: $bodySnippet, clearing session',
       );
-      await logout();
+      await clearSessionOnly();
       showSessionExpiredSnackbar();
       return;
     }
@@ -938,11 +991,11 @@ class AuthNotifier extends _$AuthNotifier {
           ? '${response.body.substring(0, 500)}...'
           : response.body;
       _logger.warning(
-        'refreshAccessToken: malformed response body, logging out. Body: $bodySnippet',
+        'refreshAccessToken: malformed response body, clearing session. Body: $bodySnippet',
         e,
         s,
       );
-      await logout();
+      await clearSessionOnly();
       showSessionExpiredSnackbar();
       return;
     }
@@ -967,6 +1020,11 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(current.copyWith(accessToken: newAccess, accessExpiresAt: newExp));
   }
 
+  /// User-driven logout: wipes credentials AND the local PowerSync data.
+  /// Use for the explicit "Logout" buttons in the UI. For an involuntary
+  /// session loss (refresh-token expired, repeated 401, etc.) call
+  /// [clearSessionOnly] instead, which keeps the local DB so the user can
+  /// re-authenticate without losing queued writes or cached read data.
   Future<void> logout() async {
     _logger.fine('logging out');
 
@@ -990,6 +1048,35 @@ class AuthNotifier extends _$AuthNotifier {
     await prefs.remove(PREFS_ACCESS_EXPIRES_AT);
     await prefs.remove(PREFS_TOKEN_TYPE);
     await prefs.remove(PREFS_SERVER_URL);
+    await prefs.remove(PREFS_USER_ID);
+    await ref.read(secureTokenStorageProvider).deleteRefreshToken();
+  }
+
+  /// Involuntary session loss: clears credentials but **keeps** the local
+  /// PowerSync DB so the user can sign back in without losing queued
+  /// writes or cached read data. PowerSync is disconnected, not cleared,
+  /// and [PREFS_HAS_EVER_SYNCED] is preserved so the next auto-login
+  /// takes the offline-friendly restored-session path.
+  ///
+  /// Called from refresh-token failures, repeated 401s on the HTTP
+  /// client, and revalidation rejections. The UI logout button must use
+  /// [logout] instead, which performs a full wipe.
+  Future<void> clearSessionOnly() async {
+    _logger.fine('clearing session, keeping local DB');
+    await _disconnectPowerSyncIfBuilt();
+    state = AsyncData(
+      AuthState(applicationVersion: _currentOrBlank().applicationVersion),
+    );
+    final prefs = PreferenceHelper.asyncPref;
+    // Same headless-JWT key set as logout(), minus PREFS_HAS_EVER_SYNCED
+    // (kept so the cached DB stays usable on the next login) and minus
+    // the PowerSync wipe side effect.
+    await prefs.remove(PREFS_USER);
+    await prefs.remove(PREFS_ACCESS_TOKEN);
+    await prefs.remove(PREFS_ACCESS_EXPIRES_AT);
+    await prefs.remove(PREFS_TOKEN_TYPE);
+    await prefs.remove(PREFS_SERVER_URL);
+    await prefs.remove(PREFS_USER_ID);
     await ref.read(secureTokenStorageProvider).deleteRefreshToken();
   }
 
@@ -1005,6 +1092,43 @@ class AuthNotifier extends _$AuthNotifier {
       await db.disconnectAndClear();
     } catch (e, s) {
       _logger.warning('PowerSync wipe failed', e, s);
+    }
+  }
+
+  /// Disconnects an already-built PowerSync DB but keeps its data on
+  /// disk so a subsequent login can re-attach to the same database.
+  /// No-op when PowerSync hasn't been built yet.
+  Future<void> _disconnectPowerSyncIfBuilt() async {
+    final db = builtPowerSyncInstance;
+    if (db == null) {
+      return;
+    }
+    try {
+      await db.disconnect();
+    } catch (e, s) {
+      _logger.warning('PowerSync disconnect failed', e, s);
+    }
+  }
+
+  /// Wipes the local PowerSync data when a different user logs in. If the
+  /// DB instance already exists we use PowerSync's own [disconnectAndClear];
+  /// otherwise (cold-start login as a different user) we remove the on-disk
+  /// files directly so the next build starts with an empty DB.
+  Future<void> _wipeOnUserSwitch() async {
+    userSwitchWipeCount++;
+    final db = builtPowerSyncInstance;
+    if (db != null) {
+      try {
+        await db.disconnectAndClear();
+      } catch (e, s) {
+        _logger.warning('user-switch DB wipe via disconnectAndClear failed', e, s);
+      }
+      return;
+    }
+    try {
+      await deletePowerSyncDatabaseFile();
+    } catch (e, s) {
+      _logger.warning('user-switch DB wipe via file delete failed', e, s);
     }
   }
 

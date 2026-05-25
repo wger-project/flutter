@@ -170,7 +170,7 @@ final authenticatedHttpClientProvider = Provider<http.Client>(
     readAuth: () => ref.read(authProvider).asData?.value,
     refresh: () => ref.read(authProvider.notifier).refreshAccessToken(),
     onSessionExpired: () async {
-      await ref.read(authProvider.notifier).logout();
+      await ref.read(authProvider.notifier).clearSessionOnly();
       showSessionExpiredSnackbar();
     },
   ),

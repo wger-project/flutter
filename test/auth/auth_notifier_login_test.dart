@@ -166,14 +166,19 @@ void main() {
       // Refresh token in secure storage.
       verify(mockSecureStorage.writeRefreshToken('fresh-refresh')).called(1);
 
-      // Headless prefs populated.
+      // Headless prefs populated. The JWT subject is persisted so the next
+      // login can detect a user-switch and wipe the local DB.
       final prefs = PreferenceHelper.asyncPref;
       expect(await prefs.getString(PREFS_ACCESS_TOKEN), accessJwt);
       expect(await prefs.getString(PREFS_TOKEN_TYPE), AuthTokenType.headlessJwt.name);
       expect(await prefs.getString(PREFS_SERVER_URL), serverUrl);
+      expect(await prefs.getString(PREFS_USER_ID), '7');
 
       // Stale legacy blob wiped.
       expect(await prefs.containsKey(PREFS_USER), false);
+
+      // No prior session, so the user-switch wipe path must not have fired.
+      expect(container.read(authProvider.notifier).userSwitchWipeCount, 0);
     });
 
     test('Authorization is not built by the notifier itself; the auth client owns it', () async {
@@ -206,6 +211,66 @@ void main() {
               ).captured.last
               as Map<String, String>;
       expect(captured.containsKey('authorization'), false);
+    });
+  });
+
+  group('login: user-switch detection', () {
+    /// Builds a 200 response carrying [accessJwt] and a refresh token.
+    void stubLoginSuccess(String accessJwt) {
+      when(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {},
+            'meta': {'access_token': accessJwt, 'refresh_token': 'r'},
+          }),
+          200,
+        ),
+      );
+    }
+
+    test('login as a different user wipes the local DB on completion', () async {
+      // Previous session belonged to user '5'.
+      await PreferenceHelper.asyncPref.setString(PREFS_USER_ID, '5');
+      stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).login(username, password, serverUrl, null);
+
+      // The user-switch wipe path must have fired exactly once.
+      expect(container.read(authProvider.notifier).userSwitchWipeCount, 1);
+      // And the new user-id is now persisted so a future re-login can detect
+      // the next switch.
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_USER_ID), '7');
+    });
+
+    test('same user logging back in keeps the local DB', () async {
+      // Same user as the previously stored session.
+      await PreferenceHelper.asyncPref.setString(PREFS_USER_ID, '7');
+      stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).login(username, password, serverUrl, null);
+
+      // No user mismatch → no wipe.
+      expect(container.read(authProvider.notifier).userSwitchWipeCount, 0);
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_USER_ID), '7');
+    });
+
+    test('first login after a clean install does not wipe (no previous user)', () async {
+      // No PREFS_USER_ID at all → nothing to compare against, no wipe.
+      stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).login(username, password, serverUrl, null);
+
+      expect(container.read(authProvider.notifier).userSwitchWipeCount, 0);
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_USER_ID), '7');
     });
   });
 
