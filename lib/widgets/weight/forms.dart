@@ -138,14 +138,16 @@ class WeightForm extends riverpod.ConsumerWidget {
               _weightEntry.weight = numberFormat.parse(newValue!);
             },
             validator: (value) {
+              final i18n = AppLocalizations.of(context);
               if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
+                return i18n.enterValue;
               }
-
-              try {
-                numberFormat.parse(value);
-              } catch (error) {
-                return AppLocalizations.of(context).enterValidNumber;
+              final parsed = numberFormat.tryParse(value);
+              if (parsed == null) {
+                return i18n.enterValidNumber;
+              }
+              if (parsed < 30 || parsed > 300) {
+                return i18n.formMinMaxValues(30, 300);
               }
               return null;
             },

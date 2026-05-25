@@ -35,6 +35,8 @@ class DecimalInputWidget extends StatelessWidget {
     required this.labelText,
     this.suffixText,
     this.isRequired = false,
+    this.min,
+    this.max,
     super.key,
   });
 
@@ -51,6 +53,13 @@ class DecimalInputWidget extends StatelessWidget {
 
   /// When true, an empty field fails validation instead of being accepted.
   final bool isRequired;
+
+  /// Optional inclusive lower bound. When both [min] and [max] are set, a
+  /// parsed value outside the range fails validation.
+  final num? min;
+
+  /// Optional inclusive upper bound. See [min].
+  final num? max;
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +80,12 @@ class DecimalInputWidget extends StatelessWidget {
         if (trimmed.isEmpty) {
           return isRequired ? i18n.enterValue : null;
         }
-        if (numberFormat.tryParse(trimmed) == null) {
+        final parsed = numberFormat.tryParse(trimmed);
+        if (parsed == null) {
           return i18n.enterValidNumber;
+        }
+        if (min != null && max != null && (parsed < min! || parsed > max!)) {
+          return i18n.formMinMaxValues(min!.toInt(), max!.toInt());
         }
         return null;
       },
