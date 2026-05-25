@@ -1382,5 +1382,9 @@
   "sessionExpired": "Your session has expired, please log in again",
   "@sessionExpired": {
     "description": "Snackbar message shown when the saved login token is no longer valid"
+  },
+  "weightOrRepsRequired": "Please enter a weight, repetitions, or both",
+  "@weightOrRepsRequired": {
+    "description": "Validation error when both weight and repetitions are empty in a workout log"
   }
 }

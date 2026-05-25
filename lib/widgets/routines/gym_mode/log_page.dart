@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/routines/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
@@ -338,6 +339,16 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 return;
               }
               _form.currentState!.save();
+
+              final error = validateWorkoutLogCrossField(
+                repetitions: log.repetitions,
+                weight: log.weight,
+                i18n: i18n,
+              );
+              if (error != null) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                return;
+              }
 
               final gymState = ref.read(gymStateProvider);
               final gymProvider = ref.read(gymStateProvider.notifier);

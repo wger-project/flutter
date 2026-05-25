@@ -1001,5 +1001,6 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "weightOrRepsRequired": "Bitte Gewicht, Wiederholungen oder beides eingeben"
 }

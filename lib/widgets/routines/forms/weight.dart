@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/form_validators.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -229,12 +230,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
               }
               widget.onChanged(_numberFormat.parse(text));
             },
-            validator: (text) {
-              if (_numberFormat.tryParse(text ?? '') == null) {
-                return i18n.enterValidNumber;
-              }
-              return null;
-            },
+            validator: (text) => validateOptionalDecimal(text, _numberFormat, context),
           ),
         ),
 
