@@ -101,11 +101,20 @@ class _SessionFormState extends ConsumerState<SessionForm> {
               labelText: AppLocalizations.of(context).notes,
             ),
             maxLines: 3,
+            maxLength: WorkoutSession.maxNotesChars,
             controller: notesController,
             keyboardType: TextInputType.multiline,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               widget._session.notes = newValue!;
+            },
+            validator: (value) {
+              if (value != null && value.length > WorkoutSession.maxNotesChars) {
+                return AppLocalizations.of(
+                  context,
+                ).enterMaxCharacters(WorkoutSession.maxNotesChars.toString());
+              }
+              return null;
             },
           ),
           Row(

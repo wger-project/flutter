@@ -55,6 +55,9 @@ extension WorkoutImpressionL10n on WorkoutImpression {
 }
 
 class WorkoutSession {
+  /// Inclusive upper bound for [notes]
+  static const maxNotesChars = 1000;
+
   /// Client-generated UUID, is `null` only before the first persist
   String? id;
   late int? routineId;
