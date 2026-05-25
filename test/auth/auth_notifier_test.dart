@@ -19,7 +19,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:version/version.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/server_gating.dart';
 
 void main() {
   group('min server version check', () {
