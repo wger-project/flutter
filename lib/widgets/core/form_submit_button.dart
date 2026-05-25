@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
 /// Submit button that owns the saving and error state of an async form action.

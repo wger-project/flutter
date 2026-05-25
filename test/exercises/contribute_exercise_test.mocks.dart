@@ -14,11 +14,11 @@ import 'package:wger/models/exercises/exercise_filters.dart' as _i10;
 import 'package:wger/models/exercises/exercise_submission.dart' as _i5;
 import 'package:wger/models/exercises/exercise_submission_images.dart' as _i6;
 import 'package:wger/models/exercises/muscle.dart' as _i14;
-import 'package:wger/models/user/profile.dart' as _i2;
+import 'package:wger/models/user/account.dart' as _i2;
+import 'package:wger/providers/account_repository.dart' as _i7;
 import 'package:wger/providers/add_exercise_repository.dart' as _i3;
 import 'package:wger/providers/exercise_repository.dart' as _i8;
 import 'package:wger/providers/exercises_notifier.dart' as _i12;
-import 'package:wger/providers/user_profile_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -35,8 +35,8 @@ import 'package:wger/providers/user_profile_repository.dart' as _i7;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeProfile_0 extends _i1.SmartFake implements _i2.Profile {
-  _FakeProfile_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeAccount_0 extends _i1.SmartFake implements _i2.Account {
+  _FakeAccount_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AddExerciseRepository].
@@ -81,37 +81,37 @@ class MockAddExerciseRepository extends _i1.Mock implements _i3.AddExerciseRepos
           as _i4.Future<String?>);
 }
 
-/// A class which mocks [UserProfileRepository].
+/// A class which mocks [AccountRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i7.UserProfileRepository {
-  MockUserProfileRepository() {
+class MockAccountRepository extends _i1.Mock implements _i7.AccountRepository {
+  MockAccountRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.Profile> fetchProfile() =>
+  _i4.Future<_i2.Account> fetchAccount() =>
       (super.noSuchMethod(
-            Invocation.method(#fetchProfile, []),
-            returnValue: _i4.Future<_i2.Profile>.value(
-              _FakeProfile_0(this, Invocation.method(#fetchProfile, [])),
+            Invocation.method(#fetchAccount, []),
+            returnValue: _i4.Future<_i2.Account>.value(
+              _FakeAccount_0(this, Invocation.method(#fetchAccount, [])),
             ),
           )
-          as _i4.Future<_i2.Profile>);
+          as _i4.Future<_i2.Account>);
 
   @override
-  _i4.Future<void> saveProfile(_i2.Profile? profile) =>
+  _i4.Future<void> requestEmailChange(String? newEmail) =>
       (super.noSuchMethod(
-            Invocation.method(#saveProfile, [profile]),
+            Invocation.method(#requestEmailChange, [newEmail]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> verifyEmail() =>
+  _i4.Future<void> resendVerification(String? email) =>
       (super.noSuchMethod(
-            Invocation.method(#verifyEmail, []),
+            Invocation.method(#resendVerification, [email]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )

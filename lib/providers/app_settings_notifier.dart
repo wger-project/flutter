@@ -41,8 +41,7 @@ enum DashboardWidget {
   nutrition('nutrition'),
   weight('weight'),
   measurements('measurements'),
-  calendar('calendar')
-  ;
+  calendar('calendar');
 
   final String value;
   const DashboardWidget(this.value);

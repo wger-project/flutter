@@ -858,8 +858,6 @@
   "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
     "description": "Message shown to guide users to the nutritional plan details page to add meals"
   },
-  "errorCouldNotConnectToServerDetails": "אין באפשרות היישום להתחבר לשרת. נא לבדוק את החיבור לאינטרנט או לכתובת השרת ולנסות שוב. אם הבעיה ממשיכה להתקיים, נא לפנות למנהל השרת.",
-  "@errorCouldNotConnectToServerDetails": {},
   "chartAllTimeTitle": "{name} בכל הזמנים",
   "@chartAllTimeTitle": {
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",

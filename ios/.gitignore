@@ -10,6 +10,8 @@
 **/DerivedData/
 Icon?
 **/Pods/
+/Podfile
+/Podfile.lock
 **/.symlinks/
 **/Flutter/ephemeral/
 profile

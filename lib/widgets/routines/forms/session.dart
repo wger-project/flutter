@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,8 +20,9 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/helpers/errors.dart';
+import 'package:wger/helpers/routines/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/workout_session_notifier.dart';
@@ -42,8 +43,8 @@ class SessionForm extends ConsumerStatefulWidget {
             routineId: routineId,
             dayId: dayId,
             date: clock.now(),
-            timeEnd: TimeOfDay.fromDateTime(clock.now()),
             timeStart: null,
+            timeEnd: null,
           );
 
   @override
@@ -100,11 +101,20 @@ class _SessionFormState extends ConsumerState<SessionForm> {
               labelText: AppLocalizations.of(context).notes,
             ),
             maxLines: 3,
+            maxLength: WorkoutSession.maxNotesChars,
             controller: notesController,
             keyboardType: TextInputType.multiline,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               widget._session.notes = newValue!;
+            },
+            validator: (value) {
+              if (value != null && value.length > WorkoutSession.maxNotesChars) {
+                return AppLocalizations.of(
+                  context,
+                ).enterMaxCharacters(WorkoutSession.maxNotesChars.toString());
+              }
+              return null;
             },
           ),
           Row(
@@ -117,14 +127,6 @@ class _SessionFormState extends ConsumerState<SessionForm> {
                   labelText: AppLocalizations.of(context).timeStart,
                   onCleared: () => widget._session.timeStart = null,
                   onChanged: (time) => widget._session.timeStart = time,
-                  validator: (_) {
-                    final start = widget._session.timeStart;
-                    final end = widget._session.timeEnd;
-                    if (start != null && end != null && start.isAfter(end)) {
-                      return AppLocalizations.of(context).timeStartAhead;
-                    }
-                    return null;
-                  },
                 ),
               ),
               Flexible(
@@ -149,6 +151,17 @@ class _SessionFormState extends ConsumerState<SessionForm> {
                 return;
               }
               _form.currentState!.save();
+
+              final i18n = AppLocalizations.of(context);
+              final error = validateWorkoutSessionTimes(
+                timeStart: widget._session.timeStart,
+                timeEnd: widget._session.timeEnd,
+                i18n: i18n,
+              );
+              if (error != null) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                return;
+              }
 
               // Reset any previous error message
               setState(() {

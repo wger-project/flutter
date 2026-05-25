@@ -20,8 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/auth_notifier.dart';
-import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/widgets/core/about.dart';
@@ -98,18 +98,12 @@ class MainSettingsDialog extends ConsumerWidget {
             leading: const Icon(Icons.person),
             title: Text(AppLocalizations.of(context).userProfile),
             onTap: () {
-              // Only navigate once the profile is loaded; otherwise the form
-              // would crash on a null user.
-              final profile = ref.read(userProfileProvider).value;
-              if (profile == null) {
-                return;
-              }
               Navigator.pushNamed(
                 context,
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   AppLocalizations.of(context).userProfile,
-                  UserProfileForm(profile),
+                  const UserProfileForm(),
                 ),
               );
             },
@@ -137,7 +131,7 @@ class MainSettingsDialog extends ConsumerWidget {
               // state lives in PowerSync now and gets cleared along with the
               // rest of the synced tables.
               await ref.read(authProvider.notifier).logout();
-              ref.read(userProfileProvider.notifier).clear();
+              ref.read(accountProvider.notifier).clear();
 
               navigator.pop();
               navigator.pushReplacementNamed('/');

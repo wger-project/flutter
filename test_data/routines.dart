@@ -481,6 +481,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     sessions: [session1, session2],
     dayData: dayDataDisplay,
     dayDataGym: dayDataGym,
+    isHydrated: true,
   );
 
   return routine;

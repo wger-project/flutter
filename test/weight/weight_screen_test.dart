@@ -53,7 +53,9 @@ void main() {
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
     mockUserProfileRepository = MockUserProfileRepository();
-    when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => tProfile1);
+    when(
+      mockUserProfileRepository.watchDrift(),
+    ).thenAnswer((_) => Stream.value(tUserProfile1));
 
     mockBodyWeightRepository = MockBodyWeightRepository();
     when(

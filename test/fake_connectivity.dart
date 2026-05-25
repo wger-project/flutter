@@ -26,18 +26,18 @@ import 'package:wger/providers/network_provider.dart';
 ///
 /// Without this, `NetworkStatus.check()` would do a real `InternetAddress.lookup`
 /// against `google.com` from every test that touches a provider depending on
-/// the network state — slow, non-deterministic (CI vs no CI internet), and
+/// the network state, slow, non-deterministic (CI vs no CI internet), and
 /// hits an external host from the test runner.
 ///
 /// The [ConnectivityPlatform.instance] swap follows the officially recommended
 /// pattern from connectivity_plus' own tests:
 /// https://github.com/fluttercommunity/plus_plugins/blob/main/packages/connectivity_plus/connectivity_plus/test/connectivity_test.dart
 ///
-/// Call once per test file (top of `main()` is fine — the static swaps stick
+/// Call once per test file (top of `main()` is fine, the static swaps stick
 /// for the entire file).
 void installFakeConnectivity() {
   ConnectivityPlatform.instance = _FakeConnectivityPlatform();
-  reachabilityCheck = (_) async => true;
+  reachabilityCheck = (_, _, _) async => true;
 }
 
 class _FakeConnectivityPlatform extends ConnectivityPlatform with MockPlatformInterfaceMixin {

@@ -26,6 +26,12 @@ part 'measurement_category.freezed.dart';
 
 @freezed
 class MeasurementCategory with _$MeasurementCategory {
+  /// Inclusive upper bound for [name]
+  static const maxNameChars = 100;
+
+  /// Inclusive upper bound for [unit]
+  static const maxUnitChars = 30;
+
   /// Client-generated UUID, is `null` only before the first persist
   @override
   final String? id;

@@ -21,7 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/models/user/profile.dart';
+import 'package:wger/models/user/user_profile.dart';
 import 'package:wger/providers/body_weight_notifier.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -65,7 +65,7 @@ class DashboardWeightWidget extends ConsumerWidget {
     // Composite loading / error / data resolution. We need both providers
     // ready before we can render the chart (entries → series, profile →
     // unit). Treating them independently with a nested .when() is what gave
-    // us the eternal-spinner bug when fetchProfile() returned null — so we
+    // us the eternal-spinner bug when fetchProfile() returned null, so we
     // funnel everything through a single decision tree here.
     if (entriesAsync.isLoading || profileAsync.isLoading) {
       return _shell(context, const BoxedProgressIndicator());
@@ -84,7 +84,7 @@ class DashboardWeightWidget extends ConsumerWidget {
     }
     final profile = profileAsync.value;
     if (profile == null) {
-      // Loaded successfully but the API returned no profile — treat the same
+      // Loaded successfully but the API returned no profile, treat the same
       // way we treat a server error so the user isn't stuck on a spinner.
       return _shell(context, const StreamErrorIndicator('User profile is unavailable'));
     }
@@ -92,7 +92,11 @@ class DashboardWeightWidget extends ConsumerWidget {
     return _shell(context, _buildContent(context, entriesAsync.value!, profile));
   }
 
-  Widget _buildContent(BuildContext context, List<WeightEntry> entriesList, Profile profile) {
+  Widget _buildContent(
+    BuildContext context,
+    List<WeightEntry> entriesList,
+    UserProfile profile,
+  ) {
     if (entriesList.isEmpty) {
       return NothingFound(
         AppLocalizations.of(context).noWeightEntries,

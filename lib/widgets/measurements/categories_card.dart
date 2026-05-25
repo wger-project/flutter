@@ -45,10 +45,13 @@ class CategoriesCard extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Text(
                 currentCategory.name,
                 style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Container(

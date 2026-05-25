@@ -73,7 +73,7 @@ void main() {
 
   // ---------------------------------------------------------------------------
 
-  group('Routines — Drift', () {
+  group('Routines, Drift', () {
     test('watchAllDrift emits an empty list when no routines exist', () async {
       expect(await repo.watchAllDrift().first, isEmpty);
     });
@@ -155,7 +155,7 @@ void main() {
   // else lives here.
   // ---------------------------------------------------------------------------
 
-  group('Days — REST', () {
+  group('Days, REST', () {
     test('addDayServer POSTs to /day/ and returns the created Day', () async {
       final dayUri = Uri.https('localhost', 'api/v2/day/');
       when(mockBase.makeUrl('day')).thenReturn(dayUri);
@@ -200,7 +200,7 @@ void main() {
     });
   });
 
-  group('Slots — REST', () {
+  group('Slots, REST', () {
     test('addSlotServer POSTs to /slot/ and returns the created Slot', () async {
       final uri = Uri.https('localhost', 'api/v2/slot/');
       when(mockBase.makeUrl('slot')).thenReturn(uri);
@@ -232,7 +232,7 @@ void main() {
     });
   });
 
-  group('Slot entries — REST', () {
+  group('Slot entries, REST', () {
     SlotEntry makeEntry({int? id, int slotId = 1}) {
       // `config` is `late Object?` and required for toJson to work.
       return SlotEntry(
@@ -292,7 +292,7 @@ void main() {
     });
   });
 
-  group('Configs — REST', () {
+  group('Configs, REST', () {
     Map<String, dynamic> configResponse(int id, num value) => {
       'id': id,
       'iteration': 1,

@@ -47,7 +47,7 @@ void main() {
     });
   });
 
-  group('exerciseApiObject — English-only submission', () {
+  group('exerciseApiObject, English-only submission', () {
     const state = AddExerciseState(
       author: 'Alice',
       exerciseNameEn: 'Bench Press',
@@ -86,7 +86,7 @@ void main() {
     });
   });
 
-  group('exerciseApiObject — with translation', () {
+  group('exerciseApiObject, with translation', () {
     const state = AddExerciseState(
       author: 'Alice',
       exerciseNameEn: 'Bench Press',

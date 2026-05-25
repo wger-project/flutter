@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Locale-aware decimal text field.
@@ -34,6 +35,8 @@ class DecimalInputWidget extends StatelessWidget {
     required this.labelText,
     this.suffixText,
     this.isRequired = false,
+    this.min,
+    this.max,
     super.key,
   });
 
@@ -51,6 +54,13 @@ class DecimalInputWidget extends StatelessWidget {
   /// When true, an empty field fails validation instead of being accepted.
   final bool isRequired;
 
+  /// Optional inclusive lower bound. When both [min] and [max] are set, a
+  /// parsed value outside the range fails validation.
+  final num? min;
+
+  /// Optional inclusive upper bound. See [min].
+  final num? max;
+
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
@@ -60,6 +70,7 @@ class DecimalInputWidget extends StatelessWidget {
       initialValue: value == null ? '' : numberFormat.format(value),
       decoration: InputDecoration(labelText: labelText, suffixText: suffixText),
       keyboardType: textInputTypeDecimal,
+      inputFormatters: [LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP)],
       onChanged: (text) {
         final trimmed = text.trim();
         onChanged(trimmed.isEmpty ? null : numberFormat.tryParse(trimmed));
@@ -69,8 +80,12 @@ class DecimalInputWidget extends StatelessWidget {
         if (trimmed.isEmpty) {
           return isRequired ? i18n.enterValue : null;
         }
-        if (numberFormat.tryParse(trimmed) == null) {
+        final parsed = numberFormat.tryParse(trimmed);
+        if (parsed == null) {
           return i18n.enterValidNumber;
+        }
+        if (min != null && max != null && (parsed < min! || parsed > max!)) {
+          return i18n.formMinMaxValues(min!.toInt(), max!.toInt());
         }
         return null;
       },

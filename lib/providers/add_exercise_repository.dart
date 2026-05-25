@@ -58,7 +58,7 @@ class AddExerciseRepository {
     required String author,
   }) async {
     final request = http.MultipartRequest('POST', _base.makeUrl(_imagesUrlPath))
-      ..headers.addAll(_base.getDefaultHeaders(includeAuth: true))
+      ..headers.addAll(_base.getDefaultHeaders())
       ..files.add(await http.MultipartFile.fromPath('image', image.imageFile.path))
       ..fields['exercise'] = exerciseId.toString()
       ..fields['is_main'] = 'false'
@@ -70,7 +70,7 @@ class AddExerciseRepository {
       request.fields.addAll(details);
     }
 
-    final streamedResponse = await request.send();
+    final streamedResponse = await _base.client.send(request);
     if (streamedResponse.statusCode == 201 || streamedResponse.statusCode == 200) {
       _logger.fine('Image uploaded successfully');
     } else {

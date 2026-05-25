@@ -34,37 +34,30 @@ const DEFAULT_TIMEOUT = Duration(seconds: 15);
 /// Base provider class.
 ///
 /// Provides a couple of comfort functions so we avoid a bit of boilerplate.
-/// Holds a snapshot of the auth-relevant fields (serverUrl, token, app version)
-/// so it can build authenticated requests without depending on a specific
-/// state-management library.
+/// Holds the [serverUrl] + app version snapshot and a [client] that already
+/// handles authentication for every outgoing request (see `AuthHttpClient`).
+/// Building the `Authorization` header is therefore *not* a responsibility
+/// of this class anymore, the client owns it.
 class WgerBaseProvider {
   final _logger = Logger('WgerBaseProvider');
 
   final String? serverUrl;
-  final String? token;
   final PackageInfo? applicationVersion;
   late http.Client client;
 
-  WgerBaseProvider({
-    this.serverUrl,
-    this.token,
-    this.applicationVersion,
-    http.Client? client,
-  }) {
+  WgerBaseProvider({this.serverUrl, this.applicationVersion, http.Client? client}) {
     this.client = client ?? http.Client();
   }
 
   String getAppNameHeaderValue() => getAppNameHeader(applicationVersion);
 
-  Map<String, String> getDefaultHeaders({bool includeAuth = false, String? language}) {
+  /// Default non-auth headers for outgoing requests. The `Authorization`
+  /// header is injected by the underlying `AuthHttpClient`
+  Map<String, String> getDefaultHeaders({String? language}) {
     final out = {
       HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       HttpHeaders.userAgentHeader: getAppNameHeaderValue(),
     };
-
-    if (includeAuth) {
-      out[HttpHeaders.authorizationHeader] = 'Token $token';
-    }
 
     if (language != null) {
       out[HttpHeaders.acceptLanguageHeader] = language;
@@ -77,6 +70,9 @@ class WgerBaseProvider {
   Uri makeUrl(String path, {int? id, String? objectMethod, Map<String, dynamic>? query}) {
     return makeUri(serverUrl!, path, id: id, objectMethod: objectMethod, query: query);
   }
+
+  /// Builds a `/_allauth/app/v1/<path>` URL for the headless API.
+  Uri makeHeadlessUrl(String path) => makeHeadlessUri(serverUrl!, path);
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
   /// with a simple retry mechanism for transient errors.
@@ -102,7 +98,7 @@ class WgerBaseProvider {
     while (true) {
       try {
         final response = await client
-            .get(uri, headers: getDefaultHeaders(includeAuth: true, language: language))
+            .get(uri, headers: getDefaultHeaders(language: language))
             .timeout(timeout);
 
         if (response.statusCode >= 400) {
@@ -159,7 +155,7 @@ class WgerBaseProvider {
   Future<Map<String, dynamic>> post(Map<String, dynamic> data, Uri uri) async {
     final response = await client.post(
       uri,
-      headers: getDefaultHeaders(includeAuth: true),
+      headers: getDefaultHeaders(),
       body: json.encode(data),
     );
 
@@ -171,11 +167,22 @@ class WgerBaseProvider {
     return json.decode(response.body);
   }
 
+  /// PUTs to the given URI.
+  Future<Map<String, dynamic>> put(Map<String, dynamic> data, Uri uri) async {
+    final response = await client.put(uri, headers: getDefaultHeaders(), body: json.encode(data));
+
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response);
+    }
+
+    return response.body.isEmpty ? {} : json.decode(response.body);
+  }
+
   /// PATCHEs an existing object
   Future<Map<String, dynamic>> patch(Map<String, dynamic> data, Uri uri) async {
     final response = await client.patch(
       uri,
-      headers: getDefaultHeaders(includeAuth: true),
+      headers: getDefaultHeaders(),
       body: json.encode(data),
     );
 
@@ -193,7 +200,7 @@ class WgerBaseProvider {
 
     final response = await client.delete(
       deleteUrl,
-      headers: getDefaultHeaders(includeAuth: true),
+      headers: getDefaultHeaders(),
     );
 
     // Something wrong with our request

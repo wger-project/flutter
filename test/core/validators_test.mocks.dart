@@ -251,12 +251,12 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get useApiToken =>
+  String get useRefreshToken =>
       (super.noSuchMethod(
-            Invocation.getter(#useApiToken),
+            Invocation.getter(#useRefreshToken),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#useApiToken),
+              Invocation.getter(#useRefreshToken),
             ),
           )
           as String);
@@ -273,34 +273,177 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get apiToken =>
+  String get loginViaWeb =>
       (super.noSuchMethod(
-            Invocation.getter(#apiToken),
+            Invocation.getter(#loginViaWeb),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#apiToken),
+              Invocation.getter(#loginViaWeb),
             ),
           )
           as String);
 
   @override
-  String get invalidApiToken =>
+  String get refreshToken =>
       (super.noSuchMethod(
-            Invocation.getter(#invalidApiToken),
+            Invocation.getter(#refreshToken),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#invalidApiToken),
+              Invocation.getter(#refreshToken),
             ),
           )
           as String);
 
   @override
-  String get apiTokenValidChars =>
+  String get invalidRefreshToken =>
       (super.noSuchMethod(
-            Invocation.getter(#apiTokenValidChars),
+            Invocation.getter(#invalidRefreshToken),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#apiTokenValidChars),
+              Invocation.getter(#invalidRefreshToken),
+            ),
+          )
+          as String);
+
+  @override
+  String get refreshTokenValidChars =>
+      (super.noSuchMethod(
+            Invocation.getter(#refreshTokenValidChars),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#refreshTokenValidChars),
+            ),
+          )
+          as String);
+
+  @override
+  String get refreshTokenHelperText =>
+      (super.noSuchMethod(
+            Invocation.getter(#refreshTokenHelperText),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#refreshTokenHelperText),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaChallengeTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaChallengeTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaChallengeTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaChallengeTotpPrompt =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaChallengeTotpPrompt),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaChallengeTotpPrompt),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaChallengeRecoveryPrompt =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaChallengeRecoveryPrompt),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaChallengeRecoveryPrompt),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaCodeLabel =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaCodeLabel),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaCodeLabel),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaInvalidCode =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaInvalidCode),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaInvalidCode),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaUseRecoveryCode =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaUseRecoveryCode),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaUseRecoveryCode),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaUseTotpCode =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaUseTotpCode),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaUseTotpCode),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaSubmit =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaSubmit),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaSubmit),
+            ),
+          )
+          as String);
+
+  @override
+  String get mfaUnsupportedFactor =>
+      (super.noSuchMethod(
+            Invocation.getter(#mfaUnsupportedFactor),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#mfaUnsupportedFactor),
+            ),
+          )
+          as String);
+
+  @override
+  String get manageAccountOnWeb =>
+      (super.noSuchMethod(
+            Invocation.getter(#manageAccountOnWeb),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#manageAccountOnWeb),
+            ),
+          )
+          as String);
+
+  @override
+  String get manageAccountOnWebSubtitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#manageAccountOnWebSubtitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#manageAccountOnWebSubtitle),
             ),
           )
           as String);
@@ -1713,17 +1856,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#errorCouldNotConnectToServer),
-            ),
-          )
-          as String);
-
-  @override
-  String get errorCouldNotConnectToServerDetails =>
-      (super.noSuchMethod(
-            Invocation.getter(#errorCouldNotConnectToServerDetails),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#errorCouldNotConnectToServerDetails),
             ),
           )
           as String);
@@ -4323,6 +4455,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#viewDocumentation),
+            ),
+          )
+          as String);
+
+  @override
+  String get sessionExpired =>
+      (super.noSuchMethod(
+            Invocation.getter(#sessionExpired),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#sessionExpired),
             ),
           )
           as String);

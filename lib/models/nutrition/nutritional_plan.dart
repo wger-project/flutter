@@ -30,6 +30,16 @@ import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
 class NutritionalPlan {
+  /// Inclusive upper bound for [description]
+  static const maxDescriptionChars = 80;
+
+  /// Inclusive upper bounds for the nutritional goal fields
+  static const maxGoalEnergy = 6000;
+  static const maxGoalProtein = 500;
+  static const maxGoalCarbohydrates = 750;
+  static const maxGoalFat = 500;
+  static const maxGoalFiber = 500;
+
   final _logger = Logger('NutritionalPlan Model');
 
   /// Client-generated UUID, is `null` only before the first persist

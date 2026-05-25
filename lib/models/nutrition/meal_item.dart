@@ -26,7 +26,7 @@ class MealItem {
   /// Client-generated UUID, is `null` only before the first persist
   String? id;
 
-  /// FK to the parent meal — the meal's UUID, not the server-side integer PK.
+  /// FK to the parent meal, the meal's UUID, not the server-side integer PK.
   late String mealId;
 
   late int ingredientId;

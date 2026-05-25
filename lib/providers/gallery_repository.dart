@@ -40,7 +40,7 @@ final galleryRepositoryProvider = Provider<GalleryRepository>((ref) {
 ///
 /// REST handles anything that involves the binary file (create, edit-with-
 /// new-file). Reads, metadata edits and deletes go through the local
-/// PowerSync-backed Drift table — see [watchAllDrift], [editLocalDrift]
+/// PowerSync-backed Drift table, see [watchAllDrift], [editLocalDrift]
 /// and [deleteLocalDrift].
 class GalleryRepository {
   static const _galleryUrlPath = 'gallery';
@@ -63,12 +63,12 @@ class GalleryRepository {
   /// Uploads a new image with metadata via REST. Returns the saved row.
   Future<GalleryImage> addImageServer(GalleryImage image, XFile imageFile) async {
     final request = http.MultipartRequest('POST', _base.makeUrl(_galleryUrlPath))
-      ..headers.addAll(_base.getDefaultHeaders(includeAuth: true))
+      ..headers.addAll(_base.getDefaultHeaders())
       ..files.add(await http.MultipartFile.fromPath('image', imageFile.path))
       ..fields['date'] = dateToYYYYMMDD(image.date)!
       ..fields['description'] = image.description;
 
-    final response = await http.Response.fromStream(await request.send());
+    final response = await http.Response.fromStream(await _base.client.send(request));
     if (response.statusCode >= 400) {
       throw WgerHttpException(response);
     }
@@ -80,12 +80,12 @@ class GalleryRepository {
   /// before the next PowerSync emission catches up.
   Future<String?> editImageServer(GalleryImage image, XFile imageFile) async {
     final request = http.MultipartRequest('PATCH', _base.makeUrl(_galleryUrlPath, id: image.id))
-      ..headers.addAll(_base.getDefaultHeaders(includeAuth: true))
+      ..headers.addAll(_base.getDefaultHeaders())
       ..files.add(await http.MultipartFile.fromPath('image', imageFile.path))
       ..fields['date'] = dateToYYYYMMDD(image.date)!
       ..fields['description'] = image.description;
 
-    final response = await http.Response.fromStream(await request.send());
+    final response = await http.Response.fromStream(await _base.client.send(request));
     if (response.statusCode >= 400) {
       throw WgerHttpException(response);
     }

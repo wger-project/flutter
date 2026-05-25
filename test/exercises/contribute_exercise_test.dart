@@ -27,36 +27,48 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/user/account.dart';
+import 'package:wger/providers/account_repository.dart';
 import 'package:wger/providers/add_exercise_repository.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
-import '../../test_data/profile.dart';
 import '../fake_connectivity.dart';
 import 'contribute_exercise_test.mocks.dart';
 
 /// Test suite for the exercise-contribution screen.
 ///
-@GenerateMocks([AddExerciseRepository, UserProfileRepository, ExerciseRepository])
+@GenerateMocks([AddExerciseRepository, AccountRepository, ExerciseRepository])
 void main() {
   installFakeConnectivity();
 
   late MockAddExerciseRepository mockAddExerciseRepository;
-  late MockUserProfileRepository mockUserProfileRepository;
+  late MockAccountRepository mockAccountRepository;
   late MockExerciseRepository mockExerciseRepository;
 
   setUp(() {
     mockAddExerciseRepository = MockAddExerciseRepository();
-    mockUserProfileRepository = MockUserProfileRepository();
+    mockAccountRepository = MockAccountRepository();
     mockExerciseRepository = MockExerciseRepository();
-    when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => tProfile1);
     when(
       mockExerciseRepository.watchAllDrift(),
     ).thenAnswer((_) => Stream.value(const ExerciseState(<Exercise>[])));
   });
+
+  /// Stubs the account fetch so the contribution gate sees a (non-)trustworthy
+  /// user. The screen branches on [Account.isTrustworthy].
+  void setTrustworthy(bool value) {
+    when(mockAccountRepository.fetchAccount()).thenAnswer(
+      (_) async => Account(
+        username: 'test',
+        email: 'test@example.com',
+        emailVerified: value,
+        isTrustworthy: value,
+      ),
+    );
+  }
 
   Widget createExerciseScreen({locale = 'en', bool isOnline = true}) {
     return ProviderScope(
@@ -70,7 +82,7 @@ void main() {
         exerciseEquipmentProvider.overrideWith(
           (ref) => Stream<List<Equipment>>.value(<Equipment>[]),
         ),
-        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
+        accountRepositoryProvider.overrideWithValue(mockAccountRepository),
         addExerciseRepositoryProvider.overrideWithValue(mockAddExerciseRepository),
         networkStatusProvider.overrideWithValue(isOnline),
       ],
@@ -89,7 +101,7 @@ void main() {
 
   group('Form Field Validation Tests', () {
     testWidgets('Exercise name field is required and displays validation error', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
@@ -110,7 +122,7 @@ void main() {
     });
 
     testWidgets('User can enter exercise name in text field', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
@@ -124,7 +136,7 @@ void main() {
     });
 
     testWidgets('Alternative names field accepts multiple lines of text', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
@@ -139,7 +151,7 @@ void main() {
     });
 
     testWidgets('Category dropdown is required for form submission', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
@@ -168,7 +180,7 @@ void main() {
 
   group('Form Navigation and Data Persistence Tests', () {
     testWidgets('Form data persists when navigating between steps', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
@@ -180,7 +192,7 @@ void main() {
     });
 
     testWidgets('Previous button navigates back to previous step', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
@@ -204,7 +216,7 @@ void main() {
 
   group('Dropdown Selection Tests', () {
     testWidgets('Category selection widgets exist in form', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
@@ -217,7 +229,7 @@ void main() {
     });
 
     testWidgets('Form contains multiple selection fields', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
@@ -236,7 +248,7 @@ void main() {
 
   group('Exercise Submission Tests', () {
     testWidgets('Submission flow structure', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       when(mockAddExerciseRepository.submit(any)).thenAnswer((_) async => 1);
 
       await tester.pumpWidget(createExerciseScreen());
@@ -247,7 +259,7 @@ void main() {
     });
 
     testWidgets('Form structure supports error handling', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       when(mockAddExerciseRepository.submit(any)).thenThrow(Exception('Bad request'));
 
       await tester.pumpWidget(createExerciseScreen());
@@ -264,7 +276,7 @@ void main() {
 
   group('Access Control Tests', () {
     testWidgets('Unverified users cannot access exercise form', (tester) async {
-      tProfile1.isTrustworthy = false;
+      setTrustworthy(false);
 
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
@@ -275,7 +287,7 @@ void main() {
     });
 
     testWidgets('Verified users can access all form fields', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
 
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
@@ -289,7 +301,7 @@ void main() {
     });
 
     testWidgets('Email verification warning displays correct message', (tester) async {
-      tProfile1.isTrustworthy = false;
+      setTrustworthy(false);
 
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
@@ -306,7 +318,7 @@ void main() {
 
   group('Offline gating', () {
     testWidgets('Offline placeholder is shown instead of the wizard', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen(isOnline: false));
       await tester.pumpAndSettle();
 
@@ -317,7 +329,7 @@ void main() {
     });
 
     testWidgets('Wizard is shown when online', (tester) async {
-      tProfile1.isTrustworthy = true;
+      setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen(isOnline: true));
       await tester.pumpAndSettle();
 

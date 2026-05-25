@@ -26,13 +26,10 @@ enum AuthStatus {
   loggedIn,
 
   // The app used to connect to a wger instance is too old and must be updated
-  updateRequired,
+  appUpdateRequired,
 
   // The wger server the app is configured to connect to is too old and must be updated
   serverUpdateRequired,
-
-  /// The wger instance can't be reached at the moment
-  serverUnreachable,
 
   /// The wger server is reachable, but the PowerSync service it points us
   /// at is not, and the user has never completed a full sync, so we have
@@ -45,11 +42,29 @@ enum LoginActions {
   proceed,
 }
 
+/// Distinguishes which auth credential is currently active.
+///
+/// The app supports two parallel auth surfaces during the headless-allauth
+/// migration: the legacy permanent DRF token (`/api/v2/login/` or pasted by
+/// hand) and the short-lived JWT issued by `allauth.headless`. The HTTP
+/// client branches on this to pick the right `Authorization` header.
+enum AuthTokenType {
+  /// Permanent DRF token, sent as `Authorization: Token <token>`.
+  legacyApiToken,
+
+  /// Short-lived JWT from `allauth.headless`, sent as `Authorization: Bearer <jwt>`.
+  /// Refresh token lives in secure storage, not in state.
+  headlessJwt,
+}
+
 @freezed
 sealed class AuthState with _$AuthState {
   const factory AuthState({
     @Default(AuthStatus.loggedOut) AuthStatus status,
     String? token,
+    String? accessToken,
+    DateTime? accessExpiresAt,
+    AuthTokenType? tokenType,
     String? serverUrl,
     String? serverVersion,
     PackageInfo? applicationVersion,
@@ -58,5 +73,5 @@ sealed class AuthState with _$AuthState {
 
   const AuthState._();
 
-  bool get isAuth => token != null;
+  bool get isAuth => token != null || accessToken != null;
 }

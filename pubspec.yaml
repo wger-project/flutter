@@ -32,6 +32,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  app_links: ^6.3.2
   carousel_slider: ^5.1.2
   clock: ^1.1.2
   collection: ^1.18.0
@@ -42,6 +43,7 @@ dependencies:
   fl_chart: ^1.2.0
   flex_color_scheme: ^8.3.1
   flutter_html: ^3.0.0
+  flutter_secure_storage: ^10.2.0
   flutter_staggered_grid_view: ^0.7.0
   flutter_svg: ^2.3.0
   flutter_svg_icons: ^0.0.1
@@ -81,6 +83,8 @@ dev_dependencies:
   cider: ^0.2.9
   # Used to stub the connectivity_plus platform interface
   connectivity_plus_platform_interface: ^2.1.0
+  # Used to stub the url_launcher platform interface for the web-handoff test
+  url_launcher_platform_interface: ^2.3.2
   drift_dev: ^2.33.0
   xml: ^6.6.1
   flutter_lints: ^6.0.0

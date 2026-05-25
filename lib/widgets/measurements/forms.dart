@@ -52,9 +52,14 @@ class MeasurementCategoryForm extends ConsumerWidget {
               helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
             ),
             controller: nameController,
+            maxLength: MeasurementCategory.maxNameChars,
             validator: (value) {
+              final i18n = AppLocalizations.of(context);
               if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
+                return i18n.enterValue;
+              }
+              if (value.length > MeasurementCategory.maxNameChars) {
+                return i18n.enterMaxCharacters(MeasurementCategory.maxNameChars.toString());
               }
               return null;
             },
@@ -67,9 +72,14 @@ class MeasurementCategoryForm extends ConsumerWidget {
               helperText: AppLocalizations.of(context).measurementEntriesHelpText,
             ),
             controller: unitController,
+            maxLength: MeasurementCategory.maxUnitChars,
             validator: (value) {
+              final i18n = AppLocalizations.of(context);
               if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
+                return i18n.enterValue;
+              }
+              if (value.length > MeasurementCategory.maxUnitChars) {
+                return i18n.enterMaxCharacters(MeasurementCategory.maxUnitChars.toString());
               }
               return null;
             },
@@ -200,6 +210,8 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                 labelText: AppLocalizations.of(context).value,
                 suffixText: category.unit,
                 isRequired: true,
+                min: MeasurementEntry.minValue,
+                max: MeasurementEntry.maxValue,
                 onChanged: (value) => _value = value,
               ),
               // Notes

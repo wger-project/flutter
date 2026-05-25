@@ -24,7 +24,7 @@ class IngredientFilters {
 
   /// Locale-aware default filter set.
   ///
-  /// In an English locale "current + English" collapses to "current" — there
+  /// In an English locale "current + English" collapses to "current", there
   /// is no extra fallback to add. Everywhere else, falling back to English is
   /// the default. All other fields take the constructor defaults.
   factory IngredientFilters.defaultFor(String localeCode) => IngredientFilters(

@@ -22,6 +22,7 @@ import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/routines/routine_edit.dart';
 
 class RoutineEditScreen extends ConsumerWidget {
@@ -37,7 +38,9 @@ class RoutineEditScreen extends ConsumerWidget {
       value: ref.watch(routinesRiverpodProvider),
       loggerName: 'RoutineEditScreen',
       loading: const Scaffold(body: Center(child: CircularProgressIndicator())),
-      errorBuilder: (e, _) => Scaffold(body: Center(child: Text('$e'))),
+      errorBuilder: (e, st) => Scaffold(
+        body: Center(child: StreamErrorIndicator(e, stacktrace: st)),
+      ),
       data: (state) {
         final routine = state.findById(routineId);
         return Scaffold(

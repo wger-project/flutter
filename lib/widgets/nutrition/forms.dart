@@ -101,7 +101,7 @@ Widget getMealItemForm(
   bool? test,
 ]) {
   return IngredientForm(
-    // The recent list is ephemeral display data — planId isn't used for
+    // The recent list is ephemeral display data, planId isn't used for
     // persistence, so an empty sentinel is fine.
     recent: recent.map((e) => LogItem.fromMealItem(e, '', e.mealId)).toList(),
     onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) {
@@ -429,8 +429,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
 enum GoalType {
   meals('From meals'),
   basic('Basic'),
-  advanced('Advanced')
-  ;
+  advanced('Advanced');
 
   const GoalType(this.label);
 
@@ -497,8 +496,17 @@ class _PlanFormState extends ConsumerState<PlanForm> {
             controller: TextEditingController(
               text: widget._plan.description,
             ),
+            maxLength: NutritionalPlan.maxDescriptionChars,
             onSaved: (newValue) {
               widget._plan.description = newValue!;
+            },
+            validator: (value) {
+              if (value != null && value.length > NutritionalPlan.maxDescriptionChars) {
+                return AppLocalizations.of(
+                  context,
+                ).enterMaxCharacters(NutritionalPlan.maxDescriptionChars.toString());
+              }
+              return null;
             },
           ),
           // Start Date
@@ -657,6 +665,8 @@ class _PlanFormState extends ConsumerState<PlanForm> {
                   value: widget._plan.goalEnergy,
                   labelText: AppLocalizations.of(context).goalEnergy,
                   suffixText: AppLocalizations.of(context).kcal,
+                  min: 0,
+                  max: NutritionalPlan.maxGoalEnergy,
                   onChanged: (value) => widget._plan.goalEnergy = value,
                 ),
                 DecimalInputWidget(
@@ -664,6 +674,8 @@ class _PlanFormState extends ConsumerState<PlanForm> {
                   value: widget._plan.goalProtein,
                   labelText: AppLocalizations.of(context).goalProtein,
                   suffixText: AppLocalizations.of(context).g,
+                  min: 0,
+                  max: NutritionalPlan.maxGoalProtein,
                   onChanged: (value) => widget._plan.goalProtein = value,
                 ),
                 DecimalInputWidget(
@@ -671,6 +683,8 @@ class _PlanFormState extends ConsumerState<PlanForm> {
                   value: widget._plan.goalCarbohydrates,
                   labelText: AppLocalizations.of(context).goalCarbohydrates,
                   suffixText: AppLocalizations.of(context).g,
+                  min: 0,
+                  max: NutritionalPlan.maxGoalCarbohydrates,
                   onChanged: (value) => widget._plan.goalCarbohydrates = value,
                 ),
                 DecimalInputWidget(
@@ -678,6 +692,8 @@ class _PlanFormState extends ConsumerState<PlanForm> {
                   value: widget._plan.goalFat,
                   labelText: AppLocalizations.of(context).goalFat,
                   suffixText: AppLocalizations.of(context).g,
+                  min: 0,
+                  max: NutritionalPlan.maxGoalFat,
                   onChanged: (value) => widget._plan.goalFat = value,
                 ),
               ],
@@ -689,6 +705,8 @@ class _PlanFormState extends ConsumerState<PlanForm> {
               value: widget._plan.goalFiber,
               labelText: AppLocalizations.of(context).goalFiber,
               suffixText: AppLocalizations.of(context).g,
+              min: 0,
+              max: NutritionalPlan.maxGoalFiber,
               onChanged: (value) => widget._plan.goalFiber = value,
             ),
           ElevatedButton(

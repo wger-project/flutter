@@ -23,7 +23,7 @@ import 'package:wger/database/powersync/database.dart';
 /// SQLite instance. The schema is created explicitly because the production
 /// migration is a no-op (PowerSync owns the schema in production).
 ///
-/// Each call returns an isolated database — call this in `setUp`, and call
+/// Each call returns an isolated database, call this in `setUp`, and call
 /// `db.close()` in `tearDown`.
 Future<DriftPowersyncDatabase> openTestDatabase() async {
   final db = DriftPowersyncDatabase(NativeDatabase.memory());

@@ -19,6 +19,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/powersync/api_client.dart';
@@ -31,7 +32,7 @@ void main() {
   late DjangoConnector connector;
 
   setUp(() {
-    connector = DjangoConnector(baseUrl: 'http://example.invalid');
+    connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: MockApiClient());
   });
 
   /// Builds a JWT-shaped string with the given payload (signature is a sham,
@@ -123,7 +124,7 @@ void main() {
       test('does not touch DateTimeField columns even on registered tables', () {
         // `manager_workoutlog.date` is a DateTimeField on Django (not a
         // DateField), and `manager_workoutlog` isn't in the date-only
-        // registry — the timestamp must round-trip unchanged.
+        // registry, the timestamp must round-trip unchanged.
         final out = connector.genericTransform(
           'manager_workoutlog',
           {'date': '2024-11-01T17:30:00.000Z'},
@@ -154,59 +155,6 @@ void main() {
         expect(out['start'], '2024-11-01');
         expect(out['end'], isNull);
       });
-    });
-  });
-
-  group('decodeJwtPayload', () {
-    test('decodes the middle segment into a map', () {
-      final jwt = makeJwt({'sub': '42', 'exp': 1700000000});
-
-      final payload = DjangoConnector.decodeJwtPayload(jwt);
-
-      expect(payload, {'sub': '42', 'exp': 1700000000});
-    });
-
-    test('returns null when the JWT does not have three segments', () {
-      expect(DjangoConnector.decodeJwtPayload('only.two'), isNull);
-      expect(DjangoConnector.decodeJwtPayload('one'), isNull);
-      expect(DjangoConnector.decodeJwtPayload('a.b.c.d'), isNull);
-    });
-
-    test('returns null when the middle segment is not valid base64-url', () {
-      expect(DjangoConnector.decodeJwtPayload('aaa.!!!.bbb'), isNull);
-    });
-
-    test('returns null when the decoded segment is not JSON', () {
-      final notJson = base64Url.encode(utf8.encode('not json')).replaceAll('=', '');
-      expect(DjangoConnector.decodeJwtPayload('a.$notJson.b'), isNull);
-    });
-  });
-
-  group('jwtExp', () {
-    test('returns a UTC DateTime built from unix seconds', () {
-      // 2023-11-14T22:13:20Z is exactly 1700000000 seconds past the epoch.
-      final result = DjangoConnector.jwtExp({'exp': 1700000000});
-
-      expect(result, DateTime.utc(2023, 11, 14, 22, 13, 20));
-      expect(result!.isUtc, isTrue);
-    });
-
-    test('accepts double-encoded exp values (some JWT libraries produce these)', () {
-      final result = DjangoConnector.jwtExp({'exp': 1700000000.5});
-
-      expect(result, DateTime.utc(2023, 11, 14, 22, 13, 20));
-    });
-
-    test('returns null when payload is null', () {
-      expect(DjangoConnector.jwtExp(null), isNull);
-    });
-
-    test('returns null when exp is missing', () {
-      expect(DjangoConnector.jwtExp({'sub': '42'}), isNull);
-    });
-
-    test('returns null when exp is not numeric', () {
-      expect(DjangoConnector.jwtExp({'exp': 'soon'}), isNull);
     });
   });
 
@@ -254,6 +202,16 @@ void main() {
       expect(creds.token, 'not.a.jwt');
       expect(creds.userId, isNull);
       expect(creds.expiresAt, isNull);
+    });
+
+    test('returns null when the backend is unreachable', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      when(
+        mockApi.getPowersyncToken(),
+      ).thenThrow(http.ClientException('Connection refused'));
+
+      expect(await connector.fetchCredentials(), isNull);
     });
   });
 }

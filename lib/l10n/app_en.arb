@@ -13,14 +13,6 @@
   "@register": {
     "description": "Text for registration button"
   },
-  "useDefaultServer": "Use default server",
-  "@useDefaultServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "useCustomServer": "Use custom server",
-  "@useCustomServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
   "invalidUrl": "Please enter a valid URL",
   "@invalidUrl": {
     "description": "Error message when the user enters an invalid URL, e.g. in the login form"
@@ -56,17 +48,63 @@
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
-  "useApiToken": "Use API Token",
-  "useUsernameAndPassword": "Use username and password",
-  "apiToken": "API Token",
-  "@apiToken": {},
-  "invalidApiToken": "Please enter a valid API key",
-  "@invalidApiToken": {
-    "description": "Error message when the user enters an invalid API key"
+  "refreshToken": "Refresh token",
+  "@refreshToken": {},
+  "invalidRefreshToken": "Please enter a valid refresh token",
+  "@invalidRefreshToken": {
+    "description": "Error message when the user enters an invalid refresh token"
   },
-  "apiTokenValidChars": "An API key may only contain the letters a-f, numbers 0-9 and be exactly 40 characters long",
-  "@apiTokenValidChars": {
-    "description": "Error message when the user tries to input a API key with forbidden characters"
+  "refreshTokenValidChars": "A refresh token has three dot-separated segments (header.payload.signature), each made of letters, digits, '-' and '_'",
+  "@refreshTokenValidChars": {
+    "description": "Error message when the user pastes a string that does not match the JWT shape"
+  },
+  "refreshTokenHelperText": "Generate a JWT refresh token on the wger website and paste it here. Useful when your server sits behind an auth proxy or when you want to skip the regular login flow.",
+  "@refreshTokenHelperText": {
+    "description": "Helper text on the refresh-token paste field"
+  },
+  "mfaChallengeTitle": "Two-factor authentication",
+  "@mfaChallengeTitle": {
+    "description": "App bar title on the 2FA challenge screen"
+  },
+  "mfaChallengeTotpPrompt": "Enter the 6-digit code from your authenticator app",
+  "@mfaChallengeTotpPrompt": {
+    "description": "Helper text above the TOTP input field"
+  },
+  "mfaChallengeRecoveryPrompt": "Enter one of your recovery codes",
+  "@mfaChallengeRecoveryPrompt": {
+    "description": "Helper text above the recovery-code input field"
+  },
+  "mfaCodeLabel": "Code",
+  "@mfaCodeLabel": {
+    "description": "Label on the 2FA code input field"
+  },
+  "mfaInvalidCode": "Please enter a code",
+  "@mfaInvalidCode": {
+    "description": "Validation error when the 2FA code field is empty"
+  },
+  "mfaUseRecoveryCode": "Use a recovery code instead",
+  "@mfaUseRecoveryCode": {
+    "description": "Button that switches the 2FA challenge to recovery-code mode"
+  },
+  "mfaUseTotpCode": "Use an authenticator app code",
+  "@mfaUseTotpCode": {
+    "description": "Button that switches the 2FA challenge back to TOTP mode"
+  },
+  "mfaSubmit": "Verify",
+  "@mfaSubmit": {
+    "description": "Submit button on the 2FA challenge screen"
+  },
+  "mfaUnsupportedFactor": "Your account is set up with a second factor this app does not support yet. Please sign in on the website.",
+  "@mfaUnsupportedFactor": {
+    "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+  },
+  "manageAccountOnWeb": "Manage account on the web",
+  "@manageAccountOnWeb": {
+    "description": "Label on a button that opens the user's preferences page on the wger website"
+  },
+  "manageAccountOnWebSubtitle": "Change your password, set up two-factor authentication, manage API tokens, or delete your account.",
+  "@manageAccountOnWebSubtitle": {
+    "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
   },
   "customServerUrl": "URL of the wger instance",
   "@customServerUrl": {
@@ -80,10 +118,36 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "registerInstead": "Don't have an account? Register now",
-  "@registerInstead": {},
-  "loginInstead": "Already have an account? Login",
-  "@loginInstead": {},
+  "advanced": "Advanced",
+  "@advanced": {},
+  "advancedSubtitle": "Server and authentication options",
+  "@advancedSubtitle": {},
+  "serverSectionLabel": "Server",
+  "@serverSectionLabel": {},
+  "signInMethodSectionLabel": "Sign-in method",
+  "@signInMethodSectionLabel": {},
+  "serverOptionDefaultDetail": "The official server",
+  "@serverOptionDefaultDetail": {},
+  "serverOptionSelfHostedTitle": "Self-hosted",
+  "@serverOptionSelfHostedTitle": {},
+  "serverOptionSelfHostedDetail": "Connect to your own instance",
+  "@serverOptionSelfHostedDetail": {},
+  "authOptionPasswordTitle": "Username and password",
+  "@authOptionPasswordTitle": {},
+  "signInWithToken": "Sign in with token",
+  "@signInWithToken": {},
+  "tokenSubtitle": "Generate one on the wger website",
+  "@tokenSubtitle": {},
+  "newToWger": "New to wger?",
+  "@newToWger": {},
+  "alreadyHaveAccount": "Already have an account?",
+  "@alreadyHaveAccount": {},
+  "tokenLabel": "Token",
+  "@tokenLabel": {},
+  "webHandoffLinkLabel": "Other sign-in options",
+  "@webHandoffLinkLabel": {},
+  "webHandoffLinkSubtitle": "Social login, passkey, SSO",
+  "@webHandoffLinkSubtitle": {},
   "labelBottomNavWorkout": "Workout",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -413,7 +477,6 @@
   "errorViewDetails": "Technical details",
   "applicationLogs": "Application logs",
   "errorCouldNotConnectToServer": "Couldn't connect to server",
-  "errorCouldNotConnectToServerDetails": "The application could not connect to the server. Please check your internet connection or the server URL and try again. If the problem persists, contact the server administrator.",
   "copyToClipboard": "Copy to clipboard",
   "weight": "Weight",
   "min": "Min",
@@ -731,6 +794,16 @@
     "type": "text",
     "placeholders": {
       "min": {
+        "type": "String"
+      }
+    }
+  },
+  "enterMaxCharacters": "Please enter at most {max} characters",
+  "@enterMaxCharacters": {
+    "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "max": {
         "type": "String"
       }
     }
@@ -1182,7 +1255,7 @@
   "systemMode": "System settings",
   "networkInfo": "Network information",
   "youAreOffline": "You are offline",
-  "offlineModeInfo": "Some features are unavailable until you reconnect to the internet (buttons and menus will be disabled). Currently, this mainly affects editing routines and nutrition plans, but logging workouts and meals works offline. The data will be synced automatically once you are back online.",
+  "offlineModeInfo": "Some features are unavailable until you reconnect to the internet (buttons and menus will be disabled). Currently, this mainly affects editing routines, but logging workouts and meals works offline. The data will be synced automatically once you are back online.",
   "appLanguage": "App language",
   "@appLanguage": {
     "description": "Label for the in-app language selector in settings"
@@ -1326,5 +1399,17 @@
    "viewDocumentation": "View documentation",
    "@viewDocumentation": {
    "description": "Button label to open the documentation about server configuration"
-   }
+   },
+  "sessionExpired": "Your session has expired, please log in again",
+  "@sessionExpired": {
+    "description": "Snackbar message shown when the saved login token is no longer valid"
+  },
+  "weightOrRepsRequired": "Please enter a weight, repetitions, or both",
+  "@weightOrRepsRequired": {
+    "description": "Validation error when both weight and repetitions are empty in a workout log"
+  },
+  "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
+  "@timeStartEndBothOrNeither": {
+    "description": "Validation error when only one of start/end time is set on a workout session"
+  }
 }

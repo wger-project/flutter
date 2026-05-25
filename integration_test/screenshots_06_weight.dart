@@ -42,7 +42,9 @@ Widget createWeightScreen({Locale? locale}) {
   ).thenAnswer((_) => Stream.value(getWeightEntries()));
 
   final mockUserProfileRepository = MockUserProfileRepository();
-  when(mockUserProfileRepository.fetchProfile()).thenAnswer((_) async => tProfile1);
+  when(
+    mockUserProfileRepository.watchDrift(),
+  ).thenAnswer((_) => Stream.value(tUserProfile1));
 
   final mockNutritionRepo = MockNutritionRepository();
   final mockIngredientRepo = MockIngredientRepository();

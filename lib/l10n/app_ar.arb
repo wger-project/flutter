@@ -878,7 +878,6 @@
     "errorViewDetails": "التفاصيل التقنية",
     "applicationLogs": "سجلات التطبيق",
     "errorCouldNotConnectToServer": "لم يتمكن التطبيق من الاتصال بالخادم",
-    "errorCouldNotConnectToServerDetails": "لم يتمكن التطبيق من الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت أو عنوان URL الخاص بالخادم، ثم المحاولة مرة أخرى. إذا استمرت المشكلة، فاتصل بمسؤول الخادم.",
     "max": "الاقصى",
     "min": "الادنى",
     "chartDuringPlanTitle": "{chartName} خلال الخطة الغذائية {planName}",

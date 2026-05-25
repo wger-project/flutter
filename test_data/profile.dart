@@ -1,9 +1,11 @@
-import 'package:wger/models/user/profile.dart';
+import 'package:wger/models/user/account.dart';
+import 'package:wger/models/user/user_profile.dart';
 
-final tProfile1 = Profile(
+final tAccount1 = Account(
   username: 'super root',
+  email: 'admin@google.com',
   emailVerified: true,
   isTrustworthy: true,
-  email: 'admin@google.com',
-  weightUnitStr: 'kg',
 );
+
+final tUserProfile1 = UserProfile(id: 1, weightUnitStr: 'kg');

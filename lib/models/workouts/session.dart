@@ -32,8 +32,7 @@ import 'package:wger/models/workouts/log.dart';
 enum WorkoutImpression {
   bad('1'),
   neutral('2'),
-  good('3')
-  ;
+  good('3');
 
   final String wireValue;
   const WorkoutImpression(this.wireValue);
@@ -56,6 +55,9 @@ extension WorkoutImpressionL10n on WorkoutImpression {
 }
 
 class WorkoutSession {
+  /// Inclusive upper bound for [notes]
+  static const maxNotesChars = 1000;
+
   /// Client-generated UUID, is `null` only before the first persist
   String? id;
   late int? routineId;

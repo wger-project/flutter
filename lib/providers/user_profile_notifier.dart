@@ -17,7 +17,7 @@
  */
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/user/profile.dart';
+import 'package:wger/models/user/user_profile.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 
 part 'user_profile_notifier.g.dart';
@@ -27,33 +27,13 @@ class UserProfileNotifier extends _$UserProfileNotifier {
   late UserProfileRepository _repo;
 
   @override
-  Future<Profile?> build() async {
+  Stream<UserProfile?> build() {
     _repo = ref.read(userProfileRepositoryProvider);
-    return _repo.fetchProfile();
+    return _repo.watchDrift();
   }
 
-  /// Saves the current profile to the server.
-  Future<void> saveProfile() async {
-    final profile = state.asData?.value;
-    if (profile == null) {
-      return;
-    }
-    await _repo.saveProfile(profile);
-  }
-
-  /// Triggers the server's verification email flow.
-  Future<void> verifyEmail() async {
-    await _repo.verifyEmail();
-  }
-
-  /// Replaces the in-memory profile. Used by forms that edit profile fields
-  /// locally before saving.
-  void setProfile(Profile profile) {
-    state = AsyncData(profile);
-  }
-
-  /// Clears the current profile (e.g. on logout).
-  void clear() {
-    state = const AsyncData(null);
+  /// Persists the edited preferences locally; PowerSync syncs them upstream.
+  Future<void> updateProfile(UserProfile profile) async {
+    await _repo.editLocalDrift(profile);
   }
 }

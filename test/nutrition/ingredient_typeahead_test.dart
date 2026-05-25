@@ -259,7 +259,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.tune));
     await tester.pumpAndSettle();
 
-    // Move the slider off the Off position — index 1 is the first grade, A
+    // Move the slider off the Off position, index 1 is the first grade, A
     final sliderFinder = find.byType(Slider);
     final Slider slider = tester.widget<Slider>(sliderFinder);
     slider.onChanged!(1.0);
@@ -272,7 +272,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField), 'Apple');
     await tester.pump(const Duration(milliseconds: 600));
 
-    // Assert — index 1 maps to NutriScore.a
+    // Assert, index 1 maps to NutriScore.a
     verify(
       mockIngredientRepo.searchIngredientServer(
         'Apple',

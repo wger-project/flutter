@@ -46,4 +46,11 @@ void main() {
     final result = validateUrl('https://example.com', mockI18n);
     expect(result, isNull);
   });
+
+  test('Scheme-only URL with empty host returns error', () {
+    // Uri.parse('http://') succeeds with an empty host; the validator must
+    // still reject it.
+    expect(validateUrl('http://', mockI18n), isNotNull);
+    expect(validateUrl('https://', mockI18n), isNotNull);
+  });
 }

@@ -94,7 +94,7 @@ void main() {
     });
   });
 
-  group('variation setters — mutual exclusion', () {
+  group('variation setters, mutual exclusion', () {
     test('setVariationGroup clears variationConnectToExercise', () {
       final n = container.read(addExerciseProvider.notifier);
       n.setVariationConnectToExercise(42);

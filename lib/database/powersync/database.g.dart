@@ -392,6 +392,153 @@ class LicenseTableCompanion extends UpdateCompanion<License> {
   }
 }
 
+class $UserProfileTableTable extends UserProfileTable
+    with TableInfo<$UserProfileTableTable, UserProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserProfileTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weightUnitStrMeta = const VerificationMeta(
+    'weightUnitStr',
+  );
+  @override
+  late final GeneratedColumn<String> weightUnitStr = GeneratedColumn<String>(
+    'weight_unit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, weightUnitStr];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'core_userprofile';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UserProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('weight_unit')) {
+      context.handle(
+        _weightUnitStrMeta,
+        weightUnitStr.isAcceptableOrUnknown(
+          data['weight_unit']!,
+          _weightUnitStrMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_weightUnitStrMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  UserProfile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserProfile(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      weightUnitStr: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weight_unit'],
+      )!,
+    );
+  }
+
+  @override
+  $UserProfileTableTable createAlias(String alias) {
+    return $UserProfileTableTable(attachedDatabase, alias);
+  }
+}
+
+class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
+  final Value<int> id;
+  final Value<String> weightUnitStr;
+  final Value<int> rowid;
+  const UserProfileTableCompanion({
+    this.id = const Value.absent(),
+    this.weightUnitStr = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UserProfileTableCompanion.insert({
+    required int id,
+    required String weightUnitStr,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       weightUnitStr = Value(weightUnitStr);
+  static Insertable<UserProfile> custom({
+    Expression<int>? id,
+    Expression<String>? weightUnitStr,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (weightUnitStr != null) 'weight_unit': weightUnitStr,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UserProfileTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? weightUnitStr,
+    Value<int>? rowid,
+  }) {
+    return UserProfileTableCompanion(
+      id: id ?? this.id,
+      weightUnitStr: weightUnitStr ?? this.weightUnitStr,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (weightUnitStr.present) {
+      map['weight_unit'] = Variable<String>(weightUnitStr.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserProfileTableCompanion(')
+          ..write('id: $id, ')
+          ..write('weightUnitStr: $weightUnitStr, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ExerciseCategoryTableTable extends ExerciseCategoryTable
     with TableInfo<$ExerciseCategoryTableTable, ExerciseCategory> {
   @override
@@ -10007,6 +10154,9 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   $DriftPowersyncDatabaseManager get managers => $DriftPowersyncDatabaseManager(this);
   late final $LanguageTableTable languageTable = $LanguageTableTable(this);
   late final $LicenseTableTable licenseTable = $LicenseTableTable(this);
+  late final $UserProfileTableTable userProfileTable = $UserProfileTableTable(
+    this,
+  );
   late final $ExerciseCategoryTableTable exerciseCategoryTable = $ExerciseCategoryTableTable(this);
   late final $ExerciseTableTable exerciseTable = $ExerciseTableTable(this);
   late final $ExerciseTranslationTableTable exerciseTranslationTable =
@@ -10055,6 +10205,7 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     languageTable,
     licenseTable,
+    userProfileTable,
     exerciseCategoryTable,
     exerciseTable,
     exerciseTranslationTable,
@@ -10536,6 +10687,151 @@ typedef $$LicenseTableTableProcessedTableManager =
         BaseReferences<_$DriftPowersyncDatabase, $LicenseTableTable, License>,
       ),
       License,
+      PrefetchHooks Function()
+    >;
+typedef $$UserProfileTableTableCreateCompanionBuilder =
+    UserProfileTableCompanion Function({
+      required int id,
+      required String weightUnitStr,
+      Value<int> rowid,
+    });
+typedef $$UserProfileTableTableUpdateCompanionBuilder =
+    UserProfileTableCompanion Function({
+      Value<int> id,
+      Value<String> weightUnitStr,
+      Value<int> rowid,
+    });
+
+class $$UserProfileTableTableFilterComposer
+    extends Composer<_$DriftPowersyncDatabase, $UserProfileTableTable> {
+  $$UserProfileTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weightUnitStr => $composableBuilder(
+    column: $table.weightUnitStr,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UserProfileTableTableOrderingComposer
+    extends Composer<_$DriftPowersyncDatabase, $UserProfileTableTable> {
+  $$UserProfileTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weightUnitStr => $composableBuilder(
+    column: $table.weightUnitStr,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UserProfileTableTableAnnotationComposer
+    extends Composer<_$DriftPowersyncDatabase, $UserProfileTableTable> {
+  $$UserProfileTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get weightUnitStr => $composableBuilder(
+    column: $table.weightUnitStr,
+    builder: (column) => column,
+  );
+}
+
+class $$UserProfileTableTableTableManager
+    extends
+        RootTableManager<
+          _$DriftPowersyncDatabase,
+          $UserProfileTableTable,
+          UserProfile,
+          $$UserProfileTableTableFilterComposer,
+          $$UserProfileTableTableOrderingComposer,
+          $$UserProfileTableTableAnnotationComposer,
+          $$UserProfileTableTableCreateCompanionBuilder,
+          $$UserProfileTableTableUpdateCompanionBuilder,
+          (
+            UserProfile,
+            BaseReferences<_$DriftPowersyncDatabase, $UserProfileTableTable, UserProfile>,
+          ),
+          UserProfile,
+          PrefetchHooks Function()
+        > {
+  $$UserProfileTableTableTableManager(
+    _$DriftPowersyncDatabase db,
+    $UserProfileTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UserProfileTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UserProfileTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UserProfileTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> weightUnitStr = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UserProfileTableCompanion(
+                id: id,
+                weightUnitStr: weightUnitStr,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                required String weightUnitStr,
+                Value<int> rowid = const Value.absent(),
+              }) => UserProfileTableCompanion.insert(
+                id: id,
+                weightUnitStr: weightUnitStr,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UserProfileTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DriftPowersyncDatabase,
+      $UserProfileTableTable,
+      UserProfile,
+      $$UserProfileTableTableFilterComposer,
+      $$UserProfileTableTableOrderingComposer,
+      $$UserProfileTableTableAnnotationComposer,
+      $$UserProfileTableTableCreateCompanionBuilder,
+      $$UserProfileTableTableUpdateCompanionBuilder,
+      (
+        UserProfile,
+        BaseReferences<_$DriftPowersyncDatabase, $UserProfileTableTable, UserProfile>,
+      ),
+      UserProfile,
       PrefetchHooks Function()
     >;
 typedef $$ExerciseCategoryTableTableCreateCompanionBuilder =
@@ -21821,6 +22117,8 @@ class $DriftPowersyncDatabaseManager {
       $$LanguageTableTableTableManager(_db, _db.languageTable);
   $$LicenseTableTableTableManager get licenseTable =>
       $$LicenseTableTableTableManager(_db, _db.licenseTable);
+  $$UserProfileTableTableTableManager get userProfileTable =>
+      $$UserProfileTableTableTableManager(_db, _db.userProfileTable);
   $$ExerciseCategoryTableTableTableManager get exerciseCategoryTable =>
       $$ExerciseCategoryTableTableTableManager(_db, _db.exerciseCategoryTable);
   $$ExerciseTableTableTableManager get exerciseTable =>

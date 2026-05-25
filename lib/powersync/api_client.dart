@@ -20,44 +20,34 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:wger/helpers/shared_preferences.dart';
 
-import '../helpers/consts.dart';
-
+/// Thin REST client used by the PowerSync connector.
+///
+/// In production the [http.Client] passed in is the project-wide
+/// `AuthHttpClient`, which injects the right `Authorization` header
+/// (`Bearer` for headless JWT, `Token` for legacy permanent tokens) and
+/// runs pre-emptive refresh ahead of token expiry. This class itself
+/// therefore stays auth-agnostic: it only sets `Content-Type` and lets
+/// the client own everything else.
 class ApiClient {
   late final uri = Uri.parse('$serverUrl/api/v2/upload-powersync-data');
 
   final String serverUrl;
   final http.Client _client;
-  String token = '';
 
   ApiClient(this.serverUrl, {http.Client? client}) : _client = client ?? http.Client();
 
   Map<String, String> getHeaders() {
-    return {
-      HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.authorizationHeader: 'Token $token',
-    };
+    return {HttpHeaders.contentTypeHeader: 'application/json'};
   }
 
-  /// Returns a powersync JWT token token
-  ///
-  /// Note that at the moment we use the permanent API token for authentication
-  /// but this should be probably changed to the wger API JWT tokens in the
-  /// future since they are not permanent and could be easily revoked.
+  /// Fetches a short-lived PowerSync JWT and its endpoint URL from the
+  /// wger backend. The `Authorization` header for this request is set
+  /// by the underlying [AuthHttpClient] based on the current auth state.
   Future<Map<String, dynamic>> getPowersyncToken() async {
-    final prefs = PreferenceHelper.asyncPref;
-
-    final apiData = json.decode((await prefs.getString(PREFS_USER))!);
-    // _logger.info('posting our token "${apiData["token"]}" to $baseUrl/api/v2/powersync-token');
-
-    token = apiData['token'];
     final response = await _client.get(
       Uri.parse('$serverUrl/api/v2/powersync-token'),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
-        HttpHeaders.authorizationHeader: 'Token ${apiData["token"]}',
-      },
+      headers: getHeaders(),
     );
 
     if (response.statusCode == 200) {

@@ -24,6 +24,9 @@ part 'measurement_entry.freezed.dart';
 
 @freezed
 class MeasurementEntry with _$MeasurementEntry {
+  static const minValue = 0;
+  static const maxValue = 1000;
+
   /// Client-generated UUID, is `null` only before the first persist
   @override
   final String? id;

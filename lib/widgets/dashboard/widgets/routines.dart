@@ -23,6 +23,7 @@ import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -88,10 +89,13 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
     final i18n = AppLocalizations.of(context);
 
     final asyncState = ref.watch(routinesRiverpodProvider);
+    final isOnline = ref.watch(networkStatusProvider);
 
-    // Auto-hydrate the current routine once it appears in the sparse list
+    // Auto-hydrate the current routine once it appears in the sparse list.
+    // Skipped while offline (the structure fetch is REST-only); leaving
+    // `_hydratedRoutineId` unset means it retries once the connection is back.
     final currentId = asyncState.value?.currentRoutine?.id;
-    if (currentId != null && currentId != _hydratedRoutineId) {
+    if (isOnline && currentId != null && currentId != _hydratedRoutineId) {
       _hydratedRoutineId = currentId;
       Future.microtask(() async {
         if (!mounted) {
@@ -130,6 +134,11 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
       ),
       data: (state) {
         final routine = state.currentRoutine;
+
+        // Offline and never fetched: the structure is unavailable, so lock
+        // the detail UI instead of showing an empty block.
+        final detailsLocked = routine != null && !isOnline && !routine.isHydrated;
+
         if (routine == null) {
           return _shell(
             context,
@@ -162,15 +171,17 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
+                    : detailsLocked
+                    ? Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.outline)
                     : Tooltip(
                         message: i18n.toggleDetails,
                         child: _showDetail
                             ? const Icon(Icons.info)
                             : const Icon(Icons.info_outline),
                       ),
-                // Toggle is meaningless while the day data is still
-                // loading — disable the tap until hydration finishes.
-                onTap: _isHydrating
+                // The toggle is meaningless while the day data is still
+                // loading or unavailable offline, so disable the tap then.
+                onTap: _isHydrating || detailsLocked
                     ? null
                     : () {
                         setState(() {
@@ -183,7 +194,7 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                   padding: EdgeInsets.symmetric(vertical: 24),
                   child: Center(child: CircularProgressIndicator()),
                 )
-              else
+              else if (!detailsLocked)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: DetailContentWidget(
@@ -195,13 +206,15 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   TextButton(
+                    onPressed: detailsLocked
+                        ? null
+                        : () {
+                            Navigator.of(context).pushNamed(
+                              RoutineScreen.routeName,
+                              arguments: routine.id,
+                            );
+                          },
                     child: Text(i18n.goToDetailPage),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        RoutineScreen.routeName,
-                        arguments: routine.id,
-                      );
-                    },
                   ),
                 ],
               ),

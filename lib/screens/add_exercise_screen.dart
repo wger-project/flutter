@@ -18,16 +18,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/add_exercise_notifier.dart';
 import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/add_exercise/steps/step_1_basics.dart';
 import 'package:wger/widgets/add_exercise/steps/step_2_variations.dart';
@@ -48,9 +48,9 @@ class AddExerciseScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(userProfileProvider).value;
+    final account = ref.watch(accountProvider).value;
     final isOnline = ref.watch(networkStatusProvider);
-    if (profile == null) {
+    if (account == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     if (!isOnline) {
@@ -77,7 +77,7 @@ class AddExerciseScreen extends ConsumerWidget {
         ),
       );
     }
-    return profile.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
+    return account.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
   }
 }
 
@@ -322,11 +322,6 @@ class EmailNotVerified extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProfileProvider).value;
-    if (user == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).unVerifiedEmail),
       body: Container(
@@ -356,7 +351,7 @@ class EmailNotVerified extends ConsumerWidget {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).userProfile,
-                            UserProfileForm(user),
+                            const UserProfileForm(),
                           ),
                         );
                       },

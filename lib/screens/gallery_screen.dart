@@ -17,39 +17,47 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/widgets/core/app_bar.dart';
 import 'package:wger/widgets/gallery/forms.dart';
 import 'package:wger/widgets/gallery/overview.dart';
 
 import 'form_screen.dart';
 
-class GalleryScreen extends StatelessWidget {
+class GalleryScreen extends ConsumerWidget {
   static const routeName = '/gallery';
 
   const GalleryScreen();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Adding an image is a binary REST upload, so it needs connectivity.
+    final isOnline = ref.watch(networkStatusProvider);
+
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).gallery),
       floatingActionButton: isDesktop
           ? null
           : FloatingActionButton(
+              backgroundColor: isOnline ? null : Colors.grey,
+              onPressed: isOnline
+                  ? () {
+                      Navigator.pushNamed(
+                        context,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context).addImage,
+                          ImageForm(),
+                          hasListView: true,
+                        ),
+                      );
+                    }
+                  : null,
               child: const Icon(Icons.add, color: Colors.white),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).addImage,
-                    ImageForm(),
-                    hasListView: true,
-                  ),
-                );
-              },
             ),
       body: const WidescreenWrapper(child: Gallery()),
     );

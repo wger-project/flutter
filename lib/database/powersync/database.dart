@@ -44,6 +44,7 @@ import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/user/user_profile.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
@@ -59,6 +60,7 @@ import 'tables/license.dart';
 import 'tables/measurements.dart';
 import 'tables/nutrition.dart';
 import 'tables/routines.dart';
+import 'tables/user_profile.dart';
 import 'tables/weight.dart';
 
 part 'database.g.dart';
@@ -68,6 +70,7 @@ part 'database.g.dart';
     // Core
     LanguageTable,
     LicenseTable,
+    UserProfileTable,
 
     // Exercises
     ExerciseTable,

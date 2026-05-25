@@ -209,6 +209,11 @@ void main() {
         classifyError(FlutterError('A RenderFlex overflowed by 99 pixels on the right.')),
         ErrorSeverity.cosmetic,
       );
+      // extended_image throws a plain StateError for a failed image load.
+      expect(
+        classifyError(StateError('Failed to load https://x/y.jpg.')),
+        ErrorSeverity.cosmetic,
+      );
     });
 
     test('Other errors are fatal', () {

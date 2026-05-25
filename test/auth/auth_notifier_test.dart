@@ -28,47 +28,47 @@ void main() {
     const atMin = MIN_SERVER_VERSION;
     final belowMin = Version(minVersion.major, minVersion.minor - 1, 0).toString();
 
-    test('server version greater than min — no update needed', () {
+    test('server version greater than min, no update needed', () {
       expect(serverUpdateRequired(aboveMin), false);
     });
 
-    test('server version equal to min — no update needed', () {
+    test('server version equal to min, no update needed', () {
       expect(serverUpdateRequired(atMin), false);
     });
 
-    test('server version less than min — update needed', () {
+    test('server version less than min, update needed', () {
       expect(serverUpdateRequired(belowMin), true);
     });
 
-    test('server version with patch component less than min — update needed', () {
+    test('server version with patch component less than min, update needed', () {
       expect(serverUpdateRequired('$belowMin.9'), true);
     });
 
-    test('server version with patch component greater than min — no update needed', () {
+    test('server version with patch component greater than min, no update needed', () {
       expect(serverUpdateRequired('$atMin.1'), false);
     });
 
-    test('null server version — returns false (lenient, no lockout)', () {
+    test('null server version, returns false (lenient, no lockout)', () {
       expect(serverUpdateRequired(null), false);
     });
 
-    test('server version with pre-release suffix — still parsed correctly', () {
+    test('server version with pre-release suffix, still parsed correctly', () {
       expect(serverUpdateRequired('$aboveMin.0-beta'), false);
     });
 
-    test('server version with Python alpha suffix (e.g. 1.2.3.0a2) — parsed correctly', () {
+    test('server version with Python alpha suffix (e.g. 1.2.3.0a2), parsed correctly', () {
       expect(serverUpdateRequired('$aboveMin.0a2'), false);
     });
 
-    test('server version with Python alpha suffix below min — blocked', () {
+    test('server version with Python alpha suffix below min, blocked', () {
       expect(serverUpdateRequired('$belowMin.0a2'), true);
     });
 
-    test('server version with build metadata suffix — still parsed correctly', () {
+    test('server version with build metadata suffix, still parsed correctly', () {
       expect(serverUpdateRequired('$belowMin.0 (git-abc1234)'), true);
     });
 
-    test('completely unparseable server version — returns false (lenient)', () {
+    test('completely unparseable server version, returns false (lenient)', () {
       expect(serverUpdateRequired('unknown'), false);
     });
   });

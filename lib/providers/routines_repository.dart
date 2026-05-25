@@ -45,7 +45,7 @@ RoutinesRepository routinesRepository(Ref ref) {
 /// HTTP for everything that hasn't been migrated to PowerSync yet (creation
 /// of routines, days, slots, slot entries, configs, …). Top-level [Routine]
 /// reads as well as edit/delete go through the local PowerSync-backed Drift
-/// table — see [watchAllDrift], [editLocalDrift], [deleteLocalDrift].
+/// table, see [watchAllDrift], [editLocalDrift], [deleteLocalDrift].
 class RoutinesRepository {
   RoutinesRepository(this._baseProvider, this._db);
 
@@ -105,6 +105,7 @@ class RoutinesRepository {
 
     routine.dayData = dayData.map((entry) => DayData.fromJson(entry)).toList();
     routine.dayDataGym = dayDataGym.map((entry) => DayData.fromJson(entry)).toList();
+    routine.isHydrated = true;
 
     return routine;
   }
@@ -121,7 +122,7 @@ class RoutinesRepository {
   ///
   /// Templates (`is_template = TRUE`, including public ones) are excluded at
   /// the sync-rule level (see `sync_rules.yaml`), so they never reach the
-  /// local DB — no client-side filter needed here.
+  /// local DB, no client-side filter needed here.
   ///
   /// Sort matches Django's `Routine.Meta.ordering = ['-start', '-created']` so
   /// that REST responses and PowerSync emissions agree on the row order. The

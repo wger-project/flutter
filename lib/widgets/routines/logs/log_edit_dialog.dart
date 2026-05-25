@@ -19,12 +19,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/helpers/routines/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/workout_logs_notifier.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight.dart';
@@ -85,6 +85,19 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
       return;
     }
     _form.currentState!.save();
+
+    final i18n = AppLocalizations.of(context);
+
+    final error = validateWorkoutLogCrossField(
+      repetitions: _repetitions,
+      weight: _weight,
+      i18n: i18n,
+    );
+    if (error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+      return;
+    }
+
     setState(() => _saving = true);
 
     final updated = widget.log.copyWith(
@@ -95,7 +108,6 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
       weightUnitObj: _weightUnit,
     );
 
-    final i18n = AppLocalizations.of(context);
     try {
       await ref.read(workoutLogProvider).updateEntry(updated);
       if (!mounted) {
@@ -167,7 +179,7 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
         FilledButton(
           key: const ValueKey('edit-save-button'),
           onPressed: _saving ? null : _onSave,
-          child: _saving ? const FormProgressIndicator() : Text(i18n.save),
+          child: Text(i18n.save),
         ),
       ],
     );

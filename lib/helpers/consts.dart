@@ -19,6 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Minimum server version required by this version of the app.
+///
+/// Bump this value whenever you depend on API changes that are only available
+/// in a newer server release. The check is performed during login and
+/// auto-login and mirrors what the server does with MIN_APP_VERSION.
+const MIN_SERVER_VERSION = '2.5';
+
 /// Size for the "smaller" icons, e.g. when they belong to less important items
 /// and we don't want to fill the whole screen
 const double ICON_SIZE_SMALL = 20;
@@ -30,13 +37,6 @@ const DEFAULT_SERVER_PROD = 'https://wger.de';
 const DEFAULT_SERVER_TEST = 'https://dev.wger.de';
 const TESTSERVER_USER_NAME = 'user';
 const TESTSERVER_PASSWORD = 'flutteruser';
-
-/// Minimum server version required by this version of the app.
-///
-/// Bump this value whenever you depend on API changes that are only available
-/// in a newer server release. The check is performed during login and
-/// auto-login and mirrors what the server does with MIN_APP_VERSION.
-const MIN_SERVER_VERSION = '2.5';
 
 // Weight and repetition units for the workout logs
 const REP_UNIT_REPETITIONS_ID = 1;
@@ -58,6 +58,25 @@ const PREFS_USER = 'userData';
 const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_USER_LOCALE = 'userLocale';
 const PREFS_LAST_SERVER = 'lastServer';
+
+/// Headless JWT auth: SharedPreferences keys.
+///
+/// Read in parallel with the legacy `PREFS_USER` blob during the migration
+/// window; once a user logs in via the headless flow these supersede it.
+/// The refresh token is **not** stored here, it lives in secure storage
+/// (`SECURE_STORAGE_REFRESH_TOKEN`).
+const PREFS_ACCESS_TOKEN = 'accessToken';
+const PREFS_ACCESS_EXPIRES_AT = 'accessExpiresAt';
+const PREFS_TOKEN_TYPE = 'tokenType';
+const PREFS_SERVER_URL = 'serverUrl';
+
+/// Secure-storage key for the headless refresh token.
+const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';
+
+/// Login-CSRF defence for the web-handoff flow. Stored in SharedPreferences
+/// (not a secret, just a one-shot nonce echoed back by the server).
+const PREFS_APP_AUTH_STATE = 'appAuthState';
+const PREFS_APP_AUTH_STATE_AT = 'appAuthStateAt';
 
 /// True once PowerSync has been reachable for this user at least once
 /// (i.e. its liveness probe returned 200).

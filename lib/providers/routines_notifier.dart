@@ -97,10 +97,10 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     // Top-level routine list comes from PowerSync. Two kinds of sub-data are
     // layered on top:
     //
-    //   * Plan structure (days, slots, set configs) — fetched via REST by
+    //   * Plan structure (days, slots, set configs), fetched via REST by
     //     [fetchAndSetRoutineFull]; we carry it forward from the previous
     //     state on every stream emission so a remote edit doesn't wipe it.
-    //   * Sessions + their logs (with `log.exerciseObj` hydrated) — pulled
+    //   * Sessions + their logs (with `log.exerciseObj` hydrated), pulled
     //     in from [workoutSessionProvider] / [exercisesProvider] below.
     final repo = ref.read(routinesRepositoryProvider);
 
@@ -117,6 +117,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
           fresh.days = old.days;
           fresh.dayData = old.dayData;
           fresh.dayDataGym = old.dayDataGym;
+          fresh.isHydrated = old.isHydrated;
         }
       }
       freshRoutines.forEach(_hydrateRoutine);
@@ -256,7 +257,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     _hydrateRoutine(routine);
 
     // Inject the hydrated routine into the current state. Note: this is
-    // a transient overlay — the next PowerSync stream tick re-emits the
+    // a transient overlay, the next PowerSync stream tick re-emits the
     // top-level routine (without sub-data), but `build()` re-attaches
     // sub-data from the previous state, so the hydration survives.
     final current = state.value ?? const RoutinesState();
@@ -386,7 +387,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   }
 
   /// Single-config write helper. Intentionally does NOT trigger a routine
-  /// refresh — the only caller (`SlotEntryForm._save`) batches several of
+  /// refresh, the only caller (`SlotEntryForm._save`) batches several of
   /// these in a `Future.wait` and then calls [editSlotEntry] right after,
   /// which performs the refresh once for the whole batch.
   Future<void> handleConfig(SlotEntry entry, num? value, ConfigType type) async {

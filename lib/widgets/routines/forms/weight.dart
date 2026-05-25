@@ -21,7 +21,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/form_validators.dart';
 import 'package:wger/helpers/i18n.dart';
+import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/routines_notifier.dart';
@@ -129,7 +131,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
     }
     // Setting `controller.text` notifies its listeners synchronously,
     // which in turn calls `setState` on the surrounding Form/TextField
-    // state — and `didUpdateWidget` runs *during* the build cycle, so
+    // state, and `didUpdateWidget` runs *during* the build cycle, so
     // that's illegal. Defer the assignment to after the current frame.
     final text = widget.value == null ? '' : _numberFormat.format(widget.value);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -210,6 +212,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
               isDense: true,
             ),
             keyboardType: textInputTypeDecimal,
+            inputFormatters: [LocalizedDecimalInputFormatter(_numberFormat.symbols.DECIMAL_SEP)],
             onChanged: (text) {
               if (text.isEmpty) {
                 widget.onChanged(null);
@@ -227,12 +230,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
               }
               widget.onChanged(_numberFormat.parse(text));
             },
-            validator: (text) {
-              if (_numberFormat.tryParse(text ?? '') == null) {
-                return i18n.enterValidNumber;
-              }
-              return null;
-            },
+            validator: (text) => validateOptionalDecimal(text, _numberFormat, context),
           ),
         ),
 

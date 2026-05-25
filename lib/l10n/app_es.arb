@@ -725,7 +725,6 @@
     "errorInfoDescription2": "Puedes seguir utilizando la aplicación pero algunas características pueden no funcionar.",
     "errorViewDetails": "Detalles técnicos",
     "errorCouldNotConnectToServer": "No se pudo conectar con el servidor",
-    "errorCouldNotConnectToServerDetails": "La aplicación no se pudo conectar con el servidor. Por favor, comprueba to conexión a internet o la URL del servidor y prueba de nuevo. Si el problema persiste, contacta con el administrador del servidor.",
     "copyToClipboard": "Copiar al portapapeles",
     "max": "Máximo",
     "aboutContributeTitle": "Contribuir",
