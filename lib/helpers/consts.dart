@@ -19,6 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Minimum server version required by this version of the app.
+///
+/// Bump this value whenever you depend on API changes that are only available
+/// in a newer server release. The check is performed during login and
+/// auto-login and mirrors what the server does with MIN_APP_VERSION.
+const MIN_SERVER_VERSION = '2.5';
+
 /// Size for the "smaller" icons, e.g. when they belong to less important items
 /// and we don't want to fill the whole screen
 const double ICON_SIZE_SMALL = 20;
@@ -30,13 +37,6 @@ const DEFAULT_SERVER_PROD = 'https://wger.de';
 const DEFAULT_SERVER_TEST = 'https://dev.wger.de';
 const TESTSERVER_USER_NAME = 'user';
 const TESTSERVER_PASSWORD = 'flutteruser';
-
-/// Minimum server version required by this version of the app.
-///
-/// Bump this value whenever you depend on API changes that are only available
-/// in a newer server release. The check is performed during login and
-/// auto-login and mirrors what the server does with MIN_APP_VERSION.
-const MIN_SERVER_VERSION = '2.5';
 
 // Weight and repetition units for the workout logs
 const REP_UNIT_REPETITIONS_ID = 1;

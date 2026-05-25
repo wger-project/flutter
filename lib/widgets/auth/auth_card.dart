@@ -100,7 +100,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
       }
     });
 
-    _preFillTextfields();
+    _preFillTextFields();
   }
 
   /// Opens the server's web-handoff page in the system browser. The user
@@ -122,7 +122,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     );
   }
 
-  void _preFillTextfields() {
+  void _preFillTextFields() {
     if (kDebugMode && _authMode == AuthMode.login) {
       setState(() {
         _usernameController.text = TESTSERVER_USER_NAME;
@@ -131,7 +131,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     }
   }
 
-  void _resetTextfields() {
+  void _resetTextFields() {
     _usernameController.clear();
     _passwordController.clear();
     _refreshTokenController.clear();
@@ -231,13 +231,13 @@ class _AuthCardState extends ConsumerState<AuthCard> {
         _useUsernameAndPassword = true;
         _autoValidate = false;
       });
-      _resetTextfields();
+      _resetTextFields();
     } else {
       setState(() {
         _authMode = AuthMode.login;
         _autoValidate = false;
       });
-      _preFillTextfields();
+      _preFillTextFields();
     }
   }
 
