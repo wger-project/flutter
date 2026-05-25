@@ -200,8 +200,8 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                 labelText: AppLocalizations.of(context).value,
                 suffixText: category.unit,
                 isRequired: true,
-                min: 0,
-                max: 1000,
+                min: MeasurementEntry.minValue,
+                max: MeasurementEntry.maxValue,
                 onChanged: (value) => _value = value,
               ),
               // Notes
