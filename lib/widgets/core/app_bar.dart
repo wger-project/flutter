@@ -22,6 +22,7 @@ import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/widgets/core/about.dart';
@@ -79,6 +80,8 @@ class MainSettingsDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isOnline = ref.watch(networkStatusProvider);
+
     return AlertDialog(
       title: Text(AppLocalizations.of(context).optionsLabel),
       actions: [
@@ -97,6 +100,10 @@ class MainSettingsDialog extends ConsumerWidget {
             //dense: true,
             leading: const Icon(Icons.person),
             title: Text(AppLocalizations.of(context).userProfile),
+            enabled: isOnline,
+            trailing: isOnline
+                ? null
+                : Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.outline),
             onTap: () {
               Navigator.pushNamed(
                 context,
