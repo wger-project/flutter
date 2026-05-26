@@ -110,18 +110,21 @@ class AboutPage extends ConsumerWidget {
               Text(i18n.aboutContributeText),
               ListTile(
                 leading: const Icon(Icons.bug_report),
+                trailing: const Icon(Icons.arrow_outward),
                 title: Text(i18n.aboutBugsListTitle),
                 contentPadding: EdgeInsets.zero,
                 onTap: () => launchURL(GITHUB_ISSUES_URL, context),
               ),
               ListTile(
                 leading: const Icon(Icons.translate),
+                trailing: const Icon(Icons.arrow_outward),
                 title: Text(i18n.aboutTranslationListTitle),
                 contentPadding: EdgeInsets.zero,
                 onTap: () => launchURL(WEBLATE_URL, context),
               ),
               ListTile(
                 leading: const Icon(Icons.code),
+                trailing: const Icon(Icons.arrow_outward),
                 title: Text(i18n.aboutSourceListTitle),
                 contentPadding: EdgeInsets.zero,
                 onTap: () => launchURL(GITHUB_PROJECT_URL, context),
