@@ -118,6 +118,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   @override
   Widget build(BuildContext context) {
     final filters = ref.watch(ingredientFiltersSyncProvider);
+    final isOnline = ref.watch(networkStatusProvider);
     return Column(
       children: [
         TypeAheadField<Ingredient>(
@@ -141,7 +142,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     filterButton(),
-                    if (widget.showScanner && !isDesktop) scanButton(),
+                    if (widget.showScanner && !isDesktop && isOnline) scanButton(),
                   ],
                 ),
               ),
