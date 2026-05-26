@@ -69,6 +69,10 @@ class Ingredient {
   @JsonKey(required: true)
   final String name;
 
+  /// Brand of the product
+  @JsonKey(name: 'brand')
+  final String? brand;
+
   @JsonKey(required: true, name: 'created')
   final DateTime created;
 
@@ -137,6 +141,7 @@ class Ingredient {
     required this.id,
     required this.code,
     required this.name,
+    this.brand,
     required this.created,
     required this.energy,
     required this.carbohydrates,

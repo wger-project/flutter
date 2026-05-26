@@ -7489,6 +7489,15 @@ class $IngredientTableTable extends IngredientTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _brandMeta = const VerificationMeta('brand');
+  @override
+  late final GeneratedColumn<String> brand = GeneratedColumn<String>(
+    'brand',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdMeta = const VerificationMeta(
     'created',
   );
@@ -7628,6 +7637,7 @@ class $IngredientTableTable extends IngredientTable
     licenseObjectURl,
     code,
     name,
+    brand,
     created,
     energy,
     carbohydrates,
@@ -7712,6 +7722,12 @@ class $IngredientTableTable extends IngredientTable
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('brand')) {
+      context.handle(
+        _brandMeta,
+        brand.isAcceptableOrUnknown(data['brand']!, _brandMeta),
+      );
     }
     if (data.containsKey('created')) {
       context.handle(
@@ -7842,6 +7858,10 @@ class $IngredientTableTable extends IngredientTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      brand: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}brand'],
+      ),
       created: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created'],
@@ -7916,6 +7936,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
   final Value<String?> licenseObjectURl;
   final Value<String?> code;
   final Value<String> name;
+  final Value<String?> brand;
   final Value<DateTime> created;
   final Value<int> energy;
   final Value<double> carbohydrates;
@@ -7939,6 +7960,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     this.licenseObjectURl = const Value.absent(),
     this.code = const Value.absent(),
     this.name = const Value.absent(),
+    this.brand = const Value.absent(),
     this.created = const Value.absent(),
     this.energy = const Value.absent(),
     this.carbohydrates = const Value.absent(),
@@ -7963,6 +7985,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     this.licenseObjectURl = const Value.absent(),
     this.code = const Value.absent(),
     required String name,
+    this.brand = const Value.absent(),
     required DateTime created,
     required int energy,
     required double carbohydrates,
@@ -7994,6 +8017,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     Expression<String>? licenseObjectURl,
     Expression<String>? code,
     Expression<String>? name,
+    Expression<String>? brand,
     Expression<DateTime>? created,
     Expression<int>? energy,
     Expression<double>? carbohydrates,
@@ -8018,6 +8042,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
       if (licenseObjectURl != null) 'license_object_url': licenseObjectURl,
       if (code != null) 'code': code,
       if (name != null) 'name': name,
+      if (brand != null) 'brand': brand,
       if (created != null) 'created': created,
       if (energy != null) 'energy': energy,
       if (carbohydrates != null) 'carbohydrates': carbohydrates,
@@ -8044,6 +8069,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     Value<String?>? licenseObjectURl,
     Value<String?>? code,
     Value<String>? name,
+    Value<String?>? brand,
     Value<DateTime>? created,
     Value<int>? energy,
     Value<double>? carbohydrates,
@@ -8068,6 +8094,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
       licenseObjectURl: licenseObjectURl ?? this.licenseObjectURl,
       code: code ?? this.code,
       name: name ?? this.name,
+      brand: brand ?? this.brand,
       created: created ?? this.created,
       energy: energy ?? this.energy,
       carbohydrates: carbohydrates ?? this.carbohydrates,
@@ -8113,6 +8140,9 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (brand.present) {
+      map['brand'] = Variable<String>(brand.value);
     }
     if (created.present) {
       map['created'] = Variable<DateTime>(created.value);
@@ -8170,6 +8200,7 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
           ..write('licenseObjectURl: $licenseObjectURl, ')
           ..write('code: $code, ')
           ..write('name: $name, ')
+          ..write('brand: $brand, ')
           ..write('created: $created, ')
           ..write('energy: $energy, ')
           ..write('carbohydrates: $carbohydrates, ')
@@ -18873,6 +18904,7 @@ typedef $$IngredientTableTableCreateCompanionBuilder =
       Value<String?> licenseObjectURl,
       Value<String?> code,
       required String name,
+      Value<String?> brand,
       required DateTime created,
       required int energy,
       required double carbohydrates,
@@ -18898,6 +18930,7 @@ typedef $$IngredientTableTableUpdateCompanionBuilder =
       Value<String?> licenseObjectURl,
       Value<String?> code,
       Value<String> name,
+      Value<String?> brand,
       Value<DateTime> created,
       Value<int> energy,
       Value<double> carbohydrates,
@@ -19063,6 +19096,11 @@ class $$IngredientTableTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get brand => $composableBuilder(
+    column: $table.brand,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -19278,6 +19316,11 @@ class $$IngredientTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get brand => $composableBuilder(
+    column: $table.brand,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get created => $composableBuilder(
     column: $table.created,
     builder: (column) => ColumnOrderings(column),
@@ -19379,6 +19422,9 @@ class $$IngredientTableTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get brand =>
+      $composableBuilder(column: $table.brand, builder: (column) => column);
 
   GeneratedColumn<DateTime> get created =>
       $composableBuilder(column: $table.created, builder: (column) => column);
@@ -19567,6 +19613,7 @@ class $$IngredientTableTableTableManager
                 Value<String?> licenseObjectURl = const Value.absent(),
                 Value<String?> code = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<String?> brand = const Value.absent(),
                 Value<DateTime> created = const Value.absent(),
                 Value<int> energy = const Value.absent(),
                 Value<double> carbohydrates = const Value.absent(),
@@ -19590,6 +19637,7 @@ class $$IngredientTableTableTableManager
                 licenseObjectURl: licenseObjectURl,
                 code: code,
                 name: name,
+                brand: brand,
                 created: created,
                 energy: energy,
                 carbohydrates: carbohydrates,
@@ -19615,6 +19663,7 @@ class $$IngredientTableTableTableManager
                 Value<String?> licenseObjectURl = const Value.absent(),
                 Value<String?> code = const Value.absent(),
                 required String name,
+                Value<String?> brand = const Value.absent(),
                 required DateTime created,
                 required int energy,
                 required double carbohydrates,
@@ -19638,6 +19687,7 @@ class $$IngredientTableTableTableManager
                 licenseObjectURl: licenseObjectURl,
                 code: code,
                 name: name,
+                brand: brand,
                 created: created,
                 energy: energy,
                 carbohydrates: carbohydrates,

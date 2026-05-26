@@ -46,6 +46,9 @@ class IngredientTable extends Table {
   // Display name (required)
   TextColumn get name => text()();
 
+  // Brand of the product
+  TextColumn get brand => text().nullable()();
+
   // Creation timestamp from server
   DateTimeColumn get created => dateTime()();
 
@@ -77,6 +80,7 @@ const PowersyncIngredientTable = ps.Table(
     ps.Column.text('license_object_url'),
     ps.Column.text('code'),
     ps.Column.text('name'),
+    ps.Column.text('brand'),
     ps.Column.text('created'),
     ps.Column.integer('energy'),
     ps.Column.real('carbohydrates'),
