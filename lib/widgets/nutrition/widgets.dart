@@ -218,8 +218,21 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                   Icon(Icons.image, color: Colors.grey),
                 ),
               ),
-              title: Text(
-                ingredient.name,
+              title: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(text: ingredient.name),
+                    if (ingredient.brand case final brand? when brand.isNotEmpty)
+                      TextSpan(
+                        text: '  $brand',
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                        ),
+                      ),
+                  ],
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),

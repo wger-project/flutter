@@ -95,7 +95,20 @@ class IngredientDetailsDialog extends StatelessWidget {
     final source = ingredient.sourceName ?? 'unknown';
 
     return AlertDialog(
-      title: Text(ingredient.name),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(ingredient.name),
+          if (ingredient.brand case final brand? when brand.isNotEmpty)
+            Text(
+              brand,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+        ],
+      ),
       content: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
