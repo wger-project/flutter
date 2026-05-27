@@ -3958,10 +3958,10 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
       'CHECK ("is_main" IN (0, 1))',
     ),
   );
-  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  static const VerificationMeta _videoMeta = const VerificationMeta('video');
   @override
-  late final GeneratedColumn<String> url = GeneratedColumn<String>(
-    'url',
+  late final GeneratedColumn<String> video = GeneratedColumn<String>(
+    'video',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -4119,7 +4119,7 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     uuid,
     exerciseId,
     isMain,
-    url,
+    video,
     size,
     duration,
     width,
@@ -4176,13 +4176,13 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
     } else if (isInserting) {
       context.missing(_isMainMeta);
     }
-    if (data.containsKey('url')) {
+    if (data.containsKey('video')) {
       context.handle(
-        _urlMeta,
-        url.isAcceptableOrUnknown(data['url']!, _urlMeta),
+        _videoMeta,
+        video.isAcceptableOrUnknown(data['video']!, _videoMeta),
       );
     } else if (isInserting) {
-      context.missing(_urlMeta);
+      context.missing(_videoMeta);
     }
     if (data.containsKey('size')) {
       context.handle(
@@ -4334,9 +4334,9 @@ class $ExerciseVideoTableTable extends ExerciseVideoTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_main'],
       )!,
-      url: attachedDatabase.typeMapping.read(
+      video: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}url'],
+        data['${effectivePrefix}video'],
       )!,
       size: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -4408,7 +4408,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
   final Value<String> uuid;
   final Value<int> exerciseId;
   final Value<bool> isMain;
-  final Value<String> url;
+  final Value<String> video;
   final Value<int> size;
   final Value<int> duration;
   final Value<int> width;
@@ -4429,7 +4429,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     this.uuid = const Value.absent(),
     this.exerciseId = const Value.absent(),
     this.isMain = const Value.absent(),
-    this.url = const Value.absent(),
+    this.video = const Value.absent(),
     this.size = const Value.absent(),
     this.duration = const Value.absent(),
     this.width = const Value.absent(),
@@ -4451,7 +4451,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     required String uuid,
     required int exerciseId,
     required bool isMain,
-    required String url,
+    required String video,
     required int size,
     required int duration,
     required int width,
@@ -4471,7 +4471,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
        uuid = Value(uuid),
        exerciseId = Value(exerciseId),
        isMain = Value(isMain),
-       url = Value(url),
+       video = Value(video),
        size = Value(size),
        duration = Value(duration),
        width = Value(width),
@@ -4490,7 +4490,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     Expression<String>? uuid,
     Expression<int>? exerciseId,
     Expression<bool>? isMain,
-    Expression<String>? url,
+    Expression<String>? video,
     Expression<int>? size,
     Expression<int>? duration,
     Expression<int>? width,
@@ -4512,7 +4512,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
       if (uuid != null) 'uuid': uuid,
       if (exerciseId != null) 'exercise_id': exerciseId,
       if (isMain != null) 'is_main': isMain,
-      if (url != null) 'url': url,
+      if (video != null) 'video': video,
       if (size != null) 'size': size,
       if (duration != null) 'duration': duration,
       if (width != null) 'width': width,
@@ -4537,7 +4537,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     Value<String>? uuid,
     Value<int>? exerciseId,
     Value<bool>? isMain,
-    Value<String>? url,
+    Value<String>? video,
     Value<int>? size,
     Value<int>? duration,
     Value<int>? width,
@@ -4559,7 +4559,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
       uuid: uuid ?? this.uuid,
       exerciseId: exerciseId ?? this.exerciseId,
       isMain: isMain ?? this.isMain,
-      url: url ?? this.url,
+      video: video ?? this.video,
       size: size ?? this.size,
       duration: duration ?? this.duration,
       width: width ?? this.width,
@@ -4593,8 +4593,8 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
     if (isMain.present) {
       map['is_main'] = Variable<bool>(isMain.value);
     }
-    if (url.present) {
-      map['url'] = Variable<String>(url.value);
+    if (video.present) {
+      map['video'] = Variable<String>(video.value);
     }
     if (size.present) {
       map['size'] = Variable<int>(size.value);
@@ -4653,7 +4653,7 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
           ..write('uuid: $uuid, ')
           ..write('exerciseId: $exerciseId, ')
           ..write('isMain: $isMain, ')
-          ..write('url: $url, ')
+          ..write('video: $video, ')
           ..write('size: $size, ')
           ..write('duration: $duration, ')
           ..write('width: $width, ')
@@ -15717,7 +15717,7 @@ typedef $$ExerciseVideoTableTableCreateCompanionBuilder =
       required String uuid,
       required int exerciseId,
       required bool isMain,
-      required String url,
+      required String video,
       required int size,
       required int duration,
       required int width,
@@ -15740,7 +15740,7 @@ typedef $$ExerciseVideoTableTableUpdateCompanionBuilder =
       Value<String> uuid,
       Value<int> exerciseId,
       Value<bool> isMain,
-      Value<String> url,
+      Value<String> video,
       Value<int> size,
       Value<int> duration,
       Value<int> width,
@@ -15813,8 +15813,8 @@ class $$ExerciseVideoTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get url => $composableBuilder(
-    column: $table.url,
+  ColumnFilters<String> get video => $composableBuilder(
+    column: $table.video,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -15935,8 +15935,8 @@ class $$ExerciseVideoTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get url => $composableBuilder(
-    column: $table.url,
+  ColumnOrderings<String> get video => $composableBuilder(
+    column: $table.video,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -16050,8 +16050,8 @@ class $$ExerciseVideoTableTableAnnotationComposer
   GeneratedColumn<bool> get isMain =>
       $composableBuilder(column: $table.isMain, builder: (column) => column);
 
-  GeneratedColumn<String> get url =>
-      $composableBuilder(column: $table.url, builder: (column) => column);
+  GeneratedColumn<String> get video =>
+      $composableBuilder(column: $table.video, builder: (column) => column);
 
   GeneratedColumn<int> get size =>
       $composableBuilder(column: $table.size, builder: (column) => column);
@@ -16166,7 +16166,7 @@ class $$ExerciseVideoTableTableTableManager
                 Value<String> uuid = const Value.absent(),
                 Value<int> exerciseId = const Value.absent(),
                 Value<bool> isMain = const Value.absent(),
-                Value<String> url = const Value.absent(),
+                Value<String> video = const Value.absent(),
                 Value<int> size = const Value.absent(),
                 Value<int> duration = const Value.absent(),
                 Value<int> width = const Value.absent(),
@@ -16187,7 +16187,7 @@ class $$ExerciseVideoTableTableTableManager
                 uuid: uuid,
                 exerciseId: exerciseId,
                 isMain: isMain,
-                url: url,
+                video: video,
                 size: size,
                 duration: duration,
                 width: width,
@@ -16210,7 +16210,7 @@ class $$ExerciseVideoTableTableTableManager
                 required String uuid,
                 required int exerciseId,
                 required bool isMain,
-                required String url,
+                required String video,
                 required int size,
                 required int duration,
                 required int width,
@@ -16231,7 +16231,7 @@ class $$ExerciseVideoTableTableTableManager
                 uuid: uuid,
                 exerciseId: exerciseId,
                 isMain: isMain,
-                url: url,
+                video: video,
                 size: size,
                 duration: duration,
                 width: width,

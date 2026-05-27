@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,38 +18,55 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/models/exercises/video.dart';
+import 'package:wger/providers/wger_base.dart';
 
-class ExerciseVideoWidget extends StatefulWidget {
+class ExerciseVideoWidget extends ConsumerStatefulWidget {
   const ExerciseVideoWidget({required this.video});
 
   final Video video;
 
   @override
-  State<ExerciseVideoWidget> createState() => _ExerciseVideoWidgetState();
+  ConsumerState<ExerciseVideoWidget> createState() => _ExerciseVideoWidgetState();
 }
 
-class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
+class _ExerciseVideoWidgetState extends ConsumerState<ExerciseVideoWidget> {
   final logger = Logger('ExerciseVideoWidgetState');
 
-  late VideoPlayerController _controller;
+  VideoPlayerController? _controller;
   bool hasError = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(widget.video.uri);
+    // Defer controller construction until first build so we can resolve the
+    // absolute media URL via Riverpod.
+  }
+
+  void _ensureController() {
+    if (_controller != null) {
+      return;
+    }
+    final uri = ref.read(mediaUrlBuilderProvider)(widget.video.video);
+    if (uri == null) {
+      hasError = true;
+      return;
+    }
+    _controller = VideoPlayerController.networkUrl(uri);
     _initializeVideo();
   }
 
   Future<void> _initializeVideo() async {
     try {
-      await _controller.initialize();
-      setState(() {});
+      await _controller!.initialize();
+      if (mounted) {
+        setState(() {});
+      }
     } on PlatformException catch (e) {
       if (mounted) {
         setState(() => hasError = true);
@@ -61,13 +78,15 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return hasError
+    _ensureController();
+    final controller = _controller;
+    return hasError || controller == null
         ? FormHttpErrorsWidget(
             WgerHttpException.fromMap(
               const {
@@ -77,15 +96,15 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
               },
             ),
           )
-        : _controller.value.isInitialized
+        : controller.value.isInitialized
         ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
+            aspectRatio: controller.value.aspectRatio,
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                VideoPlayer(_controller),
-                _ControlsOverlay(controller: _controller),
-                VideoProgressIndicator(_controller, allowScrubbing: true),
+                VideoPlayer(controller),
+                _ControlsOverlay(controller: controller),
+                VideoProgressIndicator(controller, allowScrubbing: true),
               ],
             ),
           )

@@ -22,9 +22,9 @@ class Video {
   final int exerciseId;
   final bool isMain;
 
-  final String url;
-
-  Uri get uri => Uri.parse(url);
+  /// Relative path under MEDIA_ROOT, as stored by Django's `FileField`.
+  /// Resolve to an absolute URL via `mediaUrlBuilderProvider`.
+  final String video;
 
   final int size;
   final num duration;
@@ -50,7 +50,7 @@ class Video {
     required this.uuid,
     required this.exerciseId,
     required this.isMain,
-    required this.url,
+    required this.video,
     required this.size,
     required this.duration,
     required this.width,

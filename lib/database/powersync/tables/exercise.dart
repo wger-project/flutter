@@ -302,7 +302,8 @@ class ExerciseVideoTable extends Table {
   TextColumn get uuid => text()();
   IntColumn get exerciseId => integer().named('exercise_id').references(ExerciseTable, #id)();
   BoolColumn get isMain => boolean().named('is_main')();
-  TextColumn get url => text()();
+  // Relative path under MEDIA_ROOT (Django's FileField stores this)
+  TextColumn get video => text()();
   IntColumn get size => integer()();
   IntColumn get duration => integer()();
   IntColumn get width => integer()();
@@ -329,7 +330,7 @@ const PowersyncExerciseVideoTable = ps.Table(
     ps.Column.text('uuid'),
     ps.Column.integer('exercise_id'),
     ps.Column.integer('is_main'),
-    ps.Column.text('url'),
+    ps.Column.text('video'),
     ps.Column.integer('size'),
     ps.Column.integer('duration'),
     ps.Column.integer('width'),
