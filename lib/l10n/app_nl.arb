@@ -155,7 +155,7 @@
     "@musclesSecondary": {
         "description": "secondary muscles trained by an exercise"
     },
-    "startDate": "Start datum",
+    "startDate": "Start­datum",
     "@startDate": {
         "description": "The start date of a nutritional plan or routine"
     },
@@ -340,11 +340,11 @@
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
-    "goalEnergy": "Energie doel",
-    "goalProtein": "Proteïne doel",
-    "goalCarbohydrates": "Koolhydratendoel",
-    "goalFat": "Vet doel",
-    "goalFiber": "Vezel doel",
+    "goalEnergy": "Energie­doelstelling",
+    "goalProtein": "Eiwit­doelstelling",
+    "goalCarbohydrates": "Koolhydraat­doelstelling",
+    "goalFat": "Vet­doelstelling",
+    "goalFiber": "Vezel­doelstelling",
     "anErrorOccurred": "Er is een fout opgetreden!",
     "errorInfoDescription": "Het spijt ons, maar er is iets misgegaan. Je kunt ons helpen dit op te lossen door het probleem te melden op GitHub.",
     "errorInfoDescription2": "Je kunt de app blijven gebruiken, maar sommige functies werken mogelijk niet.",
@@ -403,7 +403,7 @@
     "@date": {
         "description": "The date of a workout log or body weight entry"
     },
-    "endDate": "Einddatum",
+    "endDate": "Eind­datum",
     "@endDate": {
         "description": "The End date of a nutritional plan or routine"
     },
