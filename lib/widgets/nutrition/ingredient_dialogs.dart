@@ -108,7 +108,22 @@ class IngredientDetails extends StatelessWidget {
     }
 
     return AlertDialog(
-      title: (snapshot.hasData) ? Text(ingredient!.name) : null,
+      title: snapshot.hasData
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(ingredient!.name),
+                if (ingredient.brand != null && ingredient.brand!.isNotEmpty)
+                  Text(
+                    ingredient.brand!,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+              ],
+            )
+          : null,
       content: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

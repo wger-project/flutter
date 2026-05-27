@@ -22,6 +22,34 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 
+import '../../../test_data/nutritional_plans.dart';
+
+Future<void> pumpIngredientDetailsDialog(
+  WidgetTester tester, {
+  required AsyncSnapshot<Ingredient> snapshot,
+}) async {
+  await tester.pumpWidget(
+    MaterialApp(
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        body: Builder(
+          builder: (context) => ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => IngredientDetails(snapshot),
+              );
+            },
+            child: const Text('Show Dialog'),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 Future<void> pumpIngredientScanDialog(
   WidgetTester tester, {
   required AsyncSnapshot<Ingredient?> snapshot,
@@ -54,6 +82,39 @@ Future<void> pumpIngredientScanDialog(
 }
 
 void main() {
+  group('IngredientDetails tests', () {
+    testWidgets('shows brand below name in title when ingredient has a brand', (
+      WidgetTester tester,
+    ) async {
+      // ingredient3 (Broccoli cake, brand: 'Weightwatchers')
+      final snapshot = AsyncSnapshot<Ingredient>.withData(ConnectionState.done, ingredient3);
+
+      await pumpIngredientDetailsDialog(tester, snapshot: snapshot);
+      await tester.tap(find.text('Show Dialog'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('Broccoli cake'), findsOneWidget);
+      expect(find.text('Weightwatchers'), findsOneWidget);
+    });
+
+    testWidgets('does not show brand in title when ingredient has no brand', (
+      WidgetTester tester,
+    ) async {
+      // ingredient1 (Water, brand: null)
+      final snapshot = AsyncSnapshot<Ingredient>.withData(ConnectionState.done, ingredient1);
+
+      await pumpIngredientDetailsDialog(tester, snapshot: snapshot);
+      await tester.tap(find.text('Show Dialog'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('Water'), findsOneWidget);
+      // brand: null must not render as the literal string "null"
+      expect(find.text('null'), findsNothing);
+    });
+  });
+
   group('IngredientScanResultDialog tests', () {
     const testBarcode = '1234567890123';
 
