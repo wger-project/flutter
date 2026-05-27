@@ -118,7 +118,7 @@ class IngredientDetails extends StatelessWidget {
                   Text(
                     ingredient.brand!,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: DefaultTextStyle.of(context).style.color?.withValues(alpha: 0.6),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
               ],

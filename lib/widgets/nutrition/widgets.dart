@@ -220,7 +220,9 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                       TextSpan(
                         text: '  ${ingredient.brand}',
                         style: TextStyle(
-                          color: DefaultTextStyle.of(context).style.color?.withValues(alpha: 0.6),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                         ),
                       ),
                   ],
