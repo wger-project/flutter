@@ -21,8 +21,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -30,6 +28,7 @@ import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/routine_screen.dart';
 
 import '../../test_data/routines.dart';
+import '../fake_auth_environment.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
   _StubRoutinesRiverpod(this._routines);
@@ -40,9 +39,7 @@ class _StubRoutinesRiverpod extends RoutinesRiverpod {
 }
 
 void main() {
-  setUp(() {
-    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-  });
+  installFakeAuthEnvironment();
 
   Widget renderWidget({locale = 'en', bool isOnline = true}) {
     final key = GlobalKey<NavigatorState>();

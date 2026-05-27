@@ -374,18 +374,18 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<AuthState> _tryAutoLogin() async {
-    final appVersion = await PackageInfo.fromPlatform();
     // One-shot migration: if a legacy DRF token is still on disk, swap it
     // for a JWT bundle now so the rest of the auto-login can take the
     // JWT happy path. On any failure the legacy blob is left alone and the
     // user falls back to the still-supported legacy code path; the next
     // start will try again.
-    await _maybeMigrateLegacyToJwt(appVersion);
+    await _maybeMigrateLegacyToJwt();
     final stored = await _storage.load();
     if (stored == null) {
       _logger.info('autologin failed, no saved session');
-      return AuthState(applicationVersion: appVersion);
+      return const AuthState();
     }
+    final appVersion = await PackageInfo.fromPlatform();
     return _resolveStoredSession(stored, appVersion);
   }
 
@@ -413,13 +413,14 @@ class AuthNotifier extends _$AuthNotifier {
   /// - 5xx / malformed body / refresh exchange failure: keep the legacy
   ///   blob and retry on the next start. The server-side session row
   ///   minted in step 1 stays orphaned but is harmless.
-  Future<void> _maybeMigrateLegacyToJwt(PackageInfo appVersion) async {
+  Future<void> _maybeMigrateLegacyToJwt() async {
     final stored = await _storage.load();
     if (stored == null || stored.credential is! LegacyCredential) {
       return;
     }
     final legacyCred = stored.credential as LegacyCredential;
     final serverUrl = stored.serverUrl;
+    final appVersion = await PackageInfo.fromPlatform();
 
     _logger.info('Legacy DRF token present, attempting JWT migration');
 
