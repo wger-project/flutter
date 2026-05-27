@@ -25,6 +25,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/providers/body_weight_repository.dart';
@@ -55,6 +57,8 @@ void main() {
   late Ingredient fetchedIngredient;
 
   setUp(() {
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+
     mockBodyWeightRepository = MockBodyWeightRepository();
     when(
       mockBodyWeightRepository.watchAllDrift(),
