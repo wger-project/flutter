@@ -37,6 +37,7 @@ import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/user.dart';
 
 class RoutinesProvider with ChangeNotifier {
   final _logger = Logger('RoutinesProvider');
@@ -67,6 +68,7 @@ class RoutinesProvider with ChangeNotifier {
   Routine? activeRoutine;
   final ExercisesProvider _exerciseProvider;
   final WgerBaseProvider baseProvider;
+  final UserProvider _userProvider;
   List<Routine> _routines = [];
   List<WeightUnit> _weightUnits = [];
   List<RepetitionUnit> _repetitionUnits = [];
@@ -74,6 +76,7 @@ class RoutinesProvider with ChangeNotifier {
   RoutinesProvider(
     this.baseProvider,
     this._exerciseProvider,
+    this._userProvider,
     List<Routine> entries, {
     List<WeightUnit>? weightUnits,
     List<RepetitionUnit>? repetitionUnits,
@@ -112,8 +115,9 @@ class RoutinesProvider with ChangeNotifier {
   }
 
   /// Return the default weight unit (kg)
-  WeightUnit get defaultWeightUnit {
-    return _weightUnits.firstWhere((element) => element.id == WEIGHT_UNIT_KG);
+  Future<WeightUnit> get defaultWeightUnit async {
+    final id = await _userProvider.isMetric() ? WEIGHT_UNIT_KG : WEIGHT_UNIT_LB;
+    return _weightUnits.firstWhere((element) => element.id == id);
   }
 
   WeightUnit findWeightUnitById(int id) => _weightUnits.firstWhere((element) => element.id == id);
@@ -203,9 +207,13 @@ class RoutinesProvider with ChangeNotifier {
             (e) => e.id == setConfig.repetitionsUnitId,
           );
 
-          setConfig.weightUnit = _weightUnits.firstWhere(
-            (e) => e.id == setConfig.weightUnitId,
-          );
+          if (setConfig.weightUnitId != null) {
+            setConfig.weightUnit = _weightUnits.firstWhere(
+                  (e) => e.id == setConfig.weightUnitId,
+            );
+          } else {
+            setConfig.weightUnit = await defaultWeightUnit;
+          }
         }
       }
     }

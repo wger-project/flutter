@@ -163,14 +163,15 @@ class MainApp extends StatelessWidget {
           update: (context, base, previous) =>
               previous ?? ExercisesProvider(WgerBaseProvider(base)),
         ),
-        ChangeNotifierProxyProvider2<AuthProvider, ExercisesProvider, RoutinesProvider>(
+        ChangeNotifierProxyProvider3<AuthProvider, ExercisesProvider, UserProvider, RoutinesProvider>(
           create: (context) => RoutinesProvider(
             WgerBaseProvider(Provider.of(context, listen: false)),
             Provider.of(context, listen: false),
+            Provider.of(context, listen: true),
             [],
           ),
-          update: (context, auth, exercises, previous) =>
-              previous ?? RoutinesProvider(WgerBaseProvider(auth), exercises, []),
+          update: (context, auth, exercises, user, previous) =>
+              previous ?? RoutinesProvider(WgerBaseProvider(auth), exercises, user, []),
         ),
         ChangeNotifierProxyProvider<AuthProvider, NutritionPlansProvider>(
           create: (context) => NutritionPlansProvider(

@@ -93,14 +93,12 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       final galleryProvider = context.read<GalleryProvider>();
       final weightProvider = context.read<BodyWeightProvider>();
       final measurementProvider = context.read<MeasurementProvider>();
-      final userProvider = context.read<UserProvider>();
 
       //
       // Base data
       widget._logger.info('Loading base data');
       await Future.wait([
         authProvider.setServerVersion(),
-        userProvider.fetchAndSetProfile(),
         routinesProvider.fetchAndSetUnits(),
         nutritionPlansProvider.fetchIngredientsFromCache(),
         exercisesProvider.fetchAndSetInitialData(),
