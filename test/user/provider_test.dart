@@ -70,7 +70,7 @@ void main() {
   group('house keeping', () {
     test('should clear the profile list with clear()', () async {
       // arrange
-      await userProvider.fetchAndSetProfile();
+      await userProvider.isMetric();
 
       // assert
       expect(userProvider.profile, isNot(null));
@@ -87,7 +87,7 @@ void main() {
   group('profile', () {
     test('Loading the profile from the server works', () async {
       // arrange
-      await userProvider.fetchAndSetProfile();
+      await userProvider.isMetric();
 
       // assert
       expect(userProvider.profile!.username, 'admin');
@@ -98,7 +98,7 @@ void main() {
 
     test('Sending the verify email works', () async {
       // arrange
-      await userProvider.fetchAndSetProfile();
+      await userProvider.isMetric();
       await userProvider.verifyEmail();
 
       // assert

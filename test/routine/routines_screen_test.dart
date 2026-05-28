@@ -29,6 +29,7 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
@@ -36,9 +37,10 @@ import 'package:wger/widgets/routines/forms/routine.dart';
 
 import 'routines_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
+@GenerateMocks([WgerBaseProvider, UserProvider])
 void main() {
   var mockBaseProvider = MockWgerBaseProvider();
+  var mockUserProvider = MockUserProvider();
   final testExercisesProvider = ExercisesProvider(
     mockBaseProvider,
     database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
@@ -61,6 +63,7 @@ void main() {
       create: (context) => RoutinesProvider(
         mockBaseProvider,
         testExercisesProvider,
+        mockUserProvider,
         [
           Routine(
             id: 1,

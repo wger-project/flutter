@@ -3,12 +3,17 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i6;
+import 'dart:ui' as _i9;
 
+import 'package:flutter/material.dart' as _i8;
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:shared_preferences/shared_preferences.dart' as _i5;
+import 'package:wger/models/user/profile.dart' as _i10;
 import 'package:wger/providers/auth.dart' as _i2;
 import 'package:wger/providers/base_provider.dart' as _i4;
+import 'package:wger/providers/user.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -26,19 +31,35 @@ import 'package:wger/providers/base_provider.dart' as _i4;
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeAuthProvider_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeClient_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeUri_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeResponse_3(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeWgerBaseProvider_4 extends _i1.SmartFake
+    implements _i4.WgerBaseProvider {
+  _FakeWgerBaseProvider_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeSharedPreferencesAsync_5 extends _i1.SmartFake
+    implements _i5.SharedPreferencesAsync {
+  _FakeSharedPreferencesAsync_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [WgerBaseProvider].
@@ -116,7 +137,7 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
           as Uri);
 
   @override
-  _i5.Future<dynamic> fetch(
+  _i6.Future<dynamic> fetch(
     Uri? uri, {
     int? maxRetries = 3,
     Duration? initialDelay = const Duration(milliseconds: 250),
@@ -134,12 +155,12 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
                 #language: language,
               },
             ),
-            returnValue: _i5.Future<dynamic>.value(),
+            returnValue: _i6.Future<dynamic>.value(),
           )
-          as _i5.Future<dynamic>);
+          as _i6.Future<dynamic>);
 
   @override
-  _i5.Future<List<dynamic>> fetchPaginated(
+  _i6.Future<List<dynamic>> fetchPaginated(
     Uri? uri, {
     String? language,
     Duration? timeout = const Duration(seconds: 15),
@@ -150,43 +171,227 @@ class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
               [uri],
               {#language: language, #timeout: timeout},
             ),
-            returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
+            returnValue: _i6.Future<List<dynamic>>.value(<dynamic>[]),
           )
-          as _i5.Future<List<dynamic>>);
+          as _i6.Future<List<dynamic>>);
 
   @override
-  _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
+  _i6.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
       (super.noSuchMethod(
             Invocation.method(#post, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
+            returnValue: _i6.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
           )
-          as _i5.Future<Map<String, dynamic>>);
+          as _i6.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<Map<String, dynamic>> patch(
+  _i6.Future<Map<String, dynamic>> patch(
     Map<String, dynamic>? data,
     Uri? uri,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#patch, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
+            returnValue: _i6.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
           )
-          as _i5.Future<Map<String, dynamic>>);
+          as _i6.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<_i3.Response> deleteRequest(String? url, int? id) =>
+  _i6.Future<_i3.Response> deleteRequest(String? url, int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteRequest, [url, id]),
-            returnValue: _i5.Future<_i3.Response>.value(
+            returnValue: _i6.Future<_i3.Response>.value(
               _FakeResponse_3(
                 this,
                 Invocation.method(#deleteRequest, [url, id]),
               ),
             ),
           )
-          as _i5.Future<_i3.Response>);
+          as _i6.Future<_i3.Response>);
+}
+
+/// A class which mocks [UserProvider].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserProvider extends _i1.Mock implements _i7.UserProvider {
+  MockUserProvider() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i8.ThemeMode get themeMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#themeMode),
+            returnValue: _i8.ThemeMode.system,
+          )
+          as _i8.ThemeMode);
+
+  @override
+  _i4.WgerBaseProvider get baseProvider =>
+      (super.noSuchMethod(
+            Invocation.getter(#baseProvider),
+            returnValue: _FakeWgerBaseProvider_4(
+              this,
+              Invocation.getter(#baseProvider),
+            ),
+          )
+          as _i4.WgerBaseProvider);
+
+  @override
+  _i5.SharedPreferencesAsync get prefs =>
+      (super.noSuchMethod(
+            Invocation.getter(#prefs),
+            returnValue: _FakeSharedPreferencesAsync_5(
+              this,
+              Invocation.getter(#prefs),
+            ),
+          )
+          as _i5.SharedPreferencesAsync);
+
+  @override
+  List<_i7.DashboardWidget> get dashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#dashboardWidgets),
+            returnValue: <_i7.DashboardWidget>[],
+          )
+          as List<_i7.DashboardWidget>);
+
+  @override
+  List<_i7.DashboardWidget> get allDashboardWidgets =>
+      (super.noSuchMethod(
+            Invocation.getter(#allDashboardWidgets),
+            returnValue: <_i7.DashboardWidget>[],
+          )
+          as List<_i7.DashboardWidget>);
+
+  @override
+  set themeMode(_i8.ThemeMode? value) => super.noSuchMethod(
+    Invocation.setter(#themeMode, value),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set userLocale(_i9.Locale? value) => super.noSuchMethod(
+    Invocation.setter(#userLocale, value),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set prefs(_i5.SharedPreferencesAsync? value) => super.noSuchMethod(
+    Invocation.setter(#prefs, value),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set profile(_i10.Profile? value) => super.noSuchMethod(
+    Invocation.setter(#profile, value),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  bool get hasListeners =>
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
+
+  @override
+  void clear() => super.noSuchMethod(
+    Invocation.method(#clear, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  bool isDashboardWidgetVisible(_i7.DashboardWidget? key) =>
+      (super.noSuchMethod(
+            Invocation.method(#isDashboardWidgetVisible, [key]),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i6.Future<void> setDashboardWidgetVisible(
+    _i7.DashboardWidget? key,
+    bool? visible,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardWidgetVisible, [key, visible]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setDashboardOrder(int? oldIndex, int? newIndex) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDashboardOrder, [oldIndex, newIndex]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  void setThemeMode(_i8.ThemeMode? mode) => super.noSuchMethod(
+    Invocation.method(#setThemeMode, [mode]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i6.Future<void> setUserLocale(_i9.Locale? locale) =>
+      (super.noSuchMethod(
+            Invocation.method(#setUserLocale, [locale]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> saveProfile() =>
+      (super.noSuchMethod(
+            Invocation.method(#saveProfile, []),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> verifyEmail() =>
+      (super.noSuchMethod(
+            Invocation.method(#verifyEmail, []),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<bool> isMetric() =>
+      (super.noSuchMethod(
+            Invocation.method(#isMetric, []),
+            returnValue: _i6.Future<bool>.value(false),
+          )
+          as _i6.Future<bool>);
+
+  @override
+  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#addListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#removeListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
 }
