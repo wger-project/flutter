@@ -80,7 +80,7 @@ dev_dependencies:
   xml: ^6.6.1
   drift_dev: ^2.31.0
   flutter_lints: ^6.0.0
-  flutter_native_splash: ^2.4.7
+  flutter_native_splash: ^2.4.8
   freezed: ^3.2.0
   json_serializable: ^6.11.2
   mockito: ^5.6.4
