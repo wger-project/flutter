@@ -785,7 +785,7 @@
             }
         }
     },
-    "fitInWeek": "Ajouter à la semaine",
+    "fitInWeek": "Planning hebdomadaire fixe",
     "addSuperset": "Ajouter une supersérie",
     "useApiToken": "Utiliser un jeton API",
     "apiTokenValidChars": "Une clé API ne peut contenir que les lettres a-f, les chiffres 0-9 et 40 caractères exactement",
@@ -1017,5 +1017,41 @@
         }
     },
     "searchLanguageAll": "Toutes les langues",
-    "trophies": "Trophées"
+    "trophies": "Trophées",
+    "dashboardWidgets": "Widgets de tableau de bord",
+    "slotEntryTypeWarmup": "Échauffement",
+    "topSet": "Série max : {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "preview": "Aperçu",
+    "useBasicMarkdown": "Vous pouvez utiliser du Markdown de base pour formater le texte",
+    "editorBold": "Gras",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Italic",
+    "editorList": "Liste",
+    "appLanguage": "Langue de l'application",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Valeur par défaut du système",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "exerciseSearchMode": "Mode de recherche",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeExact": "Exact",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    }
 }
