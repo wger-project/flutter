@@ -62,9 +62,10 @@ final class TrophyStateNotifier extends _$TrophyStateNotifier {
 
   @override
   TrophyState build() {
-    // Trophies are REST-only. Kick off the initial load when online, and
-    // (re)fetch once connectivity returns. Skipping the fetch while offline
-    // keeps the REST calls from hammering an unreachable server.
+    // Trophies are REST-only. Kick off the initial load when the server is
+    // reachable, and (re)fetch once it becomes reachable again. Skipping the
+    // fetch while offline keeps the REST calls from hammering an unreachable
+    // server.
     if (ref.read(networkStatusProvider)) {
       Future.microtask(_fetchAllSafe);
     }

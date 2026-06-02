@@ -108,14 +108,6 @@ class NetworkStatus extends _$NetworkStatus {
       state = await _hasConnectionAndInternet(conn);
     });
 
-    // Re-probe when the configured server changes (login / logout) so the
-    // status reflects the new backend instead of a stale pre-login value.
-    ref.listen(wgerBaseProvider, (previous, next) {
-      if (previous?.serverUrl != next.serverUrl) {
-        check();
-      }
-    });
-
     // Connectivity events only fire on adapter changes, so an active re-probe
     // is needed to notice a backend that goes down (or comes back) while the
     // network stays up.

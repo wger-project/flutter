@@ -40,6 +40,7 @@ import 'package:wger/providers/auth_http_client.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/helpers.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/server_gating.dart';
@@ -580,8 +581,10 @@ class AuthNotifier extends _$AuthNotifier {
   /// The first run is deferred to a fresh event-loop task so [build] has
   /// completed first. It then re-runs whenever connectivity is regained, so a
   /// session restored while offline still gets validated without an app
-  /// restart. Connectivity is observed directly (not via networkStatusProvider)
-  /// to avoid a dependency cycle (auth -> networkStatus -> wgerBase -> auth).
+  /// restart. Connectivity is observed directly rather than through
+  /// networkStatusProvider: the revalidation only needs a "connection returned"
+  /// trigger, and auth invalidates networkStatusProvider after login (see
+  /// [_invalidatePostLoginProviders]), so it deliberately doesn't depend on it.
   void _scheduleRevalidation() {
     revalidationDone = Future(_revalidate);
 
@@ -693,6 +696,9 @@ class AuthNotifier extends _$AuthNotifier {
     ref.invalidate(nutritionProvider);
     ref.invalidate(trophyStateProvider);
     ref.invalidate(galleryProvider);
+    // Re-probe reachability against the new server. NetworkStatus relies on
+    // this invalidation to pick up the post-login server URL immediately.
+    ref.invalidate(networkStatusProvider);
   }
 
   /// Exchanges the persisted refresh token for a fresh access/refresh pair.

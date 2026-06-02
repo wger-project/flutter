@@ -46,17 +46,6 @@ class _FakeConnectivity extends ConnectivityPlatform with MockPlatformInterfaceM
   void dispose() => _controller.close();
 }
 
-/// Drives the server URL exposed through [wgerBaseProvider] in the
-/// server-URL-change test.
-class _ServerUrl extends Notifier<String?> {
-  @override
-  String? build() => null;
-
-  void set(String? value) => state = value;
-}
-
-final _serverUrlProvider = NotifierProvider<_ServerUrl, String?>(_ServerUrl.new);
-
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -191,26 +180,20 @@ void main() {
     expect(container.read(networkStatusProvider), isFalse);
   });
 
-  test('re-probes when the configured server URL changes (login)', () async {
+  test('re-probes when invalidated (e.g. after login)', () async {
+    // NetworkStatus does not watch wgerBase, so auth re-probes the new server
+    // by invalidating the provider; the rebuild runs the probe again.
     final probedUris = <Uri?>[];
     reachabilityCheck = (uri, _, _) async {
       probedUris.add(uri);
       return true;
     };
-    final container = ProviderContainer.test(
-      overrides: [
-        wgerBaseProvider.overrideWith(
-          (ref) => WgerBaseProvider(serverUrl: ref.watch(_serverUrlProvider)),
-        ),
-      ],
-    );
+    final container = makeContainer(serverUrl: 'https://wger.example');
     await container.read(networkStatusProvider.notifier).check();
     final beforeLogin = probedUris.length;
 
-    container.read(_serverUrlProvider.notifier).set('https://wger.example');
-    // Force the dependent wgerBaseProvider to rebuild so NetworkStatus's
-    // ref.listen fires.
-    container.read(wgerBaseProvider);
+    container.invalidate(networkStatusProvider);
+    container.read(networkStatusProvider);
     await pumpEventQueue();
 
     expect(probedUris.length, greaterThan(beforeLogin));

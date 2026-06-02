@@ -43,10 +43,11 @@ PowerSyncDatabase? _builtInstance;
 /// The PowerSync database once [powerSyncInstanceProvider] has finished
 /// building, otherwise null.
 ///
-/// Escape hatch for callers that must not take a Riverpod dependency on
-/// [powerSyncInstanceProvider]: that provider transitively depends on
-/// [authProvider] (via networkStatus and wgerBase), so the auth notifier
-/// reading the provider through `ref` would form a dependency cycle.
+/// Synchronous, build-free accessor for callers that should act on the DB only
+/// when it already exists (the auth notifier's session-reset paths). Awaiting
+/// [powerSyncInstanceProvider] through `ref` would instead be async and would
+/// build the DB on demand, the opposite of the no-op-when-absent behaviour
+/// those paths need.
 PowerSyncDatabase? get builtPowerSyncInstance => _builtInstance;
 
 @Riverpod(keepAlive: true)
