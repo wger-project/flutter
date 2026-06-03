@@ -337,15 +337,20 @@ class AuthNotifier extends _$AuthNotifier {
       newState = newState.copyWith(serverConfigWarning: true);
     }
 
+    // Wipe the previous user's local DB BEFORE publishing the logged-in state,
+    // so no listener can react to the new identity while the old user's data
+    // and queued CRUD ops are still on disk (and uploadable under the new
+    // credentials). Mirrors the wipe-before-publish order of _resetSession.
+    if (newState.status == AuthStatus.loggedIn && userChanged) {
+      _logger.info(
+        'different user logging in (was $prevUserId, now $newUserId), wiping local DB',
+      );
+      await _wipeOnUserSwitch();
+    }
+
     state = AsyncData(newState);
 
     if (newState.status == AuthStatus.loggedIn) {
-      if (userChanged) {
-        _logger.info(
-          'different user logging in (was $prevUserId, now $newUserId), wiping local DB',
-        );
-        await _wipeOnUserSwitch();
-      }
       await _reconnectPowerSyncIfBuilt(serverUrl);
       _invalidatePostLoginProviders();
     }
