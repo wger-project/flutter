@@ -443,6 +443,27 @@ void main() {
       expect(emitted.single.ingredient?.name, 'Apple');
     });
 
+    test('log whose ingredient has not synced yet still emits with null', () async {
+      // Models the window between addLogLocalDrift and PowerSync pulling the
+      // referenced ingredient down. The diary entry must stay visible (else the
+      // daily totals undercount) rather than being dropped by the join.
+      await seedPlan(id: planUuid1);
+      await repo.addLogLocalDrift(
+        LogItem(
+          planId: planUuid1,
+          ingredientId: 42,
+          amount: 100,
+          datetime: DateTime.utc(2026, 4, 15),
+        ),
+      );
+
+      final emitted = await repo.watchAllLogsHydrated().first;
+
+      expect(emitted, hasLength(1));
+      expect(emitted.single.ingredient, isNull);
+      expect(emitted.single.amount, 100);
+    });
+
     test('watchAllLogsHydrated attaches image and weight units to each ingredient', () async {
       await seedPlan(id: planUuid1);
       await seedIngredient(id: 1, name: 'Apple');

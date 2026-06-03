@@ -252,7 +252,7 @@ class NutritionRepository {
   Stream<List<LogItem>> watchAllLogsHydrated() {
     _logger.finer('Watching all local diary entries');
     final query = _db.select(_db.logItemTable).join([
-      innerJoin(
+      leftOuterJoin(
         _db.ingredientTable,
         _db.ingredientTable.id.equalsExp(_db.logItemTable.ingredientId),
       ),
@@ -277,18 +277,20 @@ class NutritionRepository {
 
     for (final row in rows) {
       final log = row.readTable(_db.logItemTable);
-      final ingredient = row.readTable(_db.ingredientTable);
+      final ingredient = row.readTableOrNull(_db.ingredientTable);
       final image = row.readTableOrNull(_db.ingredientImageTable);
       final wu = row.readTableOrNull(_db.ingredientWeightUnitTable);
 
-      final ingEntry = ingredients.putIfAbsent(ingredient.id, () => ingredient);
-      if (image != null) {
-        ingEntry.image = image;
-      }
-      if (wu != null) {
-        final list = weightUnitsByIngredient.putIfAbsent(ingredient.id, () => []);
-        if (!list.any((w) => w.id == wu.id)) {
-          list.add(wu);
+      if (ingredient != null) {
+        final ingEntry = ingredients.putIfAbsent(ingredient.id, () => ingredient);
+        if (image != null) {
+          ingEntry.image = image;
+        }
+        if (wu != null) {
+          final list = weightUnitsByIngredient.putIfAbsent(ingredient.id, () => []);
+          if (!list.any((w) => w.id == wu.id)) {
+            list.add(wu);
+          }
         }
       }
 
