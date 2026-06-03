@@ -19,6 +19,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/core/language.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/image.dart';
@@ -102,17 +103,25 @@ class Exercise extends Equatable {
 
   bool get showPlateCalculator => equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL);
 
-  /// Returns translation for the given language
+  /// Returns the translation for the given language.
   ///
-  /// If no translation is found, English will be returned
-  ///
-  /// Note: we return the first translation as a fallback if we don't find a
-  ///       translation in English. This is something that should never happen,
-  ///       but we can't make sure that no local installation hasn't deleted
-  ///       the entry in English.
+  /// Falls back to English, then to any available translation. If the exercise
+  /// has no translations at all, an empty placeholder in the requested language
+  /// is returned so callers never have to handle a missing translation. This
+  /// happens transiently while translations are still syncing, or for exercises
+  /// that genuinely ship without any translation.
   Translation getTranslation(String language) {
     // If the language is in the form en-US, take the language code only
     final languageCode = language.split('-')[0];
+
+    if (translations.isEmpty) {
+      _logger.info('Exercise-ID $id has no translations, returning an empty placeholder.');
+      return Translation(
+        name: '',
+        description: '',
+        language: Language(id: -1, shortName: languageCode, fullName: ''),
+      );
+    }
 
     return translations.firstWhere(
       (e) => e.language.shortName == languageCode,

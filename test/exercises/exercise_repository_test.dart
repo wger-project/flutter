@@ -252,10 +252,12 @@ void main() {
     });
 
     test('separates primary and secondary muscles', () async {
+      await seedLanguage(testEnglish.id, 'en', 'English');
       await seedCategory(testCategoryArms.id, 'Arms');
       await seedMuscle(tMuscle1.id, 'Pec');
       await seedMuscle(tMuscle2.id, 'Tri');
       await seedExercise(1, categoryId: testCategoryArms.id);
+      await seedTranslation(1, exerciseId: 1, languageId: testEnglish.id, name: 'Bench Press');
       await linkPrimaryMuscle(1, tMuscle1.id, linkId: 1);
       await linkSecondaryMuscle(1, tMuscle2.id, linkId: 1);
 
@@ -267,10 +269,12 @@ void main() {
     });
 
     test('keeps multiple equipment entries per exercise', () async {
+      await seedLanguage(testEnglish.id, 'en', 'English');
       await seedCategory(testCategoryArms.id, 'Arms');
       await seedEquipment(testEquipmentBench.id, 'Bench');
       await seedEquipment(testEquipmentDumbbell.id, 'Dumbbell');
       await seedExercise(1, categoryId: testCategoryArms.id);
+      await seedTranslation(1, exerciseId: 1, languageId: testEnglish.id, name: 'Bench Press');
       await linkEquipment(1, testEquipmentBench.id, linkId: 1);
       await linkEquipment(1, testEquipmentDumbbell.id, linkId: 2);
 
@@ -283,8 +287,10 @@ void main() {
     });
 
     test('keeps multiple images per exercise', () async {
+      await seedLanguage(testEnglish.id, 'en', 'English');
       await seedCategory(testCategoryArms.id, 'Arms');
       await seedExercise(1, categoryId: testCategoryArms.id);
+      await seedTranslation(1, exerciseId: 1, languageId: testEnglish.id, name: 'Bench Press');
       await seedImage(1, exerciseId: 1, path: 'one.jpg');
       await seedImage(2, exerciseId: 1, path: 'two.jpg');
 
@@ -293,21 +299,25 @@ void main() {
       expect(state.exercises.single.images, hasLength(2));
     });
 
-    test('returns the exercise even if it has no translations or images', () async {
+    test('skips an exercise that has no translation yet', () async {
+      // During the initial sync the category can land before any translation.
+      // Such an exercise has no name to show, so it stays out of the catalog
+      // until a translation arrives on a later emission.
       await seedCategory(testCategoryArms.id, 'Arms');
       await seedExercise(1, categoryId: testCategoryArms.id);
 
       final state = await repo.watchAllDrift().first;
 
-      expect(state.exercises, hasLength(1));
-      expect(state.exercises.single.translations, isEmpty);
-      expect(state.exercises.single.images, isEmpty);
+      expect(state.exercises, isEmpty);
     });
 
     test('keeps each exercise distinct when more than one is present', () async {
+      await seedLanguage(testEnglish.id, 'en', 'English');
       await seedCategory(testCategoryArms.id, 'Arms');
       await seedExercise(1, categoryId: testCategoryArms.id);
       await seedExercise(2, categoryId: testCategoryArms.id);
+      await seedTranslation(1, exerciseId: 1, languageId: testEnglish.id, name: 'Bench Press');
+      await seedTranslation(2, exerciseId: 2, languageId: testEnglish.id, name: 'Squat');
 
       final state = await repo.watchAllDrift().first;
 

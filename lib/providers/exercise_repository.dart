@@ -266,6 +266,13 @@ class ExerciseRepository {
         if (category == null) {
           continue;
         }
+        // Skip exercises with no usable translation yet: an exercise without a
+        // name cannot be shown or searched, so keep it out of the catalog until
+        // a translation arrives on a later emission.
+        final translations = translationsByExercise[exerciseRow.id];
+        if (translations == null || translations.isEmpty) {
+          continue;
+        }
         exercises.add(
           Exercise(
             id: exerciseRow.id,
@@ -288,7 +295,7 @@ class ExerciseRepository {
             ],
             images: imagesByExercise[exerciseRow.id] ?? const [],
             videos: videosByExercise[exerciseRow.id] ?? const [],
-            translations: translationsByExercise[exerciseRow.id] ?? const [],
+            translations: translations,
           ),
         );
       }
