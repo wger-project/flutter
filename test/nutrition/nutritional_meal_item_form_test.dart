@@ -255,13 +255,29 @@ void main() {
     testWidgets('add incorrect weight type', (WidgetTester tester) async {
       await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
 
-      await tester.enterText(find.byKey(const Key('field-weight')), 'test');
+      // The input formatter strips letters, so the only non-empty input that
+      // still fails to parse is a lone separator.
+      await tester.enterText(find.byKey(const Key('field-weight')), '.');
       await tester.pump();
 
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pump();
 
       expect(find.text('Please enter a valid number'), findsOneWidget);
+    });
+
+    testWidgets('typed dot is parsed correctly in a comma locale', (WidgetTester tester) async {
+      // A numeric keyboard can only type '.', but in a ','-locale a raw '80.5'
+      // would otherwise parse as 805. The input formatter rewrites the
+      // separator so the value stays 80.5.
+      await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true, locale: 'de'));
+
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+
+      await tester.enterText(find.byKey(const Key('field-weight')), '80.5');
+      await tester.pump();
+
+      expect(formState.mealItem.amount, closeTo(80.5, 0.001));
     });
   });
 

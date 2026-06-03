@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
@@ -280,6 +281,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                     ),
                     controller: _amountController,
                     keyboardType: textInputTypeDecimal,
+                    inputFormatters: [LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP)],
                     onChanged: (value) {
                       setState(() {
                         final v = numberFormat.tryParse(value);
