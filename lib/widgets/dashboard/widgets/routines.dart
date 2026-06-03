@@ -94,8 +94,17 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
     // Auto-hydrate the current routine once it appears in the sparse list.
     // Skipped while offline (the structure fetch is REST-only); leaving
     // `_hydratedRoutineId` unset means it retries once the connection is back.
-    final currentId = asyncState.value?.currentRoutine?.id;
-    if (isOnline && currentId != null && currentId != _hydratedRoutineId) {
+    //
+    // Gate on the routine's own `isHydrated` flag, not only the widget-local
+    // `_hydratedRoutineId`. The flag lives on the keepAlive provider and so
+    // survives widget remounts, which would otherwise reset the local guard
+    // and re-fire the full structure fetch on every remount.
+    final currentRoutine = asyncState.value?.currentRoutine;
+    final currentId = currentRoutine?.id;
+    if (isOnline &&
+        currentId != null &&
+        !currentRoutine!.isHydrated &&
+        currentId != _hydratedRoutineId) {
       _hydratedRoutineId = currentId;
       Future.microtask(() async {
         if (!mounted) {

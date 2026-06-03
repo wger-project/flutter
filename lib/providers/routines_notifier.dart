@@ -242,7 +242,18 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     return created;
   }
 
-  Future<Routine> fetchAndSetRoutineFull(int routineId) async {
+  /// In-flight full fetches keyed by routine id. Concurrent callers for the
+  /// same routine share a single network roundtrip instead of each firing
+  /// their own structure/date-sequence trio. Cleared once the fetch settles.
+  final _fullFetchInFlight = <int, Future<Routine>>{};
+
+  Future<Routine> fetchAndSetRoutineFull(int routineId) {
+    return _fullFetchInFlight[routineId] ??= _fetchAndSetRoutineFull(routineId).whenComplete(() {
+      _fullFetchInFlight.remove(routineId);
+    });
+  }
+
+  Future<Routine> _fetchAndSetRoutineFull(int routineId) async {
     final repo = ref.read(routinesRepositoryProvider);
 
     // Wait for every reference-data stream to produce its first value before
