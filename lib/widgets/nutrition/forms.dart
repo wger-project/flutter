@@ -281,7 +281,9 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                     ),
                     controller: _amountController,
                     keyboardType: textInputTypeDecimal,
-                    inputFormatters: [LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP)],
+                    inputFormatters: [
+                      LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP),
+                    ],
                     onChanged: (value) {
                       setState(() {
                         final v = numberFormat.tryParse(value);

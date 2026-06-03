@@ -58,8 +58,7 @@ const HEADLESS_AUTH_MFA_AUTHENTICATE_PATH = 'auth/2fa/authenticate';
 
 /// `/api/v2/<this>` endpoint that mints a headless-JWT refresh token for the
 /// authenticated user. Used by the one-shot legacy-DRF → JWT migration on
-/// app start. See `plan-remove-legacy-drf-token.prompt.md` for the matching
-/// removal plan once enough users have migrated.
+/// app start.
 const ISSUE_REFRESH_TOKEN_PATH = 'issue-refresh-token';
 
 /// Header that carries the short-lived `session_token` returned by
