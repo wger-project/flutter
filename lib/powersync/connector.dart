@@ -167,6 +167,15 @@ class DjangoConnector extends PowerSyncBackendConnector {
       return;
     }
 
+    await processTransaction(transaction);
+  }
+
+  /// Uploads every op in [transaction] and, on success, completes it so the
+  /// ops leave the local queue. Backend rejections are reported but swallowed
+  /// (see [_handleUploadResponse]), and a network error rethrows so PowerSync
+  /// retries the whole transaction once the backend is reachable again.
+  @visibleForTesting
+  Future<void> processTransaction(CrudTransaction transaction) async {
     try {
       for (final op in transaction.crud) {
         final record = {

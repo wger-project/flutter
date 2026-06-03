@@ -22,6 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:powersync/powersync.dart';
 import 'package:wger/powersync/api_client.dart';
 import 'package:wger/powersync/connector.dart';
 
@@ -29,6 +30,11 @@ import 'connector_test.mocks.dart';
 
 @GenerateMocks([ApiClient])
 void main() {
+  // A rejected upload calls showGeneralErrorDialog, which reads
+  // navigatorKey.currentContext. Initialising the binding makes that return
+  // null (no widget tree) so the dialog is skipped instead of throwing.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late DjangoConnector connector;
 
   setUp(() {
@@ -212,6 +218,87 @@ void main() {
       ).thenThrow(http.ClientException('Connection refused'));
 
       expect(await connector.fetchCredentials(), isNull);
+    });
+  });
+
+  group('processTransaction', () {
+    late MockApiClient api;
+    late DjangoConnector conn;
+
+    // Mirrors PowerSync clearing the op from the local queue: set to true once
+    // transaction.complete() runs.
+    bool completed = false;
+
+    setUp(() {
+      api = MockApiClient();
+      conn = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: api);
+      completed = false;
+    });
+
+    CrudTransaction txWith(CrudEntry entry) => CrudTransaction(
+      transactionId: 1,
+      crud: [entry],
+      complete: ({String? writeCheckpoint}) async {
+        completed = true;
+      },
+    );
+
+    test('uploads a put through the transform and completes on success', () async {
+      when(api.upsert(any)).thenAnswer((_) async => http.Response('{}', 200));
+
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'Push'})),
+      );
+
+      final record = verify(api.upsert(captureAny)).captured.single;
+      expect(record, {
+        'table': 'manager_routine',
+        'data': {'id': 'r1', 'name': 'Push'},
+      });
+      expect(completed, isTrue);
+    });
+
+    test('routes patch to update and delete to delete', () async {
+      when(api.update(any)).thenAnswer((_) async => http.Response('{}', 200));
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.patch, 'manager_routine', 'r1', 1, {'name': 'Pull'})),
+      );
+      verify(api.update(any)).called(1);
+
+      when(api.delete(any)).thenAnswer((_) async => http.Response('{}', 200));
+      await conn.processTransaction(
+        txWith(CrudEntry(2, UpdateType.delete, 'manager_routine', 'r1', 1, null)),
+      );
+      verify(api.delete(any)).called(1);
+    });
+
+    test('completes the transaction even when the backend rejects the op', () async {
+      // The key anti-poison-pill behaviour: a 200 with an `error` body is a
+      // permanent rejection. processTransaction must not rethrow (that would
+      // retry forever) and must still complete the transaction so the op leaves
+      // the queue. PowerSync then reverts the local row on the next checkpoint.
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'invalid', 'details': 'bad'}), 200),
+      );
+
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+      );
+
+      expect(completed, isTrue);
+    });
+
+    test('rethrows and leaves the transaction queued when the backend is unreachable', () async {
+      when(api.upsert(any)).thenThrow(http.ClientException('Connection refused'));
+
+      await expectLater(
+        conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+        ),
+        throwsA(isA<http.ClientException>()),
+      );
+      // Not completed: the op stays queued for PowerSync to retry once online.
+      expect(completed, isFalse);
     });
   });
 }
