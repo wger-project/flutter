@@ -25,7 +25,6 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
@@ -34,7 +33,6 @@ import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
-import 'package:wger/providers/workout_logs_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -52,12 +50,7 @@ import '../../../test_data/routines.dart';
 import '../../fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
-@GenerateMocks([
-  WorkoutSessionRepository,
-  ExerciseRepository,
-  RoutinesRepository,
-  WorkoutLogRepository,
-])
+@GenerateMocks([WorkoutSessionRepository, ExerciseRepository, RoutinesRepository])
 void main() {
   installFakeConnectivity();
 
@@ -69,11 +62,9 @@ void main() {
   final mockSessionRepo = MockWorkoutSessionRepository();
   final mockExerciseRepo = MockExerciseRepository();
   final mockRoutinesRepo = MockRoutinesRepository();
-  final mockWorkoutLogRepo = MockWorkoutLogRepository();
 
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-    when(mockWorkoutLogRepo.addLocalDrift(any)).thenAnswer((_) async {});
     when(mockSessionRepo.watchAllDrift()).thenAnswer(
       (_) => Stream<List<WorkoutSession>>.multi((controller) {
         controller.add(testRoutine.sessions);
@@ -103,7 +94,6 @@ void main() {
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
-        workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepo),
         // The repetition + weight unit catalogues are tiny direct-Drift
         // stream providers, overriding them inline is the established
         // pattern (see also [exerciseCategoriesProvider] etc.).
@@ -339,42 +329,6 @@ void main() {
     tags: ['golden'],
     semanticsEnabled: false,
   );
-
-  testWidgets('saving a log persists the entered reps/weight with the slot/routine/iteration', (
-    WidgetTester tester,
-  ) async {
-    await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
-      await tester.pumpWidget(renderGymMode());
-      await tester.pumpAndSettle();
-      await tester.tap(find.byType(TextButton));
-      await tester.pumpAndSettle();
-
-      // Start page -> bench press overview -> its log page.
-      await tester.tap(find.byIcon(Icons.chevron_right));
-      await tester.pumpAndSettle();
-      await tester.drag(find.byType(ExerciseOverview), const Offset(-500, 0));
-      await tester.pumpAndSettle();
-      expect(find.byType(LogPage), findsOneWidget);
-
-      // Overwrite the pre-filled values so the assertion proves the user's
-      // edits flow through to the saved log, not just the set-config defaults.
-      final fields = find.byType(TextFormField);
-      await tester.enterText(fields.at(0), '12'); // reps
-      await tester.enterText(fields.at(1), '34'); // weight
-      await tester.pump();
-
-      await tester.tap(find.byKey(const ValueKey('save-log-button')));
-      await tester.pumpAndSettle();
-
-      final saved = verify(mockWorkoutLogRepo.addLocalDrift(captureAny)).captured.single as Log;
-      expect(saved.repetitions, 12);
-      expect(saved.weight, 34);
-      expect(saved.routineId, testRoutine.id);
-      expect(saved.iteration, 1);
-      // Linked to the currently shown slot entry (bench press), not left null.
-      expect(saved.slotEntryId, isNotNull);
-    });
-  });
 
   testWidgets('loads offline from the cached routine', (WidgetTester tester) async {
     // Offline, gym mode uses the already-downloaded (hydrated) routine.

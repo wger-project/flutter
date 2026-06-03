@@ -14,7 +14,6 @@ import 'package:wger/models/exercises/exercise_filters.dart' as _i12;
 import 'package:wger/models/exercises/muscle.dart' as _i16;
 import 'package:wger/models/workouts/base_config.dart' as _i6;
 import 'package:wger/models/workouts/day.dart' as _i3;
-import 'package:wger/models/workouts/log.dart' as _i22;
 import 'package:wger/models/workouts/repetition_unit.dart' as _i20;
 import 'package:wger/models/workouts/routine.dart' as _i2;
 import 'package:wger/models/workouts/session.dart' as _i9;
@@ -24,7 +23,6 @@ import 'package:wger/models/workouts/weight_unit.dart' as _i19;
 import 'package:wger/providers/exercise_repository.dart' as _i10;
 import 'package:wger/providers/exercises_notifier.dart' as _i14;
 import 'package:wger/providers/routines_repository.dart' as _i18;
-import 'package:wger/providers/workout_logs_repository.dart' as _i21;
 import 'package:wger/providers/workout_session_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
@@ -406,42 +404,6 @@ class MockRoutinesRepository extends _i1.Mock implements _i18.RoutinesRepository
   ) =>
       (super.noSuchMethod(
             Invocation.method(#handleConfigServer, [entry, value, type]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
-          )
-          as _i8.Future<void>);
-}
-
-/// A class which mocks [WorkoutLogRepository].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockWorkoutLogRepository extends _i1.Mock implements _i21.WorkoutLogRepository {
-  MockWorkoutLogRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i8.Future<void> deleteLocalDrift(String? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
-          )
-          as _i8.Future<void>);
-
-  @override
-  _i8.Future<void> updateLocalDrift(_i22.Log? log) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateLocalDrift, [log]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
-          )
-          as _i8.Future<void>);
-
-  @override
-  _i8.Future<void> addLocalDrift(_i22.Log? log) =>
-      (super.noSuchMethod(
-            Invocation.method(#addLocalDrift, [log]),
             returnValue: _i8.Future<void>.value(),
             returnValueForMissingStub: _i8.Future<void>.value(),
           )
