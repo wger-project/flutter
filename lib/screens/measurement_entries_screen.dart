@@ -54,6 +54,58 @@ class MeasurementEntriesScreen extends StatelessWidget {
       return const SizedBox(); // Return empty widget until pop happens
     }
 
+    if (category.isDynamic) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(category.name),
+          actions: [
+            Chip(
+              avatar: const Icon(Icons.auto_awesome, size: 14),
+              label: const Text('Auto-calculated'),
+              backgroundColor: Colors.blue.withValues(alpha: 0.15),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        body: WidescreenWrapper(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Info banner
+                Container(
+                  margin: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.auto_graph, color: Colors.blue, size: 18),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Values for this category are calculated automatically '
+                          'using the "${category.formula == 'NONE' || category.formula == null ? 'formula' : category.formula!.toLowerCase()}" formula. '
+                          'You cannot add entries manually.',
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Show the computed entries read-only
+                Consumer<MeasurementProvider>(
+                  builder: (context, provider, child) => EntriesList(category!),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(category.name),
@@ -68,7 +120,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
                     FormScreen.routeName,
                     arguments: FormScreenArguments(
                       AppLocalizations.of(context).edit,
-                      MeasurementCategoryForm(category),
+                      MeasurementCategoryForm(category: category),
                     ),
                   );
                   break;
@@ -102,9 +154,8 @@ class MeasurementEntriesScreen extends StatelessWidget {
                               // Close the popup
                               Navigator.of(contextDialog).pop();
 
-                              Navigator.of(context).pop(); // Exit detail screen
+                              Navigator.of(context).pop();
 
-                              // and inform the user
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -145,7 +196,7 @@ class MeasurementEntriesScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newEntry,
-              MeasurementEntryForm(categoryId),
+              MeasurementEntryForm(categoryId: categoryId),
             ),
           );
         },

@@ -69,48 +69,54 @@ class EntriesList extends StatelessWidget {
                 child: ListTile(
                   title: Text('${numberFormat.format(currentEntry.value)} ${_category.unit}'),
                   subtitle: Text(datetimeFormat.format(currentEntry.date)),
-                  trailing: PopupMenuButton(
-                    itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem(
-                          child: Text(AppLocalizations.of(context).edit),
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            FormScreen.routeName,
-                            arguments: FormScreenArguments(
-                              AppLocalizations.of(context).edit,
-                              MeasurementEntryForm(
-                                currentEntry.category,
-                                currentEntry,
-                              ),
-                            ),
-                          ),
-                        ),
-                        PopupMenuItem(
-                          child: Text(AppLocalizations.of(context).delete),
-                          onTap: () async {
-                            // Delete entry from DB
-                            await provider.deleteEntry(
-                              currentEntry.id!,
-                              currentEntry.category,
-                            );
-
-                            // and inform the user
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    AppLocalizations.of(context).successfullyDeleted,
-                                    textAlign: TextAlign.center,
+                  // Hide edit/delete entry for Dynamic category
+                  trailing: _category.isDynamic
+                      ? const Tooltip(
+                          message: 'Auto-calculated — cannot be edited or deleted',
+                          child: Icon(Icons.auto_graph, size: 18, color: Colors.blue),
+                        )
+                      : PopupMenuButton(
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              PopupMenuItem(
+                                child: Text(AppLocalizations.of(context).edit),
+                                onTap: () => Navigator.pushNamed(
+                                  context,
+                                  FormScreen.routeName,
+                                  arguments: FormScreenArguments(
+                                    AppLocalizations.of(context).edit,
+                                    MeasurementEntryForm(
+                                      categoryId: currentEntry.category,
+                                      entry: currentEntry,
+                                    ),
                                   ),
                                 ),
-                              );
-                            }
+                              ),
+                              PopupMenuItem(
+                                child: Text(AppLocalizations.of(context).delete),
+                                onTap: () async {
+                                  // Delete entry from DB
+                                  await provider.deleteEntry(
+                                    currentEntry.id!,
+                                    currentEntry.category,
+                                  );
+
+                                  // and inform the user
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          AppLocalizations.of(context).successfullyDeleted,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ];
                           },
                         ),
-                      ];
-                    },
-                  ),
                 ),
               );
             },

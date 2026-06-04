@@ -23,6 +23,8 @@ import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
+import 'package:wger/models/measurements/measurement_group.dart';
+import 'package:wger/models/measurements/mock_measurement_data.dart';
 import 'package:wger/providers/base_provider.dart';
 
 class MeasurementProvider with ChangeNotifier {
@@ -30,18 +32,25 @@ class MeasurementProvider with ChangeNotifier {
 
   static const _categoryUrl = 'measurement-category';
   static const _entryUrl = 'measurement';
-
+  static const _groupUrl = 'measurement-group';
   final WgerBaseProvider baseProvider;
 
   List<MeasurementCategory> _categories = [];
+  List<MeasurementGroup> _groups = [];
 
-  MeasurementProvider(this.baseProvider);
+  MeasurementProvider(this.baseProvider) {
+    // TODO: REMOVE before merge — loads mock data for UI development
+    _groups = MeasurementMockData.dummyGroups;
+    _categories = MeasurementMockData.dummyCategories;
+  }
 
   List<MeasurementCategory> get categories => _categories;
+  List<MeasurementGroup> get groups => _groups;
 
   /// Clears all lists
   void clear() {
     _categories = [];
+    _groups = [];
   }
 
   /// Finds the category by ID
@@ -69,6 +78,7 @@ class MeasurementProvider with ChangeNotifier {
   /// Fetches and sets the measurement entries for the given category
   Future<void> fetchAndSetCategoryEntries(int id) async {
     final category = findCategoryById(id);
+
     final categoryIndex = _categories.indexOf(category);
 
     // Process the response
@@ -91,6 +101,7 @@ class MeasurementProvider with ChangeNotifier {
   Future<void> fetchAndSetAllCategoriesAndEntries() async {
     _logger.info('Fetching all measurement categories and entries');
 
+    await fetchAndSetGroups();
     await fetchAndSetCategories();
     await Future.wait(_categories.map((e) => fetchAndSetCategoryEntries(e.id!)).toList());
   }
@@ -124,11 +135,24 @@ class MeasurementProvider with ChangeNotifier {
 
   /// Edits a measurement category
   /// Currently there isn't any fallback if the call to the api is unsuccessful, as WgerBaseProvider.patch only returns the response body and not the whole response
-  Future<void> editCategory(int id, String? newName, String? newUnit) async {
+  Future<void> editCategory(
+    int id,
+    String? newName,
+    String? newUnit,
+    int? newGroupId,
+    String? newFormula, {
+    bool clearGroup = false,
+    bool clearFormula = false,
+  }) async {
     final MeasurementCategory oldCategory = findCategoryById(id);
     final int categoryIndex = _categories.indexOf(oldCategory);
-    final MeasurementCategory tempNewCategory = oldCategory.copyWith(name: newName, unit: newUnit);
-
+    final MeasurementCategory tempNewCategory = oldCategory.copyWith(
+      name: newName,
+      unit: newUnit,
+      groupId: newGroupId,
+      clearGroup: clearGroup,
+      formula: newFormula,
+    );
     final Map<String, dynamic> response = await baseProvider.patch(
       tempNewCategory.toJson(),
       baseProvider.makeUrl(_categoryUrl, id: id),
@@ -140,6 +164,71 @@ class MeasurementProvider with ChangeNotifier {
     _categories.insert(categoryIndex, newCategory);
     notifyListeners();
   }
+
+  // --- Measurement Groups ---
+
+  /// Finds a group by ID
+  MeasurementGroup findGroupById(int id) {
+    return _groups.firstWhere(
+      (group) => group.id == id,
+      orElse: () => throw const NoSuchEntryException(),
+    );
+  }
+
+  /// Fetches and sets all measurement groups from the server.
+  Future<void> fetchAndSetGroups() async {
+    final requestUrl = baseProvider.makeUrl(_groupUrl, query: {'limit': API_MAX_PAGE_SIZE});
+    final data = await baseProvider.fetchPaginated(requestUrl);
+    _groups = data.map((e) => MeasurementGroup.fromJson(e)).toList();
+    notifyListeners();
+  }
+
+  /// Adds a measurement group.
+  Future<void> addGroup(MeasurementGroup group) async {
+    final Uri postUri = baseProvider.makeUrl(_groupUrl);
+    final Map<String, dynamic> newGroupMap = await baseProvider.post(group.toJson(), postUri);
+    final MeasurementGroup newGroup = MeasurementGroup.fromJson(newGroupMap);
+    _groups.add(newGroup);
+    _groups.sort((a, b) => a.name.compareTo(b.name));
+    notifyListeners();
+  }
+
+  /// Edits a measurement group name/description.
+  Future<void> editGroup(int id, String? newName, String? newDescription) async {
+    final MeasurementGroup oldGroup = findGroupById(id);
+    final int groupIndex = _groups.indexOf(oldGroup);
+    final MeasurementGroup tempNew = MeasurementGroup(
+      id: oldGroup.id,
+      uuid: oldGroup.uuid,
+      name: newName ?? oldGroup.name,
+      description: newDescription ?? oldGroup.description,
+    );
+    final Map<String, dynamic> response = await baseProvider.patch(
+      tempNew.toJson(),
+      baseProvider.makeUrl(_groupUrl, id: id),
+    );
+    final MeasurementGroup newGroup = MeasurementGroup.fromJson(response);
+    _groups.removeAt(groupIndex);
+    _groups.insert(groupIndex, newGroup);
+    notifyListeners();
+  }
+
+  /// Deletes a measurement group.
+  Future<void> deleteGroup(int id) async {
+    final MeasurementGroup group = findGroupById(id);
+    final int groupIndex = _groups.indexOf(group);
+    _groups.remove(group);
+    notifyListeners();
+    try {
+      await baseProvider.deleteRequest(_groupUrl, id);
+    } on WgerHttpException {
+      _groups.insert(groupIndex, group);
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  // --- Measurement Entries ---
 
   /// Adds a measurement entry
   Future<void> addEntry(MeasurementEntry entry) async {
@@ -175,8 +264,6 @@ class MeasurementProvider with ChangeNotifier {
   }
 
   /// Edits a measurement entry
-  /// Currently there isn't any fallback if the call to the api is unsuccessful, as
-  /// WgerBaseProvider.patch only returns the response body and not the whole response
   Future<void> editEntry(
     int id,
     int categoryId,
@@ -185,6 +272,7 @@ class MeasurementProvider with ChangeNotifier {
     DateTime? newDate,
   ) async {
     final MeasurementCategory category = findCategoryById(categoryId);
+
     final MeasurementEntry oldEntry = category.findEntryById(id);
     final int entryIndex = category.entries.indexOf(oldEntry);
     final MeasurementEntry tempNewEntry = oldEntry.copyWith(

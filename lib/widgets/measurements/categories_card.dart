@@ -33,6 +33,35 @@ class CategoriesCard extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
+            // Group
+            if (currentCategory.groupDetail != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Chip(
+                  avatar: const Icon(Icons.link, size: 14),
+                  label: Text(
+                    currentCategory.groupDetail!.name,
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+            // Dynamic
+            if (currentCategory.isDynamic)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Chip(
+                  avatar: const Icon(Icons.auto_graph, size: 14, color: Colors.blue),
+                  label: const Text(
+                    'Auto-calculated',
+                    style: TextStyle(fontSize: 11, color: Colors.blue),
+                  ),
+                  backgroundColor: Colors.blue.withValues(alpha: 0.1),
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                ),
+              ),
             Container(
               padding: const EdgeInsets.all(10),
               height: 220,
@@ -68,19 +97,23 @@ class CategoriesCard extends StatelessWidget {
                             );
                           },
                         ),
-                        IconButton(
-                          onPressed: () async {
-                            await Navigator.pushNamed(
-                              context,
-                              FormScreen.routeName,
-                              arguments: FormScreenArguments(
-                                AppLocalizations.of(context).newEntry,
-                                MeasurementEntryForm(currentCategory.id!),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
+                        // hide add-entry button for dynamic categories
+                        if (!currentCategory.isDynamic)
+                          IconButton(
+                            onPressed: () async {
+                              await Navigator.pushNamed(
+                                context,
+                                FormScreen.routeName,
+                                arguments: FormScreenArguments(
+                                  AppLocalizations.of(context).newEntry,
+                                  MeasurementEntryForm(
+                                    categoryId: currentCategory.id!,
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.add),
+                          ),
                       ],
                     ),
                   ),
