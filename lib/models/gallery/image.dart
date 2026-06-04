@@ -31,6 +31,9 @@ part 'image.g.dart';
 /// REST POST response (which still handles uploads) hydrates cleanly.
 @JsonSerializable()
 class GalleryImage {
+  // Mirrors the backend description max_length (server gallery/models/image.py).
+  static const MAX_LENGTH_DESCRIPTION = 1000;
+
   @JsonKey(required: true)
   int? id;
 

@@ -117,4 +117,17 @@ void main() {
     );
     expect(button.enabled, isFalse);
   });
+
+  testWidgets('Description field caps length at the backend max', (WidgetTester tester) async {
+    await mockNetworkImagesFor(() => tester.pumpWidget(createScreen(useImage: true)));
+    await tester.pump();
+
+    final textField = tester.widget<TextField>(
+      find.descendant(
+        of: find.byKey(const Key('field-description')),
+        matching: find.byType(TextField),
+      ),
+    );
+    expect(textField.maxLength, GalleryImage.MAX_LENGTH_DESCRIPTION);
+  });
 }

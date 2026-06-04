@@ -35,6 +35,10 @@ enum LogTargetStatus {
 }
 
 class Log {
+  /// Max value the backend stores for weight / repetitions
+  /// (in the backend: DecimalField max_digits=6, decimal_places=2)
+  static const MAX_VALUE = 9999.99;
+
   /// Client-generated UUID, is `null` only before the first persist
   String? id;
 

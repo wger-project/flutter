@@ -83,6 +83,19 @@ void main() {
     expect(captured, 7.5);
   });
 
+  testWidgets('drops decimal digits beyond two', (WidgetTester tester) async {
+    num? captured = 0;
+    await tester.pumpWidget(
+      wrap(DecimalInputWidget(value: null, labelText: 'X', onChanged: (v) => captured = v)),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField), '7.555');
+
+    expect(find.text('7.55'), findsOneWidget);
+    expect(captured, 7.55);
+  });
+
   testWidgets('reports null when the field is cleared', (WidgetTester tester) async {
     num? captured = 1;
     await tester.pumpWidget(

@@ -197,6 +197,7 @@ class _ImageFormState extends ConsumerState<ImageForm> {
             ),
             minLines: 3,
             maxLines: 10,
+            maxLength: GalleryImage.MAX_LENGTH_DESCRIPTION,
             controller: descriptionController,
             onSaved: (newValue) {
               widget._image.description = newValue!;

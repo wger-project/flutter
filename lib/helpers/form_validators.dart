@@ -24,18 +24,24 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 ///
 /// Empty input is allowed and returns `null`. Non-empty input must be
 /// parseable by [numberFormat]; otherwise an `enterValidNumber` error
-/// message is returned.
+/// message is returned. When [max] is set, the value must also be within
+/// `0..max` (inclusive).
 String? validateOptionalDecimal(
   String? text,
   NumberFormat numberFormat,
-  BuildContext context,
-) {
+  BuildContext context, {
+  num? max,
+}) {
   final trimmed = (text ?? '').trim();
   if (trimmed.isEmpty) {
     return null;
   }
-  if (numberFormat.tryParse(trimmed) == null) {
+  final parsed = numberFormat.tryParse(trimmed);
+  if (parsed == null) {
     return AppLocalizations.of(context).enterValidNumber;
+  }
+  if (max != null && (parsed < 0 || parsed > max)) {
+    return AppLocalizations.of(context).formMinMaxValues(0, max.toInt());
   }
   return null;
 }

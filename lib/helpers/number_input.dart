@@ -24,14 +24,19 @@ import 'package:flutter/services.dart';
 /// to type '.' even when the locale expects ','. This formatter accepts both
 /// '.' and ',' and rewrites the separator to [decimalSeparator], so the field
 /// content always matches the active locale and parses correctly with
-/// `NumberFormat.parse`. Digits are kept, at most one separator is allowed, and
-/// every other character (grouping separators, spaces, letters) is dropped.
+/// `NumberFormat.parse`. Digits are kept, at most one separator is allowed,
+/// at most [maxDecimalPlaces] digits are kept after it, and every other
+/// character (grouping separators, spaces, letters) is dropped.
 class LocalizedDecimalInputFormatter extends TextInputFormatter {
-  LocalizedDecimalInputFormatter(this.decimalSeparator);
+  LocalizedDecimalInputFormatter(this.decimalSeparator, {this.maxDecimalPlaces = 2});
 
   /// Decimal separator of the active locale, e.g. obtained from
   /// `NumberFormat.decimalPattern(locale).symbols.DECIMAL_SEP`.
   final String decimalSeparator;
+
+  /// Maximum digits kept after the separator; extra fractional digits are
+  /// dropped, mirroring the backend's `decimal_places`.
+  final int maxDecimalPlaces;
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
@@ -53,9 +58,16 @@ class LocalizedDecimalInputFormatter extends TextInputFormatter {
     const digits = '0123456789';
     final buffer = StringBuffer();
     var hasSeparator = false;
+    var decimals = 0;
     for (var i = 0; i < input.length; i++) {
       final char = input[i];
       if (digits.contains(char)) {
+        if (hasSeparator) {
+          if (decimals >= maxDecimalPlaces) {
+            continue;
+          }
+          decimals++;
+        }
         buffer.write(char);
       } else if (char == '.' || char == ',') {
         if (!hasSeparator) {

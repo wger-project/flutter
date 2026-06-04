@@ -25,6 +25,7 @@ import 'package:wger/helpers/form_validators.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/providers/routines_notifier.dart';
 
@@ -235,7 +236,8 @@ class _RepetitionInputWidgetState extends ConsumerState<RepetitionInputWidget> {
               }
               widget.onChanged(_numberFormat.parse(text));
             },
-            validator: (text) => validateOptionalDecimal(text, _numberFormat, context),
+            validator: (text) =>
+                validateOptionalDecimal(text, _numberFormat, context, max: Log.MAX_VALUE),
           ),
         ),
 
