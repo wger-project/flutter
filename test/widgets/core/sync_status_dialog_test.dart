@@ -24,9 +24,15 @@ import 'dart:io' show SocketException;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powersync/powersync.dart'
-    show CredentialsException, PowerSyncProtocolException, SyncResponseException, SyncStatus;
+    show
+        CredentialsException,
+        PowerSyncProtocolException,
+        SyncResponseException,
+        SyncStatus,
+        UpdateType;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';
+import 'package:wger/powersync/connector.dart' show RetryableUploadException;
 import 'package:wger/widgets/core/sync_status_dialog.dart';
 
 Widget _wrap(Widget child) {
@@ -192,6 +198,30 @@ void main() {
 
     testWidgets('PowerSyncProtocolException → "Protocol error"', (tester) async {
       await expectCategory(tester, PowerSyncProtocolException('bad frame'), 'Protocol error');
+    });
+
+    testWidgets('RetryableUploadException(503) → "Server error"', (tester) async {
+      await expectCategory(
+        tester,
+        RetryableUploadException(table: 'manager_routine', op: UpdateType.put, statusCode: 503),
+        'Server error',
+      );
+    });
+
+    testWidgets('RetryableUploadException(401) → "Authentication error"', (tester) async {
+      await expectCategory(
+        tester,
+        RetryableUploadException(table: 'manager_routine', op: UpdateType.put, statusCode: 401),
+        'Authentication error',
+      );
+    });
+
+    testWidgets('RetryableUploadException(429) → "HTTP 429"', (tester) async {
+      await expectCategory(
+        tester,
+        RetryableUploadException(table: 'manager_routine', op: UpdateType.put, statusCode: 429),
+        'HTTP 429',
+      );
     });
 
     testWidgets('SocketException → "Connection error"', (tester) async {

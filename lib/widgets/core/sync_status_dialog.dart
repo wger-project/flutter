@@ -21,23 +21,34 @@ import 'package:intl/intl.dart';
 import 'package:powersync/powersync.dart'
     show CredentialsException, PowerSyncProtocolException, SyncResponseException, SyncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/powersync/connector.dart' show RetryableUploadException;
+
+/// Maps an HTTP status code to a short English category label.
+String _categoriseHttpStatus(int statusCode) {
+  if (statusCode == 401 || statusCode == 403) {
+    return 'Authentication error';
+  }
+  if (statusCode >= 500) {
+    return 'Server error';
+  }
+  return 'HTTP $statusCode';
+}
 
 /// Classifies a sync error into a short English category label
 String? _categoriseSyncError(Object error) {
   if (error is CredentialsException) {
     return 'Authentication error';
   }
-  if (error is SyncResponseException) {
-    if (error.statusCode == 401 || error.statusCode == 403) {
-      return 'Authentication error';
-    }
-    if (error.statusCode >= 500) {
-      return 'Server error';
-    }
-    return 'HTTP ${error.statusCode}';
-  }
+
   if (error is PowerSyncProtocolException) {
     return 'Protocol error';
+  }
+
+  if (error is SyncResponseException) {
+    return _categoriseHttpStatus(error.statusCode);
+  }
+  if (error is RetryableUploadException) {
+    return _categoriseHttpStatus(error.statusCode);
   }
 
   final typeName = error.runtimeType.toString();
