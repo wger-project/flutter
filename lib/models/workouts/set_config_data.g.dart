@@ -40,7 +40,7 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
     maxNrOfSets: json['max_sets'] as num?,
     weight: stringToNumNull(json['weight'] as String?),
     maxWeight: stringToNumNull(json['max_weight'] as String?),
-    weightUnitId: (json['weight_unit'] as num?)?.toInt() ?? WEIGHT_UNIT_KG,
+    weightUnitId: (json['weight_unit'] as num?)?.toInt(),
     weightRounding: stringToNumNull(json['weight_rounding'] as String?),
     repetitions: stringToNumNull(json['repetitions'] as String?),
     maxRepetitions: stringToNumNull(json['max_repetitions'] as String?),

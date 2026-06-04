@@ -28,14 +28,16 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/user.dart';
 import 'package:wger/screens/routine_screen.dart';
 
 import '../../test_data/routines.dart';
 import 'routine_screen_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider])
+@GenerateMocks([WgerBaseProvider, UserProvider])
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
+  final mockUserProvider = MockUserProvider();
   final exercisesProvider = ExercisesProvider(
     mockBaseProvider,
     database: ExerciseDatabase.inMemory(NativeDatabase.memory()),
@@ -48,6 +50,7 @@ void main() {
       create: (context) => RoutinesProvider(
         mockBaseProvider,
         exercisesProvider,
+        mockUserProvider,
         [getTestRoutine()],
       ),
       child: MaterialApp(

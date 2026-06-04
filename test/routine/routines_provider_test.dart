@@ -35,15 +35,17 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/user.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
 import '../fixtures/fixture_reader.dart';
 import 'routines_provider_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider, ExercisesProvider])
+@GenerateMocks([WgerBaseProvider, ExercisesProvider, UserProvider])
 void main() {
   final mockBaseProvider = MockWgerBaseProvider();
+  final mockUserProvider = MockUserProvider();
 
   /// Replacement for SharedPreferences.setMockInitialValues()
   SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
@@ -74,7 +76,7 @@ void main() {
       );
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, mockUserProvider, []);
       final plan = await provider.fetchAndSetRoutineSparse(325397);
       final plans = provider.getPlans();
 
@@ -102,7 +104,7 @@ void main() {
       );
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, mockUserProvider, []);
 
       await provider.fetchAndSetRoutineSparse(325397);
       await provider.deleteRoutine(325397);
@@ -121,7 +123,7 @@ void main() {
       ).thenAnswer((_) => Future.value(tRepetitionUnits['results']));
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, mockUserProvider, []);
       await provider.fetchAndSetRepetitionUnits();
       final repetitionUnits = provider.repetitionUnits;
 
@@ -139,7 +141,7 @@ void main() {
       final ExercisesProvider testExercisesProvider = ExercisesProvider(mockBaseProvider);
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, testExercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, testExercisesProvider, mockUserProvider, []);
       await provider.fetchAndSetWeightUnits();
       final weightUnits = provider.weightUnits;
 
@@ -168,7 +170,7 @@ void main() {
       final prefs = PreferenceHelper.asyncPref;
 
       // Load the entries
-      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, exercisesProvider, mockUserProvider, []);
       await provider.fetchAndSetUnits();
       final prefsJson = jsonDecode((await prefs.getString(PREFS_WORKOUT_UNITS))!);
 
@@ -229,7 +231,7 @@ void main() {
         (_) async => Future.value(testCrunches),
       );
 
-      final provider = RoutinesProvider(mockBaseProvider, mockExercisesProvider, []);
+      final provider = RoutinesProvider(mockBaseProvider, mockExercisesProvider, mockUserProvider, []);
       provider.repetitionUnits = testRepetitionUnits;
       provider.weightUnits = testWeightUnits;
 

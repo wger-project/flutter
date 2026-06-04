@@ -244,7 +244,7 @@ class UserProvider with ChangeNotifier {
   }
 
   /// Fetch the current user's profile
-  Future<void> fetchAndSetProfile() async {
+  Future<void> _fetchAndSetProfile() async {
     final userData = await baseProvider.fetch(baseProvider.makeUrl(PROFILE_URL));
     try {
       profile = Profile.fromJson(userData);
@@ -255,10 +255,13 @@ class UserProvider with ChangeNotifier {
 
   /// Save the user's profile to the server
   Future<void> saveProfile() async {
-    await baseProvider.post(
-      profile!.toJson(),
-      baseProvider.makeUrl(PROFILE_URL),
-    );
+    final profile = this.profile;
+    if (profile != null) {
+      await baseProvider.post(
+        profile.toJson(),
+        baseProvider.makeUrl(PROFILE_URL),
+      );
+    }
   }
 
   /// Verify the user's email
@@ -270,5 +273,12 @@ class UserProvider with ChangeNotifier {
       ),
     );
     //log(verificationData.toString());
+  }
+
+  Future<bool> isMetric() async {
+    if (profile == null) {
+      await _fetchAndSetProfile();
+    }
+    return profile?.isMetric ?? false;
   }
 }
