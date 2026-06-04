@@ -56,12 +56,11 @@ class ApiClient {
     throw Exception('Failed to fetch token');
   }
 
-  // The methods below return the raw [http.Response] so the connector
-  // can inspect the status code and the JSON body. The backend always
-  // answers 200 (PowerSync-recommended pattern: non-2xx triggers an
-  // infinite retry loop on the SDK side, which is wrong for permanent
-  // rejections like validation failures), but encodes any rejection
-  // as `{'error': '...', 'details': ...}` in the body.
+  // Return the raw [http.Response] so the connector can inspect status and
+  // body. The backend encodes permanent rejections as 200 + `{'error': ...}`
+  // (a non-2xx would trigger PowerSync's retry loop). Infrastructure and
+  // unhandled 5xx aren't part of that contract; the connector classifies and
+  // retries those.
   Future<http.Response> upsert(Map<String, dynamic> record) {
     return _client.put(uri, headers: getHeaders(), body: json.encode(record));
   }

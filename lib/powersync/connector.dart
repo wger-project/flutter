@@ -25,33 +25,42 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
 import 'package:wger/core/error_dialogs.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/jwt.dart';
 import 'package:wger/powersync/api_client.dart';
 
 final logger = Logger('powersync-django');
 
-/// Exception thrown when the wger backend returned a 200 response whose
-/// body indicates that the operation was rejected (validation failure,
-/// missing object, ownership violation, unknown table…). Carries the
-/// raw error map so the global error dialog can display the detail.
-class BackendUploadException implements Exception {
+/// Thrown for an upload status that should be retried, not discarded such as
+/// HTTP status codes 5xx, 408, 429, or an unrecovered 401. Throwing leaves the
+/// transaction queued for PowerSync to retry. Carries table/op/status for
+/// logging and tests.
+class RetryableUploadException implements Exception {
   final String table;
   final UpdateType op;
-  final String error;
-  final Object? details;
+  final int statusCode;
 
-  BackendUploadException({
+  RetryableUploadException({
     required this.table,
     required this.op,
-    required this.error,
-    required this.details,
+    required this.statusCode,
   });
 
   @override
-  String toString() {
-    final detailsStr = details == null ? '' : '\n$details';
-    return 'Backend rejected $op on $table: $error$detailsStr';
-  }
+  String toString() => 'Upload of $op on $table deferred: retryable status $statusCode';
+}
+
+/// What the transaction loop does with one upload response.
+enum _UploadOutcome {
+  /// Accepted: complete the transaction once all ops are ok.
+  ok,
+
+  /// Permanently refused: surface it but still complete, so one bad op can't
+  /// block the queue.
+  reject,
+
+  /// Retryable: throw so PowerSync retries the queued transaction later.
+  retry,
 }
 
 class DjangoConnector extends PowerSyncBackendConnector {
@@ -170,10 +179,13 @@ class DjangoConnector extends PowerSyncBackendConnector {
     await processTransaction(transaction);
   }
 
-  /// Uploads every op in [transaction] and, on success, completes it so the
-  /// ops leave the local queue. Backend rejections are reported but swallowed
-  /// (see [_handleUploadResponse]), and a network error rethrows so PowerSync
-  /// retries the whole transaction once the backend is reachable again.
+  /// Uploads every op in [transaction] and decides its fate: all accepted
+  /// completes it; a permanent refusal is surfaced but still completes (so one
+  /// bad op can't block the queue); a transient status (5xx, 408, 429, 401) or
+  /// an unreachable backend throws, leaving it queued for PowerSync to retry.
+  ///
+  /// A retry re-sends the whole transaction (at-least-once), so backend handlers
+  /// must be idempotent.
   @visibleForTesting
   Future<void> processTransaction(CrudTransaction transaction) async {
     try {
@@ -198,7 +210,19 @@ class DjangoConnector extends PowerSyncBackendConnector {
             break;
         }
 
-        _handleUploadResponse(op, response);
+        switch (_classifyResponse(response)) {
+          case _UploadOutcome.ok:
+            break;
+          case _UploadOutcome.reject:
+            _reportRejection(op, response);
+            break;
+          case _UploadOutcome.retry:
+            throw RetryableUploadException(
+              table: op.table,
+              op: op.op,
+              statusCode: response.statusCode,
+            );
+        }
       }
       await transaction.complete();
     } on http.ClientException catch (e) {
@@ -209,45 +233,79 @@ class DjangoConnector extends PowerSyncBackendConnector {
     } on SocketException catch (e) {
       logger.fine('Upload deferred, backend unreachable: ${e.message}');
       rethrow;
+    } on RetryableUploadException catch (e) {
+      // Stays queued for PowerSync to retry. Below severe: a brief server blip
+      // is expected to clear on its own.
+      logger.warning('Upload deferred: $e');
+      rethrow;
     } on Exception catch (e) {
       logger.severe('Error uploading data', e);
-      // Error may be retryable - e.g. network error or temporary server error.
-      // Throwing an error here causes this call to be retried after a delay.
+      // Error may be retryable, e.g. a temporary server error. Throwing here
+      // causes PowerSync to retry this transaction after a delay.
       rethrow;
     }
   }
 
-  /// Inspects the backend response for a given CRUD op. If the body reports a
-  /// logical / validation rejection we surface it via the global error dialog
-  /// but do **not** rethrow, otherwise that would trigger a PowerSync retry loop.
-  void _handleUploadResponse(CrudEntry op, http.Response response) {
-    if (response.statusCode != 200 || response.body.isEmpty) {
-      return;
+  /// Classifies a single upload [response] into a [_UploadOutcome].
+  _UploadOutcome _classifyResponse(http.Response response) {
+    final status = response.statusCode;
+
+    // 2xx is success, unless the backend encoded a permanent rejection as
+    // 200 + `{error}` (its anti-retry-storm contract).
+    if (status >= 200 && status < 300) {
+      return _isErrorBody(response) ? _UploadOutcome.reject : _UploadOutcome.ok;
     }
 
-    final Object? decoded;
-    try {
-      decoded = json.decode(response.body);
-    } on FormatException {
-      // Non-JSON response on a 200, uncommon but harmless to ignore.
-      return;
-    }
-    if (decoded is! Map<String, dynamic> || !decoded.containsKey('error')) {
-      return;
+    // Transient or retryable. 401 lands here because AuthHttpClient already
+    // tried to refresh; a 401 still reaching us means the session is gone, so
+    // queue the op for re-auth rather than dropping it.
+    if (status >= 500 || status == 408 || status == 429 || status == 401) {
+      return _UploadOutcome.retry;
     }
 
+    // Any other 4xx is permanent (retry won't help). Expected refusals come as
+    // 200 + `{error}`, so a non-200 4xx is genuinely unexpected.
+    return _UploadOutcome.reject;
+  }
+
+  /// Surfaces a permanently refused op via the global error dialog, once per op
+  /// per session (a re-driven transaction would otherwise re-pop it each tick).
+  void _reportRejection(CrudEntry op, http.Response response) {
     if (!_reportedFailedOps.add(op.id)) {
       // Already shown for this operation in the current session.
       return;
     }
 
-    final exception = BackendUploadException(
-      table: op.table,
-      op: op.op,
-      error: decoded['error']?.toString() ?? 'Unknown error',
-      details: decoded['details'],
+    final exception = WgerHttpException(
+      response,
+      source: ExceptionSource.powersync,
+      context: {'table': op.table, 'op': op.op.name},
     );
-    logger.warning('Backend rejected upload', exception);
-    showGeneralErrorDialog(exception, StackTrace.current);
+    final ctx = '${op.op.name} ${op.table}';
+    // 200 + {error} is the expected contract (warning); other statuses are
+    // unexpected (severe).
+    if (response.statusCode == 200) {
+      logger.warning('Backend rejected $ctx', exception);
+    } else {
+      logger.severe('Unexpected permanent upload failure: $ctx', exception);
+    }
+    // Route through the app's central error handler (same entry point as the
+    // global FlutterError/PlatformDispatcher handlers).
+    handleError(exception, StackTrace.current);
+  }
+
+  /// Whether [response]'s body is a JSON object carrying an `{error}` key, the
+  /// backend's contract for a permanent rejection on a 200.
+  bool _isErrorBody(http.Response response) {
+    if (response.body.isEmpty) {
+      return false;
+    }
+    try {
+      final decoded = json.decode(response.body);
+      return decoded is Map<String, dynamic> && decoded.containsKey('error');
+    } on FormatException {
+      // Non-JSON body, not a structured rejection.
+      return false;
+    }
   }
 }

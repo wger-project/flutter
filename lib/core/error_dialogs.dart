@@ -87,6 +87,14 @@ void showHttpExceptionErrorDialog(WgerHttpException exception, {BuildContext? co
   ).whenComplete(() => _errorDialogVisible = false);
 }
 
+/// Flattens a [WgerHttpException]'s context and error map into a readable
+/// multi-line string for the diagnostic dialog and bug report.
+String _formatHttpExceptionDetail(WgerHttpException error) {
+  String lines(Map<String, dynamic> m) => m.entries.map((e) => '${e.key}: ${e.value}').join('\n');
+  final ctx = error.context == null || error.context!.isEmpty ? '' : '${lines(error.context!)}\n\n';
+  return '$ctx${lines(error.errors)}';
+}
+
 void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext? context}) {
   // Attempt to get the BuildContext from our global navigatorKey.
   // This allows us to show a dialog even if the error occurs outside
@@ -120,6 +128,14 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
     issueErrorMessage = error.exceptionAsString();
   } else if (error is MissingRequiredKeysException) {
     issueTitle = 'Missing Required Key';
+  } else if (error is WgerHttpException) {
+    final status = error.statusCode == null ? '' : ' (HTTP ${error.statusCode})';
+    issueTitle = switch (error.source) {
+      ExceptionSource.powersync => 'Sync upload rejected$status',
+      ExceptionSource.flutter => 'Application error$status',
+      ExceptionSource.api => 'Server error$status',
+    };
+    issueErrorMessage = _formatHttpExceptionDetail(error);
   }
 
   final String fullStackTrace = stackTrace?.toString() ?? 'No stack trace available.';
@@ -246,7 +262,9 @@ void handleError(Object? error, StackTrace? stackTrace) {
     case ErrorSeverity.transient:
       showTransientErrorSnackbar();
     case ErrorSeverity.fatal:
-      if (error is WgerHttpException) {
+      // API errors are the form-validation fallback (clean field errors);
+      // other sources are diagnostic and get the dialog with logs and report.
+      if (error is WgerHttpException && error.source == ExceptionSource.api) {
         showHttpExceptionErrorDialog(error);
       } else {
         showGeneralErrorDialog(error, stackTrace);

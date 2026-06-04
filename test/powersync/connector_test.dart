@@ -30,9 +30,9 @@ import 'connector_test.mocks.dart';
 
 @GenerateMocks([ApiClient])
 void main() {
-  // A rejected upload calls showGeneralErrorDialog, which reads
-  // navigatorKey.currentContext. Initialising the binding makes that return
-  // null (no widget tree) so the dialog is skipped instead of throwing.
+  // A rejected upload surfaces via handleError -> showGeneralErrorDialog, which
+  // reads navigatorKey.currentContext. Initialising the binding makes that
+  // return null (no widget tree) so the dialog is skipped instead of throwing.
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late DjangoConnector connector;
@@ -299,6 +299,52 @@ void main() {
       );
       // Not completed: the op stays queued for PowerSync to retry once online.
       expect(completed, isFalse);
+    });
+
+    test('rethrows RetryableUploadException on transient/retryable statuses', () async {
+      // Server errors, gateway timeout, rate limiting and a non-recoverable 401
+      // are retried: throw so PowerSync keeps the transaction queued. Mirrors
+      // the ClientException test above.
+      for (final status in [500, 502, 503, 504, 408, 429, 401]) {
+        completed = false;
+        when(api.upsert(any)).thenAnswer((_) async => http.Response('', status));
+
+        await expectLater(
+          conn.processTransaction(
+            txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+          ),
+          throwsA(isA<RetryableUploadException>()),
+          reason: 'status $status should be retried',
+        );
+        expect(completed, isFalse, reason: 'status $status must stay queued');
+      }
+    });
+
+    test('reports and completes on unexpected permanent client errors', () async {
+      // Retrying these would not help, so the op is surfaced and discarded
+      // rather than blocking the queue. 403 is here, not in the retry set: the
+      // backend delivers ownership refusals as 200 + {error}, so a real 403 is
+      // a permanent refusal.
+      for (final status in [400, 403, 404, 409, 422]) {
+        completed = false;
+        when(api.upsert(any)).thenAnswer((_) async => http.Response('', status));
+
+        await conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r$status', 1, {'name': 'x'})),
+        );
+
+        expect(completed, isTrue, reason: 'status $status must not block the queue');
+      }
+    });
+
+    test('completes on a 2xx with an empty body', () async {
+      when(api.upsert(any)).thenAnswer((_) async => http.Response('', 200));
+
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+      );
+
+      expect(completed, isTrue);
     });
   });
 }
