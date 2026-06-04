@@ -22,7 +22,9 @@ import 'package:intl/intl.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/form_validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
@@ -236,6 +238,8 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                   key: const ValueKey('field-weight'),
                   value: _weight,
                   labelText: i18n.weight,
+                  min: 0,
+                  max: BaseConfig.MAX_VALUE,
                   onChanged: (v) => _weight = v,
                 ),
               ),
@@ -245,6 +249,8 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                     key: const ValueKey('field-max-weight'),
                     value: _maxWeight,
                     labelText: i18n.max,
+                    min: 0,
+                    max: BaseConfig.MAX_VALUE,
                     onChanged: (v) => _maxWeight = v,
                   ),
                 ),
@@ -266,6 +272,8 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                   key: const ValueKey('field-repetitions'),
                   value: _reps,
                   labelText: i18n.repetitions,
+                  min: 0,
+                  max: BaseConfig.MAX_VALUE,
                   onChanged: (v) => _reps = v,
                 ),
               ),
@@ -275,6 +283,8 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                     key: const ValueKey('field-max-repetitions'),
                     value: _maxReps,
                     labelText: i18n.max,
+                    min: 0,
+                    max: BaseConfig.MAX_VALUE,
                     onChanged: (v) => _maxReps = v,
                   ),
                 ),
@@ -290,12 +300,8 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                     controller: restController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: i18n.restTime),
-                    validator: (value) {
-                      if (value != null && value != '' && int.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        validateOptionalIntegerInRange(value, 0, BaseConfig.MAX_REST, i18n),
                   ),
                 ),
                 Flexible(
@@ -304,12 +310,8 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                     controller: maxRestController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && int.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        validateOptionalIntegerInRange(value, 0, BaseConfig.MAX_REST_TARGET, i18n),
                   ),
                 ),
               ],

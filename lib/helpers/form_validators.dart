@@ -39,3 +39,24 @@ String? validateOptionalDecimal(
   }
   return null;
 }
+
+/// Validates an optional whole-number field. Empty input is allowed and returns
+/// `null`; otherwise the value must be an integer within [min]..[max] inclusive.
+String? validateOptionalIntegerInRange(
+  String? value,
+  int min,
+  int max,
+  AppLocalizations i18n,
+) {
+  if (value == null || value.isEmpty) {
+    return null;
+  }
+  final parsed = int.tryParse(value);
+  if (parsed == null) {
+    return i18n.enterValidNumber;
+  }
+  if (parsed < min || parsed > max) {
+    return i18n.formMinMaxValues(min, max);
+  }
+  return null;
+}

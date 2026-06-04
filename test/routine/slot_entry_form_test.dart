@@ -168,6 +168,39 @@ void main() {
     expect(capturedArgs[(6 * 3) + 2], ConfigType.maxRest);
   });
 
+  testWidgets('rejects a weight value above the backend cap', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget(simpleMode: false));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('field-weight')),
+      '${BaseConfig.MAX_VALUE + 1}',
+    );
+
+    await tester.tap(find.byKey(const ValueKey(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pumpAndSettle();
+
+    // Validation blocks the save, so nothing reaches the repository.
+    verifyNever(mockRoutinesRepository.handleConfigServer(any, any, any));
+    verifyNever(mockRoutinesRepository.editSlotEntryServer(any));
+  });
+
+  testWidgets('rejects a rest value above the backend cap', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget(simpleMode: false));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('field-rest')),
+      '${BaseConfig.MAX_REST + 1}',
+    );
+
+    await tester.tap(find.byKey(const ValueKey(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pumpAndSettle();
+
+    verifyNever(mockRoutinesRepository.handleConfigServer(any, any, any));
+    verifyNever(mockRoutinesRepository.editSlotEntryServer(any));
+  });
+
   testWidgets('Fractional weight survives a no-op save in a comma-decimal locale', (
     WidgetTester tester,
   ) async {
