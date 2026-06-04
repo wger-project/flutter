@@ -130,7 +130,9 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
               focusNode: focusNode,
               autofocus: true,
               validator: (value) {
-                if (value!.isEmpty) {
+                // Require an actual selection; typed-but-unpicked text leaves the
+                // id empty and would crash the submit's int.parse on the id.
+                if (value == null || value.isEmpty || widget._ingredientIdController.text.isEmpty) {
                   return AppLocalizations.of(context).selectIngredient;
                 }
                 return null;

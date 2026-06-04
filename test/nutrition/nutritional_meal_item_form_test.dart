@@ -324,6 +324,38 @@ void main() {
       expect(find.text('Please enter a value'), findsOneWidget);
     });
 
+    testWidgets('save with typed-but-unselected ingredient is blocked, no crash', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(createMealItemFormScreen(meal1, '123', true));
+
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+
+      // Type a query but never pick a suggestion: the display has text while no
+      // ingredient is selected (id controller empty). With a valid amount this
+      // used to pass validation and crash the submit's int.parse('').
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(TypeAheadField<Ingredient>),
+          matching: find.byType(TextFormField),
+        ),
+        'no-such-ingredient',
+      );
+      await tester.enterText(find.byKey(const Key('field-weight')), '50');
+      await tester.pump(const Duration(seconds: 1)); // let the search debounce settle
+      expect(formState.ingredientIdController.text, isEmpty);
+
+      // Dismiss the suggestions overlay so it can't intercept the submit tap.
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.pump();
+
+      expect(find.text('Please select an ingredient'), findsOneWidget);
+      verifyNever(mockRepo.addMealItemLocalDrift(any));
+    });
+
     testWidgets('save ingredient without weight', (WidgetTester tester) async {
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
