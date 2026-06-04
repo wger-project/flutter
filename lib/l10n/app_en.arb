@@ -697,10 +697,6 @@
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
-  "noMeasurementEntries": "You have no measurement entries",
-  "@noMeasurementntries": {
-    "description": "Message shown when the user has no logged measurement entries"
-  },
   "moreMeasurementEntries": "Add new measurement",
   "@moreMeasurementEntries": {
     "description": "Message shown when the user wants to add new measurement"
@@ -708,10 +704,6 @@
   "edit": "Edit",
   "@edit": {},
   "preview": "Preview",
-  "loadingText": "Loading...",
-  "@loadingText": {
-    "description": "Text to show when entries are being loaded in the background: Loading..."
-  },
   "delete": "Delete",
   "@delete": {},
   "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
@@ -822,11 +814,6 @@
         "type": "String"
       }
     }
-  },
-  "setUnitsAndRir": "Set units and RiR",
-  "@setUnitsAndRir": {
-    "description": "Label shown on the slider where the user can toggle showing units and RiR",
-    "type": "text"
   },
   "enterValidNumber": "Please enter a valid number",
   "@enterValidNumber": {
@@ -1002,7 +989,6 @@
   },
   "verifiedEmail": "Verified email",
   "unVerifiedEmail": "Unverified email",
-  "verifiedEmailReason": "You need to verify your email to contribute exercises",
   "verifiedEmailInfo": "A verification email was sent to {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
@@ -1023,8 +1009,6 @@
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
   "superset": "Superset",
-  "setHasProgression": "Set has progression",
-  "setHasProgressionWarning": "Please note that at the moment it is not possible to edit all settings for a set on the mobile application or configure automatic progression. For now, please use the web application.",
   "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
   "translation": "Translation",
@@ -1043,8 +1027,6 @@
   "enterTextInLanguage": "Please enter the text in the correct language!",
   "settingsTitle": "Settings",
   "settingsCacheTitle": "Cache",
-  "settingsExerciseCacheDescription": "Exercise cache",
-  "settingsIngredientCacheDescription": "Ingredient cache",
   "settingsImageCacheDescription": "Image cache",
   "settingsCacheDeletedSnackbar": "Cache successfully cleared",
   "settingsDataTitle": "Privacy",
@@ -1366,10 +1348,6 @@
   "filterNutriscore": "Nutri-Score filter",
   "@filterNutriscore": {
     "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
-  },
-  "nutriscoreValue": "Nutri-Score:",
-  "@nutriscoreValue": {
-    "description": "Inline label prefixing a Nutri-Score value, e.g. in the subtitle of a custom ingredient list entry"
   },
   "filterNutriscoreOff": "Off",
   "@filterNutriscoreOff": {

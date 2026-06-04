@@ -2505,17 +2505,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get noMeasurementEntries =>
-      (super.noSuchMethod(
-            Invocation.getter(#noMeasurementEntries),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#noMeasurementEntries),
-            ),
-          )
-          as String);
-
-  @override
   String get moreMeasurementEntries =>
       (super.noSuchMethod(
             Invocation.getter(#moreMeasurementEntries),
@@ -2541,17 +2530,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#preview),
-            ),
-          )
-          as String);
-
-  @override
-  String get loadingText =>
-      (super.noSuchMethod(
-            Invocation.getter(#loadingText),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#loadingText),
             ),
           )
           as String);
@@ -2838,17 +2816,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#baseNameEnglish),
-            ),
-          )
-          as String);
-
-  @override
-  String get setUnitsAndRir =>
-      (super.noSuchMethod(
-            Invocation.getter(#setUnitsAndRir),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#setUnitsAndRir),
             ),
           )
           as String);
@@ -3280,17 +3247,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get verifiedEmailReason =>
-      (super.noSuchMethod(
-            Invocation.getter(#verifiedEmailReason),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#verifiedEmailReason),
-            ),
-          )
-          as String);
-
-  @override
   String get alternativeNames =>
       (super.noSuchMethod(
             Invocation.getter(#alternativeNames),
@@ -3415,28 +3371,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#superset),
-            ),
-          )
-          as String);
-
-  @override
-  String get setHasProgression =>
-      (super.noSuchMethod(
-            Invocation.getter(#setHasProgression),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#setHasProgression),
-            ),
-          )
-          as String);
-
-  @override
-  String get setHasProgressionWarning =>
-      (super.noSuchMethod(
-            Invocation.getter(#setHasProgressionWarning),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#setHasProgressionWarning),
             ),
           )
           as String);
@@ -3569,28 +3503,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#settingsCacheTitle),
-            ),
-          )
-          as String);
-
-  @override
-  String get settingsExerciseCacheDescription =>
-      (super.noSuchMethod(
-            Invocation.getter(#settingsExerciseCacheDescription),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#settingsExerciseCacheDescription),
-            ),
-          )
-          as String);
-
-  @override
-  String get settingsIngredientCacheDescription =>
-      (super.noSuchMethod(
-            Invocation.getter(#settingsIngredientCacheDescription),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#settingsIngredientCacheDescription),
             ),
           )
           as String);
@@ -4521,17 +4433,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#filterNutriscore),
-            ),
-          )
-          as String);
-
-  @override
-  String get nutriscoreValue =>
-      (super.noSuchMethod(
-            Invocation.getter(#nutriscoreValue),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#nutriscoreValue),
             ),
           )
           as String);
