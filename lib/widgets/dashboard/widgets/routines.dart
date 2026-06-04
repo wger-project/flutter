@@ -44,17 +44,6 @@ class DashboardRoutineWidget extends ConsumerStatefulWidget {
 class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget> {
   var _showDetail = false;
 
-  /// Routine ID we've already requested a full fetch for. The sparse list
-  /// landing first only carries `name`/`start`/`end`; `dayData` (which
-  /// the detail rendering below depends on) is only populated by
-  /// [RoutinesRiverpod.fetchAndSetRoutineFull]. We track which routine we
-  /// already triggered to avoid re-firing on every rebuild.
-  int? _hydratedRoutineId;
-
-  /// True while the auto-hydration call is in flight, so we can render a
-  /// spinner instead of the (still-empty) detail block.
-  bool _isHydrating = false;
-
   /// Renders the dashboard card shell so loading / error / empty / data
   /// states all share the same outline (icon + title) instead of the card
   /// hopping around. The trailing widget changes per state.
@@ -91,35 +80,17 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
     final asyncState = ref.watch(routinesRiverpodProvider);
     final isOnline = ref.watch(networkStatusProvider);
 
-    // Auto-hydrate the current routine once it appears in the sparse list.
-    // Skipped while offline (the structure fetch is REST-only); leaving
-    // `_hydratedRoutineId` unset means it retries once the connection is back.
+    // Auto-hydrate the current routine once it appears in the sparse list
     //
-    // Gate on the routine's own `isHydrated` flag, not only the widget-local
-    // `_hydratedRoutineId`. The flag lives on the keepAlive provider and so
-    // survives widget remounts, which would otherwise reset the local guard
-    // and re-fire the full structure fetch on every remount.
+    // Gate the watch on the routine's own `isHydrated` flag (which lives on the
+    // keep-alive routines provider and survives remounts) so a completed load
+    // never re-fires. While offline the structure fetch is unavailable, so it
+    // is skipped. A reconnect re-runs build and starts the load.
     final currentRoutine = asyncState.value?.currentRoutine;
     final currentId = currentRoutine?.id;
-    if (isOnline &&
-        currentId != null &&
-        !currentRoutine!.isHydrated &&
-        currentId != _hydratedRoutineId) {
-      _hydratedRoutineId = currentId;
-      Future.microtask(() async {
-        if (!mounted) {
-          return;
-        }
-        setState(() => _isHydrating = true);
-        try {
-          await ref.read(routinesRiverpodProvider.notifier).fetchAndSetRoutineFull(currentId);
-        } finally {
-          if (mounted) {
-            setState(() => _isHydrating = false);
-          }
-        }
-      });
-    }
+    final hydration = isOnline && currentId != null && !currentRoutine!.isHydrated
+        ? ref.watch(routineHydrationProvider(currentId))
+        : null;
 
     return AsyncValueWidget<RoutinesState>(
       value: asyncState,
@@ -162,6 +133,8 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
           );
         }
 
+        final isHydrating = hydration?.isLoading ?? false;
+
         return Card(
           child: Column(
             children: [
@@ -174,7 +147,7 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                   Icons.fitness_center,
                   color: Theme.of(context).textTheme.headlineSmall!.color,
                 ),
-                trailing: _isHydrating
+                trailing: isHydrating
                     ? const SizedBox(
                         height: 20,
                         width: 20,
@@ -190,7 +163,7 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                       ),
                 // The toggle is meaningless while the day data is still
                 // loading or unavailable offline, so disable the tap then.
-                onTap: _isHydrating || detailsLocked
+                onTap: isHydrating || detailsLocked
                     ? null
                     : () {
                         setState(() {
@@ -198,7 +171,7 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                         });
                       },
               ),
-              if (_isHydrating)
+              if (isHydrating)
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 24),
                   child: Center(child: CircularProgressIndicator()),

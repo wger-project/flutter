@@ -336,5 +336,73 @@ void main() {
       expect(result.sessions, hasLength(1));
       expect(result.sessions[0].logs[0].exerciseObj.id, getTestExercises()[0].id);
     });
+
+    test('concurrent calls share one server roundtrip', () async {
+      // Arrange
+      when(
+        mockRepo.fetchAndSetRoutineFullServer(101),
+      ).thenAnswer((_) async => Routine(id: 101, name: 'Test routine'));
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
+      );
+
+      // Act: fire two calls before the first settles.
+      final notifier = container.read(routinesRiverpodProvider.notifier);
+      await Future.wait([
+        notifier.fetchAndSetRoutineFull(101),
+        notifier.fetchAndSetRoutineFull(101),
+      ]);
+
+      // Assert: `_fullFetchInFlight` collapses them into a single roundtrip.
+      verify(mockRepo.fetchAndSetRoutineFullServer(101)).called(1);
+    });
+  });
+
+  group('routineHydration family', () {
+    test('watching the provider triggers a single structure fetch', () async {
+      // Arrange
+      when(
+        mockRepo.fetchAndSetRoutineFullServer(101),
+      ).thenAnswer((_) async => Routine(id: 101, name: 'Test routine'));
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
+      );
+
+      // Act
+      container.listen(routineHydrationProvider(101), (_, _) {});
+      await container.read(routineHydrationProvider(101).future);
+
+      // Assert
+      verify(mockRepo.fetchAndSetRoutineFullServer(101)).called(1);
+    });
+
+    test('concurrent watchers of the same routine share one fetch', () async {
+      // Arrange
+      when(
+        mockRepo.fetchAndSetRoutineFullServer(101),
+      ).thenAnswer((_) async => Routine(id: 101, name: 'Test routine'));
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
+      );
+
+      // Act: two readers of the same family instance.
+      container.listen(routineHydrationProvider(101), (_, _) {});
+      await Future.wait([
+        container.read(routineHydrationProvider(101).future),
+        container.read(routineHydrationProvider(101).future),
+      ]);
+
+      // Assert: a single shared roundtrip, not one per reader.
+      verify(mockRepo.fetchAndSetRoutineFullServer(101)).called(1);
+    });
   });
 }

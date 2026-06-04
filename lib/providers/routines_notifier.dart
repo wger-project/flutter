@@ -406,3 +406,18 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     await repo.handleConfigServer(entry, value, type);
   }
 }
+
+/// Drives the on-demand full-structure load for a single routine.
+///
+/// Watching this triggers the routine's structure fetch and folds the
+/// server-computed data (days, slots, configs, dayData) into the shared
+/// routines state. The value exposes only the load lifecycle (loading and
+/// error), the routine itself is read from [routinesRiverpodProvider].
+///
+/// Auto-disposed on purpose: consumers gate the watch on `Routine.isHydrated`,
+/// so a completed load never re-fires, and dropping the watch while offline
+/// lets a reconnect re-create the provider and retry.
+@riverpod
+Future<void> routineHydration(Ref ref, int routineId) async {
+  await ref.read(routinesRiverpodProvider.notifier).fetchAndSetRoutineFull(routineId);
+}

@@ -130,3 +130,131 @@ abstract class _$RoutinesRiverpod extends $StreamNotifier<RoutinesState> {
     element.handleCreate(ref, build);
   }
 }
+
+/// Drives the on-demand full-structure load for a single routine.
+///
+/// Watching this triggers the routine's structure fetch and folds the
+/// server-computed data (days, slots, configs, dayData) into the shared
+/// routines state. The value exposes only the load lifecycle (loading and
+/// error); the hydrated routine itself is read from [routinesRiverpodProvider].
+///
+/// Auto-disposed on purpose: consumers gate the watch on `Routine.isHydrated`
+/// (which outlives a remount on the keep-alive routines provider), so a
+/// completed load never re-fires, and dropping the watch while offline lets a
+/// reconnect re-create the provider and retry.
+
+@ProviderFor(routineHydration)
+final routineHydrationProvider = RoutineHydrationFamily._();
+
+/// Drives the on-demand full-structure load for a single routine.
+///
+/// Watching this triggers the routine's structure fetch and folds the
+/// server-computed data (days, slots, configs, dayData) into the shared
+/// routines state. The value exposes only the load lifecycle (loading and
+/// error); the hydrated routine itself is read from [routinesRiverpodProvider].
+///
+/// Auto-disposed on purpose: consumers gate the watch on `Routine.isHydrated`
+/// (which outlives a remount on the keep-alive routines provider), so a
+/// completed load never re-fires, and dropping the watch while offline lets a
+/// reconnect re-create the provider and retry.
+
+final class RoutineHydrationProvider
+    extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
+    with $FutureModifier<void>, $FutureProvider<void> {
+  /// Drives the on-demand full-structure load for a single routine.
+  ///
+  /// Watching this triggers the routine's structure fetch and folds the
+  /// server-computed data (days, slots, configs, dayData) into the shared
+  /// routines state. The value exposes only the load lifecycle (loading and
+  /// error); the hydrated routine itself is read from [routinesRiverpodProvider].
+  ///
+  /// Auto-disposed on purpose: consumers gate the watch on `Routine.isHydrated`
+  /// (which outlives a remount on the keep-alive routines provider), so a
+  /// completed load never re-fires, and dropping the watch while offline lets a
+  /// reconnect re-create the provider and retry.
+  RoutineHydrationProvider._({
+    required RoutineHydrationFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'routineHydrationProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$routineHydrationHash();
+
+  @override
+  String toString() {
+    return r'routineHydrationProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<void> create(Ref ref) {
+    final argument = this.argument as int;
+    return routineHydration(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoutineHydrationProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$routineHydrationHash() => r'ab11ee73aaa26fd715d0516213459a454657a47e';
+
+/// Drives the on-demand full-structure load for a single routine.
+///
+/// Watching this triggers the routine's structure fetch and folds the
+/// server-computed data (days, slots, configs, dayData) into the shared
+/// routines state. The value exposes only the load lifecycle (loading and
+/// error); the hydrated routine itself is read from [routinesRiverpodProvider].
+///
+/// Auto-disposed on purpose: consumers gate the watch on `Routine.isHydrated`
+/// (which outlives a remount on the keep-alive routines provider), so a
+/// completed load never re-fires, and dropping the watch while offline lets a
+/// reconnect re-create the provider and retry.
+
+final class RoutineHydrationFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<void>, int> {
+  RoutineHydrationFamily._()
+    : super(
+        retry: null,
+        name: r'routineHydrationProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Drives the on-demand full-structure load for a single routine.
+  ///
+  /// Watching this triggers the routine's structure fetch and folds the
+  /// server-computed data (days, slots, configs, dayData) into the shared
+  /// routines state. The value exposes only the load lifecycle (loading and
+  /// error); the hydrated routine itself is read from [routinesRiverpodProvider].
+  ///
+  /// Auto-disposed on purpose: consumers gate the watch on `Routine.isHydrated`
+  /// (which outlives a remount on the keep-alive routines provider), so a
+  /// completed load never re-fires, and dropping the watch while offline lets a
+  /// reconnect re-create the provider and retry.
+
+  RoutineHydrationProvider call(int routineId) =>
+      RoutineHydrationProvider._(argument: routineId, from: this);
+
+  @override
+  String toString() => r'routineHydrationProvider';
+}
