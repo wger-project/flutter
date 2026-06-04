@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/screens/ingredient_detail_screen.dart';
 import 'package:wger/widgets/nutrition/ingredient_images.dart';
@@ -28,6 +29,7 @@ class IngredientListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     const double IMG_SIZE = 60;
     final String macros =
         'P: ${ingredient.protein}g / C: ${ingredient.carbohydrates}g / F: ${ingredient.fat}g';
@@ -49,7 +51,7 @@ class IngredientListTile extends StatelessWidget {
       ),
       title: Text(ingredient.name, overflow: TextOverflow.ellipsis, maxLines: 2),
       subtitle: Text(
-        '${ingredient.energy} kJ • $macros',
+        '${ingredient.energy} ${i18n.kJ} • $macros',
         overflow: TextOverflow.ellipsis,
       ),
       onTap: () {

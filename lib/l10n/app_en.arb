@@ -203,7 +203,6 @@
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
   },
-  "searchNamesInEnglish": "Also search for names in English",
   "equipment": "Equipment",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -303,8 +302,6 @@
       }
     }
   },
-  "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
-  "@sameRepetitions": {},
   "comment": "Comment",
   "@comment": {
     "description": "Comment, additional information"
@@ -347,8 +344,6 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
-  "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
-  "@selectExercises": {},
   "personalRecords": "Personal records",
   "gymMode": "Gym mode",
   "@gymMode": {
@@ -745,10 +740,6 @@
   "others": "Others",
   "calendar": "Calendar",
   "@calendar": {},
-  "goToToday": "Go to today",
-  "@goToToday": {
-    "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
   "enterValue": "Please enter a value",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
