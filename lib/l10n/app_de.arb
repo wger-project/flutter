@@ -644,6 +644,9 @@
     "settingsCacheTitle": "Zwischenspeicher",
     "settingsImageCacheDescription": "Bild-Zwischenspeicher",
     "settingsCacheDeletedSnackbar": "Zwischenspeicher erfolgreich gelöscht",
+    "settingsDataTitle": "Datenschutz",
+    "settingsKeepDataOnLogout": "Daten beim Abmelden behalten",
+    "settingsKeepDataOnLogoutDescription": "Die lokale Datenbank bleibt auf dem Gerät, bis sich ein anderes Konto anmeldet.",
     "lb": "lb",
     "@lb": {
         "description": "Generated entry for translation for server strings"

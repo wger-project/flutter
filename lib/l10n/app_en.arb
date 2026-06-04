@@ -1047,6 +1047,9 @@
   "settingsIngredientCacheDescription": "Ingredient cache",
   "settingsImageCacheDescription": "Image cache",
   "settingsCacheDeletedSnackbar": "Cache successfully cleared",
+  "settingsDataTitle": "Privacy",
+  "settingsKeepDataOnLogout": "Keep data when logging out",
+  "settingsKeepDataOnLogoutDescription": "The local database stays on your device until a different account signs in.",
   "aboutPageTitle": "About us & Support",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
   "@contributeExerciseWarning": {

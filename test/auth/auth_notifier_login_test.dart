@@ -32,11 +32,28 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/providers/auth_credentials_storage.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/secure_token_storage.dart';
 
 import 'auth_notifier_login_test.mocks.dart';
+
+/// Storage that simulates the process dying at the moment login claims DB
+/// ownership for a new user (the write that must happen only after the wipe).
+/// Everything else delegates to the real implementation, so the surrounding
+/// prefs-based assertions stay meaningful.
+class _CrashOnOwnerClaimStorage extends AuthCredentialsStorage {
+  _CrashOnOwnerClaimStorage(super.secureStorage);
+
+  @override
+  Future<void> setDbOwnerUserId(String? userId) async {
+    if (userId != null) {
+      throw Exception('simulated crash while claiming DB ownership');
+    }
+    await super.setDbOwnerUserId(userId);
+  }
+}
 
 @GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
@@ -165,13 +182,13 @@ void main() {
       // Refresh token in secure storage.
       verify(mockSecureStorage.writeRefreshToken('fresh-refresh')).called(1);
 
-      // Headless prefs populated. The JWT subject is persisted so the next
-      // login can detect a user-switch and wipe the local DB.
+      // Headless prefs populated. The DB-owner marker is claimed for the
+      // logged-in user so the next login can detect a user-switch.
       final prefs = PreferenceHelper.asyncPref;
       expect(await prefs.getString(PREFS_ACCESS_TOKEN), accessJwt);
       expect(await prefs.getString(PREFS_TOKEN_TYPE), AuthTokenType.headlessJwt.name);
       expect(await prefs.getString(PREFS_SERVER_URL), serverUrl);
-      expect(await prefs.getString(PREFS_USER_ID), '7');
+      expect(await prefs.getString(PREFS_DB_OWNER_USER_ID), '7');
 
       // Stale legacy blob wiped.
       expect(await prefs.containsKey(PREFS_USER), false);
@@ -231,8 +248,8 @@ void main() {
     }
 
     test('login as a different user wipes the local DB on completion', () async {
-      // Previous session belonged to user '5'.
-      await PreferenceHelper.asyncPref.setString(PREFS_USER_ID, '5');
+      // The local DB belongs to user '5'.
+      await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '5');
       stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
 
       final container = makeContainer();
@@ -241,14 +258,14 @@ void main() {
 
       // The user-switch wipe path must have fired exactly once.
       expect(container.read(authProvider.notifier).userSwitchWipeCount, 1);
-      // And the new user-id is now persisted so a future re-login can detect
-      // the next switch.
-      expect(await PreferenceHelper.asyncPref.getString(PREFS_USER_ID), '7');
+      // And ownership is now claimed for the new user so a future re-login
+      // can detect the next switch.
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '7');
     });
 
     test('same user logging back in keeps the local DB', () async {
-      // Same user as the previously stored session.
-      await PreferenceHelper.asyncPref.setString(PREFS_USER_ID, '7');
+      // Same user as the local DB owner.
+      await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '7');
       stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
 
       final container = makeContainer();
@@ -257,11 +274,11 @@ void main() {
 
       // No user mismatch → no wipe.
       expect(container.read(authProvider.notifier).userSwitchWipeCount, 0);
-      expect(await PreferenceHelper.asyncPref.getString(PREFS_USER_ID), '7');
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '7');
     });
 
-    test('first login after a clean install does not wipe (no previous user)', () async {
-      // No PREFS_USER_ID at all → nothing to compare against, no wipe.
+    test('first login after a clean install does not wipe (no owner marker)', () async {
+      // No owner marker at all → no data on disk, nothing to compare, no wipe.
       stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
 
       final container = makeContainer();
@@ -269,8 +286,57 @@ void main() {
       await container.read(authProvider.notifier).login(username, password, serverUrl, null);
 
       expect(container.read(authProvider.notifier).userSwitchWipeCount, 0);
-      expect(await PreferenceHelper.asyncPref.getString(PREFS_USER_ID), '7');
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '7');
     });
+
+    test('different user logging in after a session-only clear still wipes', () async {
+      // clearSessionOnly keeps the DB but clears credentials; the durable
+      // owner marker is what still records who that data belongs to. A
+      // different user logging in must therefore wipe.
+      await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '5');
+      stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).clearSessionOnly();
+      await container.read(authProvider.notifier).login(username, password, serverUrl, null);
+
+      expect(container.read(authProvider.notifier).userSwitchWipeCount, 1);
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '7');
+    });
+
+    test(
+      'a crash while claiming ownership leaves the old marker so a restart still wipes',
+      () async {
+        // The owner marker is written only AFTER the wipe. Simulate the process
+        // dying at that write: the wipe must already have run, and the marker
+        // must still point at the OLD owner (never the new user), so the next
+        // start re-detects the switch and wipes again instead of leaking.
+        await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '5');
+        stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
+
+        final container = ProviderContainer(
+          overrides: [
+            authHttpClientProvider.overrideWithValue(mockClient),
+            secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
+            authCredentialsStorageProvider.overrideWithValue(
+              _CrashOnOwnerClaimStorage(mockSecureStorage),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        await container.read(authProvider.future);
+        final notifier = container.read(authProvider.notifier);
+
+        await expectLater(
+          notifier.login(username, password, serverUrl, null),
+          throwsA(isA<Exception>()),
+        );
+
+        expect(notifier.userSwitchWipeCount, 1);
+        expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '5');
+      },
+    );
   });
 
   group('login: headless 401 / MFA detection', () {

@@ -124,6 +124,49 @@ void main() {
     });
   });
 
+  group('Keep-data-on-logout (AppSettingsNotifier)', () {
+    riverpod.ProviderContainer makeContainer() {
+      final container = riverpod.ProviderContainer(
+        overrides: [
+          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
+        ],
+      );
+      addTearDown(container.dispose);
+      return container;
+    }
+
+    test('defaults to false', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
+      ).thenAnswer((_) async => null);
+
+      final settings = await makeContainer().read(appSettingsProvider.future);
+      expect(settings.keepDataOnLogout, false);
+    });
+
+    test('loads true from prefs', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
+      ).thenAnswer((_) async => true);
+
+      final settings = await makeContainer().read(appSettingsProvider.future);
+      expect(settings.keepDataOnLogout, true);
+    });
+
+    test('persists the toggle', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
+      ).thenAnswer((_) async => null);
+      final container = makeContainer();
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setKeepDataOnLogout(true);
+
+      expect(container.read(appSettingsProvider).requireValue.keepDataOnLogout, true);
+      verify(mockSharedPreferences.setBool(PREFS_KEEP_DATA_ON_LOGOUT, true)).called(1);
+    });
+  });
+
   group('Language switcher', () {
     testWidgets('shows system option when no override set', (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());

@@ -70,10 +70,14 @@ const PREFS_ACCESS_EXPIRES_AT = 'accessExpiresAt';
 const PREFS_TOKEN_TYPE = 'tokenType';
 const PREFS_SERVER_URL = 'serverUrl';
 
-/// JWT `sub` claim of the logged-in user. Compared on next login to decide
-/// whether the local PowerSync DB belongs to the same user (keep it) or a
-/// different one (wipe it). Only written for the headless-JWT flow.
-const PREFS_USER_ID = 'userId';
+/// JWT `sub` of the user whose data is materialised in the local PowerSync
+/// DB. Compared on login to wipe the DB only on a genuine user switch.
+const PREFS_DB_OWNER_USER_ID = 'dbOwnerUserId';
+
+/// User preference: keep the local PowerSync DB on logout instead of wiping
+/// it. Defaults to [KEEP_DATA_ON_LOGOUT_DEFAULT].
+const PREFS_KEEP_DATA_ON_LOGOUT = 'keepDataOnLogout';
+const KEEP_DATA_ON_LOGOUT_DEFAULT = true;
 
 /// Secure-storage key for the headless refresh token.
 const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';

@@ -305,12 +305,13 @@ class AuthNotifier extends _$AuthNotifier {
     String serverUrl,
     PackageInfo appVersion,
   ) async {
-    // Capture the previous user-id BEFORE saving overwrites it. null on
-    // the previous side means "no prior session" (fresh install,
-    // post-logout); we only wipe on a confirmed mismatch.
-    final prevUserId = await _storage.previousUserId();
+    // Compare the durable DB-owner marker against the incoming user. null
+    // on the owner side means "no user data on disk" (fresh install, or the
+    // DB was wiped), so there is nothing to leak; we only wipe on a
+    // confirmed mismatch between two known users.
+    final dbOwnerUserId = await _storage.dbOwnerUserId();
     final newUserId = creds.credential.userId;
-    final userChanged = prevUserId != null && newUserId != null && prevUserId != newUserId;
+    final userChanged = dbOwnerUserId != null && newUserId != null && dbOwnerUserId != newUserId;
 
     await _storage.saveJwt(
       credential: creds.credential,
@@ -342,9 +343,16 @@ class AuthNotifier extends _$AuthNotifier {
     // credentials). Mirrors the wipe-before-publish order of _resetSession.
     if (newState.status == AuthStatus.loggedIn && userChanged) {
       _logger.info(
-        'different user logging in (was $prevUserId, now $newUserId), wiping local DB',
+        'different user logging in (was $dbOwnerUserId, now $newUserId), wiping local DB',
       );
       await _wipeOnUserSwitch();
+    }
+
+    // Claim DB ownership for the new user. Written AFTER any wipe (and before
+    // the state publish) so a crash mid-login can never leave the marker
+    // pointing at a user whose data is still on disk under old ownership.
+    if (newState.status == AuthStatus.loggedIn && newUserId != null) {
+      await _storage.setDbOwnerUserId(newUserId);
     }
 
     state = AsyncData(newState);
@@ -488,6 +496,13 @@ class AuthNotifier extends _$AuthNotifier {
       refreshToken: freshCreds.refreshToken,
       serverUrl: serverUrl,
     );
+    // Claim DB ownership for the migrated user: this path logs in without
+    // going through _completeLogin, so otherwise the marker would stay null
+    // and a later different-user login wouldn't wipe.
+    final migratedUserId = freshCreds.credential.userId;
+    if (migratedUserId != null) {
+      await _storage.setDbOwnerUserId(migratedUserId);
+    }
     _logger.info('Legacy migration: successful, DRF token replaced with JWT');
   }
 
@@ -805,12 +820,20 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(current.copyWith(credential: newCred));
   }
 
-  /// User-driven logout: wipes credentials AND the local PowerSync data.
+  /// User-driven logout. Wipes credentials, and wipes the local PowerSync
+  /// data unless the user has opted to keep it ([keepDataOnLogout]). Keeping
+  /// it lets the same user sign back in and resume the sync incrementally
+  /// instead of re-downloading everything; the DB-owner marker is preserved
+  /// so a *different* user signing in still triggers a wipe.
+  ///
   /// Use for the explicit "Logout" buttons in the UI. For an involuntary
   /// session loss (refresh-token expired, repeated 401, etc.) call
-  /// [clearSessionOnly] instead, which keeps the local DB so the user can
-  /// re-authenticate without losing queued writes or cached read data.
-  Future<void> logout() => _resetSession(wipeLocalData: true);
+  /// [clearSessionOnly] instead, which always keeps the local DB so the user
+  /// can re-authenticate without losing queued writes or cached read data.
+  Future<void> logout() async {
+    final keepData = await _storage.keepDataOnLogout();
+    await _resetSession(wipeLocalData: !keepData);
+  }
 
   /// Involuntary session loss: clears credentials but **keeps** the local
   /// PowerSync DB so the user can sign back in without losing queued
@@ -828,23 +851,16 @@ class AuthNotifier extends _$AuthNotifier {
   /// can never race ahead and re-attach to a DB we're about to wipe.
   Future<void> _resetSession({required bool wipeLocalData}) async {
     _logger.fine(wipeLocalData ? 'logging out' : 'clearing session, keeping local DB');
-    await (wipeLocalData ? _wipePowerSyncIfBuilt() : _disconnectPowerSyncIfBuilt());
+    await (wipeLocalData ? _wipeLocalDb() : _disconnectPowerSyncIfBuilt());
     state = AsyncData(AuthState(applicationVersion: _currentOrBlank().applicationVersion));
-    await (wipeLocalData ? _storage.clearAll() : _storage.clearCredentials());
-  }
-
-  /// Wipes the local PowerSync database if it has already been built.
-  /// No-op when PowerSync hasn't been initialised yet (e.g. during the
-  /// pre-login reset on app start, before any data widgets have run).
-  Future<void> _wipePowerSyncIfBuilt() async {
-    final db = builtPowerSyncInstance;
-    if (db == null) {
-      return;
-    }
-    try {
-      await db.disconnectAndClear();
-    } catch (e, s) {
-      _logger.warning('PowerSync wipe failed', e, s);
+    if (wipeLocalData) {
+      await _storage.clearAll();
+      // The wipe above removed the data (built DB or on-disk file), so the
+      // owner marker is reset to keep the "null marker ⟺ no data" invariant.
+      // Kept on the credentials-only path so a returning user is recognised.
+      await _storage.setDbOwnerUserId(null);
+    } else {
+      await _storage.clearCredentials();
     }
   }
 
@@ -863,25 +879,30 @@ class AuthNotifier extends _$AuthNotifier {
     }
   }
 
-  /// Wipes the local PowerSync data when a different user logs in. If the
-  /// DB instance already exists we use PowerSync's own [disconnectAndClear];
-  /// otherwise (cold-start login as a different user) we remove the on-disk
-  /// files directly so the next build starts with an empty DB.
+  /// Wipes the local PowerSync data when a different user logs in.
   Future<void> _wipeOnUserSwitch() async {
     userSwitchWipeCount++;
+    await _wipeLocalDb();
+  }
+
+  /// Removes the local PowerSync data whether or not the DB has been built:
+  /// when the instance exists we use PowerSync's own [disconnectAndClear],
+  /// otherwise (cold start, before any data widget has built it) we delete
+  /// the on-disk files directly so no data survives.
+  Future<void> _wipeLocalDb() async {
     final db = builtPowerSyncInstance;
     if (db != null) {
       try {
         await db.disconnectAndClear();
       } catch (e, s) {
-        _logger.warning('user-switch DB wipe via disconnectAndClear failed', e, s);
+        _logger.warning('local DB wipe via disconnectAndClear failed', e, s);
       }
       return;
     }
     try {
       await deletePowerSyncDatabaseFile();
     } catch (e, s) {
-      _logger.warning('user-switch DB wipe via file delete failed', e, s);
+      _logger.warning('local DB wipe via file delete failed', e, s);
     }
   }
 

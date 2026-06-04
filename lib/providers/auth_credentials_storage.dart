@@ -104,10 +104,10 @@ class AuthCredentialsStorage {
   }
 
   /// Persists a fresh JWT bundle. As a side effect this records the
-  /// server URL as the "last server" for the next login screen, persists
-  /// the JWT subject so the next login can detect a user switch, and
-  /// wipes the legacy `PREFS_USER` blob (legacy users transition to JWT
-  /// on first login through this path).
+  /// server URL as the "last server" for the next login screen and wipes
+  /// the legacy `PREFS_USER` blob (legacy users transition to JWT on first
+  /// login through this path). The DB-owner marker is intentionally NOT
+  /// written here; the login flow sets it after any required DB wipe.
   Future<void> saveJwt({
     required JwtCredential credential,
     required String serverUrl,
@@ -122,13 +122,6 @@ class AuthCredentialsStorage {
     }
     await _prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
     await _prefs.setString(PREFS_SERVER_URL, serverUrl);
-
-    final userId = credential.userId;
-    if (userId != null) {
-      await _prefs.setString(PREFS_USER_ID, userId);
-    } else {
-      await _prefs.remove(PREFS_USER_ID);
-    }
 
     if (refreshToken != null) {
       await _secureStorage.writeRefreshToken(refreshToken);
@@ -157,13 +150,14 @@ class AuthCredentialsStorage {
 
   /// Wipes the headless-JWT preference bundle and the secure-storage
   /// refresh token. Used both for involuntary session clears and as part
-  /// of a full [clearAll].
+  /// of a full [clearAll]. The DB-owner marker is deliberately left intact:
+  /// it tracks who owns the on-disk data, which clearing credentials does
+  /// not change. It is reset only when the DB is actually wiped.
   Future<void> clearJwt() async {
     await _prefs.remove(PREFS_ACCESS_TOKEN);
     await _prefs.remove(PREFS_ACCESS_EXPIRES_AT);
     await _prefs.remove(PREFS_TOKEN_TYPE);
     await _prefs.remove(PREFS_SERVER_URL);
-    await _prefs.remove(PREFS_USER_ID);
     await _secureStorage.deleteRefreshToken();
   }
 
@@ -191,10 +185,23 @@ class AuthCredentialsStorage {
     await _prefs.remove(PREFS_HAS_EVER_SYNCED);
   }
 
-  /// JWT `sub` claim from the previous login. Compared against the new
-  /// `sub` on subsequent login to detect a user switch and wipe the
-  /// local PowerSync DB. Null on first install or after a full wipe.
-  Future<String?> previousUserId() => _prefs.getString(PREFS_USER_ID);
+  /// JWT `sub` of the user whose data sits in the local PowerSync DB, or null
+  /// if none. Durable across credential clears.
+  Future<String?> dbOwnerUserId() => _prefs.getString(PREFS_DB_OWNER_USER_ID);
+
+  /// Records (or, with null, clears) the owner of the on-disk local DB.
+  Future<void> setDbOwnerUserId(String? userId) async {
+    if (userId == null) {
+      await _prefs.remove(PREFS_DB_OWNER_USER_ID);
+    } else {
+      await _prefs.setString(PREFS_DB_OWNER_USER_ID, userId);
+    }
+  }
+
+  /// User preference: whether a manual logout keeps the local DB on disk.
+  /// Default false (wipe on logout).
+  Future<bool> keepDataOnLogout() async =>
+      (await _prefs.getBool(PREFS_KEEP_DATA_ON_LOGOUT)) ?? false;
 
   /// True once a PowerSync sync has completed for the current install.
   /// Drives the offline-friendly fast path in auto-login.

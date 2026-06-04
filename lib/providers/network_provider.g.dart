@@ -40,7 +40,7 @@ final class NetworkStatusProvider extends $NotifierProvider<NetworkStatus, bool>
   }
 }
 
-String _$networkStatusHash() => r'bcafcfe88c841278c7ca00184c63e8fcaf3043ae';
+String _$networkStatusHash() => r'2abc19df2e0e679222609fec1d637ae131ef4ac1';
 
 abstract class _$NetworkStatus extends $Notifier<bool> {
   bool build();

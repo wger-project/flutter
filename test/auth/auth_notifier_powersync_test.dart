@@ -21,6 +21,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -561,6 +562,71 @@ void main() {
       expect(await prefs.containsKey(PREFS_SERVER_URL), false);
       verify(mockSecureStorage.deleteRefreshToken()).called(1);
     });
+
+    test('deletes the on-disk DB even when PowerSync was never built', () async {
+      // Regression: in the cold-start case (instance not yet built, e.g. a
+      // logout from the PowerSync-unreachable screen) the wipe must remove the
+      // on-disk file, otherwise the owner marker is reset to null while the
+      // previous user's data lingers -> the next different user docks onto it.
+      final tmpDir = Directory.systemTemp.createTempSync('wger_ps_logout');
+      const channel = MethodChannel('plugins.flutter.io/path_provider');
+      final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(
+        channel,
+        (call) async => call.method == 'getApplicationSupportDirectory' ? tmpDir.path : null,
+      );
+      addTearDown(() {
+        messenger.setMockMethodCallHandler(channel, null);
+        if (tmpDir.existsSync()) {
+          tmpDir.deleteSync(recursive: true);
+        }
+      });
+
+      final dbFile = File('${tmpDir.path}/powersync-wger.db')..writeAsStringSync('user-7-data');
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setString(PREFS_DB_OWNER_USER_ID, '7');
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).logout();
+
+      expect(dbFile.existsSync(), false, reason: 'on-disk DB must be wiped on logout');
+      expect(await prefs.containsKey(PREFS_DB_OWNER_USER_ID), false);
+    });
+  });
+
+  group('logout: keep-data-on-logout setting', () {
+    test('off (default) wipes the DB owner marker and the ever-synced flag', () async {
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setString(PREFS_DB_OWNER_USER_ID, '7');
+      await prefs.setBool(PREFS_HAS_EVER_SYNCED, true);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+      await container.read(authProvider.notifier).logout();
+
+      expect(await prefs.containsKey(PREFS_DB_OWNER_USER_ID), false);
+      expect(await prefs.containsKey(PREFS_HAS_EVER_SYNCED), false);
+    });
+
+    test('on keeps the DB owner marker and the ever-synced flag', () async {
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setBool(PREFS_KEEP_DATA_ON_LOGOUT, true);
+      await prefs.setString(PREFS_DB_OWNER_USER_ID, '7');
+      await prefs.setBool(PREFS_HAS_EVER_SYNCED, true);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+      await container.read(authProvider.notifier).logout();
+
+      // Credentials are gone, but the local DB (its owner marker and the
+      // ever-synced flag) survives so the same user resumes incrementally.
+      expect(await prefs.getString(PREFS_DB_OWNER_USER_ID), '7');
+      expect(await prefs.getBool(PREFS_HAS_EVER_SYNCED), true);
+      expect(await prefs.containsKey(PREFS_USER), false);
+    });
   });
 
   group('_tryAutoLogin: headless-JWT migration', () {
@@ -700,7 +766,9 @@ void main() {
       final prefs = PreferenceHelper.asyncPref;
       expect(await prefs.containsKey(PREFS_USER), false);
       expect(await prefs.getString(PREFS_ACCESS_TOKEN), accessJwt);
-      expect(await prefs.getString(PREFS_USER_ID), '42');
+      // The migrated user claims DB ownership so a later different-user login
+      // still triggers a wipe.
+      expect(await prefs.getString(PREFS_DB_OWNER_USER_ID), '42');
       verify(mockSecureStorage.writeRefreshToken('rotated-refresh')).called(1);
 
       // The migration POST must have been authenticated with the legacy
@@ -955,38 +1023,18 @@ void main() {
       );
     });
 
-    test('persists the JWT subject so the next login can detect a user switch', () async {
-      // Refresh itself doesn't write PREFS_USER_ID (the same user just got
-      // new tokens), but a subsequent `login()` is the trigger and relies on
-      // the value persisted at the original login. This test verifies that
-      // value is in place after the headless login flow has run via the seed
-      // helper plus a single happy-path refresh.
+    test('clearSessionOnly keeps the DB-owner marker (the local DB is preserved)', () async {
+      // An involuntary clear keeps the local DB on disk, so its owner marker
+      // must survive too: it is what lets a *different* user signing in later
+      // still trigger a wipe, and the same user skip it.
       await seedHeadlessBundle();
-      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
-      final newAccess = makeJwt({'sub': '42', 'exp': 1900000000});
-      when(
-        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
-      ).thenAnswer(
-        (_) async => Response(
-          jsonEncode({
-            'status': 200,
-            'data': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
-            'meta': {'is_authenticated': true},
-          }),
-          200,
-        ),
-      );
+      await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '42');
 
       final container = makeContainer();
       await container.read(authProvider.future);
-      await container.read(authProvider.notifier).refreshAccessToken();
-
-      // The persisted user-id comes from the login that seeded the bundle, not
-      // from the refresh itself, so the assertion lives in the login-flow
-      // test. Here we just verify clearSessionOnly is the one wiping it on
-      // an involuntary clear, by triggering one and inspecting prefs.
       await container.read(authProvider.notifier).clearSessionOnly();
-      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER_ID), false);
+
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '42');
     });
 
     test('parses access_token from data', () async {

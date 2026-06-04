@@ -78,6 +78,10 @@ sealed class AppSettings with _$AppSettings {
 
     /// Locale override. Null means the app follows the system locale.
     Locale? userLocale,
+
+    /// When true, a manual logout keeps the local database on disk instead
+    /// of wiping it, so the same user signing back in resumes incrementally.
+    @Default(KEEP_DATA_ON_LOGOUT_DEFAULT) bool keepDataOnLogout,
   }) = _AppSettings;
 }
 
@@ -96,10 +100,12 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     final themeMode = await _loadThemeMode();
     final userLocale = await _loadUserLocale();
     final items = await _loadDashboardItems();
+    final keepDataOnLogout = await _loadKeepDataOnLogout();
     return AppSettings(
       themeMode: themeMode,
       userLocale: userLocale,
       dashboardItems: items,
+      keepDataOnLogout: keepDataOnLogout,
     );
   }
 
@@ -170,6 +176,19 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     } else {
       await _prefs.setString(PREFS_USER_LOCALE, encodeLocale(locale));
     }
+  }
+
+  //
+  // Keep local data on logout
+  //
+
+  Future<bool> _loadKeepDataOnLogout() async =>
+      (await _prefs.getBool(PREFS_KEEP_DATA_ON_LOGOUT)) ?? KEEP_DATA_ON_LOGOUT_DEFAULT;
+
+  Future<void> setKeepDataOnLogout(bool value) async {
+    final current = state.asData?.value ?? const AppSettings();
+    state = AsyncData(current.copyWith(keepDataOnLogout: value));
+    await _prefs.setBool(PREFS_KEEP_DATA_ON_LOGOUT, value);
   }
 
   //

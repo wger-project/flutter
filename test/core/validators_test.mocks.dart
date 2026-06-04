@@ -3618,6 +3618,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get settingsDataTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsDataTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsDataTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get settingsKeepDataOnLogout =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsKeepDataOnLogout),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsKeepDataOnLogout),
+            ),
+          )
+          as String);
+
+  @override
+  String get settingsKeepDataOnLogoutDescription =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsKeepDataOnLogoutDescription),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsKeepDataOnLogoutDescription),
+            ),
+          )
+          as String);
+
+  @override
   String get aboutPageTitle =>
       (super.noSuchMethod(
             Invocation.getter(#aboutPageTitle),
