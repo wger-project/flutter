@@ -820,11 +820,11 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(current.copyWith(credential: newCred));
   }
 
-  /// User-driven logout. Wipes credentials, and wipes the local PowerSync
-  /// data unless the user has opted to keep it ([keepDataOnLogout]). Keeping
-  /// it lets the same user sign back in and resume the sync incrementally
-  /// instead of re-downloading everything; the DB-owner marker is preserved
-  /// so a *different* user signing in still triggers a wipe.
+  /// User-driven logout. Always wipes credentials; the local PowerSync data is
+  /// kept by default and only wiped when the user opts out ([keepDataOnLogout]).
+  /// Keeping it lets the same user sign back in and resume the sync
+  /// incrementally instead of re-downloading everything; the DB-owner marker is
+  /// preserved so a *different* user signing in still triggers a wipe.
   ///
   /// Use for the explicit "Logout" buttons in the UI. For an involuntary
   /// session loss (refresh-token expired, repeated 401, etc.) call

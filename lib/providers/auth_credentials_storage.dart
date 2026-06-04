@@ -199,9 +199,9 @@ class AuthCredentialsStorage {
   }
 
   /// User preference: whether a manual logout keeps the local DB on disk.
-  /// Default false (wipe on logout).
+  /// Defaults to [KEEP_DATA_ON_LOGOUT_DEFAULT] (keep on logout).
   Future<bool> keepDataOnLogout() async =>
-      (await _prefs.getBool(PREFS_KEEP_DATA_ON_LOGOUT)) ?? false;
+      (await _prefs.getBool(PREFS_KEEP_DATA_ON_LOGOUT)) ?? KEEP_DATA_ON_LOGOUT_DEFAULT;
 
   /// True once a PowerSync sync has completed for the current install.
   /// Drives the offline-friendly fast path in auto-login.

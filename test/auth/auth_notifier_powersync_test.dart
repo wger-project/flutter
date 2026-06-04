@@ -528,20 +528,25 @@ void main() {
   });
 
   group('logout', () {
-    test('clears PREFS_HAS_EVER_SYNCED so next login re-checks PowerSync', () async {
-      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+    test(
+      'a wiping logout clears PREFS_HAS_EVER_SYNCED so next login re-checks PowerSync',
+      () async {
+        await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+        // Logout keeps the local DB by default; opt out to exercise the wipe.
+        await PreferenceHelper.asyncPref.setBool(PREFS_KEEP_DATA_ON_LOGOUT, false);
 
-      final container = makeContainer();
-      // Wait for auto-login to settle so the notifier exists.
-      await container.read(authProvider.future);
-      // Drain the background revalidation before mutating state.
-      await container.read(authProvider.notifier).revalidationDone;
+        final container = makeContainer();
+        // Wait for auto-login to settle so the notifier exists.
+        await container.read(authProvider.future);
+        // Drain the background revalidation before mutating state.
+        await container.read(authProvider.notifier).revalidationDone;
 
-      await container.read(authProvider.notifier).logout();
+        await container.read(authProvider.notifier).logout();
 
-      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_HAS_EVER_SYNCED), false);
-      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
-    });
+        expect(await PreferenceHelper.asyncPref.containsKey(PREFS_HAS_EVER_SYNCED), false);
+        expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
+      },
+    );
 
     test('wipes the headless-JWT prefs bundle and the secure-storage refresh token', () async {
       // Seed both formats so we can assert each gets removed.
@@ -585,6 +590,8 @@ void main() {
       final dbFile = File('${tmpDir.path}/powersync-wger.db')..writeAsStringSync('user-7-data');
       final prefs = PreferenceHelper.asyncPref;
       await prefs.setString(PREFS_DB_OWNER_USER_ID, '7');
+      // Logout keeps the local DB by default; opt out so the file is wiped.
+      await prefs.setBool(PREFS_KEEP_DATA_ON_LOGOUT, false);
 
       final container = makeContainer();
       await container.read(authProvider.future);
@@ -596,23 +603,8 @@ void main() {
   });
 
   group('logout: keep-data-on-logout setting', () {
-    test('off (default) wipes the DB owner marker and the ever-synced flag', () async {
+    test('on (default) keeps the DB owner marker and the ever-synced flag', () async {
       final prefs = PreferenceHelper.asyncPref;
-      await prefs.setString(PREFS_DB_OWNER_USER_ID, '7');
-      await prefs.setBool(PREFS_HAS_EVER_SYNCED, true);
-
-      final container = makeContainer();
-      await container.read(authProvider.future);
-      await container.read(authProvider.notifier).revalidationDone;
-      await container.read(authProvider.notifier).logout();
-
-      expect(await prefs.containsKey(PREFS_DB_OWNER_USER_ID), false);
-      expect(await prefs.containsKey(PREFS_HAS_EVER_SYNCED), false);
-    });
-
-    test('on keeps the DB owner marker and the ever-synced flag', () async {
-      final prefs = PreferenceHelper.asyncPref;
-      await prefs.setBool(PREFS_KEEP_DATA_ON_LOGOUT, true);
       await prefs.setString(PREFS_DB_OWNER_USER_ID, '7');
       await prefs.setBool(PREFS_HAS_EVER_SYNCED, true);
 
@@ -626,6 +618,21 @@ void main() {
       expect(await prefs.getString(PREFS_DB_OWNER_USER_ID), '7');
       expect(await prefs.getBool(PREFS_HAS_EVER_SYNCED), true);
       expect(await prefs.containsKey(PREFS_USER), false);
+    });
+
+    test('off wipes the DB owner marker and the ever-synced flag', () async {
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setBool(PREFS_KEEP_DATA_ON_LOGOUT, false);
+      await prefs.setString(PREFS_DB_OWNER_USER_ID, '7');
+      await prefs.setBool(PREFS_HAS_EVER_SYNCED, true);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+      await container.read(authProvider.notifier).logout();
+
+      expect(await prefs.containsKey(PREFS_DB_OWNER_USER_ID), false);
+      expect(await prefs.containsKey(PREFS_HAS_EVER_SYNCED), false);
     });
   });
 

@@ -135,22 +135,22 @@ void main() {
       return container;
     }
 
-    test('defaults to false', () async {
+    test('defaults to true', () async {
       when(
         mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
       ).thenAnswer((_) async => null);
 
       final settings = await makeContainer().read(appSettingsProvider.future);
-      expect(settings.keepDataOnLogout, false);
+      expect(settings.keepDataOnLogout, true);
     });
 
-    test('loads true from prefs', () async {
+    test('loads false from prefs', () async {
       when(
         mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
-      ).thenAnswer((_) async => true);
+      ).thenAnswer((_) async => false);
 
       final settings = await makeContainer().read(appSettingsProvider.future);
-      expect(settings.keepDataOnLogout, true);
+      expect(settings.keepDataOnLogout, false);
     });
 
     test('persists the toggle', () async {
