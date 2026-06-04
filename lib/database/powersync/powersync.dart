@@ -179,16 +179,6 @@ final syncStatus = Provider((ref) {
   return ref.watch(_syncStatusInternal).value ?? const SyncStatus();
 });
 
-@riverpod
-bool didCompleteSync(Ref ref, [StreamPriority? priority]) {
-  final status = ref.watch(syncStatus);
-  if (priority != null) {
-    return status.statusForPriority(priority).hasSynced ?? false;
-  } else {
-    return status.hasSynced ?? false;
-  }
-}
-
 Future<String> _getDatabasePath() async {
   const dbFilename = 'powersync-wger.db';
 
