@@ -18,6 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_image.dart' show IngredientImage;
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart' show IngredientWeightUnit;
@@ -50,7 +51,7 @@ class IngredientTable extends Table {
   TextColumn get brand => text().nullable()();
 
   // Creation timestamp from server
-  DateTimeColumn get created => dateTime()();
+  DateTimeColumn get created => dateTime().map(const UtcDateTimeConverter())();
 
   // Energy and macronutrients
   IntColumn get energy => integer()();
@@ -112,8 +113,9 @@ class IngredientImageTable extends Table {
   IntColumn get size => integer()();
   IntColumn get width => integer()();
   IntColumn get height => integer()();
-  DateTimeColumn get created => dateTime()();
-  DateTimeColumn get lastUpdate => dateTime().named('last_update')();
+  DateTimeColumn get created => dateTime().map(const UtcDateTimeConverter())();
+  DateTimeColumn get lastUpdate =>
+      dateTime().named('last_update').map(const UtcDateTimeConverter())();
 
   // License (TASL). license_author may be null on the server (TextField with
   // null=True); the others are not-null strings (possibly empty).

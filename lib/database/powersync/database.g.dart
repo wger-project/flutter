@@ -5294,17 +5294,15 @@ class $RoutineTableTable extends RoutineTable with TableInfo<$RoutineTableTable,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _createdMeta = const VerificationMeta(
-    'created',
-  );
   @override
-  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
-    'created',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> created =
+      GeneratedColumn<DateTime>(
+        'created',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($RoutineTableTable.$convertercreated);
   static const VerificationMeta _startMeta = const VerificationMeta('start');
   @override
   late final GeneratedColumn<DateTime> start = GeneratedColumn<DateTime>(
@@ -5413,14 +5411,6 @@ class $RoutineTableTable extends RoutineTable with TableInfo<$RoutineTableTable,
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
-    if (data.containsKey('created')) {
-      context.handle(
-        _createdMeta,
-        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdMeta);
-    }
     if (data.containsKey('start')) {
       context.handle(
         _startMeta,
@@ -5474,10 +5464,12 @@ class $RoutineTableTable extends RoutineTable with TableInfo<$RoutineTableTable,
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      created: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created'],
-      )!,
+      created: $RoutineTableTable.$convertercreated.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}created'],
+        )!,
+      ),
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
@@ -5513,6 +5505,8 @@ class $RoutineTableTable extends RoutineTable with TableInfo<$RoutineTableTable,
   $RoutineTableTable createAlias(String alias) {
     return $RoutineTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, DateTime> $convertercreated = const UtcDateTimeConverter();
 }
 
 class RoutineTableCompanion extends UpdateCompanion<Routine> {
@@ -5623,7 +5617,9 @@ class RoutineTableCompanion extends UpdateCompanion<Routine> {
       map['description'] = Variable<String>(description.value);
     }
     if (created.present) {
-      map['created'] = Variable<DateTime>(created.value);
+      map['created'] = Variable<DateTime>(
+        $RoutineTableTable.$convertercreated.toSql(created.value),
+      );
     }
     if (start.present) {
       map['start'] = Variable<DateTime>(start.value);
@@ -7494,17 +7490,15 @@ class $IngredientTableTable extends IngredientTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _createdMeta = const VerificationMeta(
-    'created',
-  );
   @override
-  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
-    'created',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> created =
+      GeneratedColumn<DateTime>(
+        'created',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($IngredientTableTable.$convertercreated);
   static const VerificationMeta _energyMeta = const VerificationMeta('energy');
   @override
   late final GeneratedColumn<int> energy = GeneratedColumn<int>(
@@ -7725,14 +7719,6 @@ class $IngredientTableTable extends IngredientTable
         brand.isAcceptableOrUnknown(data['brand']!, _brandMeta),
       );
     }
-    if (data.containsKey('created')) {
-      context.handle(
-        _createdMeta,
-        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdMeta);
-    }
     if (data.containsKey('energy')) {
       context.handle(
         _energyMeta,
@@ -7858,10 +7844,12 @@ class $IngredientTableTable extends IngredientTable
         DriftSqlType.string,
         data['${effectivePrefix}brand'],
       ),
-      created: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created'],
-      )!,
+      created: $IngredientTableTable.$convertercreated.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}created'],
+        )!,
+      ),
       energy: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}energy'],
@@ -7916,6 +7904,7 @@ class $IngredientTableTable extends IngredientTable
     return $IngredientTableTable(attachedDatabase, alias);
   }
 
+  static TypeConverter<DateTime, DateTime> $convertercreated = const UtcDateTimeConverter();
   static JsonTypeConverter2<NutriScore, String, String> $converternutriscore =
       const EnumNameConverter<NutriScore>(NutriScore.values);
   static JsonTypeConverter2<NutriScore?, String?, String?> $converternutriscoren =
@@ -8141,7 +8130,9 @@ class IngredientTableCompanion extends UpdateCompanion<Ingredient> {
       map['brand'] = Variable<String>(brand.value);
     }
     if (created.present) {
-      map['created'] = Variable<DateTime>(created.value);
+      map['created'] = Variable<DateTime>(
+        $IngredientTableTable.$convertercreated.toSql(created.value),
+      );
     }
     if (energy.present) {
       map['energy'] = Variable<int>(energy.value);
@@ -8289,28 +8280,26 @@ class $IngredientImageTableTable extends IngredientImageTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _createdMeta = const VerificationMeta(
-    'created',
-  );
   @override
-  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
-    'created',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _lastUpdateMeta = const VerificationMeta(
-    'lastUpdate',
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> created =
+      GeneratedColumn<DateTime>(
+        'created',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($IngredientImageTableTable.$convertercreated);
   @override
-  late final GeneratedColumn<DateTime> lastUpdate = GeneratedColumn<DateTime>(
-    'last_update',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> lastUpdate =
+      GeneratedColumn<DateTime>(
+        'last_update',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>(
+        $IngredientImageTableTable.$converterlastUpdate,
+      );
   static const VerificationMeta _licenseIdMeta = const VerificationMeta(
     'licenseId',
   );
@@ -8459,22 +8448,6 @@ class $IngredientImageTableTable extends IngredientImageTable
     } else if (isInserting) {
       context.missing(_heightMeta);
     }
-    if (data.containsKey('created')) {
-      context.handle(
-        _createdMeta,
-        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdMeta);
-    }
-    if (data.containsKey('last_update')) {
-      context.handle(
-        _lastUpdateMeta,
-        lastUpdate.isAcceptableOrUnknown(data['last_update']!, _lastUpdateMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_lastUpdateMeta);
-    }
     if (data.containsKey('license_id')) {
       context.handle(
         _licenseIdMeta,
@@ -8567,14 +8540,18 @@ class $IngredientImageTableTable extends IngredientImageTable
         DriftSqlType.int,
         data['${effectivePrefix}height'],
       )!,
-      created: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created'],
-      )!,
-      lastUpdate: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_update'],
-      )!,
+      created: $IngredientImageTableTable.$convertercreated.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}created'],
+        )!,
+      ),
+      lastUpdate: $IngredientImageTableTable.$converterlastUpdate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}last_update'],
+        )!,
+      ),
       licenseId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}license_id'],
@@ -8606,6 +8583,9 @@ class $IngredientImageTableTable extends IngredientImageTable
   $IngredientImageTableTable createAlias(String alias) {
     return $IngredientImageTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, DateTime> $convertercreated = const UtcDateTimeConverter();
+  static TypeConverter<DateTime, DateTime> $converterlastUpdate = const UtcDateTimeConverter();
 }
 
 class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
@@ -8775,10 +8755,14 @@ class IngredientImageTableCompanion extends UpdateCompanion<IngredientImage> {
       map['height'] = Variable<int>(height.value);
     }
     if (created.present) {
-      map['created'] = Variable<DateTime>(created.value);
+      map['created'] = Variable<DateTime>(
+        $IngredientImageTableTable.$convertercreated.toSql(created.value),
+      );
     }
     if (lastUpdate.present) {
-      map['last_update'] = Variable<DateTime>(lastUpdate.value);
+      map['last_update'] = Variable<DateTime>(
+        $IngredientImageTableTable.$converterlastUpdate.toSql(lastUpdate.value),
+      );
     }
     if (licenseId.present) {
       map['license_id'] = Variable<int>(licenseId.value);
@@ -17138,9 +17122,9 @@ class $$RoutineTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get created => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get created => $composableBuilder(
     column: $table.created,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<DateTime> get start => $composableBuilder(
@@ -17243,7 +17227,7 @@ class $$RoutineTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<DateTime> get created =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get created =>
       $composableBuilder(column: $table.created, builder: (column) => column);
 
   GeneratedColumn<DateTime> get start =>
@@ -19096,9 +19080,9 @@ class $$IngredientTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get created => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get created => $composableBuilder(
     column: $table.created,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<int> get energy => $composableBuilder(
@@ -19418,7 +19402,7 @@ class $$IngredientTableTableAnnotationComposer
   GeneratedColumn<String> get brand =>
       $composableBuilder(column: $table.brand, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get created =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get created =>
       $composableBuilder(column: $table.created, builder: (column) => column);
 
   GeneratedColumn<int> get energy =>
@@ -19931,14 +19915,14 @@ class $$IngredientImageTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get created => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get created => $composableBuilder(
     column: $table.created,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
-  ColumnFilters<DateTime> get lastUpdate => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get lastUpdate => $composableBuilder(
     column: $table.lastUpdate,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<int> get licenseId => $composableBuilder(
@@ -20122,10 +20106,10 @@ class $$IngredientImageTableTableAnnotationComposer
   GeneratedColumn<int> get height =>
       $composableBuilder(column: $table.height, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get created =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get created =>
       $composableBuilder(column: $table.created, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get lastUpdate => $composableBuilder(
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get lastUpdate => $composableBuilder(
     column: $table.lastUpdate,
     builder: (column) => column,
   );

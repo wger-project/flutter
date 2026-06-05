@@ -35,7 +35,7 @@ class RoutineTable extends Table {
   IntColumn get id => integer()();
   TextColumn get name => text()();
   TextColumn get description => text()();
-  DateTimeColumn get created => dateTime()();
+  DateTimeColumn get created => dateTime().map(const UtcDateTimeConverter())();
   DateTimeColumn get start => dateTime()();
   DateTimeColumn get end => dateTime()();
   BoolColumn get isTemplate => boolean().named('is_template')();

@@ -172,7 +172,7 @@ class Routine {
       id: drift.Value(routineId),
       name: drift.Value(name),
       description: drift.Value(description),
-      created: drift.Value(created.toUtc()),
+      created: drift.Value(created),
       // `start`/`end` are `DateField` server-side
       start: drift.Value(DateTime.utc(start.year, start.month, start.day)),
       end: drift.Value(DateTime.utc(end.year, end.month, end.day)),
