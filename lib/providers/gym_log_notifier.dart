@@ -36,10 +36,11 @@ class GymLogNotifier extends _$GymLogNotifier {
   }
 
   void setLog(Log log) {
-    // Clear the id so Drift mints a fresh UUID on insert, the source log
-    // is a template, the new state is a separate entry that will get its
-    // own DB row.
-    state = log.copyWith(date: clock.now())..id = null;
+    // Clear the id so Drift mints a fresh UUID on insert, and the sessionId so
+    // the copy lands in today's session instead of the template's historical one.
+    state = log.copyWith(date: clock.now())
+      ..id = null
+      ..sessionId = null;
   }
 
   void setWeight(num weight) {

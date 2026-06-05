@@ -57,10 +57,11 @@ void main() {
     expect(container.read(gymLogProvider), isNull);
   });
 
-  test('setLog stores a copy with cleared id and the current clock as date', () {
+  test('setLog stores a copy with cleared id/sessionId and the current clock as date', () {
     final fixed = DateTime.utc(2026, 5, 1, 12);
     withClock(Clock.fixed(fixed), () {
-      final source = makeLog(id: 'original-id', date: DateTime.utc(2020, 1, 1));
+      final source = makeLog(id: 'original-id', date: DateTime.utc(2020, 1, 1))
+        ..sessionId = 'session-from-2020';
 
       container.read(gymLogProvider.notifier).setLog(source);
 
@@ -68,10 +69,11 @@ void main() {
       expect(state.exerciseId, source.exerciseId);
       expect(state.weight, source.weight);
       expect(state.date, fixed);
-      // setLog must clear the id, the source log is a template, the new
-      // state is a separate entry that will get its own UUID from Drift on
-      // insert.
+      // setLog must clear id AND sessionId: the source is a historical template,
+      // the copy is a fresh entry that gets its own UUID from Drift on insert
+      // and must land in today's session, not back on the template's old one.
       expect(state.id, isNull);
+      expect(state.sessionId, isNull);
     });
   });
 
