@@ -38,36 +38,40 @@ const APP_AUTH_HOST = 'app-auth';
 /// via web" again
 const APP_AUTH_STATE_TTL = Duration(minutes: 10);
 
-/// Generates a 256-bit nonce, persists it as the pending handoff state and
-/// returns it for inclusion in the launch URL. Each call rotates the value,
-/// so a previously-issued (but unused) state is invalidated.
-Future<String> issueAppAuthState() async {
+/// Generates a 256-bit nonce, persists it (with [serverUrl]) as the pending
+/// handoff state and returns it for inclusion in the launch URL. Each call
+/// rotates the value, so a previously-issued (but unused) state is invalidated.
+Future<String> issueAppAuthState(String serverUrl) async {
   final rng = Random.secure();
   final bytes = List<int>.generate(32, (_) => rng.nextInt(256));
   final state = base64UrlEncode(bytes).replaceAll('=', '');
   final prefs = PreferenceHelper.asyncPref;
   await prefs.setString(PREFS_APP_AUTH_STATE, state);
+  await prefs.setString(PREFS_APP_AUTH_SERVER, serverUrl);
   await prefs.setInt(PREFS_APP_AUTH_STATE_AT, clock.now().millisecondsSinceEpoch);
   return state;
 }
 
 /// Consumes any outstanding handoff state and verifies that [received]
 /// matches it within [APP_AUTH_STATE_TTL]. Always clears the stored value
-/// (single use), regardless of outcome. Returns true on match.
-Future<bool> consumeAppAuthState(String? received) async {
+/// (single use), regardless of outcome. Returns the server URL the handoff was
+/// issued for on a valid match, or null on any rejection.
+Future<String?> consumeAppAuthState(String? received) async {
   final prefs = PreferenceHelper.asyncPref;
   final stored = await prefs.getString(PREFS_APP_AUTH_STATE);
   final issuedAt = await prefs.getInt(PREFS_APP_AUTH_STATE_AT) ?? 0;
+  final serverUrl = await prefs.getString(PREFS_APP_AUTH_SERVER);
   await prefs.remove(PREFS_APP_AUTH_STATE);
   await prefs.remove(PREFS_APP_AUTH_STATE_AT);
+  await prefs.remove(PREFS_APP_AUTH_SERVER);
   if (stored == null || received == null || received.isEmpty) {
-    return false;
+    return null;
   }
   final ageMs = clock.now().millisecondsSinceEpoch - issuedAt;
   if (ageMs > APP_AUTH_STATE_TTL.inMilliseconds) {
-    return false;
+    return null;
   }
-  return stored == received;
+  return stored == received ? serverUrl : null;
 }
 
 /// Routes incoming `wger://app-auth#token=<jwt>` deep links into the auth
@@ -113,14 +117,16 @@ class AppLinkRouter {
       return;
     }
     final state = fragmentParam(uri, 'state');
-    if (!await consumeAppAuthState(state)) {
+    // Returns the server URL the handoff was started for, so a self-hosted
+    // token is redeemed against its own server, not the default.
+    final serverUrl = await consumeAppAuthState(state);
+    if (serverUrl == null) {
       // Unsolicited link (no outstanding state), stale (past TTL), or state
       // mismatch, all three look the same from here and are all rejected by
       // design. Login-CSRF defence: only accept handoffs the app started itself.
       _logger.warning('Rejecting handoff deep link with bad/missing state: $uri');
       return;
     }
-    final serverUrl = await AuthNotifier.getServerUrlFromPrefs();
     try {
       await _ref.read(authProvider.notifier).login('', '', serverUrl, token);
     } catch (e, st) {

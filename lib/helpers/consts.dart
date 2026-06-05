@@ -86,6 +86,9 @@ const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';
 /// (not a secret, just a one-shot nonce echoed back by the server).
 const PREFS_APP_AUTH_STATE = 'appAuthState';
 const PREFS_APP_AUTH_STATE_AT = 'appAuthStateAt';
+// The server URL the handoff was started for, round-tripped with the nonce so
+// the returning token is redeemed against the same (e.g. self-hosted) server.
+const PREFS_APP_AUTH_SERVER = 'appAuthServer';
 
 /// True once PowerSync has been reachable for this user at least once
 /// (i.e. its liveness probe returned 200).

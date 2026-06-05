@@ -87,32 +87,41 @@ void main() {
   });
 
   group('issueAppAuthState / consumeAppAuthState', () {
+    const server = 'https://my.wger.example';
+
     setUp(() {
       SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     });
 
-    test('a freshly issued state is accepted exactly once', () async {
-      final state = await issueAppAuthState();
+    test('a valid match round-trips the server URL the handoff was issued for', () async {
+      final state = await issueAppAuthState(server);
       expect(state, isNotEmpty);
-      expect(await consumeAppAuthState(state), isTrue);
+      // The returning token must be redeemed against the issuing (self-hosted)
+      // server, not a default.
+      expect(await consumeAppAuthState(state), server);
+    });
+
+    test('a freshly issued state is accepted exactly once', () async {
+      final state = await issueAppAuthState(server);
+      expect(await consumeAppAuthState(state), server);
       // Single-use: the second consume sees an empty store.
-      expect(await consumeAppAuthState(state), isFalse);
+      expect(await consumeAppAuthState(state), isNull);
     });
 
     test('a mismatched state is rejected and still clears the pending one', () async {
-      await issueAppAuthState();
-      expect(await consumeAppAuthState('not-the-real-one'), isFalse);
+      await issueAppAuthState(server);
+      expect(await consumeAppAuthState('not-the-real-one'), isNull);
       // The pending state was wiped — replaying the right value now also fails.
-      expect(await consumeAppAuthState('anything'), isFalse);
+      expect(await consumeAppAuthState('anything'), isNull);
     });
 
     test('null and empty received values are rejected', () async {
-      await issueAppAuthState();
-      expect(await consumeAppAuthState(null), isFalse);
+      await issueAppAuthState(server);
+      expect(await consumeAppAuthState(null), isNull);
     });
 
-    test('consume without any pending state returns false', () async {
-      expect(await consumeAppAuthState('anything'), isFalse);
+    test('consume without any pending state returns null', () async {
+      expect(await consumeAppAuthState('anything'), isNull);
     });
 
     test('state past the TTL is rejected', () async {
@@ -120,28 +129,28 @@ void main() {
       final t0 = DateTime(2026, 1, 1, 12);
       String? issued;
       await withClock(Clock.fixed(t0), () async {
-        issued = await issueAppAuthState();
+        issued = await issueAppAuthState(server);
       });
       final later = t0.add(APP_AUTH_STATE_TTL + const Duration(seconds: 1));
       final result = await withClock(
         Clock.fixed(later),
         () => consumeAppAuthState(issued),
       );
-      expect(result, isFalse);
+      expect(result, isNull);
     });
 
     test('issuing twice rotates the value', () async {
-      final first = await issueAppAuthState();
-      final second = await issueAppAuthState();
+      final first = await issueAppAuthState(server);
+      final second = await issueAppAuthState(server);
       expect(first, isNot(second));
       // Only the second one is now consumable.
-      expect(await consumeAppAuthState(first), isFalse);
+      expect(await consumeAppAuthState(first), isNull);
     });
 
     test('rotation invariant: each issue must invalidate the previous', () async {
-      final first = await issueAppAuthState();
-      await issueAppAuthState();
-      expect(await consumeAppAuthState(first), isFalse);
+      final first = await issueAppAuthState(server);
+      await issueAppAuthState(server);
+      expect(await consumeAppAuthState(first), isNull);
     });
   });
 }

@@ -115,7 +115,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     if (serverUrl.isEmpty) {
       serverUrl = kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD;
     }
-    final state = await issueAppAuthState();
+    final state = await issueAppAuthState(serverUrl);
     await launchUrl(
       Uri.parse('$serverUrl/user/app-auth/?state=$state'),
       mode: LaunchMode.externalApplication,
