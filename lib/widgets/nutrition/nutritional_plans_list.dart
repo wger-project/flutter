@@ -118,7 +118,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
                 onTap: () {
                   Navigator.of(context).pushNamed(
                     NutritionalPlanScreen.routeName,
-                    arguments: currentPlan,
+                    arguments: currentPlan.id,
                   );
                 },
                 title: Text(currentPlan.getLabel(context)),

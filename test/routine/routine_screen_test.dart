@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -36,6 +37,14 @@ class _StubRoutinesRiverpod extends RoutinesRiverpod {
 
   @override
   Stream<RoutinesState> build() => Stream.value(RoutinesState(routines: _routines));
+}
+
+class _StreamRoutinesRiverpod extends RoutinesRiverpod {
+  _StreamRoutinesRiverpod(this._stream);
+  final Stream<RoutinesState> _stream;
+
+  @override
+  Stream<RoutinesState> build() => _stream;
 }
 
 void main() {
@@ -144,5 +153,66 @@ void main() {
       isTrue,
       reason: 'Delete syncs through PowerSync and works offline',
     );
+  });
+
+  testWidgets('a routine deleted from the live stream pops instead of crashing', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(500, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    // Single-subscription (not broadcast) so the first value is buffered until
+    // the lazily-built provider subscribes, rather than dropped.
+    final controller = StreamController<RoutinesState>();
+    addTearDown(controller.close);
+
+    final key = GlobalKey<NavigatorState>();
+    final container = ProviderContainer.test(
+      overrides: [
+        networkStatusProvider.overrideWithValue(true),
+        routinesRiverpodProvider.overrideWith(() => _StreamRoutinesRiverpod(controller.stream)),
+      ],
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: key,
+          home: TextButton(
+            onPressed: () => key.currentState!.push(
+              MaterialPageRoute<void>(
+                settings: const RouteSettings(arguments: 1),
+                builder: (_) => const RoutineScreen(),
+              ),
+            ),
+            child: const SizedBox(),
+          ),
+        ),
+      ),
+    );
+
+    // Routine #1 present: open the detail screen.
+    controller.add(RoutinesState(routines: [getTestRoutine()]));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+    expect(find.text('3 day workout'), findsOneWidget);
+
+    // Deleted on another device: the stream re-emits without it. The detail
+    // screen must not crash on the missing id, it pops back to the launcher.
+    controller.add(const RoutinesState(routines: []));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('3 day workout'), findsNothing);
+    expect(find.byType(TextButton), findsOneWidget);
   });
 }

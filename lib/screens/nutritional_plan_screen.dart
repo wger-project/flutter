@@ -20,10 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
+import 'package:wger/widgets/core/object_gone_redirect.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
@@ -33,33 +33,28 @@ enum NutritionalPlanOptions {
   delete,
 }
 
-class NutritionalPlanScreen extends ConsumerStatefulWidget {
+class NutritionalPlanScreen extends ConsumerWidget {
   const NutritionalPlanScreen();
 
   static const routeName = '/nutritional-plan-detail';
 
   @override
-  ConsumerState<NutritionalPlanScreen> createState() => _NutritionalPlanScreenState();
-}
-
-class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
-  late NutritionalPlan _argumentPlan;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _argumentPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final planId = ModalRoute.of(context)!.settings.arguments as String;
     const appBarForeground = Colors.white;
-    // Resolve the freshest plan from state so meal/diary edits reflect
-    // immediately. Falls back to the route argument if state hasn't streamed
-    // yet (e.g. cold open, deep link).
+
+    // Wait for the catalogue to stream in, then resolve the plan by id. A loaded
+    // state that no longer has it means the plan was deleted (here or on another
+    // device): leave, rather than render a phantom plan whose meal/diary writes
+    // would orphan against a missing plan.
     final state = ref.watch(nutritionProvider).value;
-    final NutritionalPlan _nutritionalPlan =
-        state?.findByIdOrNull(_argumentPlan.id) ?? _argumentPlan;
+    if (state == null) {
+      return const Scaffold(body: Center(child: BoxedProgressIndicator()));
+    }
+    final nutritionalPlan = state.findByIdOrNull(planId);
+    if (nutritionalPlan == null) {
+      return objectGoneRedirect(context);
+    }
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       floatingActionButton: Row(
@@ -74,7 +69,7 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   AppLocalizations.of(context).logIngredient,
-                  getIngredientLogForm(_nutritionalPlan),
+                  getIngredientLogForm(nutritionalPlan),
                   hasListView: true,
                 ),
               );
@@ -91,7 +86,7 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
             onPressed: () {
               Navigator.of(context).pushNamed(
                 LogMealsScreen.routeName,
-                arguments: _nutritionalPlan,
+                arguments: nutritionalPlan,
               );
             },
             child: const SvgIcon(
@@ -108,7 +103,7 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
             pinned: true,
             iconTheme: const IconThemeData(color: appBarForeground),
             actions: [
-              if (!_nutritionalPlan.onlyLogging)
+              if (!nutritionalPlan.onlyLogging)
                 IconButton(
                   icon: const SvgIcon(
                     icon: SvgIconData('assets/icons/meal-add.svg'),
@@ -119,7 +114,7 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).addMeal,
-                        MealForm(_nutritionalPlan.id!),
+                        MealForm(nutritionalPlan.id!),
                       ),
                     );
                   },
@@ -134,13 +129,13 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
                         FormScreen.routeName,
                         arguments: FormScreenArguments(
                           AppLocalizations.of(context).edit,
-                          PlanForm(_nutritionalPlan),
+                          PlanForm(nutritionalPlan),
                           hasListView: true,
                         ),
                       );
                       break;
                     case NutritionalPlanOptions.delete:
-                      ref.read(nutritionProvider.notifier).deletePlan(_nutritionalPlan.id!);
+                      ref.read(nutritionProvider.notifier).deletePlan(nutritionalPlan.id!);
                       Navigator.of(context).pop();
                       break;
                   }
@@ -169,15 +164,12 @@ class _NutritionalPlanScreenState extends ConsumerState<NutritionalPlanScreen> {
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
-                _nutritionalPlan.getLabel(context),
+                nutritionalPlan.getLabel(context),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
               ),
             ),
           ),
-          if (state == null)
-            const SliverToBoxAdapter(child: BoxedProgressIndicator())
-          else
-            NutritionalPlanDetailWidget(_nutritionalPlan),
+          NutritionalPlanDetailWidget(nutritionalPlan),
         ],
       ),
     );

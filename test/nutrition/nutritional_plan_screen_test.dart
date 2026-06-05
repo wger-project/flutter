@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -27,6 +28,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -69,13 +71,16 @@ void main() {
       jsonDecode(fixture('nutrition/ingredientinfo_10065.json')),
     );
 
-    // Plans, meals and logs all stream in via Drift now.
+    // Plans, meals and logs all stream in via Drift now. The plan under view is
+    // present in the streamed list (you reach the detail screen from it) with its
+    // meals; a list that omits it means "deleted", which routes the screen away.
+    final plan = getNutritionalPlan();
     when(
       mockNutritionRepo.watchAllDrift(),
-    ).thenAnswer((_) => Stream.value(const []));
+    ).thenAnswer((_) => Stream.value([plan]));
     when(
       mockNutritionRepo.watchAllMealsHydrated(),
-    ).thenAnswer((_) => Stream.value(const []));
+    ).thenAnswer((_) => Stream.value(plan.meals));
     when(
       mockNutritionRepo.watchAllLogsHydrated(),
     ).thenAnswer((_) => Stream.value(getTestNutritionLogs()));
@@ -113,7 +118,7 @@ void main() {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: plan),
+              settings: RouteSettings(arguments: plan.id),
               builder: (_) => const NutritionalPlanScreen(),
             ),
           ),
@@ -250,5 +255,39 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('17:00'), findsOneWidget);
+  });
+
+  testWidgets('a plan deleted from the stream routes away instead of showing a phantom', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(500, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    final plan = getNutritionalPlan();
+    final plansController = StreamController<List<NutritionalPlan>>();
+    addTearDown(plansController.close);
+    when(mockNutritionRepo.watchAllDrift()).thenAnswer((_) => plansController.stream);
+    when(mockNutritionRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(plan.meals));
+
+    await tester.pumpWidget(createNutritionalPlan(container: makeContainer()));
+    plansController.add([plan]);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+    expect(find.byType(NutritionalPlanScreen), findsOneWidget);
+    expect(find.text('Less fat, more protein'), findsOneWidget);
+
+    // Plan deleted (here or on another device): the stream re-emits without it.
+    // The screen must route away, not render a phantom whose meal/diary writes
+    // would orphan against a missing plan.
+    plansController.add(const []);
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(NutritionalPlanScreen), findsNothing);
   });
 }

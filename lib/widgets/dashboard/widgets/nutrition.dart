@@ -138,7 +138,7 @@ class DashboardNutritionWidget extends ConsumerWidget {
                             onPressed: () {
                               Navigator.of(context).pushNamed(
                                 NutritionalPlanScreen.routeName,
-                                arguments: plan,
+                                arguments: plan.id,
                               );
                             },
                           ),

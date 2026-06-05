@@ -22,6 +22,7 @@ import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/core/error.dart';
+import 'package:wger/widgets/core/object_gone_redirect.dart';
 import 'package:wger/widgets/routines/app_bar.dart';
 import 'package:wger/widgets/routines/routine_detail.dart';
 
@@ -42,7 +43,10 @@ class RoutineScreen extends ConsumerWidget {
         body: Center(child: StreamErrorIndicator(e, stacktrace: st)),
       ),
       data: (state) {
-        final routine = state.findById(routineId);
+        final routine = state.findByIdOrNull(routineId);
+        if (routine == null) {
+          return objectGoneRedirect(context);
+        }
         return Scaffold(
           appBar: RoutineDetailAppBar(routine),
           body: WidescreenWrapper(

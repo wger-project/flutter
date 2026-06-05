@@ -71,8 +71,11 @@ class RoutinesState {
     return null;
   }
 
-  Routine findById(int id) {
-    return routines.firstWhere((routine) => routine.id == id);
+  /// The routine with [id], or null when it isn't in the current list. Null is
+  /// expected (not an error): the list is a live stream, so a routine deleted on
+  /// another device can vanish while a detail screen is still open.
+  Routine? findByIdOrNull(int id) {
+    return routines.firstWhereOrNull((routine) => routine.id == id);
   }
 
   /// Return all sessions from all routines

@@ -24,6 +24,7 @@ import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/error.dart';
+import 'package:wger/widgets/core/object_gone_redirect.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/measurements/entries.dart';
 import 'package:wger/widgets/measurements/forms.dart';
@@ -72,19 +73,10 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
         }
 
         // Category was deleted (locally or via PowerSync from another device).
-        // Pop back to the categories list, but only if this screen is the
-        // topmost route, otherwise we'd pop a child route (open form,
-        // dialog, …) instead.
+        // Leave this now-stale screen.
         final category = snapshot.data;
         if (category == null) {
-          Future.microtask(() {
-            if (!context.mounted) return;
-            final route = ModalRoute.of(context);
-            if (route != null && route.isCurrent) {
-              Navigator.of(context).pop();
-            }
-          });
-          return const SizedBox.shrink();
+          return objectGoneRedirect(context);
         }
 
         return Scaffold(

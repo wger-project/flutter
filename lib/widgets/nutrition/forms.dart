@@ -743,7 +743,7 @@ class _PlanFormState extends ConsumerState<PlanForm> {
                 if (context.mounted) {
                   Navigator.of(context).pushReplacementNamed(
                     NutritionalPlanScreen.routeName,
-                    arguments: saved,
+                    arguments: saved.id,
                   );
                 }
               }
