@@ -47,7 +47,8 @@ void main() {
     final rows = await readAll();
     expect(rows, hasLength(1));
     expect(rows.first.weight, testWeightEntry1.weight);
-    expect(rows.first.date, testWeightEntry1.date);
+    // Stored as UTC, read back in the device's local zone (same instant).
+    expect(rows.first.date, testWeightEntry1.date.toLocal());
     // The entry's `id` field is ignored on insert (toCompanion uses
     // includeId:false) so the table's clientDefault assigns a fresh UUID.
     expect(rows.first.id, isNotEmpty);
@@ -68,7 +69,7 @@ void main() {
     expect(rows, hasLength(1));
     expect(rows.first.id, inserted.id);
     expect(rows.first.weight, 90.0);
-    expect(rows.first.date, DateTime.utc(2026, 4, 16));
+    expect(rows.first.date, DateTime.utc(2026, 4, 16).toLocal());
   });
 
   test('deleteLocalDrift removes the row with matching id', () async {

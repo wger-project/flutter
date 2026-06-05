@@ -4699,15 +4699,14 @@ class $WeightEntryTableTable extends WeightEntryTable
     type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+  late final GeneratedColumnWithTypeConverter<DateTime?, DateTime> date = GeneratedColumn<DateTime>(
     'date',
     aliasedName,
     true,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
-  );
+  ).withConverter<DateTime?>($WeightEntryTableTable.$converterdaten);
   @override
   List<GeneratedColumn> get $columns => [id, weight, date];
   @override
@@ -4733,12 +4732,6 @@ class $WeightEntryTableTable extends WeightEntryTable
     } else if (isInserting) {
       context.missing(_weightMeta);
     }
-    if (data.containsKey('date')) {
-      context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
-      );
-    }
     return context;
   }
 
@@ -4756,9 +4749,11 @@ class $WeightEntryTableTable extends WeightEntryTable
         DriftSqlType.double,
         data['${effectivePrefix}weight'],
       )!,
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
+      date: $WeightEntryTableTable.$converterdaten.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}date'],
+        ),
       ),
     );
   }
@@ -4767,6 +4762,11 @@ class $WeightEntryTableTable extends WeightEntryTable
   $WeightEntryTableTable createAlias(String alias) {
     return $WeightEntryTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, DateTime> $converterdate = const UtcDateTimeConverter();
+  static TypeConverter<DateTime?, DateTime?> $converterdaten = NullAwareTypeConverter.wrap(
+    $converterdate,
+  );
 }
 
 class WeightEntryTableCompanion extends UpdateCompanion<WeightEntry> {
@@ -4824,7 +4824,9 @@ class WeightEntryTableCompanion extends UpdateCompanion<WeightEntry> {
       map['weight'] = Variable<double>(weight.value);
     }
     if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+      map['date'] = Variable<DateTime>(
+        $WeightEntryTableTable.$converterdaten.toSql(date.value),
+      );
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -5047,15 +5049,14 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
       'REFERENCES measurements_category (id)',
     ),
   );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> date = GeneratedColumn<DateTime>(
     'date',
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
-  );
+  ).withConverter<DateTime>($MeasurementEntryTableTable.$converterdate);
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
   late final GeneratedColumn<double> value = GeneratedColumn<double>(
@@ -5099,14 +5100,6 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
     } else if (isInserting) {
       context.missing(_categoryIdMeta);
     }
-    if (data.containsKey('date')) {
-      context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_dateMeta);
-    }
     if (data.containsKey('value')) {
       context.handle(
         _valueMeta,
@@ -5140,10 +5133,12 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
         DriftSqlType.string,
         data['${effectivePrefix}category_id'],
       )!,
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
-      )!,
+      date: $MeasurementEntryTableTable.$converterdate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}date'],
+        )!,
+      ),
       value: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}value'],
@@ -5159,6 +5154,8 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
   $MeasurementEntryTableTable createAlias(String alias) {
     return $MeasurementEntryTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, DateTime> $converterdate = const UtcDateTimeConverter();
 }
 
 class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
@@ -5233,7 +5230,9 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
       map['category_id'] = Variable<String>(categoryId.value);
     }
     if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+      map['date'] = Variable<DateTime>(
+        $MeasurementEntryTableTable.$converterdate.toSql(date.value),
+      );
     }
     if (value.present) {
       map['value'] = Variable<double>(value.value);
@@ -5819,15 +5818,14 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> date = GeneratedColumn<DateTime>(
     'date',
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
-  );
+  ).withConverter<DateTime>($WorkoutLogTableTable.$converterdate);
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -5961,14 +5959,6 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
         ),
       );
     }
-    if (data.containsKey('date')) {
-      context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_dateMeta);
-    }
     return context;
   }
 
@@ -6034,10 +6024,12 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
         DriftSqlType.int,
         data['${effectivePrefix}weight_unit_id'],
       ),
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
-      )!,
+      date: $WorkoutLogTableTable.$converterdate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}date'],
+        )!,
+      ),
     );
   }
 
@@ -6045,6 +6037,8 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
   $WorkoutLogTableTable createAlias(String alias) {
     return $WorkoutLogTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, DateTime> $converterdate = const UtcDateTimeConverter();
 }
 
 class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
@@ -6224,7 +6218,9 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
       map['weight_unit_id'] = Variable<int>(weightUnitId.value);
     }
     if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+      map['date'] = Variable<DateTime>(
+        $WorkoutLogTableTable.$converterdate.toSql(date.value),
+      );
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -9669,17 +9665,15 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _datetimeMeta = const VerificationMeta(
-    'datetime',
-  );
   @override
-  late final GeneratedColumn<DateTime> datetime = GeneratedColumn<DateTime>(
-    'datetime',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime, DateTime> datetime =
+      GeneratedColumn<DateTime>(
+        'datetime',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($LogItemTableTable.$converterdatetime);
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
@@ -9760,14 +9754,6 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
         ),
       );
     }
-    if (data.containsKey('datetime')) {
-      context.handle(
-        _datetimeMeta,
-        datetime.isAcceptableOrUnknown(data['datetime']!, _datetimeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_datetimeMeta);
-    }
     if (data.containsKey('amount')) {
       context.handle(
         _amountMeta,
@@ -9815,10 +9801,12 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
         DriftSqlType.string,
         data['${effectivePrefix}plan_id'],
       )!,
-      datetime: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}datetime'],
-      )!,
+      datetime: $LogItemTableTable.$converterdatetime.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}datetime'],
+        )!,
+      ),
       comment: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}comment'],
@@ -9830,6 +9818,8 @@ class $LogItemTableTable extends LogItemTable with TableInfo<$LogItemTableTable,
   $LogItemTableTable createAlias(String alias) {
     return $LogItemTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, DateTime> $converterdatetime = const UtcDateTimeConverter();
 }
 
 class LogItemTableCompanion extends UpdateCompanion<LogItem> {
@@ -9934,7 +9924,9 @@ class LogItemTableCompanion extends UpdateCompanion<LogItem> {
       map['weight_unit_id'] = Variable<int>(weightUnitId.value);
     }
     if (datetime.present) {
-      map['datetime'] = Variable<DateTime>(datetime.value);
+      map['datetime'] = Variable<DateTime>(
+        $LogItemTableTable.$converterdatetime.toSql(datetime.value),
+      );
     }
     if (amount.present) {
       map['amount'] = Variable<double>(amount.value);
@@ -16349,9 +16341,9 @@ class $$WeightEntryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get date => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, DateTime> get date => $composableBuilder(
     column: $table.date,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 }
 
@@ -16395,7 +16387,7 @@ class $$WeightEntryTableTableAnnotationComposer
   GeneratedColumn<double> get weight =>
       $composableBuilder(column: $table.weight, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date =>
+  GeneratedColumnWithTypeConverter<DateTime?, DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 }
 
@@ -16828,9 +16820,9 @@ class $$MeasurementEntryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get date => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get date => $composableBuilder(
     column: $table.date,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<double> get value => $composableBuilder(
@@ -16930,7 +16922,7 @@ class $$MeasurementEntryTableTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 
   GeneratedColumn<double> get value =>
@@ -17491,9 +17483,9 @@ class $$WorkoutLogTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get date => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get date => $composableBuilder(
     column: $table.date,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 }
 
@@ -17647,7 +17639,7 @@ class $$WorkoutLogTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<DateTime> get date =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 }
 
@@ -21608,9 +21600,9 @@ class $$LogItemTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get datetime => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get datetime => $composableBuilder(
     column: $table.datetime,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<double> get amount => $composableBuilder(
@@ -21772,7 +21764,7 @@ class $$LogItemTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<DateTime> get datetime =>
+  GeneratedColumnWithTypeConverter<DateTime, DateTime> get datetime =>
       $composableBuilder(column: $table.datetime, builder: (column) => column);
 
   GeneratedColumn<double> get amount =>

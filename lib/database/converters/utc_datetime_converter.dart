@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,24 +17,19 @@
  */
 
 import 'package:drift/drift.dart';
-import 'package:powersync/powersync.dart' as ps;
-import 'package:wger/database/converters/utc_datetime_converter.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
 
-@UseRowClass(WeightEntry)
-class WeightEntryTable extends Table {
+/// Persists [DateTime] values as UTC and returns them in the device's local zone.
+///
+/// Use only on columns backed by a Django `DateTimeField`. Date-only
+/// (`DateField`) columns must not use it, or their calendar day would shift in
+/// zones west or east of UTC. The local conversion on read is required because
+/// both local writes and server sync store instants as UTC
+class UtcDateTimeConverter extends TypeConverter<DateTime, DateTime> {
+  const UtcDateTimeConverter();
+
   @override
-  String get tableName => 'weight_weightentry';
+  DateTime fromSql(DateTime fromDb) => fromDb.toLocal();
 
-  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
-  RealColumn get weight => real()();
-  DateTimeColumn get date => dateTime().nullable().map(const UtcDateTimeConverter())();
+  @override
+  DateTime toSql(DateTime value) => value.toUtc();
 }
-
-const PowersyncWeightEntryTable = ps.Table(
-  'weight_weightentry',
-  [
-    ps.Column.real('weight'),
-    ps.Column.text('date'),
-  ],
-);

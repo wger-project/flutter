@@ -18,6 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
@@ -49,8 +50,7 @@ class MeasurementEntryTable extends Table {
   TextColumn get categoryId =>
       text().named('category_id').references(MeasurementCategoryTable, #id)();
 
-  // DateTimeColumn get date => dateTime().map(const DatetimeToYYYYMMDDConverter())();
-  DateTimeColumn get date => dateTime()();
+  DateTimeColumn get date => dateTime().map(const UtcDateTimeConverter())();
   RealColumn get value => real()();
   TextColumn get notes => text()();
 }

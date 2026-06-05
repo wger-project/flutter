@@ -92,7 +92,7 @@ class LogItem {
       mealId: mealId == null ? const drift.Value.absent() : drift.Value(mealId!),
       ingredientId: drift.Value(ingredientId),
       weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId!),
-      datetime: drift.Value(datetime.toUtc()),
+      datetime: drift.Value(datetime),
       amount: drift.Value(amount.toDouble()),
       comment: comment == null ? const drift.Value.absent() : drift.Value(comment!),
     );

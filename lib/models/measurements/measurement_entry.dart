@@ -56,7 +56,7 @@ class MeasurementEntry with _$MeasurementEntry {
     return MeasurementEntryTableCompanion(
       id: id != null ? Value(id!) : const Value.absent(),
       categoryId: Value(categoryId),
-      date: Value(date.toUtc()),
+      date: Value(date),
       value: Value(value.toDouble()),
       notes: Value(notes),
     );

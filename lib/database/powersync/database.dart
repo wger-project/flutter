@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/exercise_image_style_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
+import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/converters/workout_impression_converter.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/models/core/language.dart';

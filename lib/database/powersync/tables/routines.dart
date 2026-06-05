@@ -19,6 +19,7 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/time_of_day_converter.dart';
+import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/converters/workout_impression_converter.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -79,7 +80,7 @@ class WorkoutLogTable extends Table {
   RealColumn get weightTarget => real().nullable().named('weight_target')();
   IntColumn get weightUnitId => integer().nullable().named('weight_unit_id')();
 
-  DateTimeColumn get date => dateTime()();
+  DateTimeColumn get date => dateTime().map(const UtcDateTimeConverter())();
 }
 
 const PowersyncWorkoutLogTable = ps.Table(

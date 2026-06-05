@@ -188,7 +188,7 @@ class Log {
           ? drift.Value(weightTarget!.toDouble())
           : const drift.Value.absent(),
       weightUnitId: weightUnitId != null ? drift.Value(weightUnitId) : const drift.Value.absent(),
-      date: drift.Value(date.toUtc()),
+      date: drift.Value(date),
     );
   }
 

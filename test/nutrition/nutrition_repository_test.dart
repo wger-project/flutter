@@ -443,6 +443,27 @@ void main() {
       expect(emitted.single.ingredient?.name, 'Apple');
     });
 
+    test('log datetime is stored as UTC and read back in local time', () async {
+      await seedPlan(id: planUuid1);
+      await seedIngredient(id: 1, name: 'Apple');
+
+      // A local wall-clock time. Persisted as UTC, it must come back in the
+      // device's local zone so the diary shows the time the user logged and
+      // buckets the entry on the local calendar day.
+      final localDateTime = DateTime(2026, 4, 15, 20, 30);
+      await repo.addLogLocalDrift(
+        LogItem(planId: planUuid1, ingredientId: 1, amount: 100, datetime: localDateTime),
+      );
+
+      final stored = (await repo.watchAllLogsHydrated().first).single.datetime;
+
+      expect(stored.isUtc, isFalse);
+      expect(stored.isAtSameMomentAs(localDateTime), isTrue);
+      expect(stored.hour, 20);
+      expect(stored.minute, 30);
+      expect(stored.day, 15);
+    });
+
     test('log whose ingredient has not synced yet still emits with null', () async {
       // Models the window between addLogLocalDrift and PowerSync pulling the
       // referenced ingredient down. The diary entry must stay visible (else the

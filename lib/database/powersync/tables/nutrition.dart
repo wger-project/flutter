@@ -20,6 +20,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/time_of_day_converter.dart';
+import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/powersync/tables/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -77,7 +78,7 @@ class LogItemTable extends Table {
   TextColumn get mealId => text().nullable().named('meal_id')();
   IntColumn get ingredientId => integer().named('ingredient_id').references(IngredientTable, #id)();
   IntColumn get weightUnitId => integer().nullable().named('weight_unit_id')();
-  DateTimeColumn get datetime => dateTime()();
+  DateTimeColumn get datetime => dateTime().map(const UtcDateTimeConverter())();
   RealColumn get amount => real()();
   TextColumn get comment => text().nullable()();
 }
