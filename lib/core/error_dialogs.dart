@@ -421,7 +421,6 @@ void showDeleteLogDialog(BuildContext context, String confirmDeleteName, Log log
 /// Processes the error messages from the server and returns a list of widgets
 List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
   final logger = Logger('formatApiErrors');
-  final textColor = color ?? Colors.black;
 
   final List<Widget> errorList = [];
 
@@ -429,13 +428,13 @@ List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
     errorList.add(
       Text(
         error.key,
-        style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+        style: TextStyle(fontWeight: FontWeight.bold, color: color),
       ),
     );
 
     logger.warning(error.errorMessages);
     for (final message in error.errorMessages) {
-      errorList.add(Text(message, style: TextStyle(color: textColor)));
+      errorList.add(Text(message, style: TextStyle(color: color)));
     }
     errorList.add(const SizedBox(height: 8));
   }
@@ -445,21 +444,20 @@ List<Widget> formatApiErrors(List<ApiError> errors, {Color? color}) {
 
 /// Processes the error messages from the server and returns a list of widgets
 List<Widget> formatTextErrors(List<String> errors, {String? title, Color? color}) {
-  final textColor = color ?? Colors.black;
-
   final List<Widget> errorList = [];
 
+  // A null color inherits the surrounding text style (readable in dark mode).
   if (title != null) {
     errorList.add(
       Text(
         title,
-        style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+        style: TextStyle(fontWeight: FontWeight.bold, color: color),
       ),
     );
   }
 
   for (final message in errors) {
-    errorList.add(Text(message, style: TextStyle(color: textColor)));
+    errorList.add(Text(message, style: TextStyle(color: color)));
   }
   errorList.add(const SizedBox(height: 8));
 
