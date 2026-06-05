@@ -35,6 +35,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/jwt.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/auth_credentials_storage.dart';
 import 'package:wger/providers/auth_http_client.dart';
 import 'package:wger/providers/auth_state.dart';
@@ -710,6 +711,7 @@ class AuthNotifier extends _$AuthNotifier {
   /// with the new token instead of replaying their pre-login error state.
   void _invalidatePostLoginProviders() {
     _logger.fine('Invalidating data providers after login');
+    ref.invalidate(accountProvider);
     ref.invalidate(userProfileProvider);
     ref.invalidate(routinesRiverpodProvider);
     ref.invalidate(nutritionProvider);

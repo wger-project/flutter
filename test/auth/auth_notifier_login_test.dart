@@ -17,7 +17,9 @@
  */
 
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -32,6 +34,9 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/shared_preferences.dart';
+import 'package:wger/models/user/account.dart';
+import 'package:wger/providers/account_notifier.dart';
+import 'package:wger/providers/account_repository.dart';
 import 'package:wger/providers/auth_credentials_storage.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
@@ -55,17 +60,35 @@ class _CrashOnOwnerClaimStorage extends AuthCredentialsStorage {
   }
 }
 
-@GenerateMocks([http.Client, SecureTokenStorage])
+@GenerateMocks([http.Client, SecureTokenStorage, AccountRepository])
 void main() {
+  // Needed to install the path_provider mock channel below.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
   late MockClient mockClient;
   late MockSecureTokenStorage mockSecureStorage;
+  late MockAccountRepository mockAccountRepo;
+
+  // Backing dir for the on-disk PowerSync wipe path (instance never built in
+  // these tests). When [failDbPathLookup] is set, the path lookup throws so
+  // tests can exercise a failed wipe.
+  late Directory tmpDir;
+  var failDbPathLookup = false;
+  const pathProviderChannel = MethodChannel('plugins.flutter.io/path_provider');
 
   const serverUrl = 'https://wger.example';
   const username = 'alice';
   const password = 'hunter2';
   const powerSyncUrl = 'https://ps.example/';
+
+  const tAccount = Account(
+    username: username,
+    email: 'alice@example.com',
+    emailVerified: true,
+    isTrustworthy: true,
+  );
 
   final tHeadlessLogin = Uri.parse('$serverUrl/_allauth/app/v1/auth/login');
   final tHeadlessSignup = Uri.parse('$serverUrl/_allauth/app/v1/auth/signup');
@@ -87,6 +110,7 @@ void main() {
       overrides: [
         authHttpClientProvider.overrideWithValue(mockClient),
         secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
+        accountRepositoryProvider.overrideWithValue(mockAccountRepo),
       ],
     );
     addTearDown(c.dispose);
@@ -96,9 +120,29 @@ void main() {
   setUp(() async {
     mockClient = MockClient();
     mockSecureStorage = MockSecureTokenStorage();
+    mockAccountRepo = MockAccountRepository();
+    when(mockAccountRepo.fetchAccount()).thenAnswer((_) async => tAccount);
     when(mockSecureStorage.deleteRefreshToken()).thenAnswer((_) async {});
     when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => null);
     when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
+
+    // Point the on-disk wipe path at a real temp dir so the user-switch wipe
+    // succeeds (no file present -> no-op), mirroring a device with no DB yet.
+    failDbPathLookup = false;
+    tmpDir = Directory.systemTemp.createTempSync('wger_login_ps');
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(pathProviderChannel, (call) async {
+      if (failDbPathLookup) {
+        throw PlatformException(code: 'unavailable', message: 'simulated path lookup failure');
+      }
+      return call.method == 'getApplicationSupportDirectory' ? tmpDir.path : null;
+    });
+    addTearDown(() {
+      messenger.setMockMethodCallHandler(pathProviderChannel, null);
+      if (tmpDir.existsSync()) {
+        tmpDir.deleteSync(recursive: true);
+      }
+    });
 
     SharedPreferences.setMockInitialValues({});
     PackageInfo.setMockInitialValues(
@@ -228,6 +272,39 @@ void main() {
               as Map<String, String>;
       expect(captured.containsKey('authorization'), false);
     });
+
+    test('re-login re-fetches the account (keepAlive cleared on logout)', () async {
+      final accessJwt = makeJwt({'sub': '7', 'exp': 1900000000});
+      when(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {},
+            'meta': {'access_token': accessJwt, 'refresh_token': 'r'},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      // First login loads the account.
+      await container.read(authProvider.notifier).login(username, password, serverUrl, null);
+      expect((await container.read(accountProvider.future))?.username, username);
+
+      // Logout clears the keepAlive account to AsyncData(null) (app_bar does
+      // this), then the user logs back in without restarting the app.
+      container.read(accountProvider.notifier).clear();
+      expect(container.read(accountProvider).value, isNull);
+      await container.read(authProvider.notifier).login(username, password, serverUrl, null);
+
+      // The post-login invalidation must re-fetch, not leave the stale null.
+      expect((await container.read(accountProvider.future))?.username, username);
+      verify(mockAccountRepo.fetchAccount()).called(2);
+    });
   });
 
   group('login: user-switch detection', () {
@@ -337,6 +414,30 @@ void main() {
         expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '5');
       },
     );
+
+    test('a failed wipe aborts the login and leaves the old owner marker', () async {
+      // The wipe must be load-bearing: if it fails, the previous user's data
+      // and queued CRUD ops are still on disk, so login must NOT claim
+      // ownership for the new user (that would upload the old queue under the
+      // new credentials). It aborts instead; the unchanged marker makes the
+      // next start re-detect the switch and retry.
+      await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '5');
+      stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
+      failDbPathLookup = true;
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      final notifier = container.read(authProvider.notifier);
+
+      await expectLater(
+        notifier.login(username, password, serverUrl, null),
+        throwsA(isA<Exception>()),
+      );
+
+      // The wipe was attempted but failed; ownership must stay with user '5'.
+      expect(notifier.userSwitchWipeCount, 1);
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '5');
+    });
   });
 
   group('login: headless 401 / MFA detection', () {
