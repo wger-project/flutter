@@ -204,21 +204,52 @@ class ServerGating {
     }
   }
 
-  Future<String> fetchServerVersion(String serverUrl) async {
-    final response = await _client.get(makeUri(serverUrl, _SERVER_VERSION_PATH));
-    return json.decode(response.body);
+  /// Fetches the server's reported version, or null when it can't be read
+  /// (non-200, unparseable body, or network error). Null is handled leniently
+  /// by [serverUpdateRequired], so a transient blip doesn't gate the user out.
+  Future<String?> fetchServerVersion(String serverUrl) async {
+    try {
+      final response = await _client.get(makeUri(serverUrl, _SERVER_VERSION_PATH));
+      if (response.statusCode != 200) {
+        _logger.warning('fetchServerVersion: status ${response.statusCode}, skipping check');
+        return null;
+      }
+      final decoded = json.decode(response.body);
+      return decoded is String ? decoded : null;
+    } on Exception catch (e, s) {
+      _logger.warning('fetchServerVersion failed: $e', e, s);
+      return null;
+    }
   }
 
+  /// Whether the server requires a newer app build. Lenient: on a non-200,
+  /// unparseable body, or network error the check is skipped (returns false),
+  /// so a transient blip doesn't lock the user out.
   Future<bool> applicationUpdateRequired(String serverUrl, String appVersion) async {
-    final response = await _client.get(makeUri(serverUrl, _MIN_APP_VERSION_PATH));
-    final current = Version.parse(appVersion);
-    final required = Version.parse(jsonDecode(response.body));
-
-    final needUpdate = required > current;
-    if (needUpdate) {
-      _logger.fine('Application update required: $required > $current');
+    try {
+      final response = await _client.get(makeUri(serverUrl, _MIN_APP_VERSION_PATH));
+      if (response.statusCode != 200) {
+        _logger.warning(
+          'applicationUpdateRequired: status ${response.statusCode}, skipping check',
+        );
+        return false;
+      }
+      final decoded = json.decode(response.body);
+      if (decoded is! String) {
+        _logger.warning('applicationUpdateRequired: unexpected body, skipping check');
+        return false;
+      }
+      final current = Version.parse(appVersion);
+      final required = Version.parse(decoded);
+      final needUpdate = required > current;
+      if (needUpdate) {
+        _logger.fine('Application update required: $required > $current');
+      }
+      return needUpdate;
+    } on Exception catch (e, s) {
+      _logger.warning('applicationUpdateRequired failed: $e', e, s);
+      return false;
     }
-    return needUpdate;
   }
 }
 

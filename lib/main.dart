@@ -34,6 +34,7 @@ import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/screens/auth_screen.dart';
+import 'package:wger/screens/auto_login_error_screen.dart';
 import 'package:wger/screens/dashboard.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/screens/exercises_screen.dart';
@@ -178,7 +179,9 @@ class MainApp extends ConsumerWidget {
     return authAsync.when(
       loading: () => const MaterialApp(home: SplashScreen()),
       error: (error, stack) => MaterialApp(
-        home: Scaffold(body: Center(child: Text('$error'))),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: AutoLoginErrorScreen(error: error),
       ),
       data: (authState) {
         final themeMode = ref.watch(
