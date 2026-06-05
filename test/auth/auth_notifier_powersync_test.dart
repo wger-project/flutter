@@ -59,6 +59,13 @@ void main() {
   late MockClient mockClient;
   late MockSecureTokenStorage mockSecureStorage;
 
+  // Backing dir for the on-disk PowerSync wipe path (instance never built in
+  // these tests). When [failDbPathLookup] is set, the path lookup throws so
+  // tests can exercise a failed wipe.
+  late Directory tmpDir;
+  var failDbPathLookup = false;
+  const pathProviderChannel = MethodChannel('plugins.flutter.io/path_provider');
+
   const serverUrl = 'https://wger.example';
   const token = 'token-12345';
   const powerSyncUrl = 'https://ps.example/';
@@ -102,6 +109,25 @@ void main() {
       buildNumber: '2',
       buildSignature: 'buildSignature',
     );
+
+    // Point the on-disk wipe path at a real temp dir so a wiping logout
+    // succeeds (no file present -> no-op). Set [failDbPathLookup] to make the
+    // lookup throw and exercise a failed wipe.
+    failDbPathLookup = false;
+    tmpDir = Directory.systemTemp.createTempSync('wger_ps_auth');
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(pathProviderChannel, (call) async {
+      if (failDbPathLookup) {
+        throw PlatformException(code: 'unavailable', message: 'simulated path lookup failure');
+      }
+      return call.method == 'getApplicationSupportDirectory' ? tmpDir.path : null;
+    });
+    addTearDown(() {
+      messenger.setMockMethodCallHandler(pathProviderChannel, null);
+      if (tmpDir.existsSync()) {
+        tmpDir.deleteSync(recursive: true);
+      }
+    });
 
     // Wipe async prefs between tests (the platform instance is shared).
     final prefs = PreferenceHelper.asyncPref;
@@ -599,6 +625,30 @@ void main() {
 
       expect(dbFile.existsSync(), false, reason: 'on-disk DB must be wiped on logout');
       expect(await prefs.containsKey(PREFS_DB_OWNER_USER_ID), false);
+    });
+
+    test('a failed wipe keeps the owner marker so a different user still wipes', () async {
+      // If the wipe fails the data is still on disk under the old owner, so the
+      // marker must NOT be reset to null: otherwise a different user signing in
+      // later would dock onto the previous user's data instead of wiping it.
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setString(PREFS_DB_OWNER_USER_ID, '7');
+      // Logout keeps the local DB by default; opt out so the wipe is attempted.
+      await prefs.setBool(PREFS_KEEP_DATA_ON_LOGOUT, false);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+
+      // Make the on-disk wipe fail.
+      failDbPathLookup = true;
+      await container.read(authProvider.notifier).logout();
+
+      // Credentials are still cleared (the user logged out), but the marker
+      // survives because the data was not actually removed.
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedOut);
+      expect(await prefs.containsKey(PREFS_USER), false);
+      expect(await prefs.getString(PREFS_DB_OWNER_USER_ID), '7');
     });
   });
 

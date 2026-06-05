@@ -853,14 +853,31 @@ class AuthNotifier extends _$AuthNotifier {
   /// can never race ahead and re-attach to a DB we're about to wipe.
   Future<void> _resetSession({required bool wipeLocalData}) async {
     _logger.fine(wipeLocalData ? 'logging out' : 'clearing session, keeping local DB');
-    await (wipeLocalData ? _wipeLocalDb() : _disconnectPowerSyncIfBuilt());
+
+    // A failed wipe still logs the user out, but the data is left on disk: the
+    // owner marker must then survive so a later different user is detected as a
+    // switch and re-wipes, rather than docking onto the leftover data.
+    var wiped = true;
+    if (wipeLocalData) {
+      try {
+        await _wipeLocalDb();
+      } catch (e, s) {
+        _logger.severe('logout wipe failed, keeping owner marker', e, s);
+        wiped = false;
+      }
+    } else {
+      await _disconnectPowerSyncIfBuilt();
+    }
+
     state = AsyncData(AuthState(applicationVersion: _currentOrBlank().applicationVersion));
     if (wipeLocalData) {
       await _storage.clearAll();
-      // The wipe above removed the data (built DB or on-disk file), so the
-      // owner marker is reset to keep the "null marker ⟺ no data" invariant.
-      // Kept on the credentials-only path so a returning user is recognised.
-      await _storage.setDbOwnerUserId(null);
+      // Drop the marker only when the data was actually removed, keeping the
+      // "null marker ⟺ no data" invariant. Kept on the credentials-only path
+      // so a returning user is recognised.
+      if (wiped) {
+        await _storage.setDbOwnerUserId(null);
+      }
     } else {
       await _storage.clearCredentials();
     }
@@ -891,20 +908,25 @@ class AuthNotifier extends _$AuthNotifier {
   /// when the instance exists we use PowerSync's own [disconnectAndClear],
   /// otherwise (cold start, before any data widget has built it) we delete
   /// the on-disk files directly so no data survives.
+  ///
+  /// Throws if the wipe fails. Callers must abort before advancing the DB
+  /// owner marker, otherwise the previous user's data stay on disk
   Future<void> _wipeLocalDb() async {
     final db = builtPowerSyncInstance;
     if (db != null) {
       try {
         await db.disconnectAndClear();
       } catch (e, s) {
-        _logger.warning('local DB wipe via disconnectAndClear failed', e, s);
+        _logger.severe('local DB wipe via disconnectAndClear failed', e, s);
+        rethrow;
       }
       return;
     }
     try {
       await deletePowerSyncDatabaseFile();
     } catch (e, s) {
-      _logger.warning('local DB wipe via file delete failed', e, s);
+      _logger.severe('local DB wipe via file delete failed', e, s);
+      rethrow;
     }
   }
 
