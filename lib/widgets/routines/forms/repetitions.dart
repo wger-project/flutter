@@ -136,6 +136,7 @@ class _RepetitionInputWidgetState extends ConsumerState<RepetitionInputWidget> {
         // "Quick-remove" button
         IconButton(
           icon: const Icon(Icons.remove, color: Colors.black),
+          tooltip: i18n.decrease,
           onPressed: () {
             final base = currentReps ?? 0;
             final newValue = base - widget.valueChange;
@@ -178,6 +179,7 @@ class _RepetitionInputWidgetState extends ConsumerState<RepetitionInputWidget> {
         // "Quick-add" button
         IconButton(
           icon: const Icon(Icons.add, color: Colors.black),
+          tooltip: i18n.increase,
           onPressed: () {
             final base = currentReps ?? 0;
             final newValue = base + widget.valueChange;
