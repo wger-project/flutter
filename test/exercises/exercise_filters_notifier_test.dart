@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -194,6 +196,93 @@ void main() {
       final after = container.read(exerciseListFiltersProvider);
       expect(after.filters.searchTerm, 'curls');
       expect(after.filteredExercises.map((e) => e.id).toList(), [testCurls.id]);
+    });
+  });
+
+  group('survives catalogue re-emission (sync tick)', () {
+    /// Primes a container whose exercises stream is driven by [controller], so a
+    /// test can push a second emission to simulate a PowerSync catalogue write.
+    Future<ProviderContainer> primedWith(StreamController<ExerciseState> controller) async {
+      when(mockRepo.watchAllDrift()).thenAnswer((_) => controller.stream);
+      final container = ProviderContainer.test(
+        overrides: [exerciseRepositoryProvider.overrideWithValue(mockRepo)],
+      );
+      container.listen(exerciseListFiltersProvider, (_, _) {});
+      controller.add(ExerciseState(exercises));
+      await pumpEventQueue();
+      return container;
+    }
+
+    test('keeps the user search term and selection when the exercises stream re-emits', () async {
+      final controller = StreamController<ExerciseState>();
+      addTearDown(controller.close);
+      final container = await primedWith(controller);
+
+      // User narrows to Abs + Dumbbell + 'Squat' → only testSquats.
+      final state = container.read(exerciseListFiltersProvider);
+      container
+          .read(exerciseListFiltersProvider.notifier)
+          .setFilters(
+            state.filters.copyWith(
+              searchTerm: 'Squat',
+              exerciseCategories: state.filters.exerciseCategories.copyWith(
+                items: {for (final c in categories) c: c == testCategoryAbs},
+              ),
+              equipment: state.filters.equipment.copyWith(
+                items: {for (final e in equipment) e: e == testEquipmentDumbbell},
+              ),
+            ),
+          );
+      expect(
+        container.read(exerciseListFiltersProvider).filteredExercises.map((e) => e.id).toList(),
+        [testSquats.id],
+      );
+
+      // A sync tick rewrites the catalogue: the exercises stream re-emits.
+      controller.add(ExerciseState(exercises));
+      await pumpEventQueue();
+
+      final after = container.read(exerciseListFiltersProvider);
+      expect(after.filters.searchTerm, 'Squat');
+      expect(after.filters.exerciseCategories.selected, contains(testCategoryAbs));
+      expect(after.filters.equipment.selected, contains(testEquipmentDumbbell));
+      expect(after.filteredExercises.map((e) => e.id).toList(), [testSquats.id]);
+    });
+
+    test('a re-emission keeps filtering with the pinned user language', () async {
+      // Only the German name ('Bankdrücken') contains 'Bank'; English is 'Bench press'.
+      final bilingual = testBenchPress.copyWith(translations: [benchPressEn, benchPressDe]);
+      final withGerman = [
+        bilingual,
+        ...exercises.where((e) => e.id != testBenchPress.id),
+      ];
+      final controller = StreamController<ExerciseState>();
+      addTearDown(controller.close);
+      when(mockRepo.watchAllDrift()).thenAnswer((_) => controller.stream);
+
+      final container = ProviderContainer.test(
+        overrides: [exerciseRepositoryProvider.overrideWithValue(mockRepo)],
+      );
+      container.listen(exerciseListFiltersProvider, (_, _) {});
+      controller.add(ExerciseState(withGerman));
+      await pumpEventQueue();
+
+      final state = container.read(exerciseListFiltersProvider);
+      container
+          .read(exerciseListFiltersProvider.notifier)
+          .setFilters(state.filters.copyWith(searchTerm: 'Bank'), 'de');
+      expect(
+        container.read(exerciseListFiltersProvider).filteredExercises.map((e) => e.id).toList(),
+        [testBenchPress.id],
+      );
+
+      // The rebuild must keep the German language, not fall back to English.
+      controller.add(ExerciseState(withGerman));
+      await pumpEventQueue();
+      expect(
+        container.read(exerciseListFiltersProvider).filteredExercises.map((e) => e.id).toList(),
+        [testBenchPress.id],
+      );
     });
   });
 }

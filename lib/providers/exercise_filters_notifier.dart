@@ -34,6 +34,11 @@ part 'exercise_filters_notifier.g.dart';
 class ExerciseListFiltersNotifier extends _$ExerciseListFiltersNotifier {
   final _logger = Logger('ExerciseListFiltersNotifier');
 
+  /// User-set filters (search term + selections), held on the notifier instance
+  /// so they survive build() re-runs
+  Filters? _userFilters;
+  String _userLanguageCode = LANGUAGE_SHORT_ENGLISH;
+
   @override
   ExerciseFilterState build() {
     _logger.finer('Building ExerciseListFiltersNotifier');
@@ -67,11 +72,11 @@ class ExerciseListFiltersNotifier extends _$ExerciseListFiltersNotifier {
     );
 
     final filters = _initializeFilters(
-      ExerciseFilterState().filters,
+      _userFilters ?? ExerciseFilterState().filters,
       equipment,
       categories,
     );
-    final filteredExercises = _applyFilters(exercises, filters);
+    final filteredExercises = _applyFilters(exercises, filters, languageCode: _userLanguageCode);
     return ExerciseFilterState(
       exercises: exercises,
       filters: filters,
@@ -103,6 +108,8 @@ class ExerciseListFiltersNotifier extends _$ExerciseListFiltersNotifier {
   }
 
   void setFilters(Filters filters, [String languageCode = LANGUAGE_SHORT_ENGLISH]) {
+    _userFilters = filters;
+    _userLanguageCode = languageCode;
     final filtered = _applyFilters(state.exercises, filters, languageCode: languageCode);
     state = state.copyWith(filters: filters, filteredExercises: filtered);
   }
