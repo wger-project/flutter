@@ -99,6 +99,12 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
   // Not STRICT: keep SQLite's type affinity behaviour so PowerSync's
   // inferred inserts can bind values as they arrive from the JSON wire
   // protocol without us having to coerce types up front.
+  //
+  // `id` is INTEGER, not the PowerSync-conventional TEXT, so it matches the
+  // Drift `IntColumn id` and the integer `exercise_id` FK: the catalogue join
+  // is then native INTEGER == INTEGER instead of relying on TEXT-vs-INTEGER
+  // affinity coercion. PowerSync's string oplog id coerces to INTEGER on insert
+  // (safe: Django exercise PKs are always numeric).
   const rawTables = ['exercises_exercise', 'exercises_translation'];
   final existing = await db.getAll(
     'SELECT name FROM sqlite_master '
@@ -113,7 +119,7 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
   await db.writeTransaction((tx) async {
     await tx.execute('''
       CREATE TABLE IF NOT EXISTS exercises_exercise(
-        id TEXT NOT NULL PRIMARY KEY,
+        id INTEGER NOT NULL PRIMARY KEY,
         uuid TEXT,
         category_id INTEGER,
         variation_group TEXT,
@@ -132,7 +138,7 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
 
     await tx.execute('''
       CREATE TABLE IF NOT EXISTS exercises_translation(
-        id TEXT NOT NULL PRIMARY KEY,
+        id INTEGER NOT NULL PRIMARY KEY,
         uuid TEXT,
         language_id INTEGER,
         exercise_id INTEGER,
