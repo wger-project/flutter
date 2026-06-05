@@ -76,7 +76,7 @@ class Ingredient {
   @JsonKey(required: true, name: 'created')
   final DateTime created;
 
-  /// Energy in kJ per 100g of product
+  /// Energy in kCal per 100g of product
   @JsonKey(required: true)
   final int energy;
 

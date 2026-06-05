@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,7 +51,7 @@ class IngredientListTile extends StatelessWidget {
       ),
       title: Text(ingredient.name, overflow: TextOverflow.ellipsis, maxLines: 2),
       subtitle: Text(
-        '${ingredient.energy} ${i18n.kJ} • $macros',
+        '${i18n.kcalValue(ingredient.energy.toString())} • $macros',
         overflow: TextOverflow.ellipsis,
       ),
       onTap: () {
