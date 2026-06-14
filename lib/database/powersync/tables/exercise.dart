@@ -167,8 +167,8 @@ class ExerciseEquipmentM2N extends Table {
 const PowersyncExerciseEquipmentM2N = ps.Table(
   'exercises_exercise_equipment',
   [
-    ps.Column.text('exercise_id'),
-    ps.Column.text('equipment_id'),
+    ps.Column.integer('exercise_id'),
+    ps.Column.integer('equipment_id'),
   ],
   indexes: [
     ps.Index('equipment', [ps.IndexedColumn('equipment_id')]),
@@ -192,7 +192,7 @@ const PowersyncMuscleTable = ps.Table(
   [
     ps.Column.text('name'),
     ps.Column.text('name_en'),
-    ps.Column.text('is_front'),
+    ps.Column.integer('is_front'),
   ],
 );
 
