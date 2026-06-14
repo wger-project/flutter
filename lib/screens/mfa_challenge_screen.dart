@@ -166,6 +166,9 @@ class _MfaChallengeScreenState extends ConsumerState<MfaChallengeScreen> {
           const SizedBox(height: 16),
           _errorMessage,
           const SizedBox(height: 16),
+          // Not the shared FormSubmitButton: the code field's onFieldSubmitted
+          // has to trigger this same submit, which FormSubmitButton does not
+          // expose.
           ElevatedButton(
             key: const Key('mfaSubmitButton'),
             onPressed: _isLoading ? null : _submit,

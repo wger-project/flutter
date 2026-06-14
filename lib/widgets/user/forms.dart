@@ -27,6 +27,7 @@ import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 
 /// Shows the user's account data and lets them edit the profile preferences.
 ///
@@ -154,7 +155,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
             },
           ),
           const Divider(height: 32),
-          ElevatedButton(
+          FormSubmitButton(
             onPressed: () async {
               if (!_form.currentState!.validate()) {
                 return;
@@ -190,7 +191,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
                 ),
               );
             },
-            child: Text(i18n.save),
+            label: i18n.save,
           ),
         ],
       ),

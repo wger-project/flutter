@@ -30,6 +30,7 @@ import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
 import '../../test_data/nutritional_plans.dart';
@@ -200,9 +201,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final createButton = tester.widget<ElevatedButton>(
+    final createButton = tester.widget<FormSubmitButton>(
       find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
     );
-    expect(createButton.onPressed, isNotNull);
+    expect(createButton.enabled, isTrue);
   });
 }

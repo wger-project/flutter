@@ -83,7 +83,10 @@ void main() {
               body: Builder(
                 builder: (context) {
                   final controller = PageController();
-                  return PageView(controller: controller, children: [LogPage(controller, slotUuid)]);
+                  return PageView(
+                    controller: controller,
+                    children: [LogPage(controller, slotUuid)],
+                  );
                 },
               ),
             ),

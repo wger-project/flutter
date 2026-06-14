@@ -26,6 +26,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/providers/body_weight_notifier.dart';
 import 'package:wger/widgets/core/datetime_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 
 class WeightForm extends riverpod.ConsumerWidget {
   final _form = GlobalKey<FormState>();
@@ -172,9 +173,9 @@ class WeightForm extends riverpod.ConsumerWidget {
               return null;
             },
           ),
-          ElevatedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
+            label: AppLocalizations.of(context).save,
             onPressed: () async {
               // Validate and save the current values to the weightEntry
               final isValid = _form.currentState!.validate();

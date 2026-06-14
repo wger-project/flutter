@@ -25,6 +25,7 @@ import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/core/decimal_input.dart';
 import 'package:wger/widgets/core/error.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
 class MeasurementCategoryForm extends ConsumerWidget {
@@ -84,8 +85,8 @@ class MeasurementCategoryForm extends ConsumerWidget {
               return null;
             },
           ),
-          ElevatedButton(
-            child: Text(AppLocalizations.of(context).save),
+          FormSubmitButton(
+            label: AppLocalizations.of(context).save,
             onPressed: () async {
               final isValid = _form.currentState!.validate();
               if (!isValid) {
@@ -234,8 +235,8 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                 },
               ),
 
-              ElevatedButton(
-                child: Text(AppLocalizations.of(context).save),
+              FormSubmitButton(
+                label: AppLocalizations.of(context).save,
                 onPressed: () async {
                   final isValid = _form.currentState!.validate();
                   if (!isValid) {

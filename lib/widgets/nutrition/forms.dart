@@ -32,6 +32,7 @@ import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/core/decimal_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
@@ -73,19 +74,23 @@ class MealForm extends ConsumerWidget {
                 _meal.name = newValue as String;
               },
             ),
-            ElevatedButton(
+            FormSubmitButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
-              child: Text(AppLocalizations.of(context).save),
-              onPressed: () {
+              label: AppLocalizations.of(context).save,
+              onPressed: () async {
                 if (!_form.currentState!.validate()) {
                   return;
                 }
                 _form.currentState!.save();
 
                 final notifier = ref.read(nutritionProvider.notifier);
-                isCreating ? notifier.addMeal(_meal, _planId) : notifier.editMeal(_meal);
+                isCreating
+                    ? await notifier.addMeal(_meal, _planId)
+                    : await notifier.editMeal(_meal);
 
-                Navigator.of(context).pop();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
               },
             ),
           ],
@@ -351,10 +356,10 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                   ],
                 ),
               ),
-            ElevatedButton(
+            FormSubmitButton(
               key: const Key(SUBMIT_BUTTON_KEY_NAME),
-              child: Text(AppLocalizations.of(context).save),
-              onPressed: () {
+              label: AppLocalizations.of(context).save,
+              onPressed: () async {
                 if (!_form.currentState!.validate()) {
                   return;
                 }
@@ -720,9 +725,9 @@ class _PlanFormState extends ConsumerState<PlanForm> {
               max: NutritionalPlan.maxGoalFiber,
               onChanged: (value) => widget._plan.goalFiber = value,
             ),
-          ElevatedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
+            label: AppLocalizations.of(context).save,
             onPressed: () async {
               // Validate and save the current values to the plan
               final isValid = _form.currentState!.validate();

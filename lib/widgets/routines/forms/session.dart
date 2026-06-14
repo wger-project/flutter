@@ -20,13 +20,12 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/core/error_dialogs.dart';
-import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/routines/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/workout_session_notifier.dart';
 import 'package:wger/widgets/core/datetime_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 
 class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');
@@ -52,7 +51,6 @@ class SessionForm extends ConsumerStatefulWidget {
 }
 
 class _SessionFormState extends ConsumerState<SessionForm> {
-  Widget errorMessage = const SizedBox.shrink();
   final _form = GlobalKey<FormState>();
 
   final notesController = TextEditingController();
@@ -78,7 +76,6 @@ class _SessionFormState extends ConsumerState<SessionForm> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          errorMessage,
           ToggleButtons(
             key: const ValueKey('impression-toggle-buttons'),
             renderBorder: false,
@@ -141,13 +138,11 @@ class _SessionFormState extends ConsumerState<SessionForm> {
             ],
           ),
           const SizedBox(height: 5),
-          ElevatedButton(
+          FormSubmitButton(
             key: const ValueKey('save-button'),
-            child: Text(AppLocalizations.of(context).save),
+            label: AppLocalizations.of(context).save,
             onPressed: () async {
-              // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
+              if (!_form.currentState!.validate()) {
                 return;
               }
               _form.currentState!.save();
@@ -163,35 +158,17 @@ class _SessionFormState extends ConsumerState<SessionForm> {
                 return;
               }
 
-              // Reset any previous error message
-              setState(() {
-                errorMessage = const SizedBox.shrink();
-              });
+              // A WgerHttpException is surfaced inline by FormSubmitButton.
+              if (widget._session.id == null) {
+                widget._logger.fine('Adding new session');
+                await sessionProvider.addEntry(widget._session);
+              } else {
+                widget._logger.fine('Editing existing session with id ${widget._session.id}');
+                await sessionProvider.updateEntry(widget._session);
+              }
 
-              // Save the entry on the server
-              try {
-                if (widget._session.id == null) {
-                  widget._logger.fine('Adding new session');
-                  await sessionProvider.addEntry(widget._session);
-                } else {
-                  widget._logger.fine('Editing existing session with id ${widget._session.id}');
-                  await sessionProvider.updateEntry(widget._session);
-                }
-
-                setState(() {
-                  errorMessage = const SizedBox.shrink();
-                });
-
-                if (context.mounted && widget._onSaved != null) {
-                  widget._onSaved!();
-                }
-              } on WgerHttpException catch (error) {
-                widget._logger.warning('Could not save session: $error');
-                if (context.mounted) {
-                  setState(() {
-                    errorMessage = FormHttpErrorsWidget(error);
-                  });
-                }
+              if (context.mounted && widget._onSaved != null) {
+                widget._onSaved!();
               }
             },
           ),

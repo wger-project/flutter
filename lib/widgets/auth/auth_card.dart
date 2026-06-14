@@ -328,6 +328,9 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                     ),
 
                   const SizedBox(height: 20),
+                  // Bespoke submit:  the shared FormSubmitButton only surfaces
+                  // WgerHttpException and has no style override, so it is
+                  // intentionally not used here.
                   SizedBox(
                     width: double.infinity,
                     height: 45,
