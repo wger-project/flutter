@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/consts.dart';
@@ -38,6 +39,9 @@ class ExerciseState {
 
   /// Returns the exercise with the given [id], throws if no match
   Exercise getById(int id) => exercises.firstWhere((e) => e.id == id);
+
+  /// Returns the exercise with the given [id], or null if no match
+  Exercise? getByIdOrNull(int id) => exercises.firstWhereOrNull((e) => e.id == id);
 
   /// Buckets exercises by their `variationGroup` (skipping those without one)
   Map<String, List<Exercise>> getByVariation() {

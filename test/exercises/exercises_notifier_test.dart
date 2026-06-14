@@ -85,6 +85,16 @@ void main() {
       expect(() => emptyState.getById(999), throwsStateError);
     });
 
+    test('getByIdOrNull returns the matching exercise', () {
+      final s = ExerciseState(exercises);
+
+      expect(s.getByIdOrNull(testDeadLift.id)?.id, testDeadLift.id);
+    });
+
+    test('getByIdOrNull returns null when no exercise matches', () {
+      expect(emptyState.getByIdOrNull(999), isNull);
+    });
+
     test('getByVariation buckets exercises that share a variationGroup', () {
       final s = ExerciseState(variationExercises);
 

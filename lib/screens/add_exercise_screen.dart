@@ -23,7 +23,6 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/add_exercise_notifier.dart';
 import 'package:wger/providers/exercises_notifier.dart';
@@ -141,11 +140,13 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
                           errorWidget = const SizedBox.shrink();
                         });
                         final addExerciseNotifier = ref.read(addExerciseProvider.notifier);
+                        // postExerciseToServer() clears the form, so capture the
+                        // name now for the success dialog's fallback.
+                        final submittedName = ref.read(addExerciseProvider).exerciseNameEn ?? '';
 
-                        Exercise? exercise;
+                        int? exerciseId;
                         try {
-                          final exerciseId = await addExerciseNotifier.postExerciseToServer();
-                          exercise = ref.read(exercisesProvider).requireValue.getById(exerciseId);
+                          exerciseId = await addExerciseNotifier.postExerciseToServer();
                         } on WgerHttpException catch (error) {
                           if (context.mounted) {
                             setState(() {
@@ -160,13 +161,23 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
                           }
                         }
 
-                        if (exercise == null || !context.mounted) {
+                        if (exerciseId == null || !context.mounted) {
                           return;
                         }
 
-                        final name = exercise
-                            .getTranslation(Localizations.localeOf(context).languageCode)
-                            .name;
+                        // The new exercise only reaches the local DB once it
+                        // syncs, so it may not be found yet. The dialog still
+                        // reports success, but we only offer to open it if it
+                        // is actually already available.
+                        final exercise = ref
+                            .read(exercisesProvider)
+                            .value
+                            ?.getByIdOrNull(exerciseId);
+                        final name =
+                            exercise
+                                ?.getTranslation(Localizations.localeOf(context).languageCode)
+                                .name ??
+                            submittedName;
 
                         return showDialog(
                           context: context,
@@ -179,11 +190,13 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
                                   child: Text(name),
                                   onPressed: () {
                                     Navigator.of(context).pop();
-                                    Navigator.pushReplacementNamed(
-                                      context,
-                                      ExerciseDetailScreen.routeName,
-                                      arguments: exercise,
-                                    );
+                                    if (exercise != null) {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        ExerciseDetailScreen.routeName,
+                                        arguments: exercise,
+                                      );
+                                    }
                                   },
                                 ),
                               ],
