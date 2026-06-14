@@ -18,49 +18,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/workout_logs_notifier.dart';
+import 'package:wger/widgets/core/confirm_delete_dialog.dart';
 
 /// Confirms and deletes [log], showing a success snackbar afterwards.
-void showDeleteLogDialog(BuildContext context, String confirmDeleteName, Log log) async {
-  final res = await showDialog(
-    context: context,
-    builder: (BuildContext contextDialog) {
-      return AlertDialog(
-        content: Text(AppLocalizations.of(context).confirmDelete(confirmDeleteName)),
-        actions: [
-          TextButton(
-            key: const ValueKey('cancel-button'),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            onPressed: () => Navigator.of(contextDialog).pop(),
-          ),
-          TextButton(
-            key: const ValueKey('delete-button'),
-            child: Text(
-              AppLocalizations.of(context).delete,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-            onPressed: () async {
-              await ProviderScope.containerOf(
-                context,
-              ).read(workoutLogProvider).deleteEntry(log.id.toString());
-
-              Navigator.of(contextDialog).pop();
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    AppLocalizations.of(context).successfullyDeleted,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      );
-    },
+void showDeleteLogDialog(BuildContext context, String confirmDeleteName, Log log) {
+  showConfirmDeleteDialog(
+    context,
+    itemName: confirmDeleteName,
+    onConfirm: () =>
+        ProviderScope.containerOf(context).read(workoutLogProvider).deleteEntry(log.id.toString()),
   );
-  return res;
 }

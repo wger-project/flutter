@@ -7,6 +7,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/widgets/core/confirm_delete_dialog.dart';
 import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/routines/forms/slot.dart';
 
@@ -34,29 +35,13 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
   void _showDeleteConfirmationDialog(BuildContext context, Day day) {
     final i18n = AppLocalizations.of(context);
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(i18n.delete),
-          content: Text(i18n.confirmDelete(day.isRest ? i18n.restDay : day.name)),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                widget.days.remove(day);
-                await ref.read(routinesRiverpodProvider.notifier).deleteDay(day.id!, day.routineId);
-                Navigator.of(context).pop();
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        );
+    showConfirmDeleteDialog(
+      context,
+      title: i18n.delete,
+      itemName: day.isRest ? i18n.restDay : day.name,
+      onConfirm: () async {
+        widget.days.remove(day);
+        await ref.read(routinesRiverpodProvider.notifier).deleteDay(day.id!, day.routineId);
       },
     );
   }

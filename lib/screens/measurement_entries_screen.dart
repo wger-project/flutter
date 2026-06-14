@@ -23,6 +23,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/widgets/core/confirm_delete_dialog.dart';
 import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/object_gone_redirect.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
@@ -99,51 +100,13 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
                       break;
 
                     case MeasurementOptions.delete:
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext contextDialog) {
-                          return AlertDialog(
-                            content: Text(
-                              AppLocalizations.of(context).confirmDelete(category.name),
-                            ),
-                            actions: [
-                              TextButton(
-                                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                                onPressed: () => Navigator.of(contextDialog).pop(),
-                              ),
-                              TextButton(
-                                child: Text(
-                                  AppLocalizations.of(context).delete,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.error,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  // Confirmed, delete the category
-                                  ref
-                                      .read(measurementProvider.notifier)
-                                      .deleteCategory(category.id!);
-
-                                  // Close the popup
-                                  Navigator.of(contextDialog).pop();
-
-                                  // Exit detail screen
-                                  Navigator.of(context).pop();
-
-                                  // and inform the user
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        AppLocalizations.of(context).successfullyDeleted,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        },
+                      showConfirmDeleteDialog(
+                        context,
+                        itemName: category.name,
+                        onConfirm: () =>
+                            ref.read(measurementProvider.notifier).deleteCategory(category.id!),
+                        // Exit the detail screen once the category is gone.
+                        onDeleted: () => Navigator.of(context).pop(),
                       );
                       break;
                   }
