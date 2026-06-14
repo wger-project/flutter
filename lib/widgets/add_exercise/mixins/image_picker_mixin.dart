@@ -17,8 +17,8 @@ mixin ExerciseImagePickerMixin<T extends ConsumerStatefulWidget> on ConsumerStat
   }
 
   bool _validateFileType(File file) {
-    final extension = file.path.split('.').last;
-    return validFileExtensions.any((element) => extension == element.toLowerCase());
+    final extension = file.path.split('.').last.toLowerCase();
+    return validFileExtensions.contains(extension);
   }
 
   void pickImages(BuildContext context, {bool pickFromCamera = false}) async {
@@ -47,13 +47,24 @@ mixin ExerciseImagePickerMixin<T extends ConsumerStatefulWidget> on ConsumerStat
           errorMessage = "Select only 'jpg', 'jpeg', 'png', 'webp' files";
         }
         if (_validateFileSize(image.imageFile.lengthSync())) {
-          isFileValid = true;
+          isFileValid = false;
           errorMessage = 'File Size should not be greater than 20 mb';
         }
 
         if (!isFileValid) {
           if (context.mounted) {
-            showDialog(context: context, builder: (context) => Text(errorMessage));
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: Text(errorMessage),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(MaterialLocalizations.of(context).okButtonLabel),
+                  ),
+                ],
+              ),
+            );
           }
           return;
         }
