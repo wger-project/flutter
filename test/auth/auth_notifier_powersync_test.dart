@@ -1164,6 +1164,32 @@ void main() {
       verifyNever(mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')));
     });
 
+    test(
+      'secure storage read throws (post-restore Keystore loss) → clears session, no throw',
+      () async {
+        // Android backup/restore onto a new device restores the encrypted refresh
+        // token but not the Keystore key it was sealed with, so the read throws.
+        // Must clear the session, not let the exception escape and loop into a
+        // fatal dialog on every refresh attempt.
+        await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+        when(
+          mockSecureStorage.readRefreshToken(),
+        ).thenThrow(PlatformException(code: 'BadPaddingException'));
+
+        final container = makeContainer();
+        await container.read(authProvider.future);
+
+        // Must complete normally; before the fix the exception escaped here.
+        await container.read(authProvider.notifier).refreshAccessToken();
+
+        expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
+        expect(await PreferenceHelper.asyncPref.getBool(PREFS_HAS_EVER_SYNCED), true);
+        verifyNever(
+          mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+        );
+      },
+    );
+
     test('non-200 response → clears session, keeps DB', () async {
       // Server reachable + non-200 means the refresh token is genuinely
       // rejected (typical for a refresh token that expired server-side after

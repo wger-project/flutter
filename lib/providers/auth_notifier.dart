@@ -750,7 +750,17 @@ class AuthNotifier extends _$AuthNotifier {
       return;
     }
 
-    final refreshToken = await _storage.readRefreshToken();
+    final String? refreshToken;
+    try {
+      refreshToken = await _storage.readRefreshToken();
+    } on Exception catch (e, s) {
+      // Secure storage can fail to decrypt the token, e.g. after an Android
+      // backup/restore onto a new device leaves the encrypted blob behind, etc.
+      _logger.warning('refreshAccessToken: secure storage read failed, clearing session', e, s);
+      await clearSessionOnly();
+      showSessionExpiredSnackbar();
+      return;
+    }
     if (refreshToken == null || refreshToken.isEmpty) {
       _logger.warning('refreshAccessToken: no refresh token in secure storage, clearing session');
       await clearSessionOnly();
