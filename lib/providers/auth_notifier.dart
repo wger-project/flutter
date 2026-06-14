@@ -800,11 +800,11 @@ class AuthNotifier extends _$AuthNotifier {
       newRefresh = (data?['refresh_token'] ?? meta?['refresh_token']) as String?;
       newExp = jwtExp(decodeJwtPayload(newAccess));
     } catch (e, s) {
-      final bodySnippet = response.body.length > 500
-          ? '${response.body.substring(0, 500)}...'
-          : response.body;
+      // Don't log the body: on the success-shaped path it holds the rotated
+      // refresh token
       _logger.warning(
-        'refreshAccessToken: malformed response body, clearing session. Body: $bodySnippet',
+        'refreshAccessToken: malformed response body, clearing session. '
+        'Status: ${response.statusCode}, body length: ${response.body.length}',
         e,
         s,
       );

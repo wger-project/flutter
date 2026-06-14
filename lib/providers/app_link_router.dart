@@ -113,7 +113,8 @@ class AppLinkRouter {
   Future<void> _handle(Uri uri) async {
     final token = tokenFromUri(uri);
     if (token == null) {
-      _logger.fine('Ignoring unrelated or malformed deep link: $uri');
+      // Never log the fragment: it carries the refresh token on our links.
+      _logger.fine('Ignoring unrelated or malformed deep link: ${uri.removeFragment()}');
       return;
     }
     final state = fragmentParam(uri, 'state');
@@ -124,7 +125,10 @@ class AppLinkRouter {
       // Unsolicited link (no outstanding state), stale (past TTL), or state
       // mismatch, all three look the same from here and are all rejected by
       // design. Login-CSRF defence: only accept handoffs the app started itself.
-      _logger.warning('Rejecting handoff deep link with bad/missing state: $uri');
+      // Strip the fragment before logging: it carries the refresh token
+      _logger.warning(
+        'Rejecting handoff deep link with bad/missing state: ${uri.removeFragment()}',
+      );
       return;
     }
     try {
