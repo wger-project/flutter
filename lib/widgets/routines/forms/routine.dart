@@ -18,13 +18,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/core/form_submit_button.dart';
 
 class RoutineForm extends ConsumerStatefulWidget {
@@ -107,10 +107,18 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
           widget._routine.description = newValue!;
         },
       ),
-      TextFormField(
+      DateInputWidget(
         key: const Key('field-start-date'),
-        // Stop keyboard from appearing
-        readOnly: true,
+        value: startDate,
+        labelText: i18n.startDate,
+        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
+        onChanged: (picked) {
+          widget._routine.start = picked;
+          setState(() {
+            startDate = picked;
+          });
+        },
         validator: (value) {
           if (endDate.isBefore(startDate)) {
             return 'End date must be after start date';
@@ -123,74 +131,18 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
           }
           return null;
         },
-        decoration: InputDecoration(
-          labelText: i18n.startDate,
-          suffixIcon: const Icon(
-            Icons.calendar_today,
-            key: Key('calendarIcon'),
-          ),
-        ),
-        enableInteractiveSelection: false,
-        controller: TextEditingController(
-          text: DateFormat.yMd(
-            Localizations.localeOf(context).languageCode,
-          ).format(startDate),
-        ),
-        onTap: () async {
-          final picked = await showDatePicker(
-            context: context,
-            initialDate: startDate,
-            firstDate: DateTime.now().subtract(const Duration(days: 365)),
-            lastDate: DateTime.now().add(const Duration(days: 365)),
-          );
-
-          if (picked == null) {
-            return;
-          }
-
-          widget._routine.start = picked;
-          if (mounted) {
-            setState(() {
-              startDate = picked;
-            });
-          }
-        },
       ),
-      TextFormField(
+      DateInputWidget(
         key: const Key('field-end-date'),
-        // Stop keyboard from appearing
-        readOnly: true,
-        decoration: InputDecoration(
-          labelText: i18n.endDate,
-          suffixIcon: const Icon(
-            Icons.calendar_today,
-            key: Key('calendarIcon'),
-          ),
-        ),
-        enableInteractiveSelection: false,
-        controller: TextEditingController(
-          text: DateFormat.yMd(
-            Localizations.localeOf(context).languageCode,
-          ).format(endDate),
-        ),
-        onTap: () async {
-          final picked = await showDatePicker(
-            context: context,
-            initialDate: endDate,
-            firstDate: DateTime.now().subtract(const Duration(days: 365)),
-            lastDate: DateTime.now().add(const Duration(days: 365)),
-          );
-
-          if (picked == null) {
-            return;
-          }
-
+        value: endDate,
+        labelText: i18n.endDate,
+        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
+        onChanged: (picked) {
           widget._routine.end = picked;
-          if (mounted) {
-            setState(() {
-              endDate = picked;
-            });
-          }
+          setState(() {
+            endDate = picked;
+          });
         },
       ),
       const SizedBox(height: 5),

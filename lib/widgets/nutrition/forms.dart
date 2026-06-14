@@ -496,7 +496,6 @@ class _PlanFormState extends ConsumerState<PlanForm> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final isCreating = widget._plan.id == null;
 
     return Form(
@@ -526,43 +525,22 @@ class _PlanFormState extends ConsumerState<PlanForm> {
             },
           ),
           // Start Date
-          TextFormField(
+          DateInputWidget(
             key: const Key('field-start-date'),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).startDate,
-              suffixIcon: const Icon(
-                Icons.calendar_today,
-                key: Key('calendarIcon'),
-              ),
-            ),
-            controller: TextEditingController(
-              text: dateFormat.format(widget._plan.startDate),
-            ),
-            readOnly: true,
-            onTap: () async {
-              // Stop keyboard from appearing
-              FocusScope.of(context).requestFocus(FocusNode());
-
-              // Open date picker
-              final pickedDate = await showDatePicker(
-                context: context,
-                initialDate: widget._plan.startDate,
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-              );
-
-              if (pickedDate != null) {
-                setState(() {
-                  widget._plan.startDate = pickedDate;
-                });
-              }
+            value: widget._plan.startDate,
+            labelText: AppLocalizations.of(context).startDate,
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2100),
+            onChanged: (pickedDate) {
+              setState(() {
+                widget._plan.startDate = pickedDate;
+              });
             },
             validator: (value) {
               if (widget._plan.endDate != null &&
                   widget._plan.endDate!.isBefore(widget._plan.startDate)) {
                 return 'End date must be after start date';
               }
-
               return null;
             },
           ),
@@ -570,51 +548,23 @@ class _PlanFormState extends ConsumerState<PlanForm> {
           Row(
             children: [
               Expanded(
-                child: TextFormField(
+                child: DateInputWidget(
                   key: const Key('field-end-date'),
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).endDate,
-                    helperText:
-                        'Tip: only for athletes with contest deadlines.  Most users benefit from flexibility',
-                    suffixIcon: widget._plan.endDate == null
-                        ? const Icon(
-                            Icons.calendar_today,
-                            key: Key('calendarIcon'),
-                          )
-                        : IconButton(
-                            icon: const Icon(Icons.clear),
-                            tooltip: 'Clear end date',
-                            onPressed: () {
-                              setState(() {
-                                widget._plan.endDate = null;
-                              });
-                            },
-                          ),
-                  ),
-                  controller: TextEditingController(
-                    text: widget._plan.endDate == null
-                        ? ''
-                        : dateFormat.format(widget._plan.endDate!),
-                  ),
-                  readOnly: true,
-                  onTap: () async {
-                    // Stop keyboard from appearing
-                    FocusScope.of(context).requestFocus(FocusNode());
-
-                    // Open date picker
-                    final pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: widget._plan.endDate,
-                      // end must be after start
-                      firstDate: widget._plan.startDate.add(const Duration(days: 1)),
-                      lastDate: DateTime(2100),
-                    );
-
-                    if (pickedDate != null) {
-                      setState(() {
-                        widget._plan.endDate = pickedDate;
-                      });
-                    }
+                  value: widget._plan.endDate,
+                  labelText: AppLocalizations.of(context).endDate,
+                  helperText:
+                      'Tip: only for athletes with contest deadlines.  Most users benefit from flexibility',
+                  firstDate: widget._plan.startDate.add(const Duration(days: 1)),
+                  lastDate: DateTime(2100),
+                  onChanged: (pickedDate) {
+                    setState(() {
+                      widget._plan.endDate = pickedDate;
+                    });
+                  },
+                  onCleared: () {
+                    setState(() {
+                      widget._plan.endDate = null;
+                    });
                   },
                 ),
               ),

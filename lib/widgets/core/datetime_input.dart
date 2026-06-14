@@ -136,6 +136,7 @@ class DateInputWidget extends StatefulWidget {
     this.lastDate,
     this.onCleared,
     this.validator,
+    this.helperText,
     super.key,
   });
 
@@ -146,6 +147,9 @@ class DateInputWidget extends StatefulWidget {
   final ValueChanged<DateTime> onChanged;
 
   final String labelText;
+
+  /// Optional hint shown below the field.
+  final String? helperText;
 
   /// Earliest selectable date. Defaults to the year 2000.
   final DateTime? firstDate;
@@ -201,6 +205,7 @@ class _DateInputWidgetState extends State<DateInputWidget> {
       validator: widget.validator,
       decoration: InputDecoration(
         labelText: widget.labelText,
+        helperText: widget.helperText,
         errorMaxLines: 2,
         suffixIcon: widget.onCleared != null && _value != null
             ? IconButton(

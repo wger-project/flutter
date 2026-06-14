@@ -21,12 +21,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/gallery_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/wger_image.dart';
 
@@ -46,12 +46,10 @@ class _ImageFormState extends ConsumerState<ImageForm> {
 
   XFile? _file;
 
-  final dateController = TextEditingController(text: '');
   final TextEditingController descriptionController = TextEditingController();
 
   @override
   void dispose() {
-    dateController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
@@ -102,16 +100,11 @@ class _ImageFormState extends ConsumerState<ImageForm> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
     final isOnline = ref.watch(networkStatusProvider);
     // Creating an image or replacing its photo is a binary REST upload and
     // needs connectivity. A metadata-only edit syncs through PowerSync and
     // works offline.
     final requiresUpload = widget._image.id == null || _file != null;
-
-    if (dateController.text.isEmpty) {
-      dateController.text = dateFormat.format(widget._image.date);
-    }
 
     return Form(
       key: _form,
@@ -155,38 +148,17 @@ class _ImageFormState extends ConsumerState<ImageForm> {
               child: getPicture(),
             ),
           ),
-          TextFormField(
+          DateInputWidget(
             key: const Key('field-date'),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).date,
-              suffixIcon: const Icon(Icons.calendar_today),
-            ),
-            readOnly: true,
-            // Stop keyboard from appearing
-            controller: dateController,
-            onTap: () async {
-              // Stop keyboard from appearing
-              FocusScope.of(context).requestFocus(FocusNode());
-
-              // Show Date Picker Here
-              final pickedDate = await showDatePicker(
-                context: context,
-                initialDate: widget._image.date,
-                firstDate: DateTime.now().subtract(const Duration(days: 3000)),
-                lastDate: DateTime.now(),
-              );
-              if (pickedDate != null) {
-                dateController.text = dateFormat.format(pickedDate);
-              }
-            },
-            onSaved: (newValue) {
-              widget._image.date = dateFormat.parse(newValue!);
-            },
+            value: widget._image.date,
+            labelText: AppLocalizations.of(context).date,
+            firstDate: DateTime.now().subtract(const Duration(days: 3000)),
+            lastDate: DateTime.now(),
+            onChanged: (date) => widget._image.date = date,
             validator: (value) {
               if (widget._image.id == null && _file == null) {
                 return AppLocalizations.of(context).selectImage;
               }
-
               return null;
             },
           ),
