@@ -19,6 +19,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/powersync/tables/ingredient.dart';
@@ -35,8 +36,8 @@ class NutritionalPlanTable extends Table {
   TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   TextColumn get description => text()();
   DateTimeColumn get creationDate => dateTime().named('creation_date')();
-  DateTimeColumn get startDate => dateTime().named('start')();
-  DateTimeColumn get endDate => dateTime().named('end').nullable()();
+  TextColumn get startDate => text().named('start').map(const DateOnlyTextConverter())();
+  TextColumn get endDate => text().named('end').nullable().map(const DateOnlyTextConverter())();
   BoolColumn get onlyLogging => boolean().named('only_logging')();
   IntColumn get goalEnergy => integer().named('goal_energy').nullable()();
   IntColumn get goalProtein => integer().named('goal_protein').nullable()();

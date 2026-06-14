@@ -89,6 +89,25 @@ void main() {
       expect(logs.single.sessionId, existingSession.id);
     });
 
+    test('reuses a server-synced session whose date has no time component', () async {
+      // After a round-trip the backend stores the date as a bare 'YYYY-MM-DD'
+      // (Django DateField), not the local 'T00:00:00.000Z' format. The day
+      // lookup must still match it, otherwise a duplicate session is created
+      // and the server rejects it on the unique (date, routine, user)
+      // constraint, taking every log on it down with it.
+      await db.customStatement(
+        "INSERT INTO manager_workoutsession (id, routine_id, date, impression) VALUES ('server-session', 100, '2026-04-15', '2')",
+      );
+
+      final log = makeLog(routineId: 100, date: DateTime.utc(2026, 4, 15, 18));
+      await repo.addLocalDrift(log);
+
+      expect(await readSessions(), hasLength(1));
+      expect(log.sessionId, 'server-session');
+      final logs = await readLogs();
+      expect(logs.single.sessionId, 'server-session');
+    });
+
     test('creates a new session at midnight UTC of the log date', () async {
       final log = makeLog(date: DateTime.utc(2026, 4, 15, 18, 30));
 

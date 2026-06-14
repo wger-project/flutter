@@ -5303,24 +5303,22 @@ class $RoutineTableTable extends RoutineTable with TableInfo<$RoutineTableTable,
         type: DriftSqlType.dateTime,
         requiredDuringInsert: true,
       ).withConverter<DateTime>($RoutineTableTable.$convertercreated);
-  static const VerificationMeta _startMeta = const VerificationMeta('start');
   @override
-  late final GeneratedColumn<DateTime> start = GeneratedColumn<DateTime>(
+  late final GeneratedColumnWithTypeConverter<DateTime, String> start = GeneratedColumn<String>(
     'start',
     aliasedName,
     false,
-    type: DriftSqlType.dateTime,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
-  );
-  static const VerificationMeta _endMeta = const VerificationMeta('end');
+  ).withConverter<DateTime>($RoutineTableTable.$converterstart);
   @override
-  late final GeneratedColumn<DateTime> end = GeneratedColumn<DateTime>(
+  late final GeneratedColumnWithTypeConverter<DateTime, String> end = GeneratedColumn<String>(
     'end',
     aliasedName,
     false,
-    type: DriftSqlType.dateTime,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
-  );
+  ).withConverter<DateTime>($RoutineTableTable.$converterend);
   static const VerificationMeta _isTemplateMeta = const VerificationMeta(
     'isTemplate',
   );
@@ -5411,22 +5409,6 @@ class $RoutineTableTable extends RoutineTable with TableInfo<$RoutineTableTable,
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
-    if (data.containsKey('start')) {
-      context.handle(
-        _startMeta,
-        start.isAcceptableOrUnknown(data['start']!, _startMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_startMeta);
-    }
-    if (data.containsKey('end')) {
-      context.handle(
-        _endMeta,
-        end.isAcceptableOrUnknown(data['end']!, _endMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_endMeta);
-    }
     if (data.containsKey('is_template')) {
       context.handle(
         _isTemplateMeta,
@@ -5474,14 +5456,18 @@ class $RoutineTableTable extends RoutineTable with TableInfo<$RoutineTableTable,
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      start: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}start'],
-      )!,
-      end: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}end'],
-      )!,
+      start: $RoutineTableTable.$converterstart.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}start'],
+        )!,
+      ),
+      end: $RoutineTableTable.$converterend.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}end'],
+        )!,
+      ),
       fitInWeek: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}fit_in_week'],
@@ -5507,6 +5493,8 @@ class $RoutineTableTable extends RoutineTable with TableInfo<$RoutineTableTable,
   }
 
   static TypeConverter<DateTime, DateTime> $convertercreated = const UtcDateTimeConverter();
+  static TypeConverter<DateTime, String> $converterstart = const DateOnlyTextConverter();
+  static TypeConverter<DateTime, String> $converterend = const DateOnlyTextConverter();
 }
 
 class RoutineTableCompanion extends UpdateCompanion<Routine> {
@@ -5557,8 +5545,8 @@ class RoutineTableCompanion extends UpdateCompanion<Routine> {
     Expression<String>? name,
     Expression<String>? description,
     Expression<DateTime>? created,
-    Expression<DateTime>? start,
-    Expression<DateTime>? end,
+    Expression<String>? start,
+    Expression<String>? end,
     Expression<bool>? isTemplate,
     Expression<bool>? isPublic,
     Expression<bool>? fitInWeek,
@@ -5622,10 +5610,14 @@ class RoutineTableCompanion extends UpdateCompanion<Routine> {
       );
     }
     if (start.present) {
-      map['start'] = Variable<DateTime>(start.value);
+      map['start'] = Variable<String>(
+        $RoutineTableTable.$converterstart.toSql(start.value),
+      );
     }
     if (end.present) {
-      map['end'] = Variable<DateTime>(end.value);
+      map['end'] = Variable<String>(
+        $RoutineTableTable.$converterend.toSql(end.value),
+      );
     }
     if (isTemplate.present) {
       map['is_template'] = Variable<bool>(isTemplate.value);
@@ -6284,15 +6276,14 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+  late final GeneratedColumnWithTypeConverter<DateTime, String> date = GeneratedColumn<String>(
     'date',
     aliasedName,
     false,
-    type: DriftSqlType.dateTime,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
-  );
+  ).withConverter<DateTime>($WorkoutSessionTableTable.$converterdate);
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -6370,14 +6361,6 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
         dayId.isAcceptableOrUnknown(data['day_id']!, _dayIdMeta),
       );
     }
-    if (data.containsKey('date')) {
-      context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_dateMeta);
-    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
@@ -6427,10 +6410,12 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
           data['${effectivePrefix}time_end'],
         ),
       ),
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
-      )!,
+      date: $WorkoutSessionTableTable.$converterdate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}date'],
+        )!,
+      ),
     );
   }
 
@@ -6439,6 +6424,7 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
     return $WorkoutSessionTableTable(attachedDatabase, alias);
   }
 
+  static TypeConverter<DateTime, String> $converterdate = const DateOnlyTextConverter();
   static TypeConverter<WorkoutImpression, String> $converterimpression =
       const WorkoutImpressionConverter();
   static TypeConverter<TimeOfDay, String> $convertertimeStart = const TimeOfDayConverter();
@@ -6488,7 +6474,7 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
     Expression<String>? id,
     Expression<int>? routineId,
     Expression<int>? dayId,
-    Expression<DateTime>? date,
+    Expression<String>? date,
     Expression<String>? notes,
     Expression<String>? impression,
     Expression<String>? timeStart,
@@ -6545,7 +6531,9 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
       map['day_id'] = Variable<int>(dayId.value);
     }
     if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+      map['date'] = Variable<String>(
+        $WorkoutSessionTableTable.$converterdate.toSql(date.value),
+      );
     }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
@@ -6910,28 +6898,22 @@ class $NutritionalPlanTableTable extends NutritionalPlanTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _startDateMeta = const VerificationMeta(
-    'startDate',
-  );
   @override
-  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
+  late final GeneratedColumnWithTypeConverter<DateTime, String> startDate = GeneratedColumn<String>(
     'start',
     aliasedName,
     false,
-    type: DriftSqlType.dateTime,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
-  );
-  static const VerificationMeta _endDateMeta = const VerificationMeta(
-    'endDate',
-  );
+  ).withConverter<DateTime>($NutritionalPlanTableTable.$converterstartDate);
   @override
-  late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
+  late final GeneratedColumnWithTypeConverter<DateTime?, String> endDate = GeneratedColumn<String>(
     'end',
     aliasedName,
     true,
-    type: DriftSqlType.dateTime,
+    type: DriftSqlType.string,
     requiredDuringInsert: false,
-  );
+  ).withConverter<DateTime?>($NutritionalPlanTableTable.$converterendDaten);
   static const VerificationMeta _onlyLoggingMeta = const VerificationMeta(
     'onlyLogging',
   );
@@ -7067,20 +7049,6 @@ class $NutritionalPlanTableTable extends NutritionalPlanTable
     } else if (isInserting) {
       context.missing(_creationDateMeta);
     }
-    if (data.containsKey('start')) {
-      context.handle(
-        _startDateMeta,
-        startDate.isAcceptableOrUnknown(data['start']!, _startDateMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_startDateMeta);
-    }
-    if (data.containsKey('end')) {
-      context.handle(
-        _endDateMeta,
-        endDate.isAcceptableOrUnknown(data['end']!, _endDateMeta),
-      );
-    }
     if (data.containsKey('only_logging')) {
       context.handle(
         _onlyLoggingMeta,
@@ -7160,13 +7128,17 @@ class $NutritionalPlanTableTable extends NutritionalPlanTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}creation_date'],
       )!,
-      startDate: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}start'],
-      )!,
-      endDate: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}end'],
+      startDate: $NutritionalPlanTableTable.$converterstartDate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}start'],
+        )!,
+      ),
+      endDate: $NutritionalPlanTableTable.$converterendDaten.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}end'],
+        ),
       ),
       onlyLogging: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
@@ -7203,6 +7175,12 @@ class $NutritionalPlanTableTable extends NutritionalPlanTable
   $NutritionalPlanTableTable createAlias(String alias) {
     return $NutritionalPlanTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, String> $converterstartDate = const DateOnlyTextConverter();
+  static TypeConverter<DateTime, String> $converterendDate = const DateOnlyTextConverter();
+  static TypeConverter<DateTime?, String?> $converterendDaten = NullAwareTypeConverter.wrap(
+    $converterendDate,
+  );
 }
 
 class NutritionalPlanTableCompanion extends UpdateCompanion<NutritionalPlan> {
@@ -7257,8 +7235,8 @@ class NutritionalPlanTableCompanion extends UpdateCompanion<NutritionalPlan> {
     Expression<String>? id,
     Expression<String>? description,
     Expression<DateTime>? creationDate,
-    Expression<DateTime>? startDate,
-    Expression<DateTime>? endDate,
+    Expression<String>? startDate,
+    Expression<String>? endDate,
     Expression<bool>? onlyLogging,
     Expression<int>? goalEnergy,
     Expression<int>? goalProtein,
@@ -7330,10 +7308,14 @@ class NutritionalPlanTableCompanion extends UpdateCompanion<NutritionalPlan> {
       map['creation_date'] = Variable<DateTime>(creationDate.value);
     }
     if (startDate.present) {
-      map['start'] = Variable<DateTime>(startDate.value);
+      map['start'] = Variable<String>(
+        $NutritionalPlanTableTable.$converterstartDate.toSql(startDate.value),
+      );
     }
     if (endDate.present) {
-      map['end'] = Variable<DateTime>(endDate.value);
+      map['end'] = Variable<String>(
+        $NutritionalPlanTableTable.$converterendDaten.toSql(endDate.value),
+      );
     }
     if (onlyLogging.present) {
       map['only_logging'] = Variable<bool>(onlyLogging.value);
@@ -9956,15 +9938,14 @@ class $GalleryImageTableTable extends GalleryImageTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+  late final GeneratedColumnWithTypeConverter<DateTime, String> date = GeneratedColumn<String>(
     'date',
     aliasedName,
     false,
-    type: DriftSqlType.dateTime,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
-  );
+  ).withConverter<DateTime>($GalleryImageTableTable.$converterdate);
   static const VerificationMeta _imagePathMeta = const VerificationMeta(
     'imagePath',
   );
@@ -10006,14 +9987,6 @@ class $GalleryImageTableTable extends GalleryImageTable
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('date')) {
-      context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_dateMeta);
-    }
     if (data.containsKey('image')) {
       context.handle(
         _imagePathMeta,
@@ -10046,10 +10019,12 @@ class $GalleryImageTableTable extends GalleryImageTable
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
-      )!,
+      date: $GalleryImageTableTable.$converterdate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}date'],
+        )!,
+      ),
       imagePath: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}image'],
@@ -10065,6 +10040,8 @@ class $GalleryImageTableTable extends GalleryImageTable
   $GalleryImageTableTable createAlias(String alias) {
     return $GalleryImageTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DateTime, String> $converterdate = const DateOnlyTextConverter();
 }
 
 class GalleryImageTableCompanion extends UpdateCompanion<GalleryImage> {
@@ -10092,7 +10069,7 @@ class GalleryImageTableCompanion extends UpdateCompanion<GalleryImage> {
        description = Value(description);
   static Insertable<GalleryImage> custom({
     Expression<int>? id,
-    Expression<DateTime>? date,
+    Expression<String>? date,
     Expression<String>? imagePath,
     Expression<String>? description,
     Expression<int>? rowid,
@@ -10129,7 +10106,9 @@ class GalleryImageTableCompanion extends UpdateCompanion<GalleryImage> {
       map['id'] = Variable<int>(id.value);
     }
     if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+      map['date'] = Variable<String>(
+        $GalleryImageTableTable.$converterdate.toSql(date.value),
+      );
     }
     if (imagePath.present) {
       map['image'] = Variable<String>(imagePath.value);
@@ -17127,14 +17106,14 @@ class $$RoutineTableTableFilterComposer
     builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
-  ColumnFilters<DateTime> get start => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get start => $composableBuilder(
     column: $table.start,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
-  ColumnFilters<DateTime> get end => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get end => $composableBuilder(
     column: $table.end,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<bool> get isTemplate => $composableBuilder(
@@ -17182,12 +17161,12 @@ class $$RoutineTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get start => $composableBuilder(
+  ColumnOrderings<String> get start => $composableBuilder(
     column: $table.start,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get end => $composableBuilder(
+  ColumnOrderings<String> get end => $composableBuilder(
     column: $table.end,
     builder: (column) => ColumnOrderings(column),
   );
@@ -17230,10 +17209,10 @@ class $$RoutineTableTableAnnotationComposer
   GeneratedColumnWithTypeConverter<DateTime, DateTime> get created =>
       $composableBuilder(column: $table.created, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get start =>
+  GeneratedColumnWithTypeConverter<DateTime, String> get start =>
       $composableBuilder(column: $table.start, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get end =>
+  GeneratedColumnWithTypeConverter<DateTime, String> get end =>
       $composableBuilder(column: $table.end, builder: (column) => column);
 
   GeneratedColumn<bool> get isTemplate => $composableBuilder(
@@ -17803,9 +17782,9 @@ class $$WorkoutSessionTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get date => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get date => $composableBuilder(
     column: $table.date,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<String> get notes => $composableBuilder(
@@ -17854,7 +17833,7 @@ class $$WorkoutSessionTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get date => $composableBuilder(
+  ColumnOrderings<String> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnOrderings(column),
   );
@@ -17898,7 +17877,7 @@ class $$WorkoutSessionTableTableAnnotationComposer
   GeneratedColumn<int> get dayId =>
       $composableBuilder(column: $table.dayId, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date =>
+  GeneratedColumnWithTypeConverter<DateTime, String> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 
   GeneratedColumn<String> get notes =>
@@ -18431,14 +18410,14 @@ class $$NutritionalPlanTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get startDate => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get startDate => $composableBuilder(
     column: $table.startDate,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
-  ColumnFilters<DateTime> get endDate => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, String> get endDate => $composableBuilder(
     column: $table.endDate,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<bool> get onlyLogging => $composableBuilder(
@@ -18549,12 +18528,12 @@ class $$NutritionalPlanTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get startDate => $composableBuilder(
+  ColumnOrderings<String> get startDate => $composableBuilder(
     column: $table.startDate,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get endDate => $composableBuilder(
+  ColumnOrderings<String> get endDate => $composableBuilder(
     column: $table.endDate,
     builder: (column) => ColumnOrderings(column),
   );
@@ -18617,10 +18596,10 @@ class $$NutritionalPlanTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<DateTime> get startDate =>
+  GeneratedColumnWithTypeConverter<DateTime, String> get startDate =>
       $composableBuilder(column: $table.startDate, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get endDate =>
+  GeneratedColumnWithTypeConverter<DateTime?, String> get endDate =>
       $composableBuilder(column: $table.endDate, builder: (column) => column);
 
   GeneratedColumn<bool> get onlyLogging => $composableBuilder(
@@ -21981,9 +21960,9 @@ class $$GalleryImageTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get date => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get date => $composableBuilder(
     column: $table.date,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<String> get imagePath => $composableBuilder(
@@ -22011,7 +21990,7 @@ class $$GalleryImageTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get date => $composableBuilder(
+  ColumnOrderings<String> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnOrderings(column),
   );
@@ -22038,7 +22017,7 @@ class $$GalleryImageTableTableAnnotationComposer
   });
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date =>
+  GeneratedColumnWithTypeConverter<DateTime, String> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 
   GeneratedColumn<String> get imagePath =>

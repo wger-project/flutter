@@ -18,6 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/converters/workout_impression_converter.dart';
@@ -36,8 +37,8 @@ class RoutineTable extends Table {
   TextColumn get name => text()();
   TextColumn get description => text()();
   DateTimeColumn get created => dateTime().map(const UtcDateTimeConverter())();
-  DateTimeColumn get start => dateTime()();
-  DateTimeColumn get end => dateTime()();
+  TextColumn get start => text().map(const DateOnlyTextConverter())();
+  TextColumn get end => text().map(const DateOnlyTextConverter())();
   BoolColumn get isTemplate => boolean().named('is_template')();
   BoolColumn get isPublic => boolean().named('is_public')();
   BoolColumn get fitInWeek => boolean().named('fit_in_week')();
@@ -119,7 +120,7 @@ class WorkoutSessionTable extends Table {
   TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   IntColumn get routineId => integer().named('routine_id').nullable()();
   IntColumn get dayId => integer().named('day_id').nullable()();
-  DateTimeColumn get date => dateTime()();
+  TextColumn get date => text().map(const DateOnlyTextConverter())();
   TextColumn get notes => text().nullable()();
   TextColumn get impression => text().map(const WorkoutImpressionConverter())();
   TextColumn get timeStart =>

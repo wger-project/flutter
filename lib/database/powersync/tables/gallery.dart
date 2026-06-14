@@ -18,6 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/models/gallery/image.dart';
 
 @UseRowClass(GalleryImage)
@@ -26,7 +27,7 @@ class GalleryImageTable extends Table {
   String get tableName => 'gallery_image';
 
   IntColumn get id => integer()();
-  DateTimeColumn get date => dateTime()();
+  TextColumn get date => text().map(const DateOnlyTextConverter())();
   TextColumn get imagePath => text().named('image')();
   TextColumn get description => text()();
 }

@@ -71,7 +71,7 @@ class WorkoutLogRepository {
         final existing =
             await (_db.select(_db.workoutSessionTable)
                   ..where(
-                    (t) => t.routineId.equals(log.routineId) & t.date.equals(dayMidnightUtc),
+                    (t) => t.routineId.equals(log.routineId) & t.date.equalsValue(dayMidnightUtc),
                   )
                   ..limit(1))
                 .getSingleOrNull();
