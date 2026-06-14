@@ -117,11 +117,11 @@ class _GymModeState extends ConsumerState<GymMode> {
     for (final page in state.pages) {
       for (final slotPage in page.slotPages) {
         if (slotPage.type == SlotPageType.exerciseOverview) {
-          out.add(ExerciseOverview(_controller));
+          out.add(ExerciseOverview(_controller, slotPage.uuid));
         }
 
         if (slotPage.type == SlotPageType.log) {
-          out.add(LogPage(_controller));
+          out.add(LogPage(_controller, slotPage.uuid));
         }
 
         // Timer. Use rest time from config data if available, otherwise use user settings

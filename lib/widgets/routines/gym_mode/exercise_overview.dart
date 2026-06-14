@@ -26,15 +26,19 @@ class ExerciseOverview extends ConsumerWidget {
   final _logger = Logger('ExerciseOverview');
   final PageController _controller;
 
-  ExerciseOverview(this._controller);
+  /// Identifies which slot page this widget renders, so it shows its own
+  /// content instead of whatever the globally-current page happens to be.
+  final String slotUuid;
+
+  ExerciseOverview(this._controller, this.slotUuid);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final page = ref.watch(gymStateProvider).getSlotEntryPageByIndex();
+    final page = ref.watch(gymStateProvider).getSlotPageByUUID(slotUuid);
 
     if (page == null) {
       _logger.info(
-        'getPageByIndex returned null, showing empty container.',
+        'getSlotPageByUUID for $slotUuid returned null, showing empty container.',
       );
       return Container();
     }

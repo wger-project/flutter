@@ -24,12 +24,14 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises_notifier.dart';
+import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
@@ -362,4 +364,31 @@ void main() {
       verifyNever(mockRoutinesRepo.fetchAndSetRoutineFullServer(any));
     });
   });
+
+  testWidgets(
+    'fresh session with exercise pages off: first swipe to a log page does not crash',
+    (WidgetTester tester) async {
+      // Test having a null page, which can happen on the first swipe of a fresh session
+      await PreferenceHelper.asyncPref.setBool(PREFS_SHOW_EXERCISES, false);
+
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(renderGymMode());
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(StartPage), findsOneWidget);
+        expect(find.byType(ExerciseOverview), findsNothing);
+
+        // First swipe off the start page lands directly on a log page.
+        await tester.drag(find.byType(StartPage), const Offset(-500.0, 0.0));
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.byType(LogPage), findsOneWidget);
+        expect(find.text('Bench press'), findsOneWidget);
+      });
+    },
+    semanticsEnabled: false,
+  );
 }

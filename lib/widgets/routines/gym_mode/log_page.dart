@@ -43,7 +43,12 @@ class LogPage extends ConsumerWidget {
   final _logger = Logger('LogPage');
 
   final PageController _controller;
-  LogPage(this._controller);
+
+  /// Identifies which slot page this widget renders, so it shows its own
+  /// content instead of whatever the globally-current page happens to be.
+  final String slotUuid;
+
+  LogPage(this._controller, this.slotUuid);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,24 +56,20 @@ class LogPage extends ConsumerWidget {
     final gymState = ref.watch(gymStateProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
-    final page = gymState.getPageByIndex();
-    if (page == null) {
-      _logger.info(
-        'getPageByIndex for ${gymState.currentPage} returned null, showing empty container.',
-      );
+    final slotEntryPage = gymState.getSlotPageByUUID(slotUuid);
+    if (slotEntryPage == null) {
+      _logger.info('getSlotPageByUUID for $slotUuid returned null, showing empty container.');
       return Container();
     }
 
-    final slotEntryPage = gymState.getSlotEntryPageByIndex();
-    if (slotEntryPage == null) {
+    final page = gymState.getPageByIndex(slotEntryPage.pageIndex);
+    if (page == null) {
       _logger.info(
-        'getSlotPageByIndex for ${gymState.currentPage} returned null, showing empty container',
+        'getPageByIndex for ${slotEntryPage.pageIndex} returned null, showing empty container.',
       );
       return Container();
     }
     final setConfigData = slotEntryPage.setConfigData!;
-
-    final log = ref.read(gymLogProvider);
 
     // Mark done sets
     final decorationStyle = slotEntryPage.logDone
@@ -78,7 +79,7 @@ class LogPage extends ConsumerWidget {
     return Column(
       children: [
         NavigationHeader(
-          log!.exerciseObj.getTranslation(languageCode).name,
+          setConfigData.exercise.getTranslation(languageCode).name,
           _controller,
         ),
 
@@ -120,14 +121,14 @@ class LogPage extends ConsumerWidget {
             ),
           ),
         ),
-        if (log.exerciseObj.showPlateCalculator) const LogsPlatesWidget(),
+        if (setConfigData.exercise.showPlateCalculator) const LogsPlatesWidget(),
         if (slotEntryPage.setConfigData!.comment.isNotEmpty)
           Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (gymState.routine.filterLogsByExercise(log.exerciseId).isNotEmpty)
+          child: (gymState.routine.filterLogsByExercise(setConfigData.exerciseId).isNotEmpty)
               ? LogsPastLogsWidget(
-                  pastLogs: gymState.routine.filterLogsByExercise(log.exerciseId),
+                  pastLogs: gymState.routine.filterLogsByExercise(setConfigData.exerciseId),
                 )
               : Container(),
         ),

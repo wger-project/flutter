@@ -68,6 +68,9 @@ void main() {
     }
 
     Future<void> pumpLogPage(WidgetTester tester) async {
+      // The widget resolves its own slot now, so hand it the uuid of the slot
+      // the gym state was seeded on (via setCurrentPage above).
+      final slotUuid = container.read(gymStateProvider).getSlotEntryPageByIndex()!.uuid;
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
@@ -80,7 +83,7 @@ void main() {
               body: Builder(
                 builder: (context) {
                   final controller = PageController();
-                  return PageView(controller: controller, children: [LogPage(controller)]);
+                  return PageView(controller: controller, children: [LogPage(controller, slotUuid)]);
                 },
               ),
             ),
