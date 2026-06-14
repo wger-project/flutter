@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/error_dialogs.dart';
+import 'package:wger/core/keys.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/locale.dart';
 import 'package:wger/helpers/shared_preferences.dart';
@@ -94,9 +95,6 @@ void _setupLogging() {
     InMemoryLogStore().add(record);
   });
 }
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   // Needs to be called before runApp

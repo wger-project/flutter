@@ -20,17 +20,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/keys.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/logs.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/main.dart';
-import 'package:wger/models/workouts/log.dart';
-import 'package:wger/providers/workout_logs_notifier.dart';
 
 /// Whether an error dialog is currently on screen.
 ///
@@ -374,48 +371,6 @@ class CopyToClipboardButton extends StatelessWidget {
       },
     );
   }
-}
-
-void showDeleteLogDialog(BuildContext context, String confirmDeleteName, Log log) async {
-  final res = await showDialog(
-    context: context,
-    builder: (BuildContext contextDialog) {
-      return AlertDialog(
-        content: Text(AppLocalizations.of(context).confirmDelete(confirmDeleteName)),
-        actions: [
-          TextButton(
-            key: const ValueKey('cancel-button'),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            onPressed: () => Navigator.of(contextDialog).pop(),
-          ),
-          TextButton(
-            key: const ValueKey('delete-button'),
-            child: Text(
-              AppLocalizations.of(context).delete,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-            onPressed: () async {
-              await ProviderScope.containerOf(
-                context,
-              ).read(workoutLogProvider).deleteEntry(log.id.toString());
-
-              Navigator.of(contextDialog).pop();
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    AppLocalizations.of(context).successfullyDeleted,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      );
-    },
-  );
-  return res;
 }
 
 /// Processes the error messages from the server and returns a list of widgets
