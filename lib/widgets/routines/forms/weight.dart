@@ -193,6 +193,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
           visualDensity: VisualDensity.compact,
+          tooltip: i18n.decrease,
           onPressed: () {
             final base = widget.value ?? 0;
             final newValue = base - widget.valueChange;
@@ -243,6 +244,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
           visualDensity: VisualDensity.compact,
+          tooltip: i18n.increase,
           onPressed: () {
             final base = widget.value ?? 0;
             final newValue = base + widget.valueChange;

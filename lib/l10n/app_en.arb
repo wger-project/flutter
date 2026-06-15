@@ -965,6 +965,14 @@
   "@add": {
     "description": "Add button text"
   },
+  "increase": "Increase",
+  "@increase": {
+    "description": "Tooltip / screen-reader label for a button that increases a numeric input by one step"
+  },
+  "decrease": "Decrease",
+  "@decrease": {
+    "description": "Tooltip / screen-reader label for a button that decreases a numeric input by one step"
+  },
   "variations": "Variations",
   "@variations": {
     "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"

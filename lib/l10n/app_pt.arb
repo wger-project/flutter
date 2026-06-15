@@ -1098,5 +1098,13 @@
     "understand": "Entendo",
     "@understand": {
         "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "appLanguage": "Idioma da app",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Predefinição do sistema",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
     }
 }

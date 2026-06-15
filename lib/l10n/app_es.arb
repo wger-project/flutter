@@ -996,5 +996,132 @@
     "noTrophies": "No tienes trofeos todavía",
     "slotEntryTypeWarmup": "Calentamiento",
     "preview": "Vista previa",
-    "serverUpdateTitle": "Actualización de servidor requerida"
+    "serverUpdateTitle": "Actualización de servidor requerida",
+    "topSet": "Mejor serie: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "serverUpdateContent": "El servidor conectado es demasiado antiguo para esta versión de la aplicación. Por favor, pide al administrador que actualice al menos a la versión {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "useBasicMarkdown": "Puedes usar Markdown básico para formatear el texto",
+    "editorBold": "Negrita",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Cursiva",
+    "editorList": "Lista",
+    "appLanguage": "Idioma de la aplicación",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Predefinido del sistema",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "productNotFoundOpenFoodFacts": "¡Puedes agregar este producto a Open Food Facts para ayudar a la comunidad!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Agregar a Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Vegano",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Vegetariano",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filtrar",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Solo en el idioma actual ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Idioma actual ({lang}) e Inglés",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Todos los idiomas",
+    "@searchLanguageAll": {
+        "description": "Label used in the language selector to indicate no specific language filter is applied"
+    },
+    "exerciseSearchMode": "Modo de búsqueda",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeFuzzy": "Búsqueda aproximada",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "searchModeExact": "Búsqueda exacta",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "filterNutriscore": "Filtro Nutri-Score",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreOff": "Apagado",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "filterNutriscoreNoFilter": "Sin filtro",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} o mejor",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "serverConfigIssueTitle": "Problema de configuración del servidor",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Configuración incorrecta en el servidor: las cabeceras no se están transmitiendo correctamente. Por favor, consulte la documentación.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "Lo comprendo",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "viewDocumentation": "Ver documentación",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    }
 }

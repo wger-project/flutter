@@ -28,7 +28,7 @@
         "description": "Error message when the user enters an invalid email"
     },
     "confirmPassword": "Bevestig wachtwoord",
-    "userProfile": "Jouw profiel",
+    "userProfile": "Uw profiel",
     "useDefaultServer": "Gebruik standaard server",
     "@useDefaultServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
@@ -85,7 +85,7 @@
     "@muscles": {
         "description": "(main) muscles trained by an exercise"
     },
-    "selectAvailablePlates": "Selecteer beschikbare platen",
+    "selectAvailablePlates": "Halter­schijven selecteren",
     "barWeight": "Gewicht stang",
     "useColors": "Gebruik kleuren",
     "useApiToken": "Gebruik API Token",
@@ -125,7 +125,7 @@
     "@labelWorkoutLogs": {
         "description": "(Workout) logs"
     },
-    "labelWorkoutPlan": "Workout schema",
+    "labelWorkoutPlan": "Trainings­schema",
     "@labelWorkoutPlan": {
         "description": "Title for screen workout plan"
     },
@@ -155,7 +155,7 @@
     "@musclesSecondary": {
         "description": "secondary muscles trained by an exercise"
     },
-    "startDate": "Start datum",
+    "startDate": "Start­datum",
     "@startDate": {
         "description": "The start date of a nutritional plan or routine"
     },
@@ -278,11 +278,11 @@
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
     "workoutCompleted": "Workout voltooid",
-    "plateCalculator": "Platen",
+    "plateCalculator": "Halter­schijven",
     "@plateCalculator": {
         "description": "Label used for the plate calculator in the gym mode"
     },
-    "plateCalculatorNotDivisible": "Niet mogelijk om gewicht te bereiken met beschikbare platen",
+    "plateCalculatorNotDivisible": "Niet mogelijk om gewicht te bereiken met beschikbare halter­schijven",
     "@plateCalculatorNotDivisible": {
         "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
     },
@@ -340,11 +340,11 @@
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
-    "goalEnergy": "Energie doel",
-    "goalProtein": "Proteïne doel",
-    "goalCarbohydrates": "Koolhydratendoel",
-    "goalFat": "Vet doel",
-    "goalFiber": "Vezel doel",
+    "goalEnergy": "Energie­doelstelling",
+    "goalProtein": "Eiwit­doelstelling",
+    "goalCarbohydrates": "Koolhydraat­doelstelling",
+    "goalFat": "Vet­doelstelling",
+    "goalFiber": "Vezel­doelstelling",
     "anErrorOccurred": "Er is een fout opgetreden!",
     "errorInfoDescription": "Het spijt ons, maar er is iets misgegaan. Je kunt ons helpen dit op te lossen door het probleem te melden op GitHub.",
     "errorInfoDescription2": "Je kunt de app blijven gebruiken, maar sommige functies werken mogelijk niet.",
@@ -358,7 +358,7 @@
     },
     "min": "Min",
     "max": "Max",
-    "chartAllTimeTitle": "{name} over gehele tijd",
+    "chartAllTimeTitle": "{name} door de tijd heen",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
         "type": "text",
@@ -402,7 +402,7 @@
     "@date": {
         "description": "The date of a workout log or body weight entry"
     },
-    "endDate": "Einddatum",
+    "endDate": "Eind­datum",
     "@endDate": {
         "description": "The End date of a nutritional plan or routine"
     },
@@ -577,7 +577,7 @@
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"
     },
-    "goToDetailPage": "Ga naar detail pagina",
+    "goToDetailPage": "Naar detail­pagina",
     "aboutWhySupportTitle": "Open Source & gratis te gebruiken ❤️",
     "aboutDescription": "Bedankt voor het gebruiken van wger! wger is een collaboratief open source project, gemaakt door fitness fans van over de hele wereld.",
     "@aboutDescription": {
@@ -593,7 +593,7 @@
     "aboutJoinCommunityTitle": "Sluit je aan bij de community",
     "aboutMastodonTitle": "Mastodon",
     "aboutDiscordTitle": "Discord",
-    "others": "Anderen",
+    "others": "Overig",
     "calendar": "Kalender",
     "goToToday": "Ga naar vandaag",
     "@goToToday": {
@@ -824,7 +824,7 @@
     "images": "Afbeeldingen",
     "language": "Taal",
     "addExercise": "Voeg oefening toe",
-    "fitInWeek": "In week passen",
+    "fitInWeek": "Vast week­rooster",
     "fitInWeekHelp": "Indien ingeschakeld, zullen de dagen zich herhalen in een wekelijkse cyclus; anders zullen de dagen elkaar opeenvolgend opvolgen, ongeacht het begin van een nieuwe week.",
     "addSuperset": "Superset toevoegen",
     "superset": "Superset",
@@ -841,8 +841,8 @@
     "enterTextInLanguage": "Voer de tekst in de juiste taal in!",
     "settingsTitle": "Instellingen",
     "settingsCacheTitle": "Cache",
-    "settingsExerciseCacheDescription": "Oefeningscache",
-    "settingsIngredientCacheDescription": "Ingrediënten cache",
+    "settingsExerciseCacheDescription": "Oefenings­cache",
+    "settingsIngredientCacheDescription": "Ingrediënten­cache",
     "settingsCacheDeletedSnackbar": "Cache succesvol geleegd",
     "aboutPageTitle": "Over ons & Support",
     "contributeExerciseWarning": "Je kunt alleen oefeningen bijdragen als je account ouder is dan {days} dagen en je e-mailadres is geverifieerd",
@@ -858,7 +858,7 @@
     "simpleMode": "Eenvoudige modus",
     "simpleModeHelp": "Verberg enkele van de meer geavanceerde instellingen tijdens het bewerken van oefeningen",
     "progressionRules": "Deze oefening heeft voortgangsregels en kan niet worden bewerkt in de mobiele app. Gebruik de webapplicatie om deze oefening te bewerken.",
-    "cacheWarning": "Vanwege de caching kan het even duren voordat de wijzigingen in de hele applicatie zichtbaar zijn.",
+    "cacheWarning": "Vanwege caching kan het even duren voordat de wijzigingen in de hele app zichtbaar zijn.",
     "textPromptTitle": "Klaar om te starten?",
     "textPromptSubheading": "Druk op de actieknop om te beginnen",
     "abs": "Buikspieren",
@@ -961,7 +961,7 @@
     "@minutes": {
         "description": "Generated entry for translation for server strings"
     },
-    "plates": "Platen",
+    "plates": "Halter­schijven",
     "@plates": {
         "description": "Generated entry for translation for server strings"
     },
@@ -1038,7 +1038,7 @@
     "@goalTypeAdvanced": {
         "description": "added for localization of Class GoalType's filed advanced"
     },
-    "indicatorRaw": "rauw",
+    "indicatorRaw": "ruw",
     "@indicatorRaw": {
         "description": "added for localization of Class Indicator's field text"
     },
@@ -1050,9 +1050,153 @@
     "@endWorkout": {
         "description": "Use the imperative, label on button to finish the current workout in gym mode"
     },
-    "themeMode": "Thema modus",
+    "themeMode": "Thema­modus",
     "darkMode": "Altijd donkere modus",
     "lightMode": "Altijd lichte modus",
     "systemMode": "Systeem instellingen",
-    "slotEntryTypeMyo": "Myo"
+    "slotEntryTypeMyo": "Myo",
+    "trophies": "Trofeeën",
+    "isVegan": "Veganist",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Vegetariër",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filteren",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "dashboardWidgets": "Dashboard­widgets",
+    "slotEntryTypeWarmup": "Opwarming",
+    "setNr": "Set {nr}",
+    "@setNr": {
+        "description": "Header in form indicating the number of the current set within a group of same exercises.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "topSet": "Beste set: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "personalRecords": "Persoonlijke records",
+    "noTrophies": "U heeft nog geen trofeeën",
+    "preview": "Voor­vertoning",
+    "editorBold": "Vet­gedrukt",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Cursief",
+    "editorList": "Lijst",
+    "filterNutriscoreOff": "Uit",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "searchModeExact": "Exact",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "searchLanguageAll": "Alle talen",
+    "@searchLanguageAll": {
+        "description": "Label used in the language selector to indicate no specific language filter is applied"
+    },
+    "filterNutriscore": "Nutri-Score-filter",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreNoFilter": "Geen filter",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "exerciseSearchMode": "Zoek­modus",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "understand": "Ik begrijp het",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "appLanguage": "App-taal",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Systeem­standaard",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "serverUpdateTitle": "Server­update vereist",
+    "useBasicMarkdown": "U kunt eenvoudige Markdown gebruiken om de tekst op te maken",
+    "serverUpdateContent": "De verbonden server is te oud voor deze versie van de app. Vraag de server­beheerder om de server bij te werken naar ten minste versie {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "productNotFoundOpenFoodFacts": "U kunt dit product toe­voegen aan Open Food Facts om de gemeen­schap te helpen!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Toevoegen aan Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "searchLanguageCurrent": "Alleen in de huidige taal ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Huidige taal ({lang}) & Engels",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchModeFuzzy": "Fuzzy",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "filterNutriscoreOrBetter": "{grade} of beter",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "serverConfigIssueTitle": "Probleem met server­configuratie",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Er is een foutieve server­configuratie gedetecteerd; headers worden niet correct door­gegeven. Raad­pleeg de documentatie.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "viewDocumentation": "Documentatie bekijken",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    }
 }

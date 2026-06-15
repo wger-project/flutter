@@ -826,7 +826,7 @@
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
     },
-    "chartAllTimeTitle": "{name} totale",
+    "chartAllTimeTitle": "{name} storico",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
         "type": "text",
@@ -924,7 +924,7 @@
     "aboutContributeText": "Incoraggiamo ogni tipo di contributo. Che tu sia uno sviluppatore, un traduttore, o semplicemente appassionato di fitness, ogni piccolo supporto verrà apprezzato!",
     "aboutBugsListTitle": "Segnala un problema o suggerisci una funzionalità",
     "aboutDiscordTitle": "Discord",
-    "fitInWeek": "Settimana Fit in",
+    "fitInWeek": "Pianificazione settimanale fissa",
     "creationDate": "Data di inizio",
     "@creationDate": {
         "description": "The Start date of a nutritional plan"
@@ -943,5 +943,256 @@
     "dayTypeHiit": "Allenamento a intervalli ad alta intensità",
     "workoutCompleted": "Allenamento Completato",
     "noTrophies": "Non ci sono trofei",
-    "preview": "Anteprima"
+    "preview": "Anteprima",
+    "dashboardWidgets": "Widget della dashboard",
+    "dayTypeEnom": "Ogni minuto, al minuto",
+    "dayTypeAmrap": "Più round possibili",
+    "dayTypeTabata": "Tabata",
+    "dayTypeEdt": "Allenamento a densità crescente",
+    "dayTypeRft": "Round a tempo",
+    "slotEntryTypeNormal": "Normale",
+    "slotEntryTypeDropset": "Drop set",
+    "slotEntryTypeMyo": "Mio",
+    "slotEntryTypeWarmup": "Riscaldamento",
+    "slotEntryTypePartial": "Parziale",
+    "slotEntryTypeForced": "Forzato",
+    "slotEntryTypeTut": "Tempo sotto tensione",
+    "slotEntryTypeIso": "Contrazione isometrica",
+    "slotEntryTypeJump": "Salto",
+    "trophies": "Trofei",
+    "topSet": "Serie massimale: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "impressionGood": "Buono",
+    "impressionNeutral": "Neutrale",
+    "impressionBad": "Pessimo",
+    "personalRecords": "Record personale",
+    "gymModeShowExercises": "Mostra panoramica esercizio",
+    "gymModeShowTimer": "Mostra timer tra le serie",
+    "gymModeTimerType": "Tipo timer",
+    "gymModeTimerTypeHelText": "Se una serie prevede un tempo di pausa, viene sempre utilizzato un conto alla rovescia.",
+    "countdown": "Conto alla rovescia",
+    "stopwatch": "Cronometro",
+    "gymModeDefaultCountdownTime": "Conto alla rovescia di default, in secondi",
+    "gymModeNotifyOnCountdownFinish": "Notifica quando il conto alla rovescia finisce",
+    "duration": "Durata",
+    "durationHoursMinutes": "{hours}h {minutes}m",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Volume",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "formMinMaxValues": "Inserisci un valore compreso tra {min} e {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "serverUpdateTitle": "Aggiornamento del server richiesto",
+    "serverUpdateContent": "Il server connesso è troppo vecchio per questa versione dell’app. Chiedi all’amministratore del server di aggiornare almeno alla versione {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "imageDetailsTitle": "Dettagli immagine",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Titolo",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Inserisci titolo immagine",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Link al sito sorgente",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Autore/i",
+    "authorHint": "Inserisci nome autore",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Link al sito o profilo dell’autore",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Link alla fonte originale, se si tratta di un’opera derivata",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Un’opera derivata si basa su un’opera precedente ma contiene contenuto nuovo e creativo sufficiente a conferirle un proprio diritto d’autore.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Tipo di immagine",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "Inviando questa immagine, accetti di rilasciarla sotto licenza CC-BY-SA-4. L’immagine deve essere opera tua oppure l’autore deve averla rilasciata sotto una licenza compatibile.",
+    "imageDetailsLicenseNoticeLinkToLicense": "Vedi il testo della licenza.",
+    "imageFormatNotSupported": "{imageFormat} non supportato",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "Le immagini in formato {imageFormat} non sono ancora supportate.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "superset": "Superset",
+    "useBasicMarkdown": "Puoi usare il Markdown di base per formattare il testo",
+    "editorBold": "Grassetto",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Corsivo",
+    "editorList": "Elenco",
+    "endWorkout": "Fine allenamento",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "appLanguage": "Lingua App",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Predefinito di sistema",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "productNotFoundOpenFoodFacts": "Puoi aggiungere questo prodotto a Open Food Facts per aiutare la comunità!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Aggiungi a Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Vegano",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Vegetariano",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filtra",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Solo nella lingua corrente ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Lingua corrente ({lang}) e inglese",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Tutte le lingue",
+    "@searchLanguageAll": {
+        "description": "Label used in the language selector to indicate no specific language filter is applied"
+    },
+    "exerciseSearchMode": "Modalità ricerca",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeFuzzy": "Approssimativa",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "searchModeExact": "Esatta",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "filterNutriscore": "Filtro Nutri-Score",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreOff": "Spento",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "filterNutriscoreNoFilter": "Nessun filtro",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} o meglio",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "serverConfigIssueTitle": "Problema di configurazione del server",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Rilevata configurazione errata del server: le intestazioni non vengono trasmesse correttamente. Consulta la documentazione.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "Ho capito",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "viewDocumentation": "Visualizza la documentazione",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    }
 }
