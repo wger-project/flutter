@@ -24,7 +24,7 @@ import 'package:intl/intl.dart';
 /// Bump this value whenever you depend on API changes that are only available
 /// in a newer server release. The check is performed during login and
 /// auto-login and mirrors what the server does with MIN_APP_VERSION.
-const MIN_SERVER_VERSION = '2.5';
+const MIN_SERVER_VERSION = '2.6';
 
 /// Size for the "smaller" icons, e.g. when they belong to less important items
 /// and we don't want to fill the whole screen
