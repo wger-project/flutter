@@ -94,7 +94,8 @@ Widget createGymModeScreen({Locale? locale}) {
   );
 }
 
-Widget createGymModeResultsScreen({String locale = 'en'}) {
+Widget createGymModeResultsScreen({Locale? locale}) {
+  locale ??= const Locale('en');
   final controller = PageController(initialPage: 0);
 
   final key = GlobalKey<NavigatorState>();
@@ -120,7 +121,7 @@ Widget createGymModeResultsScreen({String locale = 'en'}) {
     ),
 
     child: MaterialApp(
-      locale: Locale(locale),
+      locale: locale,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

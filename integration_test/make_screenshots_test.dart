@@ -162,7 +162,7 @@ void main() {
       // });
 
       testWidgets('gym mode stats screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createGymModeResultsScreen(locale: languageCode));
+        await tester.pumpWidget(createGymModeResultsScreen(locale: locale));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '03 - gym mode');
       });
