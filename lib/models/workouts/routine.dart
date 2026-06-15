@@ -16,14 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/session_api.dart';
+import 'package:wger/models/workouts/session.dart';
 
 part 'routine.g.dart';
 
@@ -55,6 +57,16 @@ class Routine {
   @JsonKey(required: true, name: 'fit_in_week')
   late bool fitInWeek;
 
+  // The two template flags are server-managed and the Flutter app does not
+  // expose UI to toggle them, but PowerSync syncs them so the in-memory
+  // state stays consistent with the backend (and round-trips correctly
+  // on PATCH writes via [toCompanion]).
+  @JsonKey(name: 'is_template', defaultValue: false)
+  late bool isTemplate;
+
+  @JsonKey(name: 'is_public', defaultValue: false)
+  late bool isPublic;
+
   @JsonKey(required: true, toJson: dateToYYYYMMDD)
   late DateTime start;
 
@@ -70,8 +82,14 @@ class Routine {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<DayData> dayDataGym = [];
 
-  @JsonKey(required: false, includeToJson: false, defaultValue: [])
-  List<WorkoutSessionApi> sessions = [];
+  /// Whether the full structure (days, slots, configs and the server-computed
+  /// dayData) has been loaded from the REST api. This can't be a simple
+  /// len(days) since that would match new routines.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool isHydrated = false;
+
+  @JsonKey(required: false, includeToJson: false, includeFromJson: false)
+  List<WorkoutSession> sessions = [];
 
   Routine({
     this.id,
@@ -80,10 +98,13 @@ class Routine {
     DateTime? start,
     DateTime? end,
     this.fitInWeek = false,
+    this.isTemplate = false,
+    this.isPublic = false,
     String? description,
     this.days = const [],
     this.dayData = const [],
     this.dayDataGym = const [],
+    this.isHydrated = false,
     this.sessions = const [],
   }) {
     this.created = created ?? DateTime.now();
@@ -99,12 +120,67 @@ class Routine {
     start = DateTime.now();
     end = DateTime.now().add(const Duration(days: DEFAULT_DURATION * 7));
     fitInWeek = true;
+    isTemplate = false;
+    isPublic = false;
   }
 
   // Boilerplate
   factory Routine.fromJson(Map<String, dynamic> json) => _$RoutineFromJson(json);
 
   Map<String, dynamic> toJson() => _$RoutineToJson(this);
+
+  Routine copyWith({
+    int? id,
+    DateTime? created,
+    String? name,
+    String? description,
+    bool? fitInWeek,
+    bool? isTemplate,
+    bool? isPublic,
+    DateTime? start,
+    DateTime? end,
+    List<Day>? days,
+    List<DayData>? dayData,
+    List<DayData>? dayDataGym,
+    bool? isHydrated,
+    List<WorkoutSession>? sessions,
+  }) {
+    return Routine(
+      id: id ?? this.id,
+      created: created ?? this.created,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      fitInWeek: fitInWeek ?? this.fitInWeek,
+      isTemplate: isTemplate ?? this.isTemplate,
+      isPublic: isPublic ?? this.isPublic,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      days: days ?? this.days,
+      dayData: dayData ?? this.dayData,
+      dayDataGym: dayDataGym ?? this.dayDataGym,
+      isHydrated: isHydrated ?? this.isHydrated,
+      sessions: sessions ?? this.sessions,
+    );
+  }
+
+  RoutineTableCompanion toCompanion() {
+    final routineId = id;
+    if (routineId == null) {
+      throw StateError('Cannot persist routine without id (creation goes via REST)');
+    }
+    return RoutineTableCompanion(
+      id: drift.Value(routineId),
+      name: drift.Value(name),
+      description: drift.Value(description),
+      created: drift.Value(created),
+      // `start`/`end` are `DateField` server-side
+      start: drift.Value(DateTime.utc(start.year, start.month, start.day)),
+      end: drift.Value(DateTime.utc(end.year, end.month, end.day)),
+      isTemplate: drift.Value(isTemplate),
+      isPublic: drift.Value(isPublic),
+      fitInWeek: drift.Value(fitInWeek),
+    );
+  }
 
   List<Log> get logs {
     final out = <Log>[];
@@ -202,36 +278,43 @@ class Routine {
     return groupedLogs;
   }
 
-  void replaceExercise(int oldExerciseId, Exercise newExercise) {
-    for (final session in sessions) {
+  Routine replaceExercise(int oldExerciseId, Exercise newExercise) {
+    final updatedRoutine = this.copyWith(
+      sessions: List<WorkoutSession>.from(this.sessions),
+      dayData: List<DayData>.from(this.dayData),
+      dayDataGym: List<DayData>.from(this.dayDataGym),
+    );
+
+    for (final session in updatedRoutine.sessions) {
       for (final log in session.logs) {
         if (log.exerciseId == oldExerciseId) {
-          log.exerciseId = newExercise.id!;
+          log.exerciseId = newExercise.id;
           log.exercise = newExercise;
         }
       }
     }
 
-    for (final day in dayData) {
+    for (final day in updatedRoutine.dayData) {
       for (final slot in day.slots) {
         for (final config in slot.setConfigs) {
           if (config.exerciseId == oldExerciseId) {
-            config.exerciseId = newExercise.id!;
+            config.exerciseId = newExercise.id;
             config.exercise = newExercise;
           }
         }
       }
     }
 
-    for (final day in dayDataGym) {
+    for (final day in updatedRoutine.dayDataGym) {
       for (final slot in day.slots) {
         for (final config in slot.setConfigs) {
           if (config.exerciseId == oldExerciseId) {
-            config.exerciseId = newExercise.id!;
+            config.exerciseId = newExercise.id;
             config.exercise = newExercise;
           }
         }
       }
     }
+    return updatedRoutine;
   }
 }

@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise_submission_images.dart';
-import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/account_notifier.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
 import 'package:wger/widgets/add_exercise/image_details_form.dart';
 import 'package:wger/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/widgets/add_exercise/preview_images.dart';
@@ -20,18 +20,18 @@ import 'package:wger/widgets/add_exercise/preview_images.dart';
 /// Flow:
 /// 1. User picks image from camera/gallery
 /// 2. ImageDetailsForm is shown to collect license metadata
-/// 3. Image + metadata is stored in AddExerciseProvider
+/// 3. Image + metadata is stored in AddExerciseNotifier
 /// 4. Final upload happens in Step 6 when user clicks "Submit"
-class Step5Images extends StatefulWidget {
+class Step5Images extends ConsumerStatefulWidget {
   final GlobalKey<FormState> formkey;
 
   const Step5Images({required this.formkey});
 
   @override
-  State<Step5Images> createState() => _Step5ImagesState();
+  ConsumerState<Step5Images> createState() => _Step5ImagesState();
 }
 
-class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin {
+class _Step5ImagesState extends ConsumerState<Step5Images> with ExerciseImagePickerMixin {
   /// Currently selected image waiting for metadata input
   /// When non-null, ImageDetailsForm is displayed instead of image picker
   ExerciseSubmissionImage? _currentImageToAdd;
@@ -76,7 +76,7 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
   ///
   /// [pickFromCamera] - If true, opens camera; otherwise opens gallery
   void _pickAndShowImageDetails(BuildContext context, {bool pickFromCamera = false}) async {
-    final userProvider = context.read<UserProvider>();
+    final account = ref.read(accountProvider).value;
     final imagePicker = ImagePicker();
 
     XFile? selectedImage;
@@ -118,25 +118,22 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
       setState(() {
         _currentImageToAdd = ExerciseSubmissionImage(
           imageFile: imageFile,
-          author: userProvider.profile?.username ?? '',
+          author: account?.username ?? '',
         );
       });
     }
   }
 
-  /// Add image with its license metadata to the provider
+  /// Add image with its license metadata to the notifier
   ///
   /// Called when user clicks "ADD" in ImageDetailsForm. The image and metadata
-  /// are stored locally in AddExerciseProvider and will be uploaded together
+  /// are stored locally in AddExerciseNotifier and will be uploaded together
   /// when the exercise is submitted in Step 6.
   ///
   /// [image] - The image file to add
-  /// [details] - Map containing license fields (license_title, license_author, etc.)
   void _addImageWithDetails(ExerciseSubmissionImage image) {
-    final provider = context.read<AddExerciseProvider>();
-
-    // Store image with metadata - actual upload happens in addExercise()
-    provider.addExerciseImages([image]);
+    // Store image with metadata - actual upload happens in postExerciseToServer()
+    ref.read(addExerciseProvider.notifier).addExerciseImages([image]);
 
     // Reset form state - image is now visible in preview list
     setState(() {
@@ -178,14 +175,17 @@ class _Step5ImagesState extends State<Step5Images> with ExerciseImagePickerMixin
 
           // Image picker or preview - shown when not entering metadata
           if (_currentImageToAdd == null)
-            Consumer<AddExerciseProvider>(
-              builder: (ctx, provider, _) {
-                if (provider.exerciseImages.isNotEmpty) {
+            Consumer(
+              builder: (ctx, ref, __) {
+                final exerciseImages = ref.watch(
+                  addExerciseProvider.select((s) => s.exerciseImages),
+                );
+                if (exerciseImages.isNotEmpty) {
                   // Show preview of images that have been added with metadata
                   return Column(
                     children: [
                       PreviewExerciseImages(
-                        selectedImages: provider.exerciseImages,
+                        selectedImages: exerciseImages,
                         onAddMore: () => _showImageSourceDialog(context),
                       ),
                       const SizedBox(height: 16),

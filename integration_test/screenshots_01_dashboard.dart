@@ -17,131 +17,112 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/gallery.dart';
-import 'package:wger/providers/measurement.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/routines.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/auth_state.dart';
+import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/providers/gallery_repository.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/measurement_repository.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/nutrition_repository.dart';
+import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/exercises/contribute_exercise_test.mocks.dart';
 import '../test/gallery/gallery_form_test.mocks.dart';
 import '../test/measurements/measurement_categories_screen_test.mocks.dart';
 import '../test/nutrition/nutritional_plan_screen_test.mocks.dart';
-import '../test/routine/weight_unit_form_widget_test.mocks.dart';
 import '../test/weight/weight_screen_test.mocks.dart' as weight;
 import '../test_data/body_weight.dart';
 import '../test_data/exercises.dart';
+import '../test_data/gallery.dart';
 import '../test_data/measurements.dart';
 import '../test_data/nutritional_plans.dart';
 import '../test_data/profile.dart';
 import '../test_data/routines.dart';
 
+class _FakeAuthNotifier extends AuthNotifier {
+  _FakeAuthNotifier(this._state);
+
+  final AuthState _state;
+
+  @override
+  Future<AuthState> build() async => _state;
+}
+
 Widget createDashboardScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
-  final mockGalleryProvider = MockGalleryProvider();
+  final mockGalleryRepo = MockGalleryRepository();
+  when(mockGalleryRepo.watchAllDrift()).thenAnswer((_) => Stream.value(getTestImages()));
 
-  final mockExercisesProvider = MockExercisesProvider();
+  final mockNutritionRepo = weight.MockNutritionRepository();
+  final mockIngredientRepo = weight.MockIngredientRepository();
+  when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
-  final mockAuthProvider = MockAuthProvider();
-  when(mockAuthProvider.setServerVersion()).thenAnswer((_) async {});
-  when(mockAuthProvider.dataInit).thenReturn(true);
-
-  final mockWorkoutProvider = MockRoutinesProvider();
-  when(mockWorkoutProvider.items).thenReturn([getTestRoutine(exercises: getScreenshotExercises())]);
+  final mockBodyWeightRepository = MockBodyWeightRepository();
   when(
-    mockWorkoutProvider.currentRoutine,
-  ).thenReturn(getTestRoutine(exercises: getScreenshotExercises()));
+    mockBodyWeightRepository.watchAllDrift(),
+  ).thenAnswer((_) => Stream.value(getWeightEntries()));
 
-  when(mockWorkoutProvider.fetchSessionData()).thenAnswer(
-    (a) => Future.value([
-      WorkoutSession(
-        routineId: 1,
-        date: DateTime.now().add(const Duration(days: -1)),
-        timeStart: const TimeOfDay(hour: 17, minute: 34),
-        timeEnd: const TimeOfDay(hour: 19, minute: 3),
-        impression: 3,
-      ),
-    ]),
+  final mockMeasurementRepo = MockMeasurementRepository();
+  when(
+    mockMeasurementRepo.watchAll(),
+  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+
+  final mockUserProfileRepo = weight.MockUserProfileRepository();
+  when(
+    mockUserProfileRepo.watchDrift(),
+  ).thenAnswer((_) => Stream.value(tUserProfile1));
+
+  const loggedInAuth = AuthState(
+    status: AuthStatus.loggedIn,
+    credential: LegacyCredential('test-token'),
+    serverUrl: 'http://localhost',
+  );
+  final container = ProviderContainer.test(
+    overrides: [
+      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+      authProvider.overrideWith(() => _FakeAuthNotifier(loggedInAuth)),
+      userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
+      nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+      ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      galleryRepositoryProvider.overrideWithValue(mockGalleryRepo),
+    ],
+  );
+  container.read(routinesRiverpodProvider.notifier).state = AsyncData(
+    RoutinesState(
+      routines: [getTestRoutine(exercises: getScreenshotExercises())],
+    ),
   );
 
-  final mockNutritionProvider = weight.MockNutritionPlansProvider();
+  // Seed the nutrition notifier with the screenshot plan so the dashboard can
+  // show it without going through the server.
+  container.read(nutritionProvider.notifier).state = AsyncData(
+    NutritionState(plans: [getNutritionalPlanScreenshot()]),
+  );
 
-  when(
-    mockNutritionProvider.currentPlan,
-  ).thenAnswer((realInvocation) => getNutritionalPlanScreenshot());
-  when(mockNutritionProvider.items).thenReturn([getNutritionalPlanScreenshot()]);
-
-  final mockWeightProvider = weight.MockBodyWeightProvider();
-  when(mockWeightProvider.items).thenReturn(getScreenshotWeightEntries());
-
-  final mockMeasurementProvider = MockMeasurementProvider();
-  when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
-
-  final mockUserProvider = MockUserProvider();
-  when(mockUserProvider.profile).thenReturn(tProfile1);
-  when(mockUserProvider.dashboardWidgets).thenReturn([
-    DashboardWidget.routines,
-    DashboardWidget.weight,
-    DashboardWidget.measurements,
-    DashboardWidget.calendar,
-    DashboardWidget.nutrition,
-    DashboardWidget.trophies,
-  ]);
-
-  return riverpod.ProviderScope(
-    child: MediaQuery(
-      data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first)
-          .copyWith(
-            padding: EdgeInsets.zero,
-            viewPadding: EdgeInsets.zero,
-            viewInsets: EdgeInsets.zero,
-          ),
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<GalleryProvider>(
-            create: (context) => mockGalleryProvider,
-          ),
-          ChangeNotifierProvider<ExercisesProvider>(
-            create: (context) => mockExercisesProvider,
-          ),
-          ChangeNotifierProvider<AuthProvider>(
-            create: (context) => mockAuthProvider,
-          ),
-          ChangeNotifierProvider<UserProvider>(
-            create: (context) => mockUserProvider,
-          ),
-          ChangeNotifierProvider<RoutinesProvider>(
-            create: (context) => mockWorkoutProvider,
-          ),
-          ChangeNotifierProvider<NutritionPlansProvider>(
-            create: (context) => mockNutritionProvider,
-          ),
-          ChangeNotifierProvider<BodyWeightProvider>(
-            create: (context) => mockWeightProvider,
-          ),
-          ChangeNotifierProvider<MeasurementProvider>(
-            create: (context) => mockMeasurementProvider,
-          ),
-        ],
-        child: MaterialApp(
-          locale: locale,
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          theme: wgerLightTheme,
-          home: HomeTabsScreen(),
-        ),
+  return MediaQuery(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        home: HomeTabsScreen(),
       ),
     ),
   );

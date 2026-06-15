@@ -26,17 +26,14 @@ Routine _$RoutineFromJson(Map<String, dynamic> json) {
     start: json['start'] == null ? null : DateTime.parse(json['start'] as String),
     end: json['end'] == null ? null : DateTime.parse(json['end'] as String),
     fitInWeek: json['fit_in_week'] as bool? ?? false,
+    isTemplate: json['is_template'] as bool? ?? false,
+    isPublic: json['is_public'] as bool? ?? false,
     description: json['description'] as String?,
     days:
         (json['days'] as List<dynamic>?)
             ?.map((e) => Day.fromJson(e as Map<String, dynamic>))
             .toList() ??
         const [],
-    sessions:
-        (json['sessions'] as List<dynamic>?)
-            ?.map((e) => WorkoutSessionApi.fromJson(e as Map<String, dynamic>))
-            .toList() ??
-        [],
   );
 }
 
@@ -45,6 +42,8 @@ Map<String, dynamic> _$RoutineToJson(Routine instance) => <String, dynamic>{
   'name': instance.name,
   'description': instance.description,
   'fit_in_week': instance.fitInWeek,
+  'is_template': instance.isTemplate,
+  'is_public': instance.isPublic,
   'start': dateToYYYYMMDD(instance.start),
   'end': dateToYYYYMMDD(instance.end),
 };

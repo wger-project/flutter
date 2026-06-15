@@ -829,7 +829,6 @@
         "description": "Error message when the user tries to input a API key with forbidden characters"
     },
     "errorViewDetails": "Detalhes técnicos",
-    "errorCouldNotConnectToServerDetails": "A aplicação não conseguiu ligar-se ao servidor. Por favor, verifica a ligação à rede ou o URL do servidor e tenta novamente. Se o problema persistir, contacta o administrador do servidor.",
     "copyToClipboard": "Copia para a memória",
     "setHasProgressionWarning": "Por favor, nota que, de momento, não é possível editar todos os valores para uma série na aplicação móvel ou configurar a progressão automática. Por agora, por favor, usa a aplicação web.",
     "startDate": "Data de início",

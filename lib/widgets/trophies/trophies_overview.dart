@@ -21,7 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/trophies/user_trophy_progression.dart';
-import 'package:wger/providers/trophies.dart';
+import 'package:wger/providers/trophy_notifier.dart';
 
 class TrophiesOverview extends ConsumerWidget {
   const TrophiesOverview({super.key});

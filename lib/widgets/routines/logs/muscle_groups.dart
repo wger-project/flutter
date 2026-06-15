@@ -37,7 +37,7 @@ class MuscleGroupsCard extends StatelessWidget {
 
   List<MuscleGroup> _getMuscleGroups(BuildContext context) {
     final allMuscles = logs
-        .expand((log) => [...log.exercise.muscles, ...log.exercise.musclesSecondary])
+        .expand((log) => [...log.exerciseObj.muscles, ...log.exerciseObj.musclesSecondary])
         .toList();
     if (allMuscles.isEmpty) {
       return [];

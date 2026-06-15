@@ -883,7 +883,6 @@
     "errorInfoDescription2": "Puoi continuare a utilizzare l'app, ma alcune funzionalità potrebbero non funzionare.",
     "errorViewDetails": "Dettagli Tecnici",
     "errorCouldNotConnectToServer": "Impossibile connettersi al server",
-    "errorCouldNotConnectToServerDetails": "L'applicazione non è riuscita a connettersi al server. Controlla la tua connessione Internet o l'URL del server e riprova. Se il problema persiste, contatta l'amministratore del server.",
     "copyToClipboard": "Copia negli appunti",
     "aboutTranslationListTitle": "Tradurre l'applicazione",
     "aboutSourceListTitle": "Visualizza il codice sorgente",

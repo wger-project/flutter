@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
@@ -29,23 +28,30 @@ import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
 import '../../test_data/nutritional_plans.dart';
+import '../fake_connectivity.dart';
 import 'nutritional_plan_form_test.mocks.dart';
 
 void main() {
-  late MockNutritionPlansProvider mockNutrition;
+  // The notifier reads `networkStatusProvider` to route the search.
+  installFakeConnectivity();
+
+  late MockIngredientRepository mockIngredientRepo;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
-    mockNutrition = MockNutritionPlansProvider();
+    mockIngredientRepo = MockIngredientRepository();
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
+
     when(
-      mockNutrition.searchIngredient(
+      mockIngredientRepo.search(
         any,
+        isOnline: anyNamed('isOnline'),
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
@@ -73,26 +79,23 @@ void main() {
         ),
       ]),
     );
-
-    // Mock cacheIngredient as it might be called
-    when(mockNutrition.cacheIngredient(any)).thenAnswer((_) => Future.value());
   });
 
   Widget createWidgetUnderTest() {
     return ProviderScope(
-      child: ChangeNotifierProvider<NutritionPlansProvider>.value(
-        value: mockNutrition,
-        child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
-            body: IngredientTypeahead(
-              TextEditingController(),
-              TextEditingController(),
-              selectIngredient: (id, name, amount) {},
-              onDeselectIngredient: () {},
-              onUpdateSearchQuery: (query) {},
-            ),
+      overrides: [
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      ],
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: IngredientTypeahead(
+            TextEditingController(),
+            TextEditingController(),
+            selectIngredient: (ingredient, amount) {},
+            onDeselectIngredient: () {},
+            onUpdateSearchQuery: (query) {},
           ),
         ),
       ),
@@ -131,8 +134,9 @@ void main() {
   testWidgets('Shows only Vegan chip when ingredient is vegan', (WidgetTester tester) async {
     // ingredient1 (Water) is vegan + vegetarian
     when(
-      mockNutrition.searchIngredient(
+      mockIngredientRepo.search(
         any,
+        isOnline: anyNamed('isOnline'),
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
@@ -155,8 +159,9 @@ void main() {
   ) async {
     // milk is vegetarian but not vegan
     when(
-      mockNutrition.searchIngredient(
+      mockIngredientRepo.search(
         any,
+        isOnline: anyNamed('isOnline'),
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
@@ -177,8 +182,9 @@ void main() {
   testWidgets('Shows brand inline in search result tile', (WidgetTester tester) async {
     // ingredient3 (Broccoli cake) has brand 'Weightwatchers'
     when(
-      mockNutrition.searchIngredient(
+      mockIngredientRepo.search(
         any,
+        isOnline: anyNamed('isOnline'),
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
@@ -198,8 +204,9 @@ void main() {
   testWidgets('Shows no dietary chips when ingredient has no info', (WidgetTester tester) async {
     // ingredient2 (Burger soup) has no dietary info
     when(
-      mockNutrition.searchIngredient(
+      mockIngredientRepo.search(
         any,
+        isOnline: anyNamed('isOnline'),
         languageCode: anyNamed('languageCode'),
         searchLanguage: anyNamed('searchLanguage'),
         isVegan: anyNamed('isVegan'),
@@ -242,8 +249,9 @@ void main() {
 
     // Assert
     verify(
-      mockNutrition.searchIngredient(
+      mockIngredientRepo.search(
         'Apple',
+        isOnline: true,
         languageCode: 'en',
         searchLanguage: SearchLanguage.current,
         isVegan: true,
@@ -278,7 +286,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.tune));
     await tester.pumpAndSettle();
 
-    // Move the slider off the Off position — index 1 is the first grade, A
+    // Move the slider off the Off position, index 1 is the first grade, A
     final sliderFinder = find.byType(Slider);
     final Slider slider = tester.widget<Slider>(sliderFinder);
     slider.onChanged!(1.0);
@@ -291,10 +299,11 @@ void main() {
     await tester.enterText(find.byType(TextFormField), 'Apple');
     await tester.pump(const Duration(milliseconds: 600));
 
-    // Assert — index 1 maps to NutriScore.a
+    // Assert, index 1 maps to NutriScore.a
     verify(
-      mockNutrition.searchIngredient(
+      mockIngredientRepo.search(
         'Apple',
+        isOnline: true,
         languageCode: 'en',
         searchLanguage: SearchLanguage.current,
         isVegan: false,
@@ -313,8 +322,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 600));
 
     verify(
-      mockNutrition.searchIngredient(
+      mockIngredientRepo.search(
         'Apple',
+        isOnline: true,
         languageCode: 'en',
         searchLanguage: SearchLanguage.current,
         isVegan: false,

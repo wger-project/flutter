@@ -813,7 +813,6 @@
     "isRestDayHelp": "Veuillez noter que toutes les séries et tous les exercices seront supprimés lorsque vous marquerez un jour comme jour de repos.",
     "needsLogsToAdvance": "Nécessite des journaux pour avancer",
     "errorCouldNotConnectToServer": "Impossible de se connecter au serveur",
-    "errorCouldNotConnectToServerDetails": "L'application n'a pas pu se connecter au serveur. Veuillez vérifier votre connexion internet ou l'URL du serveur et réessayer. Si le problème persiste, contactez l'administrateur du serveur.",
     "copyToClipboard": "Copier dans le presse-papiers",
     "max": "Max",
     "aboutWhySupportTitle": "Open Source et gratuit ❤️",

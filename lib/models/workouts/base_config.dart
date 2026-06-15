@@ -23,6 +23,11 @@ part 'base_config.g.dart';
 
 @JsonSerializable()
 class BaseConfig {
+  // Value caps mirroring the backend (server manager/models/*config.py)
+  static const MAX_VALUE = 3000; // weight / repetitions
+  static const MAX_REST = 1800; // rest, seconds
+  static const MAX_REST_TARGET = 600; // max-rest, seconds
+
   @JsonKey(required: true, includeToJson: false)
   late int? id;
 

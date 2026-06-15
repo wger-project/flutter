@@ -17,15 +17,15 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:provider/provider.dart' hide Consumer;
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/providers/exercise_filters_riverpod.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercises_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 import 'package:wger/widgets/exercises/exercise_filter_dialog.dart';
 import 'package:wger/widgets/exercises/images.dart';
@@ -47,6 +47,7 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
   @override
   Widget build(BuildContext context) {
     final exerciseFilters = ref.watch(exerciseFiltersSyncProvider);
+    final languageCode = Localizations.localeOf(context).languageCode;
 
     return Column(
       // mainAxisSize: MainAxisSize.min,
@@ -77,39 +78,40 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
             );
           },
           suggestionsCallback: (pattern) {
-            if (pattern == '') {
+            if (pattern.isEmpty) {
               return null;
             }
-            return context.read<ExercisesProvider>().searchExerciseWithSearchMode(
-              pattern,
-              languageCode: Localizations.localeOf(context).languageCode,
-              searchLanguage: exerciseFilters.searchLanguage,
-              searchMode: exerciseFilters.searchMode,
-              categories: exerciseFilters.selectedCategories,
-            );
+            return ref
+                .read(exercisesProvider.notifier)
+                .searchExerciseWithSearchMode(
+                  pattern,
+                  languageCode: languageCode,
+                  searchLanguage: exerciseFilters.searchLanguage,
+                  searchMode: exerciseFilters.searchMode,
+                  categories: exerciseFilters.selectedCategories,
+                );
           },
           itemBuilder:
               (
                 BuildContext context,
-                Exercise exerciseSuggestion,
+                Exercise exercise,
               ) => ListTile(
-                key: Key('exercise-${exerciseSuggestion.id}'),
+                key: Key('exercise-${exercise.id}'),
                 leading: SizedBox(
                   width: 45,
                   child: ExerciseImageWidget(
-                    image: exerciseSuggestion.getMainImage,
+                    image: exercise.getMainImage,
                   ),
                 ),
                 title: Text(
-                  exerciseSuggestion
-                      .getTranslation(Localizations.localeOf(context).languageCode)
-                      .name,
+                  exercise.getTranslation(languageCode).name,
                 ),
                 subtitle: Text(
-                  '${exerciseSuggestion.category!.name} / ${exerciseSuggestion.equipment.map((e) => e.name).join(', ')}',
+                  '${exercise.category.name} / ${exercise.equipment.map((e) => e.name).join(', ')}',
                 ),
               ),
           emptyBuilder: (context) {
+            final isOnline = ref.watch(networkStatusProvider);
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -118,10 +120,23 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                 ),
                 ListTile(
                   title: OutlinedButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
-                    },
-                    child: Text(AppLocalizations.of(context).contributeExercise),
+                    onPressed: isOnline
+                        ? () => Navigator.of(context).pushNamed(AddExerciseScreen.routeName)
+                        : null,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (!isOnline) ...[
+                          Icon(
+                            Icons.cloud_off,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                          const SizedBox(width: 6),
+                        ],
+                        Text(AppLocalizations.of(context).contributeExercise),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -143,14 +158,14 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
     );
   }
 
-  /// The filter icon button — shows an active-filter badge and opens
+  /// The filter icon button, shows an active-filter badge and opens
   /// [ExerciseFilterDialog] on tap.
   Widget _filterButton(BuildContext context) {
     final filters = ref.watch(exerciseFiltersSyncProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
     // Auto-correct: in an English locale "current + English" collapses to
-    // "current" — fix it once if a stored preference landed on the
+    // "current", fix it once if a stored preference landed on the
     // non-locale-aware default.
     if (languageCode == LANGUAGE_SHORT_ENGLISH &&
         filters.searchLanguage == SearchLanguage.currentAndEnglish) {

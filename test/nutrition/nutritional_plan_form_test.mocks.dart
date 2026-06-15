@@ -3,19 +3,18 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i9;
-import 'dart:ui' as _i12;
+import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/database/ingredients/ingredients_database.dart' as _i3;
 import 'package:wger/models/core/search_options.dart' as _i11;
-import 'package:wger/models/nutrition/ingredient.dart' as _i7;
-import 'package:wger/models/nutrition/ingredient_weight_unit.dart' as _i10;
+import 'package:wger/models/nutrition/ingredient.dart' as _i9;
+import 'package:wger/models/nutrition/ingredient_filters.dart' as _i10;
+import 'package:wger/models/nutrition/log.dart' as _i7;
 import 'package:wger/models/nutrition/meal.dart' as _i5;
 import 'package:wger/models/nutrition/meal_item.dart' as _i6;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i4;
-import 'package:wger/providers/base_provider.dart' as _i2;
-import 'package:wger/providers/nutrition.dart' as _i8;
+import 'package:wger/providers/ingredient_repository.dart' as _i8;
+import 'package:wger/providers/nutrition_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -32,327 +31,209 @@ import 'package:wger/providers/nutrition.dart' as _i8;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
-  _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeIngredientDatabase_1 extends _i1.SmartFake implements _i3.IngredientDatabase {
-  _FakeIngredientDatabase_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeNutritionalPlan_2 extends _i1.SmartFake implements _i4.NutritionalPlan {
-  _FakeNutritionalPlan_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeMeal_3 extends _i1.SmartFake implements _i5.Meal {
-  _FakeMeal_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeMealItem_4 extends _i1.SmartFake implements _i6.MealItem {
-  _FakeMealItem_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeIngredient_5 extends _i1.SmartFake implements _i7.Ingredient {
-  _FakeIngredient_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-/// A class which mocks [NutritionPlansProvider].
+/// A class which mocks [NutritionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansProvider {
-  MockNutritionPlansProvider() {
+class MockNutritionRepository extends _i1.Mock implements _i2.NutritionRepository {
+  MockNutritionRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.WgerBaseProvider get baseProvider =>
+  _i3.Stream<List<_i4.NutritionalPlan>> watchAllDrift() =>
       (super.noSuchMethod(
-            Invocation.getter(#baseProvider),
-            returnValue: _FakeWgerBaseProvider_0(
-              this,
-              Invocation.getter(#baseProvider),
-            ),
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i3.Stream<List<_i4.NutritionalPlan>>.empty(),
           )
-          as _i2.WgerBaseProvider);
+          as _i3.Stream<List<_i4.NutritionalPlan>>);
 
   @override
-  _i3.IngredientDatabase get database =>
+  _i3.Future<void> addPlanLocalDrift(_i4.NutritionalPlan? plan) =>
       (super.noSuchMethod(
-            Invocation.getter(#database),
-            returnValue: _FakeIngredientDatabase_1(
-              this,
-              Invocation.getter(#database),
-            ),
+            Invocation.method(#addPlanLocalDrift, [plan]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i3.IngredientDatabase);
+          as _i3.Future<void>);
 
   @override
-  List<_i7.Ingredient> get ingredients =>
+  _i3.Future<void> editLocalDrift(_i4.NutritionalPlan? plan) =>
       (super.noSuchMethod(
-            Invocation.getter(#ingredients),
-            returnValue: <_i7.Ingredient>[],
+            Invocation.method(#editLocalDrift, [plan]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as List<_i7.Ingredient>);
+          as _i3.Future<void>);
 
   @override
-  List<_i4.NutritionalPlan> get items =>
+  _i3.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
-            Invocation.getter(#items),
-            returnValue: <_i4.NutritionalPlan>[],
+            Invocation.method(#deleteLocalDrift, [id]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as List<_i4.NutritionalPlan>);
+          as _i3.Future<void>);
 
   @override
-  set database(_i3.IngredientDatabase? value) => super.noSuchMethod(
-    Invocation.setter(#database, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set ingredients(List<_i7.Ingredient>? value) => super.noSuchMethod(
-    Invocation.setter(#ingredients, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
-
-  @override
-  void clear() => super.noSuchMethod(
-    Invocation.method(#clear, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i4.NutritionalPlan findById(int? id) =>
+  _i3.Stream<List<_i5.Meal>> watchAllMealsHydrated() =>
       (super.noSuchMethod(
-            Invocation.method(#findById, [id]),
-            returnValue: _FakeNutritionalPlan_2(
-              this,
-              Invocation.method(#findById, [id]),
-            ),
+            Invocation.method(#watchAllMealsHydrated, []),
+            returnValue: _i3.Stream<List<_i5.Meal>>.empty(),
           )
-          as _i4.NutritionalPlan);
+          as _i3.Stream<List<_i5.Meal>>);
 
   @override
-  _i5.Meal? findMealById(int? id) =>
-      (super.noSuchMethod(Invocation.method(#findMealById, [id])) as _i5.Meal?);
-
-  @override
-  _i9.Future<void> fetchAndSetAllPlansSparse() =>
+  _i3.Future<void> addMealLocalDrift(_i5.Meal? meal) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchAndSetAllPlansSparse, []),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            Invocation.method(#addMealLocalDrift, [meal]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i9.Future<void>);
+          as _i3.Future<void>);
 
   @override
-  _i9.Future<void> fetchAndSetAllPlansFull() =>
+  _i3.Future<void> editMealLocalDrift(_i5.Meal? meal) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchAndSetAllPlansFull, []),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            Invocation.method(#editMealLocalDrift, [meal]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i9.Future<void>);
+          as _i3.Future<void>);
 
   @override
-  _i9.Future<_i4.NutritionalPlan> fetchAndSetPlanSparse(int? planId) =>
+  _i3.Future<void> deleteMealLocalDrift(String? id) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchAndSetPlanSparse, [planId]),
-            returnValue: _i9.Future<_i4.NutritionalPlan>.value(
-              _FakeNutritionalPlan_2(
-                this,
-                Invocation.method(#fetchAndSetPlanSparse, [planId]),
-              ),
-            ),
+            Invocation.method(#deleteMealLocalDrift, [id]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i9.Future<_i4.NutritionalPlan>);
+          as _i3.Future<void>);
 
   @override
-  _i9.Future<_i4.NutritionalPlan> fetchAndSetPlanFull(int? planId) =>
+  _i3.Future<void> addMealItemLocalDrift(_i6.MealItem? item) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchAndSetPlanFull, [planId]),
-            returnValue: _i9.Future<_i4.NutritionalPlan>.value(
-              _FakeNutritionalPlan_2(
-                this,
-                Invocation.method(#fetchAndSetPlanFull, [planId]),
-              ),
-            ),
+            Invocation.method(#addMealItemLocalDrift, [item]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i9.Future<_i4.NutritionalPlan>);
+          as _i3.Future<void>);
 
   @override
-  _i9.Future<_i4.NutritionalPlan> addPlan(_i4.NutritionalPlan? planData) =>
+  _i3.Future<void> editMealItemLocalDrift(_i6.MealItem? item) =>
       (super.noSuchMethod(
-            Invocation.method(#addPlan, [planData]),
-            returnValue: _i9.Future<_i4.NutritionalPlan>.value(
-              _FakeNutritionalPlan_2(
-                this,
-                Invocation.method(#addPlan, [planData]),
-              ),
-            ),
+            Invocation.method(#editMealItemLocalDrift, [item]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i9.Future<_i4.NutritionalPlan>);
+          as _i3.Future<void>);
 
   @override
-  _i9.Future<void> editPlan(_i4.NutritionalPlan? plan) =>
+  _i3.Future<void> deleteMealItemLocalDrift(String? id) =>
       (super.noSuchMethod(
-            Invocation.method(#editPlan, [plan]),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            Invocation.method(#deleteMealItemLocalDrift, [id]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i9.Future<void>);
+          as _i3.Future<void>);
 
   @override
-  _i9.Future<void> deletePlan(int? id) =>
+  _i3.Stream<List<_i7.LogItem>> watchAllLogsHydrated() =>
       (super.noSuchMethod(
-            Invocation.method(#deletePlan, [id]),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            Invocation.method(#watchAllLogsHydrated, []),
+            returnValue: _i3.Stream<List<_i7.LogItem>>.empty(),
           )
-          as _i9.Future<void>);
+          as _i3.Stream<List<_i7.LogItem>>);
 
   @override
-  _i9.Future<_i5.Meal> addMeal(_i5.Meal? meal, int? planId) =>
+  _i3.Future<void> addLogLocalDrift(_i7.LogItem? log) =>
       (super.noSuchMethod(
-            Invocation.method(#addMeal, [meal, planId]),
-            returnValue: _i9.Future<_i5.Meal>.value(
-              _FakeMeal_3(this, Invocation.method(#addMeal, [meal, planId])),
-            ),
+            Invocation.method(#addLogLocalDrift, [log]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i9.Future<_i5.Meal>);
+          as _i3.Future<void>);
 
   @override
-  _i9.Future<_i5.Meal> editMeal(_i5.Meal? meal) =>
+  _i3.Future<void> deleteLogLocalDrift(String? id) =>
       (super.noSuchMethod(
-            Invocation.method(#editMeal, [meal]),
-            returnValue: _i9.Future<_i5.Meal>.value(
-              _FakeMeal_3(this, Invocation.method(#editMeal, [meal])),
-            ),
+            Invocation.method(#deleteLogLocalDrift, [id]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i9.Future<_i5.Meal>);
+          as _i3.Future<void>);
+}
+
+/// A class which mocks [IngredientRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockIngredientRepository extends _i1.Mock implements _i8.IngredientRepository {
+  MockIngredientRepository() {
+    _i1.throwOnMissingStub(this);
+  }
 
   @override
-  _i9.Future<void> deleteMeal(_i5.Meal? meal) =>
+  _i3.Stream<_i9.Ingredient?> watchById(int? id) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteMeal, [meal]),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            Invocation.method(#watchById, [id]),
+            returnValue: _i3.Stream<_i9.Ingredient?>.empty(),
           )
-          as _i9.Future<void>);
+          as _i3.Stream<_i9.Ingredient?>);
 
   @override
-  _i9.Future<_i6.MealItem> addMealItem(
-    _i6.MealItem? mealItem,
-    _i5.Meal? meal,
-  ) =>
+  _i3.Stream<List<_i9.Ingredient>> watchAllDrift({
+    _i10.IngredientFilters? filters = const _i10.IngredientFilters(),
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#addMealItem, [mealItem, meal]),
-            returnValue: _i9.Future<_i6.MealItem>.value(
-              _FakeMealItem_4(
-                this,
-                Invocation.method(#addMealItem, [mealItem, meal]),
-              ),
-            ),
+            Invocation.method(#watchAllDrift, [], {#filters: filters}),
+            returnValue: _i3.Stream<List<_i9.Ingredient>>.empty(),
           )
-          as _i9.Future<_i6.MealItem>);
+          as _i3.Stream<List<_i9.Ingredient>>);
 
   @override
-  _i9.Future<void> deleteMealItem(_i6.MealItem? mealItem) =>
+  _i3.Future<_i9.Ingredient?> getById(int? id) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteMealItem, [mealItem]),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            Invocation.method(#getById, [id]),
+            returnValue: _i3.Future<_i9.Ingredient?>.value(),
           )
-          as _i9.Future<void>);
+          as _i3.Future<_i9.Ingredient?>);
 
   @override
-  _i9.Future<void> clearIngredientCache() =>
-      (super.noSuchMethod(
-            Invocation.method(#clearIngredientCache, []),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
-          )
-          as _i9.Future<void>);
-
-  @override
-  _i9.Future<void> cacheIngredient(
-    _i7.Ingredient? ingredient, {
-    _i3.IngredientDatabase? database,
+  _i3.Future<List<_i9.Ingredient>> searchIngredientLocal(
+    String? term, {
+    bool? isVegan = false,
+    bool? isVegetarian = false,
+    _i9.NutriScore? nutriscoreMax,
+    int? limit = 100,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
-              #cacheIngredient,
-              [ingredient],
-              {#database: database},
+              #searchIngredientLocal,
+              [term],
+              {
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
+                #limit: limit,
+              },
             ),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
-          )
-          as _i9.Future<void>);
-
-  @override
-  _i9.Future<_i7.Ingredient> fetchIngredient(
-    int? ingredientId, {
-    _i3.IngredientDatabase? database,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #fetchIngredient,
-              [ingredientId],
-              {#database: database},
-            ),
-            returnValue: _i9.Future<_i7.Ingredient>.value(
-              _FakeIngredient_5(
-                this,
-                Invocation.method(
-                  #fetchIngredient,
-                  [ingredientId],
-                  {#database: database},
-                ),
-              ),
+            returnValue: _i3.Future<List<_i9.Ingredient>>.value(
+              <_i9.Ingredient>[],
             ),
           )
-          as _i9.Future<_i7.Ingredient>);
+          as _i3.Future<List<_i9.Ingredient>>);
 
   @override
-  _i9.Future<List<_i10.IngredientWeightUnit>> fetchWeightUnits(
-    int? ingredientId,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchWeightUnits, [ingredientId]),
-            returnValue: _i9.Future<List<_i10.IngredientWeightUnit>>.value(
-              <_i10.IngredientWeightUnit>[],
-            ),
-          )
-          as _i9.Future<List<_i10.IngredientWeightUnit>>);
-
-  @override
-  _i9.Future<void> fetchIngredientsFromCache() =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchIngredientsFromCache, []),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
-          )
-          as _i9.Future<void>);
-
-  @override
-  _i9.Future<List<_i7.Ingredient>> searchIngredient(
+  _i3.Future<List<_i9.Ingredient>> searchIngredientServer(
     String? name, {
     String? languageCode = 'en',
     _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
-    _i7.NutriScore? nutriscoreMax,
+    _i9.NutriScore? nutriscoreMax,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
-              #searchIngredient,
+              #searchIngredientServer,
               [name],
               {
                 #languageCode: languageCode,
@@ -362,85 +243,46 @@ class MockNutritionPlansProvider extends _i1.Mock implements _i8.NutritionPlansP
                 #nutriscoreMax: nutriscoreMax,
               },
             ),
-            returnValue: _i9.Future<List<_i7.Ingredient>>.value(
-              <_i7.Ingredient>[],
+            returnValue: _i3.Future<List<_i9.Ingredient>>.value(
+              <_i9.Ingredient>[],
             ),
           )
-          as _i9.Future<List<_i7.Ingredient>>);
+          as _i3.Future<List<_i9.Ingredient>>);
 
   @override
-  _i9.Future<_i7.Ingredient?> searchIngredientWithBarcode(String? barcode) =>
+  _i3.Future<List<_i9.Ingredient>> search(
+    String? name, {
+    required bool? isOnline,
+    String? languageCode = 'en',
+    _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
+    _i9.NutriScore? nutriscoreMax,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#searchIngredientWithBarcode, [barcode]),
-            returnValue: _i9.Future<_i7.Ingredient?>.value(),
+            Invocation.method(
+              #search,
+              [name],
+              {
+                #isOnline: isOnline,
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
+              },
+            ),
+            returnValue: _i3.Future<List<_i9.Ingredient>>.value(
+              <_i9.Ingredient>[],
+            ),
           )
-          as _i9.Future<_i7.Ingredient?>);
+          as _i3.Future<List<_i9.Ingredient>>);
 
   @override
-  _i9.Future<void> logMealToDiary(_i5.Meal? meal, DateTime? mealDateTime) =>
+  _i3.Future<_i9.Ingredient?> searchIngredientByBarcode(String? barcode) =>
       (super.noSuchMethod(
-            Invocation.method(#logMealToDiary, [meal, mealDateTime]),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            Invocation.method(#searchIngredientByBarcode, [barcode]),
+            returnValue: _i3.Future<_i9.Ingredient?>.value(),
           )
-          as _i9.Future<void>);
-
-  @override
-  _i9.Future<void> logIngredientToDiary(
-    _i6.MealItem? mealItem,
-    int? planId, [
-    DateTime? dateTime,
-  ]) =>
-      (super.noSuchMethod(
-            Invocation.method(#logIngredientToDiary, [
-              mealItem,
-              planId,
-              dateTime,
-            ]),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
-          )
-          as _i9.Future<void>);
-
-  @override
-  _i9.Future<void> deleteLog(int? logId, int? planId) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteLog, [logId, planId]),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
-          )
-          as _i9.Future<void>);
-
-  @override
-  _i9.Future<void> fetchAndSetLogs(_i4.NutritionalPlan? plan) =>
-      (super.noSuchMethod(
-            Invocation.method(#fetchAndSetLogs, [plan]),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
-          )
-          as _i9.Future<void>);
-
-  @override
-  void addListener(_i12.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#addListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void removeListener(_i12.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#removeListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-    Invocation.method(#notifyListeners, []),
-    returnValueForMissingStub: null,
-  );
+          as _i3.Future<_i9.Ingredient?>);
 }

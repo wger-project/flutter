@@ -351,7 +351,6 @@
     "errorViewDetails": "Technische details",
     "applicationLogs": "Applicatie logboek",
     "errorCouldNotConnectToServer": "Kon niet verbinden met de server",
-    "errorCouldNotConnectToServerDetails": "De applicatie kon geen verbinding maken met de server. Controleer uw internetverbinding of de server-URL en probeer het opnieuw. Als het probleem aanhoudt, neem dan contact op met de serverbeheerder.",
     "copyToClipboard": "Kopieer naar klembord",
     "weight": "Gewicht",
     "@weight": {

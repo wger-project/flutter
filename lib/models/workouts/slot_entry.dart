@@ -101,48 +101,48 @@ class SlotEntry {
   late int? repetitionUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late RepetitionUnit? repetitionUnitObj;
+  RepetitionUnit? repetitionUnitObj;
 
   @JsonKey(required: true, name: 'repetition_rounding', fromJson: stringToNumNull)
   late num? repetitionRounding;
 
-  @JsonKey(required: false, name: 'repetitions_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'repetitions_configs', includeToJson: false)
   late List<BaseConfig> repetitionsConfigs = [];
 
-  @JsonKey(required: false, name: 'max_repetitions_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'max_repetitions_configs', includeToJson: false)
   late List<BaseConfig> maxRepetitionsConfigs = [];
 
   @JsonKey(required: true, name: 'weight_unit')
   late int? weightUnitId;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late WeightUnit? weightUnitObj;
+  WeightUnit? weightUnitObj;
 
   @JsonKey(required: true, name: 'weight_rounding', fromJson: stringToNumNull)
   late num? weightRounding;
 
-  @JsonKey(required: false, name: 'weight_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'weight_configs', includeToJson: false)
   late List<BaseConfig> weightConfigs = [];
 
-  @JsonKey(required: false, name: 'max_weight_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'max_weight_configs', includeToJson: false)
   late List<BaseConfig> maxWeightConfigs = [];
 
-  @JsonKey(required: false, name: 'set_nr_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'set_nr_configs', includeToJson: false)
   late List<BaseConfig> nrOfSetsConfigs = [];
 
-  @JsonKey(required: false, name: 'max_set_nr_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'max_set_nr_configs', includeToJson: false)
   late List<BaseConfig> maxNrOfSetsConfigs = [];
 
-  @JsonKey(required: false, name: 'rir_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'rir_configs', includeToJson: false)
   late List<BaseConfig> rirConfigs = [];
 
-  @JsonKey(required: false, name: 'max_rir_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'max_rir_configs', includeToJson: false)
   late List<BaseConfig> maxRirConfigs = [];
 
-  @JsonKey(required: false, name: 'rest_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'rest_configs', includeToJson: false)
   late List<BaseConfig> restTimeConfigs = [];
 
-  @JsonKey(required: false, name: 'max_rest_configs', includeToJson: false, defaultValue: [])
+  @JsonKey(required: false, name: 'max_rest_configs', includeToJson: false)
   late List<BaseConfig> maxRestTimeConfigs = [];
 
   @JsonKey(required: true)
@@ -202,7 +202,7 @@ class SlotEntry {
     config = null;
     this.type = type ?? SlotEntryType.normal;
     exerciseObj = exercise;
-    exerciseId = exercise.id!;
+    exerciseId = exercise.id;
     this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG;
 
     this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;
@@ -258,7 +258,7 @@ class SlotEntry {
 
   set exercise(Exercise exercise) {
     exerciseObj = exercise;
-    exerciseId = exercise.id!;
+    exerciseId = exercise.id;
   }
 
   set weightUnit(WeightUnit weightUnit) {

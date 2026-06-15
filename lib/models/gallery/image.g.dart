@@ -6,19 +6,19 @@ part of 'image.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Image _$ImageFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id', 'date', 'image']);
-  return Image(
+GalleryImage _$GalleryImageFromJson(Map<String, dynamic> json) {
+  $checkKeys(json, requiredKeys: const ['id', 'date']);
+  return GalleryImage(
     id: (json['id'] as num?)?.toInt(),
     date: utcIso8601ToLocalDate(json['date'] as String),
-    url: json['image'] as String?,
+    imagePath: json['image'] as String?,
     description: json['description'] as String? ?? '',
   );
 }
 
-Map<String, dynamic> _$ImageToJson(Image instance) => <String, dynamic>{
+Map<String, dynamic> _$GalleryImageToJson(GalleryImage instance) => <String, dynamic>{
   'id': instance.id,
   'date': dateToUtcIso8601(instance.date),
-  'image': instance.url,
+  'image': instance.imagePath,
   'description': instance.description,
 };

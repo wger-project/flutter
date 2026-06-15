@@ -22,18 +22,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
+import 'package:wger/providers/exercise_repository.dart';
+import 'package:wger/providers/exercises_notifier.dart';
+import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
-import 'package:wger/widgets/routines/forms/repetitions.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
-import 'package:wger/widgets/routines/forms/weight.dart';
 import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
@@ -43,54 +49,78 @@ import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 import '../../../test_data/exercises.dart';
 import '../../../test_data/routines.dart';
+import '../../fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
-@GenerateMocks([WgerBaseProvider, ExercisesProvider, RoutinesProvider])
+@GenerateMocks([WorkoutSessionRepository, ExerciseRepository, RoutinesRepository])
 void main() {
+  installFakeConnectivity();
+
   final key = GlobalKey<NavigatorState>();
 
-  final mockRoutinesProvider = MockRoutinesProvider();
-  final mockExerciseProvider = MockExercisesProvider();
   final testRoutine = getTestRoutine();
   final testExercises = getTestExercises();
 
-  setUp(() {
-    when(mockRoutinesProvider.findById(any)).thenReturn(testRoutine);
-    when(mockRoutinesProvider.items).thenReturn([testRoutine]);
-    when(mockRoutinesProvider.repetitionUnits).thenReturn(testRepetitionUnits);
-    when(mockRoutinesProvider.findRepetitionUnitById(1)).thenReturn(testRepetitionUnit1);
-    when(mockRoutinesProvider.weightUnits).thenReturn(testWeightUnits);
-    when(mockRoutinesProvider.findWeightUnitById(1)).thenReturn(testWeightUnit1);
-    when(
-      mockRoutinesProvider.fetchAndSetRoutineFull(any),
-    ).thenAnswer((_) => Future.value(testRoutine));
+  final mockSessionRepo = MockWorkoutSessionRepository();
+  final mockExerciseRepo = MockExerciseRepository();
+  final mockRoutinesRepo = MockRoutinesRepository();
 
+  setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    when(mockSessionRepo.watchAllDrift()).thenAnswer(
+      (_) => Stream<List<WorkoutSession>>.multi((controller) {
+        controller.add(testRoutine.sessions);
+      }),
+    );
+    when(
+      mockExerciseRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(ExerciseState(testExercises)));
+
+    // Drift the test routine in via the routines repository, the real
+    // [RoutinesRiverpod] picks it up and exposes it through state.
+    when(
+      mockRoutinesRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value([testRoutine]));
+    // [fetchAndSetRoutineFull] (called by [GymMode._loadGymState] before the
+    // page tree is built) goes back to the server in production; here we
+    // just hand back the same test routine.
+    when(
+      mockRoutinesRepo.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) async => testRoutine);
   });
 
-  Widget renderGymMode({locale = 'en'}) {
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
-      child: ChangeNotifierProvider<ExercisesProvider>(
-        create: (context) => mockExerciseProvider,
-        child: riverpod.ProviderScope(
-          child: MaterialApp(
-            locale: Locale(locale),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            navigatorKey: key,
-            home: TextButton(
-              onPressed: () => key.currentState!.push(
-                MaterialPageRoute<void>(
-                  settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
-                  builder: (_) => const GymModeScreen(),
-                ),
-              ),
-              child: const SizedBox(),
-            ),
-            routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
-          ),
+  Widget renderGymMode({locale = 'en', bool isOnline = true}) {
+    return riverpod.ProviderScope(
+      overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
+        routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
+        exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
+        workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
+        // The repetition + weight unit catalogues are tiny direct-Drift
+        // stream providers, overriding them inline is the established
+        // pattern (see also [exerciseCategoriesProvider] etc.).
+        routineRepetitionUnitProvider.overrideWith(
+          (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),
         ),
+        routineWeightUnitProvider.overrideWith(
+          (ref) => Stream<List<WeightUnit>>.value(testWeightUnits),
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: const RouteSettings(arguments: GymModeArguments(1, 1, 1)),
+              builder: (_) => const GymModeScreen(),
+            ),
+          ),
+          child: const SizedBox(),
+        ),
+        routes: {RoutineScreen.routeName: (ctx) => const RoutineScreen()},
       ),
     );
   }
@@ -98,15 +128,6 @@ void main() {
   testWidgets(
     'Test the widgets on the gym mode screen',
     (WidgetTester tester) async {
-      when(mockExerciseProvider.findExerciseById(1)).thenReturn(testExercises[0]);
-      when(mockExerciseProvider.findExerciseById(6)).thenReturn(testExercises[5]);
-      when(
-        mockExerciseProvider.findExercisesByVariationGroup(
-          null,
-          exerciseIdToExclude: anyNamed('exerciseIdToExclude'),
-        ),
-      ).thenReturn([]);
-
       await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
         await tester.pumpWidget(renderGymMode());
         await tester.pumpAndSettle();
@@ -155,20 +176,23 @@ void main() {
         expect(find.byIcon(Icons.chevron_left), findsOneWidget);
         expect(find.byIcon(Icons.chevron_right), findsOneWidget);
 
-        // Form shows only weight and reps
-        expect(find.byType(SwitchListTile), findsOneWidget);
+        // The form shows reps and weight, each with its own unit
+        // picker (PopupMenuButton<int>), plus the RiR slider, all at
+        // once. Scope the popup-menu lookup to the LogPage so other
+        // popup menus elsewhere in the app shell don't interfere.
         expect(find.byType(TextFormField), findsNWidgets(2));
-        expect(find.byType(RepetitionUnitInputWidget), findsNothing);
-        expect(find.byType(WeightUnitInputWidget), findsNothing);
-        expect(find.byType(RiRInputWidget), findsNothing);
-
-        // Form shows unit and rir after tapping the toggle button
-        await tester.tap(find.byType(SwitchListTile));
-        await tester.pump();
-        expect(find.byType(RepetitionUnitInputWidget), findsOneWidget);
-        expect(find.byType(WeightUnitInputWidget), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byType(LogPage),
+            matching: find.byType(PopupMenuButton<int>),
+          ),
+          findsNWidgets(2),
+        );
         expect(find.byType(RiRInputWidget), findsOneWidget);
-        await tester.drag(find.byType(LogPage), const Offset(-500.0, 0.0));
+        // Advance to the next page via the chevron, the RiR slider
+        // would otherwise eat a horizontal-drag gesture started over
+        // its track.
+        await tester.tap(find.byIcon(Icons.chevron_right));
         await tester.pumpAndSettle();
 
         //
@@ -283,7 +307,7 @@ void main() {
         expect(find.byIcon(Icons.sentiment_neutral), findsOneWidget);
         expect(find.byIcon(Icons.sentiment_very_satisfied), findsOneWidget);
         expect(
-          find.text('14:33'),
+          find.text('2:33 PM'),
           findsNWidgets(2),
           reason: 'start and end time are the same',
         );
@@ -305,6 +329,66 @@ void main() {
       });
     },
     tags: ['golden'],
+    semanticsEnabled: false,
+  );
+
+  testWidgets('loads offline from the cached routine', (WidgetTester tester) async {
+    // Offline, gym mode uses the already-downloaded (hydrated) routine.
+    when(mockRoutinesRepo.watchAllDrift()).thenAnswer(
+      (_) => Stream.value([testRoutine]),
+    );
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+      await tester.pumpWidget(renderGymMode(isOnline: false));
+      await tester.pumpAndSettle();
+
+      // Gym mode is always reached from a screen that has already populated
+      // data, build and settle it here too. A keepAlive stream notifier needs
+      // an explicit listener to emit its first value, a bare read leaves it
+      // stuck in loading.
+      final container = riverpod.ProviderScope.containerOf(
+        tester.element(find.byType(TextButton)),
+      );
+      container.listen(routinesRiverpodProvider, (_, _) {});
+      await tester.pumpAndSettle();
+
+      // The mock is shared across tests; only the gym-mode open below must
+      // stay clear of server calls.
+      clearInteractions(mockRoutinesRepo);
+
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(StreamErrorIndicator), findsNothing);
+      expect(find.byType(StartPage), findsOneWidget);
+      verifyNever(mockRoutinesRepo.fetchAndSetRoutineFullServer(any));
+    });
+  });
+
+  testWidgets(
+    'fresh session with exercise pages off: first swipe to a log page does not crash',
+    (WidgetTester tester) async {
+      // Test having a null page, which can happen on the first swipe of a fresh session
+      await PreferenceHelper.asyncPref.setBool(PREFS_SHOW_EXERCISES, false);
+
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(renderGymMode());
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(StartPage), findsOneWidget);
+        expect(find.byType(ExerciseOverview), findsNothing);
+
+        // First swipe off the start page lands directly on a log page.
+        await tester.drag(find.byType(StartPage), const Offset(-500.0, 0.0));
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.byType(LogPage), findsOneWidget);
+        expect(find.text('Bench press'), findsOneWidget);
+      });
+    },
     semanticsEnabled: false,
   );
 }

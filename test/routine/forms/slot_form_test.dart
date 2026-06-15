@@ -17,20 +17,22 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/widgets/routines/forms/slot.dart';
 
 import '../../../test_data/routines.dart';
+import '../helpers/routine_form_test_overrides.dart';
 import 'slot_form_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesRepository])
 void main() {
   group('computeSlotGroups', () {
     final routine = getTestRoutine();
@@ -63,7 +65,7 @@ void main() {
     });
 
     test('single slot is not grouped', () {
-      final slots = [makeSlot(1, 1, makeEntry(1, benchPress.id!, exerciseObj: benchPress))];
+      final slots = [makeSlot(1, 1, makeEntry(1, benchPress.id, exerciseObj: benchPress))];
       final groups = computeSlotGroups(slots, 'en');
 
       expect(groups[0]!.groupSize, 1);
@@ -73,8 +75,8 @@ void main() {
 
     test('two consecutive same-exercise slots form a group', () {
       final slots = [
-        makeSlot(1, 1, makeEntry(1, benchPress.id!, exerciseObj: benchPress)),
-        makeSlot(2, 2, makeEntry(2, benchPress.id!, exerciseObj: benchPress)),
+        makeSlot(1, 1, makeEntry(1, benchPress.id, exerciseObj: benchPress)),
+        makeSlot(2, 2, makeEntry(2, benchPress.id, exerciseObj: benchPress)),
       ];
       final groups = computeSlotGroups(slots, 'en');
 
@@ -88,8 +90,8 @@ void main() {
 
     test('different exercises are not grouped', () {
       final slots = [
-        makeSlot(1, 1, makeEntry(1, benchPress.id!, exerciseObj: benchPress)),
-        makeSlot(2, 2, makeEntry(2, sideRaises.id!, exerciseObj: sideRaises)),
+        makeSlot(1, 1, makeEntry(1, benchPress.id, exerciseObj: benchPress)),
+        makeSlot(2, 2, makeEntry(2, sideRaises.id, exerciseObj: sideRaises)),
       ];
       final groups = computeSlotGroups(slots, 'en');
 
@@ -100,10 +102,10 @@ void main() {
     test('only consecutive same-exercise slots are grouped', () {
       // Bench, Bench, Side raises, Bench → group[2], single, single
       final slots = [
-        makeSlot(1, 1, makeEntry(1, benchPress.id!, exerciseObj: benchPress)),
-        makeSlot(2, 2, makeEntry(2, benchPress.id!, exerciseObj: benchPress)),
-        makeSlot(3, 3, makeEntry(3, sideRaises.id!, exerciseObj: sideRaises)),
-        makeSlot(4, 4, makeEntry(4, benchPress.id!, exerciseObj: benchPress)),
+        makeSlot(1, 1, makeEntry(1, benchPress.id, exerciseObj: benchPress)),
+        makeSlot(2, 2, makeEntry(2, benchPress.id, exerciseObj: benchPress)),
+        makeSlot(3, 3, makeEntry(3, sideRaises.id, exerciseObj: sideRaises)),
+        makeSlot(4, 4, makeEntry(4, benchPress.id, exerciseObj: benchPress)),
       ];
       final groups = computeSlotGroups(slots, 'en');
 
@@ -115,12 +117,12 @@ void main() {
 
     test('superset slots (multiple entries) are never grouped', () {
       final supersetSlot = Slot.withData(id: 1, day: 1, order: 1);
-      supersetSlot.entries.add(makeEntry(1, benchPress.id!, exerciseObj: benchPress));
-      supersetSlot.entries.add(makeEntry(1, sideRaises.id!, exerciseObj: sideRaises));
+      supersetSlot.entries.add(makeEntry(1, benchPress.id, exerciseObj: benchPress));
+      supersetSlot.entries.add(makeEntry(1, sideRaises.id, exerciseObj: sideRaises));
 
       final slots = [
         supersetSlot,
-        makeSlot(2, 2, makeEntry(2, benchPress.id!, exerciseObj: benchPress)),
+        makeSlot(2, 2, makeEntry(2, benchPress.id, exerciseObj: benchPress)),
       ];
       final groups = computeSlotGroups(slots, 'en');
 
@@ -130,25 +132,38 @@ void main() {
   });
 
   group('ReorderableSlotList', () {
-    late MockRoutinesProvider mockProvider;
+    late MockRoutinesRepository mockRepo;
     final routine = getTestRoutine();
     final day = routine.days[0]; // has 2 slots: bench press + side raises
 
     setUp(() {
-      mockProvider = MockRoutinesProvider();
-      when(mockProvider.deleteSlot(any, any)).thenAnswer((_) async {});
-      when(mockProvider.editSlots(any, any)).thenAnswer((_) async {});
+      mockRepo = MockRoutinesRepository();
+      when(mockRepo.deleteSlotServer(any)).thenAnswer((_) async {});
+      when(mockRepo.editSlotServer(any)).thenAnswer((_) async {});
       when(
-        mockProvider.addSlot(any, any),
+        mockRepo.addSlotServer(any),
       ).thenAnswer((_) async => Slot.withData(id: 99, day: day.id, order: 3));
       when(
-        mockProvider.addSlotEntry(any, any),
+        mockRepo.addSlotEntryServer(any),
       ).thenAnswer((_) async => day.slots[0].entries[0]);
+      when(mockRepo.fetchAndSetRoutineFullServer(any)).thenAnswer((_) async => routine);
     });
 
     Widget buildWidget(List<Slot> slots) {
-      return ChangeNotifierProvider<RoutinesProvider>.value(
-        value: mockProvider,
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...routineFormAmbientOverrides(),
+        ],
+      );
+      container.read(routinesRiverpodProvider.notifier).state = AsyncData(
+        RoutinesState(
+          routines: [routine],
+        ),
+      );
+
+      return UncontrolledProviderScope(
+        container: container,
         child: MaterialApp(
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -281,16 +296,15 @@ void main() {
       await tester.pump();
 
       verify(
-        mockProvider.addSlot(
+        mockRepo.addSlotServer(
           argThat(
             isA<Slot>().having((s) => s.day, 'day', day.id).having((s) => s.order, 'order', 2),
           ),
-          day.routineId,
         ),
       ).called(1);
 
       verify(
-        mockProvider.addSlotEntry(
+        mockRepo.addSlotEntryServer(
           argThat(
             isA<SlotEntry>().having(
               (e) => e.exerciseId,
@@ -298,7 +312,6 @@ void main() {
               slot.entries[0].exerciseId,
             ),
           ),
-          day.routineId,
         ),
       ).called(1);
     });
@@ -318,9 +331,8 @@ void main() {
 
       // slot2 must be shifted to order 3 to make room for the new slot at order 2
       verify(
-        mockProvider.editSlots(
-          argThat(contains(isA<Slot>().having((s) => s.order, 'order', 3))),
-          day.routineId,
+        mockRepo.editSlotServer(
+          argThat(isA<Slot>().having((s) => s.order, 'order', 3)),
         ),
       ).called(1);
     });

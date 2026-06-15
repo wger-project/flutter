@@ -17,24 +17,25 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/i18n.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercise_filter_state.dart';
+import 'package:wger/providers/exercise_filters_notifier.dart';
 
-class ExerciseFilterModalBody extends StatefulWidget {
+class ExerciseFilterModalBody extends ConsumerStatefulWidget {
   const ExerciseFilterModalBody({super.key});
 
   @override
   _ExerciseFilterModalBodyState createState() => _ExerciseFilterModalBodyState();
 }
 
-class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
+class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBody> {
   late Filters filters;
 
   @override
   void initState() {
     super.initState();
-    filters = Provider.of<ExercisesProvider>(context, listen: false).filters!;
+    filters = ref.read(exerciseListFiltersProvider).filters;
   }
 
   @override
@@ -70,8 +71,12 @@ class _ExerciseFilterModalBodyState extends State<ExerciseFilterModalBody> {
                     onChanged: (_) {
                       setState(() {
                         filterCategory.items.update(currentEntry.key, (value) => !value);
-
-                        Provider.of<ExercisesProvider>(context, listen: false).setFilters(filters);
+                        ref
+                            .read(exerciseListFiltersProvider.notifier)
+                            .setFilters(
+                              filters,
+                              Localizations.localeOf(context).languageCode,
+                            );
                       });
                     },
                   );

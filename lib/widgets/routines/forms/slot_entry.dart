@@ -17,16 +17,21 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
+import 'package:wger/helpers/form_validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/widgets/core/decimal_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
@@ -34,7 +39,7 @@ import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight.dart';
 import 'package:wger/widgets/routines/slot.dart';
 
-class SlotEntryForm extends StatefulWidget {
+class SlotEntryForm extends ConsumerStatefulWidget {
   final SlotEntry entry;
   final bool simpleMode;
   final int routineId;
@@ -42,21 +47,20 @@ class SlotEntryForm extends StatefulWidget {
   const SlotEntryForm(this.entry, this.routineId, {this.simpleMode = true, super.key});
 
   @override
-  State<SlotEntryForm> createState() => _SlotEntryFormState();
+  _SlotEntryFormState createState() => _SlotEntryFormState();
 }
 
-class _SlotEntryFormState extends State<SlotEntryForm> {
-  bool isSaving = false;
+class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
   bool isDeleting = false;
 
   final iconSize = 18.0;
 
   double setsSliderValue = 1.0;
 
-  final weightController = TextEditingController();
-  final maxWeightController = TextEditingController();
-  final repetitionsController = TextEditingController();
-  final maxRepetitionsController = TextEditingController();
+  num? _weight;
+  num? _maxWeight;
+  num? _reps;
+  num? _maxReps;
   final restController = TextEditingController();
   final maxRestController = TextEditingController();
   final rirController = TextEditingController();
@@ -85,24 +89,17 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
     }
     _controllersInitialized = true;
 
-    // Weights can be fractional, so they are rendered with the active locale's
-    // decimal separator to round-trip through numberFormat when the form is saved.
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-
     if (widget.entry.weightConfigs.isNotEmpty) {
-      weightController.text = numberFormat.format(widget.entry.weightConfigs.first.value);
+      _weight = widget.entry.weightConfigs.first.value;
     }
     if (widget.entry.maxWeightConfigs.isNotEmpty) {
-      maxWeightController.text = numberFormat.format(widget.entry.maxWeightConfigs.first.value);
+      _maxWeight = widget.entry.maxWeightConfigs.first.value;
     }
-
     if (widget.entry.repetitionsConfigs.isNotEmpty) {
-      repetitionsController.text = widget.entry.repetitionsConfigs.first.value.round().toString();
+      _reps = widget.entry.repetitionsConfigs.first.value;
     }
     if (widget.entry.maxRepetitionsConfigs.isNotEmpty) {
-      maxRepetitionsController.text = widget.entry.maxRepetitionsConfigs.first.value
-          .round()
-          .toString();
+      _maxReps = widget.entry.maxRepetitionsConfigs.first.value;
     }
 
     if (widget.entry.restTimeConfigs.isNotEmpty) {
@@ -120,12 +117,6 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
 
   @override
   void dispose() {
-    weightController.dispose();
-    maxWeightController.dispose();
-
-    repetitionsController.dispose();
-    maxRepetitionsController.dispose();
-
     restController.dispose();
     maxRestController.dispose();
 
@@ -140,7 +131,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
     final languageCode = Localizations.localeOf(context).languageCode;
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesRiverpodProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Form(
       key: _form,
@@ -166,7 +158,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete, size: iconSize),
-                  onPressed: isDeleting
+                  onPressed: isDeleting || !isOnline
                       ? null
                       : () async {
                           setState(() => isDeleting = true);
@@ -242,32 +234,24 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             spacing: 10,
             children: [
               Flexible(
-                child: TextFormField(
+                child: DecimalInputWidget(
                   key: const ValueKey('field-weight'),
-                  controller: weightController,
-                  keyboardType: textInputTypeDecimal,
-                  decoration: InputDecoration(labelText: i18n.weight),
-                  validator: (value) {
-                    if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                      return i18n.enterValidNumber;
-                    }
-                    return null;
-                  },
+                  value: _weight,
+                  labelText: i18n.weight,
+                  min: 0,
+                  max: BaseConfig.MAX_VALUE,
+                  onChanged: (v) => _weight = v,
                 ),
               ),
               if (!widget.simpleMode)
                 Flexible(
-                  child: TextFormField(
+                  child: DecimalInputWidget(
                     key: const ValueKey('field-max-weight'),
-                    controller: maxWeightController,
-                    keyboardType: textInputTypeDecimal,
-                    decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    value: _maxWeight,
+                    labelText: i18n.max,
+                    min: 0,
+                    max: BaseConfig.MAX_VALUE,
+                    onChanged: (v) => _maxWeight = v,
                   ),
                 ),
             ],
@@ -284,32 +268,24 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
             spacing: 10,
             children: [
               Flexible(
-                child: TextFormField(
+                child: DecimalInputWidget(
                   key: const ValueKey('field-repetitions'),
-                  controller: repetitionsController,
-                  keyboardType: textInputTypeDecimal,
-                  decoration: InputDecoration(labelText: i18n.repetitions),
-                  validator: (value) {
-                    if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                      return i18n.enterValidNumber;
-                    }
-                    return null;
-                  },
+                  value: _reps,
+                  labelText: i18n.repetitions,
+                  min: 0,
+                  max: BaseConfig.MAX_VALUE,
+                  onChanged: (v) => _reps = v,
                 ),
               ),
               if (!widget.simpleMode)
                 Flexible(
-                  child: TextFormField(
+                  child: DecimalInputWidget(
                     key: const ValueKey('field-max-repetitions'),
-                    controller: maxRepetitionsController,
-                    keyboardType: textInputTypeDecimal,
-                    decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && numberFormat.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    value: _maxReps,
+                    labelText: i18n.max,
+                    min: 0,
+                    max: BaseConfig.MAX_VALUE,
+                    onChanged: (v) => _maxReps = v,
                   ),
                 ),
             ],
@@ -324,12 +300,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                     controller: restController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: i18n.restTime),
-                    validator: (value) {
-                      if (value != null && value != '' && int.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        validateOptionalIntegerInRange(value, 0, BaseConfig.MAX_REST, i18n),
                   ),
                 ),
                 Flexible(
@@ -338,12 +310,8 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
                     controller: maxRestController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: i18n.max),
-                    validator: (value) {
-                      if (value != null && value != '' && int.tryParse(value) == null) {
-                        return i18n.enterValidNumber;
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        validateOptionalIntegerInRange(value, 0, BaseConfig.MAX_REST_TARGET, i18n),
                   ),
                 ),
               ],
@@ -354,83 +322,46 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
               onChanged: (value) => rirController.text = value,
             ),
           const SizedBox(height: 5),
-          OutlinedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            onPressed: isSaving
-                ? null
-                : () async {
-                    if (!_form.currentState!.validate()) {
-                      return;
-                    }
-                    _form.currentState!.save();
-                    setState(() => isSaving = true);
+            enabled: isOnline,
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
 
-                    // Process new, edited or entries to be deleted
-                    try {
-                      await Future.wait([
-                        provider.handleConfig(
-                          widget.entry,
-                          setsSliderValue == 0 ? null : setsSliderValue.round(),
-                          ConfigType.sets,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(weightController.text),
-                          ConfigType.weight,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(maxWeightController.text),
-                          ConfigType.maxWeight,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(repetitionsController.text),
-                          ConfigType.repetitions,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(maxRepetitionsController.text),
-                          ConfigType.maxRepetitions,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(restController.text),
-                          ConfigType.rest,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          numberFormat.tryParse(maxRestController.text),
-                          ConfigType.maxRest,
-                        ),
-                        provider.handleConfig(
-                          widget.entry,
-                          // RiR is slider-driven and held as an invariant string
-                          num.tryParse(rirController.text),
-                          ConfigType.rir,
-                        ),
-                      ]);
-
-                      await provider.editSlotEntry(widget.entry, widget.routineId);
-                      if (mounted) {
-                        setState(() => isSaving = false);
-                        errorMessage = const SizedBox.shrink();
-                      }
-                    } on WgerHttpException catch (error) {
-                      if (context.mounted) {
-                        setState(() {
-                          errorMessage = FormHttpErrorsWidget(error);
-                        });
-                      }
-                    } finally {
-                      if (mounted) {
-                        setState(() => isSaving = false);
-                      }
-                    }
-                  },
-            child: isSaving
-                ? const FormProgressIndicator()
-                : Text(AppLocalizations.of(context).save),
+              // Process new, edited or entries to be deleted
+              await Future.wait([
+                provider.handleConfig(
+                  widget.entry,
+                  setsSliderValue == 0 ? null : setsSliderValue.round(),
+                  ConfigType.sets,
+                ),
+                provider.handleConfig(widget.entry, _weight, ConfigType.weight),
+                provider.handleConfig(widget.entry, _maxWeight, ConfigType.maxWeight),
+                provider.handleConfig(widget.entry, _reps, ConfigType.repetitions),
+                provider.handleConfig(widget.entry, _maxReps, ConfigType.maxRepetitions),
+                provider.handleConfig(
+                  widget.entry,
+                  numberFormat.tryParse(restController.text),
+                  ConfigType.rest,
+                ),
+                provider.handleConfig(
+                  widget.entry,
+                  numberFormat.tryParse(maxRestController.text),
+                  ConfigType.maxRest,
+                ),
+                provider.handleConfig(
+                  widget.entry,
+                  // RiR is slider-driven and held as an invariant string
+                  num.tryParse(rirController.text),
+                  ConfigType.rir,
+                ),
+              ]);
+              await provider.editSlotEntry(widget.entry, widget.routineId);
+            },
           ),
           const SizedBox(height: 10),
         ],
@@ -439,7 +370,7 @@ class _SlotEntryFormState extends State<SlotEntryForm> {
   }
 }
 
-class SlotDetailWidget extends StatefulWidget {
+class SlotDetailWidget extends ConsumerStatefulWidget {
   final Slot slot;
   final bool simpleMode;
   final int routineId;
@@ -447,17 +378,17 @@ class SlotDetailWidget extends StatefulWidget {
   const SlotDetailWidget(this.slot, this.routineId, {this.simpleMode = true, super.key});
 
   @override
-  State<SlotDetailWidget> createState() => _SlotDetailWidgetState();
+  _SlotDetailWidgetState createState() => _SlotDetailWidgetState();
 }
 
-class _SlotDetailWidgetState extends State<SlotDetailWidget> {
+class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
   bool _showExerciseSearchBox = false;
   Widget errorMessage = const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesRiverpodProvider.notifier);
 
     return Column(
       children: [
@@ -506,7 +437,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
   }
 }
 
-class ReorderableSlotList extends StatefulWidget {
+class ReorderableSlotList extends ConsumerStatefulWidget {
   final List<Slot> slots;
   final Day day;
 
@@ -516,7 +447,7 @@ class ReorderableSlotList extends StatefulWidget {
   _SlotFormWidgetStateNg createState() => _SlotFormWidgetStateNg();
 }
 
-class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
+class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
   int? selectedSlotId;
   bool simpleMode = true;
   bool isAddingSlot = false;
@@ -526,7 +457,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesRiverpodProvider.notifier);
     final languageCode = Localizations.localeOf(context).languageCode;
 
     return Column(

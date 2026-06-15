@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,104 +18,75 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
-import 'package:wger/helpers/json.dart';
+import 'package:wger/helpers/routines/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/workout_session_notifier.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 
-class SessionForm extends StatefulWidget {
+class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');
   final WorkoutSession _session;
-  final int? _routineId;
   final Function()? _onSaved;
 
   static const SLIDER_START = -0.5;
 
-  SessionForm(this._routineId, {Function()? onSaved, WorkoutSession? session, int? dayId})
+  SessionForm(int routineId, {Function()? onSaved, WorkoutSession? session, int? dayId})
     : _onSaved = onSaved,
       _session =
           session ??
           WorkoutSession(
-            routineId: _routineId,
+            routineId: routineId,
             dayId: dayId,
-            impression: DEFAULT_IMPRESSION,
             date: clock.now(),
-            timeEnd: TimeOfDay.fromDateTime(clock.now()),
             timeStart: null,
+            timeEnd: null,
           );
 
   @override
   _SessionFormState createState() => _SessionFormState();
 }
 
-class _SessionFormState extends State<SessionForm> {
-  Widget errorMessage = const SizedBox.shrink();
+class _SessionFormState extends ConsumerState<SessionForm> {
   final _form = GlobalKey<FormState>();
 
-  final impressionController = TextEditingController();
   final notesController = TextEditingController();
-  final timeStartController = TextEditingController();
-  final timeEndController = TextEditingController();
-
-  /// Selected impression: bad,  neutral, good
-  var selectedImpression = [false, false, false];
 
   @override
   void initState() {
     super.initState();
-
-    timeStartController.text = widget._session.timeStart == null
-        ? ''
-        : timeToString(widget._session.timeStart)!;
-    timeEndController.text = widget._session.timeEnd == null
-        ? ''
-        : timeToString(widget._session.timeEnd)!;
-    notesController.text = widget._session.notes;
-
-    selectedImpression[widget._session.impression - 1] = true;
+    notesController.text = widget._session.notes ?? '';
   }
 
   @override
   void dispose() {
-    impressionController.dispose();
     notesController.dispose();
-    timeStartController.dispose();
-    timeEndController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final routinesProvider = context.read<RoutinesProvider>();
+    final sessionProvider = ref.read(workoutSessionProvider.notifier);
 
     return Form(
       key: _form,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          errorMessage,
           ToggleButtons(
             key: const ValueKey('impression-toggle-buttons'),
             renderBorder: false,
             onPressed: (int index) {
               setState(() {
-                for (int buttonIndex = 0; buttonIndex < selectedImpression.length; buttonIndex++) {
-                  widget._session.impression = index + 1;
-
-                  if (buttonIndex == index) {
-                    selectedImpression[buttonIndex] = true;
-                  } else {
-                    selectedImpression[buttonIndex] = false;
-                  }
-                }
+                widget._session.impression = WorkoutImpression.values[index];
               });
             },
-            isSelected: selectedImpression,
+            isSelected: WorkoutImpression.values
+                .map((e) => e == widget._session.impression)
+                .toList(),
             children: const [
               Icon(Icons.sentiment_very_dissatisfied),
               Icon(Icons.sentiment_neutral),
@@ -127,153 +98,77 @@ class _SessionFormState extends State<SessionForm> {
               labelText: AppLocalizations.of(context).notes,
             ),
             maxLines: 3,
+            maxLength: WorkoutSession.maxNotesChars,
             controller: notesController,
             keyboardType: TextInputType.multiline,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
               widget._session.notes = newValue!;
             },
+            validator: (value) {
+              if (value != null && value.length > WorkoutSession.maxNotesChars) {
+                return AppLocalizations.of(
+                  context,
+                ).enterMaxCharacters(WorkoutSession.maxNotesChars.toString());
+              }
+              return null;
+            },
           ),
           Row(
             spacing: 10,
             children: [
               Flexible(
-                child: TextFormField(
+                child: TimeInputWidget(
                   key: const ValueKey('time-start'),
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).timeStart,
-                    errorMaxLines: 2,
-                    suffix: IconButton(
-                      onPressed: () => {
-                        setState(() {
-                          timeStartController.text = '';
-                          widget._session.timeStart = null;
-                        }),
-                      },
-                      icon: const Icon(Icons.clear),
-                    ),
-                  ),
-                  controller: timeStartController,
-                  onFieldSubmitted: (_) {},
-                  onTap: () async {
-                    // Stop keyboard from appearing
-                    FocusScope.of(context).requestFocus(FocusNode());
-
-                    // Open time picker
-                    final pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: widget._session.timeStart ?? TimeOfDay.now(),
-                    );
-
-                    if (pickedTime != null) {
-                      timeStartController.text = timeToString(pickedTime)!;
-                      widget._session.timeStart = pickedTime;
-                    }
-                  },
-                  onSaved: (newValue) {
-                    if (newValue != null && newValue.isNotEmpty) {
-                      widget._session.timeStart = stringToTime(newValue);
-                    }
-                  },
-                  validator: (_) {
-                    if (timeStartController.text.isEmpty && timeEndController.text.isEmpty) {
-                      return null;
-                    }
-
-                    if (timeStartController.text.isNotEmpty && timeEndController.text.isNotEmpty) {
-                      final TimeOfDay startTime = stringToTime(timeStartController.text);
-                      final TimeOfDay endTime = stringToTime(timeEndController.text);
-                      if (startTime.isAfter(endTime)) {
-                        return AppLocalizations.of(context).timeStartAhead;
-                      }
-                    }
-
-                    return null;
-                  },
+                  value: widget._session.timeStart,
+                  labelText: AppLocalizations.of(context).timeStart,
+                  onCleared: () => widget._session.timeStart = null,
+                  onChanged: (time) => widget._session.timeStart = time,
                 ),
               ),
               Flexible(
-                child: TextFormField(
+                child: TimeInputWidget(
                   key: const ValueKey('time-end'),
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).timeEnd,
-                    suffix: IconButton(
-                      onPressed: () => {
-                        setState(() {
-                          timeEndController.text = '';
-                          widget._session.timeEnd = null;
-                        }),
-                      },
-                      icon: const Icon(Icons.clear),
-                    ),
-                  ),
-                  controller: timeEndController,
-                  onFieldSubmitted: (_) {},
-                  onTap: () async {
-                    // Stop keyboard from appearing
-                    FocusScope.of(context).requestFocus(FocusNode());
-
-                    // Open time picker
-                    final pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: widget._session.timeEnd ?? TimeOfDay.now(),
-                    );
-
-                    if (pickedTime != null) {
-                      timeEndController.text = timeToString(pickedTime)!;
-                      widget._session.timeEnd = pickedTime;
-                    }
-                  },
-                  onSaved: (newValue) {
-                    if (newValue != null && newValue.isNotEmpty) {
-                      widget._session.timeEnd = stringToTime(newValue);
-                    }
-                  },
+                  value: widget._session.timeEnd,
+                  labelText: AppLocalizations.of(context).timeEnd,
+                  onCleared: () => widget._session.timeEnd = null,
+                  onChanged: (time) => widget._session.timeEnd = time,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 5),
-          ElevatedButton(
+          FormSubmitButton(
             key: const ValueKey('save-button'),
-            child: Text(AppLocalizations.of(context).save),
+            label: AppLocalizations.of(context).save,
             onPressed: () async {
-              // Validate and save the current values to the weightEntry
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
+              if (!_form.currentState!.validate()) {
                 return;
               }
               _form.currentState!.save();
 
-              // Reset any previous error message
-              setState(() {
-                errorMessage = const SizedBox.shrink();
-              });
+              final i18n = AppLocalizations.of(context);
+              final error = validateWorkoutSessionTimes(
+                timeStart: widget._session.timeStart,
+                timeEnd: widget._session.timeEnd,
+                i18n: i18n,
+              );
+              if (error != null) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                return;
+              }
 
-              // Save the entry on the server
-              try {
-                if (widget._session.id == null) {
-                  widget._logger.fine('Adding new session');
-                  await routinesProvider.addSession(widget._session, widget._routineId);
-                } else {
-                  widget._logger.fine('Editing existing session with id ${widget._session.id}');
-                  await routinesProvider.editSession(widget._session);
-                }
+              // A WgerHttpException is surfaced inline by FormSubmitButton.
+              if (widget._session.id == null) {
+                widget._logger.fine('Adding new session');
+                await sessionProvider.addEntry(widget._session);
+              } else {
+                widget._logger.fine('Editing existing session with id ${widget._session.id}');
+                await sessionProvider.updateEntry(widget._session);
+              }
 
-                setState(() {
-                  errorMessage = const SizedBox.shrink();
-                });
-
-                if (context.mounted && widget._onSaved != null) {
-                  widget._onSaved!();
-                }
-              } on WgerHttpException catch (error) {
-                widget._logger.warning('Could not save session: $error');
-                if (context.mounted) {
-                  setState(() {
-                    errorMessage = FormHttpErrorsWidget(error);
-                  });
-                }
+              if (context.mounted && widget._onSaved != null) {
+                widget._onSaved!();
               }
             },
           ),

@@ -17,10 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/measurement.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/providers/measurement_repository.dart';
 import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -30,8 +31,16 @@ import '../test_data/measurements.dart';
 Widget createMeasurementScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
-  final mockMeasurementProvider = MockMeasurementProvider();
-  when(mockMeasurementProvider.categories).thenReturn(getMeasurementCategories());
+  final mockMeasurementRepo = MockMeasurementRepository();
+  when(
+    mockMeasurementRepo.watchAll(),
+  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+
+  final container = ProviderContainer.test(
+    overrides: [
+      measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+    ],
+  );
 
   return MediaQuery(
     data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
@@ -39,12 +48,8 @@ Widget createMeasurementScreen({Locale? locale}) {
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,
     ),
-    child: MultiProvider(
-      providers: [
-        ChangeNotifierProvider<MeasurementProvider>(
-          create: (context) => mockMeasurementProvider,
-        ),
-      ],
+    child: UncontrolledProviderScope(
+      container: container,
       child: MaterialApp(
         locale: locale,
         debugShowCheckedModeBanner: false,

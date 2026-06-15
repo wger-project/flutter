@@ -835,7 +835,6 @@
     "noIngredientsDefined": "尚未定義食材",
     "ingredientLogged": "食材已紀錄到日記",
     "selectMealToLog": "選擇要紀錄到日記的餐點",
-    "errorCouldNotConnectToServerDetails": "無法連線至伺服器。請檢查您的網路連線或伺服器網址，然後再試一次。如果問題仍未解決，請聯絡伺服器管理員。",
     "copyToClipboard": "複製到剪貼簿",
     "aboutWhySupportTitle": "開源且免費使用❤️",
     "barWeight": "槓鈴重量",

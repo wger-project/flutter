@@ -22,6 +22,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/widgets/exercises/images.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 

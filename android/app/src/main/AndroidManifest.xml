@@ -49,6 +49,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Web-handoff deep link: the server redirects to wger://app-auth#token=…
+                 after a browser login; app_link_router consumes the URI. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="wger" android:host="app-auth" />
+            </intent-filter>
         </activity>
 
 

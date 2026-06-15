@@ -26,13 +26,13 @@ part 'user_trophy_context_data.g.dart';
 @JsonSerializable()
 class ContextData {
   @JsonKey(required: true, name: 'log_id')
-  final int logId;
+  final String logId;
 
   @JsonKey(required: true, fromJson: utcIso8601ToLocalDate)
   final DateTime date;
 
   @JsonKey(required: true, name: 'session_id')
-  final int sessionId;
+  final String sessionId;
 
   @JsonKey(required: true, name: 'exercise_id')
   final int exerciseId;

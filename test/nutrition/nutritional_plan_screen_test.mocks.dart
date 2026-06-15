@@ -3,17 +3,24 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
-import 'dart:convert' as _i9;
-import 'dart:typed_data' as _i10;
-import 'dart:ui' as _i8;
+import 'dart:async' as _i4;
+import 'dart:convert' as _i13;
+import 'dart:typed_data' as _i15;
 
-import 'package:http/http.dart' as _i3;
+import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i7;
-import 'package:package_info_plus/package_info_plus.dart' as _i6;
-import 'package:wger/providers/auth.dart' as _i2;
-import 'package:wger/providers/base_provider.dart' as _i4;
+import 'package:mockito/src/dummies.dart' as _i14;
+import 'package:wger/models/body_weight/weight_entry.dart' as _i17;
+import 'package:wger/models/core/search_options.dart' as _i12;
+import 'package:wger/models/nutrition/ingredient.dart' as _i10;
+import 'package:wger/models/nutrition/ingredient_filters.dart' as _i11;
+import 'package:wger/models/nutrition/log.dart' as _i8;
+import 'package:wger/models/nutrition/meal.dart' as _i6;
+import 'package:wger/models/nutrition/meal_item.dart' as _i7;
+import 'package:wger/models/nutrition/nutritional_plan.dart' as _i5;
+import 'package:wger/providers/body_weight_repository.dart' as _i16;
+import 'package:wger/providers/ingredient_repository.dart' as _i9;
+import 'package:wger/providers/nutrition_repository.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -30,482 +37,311 @@ import 'package:wger/providers/base_provider.dart' as _i4;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeResponse_0 extends _i1.SmartFake implements _i2.Response {
+  _FakeResponse_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeStreamedResponse_4 extends _i1.SmartFake implements _i3.StreamedResponse {
-  _FakeStreamedResponse_4(Object parent, Invocation parentInvocation)
+class _FakeStreamedResponse_1 extends _i1.SmartFake implements _i2.StreamedResponse {
+  _FakeStreamedResponse_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-/// A class which mocks [WgerBaseProvider].
+/// A class which mocks [NutritionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
-  MockWgerBaseProvider() {
+class MockNutritionRepository extends _i1.Mock implements _i3.NutritionRepository {
+  MockNutritionRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.AuthProvider get auth =>
+  _i4.Stream<List<_i5.NutritionalPlan>> watchAllDrift() =>
       (super.noSuchMethod(
-            Invocation.getter(#auth),
-            returnValue: _FakeAuthProvider_0(this, Invocation.getter(#auth)),
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i4.Stream<List<_i5.NutritionalPlan>>.empty(),
           )
-          as _i2.AuthProvider);
+          as _i4.Stream<List<_i5.NutritionalPlan>>);
 
   @override
-  _i3.Client get client =>
+  _i4.Future<void> addPlanLocalDrift(_i5.NutritionalPlan? plan) =>
       (super.noSuchMethod(
-            Invocation.getter(#client),
-            returnValue: _FakeClient_1(this, Invocation.getter(#client)),
+            Invocation.method(#addPlanLocalDrift, [plan]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Client);
+          as _i4.Future<void>);
 
   @override
-  set auth(_i2.AuthProvider? value) => super.noSuchMethod(
-    Invocation.setter(#auth, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set client(_i3.Client? value) => super.noSuchMethod(
-    Invocation.setter(#client, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  Map<String, String> getDefaultHeaders({
-    bool? includeAuth = false,
-    String? language,
-  }) =>
+  _i4.Future<void> editLocalDrift(_i5.NutritionalPlan? plan) =>
       (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {
-              #includeAuth: includeAuth,
-              #language: language,
-            }),
-            returnValue: <String, String>{},
+            Invocation.method(#editLocalDrift, [plan]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as Map<String, String>);
+          as _i4.Future<void>);
 
   @override
-  Uri makeUrl(
-    String? path, {
-    int? id,
-    String? objectMethod,
-    Map<String, dynamic>? query,
-  }) =>
+  _i4.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #makeUrl,
-              [path],
-              {#id: id, #objectMethod: objectMethod, #query: query},
-            ),
-            returnValue: _FakeUri_2(
-              this,
-              Invocation.method(
-                #makeUrl,
-                [path],
-                {#id: id, #objectMethod: objectMethod, #query: query},
-              ),
-            ),
+            Invocation.method(#deleteLocalDrift, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as Uri);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<dynamic> fetch(
-    Uri? uri, {
-    int? maxRetries = 3,
-    Duration? initialDelay = const Duration(milliseconds: 250),
-    Duration? timeout = const Duration(seconds: 15),
-    String? language,
-  }) =>
+  _i4.Stream<List<_i6.Meal>> watchAllMealsHydrated() =>
       (super.noSuchMethod(
-            Invocation.method(
-              #fetch,
-              [uri],
-              {
-                #maxRetries: maxRetries,
-                #initialDelay: initialDelay,
-                #timeout: timeout,
-                #language: language,
-              },
-            ),
-            returnValue: _i5.Future<dynamic>.value(),
+            Invocation.method(#watchAllMealsHydrated, []),
+            returnValue: _i4.Stream<List<_i6.Meal>>.empty(),
           )
-          as _i5.Future<dynamic>);
+          as _i4.Stream<List<_i6.Meal>>);
 
   @override
-  _i5.Future<List<dynamic>> fetchPaginated(
-    Uri? uri, {
-    String? language,
-    Duration? timeout = const Duration(seconds: 15),
-  }) =>
+  _i4.Future<void> addMealLocalDrift(_i6.Meal? meal) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #fetchPaginated,
-              [uri],
-              {#language: language, #timeout: timeout},
-            ),
-            returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
+            Invocation.method(#addMealLocalDrift, [meal]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<List<dynamic>>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
+  _i4.Future<void> editMealLocalDrift(_i6.Meal? meal) =>
       (super.noSuchMethod(
-            Invocation.method(#post, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
+            Invocation.method(#editMealLocalDrift, [meal]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<Map<String, dynamic>>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<Map<String, dynamic>> patch(
-    Map<String, dynamic>? data,
-    Uri? uri,
-  ) =>
+  _i4.Future<void> deleteMealLocalDrift(String? id) =>
       (super.noSuchMethod(
-            Invocation.method(#patch, [data, uri]),
-            returnValue: _i5.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
+            Invocation.method(#deleteMealLocalDrift, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<Map<String, dynamic>>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<_i3.Response> deleteRequest(String? url, int? id) =>
+  _i4.Future<void> addMealItemLocalDrift(_i7.MealItem? item) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteRequest, [url, id]),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
-                this,
-                Invocation.method(#deleteRequest, [url, id]),
-              ),
-            ),
+            Invocation.method(#addMealItemLocalDrift, [item]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<_i3.Response>);
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> editMealItemLocalDrift(_i7.MealItem? item) =>
+      (super.noSuchMethod(
+            Invocation.method(#editMealItemLocalDrift, [item]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> deleteMealItemLocalDrift(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteMealItemLocalDrift, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Stream<List<_i8.LogItem>> watchAllLogsHydrated() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllLogsHydrated, []),
+            returnValue: _i4.Stream<List<_i8.LogItem>>.empty(),
+          )
+          as _i4.Stream<List<_i8.LogItem>>);
+
+  @override
+  _i4.Future<void> addLogLocalDrift(_i8.LogItem? log) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLogLocalDrift, [log]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> deleteLogLocalDrift(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLogLocalDrift, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 }
 
-/// A class which mocks [AuthProvider].
+/// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthProvider extends _i1.Mock implements _i2.AuthProvider {
-  MockAuthProvider() {
+class MockIngredientRepository extends _i1.Mock implements _i9.IngredientRepository {
+  MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  Map<String, String> get metadata =>
+  _i4.Stream<_i10.Ingredient?> watchById(int? id) =>
       (super.noSuchMethod(
-            Invocation.getter(#metadata),
-            returnValue: <String, String>{},
+            Invocation.method(#watchById, [id]),
+            returnValue: _i4.Stream<_i10.Ingredient?>.empty(),
           )
-          as Map<String, String>);
+          as _i4.Stream<_i10.Ingredient?>);
 
   @override
-  _i2.AuthState get state =>
-      (super.noSuchMethod(
-            Invocation.getter(#state),
-            returnValue: _i2.AuthState.updateRequired,
-          )
-          as _i2.AuthState);
-
-  @override
-  bool get serverConfigWarning =>
-      (super.noSuchMethod(
-            Invocation.getter(#serverConfigWarning),
-            returnValue: false,
-          )
-          as bool);
-
-  @override
-  _i3.Client get client =>
-      (super.noSuchMethod(
-            Invocation.getter(#client),
-            returnValue: _FakeClient_1(this, Invocation.getter(#client)),
-          )
-          as _i3.Client);
-
-  @override
-  bool get dataInit =>
-      (super.noSuchMethod(Invocation.getter(#dataInit), returnValue: false) as bool);
-
-  @override
-  bool get isAuth => (super.noSuchMethod(Invocation.getter(#isAuth), returnValue: false) as bool);
-
-  @override
-  set token(String? value) => super.noSuchMethod(
-    Invocation.setter(#token, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set serverUrl(String? value) => super.noSuchMethod(
-    Invocation.setter(#serverUrl, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set serverVersion(String? value) => super.noSuchMethod(
-    Invocation.setter(#serverVersion, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set applicationVersion(_i6.PackageInfo? value) => super.noSuchMethod(
-    Invocation.setter(#applicationVersion, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set metadata(Map<String, String>? value) => super.noSuchMethod(
-    Invocation.setter(#metadata, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set state(_i2.AuthState? value) => super.noSuchMethod(
-    Invocation.setter(#state, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set client(_i3.Client? value) => super.noSuchMethod(
-    Invocation.setter(#client, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set dataInit(bool? value) => super.noSuchMethod(
-    Invocation.setter(#dataInit, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
-
-  @override
-  void clearServerConfigWarning() => super.noSuchMethod(
-    Invocation.method(#clearServerConfigWarning, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i5.Future<void> setServerVersion() =>
-      (super.noSuchMethod(
-            Invocation.method(#setServerVersion, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> setApplicationVersion() =>
-      (super.noSuchMethod(
-            Invocation.method(#setApplicationVersion, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> initVersions(String? serverUrl) =>
-      (super.noSuchMethod(
-            Invocation.method(#initVersions, [serverUrl]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<bool> applicationUpdateRequired([String? version]) =>
-      (super.noSuchMethod(
-            Invocation.method(#applicationUpdateRequired, [version]),
-            returnValue: _i5.Future<bool>.value(false),
-          )
-          as _i5.Future<bool>);
-
-  @override
-  bool serverUpdateRequired([String? version]) =>
-      (super.noSuchMethod(
-            Invocation.method(#serverUpdateRequired, [version]),
-            returnValue: false,
-          )
-          as bool);
-
-  @override
-  _i5.Future<bool> serverConfigSane() =>
-      (super.noSuchMethod(
-            Invocation.method(#serverConfigSane, []),
-            returnValue: _i5.Future<bool>.value(false),
-          )
-          as _i5.Future<bool>);
-
-  @override
-  _i5.Future<_i2.LoginActions> register({
-    required String? username,
-    required String? password,
-    required String? email,
-    required String? serverUrl,
-    String? locale = 'en',
+  _i4.Stream<List<_i10.Ingredient>> watchAllDrift({
+    _i11.IngredientFilters? filters = const _i11.IngredientFilters(),
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#register, [], {
-              #username: username,
-              #password: password,
-              #email: email,
-              #serverUrl: serverUrl,
-              #locale: locale,
-            }),
-            returnValue: _i5.Future<_i2.LoginActions>.value(
-              _i2.LoginActions.update,
+            Invocation.method(#watchAllDrift, [], {#filters: filters}),
+            returnValue: _i4.Stream<List<_i10.Ingredient>>.empty(),
+          )
+          as _i4.Stream<List<_i10.Ingredient>>);
+
+  @override
+  _i4.Future<_i10.Ingredient?> getById(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#getById, [id]),
+            returnValue: _i4.Future<_i10.Ingredient?>.value(),
+          )
+          as _i4.Future<_i10.Ingredient?>);
+
+  @override
+  _i4.Future<List<_i10.Ingredient>> searchIngredientLocal(
+    String? term, {
+    bool? isVegan = false,
+    bool? isVegetarian = false,
+    _i10.NutriScore? nutriscoreMax,
+    int? limit = 100,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchIngredientLocal,
+              [term],
+              {
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
+                #limit: limit,
+              },
+            ),
+            returnValue: _i4.Future<List<_i10.Ingredient>>.value(
+              <_i10.Ingredient>[],
             ),
           )
-          as _i5.Future<_i2.LoginActions>);
+          as _i4.Future<List<_i10.Ingredient>>);
 
   @override
-  _i5.Future<_i2.LoginActions> login(
-    String? username,
-    String? password,
-    String? serverUrl,
-    String? apiToken,
-  ) =>
+  _i4.Future<List<_i10.Ingredient>> searchIngredientServer(
+    String? name, {
+    String? languageCode = 'en',
+    _i12.SearchLanguage? searchLanguage = _i12.SearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
+    _i10.NutriScore? nutriscoreMax,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#login, [
-              username,
-              password,
-              serverUrl,
-              apiToken,
-            ]),
-            returnValue: _i5.Future<_i2.LoginActions>.value(
-              _i2.LoginActions.update,
+            Invocation.method(
+              #searchIngredientServer,
+              [name],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
+              },
+            ),
+            returnValue: _i4.Future<List<_i10.Ingredient>>.value(
+              <_i10.Ingredient>[],
             ),
           )
-          as _i5.Future<_i2.LoginActions>);
+          as _i4.Future<List<_i10.Ingredient>>);
 
   @override
-  _i5.Future<String> getServerUrlFromPrefs() =>
+  _i4.Future<List<_i10.Ingredient>> search(
+    String? name, {
+    required bool? isOnline,
+    String? languageCode = 'en',
+    _i12.SearchLanguage? searchLanguage = _i12.SearchLanguage.current,
+    bool? isVegan = false,
+    bool? isVegetarian = false,
+    _i10.NutriScore? nutriscoreMax,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getServerUrlFromPrefs, []),
-            returnValue: _i5.Future<String>.value(
-              _i7.dummyValue<String>(
-                this,
-                Invocation.method(#getServerUrlFromPrefs, []),
-              ),
+            Invocation.method(
+              #search,
+              [name],
+              {
+                #isOnline: isOnline,
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #isVegan: isVegan,
+                #isVegetarian: isVegetarian,
+                #nutriscoreMax: nutriscoreMax,
+              },
+            ),
+            returnValue: _i4.Future<List<_i10.Ingredient>>.value(
+              <_i10.Ingredient>[],
             ),
           )
-          as _i5.Future<String>);
+          as _i4.Future<List<_i10.Ingredient>>);
 
   @override
-  _i5.Future<void> tryAutoLogin() =>
+  _i4.Future<_i10.Ingredient?> searchIngredientByBarcode(String? barcode) =>
       (super.noSuchMethod(
-            Invocation.method(#tryAutoLogin, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            Invocation.method(#searchIngredientByBarcode, [barcode]),
+            returnValue: _i4.Future<_i10.Ingredient?>.value(),
           )
-          as _i5.Future<void>);
-
-  @override
-  _i5.Future<void> logout({bool? shouldNotify = true}) =>
-      (super.noSuchMethod(
-            Invocation.method(#logout, [], {#shouldNotify: shouldNotify}),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
-
-  @override
-  String getAppNameHeader() =>
-      (super.noSuchMethod(
-            Invocation.method(#getAppNameHeader, []),
-            returnValue: _i7.dummyValue<String>(
-              this,
-              Invocation.method(#getAppNameHeader, []),
-            ),
-          )
-          as String);
-
-  @override
-  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#addListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#removeListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-    Invocation.method(#notifyListeners, []),
-    returnValueForMissingStub: null,
-  );
+          as _i4.Future<_i10.Ingredient?>);
 }
 
 /// A class which mocks [Client].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockClient extends _i1.Mock implements _i3.Client {
+class MockClient extends _i1.Mock implements _i2.Client {
   MockClient() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<_i3.Response> head(Uri? url, {Map<String, String>? headers}) =>
+  _i4.Future<_i2.Response> head(Uri? url, {Map<String, String>? headers}) =>
       (super.noSuchMethod(
             Invocation.method(#head, [url], {#headers: headers}),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            returnValue: _i4.Future<_i2.Response>.value(
+              _FakeResponse_0(
                 this,
                 Invocation.method(#head, [url], {#headers: headers}),
               ),
             ),
           )
-          as _i5.Future<_i3.Response>);
+          as _i4.Future<_i2.Response>);
 
   @override
-  _i5.Future<_i3.Response> get(Uri? url, {Map<String, String>? headers}) =>
+  _i4.Future<_i2.Response> get(Uri? url, {Map<String, String>? headers}) =>
       (super.noSuchMethod(
             Invocation.method(#get, [url], {#headers: headers}),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            returnValue: _i4.Future<_i2.Response>.value(
+              _FakeResponse_0(
                 this,
                 Invocation.method(#get, [url], {#headers: headers}),
               ),
             ),
           )
-          as _i5.Future<_i3.Response>);
+          as _i4.Future<_i2.Response>);
 
   @override
-  _i5.Future<_i3.Response> post(
+  _i4.Future<_i2.Response> post(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i9.Encoding? encoding,
+    _i13.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -513,8 +349,8 @@ class MockClient extends _i1.Mock implements _i3.Client {
               [url],
               {#headers: headers, #body: body, #encoding: encoding},
             ),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            returnValue: _i4.Future<_i2.Response>.value(
+              _FakeResponse_0(
                 this,
                 Invocation.method(
                   #post,
@@ -524,14 +360,14 @@ class MockClient extends _i1.Mock implements _i3.Client {
               ),
             ),
           )
-          as _i5.Future<_i3.Response>);
+          as _i4.Future<_i2.Response>);
 
   @override
-  _i5.Future<_i3.Response> put(
+  _i4.Future<_i2.Response> put(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i9.Encoding? encoding,
+    _i13.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -539,8 +375,8 @@ class MockClient extends _i1.Mock implements _i3.Client {
               [url],
               {#headers: headers, #body: body, #encoding: encoding},
             ),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            returnValue: _i4.Future<_i2.Response>.value(
+              _FakeResponse_0(
                 this,
                 Invocation.method(
                   #put,
@@ -550,14 +386,14 @@ class MockClient extends _i1.Mock implements _i3.Client {
               ),
             ),
           )
-          as _i5.Future<_i3.Response>);
+          as _i4.Future<_i2.Response>);
 
   @override
-  _i5.Future<_i3.Response> patch(
+  _i4.Future<_i2.Response> patch(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i9.Encoding? encoding,
+    _i13.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -565,8 +401,8 @@ class MockClient extends _i1.Mock implements _i3.Client {
               [url],
               {#headers: headers, #body: body, #encoding: encoding},
             ),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            returnValue: _i4.Future<_i2.Response>.value(
+              _FakeResponse_0(
                 this,
                 Invocation.method(
                   #patch,
@@ -576,14 +412,14 @@ class MockClient extends _i1.Mock implements _i3.Client {
               ),
             ),
           )
-          as _i5.Future<_i3.Response>);
+          as _i4.Future<_i2.Response>);
 
   @override
-  _i5.Future<_i3.Response> delete(
+  _i4.Future<_i2.Response> delete(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i9.Encoding? encoding,
+    _i13.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -591,8 +427,8 @@ class MockClient extends _i1.Mock implements _i3.Client {
               [url],
               {#headers: headers, #body: body, #encoding: encoding},
             ),
-            returnValue: _i5.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            returnValue: _i4.Future<_i2.Response>.value(
+              _FakeResponse_0(
                 this,
                 Invocation.method(
                   #delete,
@@ -602,48 +438,92 @@ class MockClient extends _i1.Mock implements _i3.Client {
               ),
             ),
           )
-          as _i5.Future<_i3.Response>);
+          as _i4.Future<_i2.Response>);
 
   @override
-  _i5.Future<String> read(Uri? url, {Map<String, String>? headers}) =>
+  _i4.Future<String> read(Uri? url, {Map<String, String>? headers}) =>
       (super.noSuchMethod(
             Invocation.method(#read, [url], {#headers: headers}),
-            returnValue: _i5.Future<String>.value(
-              _i7.dummyValue<String>(
+            returnValue: _i4.Future<String>.value(
+              _i14.dummyValue<String>(
                 this,
                 Invocation.method(#read, [url], {#headers: headers}),
               ),
             ),
           )
-          as _i5.Future<String>);
+          as _i4.Future<String>);
 
   @override
-  _i5.Future<_i10.Uint8List> readBytes(
+  _i4.Future<_i15.Uint8List> readBytes(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#readBytes, [url], {#headers: headers}),
-            returnValue: _i5.Future<_i10.Uint8List>.value(_i10.Uint8List(0)),
+            returnValue: _i4.Future<_i15.Uint8List>.value(_i15.Uint8List(0)),
           )
-          as _i5.Future<_i10.Uint8List>);
+          as _i4.Future<_i15.Uint8List>);
 
   @override
-  _i5.Future<_i3.StreamedResponse> send(_i3.BaseRequest? request) =>
+  _i4.Future<_i2.StreamedResponse> send(_i2.BaseRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#send, [request]),
-            returnValue: _i5.Future<_i3.StreamedResponse>.value(
-              _FakeStreamedResponse_4(
+            returnValue: _i4.Future<_i2.StreamedResponse>.value(
+              _FakeStreamedResponse_1(
                 this,
                 Invocation.method(#send, [request]),
               ),
             ),
           )
-          as _i5.Future<_i3.StreamedResponse>);
+          as _i4.Future<_i2.StreamedResponse>);
 
   @override
   void close() => super.noSuchMethod(
     Invocation.method(#close, []),
     returnValueForMissingStub: null,
   );
+}
+
+/// A class which mocks [BodyWeightRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockBodyWeightRepository extends _i1.Mock implements _i16.BodyWeightRepository {
+  MockBodyWeightRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Stream<List<_i17.WeightEntry>> watchAllDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i4.Stream<List<_i17.WeightEntry>>.empty(),
+          )
+          as _i4.Stream<List<_i17.WeightEntry>>);
+
+  @override
+  _i4.Future<void> deleteLocalDrift(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDrift, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateLocalDrift(_i17.WeightEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLocalDrift, [entry]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> addLocalDrift(_i17.WeightEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDrift, [entry]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 }

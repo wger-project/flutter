@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
+import 'package:wger/providers/exercises_notifier.dart';
 
-class Step2Variations extends StatelessWidget {
+class Step2Variations extends ConsumerWidget {
   final GlobalKey<FormState> formkey;
 
   const Step2Variations({required this.formkey});
 
   @override
-  Widget build(BuildContext context) {
-    final exerciseProvider = context.read<ExercisesProvider>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Reactive: rebuilds when the exercise catalogue changes. Falls back to
+    // an empty state while the stream hasn't emitted yet.
+    final exerciseState = ref.watch(exercisesProvider).value ?? const ExerciseState([]);
+    final byVariation = exerciseState.getByVariation();
 
     return Form(
       key: formkey,
@@ -28,7 +31,7 @@ class Step2Variations extends StatelessWidget {
               child: Column(
                 children: [
                   // Exercise bases with variations
-                  ...exerciseProvider.exerciseByVariation.keys.map(
+                  ...byVariation.keys.map(
                     (key) => Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -37,7 +40,7 @@ class Step2Variations extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             //mainAxisSize: MainAxisSize.max,
                             children: [
-                              ...exerciseProvider.exerciseByVariation[key]!.map(
+                              ...byVariation[key]!.map(
                                 (base) => Text(
                                   base
                                       .getTranslation(Localizations.localeOf(context).languageCode)
@@ -49,17 +52,22 @@ class Step2Variations extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Consumer<AddExerciseProvider>(
-                          builder: (ctx, provider, _) => Switch(
-                            value: provider.variationGroup == key,
-                            onChanged: (state) => provider.variationGroup = state ? key : null,
-                          ),
+                        Consumer(
+                          builder: (ctx, ref, __) {
+                            final state = ref.watch(addExerciseProvider);
+                            return Switch(
+                              value: state.variationGroup == key,
+                              onChanged: (newState) => ref
+                                  .read(addExerciseProvider.notifier)
+                                  .setVariationGroup(newState ? key : null),
+                            );
+                          },
                         ),
                       ],
                     ),
                   ),
                   // Exercise bases without variations
-                  ...exerciseProvider.exercises
+                  ...exerciseState.exercises
                       .where((b) => b.variationGroup == null)
                       .map(
                         (base) => Row(
@@ -82,11 +90,16 @@ class Step2Variations extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Consumer<AddExerciseProvider>(
-                              builder: (ctx, provider, _) => Switch(
-                                value: provider.variationConnectToExercise == base.id,
-                                onChanged: (state) => provider.variationConnectToExercise = base.id,
-                              ),
+                            Consumer(
+                              builder: (ctx, ref, __) {
+                                final state = ref.watch(addExerciseProvider);
+                                return Switch(
+                                  value: state.variationConnectToExercise == base.id,
+                                  onChanged: (_) => ref
+                                      .read(addExerciseProvider.notifier)
+                                      .setVariationConnectToExercise(base.id),
+                                );
+                              },
                             ),
                           ],
                         ),

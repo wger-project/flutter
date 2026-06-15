@@ -26,7 +26,7 @@ import '../../../test_data/nutritional_plans.dart';
 
 Future<void> pumpIngredientDetailsDialog(
   WidgetTester tester, {
-  required AsyncSnapshot<Ingredient> snapshot,
+  required Ingredient ingredient,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -39,7 +39,7 @@ Future<void> pumpIngredientDetailsDialog(
             onPressed: () {
               showDialog(
                 context: context,
-                builder: (_) => IngredientDetails(snapshot),
+                builder: (_) => IngredientDetailsDialog(ingredient),
               );
             },
             child: const Text('Show Dialog'),
@@ -69,7 +69,7 @@ Future<void> pumpIngredientScanDialog(
                 builder: (_) => IngredientScanResultDialog(
                   snapshot,
                   barcode,
-                  (int id, String name, num? amount) {}, // Mock callback
+                  (Ingredient ingredient, num? amount) {}, // Mock callback
                 ),
               );
             },
@@ -87,9 +87,7 @@ void main() {
       WidgetTester tester,
     ) async {
       // ingredient3 (Broccoli cake, brand: 'Weightwatchers')
-      final snapshot = AsyncSnapshot<Ingredient>.withData(ConnectionState.done, ingredient3);
-
-      await pumpIngredientDetailsDialog(tester, snapshot: snapshot);
+      await pumpIngredientDetailsDialog(tester, ingredient: ingredient3);
       await tester.tap(find.text('Show Dialog'));
       await tester.pumpAndSettle();
 
@@ -102,9 +100,7 @@ void main() {
       WidgetTester tester,
     ) async {
       // ingredient1 (Water, brand: null)
-      final snapshot = AsyncSnapshot<Ingredient>.withData(ConnectionState.done, ingredient1);
-
-      await pumpIngredientDetailsDialog(tester, snapshot: snapshot);
+      await pumpIngredientDetailsDialog(tester, ingredient: ingredient1);
       await tester.tap(find.text('Show Dialog'));
       await tester.pumpAndSettle();
 

@@ -1,0 +1,55 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'network_provider.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(NetworkStatus)
+final networkStatusProvider = NetworkStatusProvider._();
+
+final class NetworkStatusProvider extends $NotifierProvider<NetworkStatus, bool> {
+  NetworkStatusProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'networkStatusProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$networkStatusHash();
+
+  @$internal
+  @override
+  NetworkStatus create() => NetworkStatus();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$networkStatusHash() => r'2abc19df2e0e679222609fec1d637ae131ef4ac1';
+
+abstract class _$NetworkStatus extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
+}

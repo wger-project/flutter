@@ -38,52 +38,52 @@ SlotEntry _$SlotEntryFromJson(Map<String, dynamic> json) {
         (json['weight_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     maxWeightConfigs:
         (json['max_weight_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     nrOfSetsConfigs:
         (json['set_nr_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     maxNrOfSetsConfigs:
         (json['max_set_nr_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     rirConfigs:
         (json['rir_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     maxRirConfigs:
         (json['max_rir_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     restTimeConfigs:
         (json['rest_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     maxRestTimeConfigs:
         (json['max_rest_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     repetitionsConfigs:
         (json['repetitions_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
     maxRepetitionsConfigs:
         (json['max_repetitions_configs'] as List<dynamic>?)
             ?.map((e) => BaseConfig.fromJson(e as Map<String, dynamic>))
             .toList() ??
-        [],
+        const [],
   )..config = json['config'];
 }
 

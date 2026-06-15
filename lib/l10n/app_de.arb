@@ -158,7 +158,7 @@
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
     },
-    "customServerHint": "Geben Sie die Adresse deines eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
+    "customServerHint": "Gebe die Adresse deines eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
     },
@@ -558,6 +558,7 @@
             }
         }
     },
+    "enterMaxCharacters": "Bitte gebe höchstens {max} Zeichen ein",
     "baseNameEnglish": "Alle Übungen brauchen einen Basisnamen in Englisch",
     "contributeExerciseWarning": "Sie können nur Übungen beitragen, wenn Ihr Konto älter als {days} Tage ist und Sie Ihre E-Mail verifiziert haben",
     "@contributeExerciseWarning": {
@@ -641,8 +642,11 @@
     "aboutDonateTitle": "Mach eine Spende",
     "aboutDonateText": "Das Projekt ist kostenlos und wird es auch bleiben, der Betrieb des Servers hingegen ist es nicht! Die Entwicklung erfordert zudem viel Zeit und Mühe von Freiwilligen. Ihr Beitrag deckt diese Kosten direkt und trägt zur Zuverlässigkeit des Dienstes bei.",
     "settingsCacheTitle": "Zwischenspeicher",
-    "settingsExerciseCacheDescription": "Übungs-Zwischenspeicher",
+    "settingsImageCacheDescription": "Bild-Zwischenspeicher",
     "settingsCacheDeletedSnackbar": "Zwischenspeicher erfolgreich gelöscht",
+    "settingsDataTitle": "Datenschutz",
+    "settingsKeepDataOnLogout": "Daten beim Abmelden behalten",
+    "settingsKeepDataOnLogoutDescription": "Die lokale Datenbank bleibt auf dem Gerät, bis sich ein anderes Konto anmeldet.",
     "lb": "lb",
     "@lb": {
         "description": "Generated entry for translation for server strings"
@@ -836,7 +840,6 @@
     "themeMode": "Theme Modus",
     "lightMode": "Immer Hellmodus",
     "systemMode": "Systemeinstellungen",
-    "errorCouldNotConnectToServerDetails": "Die Anwendung konnte keine Verbindung zum Server herstellen. Bitte überprüfen Sie Ihre Internetverbindung oder die Server-URL und versuchen Sie es erneut. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Serveradministrator.",
     "fitInWeek": "Fester Wochenrhythmus",
     "fitInWeekHelp": "Wenn diese Option aktiviert ist, wiederholen sich die Tage in einem wöchentlichen Zyklus, andernfalls folgen die Tage der Reihe nach, ohne Rücksicht auf den Beginn einer neuen Woche.",
     "aboutContributeText": "Beiträge aller Art sind willkommen. Egal, ob Sie Entwickler, Übersetzer oder einfach nur Fitnessbegeisterter sind – jede Unterstützung ist willkommen!",
@@ -1003,6 +1006,8 @@
             }
         }
     },
+    "weightOrRepsRequired": "Bitte Gewicht, Wiederholungen oder beides eingeben",
+    "timeStartEndBothOrNeither": "Entweder Start- und Endzeit beide setzen oder beide leer lassen",
     "personalRecords": "Persönliche Rekorde",
     "noTrophies": "Du hast noch keine Trophäen",
     "preview": "Vorschau",

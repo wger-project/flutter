@@ -17,33 +17,35 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/exercises/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/language.dart';
-import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/models/core/language.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
+import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/widgets/exercises/forms.dart';
 
-class Step4Translation extends StatefulWidget {
+class Step4Translation extends ConsumerStatefulWidget {
   final GlobalKey<FormState> formkey;
 
   const Step4Translation({required this.formkey});
 
   @override
-  State<Step4Translation> createState() => _Step4TranslationState();
+  ConsumerState<Step4Translation> createState() => _Step4TranslationState();
 }
 
-class _Step4TranslationState extends State<Step4Translation> {
+class _Step4TranslationState extends ConsumerState<Step4Translation> {
   bool translate = false;
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final addExerciseProvider = context.read<AddExerciseProvider>();
-    final exerciseProvider = context.read<ExercisesProvider>();
-    final languages = exerciseProvider.languages;
+    final notifier = ref.read(addExerciseProvider.notifier);
+    final state = ref.read(addExerciseProvider);
+
+    final languagesAsync = ref.watch(languagesProvider);
+    final languages = languagesAsync.asData?.value ?? <Language>[];
 
     return Form(
       key: widget.formkey,
@@ -68,7 +70,7 @@ class _Step4TranslationState extends State<Step4Translation> {
                   title: '${i18n.language}*',
                   displayName: (Language l) => l.fullName,
                   callback: (Language newValue) {
-                    addExerciseProvider.languageTranslation = newValue;
+                    notifier.setLanguageTranslation(newValue);
                   },
                   validator: (Language? language) {
                     if (language == null) {
@@ -77,11 +79,11 @@ class _Step4TranslationState extends State<Step4Translation> {
                   },
                 ),
                 AddExerciseTextArea(
-                  initialValue: addExerciseProvider.exerciseNameTrans ?? '',
+                  initialValue: state.exerciseNameTrans ?? '',
                   title: '${i18n.name}*',
                   validator: (name) => validateName(name, context),
-                  onChange: (v) => addExerciseProvider.exerciseNameTrans = v,
-                  onSaved: (String? name) => addExerciseProvider.exerciseNameTrans = name,
+                  onChange: (v) => notifier.setExerciseNameTrans(v),
+                  onSaved: (String? name) => notifier.setExerciseNameTrans(name!),
                 ),
                 AddExerciseTextArea(
                   title: i18n.alternativeNames,
@@ -103,20 +105,24 @@ class _Step4TranslationState extends State<Step4Translation> {
                     return null;
                   },
                   onSaved: (String? alternateName) =>
-                      addExerciseProvider.alternateNamesTrans = alternateName!.split('\n'),
+                      notifier.setAlternateNamesTrans(alternateName!.split('\n')),
                 ),
-                Consumer<AddExerciseProvider>(
-                  builder: (ctx, provider, _) => AddExerciseTextArea(
-                    useMarkdownEditor: true,
-                    initialValue: provider.descriptionTrans ?? '',
-                    onChange: (value) => provider.descriptionTrans = value,
-                    title: '${i18n.description}*',
-                    helperText: i18n.enterTextInLanguage,
-                    isMultiline: true,
-                    validator: (name) => validateExerciseDescription(name, context),
-                    onSaved: (String? description) =>
-                        addExerciseProvider.descriptionTrans = description,
-                  ),
+                Consumer(
+                  builder: (ctx, ref, __) {
+                    final descriptionTrans = ref.watch(
+                      addExerciseProvider.select((s) => s.descriptionTrans),
+                    );
+                    return AddExerciseTextArea(
+                      useMarkdownEditor: true,
+                      initialValue: descriptionTrans ?? '',
+                      onChange: (value) => notifier.setDescriptionTrans(value),
+                      title: '${i18n.description}*',
+                      helperText: i18n.enterTextInLanguage,
+                      isMultiline: true,
+                      validator: (name) => validateExerciseDescription(name, context),
+                      onSaved: (String? description) => notifier.setDescriptionTrans(description!),
+                    );
+                  },
                 ),
               ],
             ),

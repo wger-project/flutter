@@ -17,32 +17,36 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/widgets/routines/forms/day.dart';
 import 'package:wger/widgets/routines/routine_edit.dart';
 
 import '../../test_data/routines.dart';
 import 'routine_edit_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesRepository])
 void main() {
-  late MockRoutinesProvider mockRoutinesProvider;
+  late MockRoutinesRepository mockRoutinesRepository;
 
   setUp(() {
-    mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) async => getTestRoutine());
+    mockRoutinesRepository = MockRoutinesRepository();
+    when(
+      mockRoutinesRepository.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) => Future.value(getTestRoutine()));
   });
 
   testWidgets('RoutineEditScreen smoke test', (WidgetTester tester) async {
     // Build the RoutineEditScreen widget with the correct arguments
     await tester.pumpWidget(
-      ChangeNotifierProvider<RoutinesProvider>.value(
-        value: mockRoutinesProvider,
+      ProviderScope(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
+        ],
         child: MaterialApp(
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,

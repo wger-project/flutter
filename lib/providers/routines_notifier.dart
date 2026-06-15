@@ -1,0 +1,426 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:collection/collection.dart';
+import 'package:logging/logging.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_entry.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
+import 'package:wger/providers/exercises_notifier.dart';
+import 'package:wger/providers/helpers.dart';
+import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/workout_session_notifier.dart';
+
+part 'routines_notifier.g.dart';
+
+// Reference-data streams: kept alive across the app's lifetime so that
+// callers using `ref.read(...future)` (notably [fetchAndSetRoutineFull])
+// don't race the auto-dispose scheduler and crash with "provider was
+// disposed during loading state".
+@Riverpod(keepAlive: true)
+Stream<List<WeightUnit>> routineWeightUnit(Ref ref) {
+  return ref.read(routinesRepositoryProvider).watchWeightUnitsDrift();
+}
+
+@Riverpod(keepAlive: true)
+Stream<List<RepetitionUnit>> routineRepetitionUnit(Ref ref) {
+  return ref.read(routinesRepositoryProvider).watchRepetitionUnitsDrift();
+}
+
+class RoutinesState {
+  const RoutinesState({
+    this.routines = const [],
+  });
+
+  final List<Routine> routines;
+
+  RoutinesState copyWith({
+    List<Routine>? routines,
+    Routine? activeRoutine,
+  }) {
+    return RoutinesState(routines: routines ?? this.routines);
+  }
+
+  /// Returns the current active routine. At the moment this is just
+  /// the latest, but this might change in the future.
+  Routine? get currentRoutine {
+    if (routines.isNotEmpty) {
+      return routines.first;
+    }
+    return null;
+  }
+
+  /// The routine with [id], or null when it isn't in the current list. Null is
+  /// expected (not an error): the list is a live stream, so a routine deleted on
+  /// another device can vanish while a detail screen is still open.
+  Routine? findByIdOrNull(int id) {
+    return routines.firstWhereOrNull((routine) => routine.id == id);
+  }
+
+  /// Return all sessions from all routines
+  List<WorkoutSession> get sessions {
+    if (routines.isNotEmpty) {
+      return routines.expand((routine) => routine.sessions).toList();
+    }
+
+    return [];
+  }
+}
+
+@Riverpod(keepAlive: true)
+class RoutinesRiverpod extends _$RoutinesRiverpod {
+  final _logger = Logger('RoutinesRiverpod');
+
+  @override
+  Stream<RoutinesState> build() {
+    _logger.fine('Building Routines Riverpod notifier');
+    ref.keepAlive();
+
+    // Top-level routine list comes from PowerSync. Two kinds of sub-data are
+    // layered on top:
+    //
+    //   * Plan structure (days, slots, set configs), fetched via REST by
+    //     [fetchAndSetRoutineFull]; we carry it forward from the previous
+    //     state on every stream emission so a remote edit doesn't wipe it.
+    //   * Sessions + their logs (with `log.exerciseObj` hydrated), pulled
+    //     in from [workoutSessionProvider] / [exercisesProvider] below.
+    final repo = ref.read(routinesRepositoryProvider);
+
+    ref.listen(workoutSessionProvider, (_, _) => _rehydrate());
+    ref.listen(exercisesProvider, (_, _) => _rehydrate());
+    ref.listen(routineRepetitionUnitProvider, (_, _) => _rehydrate());
+    ref.listen(routineWeightUnitProvider, (_, _) => _rehydrate());
+
+    return repo.watchAllDrift().map((freshRoutines) {
+      final existing = state.value?.routines ?? const <Routine>[];
+      for (final fresh in freshRoutines) {
+        final old = existing.firstWhereOrNull((r) => r.id == fresh.id);
+        if (old != null) {
+          fresh.days = old.days;
+          fresh.dayData = old.dayData;
+          fresh.dayDataGym = old.dayDataGym;
+          fresh.isHydrated = old.isHydrated;
+        }
+      }
+      freshRoutines.forEach(_hydrateRoutine);
+      return RoutinesState(routines: freshRoutines);
+    });
+  }
+
+  /// Hydrates a routine and its sub-objects (sessions, logs, slot entries) with
+  /// the needed objects (exercises, units, etc)
+  ///
+  /// All steps are best-effort: if a reference-data stream hasn't produced
+  /// its first value yet, the corresponding hydration step is silently skipped.
+  /// The listeners in [build] re-run hydration once the upstream data arrives.
+  void _hydrateRoutine(Routine routine) {
+    final sessions = ref.read(workoutSessionProvider).value ?? const <WorkoutSession>[];
+    final exerciseState = ref.read(exercisesProvider).value;
+    final repetitionUnits =
+        ref.read(routineRepetitionUnitProvider).value ?? const <RepetitionUnit>[];
+    final weightUnits = ref.read(routineWeightUnitProvider).value ?? const <WeightUnit>[];
+
+    routine.sessions = sessions.where((s) => s.routineId == routine.id).toList();
+
+    if (exerciseState != null) {
+      for (final session in routine.sessions) {
+        for (final log in session.logs) {
+          // Fall back gracefully if the referenced exercise hasn't been
+          // synced yet (rare but possible on a cold start).
+          final exercise = exerciseState.exercises.firstWhereOrNull(
+            (e) => e.id == log.exerciseId,
+          );
+          if (exercise != null) {
+            log.exerciseObj = exercise;
+          }
+        }
+      }
+    }
+
+    for (final day in routine.days) {
+      for (final slot in day.slots) {
+        for (final entry in slot.entries) {
+          if (exerciseState != null) {
+            final exercise = exerciseState.exercises.firstWhereOrNull(
+              (e) => e.id == entry.exerciseId,
+            );
+            if (exercise != null) {
+              entry.exerciseObj = exercise;
+            }
+          }
+          entry.repetitionUnitObj = repetitionUnits.firstWhereOrNull(
+            (u) => u.id == entry.repetitionUnitId,
+          );
+          entry.weightUnitObj = weightUnits.firstWhereOrNull(
+            (u) => u.id == entry.weightUnitId,
+          );
+        }
+      }
+    }
+
+    // Set configs on the REST-only `dayData` / `dayDataGym` views.
+    void hydrateSetConfigs(List<DayData> entries) {
+      for (final entry in entries) {
+        for (final slot in entry.slots) {
+          for (final setConfig in slot.setConfigs) {
+            if (exerciseState != null) {
+              final exercise = exerciseState.exercises.firstWhereOrNull(
+                (e) => e.id == setConfig.exerciseId,
+              );
+              if (exercise != null) {
+                setConfig.exercise = exercise;
+              }
+            }
+            setConfig.repetitionsUnit = repetitionUnits.firstWhereOrNull(
+              (u) => u.id == setConfig.repetitionsUnitId,
+            );
+            setConfig.weightUnit = weightUnits.firstWhereOrNull(
+              (u) => u.id == setConfig.weightUnitId,
+            );
+          }
+        }
+      }
+    }
+
+    hydrateSetConfigs(routine.dayData);
+    hydrateSetConfigs(routine.dayDataGym);
+  }
+
+  /// Re-runs hydration on the current state and re-emits it. Triggered by
+  /// [ref.listen] on the upstream reference-data providers (sessions,
+  /// exercises, repetition/weight units).
+  void _rehydrate() {
+    final current = state.value;
+    if (current == null) {
+      return;
+    }
+    current.routines.forEach(_hydrateRoutine);
+    state = AsyncData(RoutinesState(routines: List.of(current.routines)));
+  }
+
+  /*
+   * Routines
+   */
+  Future<Routine> addRoutine(Routine routine) async {
+    // Creation still goes through REST: the backend assigns the integer
+    // PK and any auto-fields (created etc.). PowerSync will eventually
+    // replicate the new row down via the stream, but to avoid a
+    // perceptible UI lag we also inject the freshly-created routine
+    // into state right away. When the stream later re-emits the same
+    // row, build()'s sub-data preservation logic keeps things stable.
+    final repo = ref.read(routinesRepositoryProvider);
+    final created = await repo.addRoutineServer(routine);
+    final current = state.value ?? const RoutinesState();
+
+    // Re-sort to match Django's `Meta.ordering = ['-start', '-created']` so
+    // a freshly-created routine with an older start date doesn't briefly
+    // jump to the front before the next stream emission corrects it.
+    final routines = [created, ...current.routines]
+      ..sort((a, b) {
+        final byStart = b.start.compareTo(a.start);
+        return byStart != 0 ? byStart : b.created.compareTo(a.created);
+      });
+    state = AsyncData(current.copyWith(routines: routines));
+    return created;
+  }
+
+  /// In-flight full fetches keyed by routine id. Concurrent callers for the
+  /// same routine share a single network roundtrip instead of each firing
+  /// their own structure/date-sequence trio. Cleared once the fetch settles.
+  final _fullFetchInFlight = <int, Future<Routine>>{};
+
+  Future<Routine> fetchAndSetRoutineFull(int routineId) {
+    return _fullFetchInFlight[routineId] ??= _fetchAndSetRoutineFull(routineId).whenComplete(() {
+      _fullFetchInFlight.remove(routineId);
+    });
+  }
+
+  Future<Routine> _fetchAndSetRoutineFull(int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+
+    // Wait for every reference-data stream to produce its first value before
+    // hydrating, so [_hydrateRoutine] doesn't silently skip steps just because
+    // a stream hasn't emitted yet.
+    await ref.awaitFirstValue(exercisesProvider);
+    await ref.awaitFirstValue(routineRepetitionUnitProvider);
+    await ref.awaitFirstValue(routineWeightUnitProvider);
+    await ref.awaitFirstValue(workoutSessionProvider);
+
+    final routine = await repo.fetchAndSetRoutineFullServer(routineId);
+    _hydrateRoutine(routine);
+
+    // Inject the hydrated routine into the current state. Note: this is
+    // a transient overlay, the next PowerSync stream tick re-emits the
+    // top-level routine (without sub-data), but `build()` re-attaches
+    // sub-data from the previous state, so the hydration survives.
+    final current = state.value ?? const RoutinesState();
+    final updatedRoutines = [...current.routines];
+    final index = updatedRoutines.indexWhere((r) => r.id == routineId);
+    if (index != -1) {
+      updatedRoutines[index] = routine;
+    } else {
+      updatedRoutines.add(routine);
+    }
+    state = AsyncData(current.copyWith(routines: updatedRoutines));
+
+    return routine;
+  }
+
+  Future<void> deleteRoutine(int routineId) async {
+    // Goes through PowerSync (Drift delete → CRUD queue → backend).
+    // Local state picks up the removal on the next stream emission.
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.deleteLocalDrift(routineId);
+  }
+
+  Future<void> editRoutine(Routine routine) async {
+    // Goes through PowerSync (Drift update → CRUD queue → backend).
+    // Local state picks up the change on the next stream emission.
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.editLocalDrift(routine);
+  }
+
+  /*
+   * Days
+   */
+  Future<Day> addDay(Day day) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final newDay = await repo.addDayServer(day);
+    await fetchAndSetRoutineFull(day.routineId);
+
+    return newDay;
+  }
+
+  Future<void> editDay(Day day) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.editDayServer(day);
+    await fetchAndSetRoutineFull(day.routineId);
+  }
+
+  Future<void> editDays(List<Day> days) async {
+    if (days.isEmpty) {
+      return;
+    }
+    final repo = ref.read(routinesRepositoryProvider);
+    for (final day in days) {
+      await repo.editDayServer(day);
+    }
+    await fetchAndSetRoutineFull(days.first.routineId);
+  }
+
+  Future<void> deleteDay(int dayId, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.deleteDayServer(dayId);
+    await fetchAndSetRoutineFull(routineId);
+  }
+
+  /*
+   * Slots
+   */
+  Future<Slot> addSlot(Slot slot, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final newSlot = await repo.addSlotServer(slot);
+    await fetchAndSetRoutineFull(routineId);
+    return newSlot;
+  }
+
+  Future<void> deleteSlot(int slotId, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.deleteSlotServer(slotId);
+    await fetchAndSetRoutineFull(routineId);
+  }
+
+  Future<void> editSlot(Slot slot, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.editSlotServer(slot);
+    await fetchAndSetRoutineFull(routineId);
+  }
+
+  Future<void> editSlots(List<Slot> slots, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    for (final slot in slots) {
+      await repo.editSlotServer(slot);
+    }
+
+    await fetchAndSetRoutineFull(routineId);
+  }
+
+  /*
+   * Slot entries
+   */
+  Future<SlotEntry> addSlotEntry(SlotEntry entry, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    final newEntry = await repo.addSlotEntryServer(entry);
+    await fetchAndSetRoutineFull(routineId);
+
+    return newEntry;
+  }
+
+  Future<void> deleteSlotEntry(int id, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.deleteSlotEntryServer(id);
+
+    await fetchAndSetRoutineFull(routineId);
+  }
+
+  Future<void> editSlotEntry(SlotEntry entry, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.editSlotEntryServer(entry);
+
+    await fetchAndSetRoutineFull(routineId);
+  }
+
+  /*
+   * Configs
+   */
+  Future<void> editConfig(SlotEntry entry, num? value, ConfigType type, int routineId) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.handleConfigServer(entry, value, type);
+    await fetchAndSetRoutineFull(routineId);
+  }
+
+  /// Single-config write helper. Intentionally does NOT trigger a routine
+  /// refresh, the only caller (`SlotEntryForm._save`) batches several of
+  /// these in a `Future.wait` and then calls [editSlotEntry] right after,
+  /// which performs the refresh once for the whole batch.
+  Future<void> handleConfig(SlotEntry entry, num? value, ConfigType type) async {
+    final repo = ref.read(routinesRepositoryProvider);
+    await repo.handleConfigServer(entry, value, type);
+  }
+}
+
+/// Drives the on-demand full-structure load for a single routine.
+///
+/// Watching this triggers the routine's structure fetch and folds the
+/// server-computed data (days, slots, configs, dayData) into the shared
+/// routines state. The value exposes only the load lifecycle (loading and
+/// error), the routine itself is read from [routinesRiverpodProvider].
+///
+/// Auto-disposed on purpose: consumers gate the watch on `Routine.isHydrated`,
+/// so a completed load never re-fires, and dropping the watch while offline
+/// lets a reconnect re-create the provider and retry.
+@riverpod
+Future<void> routineHydration(Ref ref, int routineId) async {
+  await ref.read(routinesRiverpodProvider.notifier).fetchAndSetRoutineFull(routineId);
+}

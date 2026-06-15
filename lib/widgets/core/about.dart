@@ -19,18 +19,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import 'log_overview.dart';
 
-class AboutPage extends StatelessWidget {
+class AboutPage extends ConsumerWidget {
   static String routeName = '/AboutPage';
 
   const AboutPage({super.key});
@@ -49,8 +50,9 @@ class AboutPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authProvider).value;
+    final isOnline = ref.watch(networkStatusProvider);
     final i18n = AppLocalizations.of(context);
     final today = DateTime.now();
 
@@ -83,8 +85,8 @@ class AboutPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'App: ${authProvider.applicationVersion?.version ?? 'N/A'}\n'
-                        'Server: ${authProvider.serverVersion ?? 'N/A'}',
+                        'App: ${authState?.applicationVersion?.version ?? 'N/A'}\n'
+                        'Server: ${authState?.serverVersion ?? 'N/A'}',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       Padding(
@@ -108,27 +110,36 @@ class AboutPage extends StatelessWidget {
               Text(i18n.aboutContributeText),
               ListTile(
                 leading: const Icon(Icons.bug_report),
+                trailing: const Icon(Icons.arrow_outward),
                 title: Text(i18n.aboutBugsListTitle),
                 contentPadding: EdgeInsets.zero,
                 onTap: () => launchURL(GITHUB_ISSUES_URL, context),
               ),
               ListTile(
                 leading: const Icon(Icons.translate),
+                trailing: const Icon(Icons.arrow_outward),
                 title: Text(i18n.aboutTranslationListTitle),
                 contentPadding: EdgeInsets.zero,
                 onTap: () => launchURL(WEBLATE_URL, context),
               ),
               ListTile(
                 leading: const Icon(Icons.code),
+                trailing: const Icon(Icons.arrow_outward),
                 title: Text(i18n.aboutSourceListTitle),
                 contentPadding: EdgeInsets.zero,
                 onTap: () => launchURL(GITHUB_PROJECT_URL, context),
               ),
               ListTile(
+                enabled: isOnline,
                 leading: const FaIcon(FontAwesomeIcons.dumbbell, size: 18),
                 title: Text(i18n.contributeExercise),
+                trailing: isOnline
+                    ? null
+                    : Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.outline),
                 contentPadding: EdgeInsets.zero,
-                onTap: () => Navigator.of(context).pushNamed(AddExerciseScreen.routeName),
+                onTap: isOnline
+                    ? () => Navigator.of(context).pushNamed(AddExerciseScreen.routeName)
+                    : null,
               ),
 
               // Don't show the donate section under iOS. The app was rejected once because
@@ -201,26 +212,33 @@ class AboutPage extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.article),
                 trailing: const Icon(Icons.chevron_right),
-                title: const Text('View Licenses'),
+                title: Text(i18n.aboutViewLicensesTitle),
                 contentPadding: EdgeInsets.zero,
                 onTap: () {
                   showLicensePage(
                     context: context,
                     applicationName: 'wger',
                     applicationVersion:
-                        'App: ${authProvider.applicationVersion?.version ?? 'N/A'} '
-                        'Server: ${authProvider.serverVersion ?? 'N/A'}',
+                        'App: ${authState?.applicationVersion?.version ?? 'N/A'} / '
+                        'Server: ${authState?.serverVersion ?? 'N/A'}',
                     applicationLegalese: '\u{a9} ${today.year} wger contributors',
-                    applicationIcon: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        width: 60,
-                        semanticLabel: 'wger logo',
-                      ),
-                    ),
+                    // applicationIcon: Padding(
+                    //   padding: const EdgeInsets.only(top: 10),
+                    //   child: Image.asset(
+                    //     'assets/images/logo.png',
+                    //     width: 60,
+                    //     semanticLabel: 'wger logo',
+                    //   ),
+                    // ),
                   );
                 },
+              ),
+              ListTile(
+                leading: const Icon(Icons.article),
+                trailing: const Icon(Icons.arrow_outward),
+                title: Text(i18n.aboutViewDocsTitle),
+                contentPadding: EdgeInsets.zero,
+                onTap: () => launchURL(READTHEDOCS_URL, context),
               ),
             ],
           ),

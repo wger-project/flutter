@@ -20,15 +20,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/trophies/trophy.dart';
-import 'package:wger/providers/trophies.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/trophy_notifier.dart';
 import 'package:wger/screens/trophy_screen.dart';
+import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/wger_image.dart';
 
 class DashboardTrophiesWidget extends ConsumerWidget {
   const DashboardTrophiesWidget();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final trophiesState = ref.read(trophyStateProvider);
+    final trophiesState = ref.watch(trophyStateProvider);
+    final isOnline = ref.watch(networkStatusProvider);
     final i18n = AppLocalizations.of(context);
 
     return Card(
@@ -46,7 +50,9 @@ class DashboardTrophiesWidget extends ConsumerWidget {
                       i18n.trophies,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                    // leading: Icon(Icons.widgets_outlined),
+                    trailing: isOnline
+                        ? null
+                        : Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.outline),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -105,9 +111,16 @@ class TrophyCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(trophy.image),
+                  WgerImage(
+                    mediaPath: trophy.image,
+                    width: 60,
+                    height: 60,
+                    cacheWidth: 180,
+                    borderRadius: BorderRadius.circular(30),
+                    errorWidget: const CircleIconAvatar(
+                      Icon(Icons.emoji_events, color: Colors.grey),
+                      radius: 30,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(

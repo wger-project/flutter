@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,40 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
+import 'package:drift/drift.dart' as drift;
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-part 'meal_item.g.dart';
-
-@JsonSerializable()
 class MealItem {
-  @JsonKey(required: true)
-  int? id;
+  /// Client-generated UUID, is `null` only before the first persist
+  String? id;
 
-  @JsonKey(required: false, name: 'meal')
-  late int mealId;
+  /// FK to the parent meal, the meal's UUID, not the server-side integer PK.
+  late String mealId;
 
-  @JsonKey(required: false, name: 'ingredient')
   late int ingredientId;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late Ingredient ingredient;
+  /// Nullable because of the way powersync works. This will be only the case
+  /// in the time between setting the ingredient ID (e.g. while editing a meal)
+  /// and when the sync comes from the server and the provider can load the
+  /// ingredient.Callers must treat null as "data still arriving" rather than
+  /// as an error.
+  Ingredient? ingredient;
 
-  @JsonKey(required: false, name: 'weight_unit')
   int? weightUnitId;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   IngredientWeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   late num amount;
+
+  /// Server-side ordering inside the meal. Replicated down for completeness;
+  /// the client computes new values as `MAX(order) + 1` on insert.
+  int order = 1;
 
   MealItem({
     this.id,
-    int? mealId,
+    String? mealId,
     required this.ingredientId,
     this.weightUnitId,
     required this.amount,
@@ -66,21 +67,57 @@ class MealItem {
 
   MealItem.empty();
 
-  // Boilerplate
-  factory MealItem.fromJson(Map<String, dynamic> json) => _$MealItemFromJson(json);
+  /// Constructor used by Drift's generated row factory.
+  ///
+  /// The hydrated [ingredient]/[weightUnitObj] are filled in by the repository
+  /// after a JOIN; instances built here have only the FK ids set.
+  MealItem.fromDrift({
+    this.id,
+    required String mealId,
+    required int ingredientId,
+    this.weightUnitId,
+    required int order,
+    required double amount,
+  }) {
+    this.mealId = mealId;
+    this.ingredientId = ingredientId;
+    this.amount = amount;
+    this.order = order;
+  }
 
-  Map<String, dynamic> toJson() => _$MealItemToJson(this);
+  /// Drift companion for inserts/updates against `nutrition_mealitem`.
+  ///
+  /// If [id] is null, Drift's `clientDefault` mints a fresh UUID on insert.
+  /// If set, the value round-trips into the row as-is.
+  MealItemTableCompanion toCompanion() {
+    return MealItemTableCompanion(
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
+      mealId: drift.Value(mealId),
+      ingredientId: drift.Value(ingredientId),
+      weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId!),
+      order: drift.Value(order),
+      amount: drift.Value(amount.toDouble()),
+    );
+  }
 
   /// Calculations
+  ///
+  /// Returns all-zero values while [ingredient] is still being hydrated
+  /// (see the field doc) so totals and renderers keep working through the
+  /// brief sync gap; the watcher will re-emit with real values once the
+  /// ingredient row arrives.
   NutritionalValues get nutritionalValues {
+    final ing = ingredient;
+    if (ing == null) {
+      return NutritionalValues();
+    }
     final weight = weightUnitObj == null ? amount : amount * weightUnitObj!.grams;
-
-    return ingredient.nutritionalValues / (100 / weight);
+    return ing.nutritionalValues / (100 / weight);
   }
 
   MealItem copyWith({
-    int? id,
-    int? mealId,
+    String? id,
+    String? mealId,
     int? ingredientId,
     int? weightUnitId,
     num? amount,

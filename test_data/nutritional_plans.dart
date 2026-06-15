@@ -158,6 +158,41 @@ final cake = Ingredient(
   sodium: 0,
 );
 
+/// Stable UUIDs for the test plans and meals so cross-references
+/// (Meal.planId, MealItem.mealId, LogItem.planId/mealId) line up across
+/// fixtures and assertions.
+const testPlanUuid1 = 'cc000000-0000-4000-8000-000000000001';
+const testMealUuid1 = 'aa000000-0000-4000-8000-000000000001';
+const testMealUuid2 = 'aa000000-0000-4000-8000-000000000002';
+
+/// Three diary entries matching the meals on [getNutritionalPlan]: 100 g of
+/// `ingredient1` (Water), 75 g of `ingredient2` (Burger soup), and 300 g of
+/// `ingredient3` (Broccoli cake). Useful as a pre-hydrated payload for
+/// `watchAllLogsHydrated` mocks.
+List<LogItem> getTestNutritionLogs() => [
+  LogItem(
+    planId: testPlanUuid1,
+    mealId: testMealUuid1,
+    ingredientId: 1,
+    amount: 100,
+    datetime: DateTime(2021, 6, 1),
+  )..ingredient = ingredient1,
+  LogItem(
+    planId: testPlanUuid1,
+    mealId: testMealUuid1,
+    ingredientId: 2,
+    amount: 75,
+    datetime: DateTime(2021, 6, 1),
+  )..ingredient = ingredient2,
+  LogItem(
+    planId: testPlanUuid1,
+    mealId: testMealUuid1,
+    ingredientId: 3,
+    amount: 300,
+    datetime: DateTime(2021, 6, 10),
+  )..ingredient = ingredient3,
+];
+
 NutritionalPlan getNutritionalPlan() {
   final mealItem1 = MealItem(ingredientId: 1, amount: 100);
   mealItem1.ingredient = ingredient1;
@@ -169,33 +204,29 @@ NutritionalPlan getNutritionalPlan() {
   mealItem3.ingredient = ingredient3;
 
   final meal1 = Meal(
-    id: 1,
-    plan: 1,
+    id: testMealUuid1,
+    plan: testPlanUuid1,
     time: const TimeOfDay(hour: 17, minute: 0),
     name: 'Initial Name 1',
   );
   meal1.mealItems = [mealItem1, mealItem2];
 
   final meal2 = Meal(
-    id: 2,
-    plan: 1,
+    id: testMealUuid2,
+    plan: testPlanUuid1,
     time: const TimeOfDay(hour: 22, minute: 5),
     name: 'Initial Name 2',
   );
   meal2.mealItems = [mealItem3];
 
   final NutritionalPlan plan = NutritionalPlan(
-    id: 1,
+    id: testPlanUuid1,
     description: 'Less fat, more protein',
     creationDate: DateTime(2021, 5, 23),
     startDate: DateTime(2021, 5, 23),
   );
   plan.meals = [meal1, meal2];
-
-  // Add logs
-  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime(2021, 6, 1)));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime(2021, 6, 1)));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime(2021, 6, 10)));
+  plan.diaryEntries = getTestNutritionLogs();
 
   return plan;
 }
@@ -208,23 +239,23 @@ NutritionalPlan getNutritionalPlanScreenshot() {
   final mealItem3 = MealItem(ingredientId: 3, amount: 100, ingredient: apple);
 
   final meal1 = Meal(
-    id: 1,
-    plan: 1,
+    id: testMealUuid1,
+    plan: testPlanUuid1,
     time: const TimeOfDay(hour: 8, minute: 30),
     name: 'Breakfast',
     mealItems: [mealItem1, mealItem2],
   );
 
   final meal2 = Meal(
-    id: 2,
-    plan: 1,
+    id: testMealUuid2,
+    plan: testPlanUuid1,
     time: const TimeOfDay(hour: 11, minute: 0),
     name: 'Snack 1',
     mealItems: [mealItem3],
   );
 
   final NutritionalPlan plan = NutritionalPlan(
-    id: 1,
+    id: testPlanUuid1,
     description: 'Diet',
     creationDate: DateTime(2021, 5, 23),
     startDate: DateTime(2021, 5, 23),
@@ -232,16 +263,22 @@ NutritionalPlan getNutritionalPlanScreenshot() {
   );
 
   // Add logs
-  plan.diaryEntries.add(Log.fromMealItem(mealItem1, 1, 1, DateTime.now()));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem2, 1, 1, DateTime.now()));
-  plan.diaryEntries.add(Log.fromMealItem(mealItem3, 1, 1, DateTime.now()));
+  plan.diaryEntries.add(
+    LogItem.fromMealItem(mealItem1, testPlanUuid1, testMealUuid1, DateTime.now()),
+  );
+  plan.diaryEntries.add(
+    LogItem.fromMealItem(mealItem2, testPlanUuid1, testMealUuid1, DateTime.now()),
+  );
+  plan.diaryEntries.add(
+    LogItem.fromMealItem(mealItem3, testPlanUuid1, testMealUuid1, DateTime.now()),
+  );
 
   for (final i in plan.diaryEntries) {
     i.datetime = DateTime.now();
     i.amount = i.amount / (1.0 + random.nextDouble() * (4.0 - 1.0));
   }
 
-  final log = Log(
+  final log = LogItem(
     mealId: meal1.id,
     ingredientId: 1,
     weightUnitId: 1,

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020 - 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,14 +19,13 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/gym_state.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
+import 'package:wger/providers/workout_session_notifier.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/routines/forms/session.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
@@ -40,20 +39,6 @@ class SessionPage extends ConsumerStatefulWidget {
 }
 
 class _SessionPageState extends ConsumerState<SessionPage> {
-  late Future<void> _initData;
-  late Routine _routine;
-
-  @override
-  void initState() {
-    super.initState();
-    _initData = _reloadRoutineData();
-  }
-
-  Future<void> _reloadRoutineData() async {
-    final gymState = ref.read(gymStateProvider);
-    _routine = await context.read<RoutinesProvider>().fetchAndSetRoutineFull(gymState.routine.id!);
-  }
-
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
@@ -63,44 +48,37 @@ class _SessionPageState extends ConsumerState<SessionPage> {
       children: [
         NavigationHeader(i18n.workoutSession, widget._controller),
         Expanded(
-          child: FutureBuilder<void>(
-            future: _initData,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else {
-                final session = _routine.sessions
-                    .map((sessionApi) => sessionApi.session)
-                    .firstWhere(
-                      (s) => s.date.isSameDayAs(clock.now()),
-                      orElse: () => WorkoutSession(
-                        dayId: gymState.dayId,
-                        date: clock.now(),
-                        routineId: gymState.routine.id,
-                        timeStart: gymState.startTime,
-                        timeEnd: TimeOfDay.fromDateTime(clock.now()),
-                      ),
-                    );
+          child: AsyncValueWidget<List<WorkoutSession>>(
+            value: ref.watch(workoutSessionProvider),
+            loggerName: 'SessionPage',
+            data: (sessions) {
+              final session = sessions.firstWhere(
+                (s) => s.date.isSameDayAs(clock.now()) && s.routineId == gymState.routine.id,
+                orElse: () => WorkoutSession(
+                  dayId: gymState.dayId,
+                  date: clock.now(),
+                  routineId: gymState.routine.id,
+                  timeStart: gymState.startTime,
+                  timeEnd: TimeOfDay.fromDateTime(clock.now()),
+                ),
+              );
 
-                return Column(
-                  children: [
-                    Expanded(child: Container()),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: SessionForm(
-                        gymState.routine.id,
-                        onSaved: () => widget._controller.nextPage(
-                          duration: DEFAULT_ANIMATION_DURATION,
-                          curve: DEFAULT_ANIMATION_CURVE,
-                        ),
-                        session: session,
+              return Column(
+                children: [
+                  Expanded(child: Container()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: SessionForm(
+                      gymState.routine.id!,
+                      onSaved: () => widget._controller.nextPage(
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
                       ),
+                      session: session,
                     ),
-                  ],
-                );
-              }
+                  ),
+                ],
+              );
             },
           ),
         ),

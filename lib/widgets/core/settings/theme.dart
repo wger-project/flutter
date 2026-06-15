@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/app_settings_notifier.dart';
 
-class SettingsTheme extends StatelessWidget {
+class SettingsTheme extends ConsumerWidget {
   const SettingsTheme({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
-    final userProvider = Provider.of<UserProvider>(context);
+    final currentMode = ref.watch(
+      appSettingsProvider.select((s) => s.value?.themeMode ?? ThemeMode.system),
+    );
 
     return ListTile(
       title: Text(i18n.themeMode),
       trailing: DropdownButton<ThemeMode>(
         key: const ValueKey('themeModeDropdown'),
-        value: userProvider.themeMode,
+        value: currentMode,
         onChanged: (ThemeMode? newValue) {
           if (newValue != null) {
-            userProvider.setThemeMode(newValue);
+            ref.read(appSettingsProvider.notifier).setThemeMode(newValue);
           }
         },
         items: ThemeMode.values.map<DropdownMenuItem<ThemeMode>>((ThemeMode value) {

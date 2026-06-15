@@ -1,0 +1,154 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020 - 2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:drift/drift.dart';
+import 'package:drift_sqlite_async/drift_sqlite_async.dart';
+import 'package:flutter/material.dart' show TimeOfDay;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/date_only_text_converter.dart';
+import 'package:wger/database/converters/exercise_image_style_converter.dart';
+import 'package:wger/database/converters/time_of_day_converter.dart';
+import 'package:wger/database/converters/utc_datetime_converter.dart';
+import 'package:wger/database/converters/workout_impression_converter.dart';
+import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/core/language.dart';
+import 'package:wger/models/core/license.dart';
+import 'package:wger/models/exercises/alias.dart';
+import 'package:wger/models/exercises/category.dart';
+import 'package:wger/models/exercises/comment.dart';
+import 'package:wger/models/exercises/equipment.dart';
+import 'package:wger/models/exercises/image.dart';
+import 'package:wger/models/exercises/muscle.dart';
+import 'package:wger/models/exercises/video.dart';
+import 'package:wger/models/gallery/image.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/models/measurements/measurement_entry.dart';
+import 'package:wger/models/nutrition/ingredient.dart';
+import 'package:wger/models/nutrition/ingredient_image.dart';
+import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
+import 'package:wger/models/nutrition/log.dart';
+import 'package:wger/models/nutrition/meal.dart';
+import 'package:wger/models/nutrition/meal_item.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/user/user_profile.dart';
+import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/repetition_unit.dart';
+import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
+
+import 'powersync.dart';
+import 'tables/exercise.dart';
+import 'tables/gallery.dart';
+import 'tables/ingredient.dart';
+import 'tables/language.dart';
+import 'tables/license.dart';
+import 'tables/measurements.dart';
+import 'tables/nutrition.dart';
+import 'tables/routines.dart';
+import 'tables/user_profile.dart';
+import 'tables/weight.dart';
+
+part 'database.g.dart';
+
+@DriftDatabase(
+  tables: [
+    // Core
+    LanguageTable,
+    LicenseTable,
+    UserProfileTable,
+
+    // Exercises
+    ExerciseTable,
+    ExerciseTranslationTable,
+    ExerciseAliasTable,
+    ExerciseCommentTable,
+    MuscleTable,
+    ExerciseMuscleM2N,
+    ExerciseSecondaryMuscleM2N,
+    EquipmentTable,
+    ExerciseEquipmentM2N,
+    ExerciseCategoryTable,
+    ExerciseImageTable,
+    ExerciseVideoTable,
+
+    // Body weight
+    WeightEntryTable,
+
+    // Measurements
+    MeasurementCategoryTable,
+    MeasurementEntryTable,
+
+    // Routines
+    RoutineTable,
+    WorkoutLogTable,
+    WorkoutSessionTable,
+    RoutineRepetitionUnitTable,
+    RoutineWeightUnitTable,
+
+    // Nutrition
+    NutritionalPlanTable,
+    IngredientTable,
+    IngredientImageTable,
+    IngredientWeightUnitTable,
+    MealTable,
+    MealItemTable,
+    LogItemTable,
+
+    // Gallery
+    GalleryImageTable,
+  ],
+  //include: {'queries.drift'},
+)
+class DriftPowersyncDatabase extends _$DriftPowersyncDatabase {
+  DriftPowersyncDatabase(super.e);
+
+  @override
+  int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (m) async {
+        // We don't have to call createAll(), PowerSync instantiates the schema
+        // for us. We can use the opportunity to create fts5 indexes though.
+      },
+      onUpgrade: (m, from, to) async {
+        if (from == 1) {
+          // await createFts5Tables(
+          //   db: this,
+          //   tableName: 'todos',
+          //   columns: ['description', 'list_id'],
+          // );
+        }
+      },
+    );
+  }
+}
+
+final driftPowerSyncDatabase = Provider((ref) {
+  return DriftPowersyncDatabase(
+    DatabaseConnection.delayed(
+      Future(() async {
+        final database = await ref.read(powerSyncInstanceProvider.future);
+        return SqliteAsyncDriftConnection(database);
+      }),
+    ),
+  );
+});

@@ -17,20 +17,35 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/widgets/weight/forms.dart';
 
 import '../../test_data/body_weight.dart';
+import 'weight_form_test.mocks.dart';
 
+@GenerateMocks([BodyWeightRepository])
 void main() {
-  Widget createWeightForm({locale = 'en', weightEntry = WeightEntry}) {
-    return MaterialApp(
-      locale: Locale(locale),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(body: WeightForm(weightEntry)),
+  Widget createWeightForm({
+    locale = 'en',
+    weightEntry = WeightEntry,
+    List<Override> overrides = const [],
+  }) {
+    return ProviderScope(
+      overrides: overrides,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: WeightForm(weightEntry)),
+      ),
     );
   }
 
@@ -69,26 +84,57 @@ void main() {
     expect(find.text('80'), findsOneWidget);
   });
 
-  testWidgets("Entering garbage doesn't break the quick-change", (WidgetTester tester) async {
+  testWidgets('Non-numeric input never reaches the field', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1));
     await tester.pumpAndSettle();
+
     await tester.enterText(find.byKey(const Key('weightInput')), 'shiba inu');
+    await tester.pumpAndSettle();
+    expect(find.text('shiba inu'), findsNothing);
 
+    // Quick-change still works on the now-empty field
     await tester.tap(find.byKey(const Key('quickMinus')));
-    expect(find.text('shiba inu'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('shiba inu'), findsNothing);
+  });
 
-    await tester.tap(find.byKey(const Key('quickMinusSmall')));
-    expect(find.text('shiba inu'), findsOneWidget);
+  testWidgets('Accepts a dot as decimal separator in the de locale', (WidgetTester tester) async {
+    await tester.pumpWidget(createWeightForm(weightEntry: null, locale: 'de'));
+    await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('quickPlus')));
-    expect(find.text('shiba inu'), findsOneWidget);
+    await tester.enterText(find.byKey(const Key('weightInput')), '81.5');
+    await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('quickPlusSmall')));
-    expect(find.text('shiba inu'), findsOneWidget);
+    expect(find.text('81,5'), findsOneWidget);
   });
 
   testWidgets('Widget works if there is no last entry', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightForm(weightEntry: null));
     await tester.pumpAndSettle();
+  });
+
+  testWidgets('Saving keeps an afternoon (PM) time intact', (WidgetTester tester) async {
+    final mockRepo = MockBodyWeightRepository();
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(<WeightEntry>[]));
+    when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
+
+    await tester.pumpWidget(
+      createWeightForm(
+        weightEntry: testWeightEntry1,
+        overrides: [bodyWeightRepositoryProvider.overrideWithValue(mockRepo)],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // The stored 15:30 renders as a PM time in a 12-hour locale
+    expect(find.text('3:30 PM'), findsOneWidget);
+
+    // Save without changing anything
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pumpAndSettle();
+
+    final saved = verify(mockRepo.updateLocalDrift(captureAny)).captured.single as WeightEntry;
+    expect(saved.date.hour, 15);
+    expect(saved.date.minute, 30);
   });
 }

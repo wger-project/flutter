@@ -1,0 +1,42 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2026 - 2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:drift/drift.dart';
+import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/date_only_text_converter.dart';
+import 'package:wger/models/gallery/image.dart';
+
+@UseRowClass(GalleryImage)
+class GalleryImageTable extends Table {
+  @override
+  String get tableName => 'gallery_image';
+
+  IntColumn get id => integer()();
+  TextColumn get date => text().map(const DateOnlyTextConverter())();
+  TextColumn get imagePath => text().named('image')();
+  TextColumn get description => text()();
+}
+
+const PowersyncGalleryImageTable = ps.Table(
+  'gallery_image',
+  [
+    ps.Column.text('date'),
+    ps.Column.text('image'),
+    ps.Column.text('description'),
+  ],
+);

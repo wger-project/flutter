@@ -17,16 +17,9 @@
  */
 
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-part 'category.g.dart';
-
-@JsonSerializable()
 class ExerciseCategory extends Equatable {
-  @JsonKey(required: true)
   final int id;
-
-  @JsonKey(required: true)
   final String name;
 
   const ExerciseCategory({required this.id, required this.name});
@@ -35,10 +28,6 @@ class ExerciseCategory extends Equatable {
   String toString() {
     return 'Category $id: $name';
   }
-
-  // Boilerplate
-  factory ExerciseCategory.fromJson(Map<String, dynamic> json) => _$ExerciseCategoryFromJson(json);
-  Map<String, dynamic> toJson() => _$ExerciseCategoryToJson(this);
 
   @override
   List<Object?> get props => [id, name];

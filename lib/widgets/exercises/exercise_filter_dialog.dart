@@ -17,12 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
-import 'package:provider/provider.dart' hide Consumer;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise_filters.dart';
 import 'package:wger/providers/exercise_filters_riverpod.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/widgets/search/language_dropdown.dart';
 
 /// Filter dialog for the exercise search. Shown via [showDialog] from the
@@ -126,7 +125,7 @@ class _CategoryChipsWrap extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
     final filters = ref.watch(exerciseFiltersSyncProvider);
-    final allCategories = Provider.of<ExercisesProvider>(context, listen: false).categories;
+    final allCategories = ref.watch(exerciseCategoriesProvider).asData?.value ?? const [];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

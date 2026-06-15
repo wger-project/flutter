@@ -23,7 +23,6 @@ import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/providers/base_provider.dart';
 
 import '../utils.dart';
 import 'base_provider.mocks.dart';
@@ -45,7 +44,7 @@ void main() {
     });
 
     // Act
-    final provider = WgerBaseProvider(testAuthProvider, mockClient);
+    final provider = buildTestBaseProvider(client: mockClient);
     final result = await provider.fetch(testUri, initialDelay: const Duration(milliseconds: 1));
 
     // Assert
@@ -67,7 +66,7 @@ void main() {
     });
 
     // Act
-    final provider = WgerBaseProvider(testAuthProvider, mockClient);
+    final provider = buildTestBaseProvider(client: mockClient);
     final result = await provider.fetch(testUri, initialDelay: const Duration(milliseconds: 1));
 
     // Assert
@@ -84,7 +83,7 @@ void main() {
     ).thenAnswer((_) => Future.value(Response('{"error":"bad"}', 400)));
 
     // Act
-    final provider = WgerBaseProvider(testAuthProvider, mockClient);
+    final provider = buildTestBaseProvider(client: mockClient);
 
     // Assert
     await expectLater(
@@ -102,7 +101,7 @@ void main() {
     ).thenAnswer((_) => Future.error(ClientException('conn fail')));
 
     // Act
-    final provider = WgerBaseProvider(testAuthProvider, mockClient);
+    final provider = buildTestBaseProvider(client: mockClient);
     dynamic caught;
     try {
       await provider.fetch(testUri, initialDelay: const Duration(milliseconds: 1));
@@ -124,7 +123,7 @@ void main() {
     ).thenAnswer((_) => Future.value(Response('{"ok": true}', 200)));
 
     // Act
-    final provider = WgerBaseProvider(testAuthProvider, mockClient);
+    final provider = buildTestBaseProvider(client: mockClient);
     final result = await provider.fetch(testUri);
 
     // Assert

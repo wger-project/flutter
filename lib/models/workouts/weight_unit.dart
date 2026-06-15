@@ -16,26 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-
-part 'weight_unit.g.dart';
-
-@JsonSerializable()
 class WeightUnit {
-  @JsonKey(required: true)
   final int id;
-
-  @JsonKey(required: true)
   final String name;
 
   const WeightUnit({required this.id, required this.name});
 
+  // Equality is based on `id`, needed e.g. for DropdownButton
   @override
-  String toString() {
-    return 'WeightUnit(id: $id, name: $name)';
-  }
+  bool operator ==(Object other) => identical(this, other) || other is WeightUnit && id == other.id;
 
-  // Boilerplate
-  factory WeightUnit.fromJson(Map<String, dynamic> json) => _$WeightUnitFromJson(json);
-  Map<String, dynamic> toJson() => _$WeightUnitToJson(this);
+  @override
+  int get hashCode => id.hashCode;
 }

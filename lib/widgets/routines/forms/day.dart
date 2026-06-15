@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
-import 'package:wger/providers/routines.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/widgets/core/confirm_delete_dialog.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/routines/forms/slot.dart';
 
-class ReorderableDaysList extends StatefulWidget {
+class ReorderableDaysList extends ConsumerStatefulWidget {
   final int routineId;
   final List<Day> days;
   final int? selectedDayId;
@@ -23,47 +25,32 @@ class ReorderableDaysList extends StatefulWidget {
     required this.onDaySelected,
   });
 
+  @override
+  ConsumerState<ReorderableDaysList> createState() => _ReorderableDaysListState();
+}
+
+class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
+  Widget errorMessage = const SizedBox.shrink();
+
   void _showDeleteConfirmationDialog(BuildContext context, Day day) {
     final i18n = AppLocalizations.of(context);
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(i18n.delete),
-          content: Text(i18n.confirmDelete(day.isRest ? i18n.restDay : day.name)),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                days.remove(day);
-                await context.read<RoutinesProvider>().deleteDay(day.id!);
-                Navigator.of(context).pop();
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        );
+    showConfirmDeleteDialog(
+      context,
+      title: i18n.delete,
+      itemName: day.isRest ? i18n.restDay : day.name,
+      onConfirm: () async {
+        widget.days.remove(day);
+        await ref.read(routinesRiverpodProvider.notifier).deleteDay(day.id!, day.routineId);
       },
     );
   }
 
   @override
-  State<ReorderableDaysList> createState() => _ReorderableDaysListState();
-}
-
-class _ReorderableDaysListState extends State<ReorderableDaysList> {
-  Widget errorMessage = const SizedBox.shrink();
-
-  @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesRiverpodProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Column(
       children: [
@@ -84,10 +71,12 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
                 tileColor: isDaySelected ? Theme.of(context).highlightColor : null,
                 key: ValueKey(day),
                 title: Text(day.isRest ? i18n.restDay : day.name),
-                leading: ReorderableDragStartListener(
-                  index: index,
-                  child: const Icon(Icons.drag_handle),
-                ),
+                leading: isOnline
+                    ? ReorderableDragStartListener(
+                        index: index,
+                        child: const Icon(Icons.drag_handle),
+                      )
+                    : const Icon(Icons.drag_handle, color: Colors.grey),
                 subtitle: Text(
                   day.description,
                   style: const TextStyle(overflow: TextOverflow.ellipsis),
@@ -102,7 +91,9 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () => widget._showDeleteConfirmationDialog(context, day),
+                      onPressed: isOnline
+                          ? () => _showDeleteConfirmationDialog(context, day)
+                          : null,
                     ),
                   ],
                 ),
@@ -140,24 +131,24 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
           child: ListTile(
             key: const ValueKey('add-day'),
             // tileColor: Theme.of(context).focusColor,
+            enabled: isOnline,
             leading: const Icon(Icons.add),
             title: Text(
               AppLocalizations.of(context).newDay,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            onTap: () async {
-              final day = Day(
-                routineId: widget.routineId,
-                name: '${i18n.newDay} ${widget.days.length + 1}',
-                order: widget.days.length + 1,
-              );
-              day.name = '${i18n.newDay} ${widget.days.length + 1}';
-              day.routineId = widget.routineId;
-              day.order = widget.days.length + 1;
-              final newDay = await provider.addDay(day);
+            onTap: isOnline
+                ? () async {
+                    final day = Day(
+                      routineId: widget.routineId,
+                      name: '${i18n.newDay} ${widget.days.length + 1}',
+                      order: widget.days.length + 1,
+                    );
+                    final newDay = await provider.addDay(day);
 
-              widget.onDaySelected(newDay.id!);
-            },
+                    widget.onDaySelected(newDay.id!);
+                  }
+                : null,
           ),
         ),
       ],
@@ -165,7 +156,7 @@ class _ReorderableDaysListState extends State<ReorderableDaysList> {
   }
 }
 
-class DayFormWidget extends StatefulWidget {
+class DayFormWidget extends ConsumerStatefulWidget {
   late final Day day;
 
   DayFormWidget({required Day day, super.key}) {
@@ -176,12 +167,9 @@ class DayFormWidget extends StatefulWidget {
   _DayFormWidgetState createState() => _DayFormWidgetState();
 }
 
-class _DayFormWidgetState extends State<DayFormWidget> {
-  Widget errorMessage = const SizedBox.shrink();
-
+class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
   final descriptionController = TextEditingController();
   final nameController = TextEditingController();
-  bool isSaving = false;
 
   final _form = GlobalKey<FormState>();
 
@@ -202,12 +190,12 @@ class _DayFormWidgetState extends State<DayFormWidget> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Form(
       key: _form,
       child: Column(
         children: [
-          errorMessage,
           Text(
             widget.day.isRest ? i18n.restDay : widget.day.name,
             style: Theme.of(context).textTheme.titleLarge,
@@ -312,44 +300,18 @@ class _DayFormWidgetState extends State<DayFormWidget> {
                   },
           ),
           const SizedBox(height: 5),
-          ElevatedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            onPressed: isSaving
-                ? null
-                : () async {
-                    if (!_form.currentState!.validate()) {
-                      return;
-                    }
-                    _form.currentState!.save();
-                    setState(() => isSaving = true);
+            enabled: isOnline,
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
 
-                    try {
-                      await Provider.of<RoutinesProvider>(
-                        context,
-                        listen: false,
-                      ).editDay(widget.day);
-                      if (context.mounted) {
-                        setState(() {
-                          errorMessage = const SizedBox.shrink();
-                        });
-                      }
-                    } on WgerHttpException catch (error) {
-                      if (context.mounted) {
-                        setState(() {
-                          errorMessage = FormHttpErrorsWidget(error);
-                        });
-                      }
-                    } finally {
-                      if (mounted) {
-                        setState(() {
-                          isSaving = false;
-                        });
-                      }
-                    }
-                  },
-            child: isSaving
-                ? const FormProgressIndicator()
-                : Text(AppLocalizations.of(context).save),
+              await ref.read(routinesRiverpodProvider.notifier).editDay(widget.day);
+            },
           ),
           const SizedBox(height: 5),
           ReorderableSlotList(widget.day.slots, widget.day),

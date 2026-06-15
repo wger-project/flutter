@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,11 +17,11 @@
  */
 
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/widgets.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal.dart';
@@ -29,55 +29,47 @@ import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_goals.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-part 'nutritional_plan.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class NutritionalPlan {
+  /// Inclusive upper bound for [description]
+  static const maxDescriptionChars = 80;
+
+  /// Inclusive upper bounds for the nutritional goal fields
+  static const maxGoalEnergy = 6000;
+  static const maxGoalProtein = 500;
+  static const maxGoalCarbohydrates = 750;
+  static const maxGoalFat = 500;
+  static const maxGoalFiber = 500;
+
   final _logger = Logger('NutritionalPlan Model');
 
-  @JsonKey(required: true)
-  int? id;
+  /// Client-generated UUID, is `null` only before the first persist
+  String? id;
 
-  @JsonKey(required: true)
   late String description;
 
-  @JsonKey(
-    required: true,
-    name: 'creation_date',
-    fromJson: utcIso8601ToLocalDate,
-    toJson: dateToUtcIso8601,
-  )
   late DateTime creationDate;
 
-  @JsonKey(required: true, name: 'start', toJson: dateToYYYYMMDD)
   late DateTime startDate;
 
-  @JsonKey(required: true, name: 'end', toJson: dateToYYYYMMDD)
   late DateTime? endDate;
 
-  @JsonKey(required: true, name: 'only_logging')
   late bool onlyLogging;
 
-  @JsonKey(required: true, name: 'goal_energy')
   late num? goalEnergy;
 
-  @JsonKey(required: true, name: 'goal_protein')
   late num? goalProtein;
 
-  @JsonKey(required: true, name: 'goal_carbohydrates')
   late num? goalCarbohydrates;
 
-  @JsonKey(required: true, name: 'goal_fat')
   late num? goalFat;
 
-  @JsonKey(required: true, name: 'goal_fiber')
   late num? goalFiber;
 
-  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
+  late bool hasGoalCalories;
+
   List<Meal> meals = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
-  List<Log> diaryEntries = [];
+  List<LogItem> diaryEntries = [];
 
   NutritionalPlan({
     this.id,
@@ -86,13 +78,14 @@ class NutritionalPlan {
     required this.startDate,
     this.endDate,
     this.onlyLogging = false,
+    this.hasGoalCalories = false,
     this.goalEnergy,
     this.goalProtein,
     this.goalCarbohydrates,
     this.goalFat,
     this.goalFiber,
     List<Meal>? meals,
-    List<Log>? diaryEntries,
+    List<LogItem>? diaryEntries,
   }) : creationDate = creationDate ?? DateTime.now() {
     this.meals = meals ?? [];
     this.diaryEntries = diaryEntries ?? [];
@@ -112,6 +105,7 @@ class NutritionalPlan {
     endDate = null;
     description = '';
     onlyLogging = false;
+    hasGoalCalories = false;
     goalEnergy = null;
     goalProtein = null;
     goalCarbohydrates = null;
@@ -119,10 +113,35 @@ class NutritionalPlan {
     goalFat = null;
   }
 
-  // Boilerplate
-  factory NutritionalPlan.fromJson(Map<String, dynamic> json) => _$NutritionalPlanFromJson(json);
-
-  Map<String, dynamic> toJson() => _$NutritionalPlanToJson(this);
+  /// Drift companion for inserts/updates against `nutrition_nutritionplan`.
+  ///
+  /// If [id] is null, Drift's `clientDefault` mints a fresh UUID on insert.
+  /// If set, the value round-trips into the row as-is.
+  NutritionalPlanTableCompanion toCompanion() {
+    return NutritionalPlanTableCompanion(
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
+      description: drift.Value(description),
+      creationDate: drift.Value(creationDate.toUtc()),
+      // `start`/`end` are `DateField` server-side
+      startDate: drift.Value(DateTime.utc(startDate.year, startDate.month, startDate.day)),
+      endDate: endDate == null
+          ? const drift.Value.absent()
+          : drift.Value(DateTime.utc(endDate!.year, endDate!.month, endDate!.day)),
+      onlyLogging: drift.Value(onlyLogging),
+      hasGoalCalories: drift.Value(hasGoalCalories),
+      goalEnergy: goalEnergy == null
+          ? const drift.Value.absent()
+          : drift.Value(goalEnergy!.toInt()),
+      goalProtein: goalProtein == null
+          ? const drift.Value.absent()
+          : drift.Value(goalProtein!.toInt()),
+      goalCarbohydrates: goalCarbohydrates == null
+          ? const drift.Value.absent()
+          : drift.Value(goalCarbohydrates!.toInt()),
+      goalFiber: goalFiber == null ? const drift.Value.absent() : drift.Value(goalFiber!.toInt()),
+      goalFat: goalFat == null ? const drift.Value.absent() : drift.Value(goalFat!.toInt()),
+    );
+  }
 
   String getLabel(BuildContext context) {
     return description != '' ? description : AppLocalizations.of(context).nutritionalPlan;
@@ -217,8 +236,8 @@ class NutritionalPlan {
   }
 
   /// Returns the nutritional logs for the given date
-  List<Log> getLogsForDate(DateTime date) {
-    final List<Log> out = [];
+  List<LogItem> getLogsForDate(DateTime date) {
+    final List<LogItem> out = [];
     for (final log in diaryEntries) {
       final dateKey = DateTime(date.year, date.month, date.day);
       final logKey = DateTime(log.datetime.year, log.datetime.month, log.datetime.day);
@@ -251,8 +270,8 @@ class NutritionalPlan {
 
   /// returns diary entries
   /// deduped by the combination of amount and ingredient ID
-  List<Log> get dedupDiaryEntries {
-    final out = <Log>[];
+  List<LogItem> get dedupDiaryEntries {
+    final out = <LogItem>[];
     for (final log in diaryEntries) {
       final found = out.firstWhereOrNull(
         (e) => e.amount == log.amount && e.ingredientId == log.ingredientId,

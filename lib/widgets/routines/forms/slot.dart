@@ -17,14 +17,15 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/autocompleter.dart';
 import 'package:wger/widgets/routines/forms/slot_entry.dart';
@@ -63,7 +64,7 @@ Map<int, SlotGroupInfo> computeSlotGroups(List<Slot> slots, String languageCode)
   return result;
 }
 
-class SlotDetailWidget extends StatefulWidget {
+class SlotDetailWidget extends ConsumerStatefulWidget {
   final Slot slot;
   final bool simpleMode;
   final int routineId;
@@ -71,17 +72,18 @@ class SlotDetailWidget extends StatefulWidget {
   const SlotDetailWidget(this.slot, this.routineId, {this.simpleMode = true, super.key});
 
   @override
-  State<SlotDetailWidget> createState() => _SlotDetailWidgetState();
+  _SlotDetailWidgetState createState() => _SlotDetailWidgetState();
 }
 
-class _SlotDetailWidgetState extends State<SlotDetailWidget> {
+class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
   bool _showExerciseSearchBox = false;
   Widget errorMessage = const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesRiverpodProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
 
     return Column(
       children: [
@@ -92,7 +94,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
               : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode),
         ),
         const SizedBox(height: 10),
-        if (_showExerciseSearchBox || widget.slot.entries.isEmpty)
+        if (isOnline && (_showExerciseSearchBox || widget.slot.entries.isEmpty))
           ExerciseAutocompleter(
             onExerciseSelected: (exercise) async {
               setState(() => _showExerciseSearchBox = false);
@@ -119,9 +121,11 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
           ),
         if (widget.slot.entries.isNotEmpty)
           FilledButton(
-            onPressed: () {
-              setState(() => _showExerciseSearchBox = !_showExerciseSearchBox);
-            },
+            onPressed: isOnline
+                ? () {
+                    setState(() => _showExerciseSearchBox = !_showExerciseSearchBox);
+                  }
+                : null,
             child: Text(i18n.addSuperset),
           ),
         const SizedBox(height: 5),
@@ -130,7 +134,7 @@ class _SlotDetailWidgetState extends State<SlotDetailWidget> {
   }
 }
 
-class ReorderableSlotList extends StatefulWidget {
+class ReorderableSlotList extends ConsumerStatefulWidget {
   final List<Slot> slots;
   final Day day;
 
@@ -140,7 +144,7 @@ class ReorderableSlotList extends StatefulWidget {
   _SlotFormWidgetStateNg createState() => _SlotFormWidgetStateNg();
 }
 
-class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
+class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
   int? selectedSlotId;
   bool simpleMode = true;
   bool isAddingSlot = false;
@@ -148,7 +152,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
   Widget errorMessage = const SizedBox.shrink();
 
   Future<void> _handleAddSet(Slot slot, int slotIndex) async {
-    final provider = Provider.of<RoutinesProvider>(context, listen: false);
+    final provider = ref.read(routinesRiverpodProvider.notifier);
     if (slot.entries.isEmpty) {
       return;
     }
@@ -204,7 +208,8 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final provider = context.read<RoutinesProvider>();
+    final provider = ref.read(routinesRiverpodProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
     final groupInfo = computeSlotGroups(widget.slots, languageCode);
 
@@ -285,12 +290,15 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                 ListTile(
                   title: Text(titleText),
                   tileColor: isCurrentSlotSelected ? Theme.of(context).highlightColor : null,
-                  leading: selectedSlotId == null
+                  leading: selectedSlotId == null && isOnline
                       ? ReorderableDragStartListener(
                           index: index,
                           child: const Icon(Icons.drag_handle),
                         )
-                      : const Icon(Icons.block),
+                      : Icon(
+                          selectedSlotId == null ? Icons.drag_handle : Icons.block,
+                          color: isOnline ? null : Colors.grey,
+                        ),
                   subtitle: subtitleWidget,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -305,7 +313,9 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Icon(Icons.content_copy),
-                          onPressed: isAddingSlot ? null : () => _handleAddSet(slot, index),
+                          onPressed: isAddingSlot || !isOnline
+                              ? null
+                              : () => _handleAddSet(slot, index),
                         ),
                       IconButton(
                         onPressed: () {
@@ -323,7 +333,7 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete),
-                        onPressed: isDeletingSlot == index
+                        onPressed: isDeletingSlot == index || !isOnline
                             ? null
                             : () async {
                                 selectedSlotId = null;
@@ -382,12 +392,13 @@ class _SlotFormWidgetStateNg extends State<ReorderableSlotList> {
         if (!widget.day.isRest)
           Card(
             child: ListTile(
+              enabled: isOnline,
               leading: isAddingSlot ? const FormProgressIndicator() : const Icon(Icons.add),
               title: Text(
                 i18n.addExercise,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              onTap: isAddingSlot
+              onTap: isAddingSlot || !isOnline
                   ? null
                   : () async {
                       setState(() => isAddingSlot = true);

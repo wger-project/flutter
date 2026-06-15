@@ -657,7 +657,6 @@
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"
     },
-    "errorCouldNotConnectToServerDetails": "애플리케이션이 서버에 연결할 수 없습니다. 인터넷 연결이나 서버 URL을 확인하고 다시 시도해 주세요. 문제가 지속되면 서버 관리자에게 문의하세요.",
     "max": "최대",
     "protein": "단백질",
     "proteinShort": "P",

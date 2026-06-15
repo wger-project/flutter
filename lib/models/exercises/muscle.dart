@@ -18,23 +18,12 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/helpers/i18n.dart';
 
-part 'muscle.g.dart';
-
-@JsonSerializable()
 class Muscle extends Equatable {
-  @JsonKey(required: true)
   final int id;
-
-  @JsonKey(required: true)
   final String name;
-
-  @JsonKey(required: true, name: 'name_en')
   final String nameEn;
-
-  @JsonKey(required: true, name: 'is_front')
   final bool isFront;
 
   const Muscle({
@@ -43,11 +32,6 @@ class Muscle extends Equatable {
     required this.nameEn,
     required this.isFront,
   });
-
-  // Boilerplate
-  factory Muscle.fromJson(Map<String, dynamic> json) => _$MuscleFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MuscleToJson(this);
 
   @override
   List<Object?> get props => [id, name, isFront];

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,47 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-part 'meal.g.dart';
-
-@JsonSerializable()
 class Meal {
-  @JsonKey(required: false)
-  late int? id;
+  /// Client-generated UUID, is `null` only before the first persist
+  String? id;
 
-  @JsonKey(name: 'plan')
-  late int planId;
+  /// FK to the parent plan
+  late String planId;
 
-  @JsonKey(toJson: timeToString, fromJson: stringToTimeNull)
   TimeOfDay? time;
 
-  @JsonKey(name: 'name')
   late String name;
 
-  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
+  /// Server-side ordering inside the plan. Replicated down for completeness;
+  /// the client computes new values as `MAX(order) + 1` on insert.
+  int order = 1;
+
   List<MealItem> mealItems = [];
 
-  @JsonKey(includeFromJson: false, includeToJson: false, defaultValue: [])
-  List<Log> diaryEntries = [];
+  List<LogItem> diaryEntries = [];
 
-  List<Log> get diaryEntriesToday =>
+  List<LogItem> get diaryEntriesToday =>
       diaryEntries.where((element) => element.datetime.isSameDayAs(DateTime.now())).toList();
 
   Meal({
     this.id,
-    int? plan,
+    String? plan,
     this.time,
     String? name,
     List<MealItem>? mealItems,
-    List<Log>? diaryEntries,
+    List<LogItem>? diaryEntries,
   }) {
     if (plan != null) {
       planId = plan;
@@ -67,8 +64,26 @@ class Meal {
     this.name = name ?? '';
   }
 
-  /// Calculate total nutritional value
-  // This is already done on the server. It might be better to read it from there.
+  /// Constructor used by Drift's generated row factory.
+  ///
+  /// The column names declared on `MealTable` map onto the named parameters
+  /// here; `mealItems`/`diaryEntries` aren't synced and are filled in later
+  /// by the repository hydration step.
+  Meal.fromDrift({
+    this.id,
+    required String planId,
+    required int order,
+    this.time,
+    required String name,
+  }) {
+    this.planId = planId;
+    this.order = order;
+    this.name = name;
+    mealItems = [];
+    diaryEntries = [];
+  }
+
+  /// Total nutritional values across all child meal items.
   NutritionalValues get plannedNutritionalValues {
     return mealItems.fold(NutritionalValues(), (a, b) => a + b.nutritionalValues);
   }
@@ -84,18 +99,27 @@ class Meal {
     return id != null && id != PSEUDO_MEAL_ID;
   }
 
-  // Boilerplate
-  factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MealToJson(this);
+  /// Drift companion for inserts/updates against `nutrition_meal`.
+  ///
+  /// If [id] is null, Drift's `clientDefault` mints a fresh UUID on insert.
+  /// If set, the value round-trips into the row as-is.
+  MealTableCompanion toCompanion() {
+    return MealTableCompanion(
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
+      planId: drift.Value(planId),
+      order: drift.Value(order),
+      time: time == null ? const drift.Value.absent() : drift.Value(time!),
+      name: drift.Value(name),
+    );
+  }
 
   Meal copyWith({
-    int? id,
-    int? planId,
+    String? id,
+    String? planId,
     TimeOfDay? time,
     String? name,
     List<MealItem>? mealItems,
-    List<Log>? diaryEntries,
+    List<LogItem>? diaryEntries,
   }) {
     return Meal(
       id: id ?? this.id,

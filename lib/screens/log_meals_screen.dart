@@ -83,7 +83,7 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
                   onPressed: () {
                     Navigator.of(context).pushReplacementNamed(
                       NutritionalPlanScreen.routeName,
-                      arguments: nutritionalPlan,
+                      arguments: nutritionalPlan.id,
                     );
                   },
                 ),

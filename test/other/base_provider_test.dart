@@ -31,7 +31,7 @@ import 'base_provider_test.mocks.dart';
 void main() {
   group('test base provider', () {
     test('Test the makeUrl helper', () {
-      final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider);
+      final WgerBaseProvider provider = buildTestBaseProvider();
 
       expect(
         Uri.https('localhost', '/api/v2/endpoint/'),
@@ -65,8 +65,9 @@ void main() {
 
     test('Test the makeUrl helper with sub url', () {
       // Trailing slash is removed when saving the server URL
-      testAuthProvider.serverUrl = 'https://example.com/wger-url';
-      final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider);
+      final WgerBaseProvider provider = buildTestBaseProvider(
+        serverUrl: 'https://example.com/wger-url',
+      );
 
       expect(
         Uri.https('example.com', '/wger-url/api/v2/endpoint/'),
@@ -135,7 +136,7 @@ void main() {
       ).thenAnswer((_) => Future.value(response3));
 
       // Act
-      final WgerBaseProvider provider = WgerBaseProvider(testAuthProvider, mockHttpClient);
+      final WgerBaseProvider provider = buildTestBaseProvider(client: mockHttpClient);
       final data = await provider.fetchPaginated(paginationUri1);
 
       // Assert

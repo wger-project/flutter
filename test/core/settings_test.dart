@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2026 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,53 +17,42 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/app_settings_notifier.dart';
 import 'package:wger/widgets/core/settings.dart';
 
-import '../../test_data/exercises.dart';
-import '../../test_data/nutritional_plans.dart';
 import 'settings_test.mocks.dart';
 
 @GenerateMocks([
-  ExercisesProvider,
-  NutritionPlansProvider,
-  UserProvider,
-  WgerBaseProvider,
   SharedPreferencesAsync,
 ])
 void main() {
-  final mockExerciseProvider = MockExercisesProvider();
-  final mockNutritionProvider = MockNutritionPlansProvider();
   final mockSharedPreferences = MockSharedPreferencesAsync();
-  final mockUserProvider = MockUserProvider();
 
   setUp(() {
-    when(mockUserProvider.themeMode).thenReturn(ThemeMode.system);
-    when(mockUserProvider.userLocale).thenReturn(null);
-    when(mockUserProvider.setUserLocale(any)).thenAnswer((_) async {});
+    when(mockSharedPreferences.getBool(any)).thenAnswer((_) async => null);
+    when(mockSharedPreferences.getString(any)).thenAnswer((_) async => null);
     when(
-      mockSharedPreferences.getString(UserProvider.PREFS_DASHBOARD_CONFIG),
-    ).thenAnswer((_) async => null);
-    when(mockExerciseProvider.exercises).thenReturn(getTestExercises());
-    when(mockNutritionProvider.ingredients).thenReturn([ingredient1, ingredient2]);
+      mockSharedPreferences.setBool(any, any),
+    ).thenAnswer((_) async {});
+    when(
+      mockSharedPreferences.setString(any, any),
+    ).thenAnswer((_) async {});
+    when(
+      mockSharedPreferences.remove(any),
+    ).thenAnswer((_) async {});
   });
 
   Widget createSettingsScreen({locale = 'en'}) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NutritionPlansProvider>(create: (context) => mockNutritionProvider),
-        ChangeNotifierProvider<ExercisesProvider>(create: (context) => mockExerciseProvider),
-        ChangeNotifierProvider<UserProvider>(create: (context) => mockUserProvider),
+    return riverpod.ProviderScope(
+      overrides: [
+        appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -74,67 +63,107 @@ void main() {
     );
   }
 
-  group('Cache', () {
-    testWidgets('Test resetting the exercise cache', (WidgetTester tester) async {
-      await tester.pumpWidget(createSettingsScreen());
-      await tester.tap(find.byKey(const ValueKey('cacheIconExercisesDelete')));
-      await tester.pumpAndSettle();
+  group('Theme settings (AppSettingsNotifier)', () {
+    test('default theme is system', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_USER_DARK_THEME),
+      ).thenAnswer((_) async => null);
+      final container = riverpod.ProviderContainer(
+        overrides: [
+          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
+        ],
+      );
+      addTearDown(container.dispose);
 
-      verify(mockExerciseProvider.clearAllCachesAndPrefs());
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.themeMode, ThemeMode.system);
     });
 
-    testWidgets('Test refreshing the exercise cache', (WidgetTester tester) async {
-      await tester.pumpWidget(createSettingsScreen());
-      await tester.tap(find.byKey(const ValueKey('cacheIconExercisesRefresh')));
-      await tester.pumpAndSettle();
+    test('loads light theme from prefs', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_USER_DARK_THEME),
+      ).thenAnswer((_) async => false);
+      final container = riverpod.ProviderContainer(
+        overrides: [
+          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
+        ],
+      );
+      addTearDown(container.dispose);
 
-      verify(mockExerciseProvider.clearAllCachesAndPrefs());
-      verify(mockExerciseProvider.fetchAndSetInitialData());
-      verify(mockExerciseProvider.fetchAndSetAllExercises());
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.themeMode, ThemeMode.light);
     });
 
-    testWidgets('Test resetting the ingredient cache', (WidgetTester tester) async {
-      await tester.pumpWidget(createSettingsScreen());
-      await tester.tap(find.byKey(const ValueKey('cacheIconIngredients')));
-      await tester.pumpAndSettle();
+    test('saves theme to prefs', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_USER_DARK_THEME),
+      ).thenAnswer((_) async => null);
+      final container = riverpod.ProviderContainer(
+        overrides: [
+          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
+        ],
+      );
+      addTearDown(container.dispose);
 
-      verify(mockNutritionProvider.clearIngredientCache());
-    });
-  });
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setThemeMode(ThemeMode.dark);
 
-  group('Theme settings', () {
-    test('Default theme is system', () async {
-      when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => null);
-      when(mockSharedPreferences.getString(PREFS_USER_LOCALE)).thenAnswer((_) async => null);
-      final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
-      await Future.delayed(const Duration(milliseconds: 50)); // wait for async prefs load
-      expect(userProvider.themeMode, ThemeMode.system);
-    });
-
-    test('Loads light theme', () async {
-      when(mockSharedPreferences.getBool(PREFS_USER_DARK_THEME)).thenAnswer((_) async => false);
-      when(mockSharedPreferences.getString(PREFS_USER_LOCALE)).thenAnswer((_) async => null);
-      final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
-      await Future.delayed(const Duration(milliseconds: 50)); // wait for async prefs load
-      expect(userProvider.themeMode, ThemeMode.light);
-    });
-
-    test('Saves theme to prefs', () {
-      when(mockSharedPreferences.getBool(any)).thenAnswer((_) async => null);
-      when(mockSharedPreferences.getString(any)).thenAnswer((_) async => null);
-      final userProvider = UserProvider(MockWgerBaseProvider(), prefs: mockSharedPreferences);
-      userProvider.setThemeMode(ThemeMode.dark);
+      expect(container.read(appSettingsProvider).requireValue.themeMode, ThemeMode.dark);
       verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, true)).called(1);
-      expect(userProvider.themeMode, ThemeMode.dark);
     });
 
     testWidgets('Test changing the theme mode in preferences', (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('themeModeDropdown')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Always light mode'));
+      await tester.pumpAndSettle();
 
-      verify(mockUserProvider.setThemeMode(ThemeMode.light)).called(1);
+      verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, false)).called(1);
+    });
+  });
+
+  group('Keep-data-on-logout (AppSettingsNotifier)', () {
+    riverpod.ProviderContainer makeContainer() {
+      final container = riverpod.ProviderContainer(
+        overrides: [
+          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
+        ],
+      );
+      addTearDown(container.dispose);
+      return container;
+    }
+
+    test('defaults to true', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
+      ).thenAnswer((_) async => null);
+
+      final settings = await makeContainer().read(appSettingsProvider.future);
+      expect(settings.keepDataOnLogout, true);
+    });
+
+    test('loads false from prefs', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
+      ).thenAnswer((_) async => false);
+
+      final settings = await makeContainer().read(appSettingsProvider.future);
+      expect(settings.keepDataOnLogout, false);
+    });
+
+    test('persists the toggle', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
+      ).thenAnswer((_) async => null);
+      final container = makeContainer();
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setKeepDataOnLogout(true);
+
+      expect(container.read(appSettingsProvider).requireValue.keepDataOnLogout, true);
+      verify(mockSharedPreferences.setBool(PREFS_KEEP_DATA_ON_LOGOUT, true)).called(1);
     });
   });
 
@@ -156,7 +185,7 @@ void main() {
       expect(find.text('System default'), findsWidgets);
     });
 
-    testWidgets('selecting a language calls setUserLocale', (WidgetTester tester) async {
+    testWidgets('selecting a language persists the override', (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());
       await tester.pumpAndSettle();
 
@@ -170,13 +199,14 @@ void main() {
       await tester.tap(find.text('Deutsch').last);
       await tester.pumpAndSettle();
 
-      final captured =
-          verify(mockUserProvider.setUserLocale(captureAny)).captured.single as Locale?;
-      expect(captured?.languageCode, 'de');
+      verify(mockSharedPreferences.setString(PREFS_USER_LOCALE, 'de')).called(1);
     });
 
-    testWidgets('selecting "System language" passes null', (WidgetTester tester) async {
-      when(mockUserProvider.userLocale).thenReturn(const Locale('de'));
+    testWidgets('selecting "System language" clears the override', (WidgetTester tester) async {
+      // Start with a stored override so the dropdown opens on German.
+      when(
+        mockSharedPreferences.getString(PREFS_USER_LOCALE),
+      ).thenAnswer((_) async => 'de');
 
       await tester.pumpWidget(createSettingsScreen());
       await tester.pumpAndSettle();
@@ -190,8 +220,7 @@ void main() {
       await tester.tap(find.text('System default').last);
       await tester.pumpAndSettle();
 
-      final captured = verify(mockUserProvider.setUserLocale(captureAny)).captured.single;
-      expect(captured, isNull);
+      verify(mockSharedPreferences.remove(PREFS_USER_LOCALE)).called(1);
     });
 
     testWidgets('renders supported locales in native script', (WidgetTester tester) async {

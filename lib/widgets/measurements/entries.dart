@@ -17,35 +17,35 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/providers/measurement.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/measurement_notifier.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/measurements/helpers.dart';
 
 import 'forms.dart';
 
-class EntriesList extends StatelessWidget {
+class EntriesList extends ConsumerWidget {
   final MeasurementCategory _category;
 
   const EntriesList(this._category);
 
   @override
-  Widget build(BuildContext context) {
-    final plans = Provider.of<NutritionPlansProvider>(context, listen: false).items;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final plans = ref.watch(nutritionProvider).value?.plans ?? const [];
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-    final provider = Provider.of<MeasurementProvider>(context, listen: false);
+    final provider = ref.read(measurementProvider.notifier);
 
     final entriesAll = _category.entries
         .map((e) => MeasurementChartEntry(e.value, e.date))
         .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
-    final datetimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode).add_Hm();
+    final datetimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
 
     return Column(
       children: [
@@ -80,7 +80,7 @@ class EntriesList extends StatelessWidget {
                             arguments: FormScreenArguments(
                               AppLocalizations.of(context).edit,
                               MeasurementEntryForm(
-                                currentEntry.category,
+                                _category.id!,
                                 currentEntry,
                               ),
                             ),
@@ -90,10 +90,7 @@ class EntriesList extends StatelessWidget {
                           child: Text(AppLocalizations.of(context).delete),
                           onTap: () async {
                             // Delete entry from DB
-                            await provider.deleteEntry(
-                              currentEntry.id!,
-                              currentEntry.category,
-                            );
+                            await provider.deleteEntry(currentEntry.id!);
 
                             // and inform the user
                             if (context.mounted) {

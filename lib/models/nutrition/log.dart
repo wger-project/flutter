@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,76 +16,100 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
+import 'package:drift/drift.dart' as drift;
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
 import 'package:wger/models/nutrition/meal_item.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
 
-part 'log.g.dart';
+/// Diary log entry, one ingredient consumed at a point in time.
+///
+/// Lives entirely in PowerSync/Drift now: row IDs are client-generated UUIDs
+/// (so we can write before the server has assigned an integer PK), and the
+/// `Ingredient` / `IngredientWeightUnit` relations are hydrated from the same
+/// local Drift database by the repository's watch. No JSON round-trip.
+///
+/// Named `LogItem` to mirror the Django model and Drift table name, and to
+/// avoid clashing with the workouts `Log`.
+class LogItem {
+  /// Client-generated UUID, is `null` only before the first persist
+  String? id;
 
-@JsonSerializable()
-class Log {
-  @JsonKey(required: true)
-  int? id;
+  String planId;
 
-  @JsonKey(required: false, name: 'meal')
-  int? mealId;
+  /// Optional parent meal (`null` for free-form diary entries that don't belong to a meal)
+  String? mealId;
 
-  @JsonKey(required: true, name: 'plan')
-  int planId;
-
-  @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
+  int ingredientId;
+  int? weightUnitId;
   late DateTime datetime;
-
+  late num amount;
   String? comment;
 
-  @JsonKey(required: true, name: 'ingredient')
-  late int ingredientId;
+  /// Nullable because of the way powersync works. This will be only the case
+  /// in the time between setting the ingredient ID (e.g. while editing a meal)
+  /// and when the sync comes from the server and the provider can load the
+  /// ingredient.Callers must treat null as "data still arriving" rather than
+  /// as an error.
+  Ingredient? ingredient;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late Ingredient ingredient;
-
-  @JsonKey(required: true, name: 'weight_unit')
-  int? weightUnitId;
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  /// Optional weight unit reference; `null` means the amount is in grams.
   IngredientWeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, fromJson: stringToNum)
-  late num amount;
-
-  Log({
+  LogItem({
     this.id,
-    required this.mealId,
+    this.mealId,
     required this.ingredientId,
-    required this.weightUnitId,
-    required this.amount,
+    this.weightUnitId,
+    required num amount,
     required this.planId,
-    required this.datetime,
+    required DateTime datetime,
     this.comment,
-  });
+  }) {
+    this.amount = amount;
+    this.datetime = datetime;
+  }
 
-  Log.fromMealItem(MealItem mealItem, this.planId, this.mealId, [DateTime? dateTime]) {
-    ingredientId = mealItem.ingredientId;
+  /// Builds a new log row from a meal-plan item, e.g. when the user taps
+  /// "log this meal". The `id` stays null and is assigned by Drift on insert.
+  LogItem.fromMealItem(MealItem mealItem, this.planId, this.mealId, [DateTime? dateTime])
+    : ingredientId = mealItem.ingredientId,
+      weightUnitId = mealItem.weightUnitId {
     ingredient = mealItem.ingredient;
-    weightUnitId = mealItem.weightUnitId;
     datetime = dateTime ?? DateTime.now();
     amount = mealItem.amount;
   }
 
-  // Boilerplate
-  factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
+  /// Drift companion for inserts/updates against `nutrition_logitem`.
+  ///
+  /// If [id] is null, Drift's `clientDefault` mints a fresh UUID on insert.
+  /// If set, the value round-trips into the row as-is.
+  LogItemTableCompanion toCompanion() {
+    return LogItemTableCompanion(
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
+      planId: drift.Value(planId),
+      mealId: mealId == null ? const drift.Value.absent() : drift.Value(mealId!),
+      ingredientId: drift.Value(ingredientId),
+      weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId!),
+      datetime: drift.Value(datetime),
+      amount: drift.Value(amount.toDouble()),
+      comment: comment == null ? const drift.Value.absent() : drift.Value(comment!),
+    );
+  }
 
-  Map<String, dynamic> toJson() => _$LogToJson(this);
-
-  /// Calculations
+  /// Total nutritional contribution of this entry. Server pre-computes the
+  /// same value, but doing it locally keeps offline mode honest.
+  ///
+  /// Returns all-zero values while [ingredient] is still being hydrated
+  /// (see the field doc) so totals and renderers keep working through the
+  /// brief sync gap.
   NutritionalValues get nutritionalValues {
-    // This is already done on the server. It might be better to read it from there.
-
+    final ing = ingredient;
+    if (ing == null) {
+      return NutritionalValues();
+    }
     final weight = weightUnitObj == null ? amount : amount * weightUnitObj!.grams;
-
-    return ingredient.nutritionalValues / (100 / weight);
+    return ing.nutritionalValues / (100 / weight);
   }
 }

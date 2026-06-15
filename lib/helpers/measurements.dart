@@ -32,7 +32,9 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
   // this also helps with computing delta's across the entire window
   List<MeasurementChartEntry> whereDateWithInterpolation(DateTime start, DateTime? end) {
     // Make sure our list is sorted by date
-    sort((a, b) => a.date.compareTo(b.date));
+    // Avoid mutating the original list (it may be unmodifiable/const). Work on a copy.
+    final List<MeasurementChartEntry> sorted = [...this];
+    sorted.sort((a, b) => a.date.compareTo(b.date));
 
     // Initialize result list
     final List<MeasurementChartEntry> result = [];
@@ -46,7 +48,7 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
     MeasurementChartEntry? lastBeforeEnd;
 
     // Single pass through the data
-    for (final entry in this) {
+    for (final entry in sorted) {
       if (entry.date.isSameDayAs(start)) {
         hasEntryOnStartDay = true;
       }

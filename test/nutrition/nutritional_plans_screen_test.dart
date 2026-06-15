@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -16,95 +16,90 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/database/ingredients/ingredients_database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/models/user/profile.dart';
-import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/models/user/user_profile.dart';
+import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/nutrition_repository.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
-import 'nutritional_plan_screen_test.mocks.dart';
+import '../fake_connectivity.dart';
+import 'nutritional_plans_screen_test.mocks.dart';
 
-@GenerateMocks([AuthProvider, WgerBaseProvider, http.Client])
+@GenerateMocks([
+  NutritionRepository,
+  IngredientRepository,
+  http.Client,
+  BodyWeightRepository,
+  UserProfileRepository,
+])
 void main() {
-  final mockAuthProvider = MockAuthProvider();
-  final mockBaseProvider = MockWgerBaseProvider();
-  final client = MockClient();
-  late IngredientDatabase database;
+  installFakeConnectivity();
 
-  setUp(() {
-    database = IngredientDatabase.inMemory(NativeDatabase.memory());
-  });
+  late MockNutritionRepository mockNutritionRepo;
+  late MockIngredientRepository mockIngredientRepo;
+  late MockUserProfileRepository mockUserProfileRepository;
 
-  tearDown(() {
-    database.close();
-  });
+  final testProfile = UserProfile(id: 1, weightUnitStr: 'kg');
 
-  Widget createHomeScreen({locale = 'en'}) {
+  const planUuid1 = 'cc000000-0000-4000-8000-000000000001';
+  const planUuid2 = 'cc000000-0000-4000-8000-000000000002';
+
+  final plans = [
+    NutritionalPlan(
+      id: planUuid1,
+      description: 'test plan 1',
+      creationDate: DateTime(2021, 01, 01),
+      startDate: DateTime(2021, 01, 01),
+    ),
+    NutritionalPlan(
+      id: planUuid2,
+      description: 'test plan 2',
+      creationDate: DateTime(2021, 01, 10),
+      startDate: DateTime(2021, 01, 10),
+    ),
+  ];
+
+  setUp(() async {
+    mockNutritionRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
+    mockUserProfileRepository = MockUserProfileRepository();
+
     when(
-      client.delete(any, headers: anyNamed('headers')),
-    ).thenAnswer((_) async => http.Response('', 200));
+      mockUserProfileRepository.watchDrift(),
+    ).thenAnswer((_) => Stream.value(testProfile));
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
-    when(mockBaseProvider.deleteRequest(any, any)).thenAnswer(
-      (_) async => http.Response('', 200),
+    when(mockNutritionRepo.watchAllDrift()).thenAnswer((_) => Stream.value(plans));
+    when(mockNutritionRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(const []));
+    when(mockNutritionRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
+    when(mockNutritionRepo.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
+  });
+
+  Widget createHomeScreen({locale = 'en', bool isOnline = true}) {
+    final container = ProviderContainer.test(
+      overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
+        bodyWeightRepositoryProvider.overrideWithValue(MockBodyWeightRepository()),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
+        nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      ],
     );
 
-    when(mockAuthProvider.token).thenReturn('1234');
-    when(mockAuthProvider.serverUrl).thenReturn('http://localhost');
-    when(mockAuthProvider.getAppNameHeader()).thenReturn('wger app');
-
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => NutritionPlansProvider(
-            mockBaseProvider,
-            [
-              NutritionalPlan(
-                id: 1,
-                description: 'test plan 1',
-                creationDate: DateTime(2021, 01, 01),
-                startDate: DateTime(2021, 01, 01),
-              ),
-              NutritionalPlan(
-                id: 2,
-                description: 'test plan 2',
-                creationDate: DateTime(2021, 01, 10),
-                startDate: DateTime(2021, 01, 10),
-              ),
-            ],
-            database: database,
-          ),
-        ),
-        ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => BodyWeightProvider(mockBaseProvider),
-        ),
-        ChangeNotifierProvider<UserProvider>(
-          create: (context) =>
-              UserProvider(
-                  mockBaseProvider,
-                )
-                ..profile = Profile(
-                  username: 'test',
-                  emailVerified: true,
-                  isTrustworthy: true,
-                  email: 'test@example.com',
-                  weightUnitStr: 'kg',
-                ),
-        ),
-      ],
+    return UncontrolledProviderScope(
+      container: container,
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -117,8 +112,9 @@ void main() {
 
   testWidgets('Test the widgets on the nutritional plans screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
+    // Stream-based notifier: first emission is async, settle before asserting.
+    await tester.pumpAndSettle();
 
-    //debugDumpApp();
     expect(find.text('Nutritional plans'), findsOneWidget);
     expect(find.byType(Card), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
@@ -126,22 +122,23 @@ void main() {
 
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.delete).first);
-
     await tester.pumpAndSettle();
 
     // Confirmation dialog
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    // Confirm
+    // Confirm tap, actual delete now goes through Drift + PowerSync (not
+    // REST), so we don't assert on the REST mock here.
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
-    expect(find.byType(ListTile), findsOneWidget);
   });
 
   testWidgets('Test the form on the nutritional plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
+    await tester.pumpAndSettle();
 
     expect(find.byType(PlanForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
@@ -149,8 +146,41 @@ void main() {
     expect(find.byType(PlanForm), findsOneWidget);
   });
 
+  testWidgets('Add-plan FAB stays enabled when offline', (WidgetTester tester) async {
+    // Plan creation goes through PowerSync, so it works offline.
+    await tester.pumpWidget(createHomeScreen(isOnline: false));
+    await tester.pumpAndSettle();
+
+    final fab = tester.widget<FloatingActionButton>(find.byType(FloatingActionButton));
+    expect(fab.onPressed, isNotNull);
+
+    // Tapping opens the form.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    expect(find.byType(PlanForm), findsOneWidget);
+  });
+
+  testWidgets('Delete button stays enabled when offline', (WidgetTester tester) async {
+    // Plan deletion syncs through PowerSync, so it works offline.
+    await tester.pumpWidget(createHomeScreen(isOnline: false));
+    await tester.pumpAndSettle();
+
+    final deleteButton = tester.widget<IconButton>(
+      find.widgetWithIcon(IconButton, Icons.delete).first,
+    );
+    expect(deleteButton.onPressed, isNotNull);
+
+    await tester.tap(find.byIcon(Icons.delete).first);
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsOneWidget);
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    verify(mockNutritionRepo.deleteLocalDrift(any)).called(1);
+  });
+
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen());
+    await tester.pumpAndSettle();
 
     // note .. "(open ended)" at the time, depending on localisation strings
     expect(find.textContaining('from 1/1/2021 ('), findsOneWidget);
@@ -159,6 +189,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createHomeScreen(locale: 'de'));
+    await tester.pumpAndSettle();
     // note .. "(open ended)" at the time, depending on localisation strings
 
     expect(find.textContaining('from 1.1.2021 ('), findsOneWidget);

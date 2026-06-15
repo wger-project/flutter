@@ -17,31 +17,38 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/models/workouts/routine.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 
 import '../../test_data/routines.dart';
-import 'routine_edit_screen_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+class _StubRoutinesRiverpod extends RoutinesRiverpod {
+  _StubRoutinesRiverpod(this._routines);
+  final List<Routine> _routines;
+
+  @override
+  Stream<RoutinesState> build() => Stream.value(RoutinesState(routines: _routines));
+}
+
 void main() {
   final key = GlobalKey<NavigatorState>();
 
   testWidgets('RoutineEditScreen smoke test', (WidgetTester tester) async {
-    // Create a mock RoutinesProvider
-    final mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(1)).thenAnswer((_) async => getTestRoutine());
-    when(mockRoutinesProvider.findById(1)).thenReturn(getTestRoutine());
+    final container = ProviderContainer.test(
+      overrides: [
+        routinesRiverpodProvider.overrideWith(
+          () => _StubRoutinesRiverpod([getTestRoutine()]),
+        ),
+      ],
+    );
 
-    // Build the RoutineEditScreen widget with the correct arguments
     await tester.pumpWidget(
-      ChangeNotifierProvider<RoutinesProvider>.value(
-        value: mockRoutinesProvider,
+      UncontrolledProviderScope(
+        container: container,
         child: MaterialApp(
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -66,7 +73,6 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify the title is correct
-    verify(mockRoutinesProvider.findById(1));
     expect(find.text('3 day workout'), findsNWidgets(2));
   });
 }

@@ -19,6 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Minimum server version required by this version of the app.
+///
+/// Bump this value whenever you depend on API changes that are only available
+/// in a newer server release. The check is performed during login and
+/// auto-login and mirrors what the server does with MIN_APP_VERSION.
+const MIN_SERVER_VERSION = '2.5';
+
 /// Size for the "smaller" icons, e.g. when they belong to less important items
 /// and we don't want to fill the whole screen
 const double ICON_SIZE_SMALL = 20;
@@ -30,16 +37,6 @@ const DEFAULT_SERVER_PROD = 'https://wger.de';
 const DEFAULT_SERVER_TEST = 'https://dev.wger.de';
 const TESTSERVER_USER_NAME = 'user';
 const TESTSERVER_PASSWORD = 'flutteruser';
-
-/// Minimum server version required by this version of the app.
-///
-/// Bump this value whenever you depend on API changes that are only available
-/// in a newer server release. The check is performed during login and
-/// auto-login and mirrors what the server does with MIN_APP_VERSION.
-const MIN_SERVER_VERSION = '2.5';
-
-/// Default impression for a workout session (neutral)
-const DEFAULT_IMPRESSION = 2;
 
 // Weight and repetition units for the workout logs
 const REP_UNIT_REPETITIONS_ID = 1;
@@ -55,17 +52,50 @@ const DAYS_TO_CACHE = 20;
 const SUBMIT_BUTTON_KEY_NAME = 'submit-button';
 
 /// Local Preferences keys
-const PREFS_EXERCISES = 'exerciseData';
-const PREFS_LAST_UPDATED_MUSCLES = 'lastUpdatedMuscles';
-const PREFS_LAST_UPDATED_EQUIPMENT = 'lastUpdatedEquipment';
-const PREFS_LAST_UPDATED_CATEGORIES = 'lastUpdatedCategories';
-const PREFS_LAST_UPDATED_LANGUAGES = 'lastUpdatedLanguages';
 const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
 const PREFS_USER = 'userData';
 const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_USER_LOCALE = 'userLocale';
 const PREFS_LAST_SERVER = 'lastServer';
+
+/// Headless JWT auth: SharedPreferences keys.
+///
+/// Read in parallel with the legacy `PREFS_USER` blob during the migration
+/// window; once a user logs in via the headless flow these supersede it.
+/// The refresh token is **not** stored here, it lives in secure storage
+/// (`SECURE_STORAGE_REFRESH_TOKEN`).
+const PREFS_ACCESS_TOKEN = 'accessToken';
+const PREFS_ACCESS_EXPIRES_AT = 'accessExpiresAt';
+const PREFS_TOKEN_TYPE = 'tokenType';
+const PREFS_SERVER_URL = 'serverUrl';
+
+/// JWT `sub` of the user whose data is materialised in the local PowerSync
+/// DB. Compared on login to wipe the DB only on a genuine user switch.
+const PREFS_DB_OWNER_USER_ID = 'dbOwnerUserId';
+
+/// User preference: keep the local PowerSync DB on logout instead of wiping
+/// it. Defaults to [KEEP_DATA_ON_LOGOUT_DEFAULT].
+const PREFS_KEEP_DATA_ON_LOGOUT = 'keepDataOnLogout';
+const KEEP_DATA_ON_LOGOUT_DEFAULT = true;
+
+/// Secure-storage key for the headless refresh token.
+const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';
+
+/// Login-CSRF defence for the web-handoff flow. Stored in SharedPreferences
+/// (not a secret, just a one-shot nonce echoed back by the server).
+const PREFS_APP_AUTH_STATE = 'appAuthState';
+const PREFS_APP_AUTH_STATE_AT = 'appAuthStateAt';
+// The server URL the handoff was started for, round-tripped with the nonce so
+// the returning token is redeemed against the same (e.g. self-hosted) server.
+const PREFS_APP_AUTH_SERVER = 'appAuthServer';
+
+/// True once PowerSync has been reachable for this user at least once
+/// (i.e. its liveness probe returned 200).
+const PREFS_HAS_EVER_SYNCED = 'hasEverSynced';
+
+/// Absolute URL prefix for server-side media files
+const PREFS_MEDIA_URL_PREFIX = 'mediaUrlPrefix';
 
 const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);
 const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;
@@ -110,8 +140,11 @@ enum EXERCISE_IMAGE_ART_STYLE {
   OTHER,
 }
 
-/// Dummy ID for pseudo meals
-const PSEUDO_MEAL_ID = -1;
+/// Sentinel UUID for the synthetic "loose log entries" pseudo-meal.
+///
+/// All-zero UUID is reserved by RFC 4122 (the "nil UUID") and won't collide
+/// with any client-generated UUID v4.
+const PSEUDO_MEAL_ID = '00000000-0000-0000-0000-000000000000';
 
 /// Colors used for muscles
 const COLOR_MAIN_MUSCLES = Colors.red;
@@ -132,6 +165,7 @@ const GITHUB_SPONSORS_URL = 'https://github.com/sponsors/wger-project';
 const GITHUB_ISSUES_MAX_URL_LENGTH = 8000;
 const DISCORD_URL = 'https://discord.gg/rPWFv6W';
 const MASTODON_URL = 'https://fosstodon.org/@wger';
+const READTHEDOCS_URL = 'https://wger.readthedocs.io';
 const WEBLATE_URL = 'https://hosted.weblate.org/engage/wger';
 const BUY_ME_A_COFFEE_URL = 'https://buymeacoffee.com/wger';
 const LIBERAPAY_URL = 'https://liberapay.com/wger';

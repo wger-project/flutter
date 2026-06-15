@@ -901,7 +901,6 @@
     "needsLogsToAdvanceHelp": "Pilih opsi ini jika Anda ingin rutinitas berlanjut ke hari berikutnya hanya setelah Anda mencatat latihan pada hari tersebut",
     "setHasNoExercises": "Set ini belum memiliki latihan apa pun!",
     "aboutBugsListTitle": "Laporkan masalah atau usulkan fitur",
-    "errorCouldNotConnectToServerDetails": "Aplikasi tidak dapat terhubung ke server. Silakan periksa koneksi internet atau URL server anda, lalu coba lagi. Jika masalah terus berlanjut, hubungi administrator server.",
     "unVerifiedEmail": "Email belum diverifikasi",
     "progressionRules": "Latihan ini memiliki aturan peningkatan dan tidak dapat diedit melalui aplikasi mobile. Silakan gunakan aplikasi web untuk mengedit latihan ini.",
     "setHasProgression": "Set memiliki peningkatan",

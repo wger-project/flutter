@@ -13,14 +13,6 @@
   "@register": {
     "description": "Text for registration button"
   },
-  "useDefaultServer": "Use default server",
-  "@useDefaultServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "useCustomServer": "Use custom server",
-  "@useCustomServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
   "invalidUrl": "Please enter a valid URL",
   "@invalidUrl": {
     "description": "Error message when the user enters an invalid URL, e.g. in the login form"
@@ -56,17 +48,63 @@
   "@invalidUsername": {
     "description": "Error message when the user enters an invalid username"
   },
-  "useApiToken": "Use API Token",
-  "useUsernameAndPassword": "Use username and password",
-  "apiToken": "API Token",
-  "@apiToken": {},
-  "invalidApiToken": "Please enter a valid API key",
-  "@invalidApiToken": {
-    "description": "Error message when the user enters an invalid API key"
+  "refreshToken": "Refresh token",
+  "@refreshToken": {},
+  "invalidRefreshToken": "Please enter a valid refresh token",
+  "@invalidRefreshToken": {
+    "description": "Error message when the user enters an invalid refresh token"
   },
-  "apiTokenValidChars": "An API key may only contain the letters a-f, numbers 0-9 and be exactly 40 characters long",
-  "@apiTokenValidChars": {
-    "description": "Error message when the user tries to input a API key with forbidden characters"
+  "refreshTokenValidChars": "A refresh token has three dot-separated segments (header.payload.signature), each made of letters, digits, '-' and '_'",
+  "@refreshTokenValidChars": {
+    "description": "Error message when the user pastes a string that does not match the JWT shape"
+  },
+  "refreshTokenHelperText": "Generate a JWT refresh token on the wger website and paste it here. Useful when your server sits behind an auth proxy or when you want to skip the regular login flow.",
+  "@refreshTokenHelperText": {
+    "description": "Helper text on the refresh-token paste field"
+  },
+  "mfaChallengeTitle": "Two-factor authentication",
+  "@mfaChallengeTitle": {
+    "description": "App bar title on the 2FA challenge screen"
+  },
+  "mfaChallengeTotpPrompt": "Enter the 6-digit code from your authenticator app",
+  "@mfaChallengeTotpPrompt": {
+    "description": "Helper text above the TOTP input field"
+  },
+  "mfaChallengeRecoveryPrompt": "Enter one of your recovery codes",
+  "@mfaChallengeRecoveryPrompt": {
+    "description": "Helper text above the recovery-code input field"
+  },
+  "mfaCodeLabel": "Code",
+  "@mfaCodeLabel": {
+    "description": "Label on the 2FA code input field"
+  },
+  "mfaInvalidCode": "Please enter a code",
+  "@mfaInvalidCode": {
+    "description": "Validation error when the 2FA code field is empty"
+  },
+  "mfaUseRecoveryCode": "Use a recovery code instead",
+  "@mfaUseRecoveryCode": {
+    "description": "Button that switches the 2FA challenge to recovery-code mode"
+  },
+  "mfaUseTotpCode": "Use an authenticator app code",
+  "@mfaUseTotpCode": {
+    "description": "Button that switches the 2FA challenge back to TOTP mode"
+  },
+  "mfaSubmit": "Verify",
+  "@mfaSubmit": {
+    "description": "Submit button on the 2FA challenge screen"
+  },
+  "mfaUnsupportedFactor": "Your account is set up with a second factor this app does not support yet. Please sign in on the website.",
+  "@mfaUnsupportedFactor": {
+    "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+  },
+  "manageAccountOnWeb": "Manage account on the web",
+  "@manageAccountOnWeb": {
+    "description": "Label on a button that opens the user's preferences page on the wger website"
+  },
+  "manageAccountOnWebSubtitle": "Change your password, set up two-factor authentication, manage API tokens, or delete your account.",
+  "@manageAccountOnWebSubtitle": {
+    "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
   },
   "customServerUrl": "URL of the wger instance",
   "@customServerUrl": {
@@ -80,10 +118,36 @@
   "@reset": {
     "description": "Button text allowing the user to reset the entered values to the default"
   },
-  "registerInstead": "Don't have an account? Register now",
-  "@registerInstead": {},
-  "loginInstead": "Already have an account? Login",
-  "@loginInstead": {},
+  "advanced": "Advanced",
+  "@advanced": {},
+  "advancedSubtitle": "Server and authentication options",
+  "@advancedSubtitle": {},
+  "serverSectionLabel": "Server",
+  "@serverSectionLabel": {},
+  "signInMethodSectionLabel": "Sign-in method",
+  "@signInMethodSectionLabel": {},
+  "serverOptionDefaultDetail": "The official server",
+  "@serverOptionDefaultDetail": {},
+  "serverOptionSelfHostedTitle": "Self-hosted",
+  "@serverOptionSelfHostedTitle": {},
+  "serverOptionSelfHostedDetail": "Connect to your own instance",
+  "@serverOptionSelfHostedDetail": {},
+  "authOptionPasswordTitle": "Username and password",
+  "@authOptionPasswordTitle": {},
+  "signInWithToken": "Sign in with token",
+  "@signInWithToken": {},
+  "tokenSubtitle": "Generate one on the wger website",
+  "@tokenSubtitle": {},
+  "newToWger": "New to wger?",
+  "@newToWger": {},
+  "alreadyHaveAccount": "Already have an account?",
+  "@alreadyHaveAccount": {},
+  "tokenLabel": "Token",
+  "@tokenLabel": {},
+  "webHandoffLinkLabel": "Other sign-in options",
+  "@webHandoffLinkLabel": {},
+  "webHandoffLinkSubtitle": "Social login, passkey, SSO",
+  "@webHandoffLinkSubtitle": {},
   "labelBottomNavWorkout": "Workout",
   "@labelBottomNavWorkout": {
     "description": "Label used in bottom navigation, use a short word"
@@ -139,7 +203,6 @@
   "@noMatchingExerciseFound": {
     "description": "Message returned if no exercises match the searched string"
   },
-  "searchNamesInEnglish": "Also search for names in English",
   "equipment": "Equipment",
   "@equipment": {
     "description": "Equipment needed to perform an exercise"
@@ -239,8 +302,6 @@
       }
     }
   },
-  "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
-  "@sameRepetitions": {},
   "comment": "Comment",
   "@comment": {
     "description": "Comment, additional information"
@@ -283,8 +344,6 @@
   "@newSet": {
     "description": "Header when adding a new set to a workout day"
   },
-  "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
-  "@selectExercises": {},
   "personalRecords": "Personal records",
   "gymMode": "Gym mode",
   "@gymMode": {
@@ -366,7 +425,7 @@
   "@logIngredient": {},
   "searchIngredient": "Search ingredient",
   "@searchIngredient": {
-    "description": "Label on ingredient search form"
+    "description": "Label (or Hint text) on ingredient search form"
   },
   "nutritionalPlan": "Nutritional plan",
   "@nutritionalPlan": {},
@@ -377,6 +436,14 @@
   "noNutritionalPlans": "You have no nutritional plans",
   "@noNutritionalPlans": {
     "description": "Message shown when the user has no nutritional plans"
+  },
+  "clearSearchTerm": "Clear search term (text)",
+  "@clearSearchTerm": {
+    "description": "Tooltip for the icon-button that clears the ingredient search text field"
+  },
+  "ingredients": "Ingredients",
+  "@ingredients": {
+    "description": "Plural title for the ingredients overview screen"
   },
   "onlyLogging": "Only track calories",
   "onlyLoggingHelpText": "Check the box if you only want to log your calories and don't want to setup a detailed nutritional plan with specific meals",
@@ -399,12 +466,15 @@
   "goalFat": "Fat goal",
   "goalFiber": "Fiber goal",
   "anErrorOccurred": "An Error Occurred!",
+  "errorRawSource": "Raw",
+  "@errorRawSource": {
+    "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
+  },
   "errorInfoDescription": "We're sorry, but something went wrong. You can help us fix this by reporting the issue on GitHub.",
   "errorInfoDescription2": "You can continue using the app, but some features may not work.",
   "errorViewDetails": "Technical details",
   "applicationLogs": "Application logs",
   "errorCouldNotConnectToServer": "Couldn't connect to server",
-  "errorCouldNotConnectToServerDetails": "The application could not connect to the server. Please check your internet connection or the server URL and try again. If the problem persists, contact the server administrator.",
   "copyToClipboard": "Copy to clipboard",
   "weight": "Weight",
   "min": "Min",
@@ -490,7 +560,9 @@
   "timeStartAhead": "Start time cannot be ahead of end time",
   "@timeStartAhead": {},
   "ingredient": "Ingredient",
-  "@ingredient": {},
+  "@ingredient": {
+    "description": "Singular label for an ingredient"
+  },
   "energy": "Energy",
   "@energy": {
     "description": "Energy in a meal, ingredient etc. e.g. in kJ"
@@ -499,6 +571,7 @@
   "@energyShort": {
     "description": "The first letter or short name of the word 'Energy', used in overviews"
   },
+  "dietaryInformation": "Dietary information",
   "macronutrients": "Macronutrients",
   "@macronutrients": {},
   "planned": "Planned",
@@ -619,10 +692,6 @@
   "@noWeightEntries": {
     "description": "Message shown when the user has no logged weight entries"
   },
-  "noMeasurementEntries": "You have no measurement entries",
-  "@noMeasurementntries": {
-    "description": "Message shown when the user has no logged measurement entries"
-  },
   "moreMeasurementEntries": "Add new measurement",
   "@moreMeasurementEntries": {
     "description": "Message shown when the user wants to add new measurement"
@@ -630,10 +699,6 @@
   "edit": "Edit",
   "@edit": {},
   "preview": "Preview",
-  "loadingText": "Loading...",
-  "@loadingText": {
-    "description": "Text to show when entries are being loaded in the background: Loading..."
-  },
   "delete": "Delete",
   "@delete": {},
   "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
@@ -670,13 +735,11 @@
   "aboutJoinCommunityTitle": "Join the community",
   "aboutMastodonTitle": "Mastodon",
   "aboutDiscordTitle": "Discord",
+  "aboutViewDocsTitle": "Open documentation",
+  "aboutViewLicensesTitle": "View licenses",
   "others": "Others",
   "calendar": "Calendar",
   "@calendar": {},
-  "goToToday": "Go to today",
-  "@goToToday": {
-    "description": "Label on button to jump back to 'today' in the calendar widget"
-  },
   "enterValue": "Please enter a value",
   "@enterValue": {
     "description": "Error message when the user hasn't entered a value on a required field"
@@ -722,6 +785,16 @@
       }
     }
   },
+  "enterMaxCharacters": "Please enter at most {max} characters",
+  "@enterMaxCharacters": {
+    "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
   "baseNameEnglish": "All exercises need a base name in English",
   "nrOfSets": "Sets per exercise: {nrOfSets}",
   "@nrOfSets": {
@@ -732,11 +805,6 @@
         "type": "String"
       }
     }
-  },
-  "setUnitsAndRir": "Set units and RiR",
-  "@setUnitsAndRir": {
-    "description": "Label shown on the slider where the user can toggle showing units and RiR",
-    "type": "text"
   },
   "enterValidNumber": "Please enter a valid number",
   "@enterValidNumber": {
@@ -785,6 +853,12 @@
         "type": "String"
       }
     }
+  },
+  "powerSyncUnreachableTitle": "Sync service unreachable",
+  "powerSyncUnreachableContent": "Your wger server is reachable, but the (separate) service that handles offline sync is not responding. If you self-host wger, check your configuration and make sure the PowerSync service is running correctly.",
+  "serverUnreachableRetry": "Try again",
+  "@serverUnreachableRetry": {
+    "description": "Button that re-runs the auto-login attempt against the saved server."
   },
   "productFound": "Product found",
   "@productFound": {
@@ -914,7 +988,6 @@
   },
   "verifiedEmail": "Verified email",
   "unVerifiedEmail": "Unverified email",
-  "verifiedEmailReason": "You need to verify your email to contribute exercises",
   "verifiedEmailInfo": "A verification email was sent to {email}",
   "@verifiedEmailInfo": {
     "placeholders": {
@@ -935,8 +1008,6 @@
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
   "superset": "Superset",
-  "setHasProgression": "Set has progression",
-  "setHasProgressionWarning": "Please note that at the moment it is not possible to edit all settings for a set on the mobile application or configure automatic progression. For now, please use the web application.",
   "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
   "translation": "Translation",
@@ -955,9 +1026,11 @@
   "enterTextInLanguage": "Please enter the text in the correct language!",
   "settingsTitle": "Settings",
   "settingsCacheTitle": "Cache",
-  "settingsExerciseCacheDescription": "Exercise cache",
-  "settingsIngredientCacheDescription": "Ingredient cache",
+  "settingsImageCacheDescription": "Image cache",
   "settingsCacheDeletedSnackbar": "Cache successfully cleared",
+  "settingsDataTitle": "Privacy",
+  "settingsKeepDataOnLogout": "Keep data when logging out",
+  "settingsKeepDataOnLogoutDescription": "The local database stays on your device until a different account signs in.",
   "aboutPageTitle": "About us & Support",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
   "@contributeExerciseWarning": {
@@ -1168,6 +1241,7 @@
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
   "systemMode": "System settings",
+  "youAreOffline": "You are offline",
   "appLanguage": "App language",
   "@appLanguage": {
     "description": "Label for the in-app language selector in settings"
@@ -1218,20 +1292,57 @@
   "@searchLanguageAll": {
     "description": "Label used in the language selector to indicate no specific language filter is applied"
   },
-
   "exerciseSearchMode": "Search mode",
   "@exerciseSearchMode": {
     "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
   },
-
   "searchModeFuzzy": "Fuzzy",
   "@searchModeFuzzy": {
     "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
   },
-
   "searchModeExact": "Exact",
   "@searchModeExact": {
     "description": "Label for the search mode that only matches exercises with this exact name"
+  },
+  "syncStatusConnected": "Connected",
+  "@syncStatusConnected": {
+    "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+  },
+  "syncStatusConnecting": "Connecting",
+  "@syncStatusConnecting": {
+    "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+  },
+  "syncStatusDisconnected": "Not connected",
+  "@syncStatusDisconnected": {
+    "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+  },
+  "syncStatusUploading": "Uploading",
+  "@syncStatusUploading": {
+    "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+  },
+  "syncStatusDownloading": "Downloading",
+  "@syncStatusDownloading": {
+    "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+  },
+  "syncStatusSyncing": "Synchronizing",
+  "@syncStatusSyncing": {
+    "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+  },
+  "syncStatusError": "Sync error",
+  "@syncStatusError": {
+    "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+  },
+  "syncStatusDialogTitle": "Sync status",
+  "@syncStatusDialogTitle": {
+    "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+  },
+  "syncStatusLastSynced": "Last synchronisation",
+  "@syncStatusLastSynced": {
+    "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+  },
+  "syncStatusErrorDetails": "Error details",
+  "@syncStatusErrorDetails": {
+    "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
   },
   "filterNutriscore": "Nutri-Score filter",
   "@filterNutriscore": {
@@ -1270,5 +1381,17 @@
    "viewDocumentation": "View documentation",
    "@viewDocumentation": {
    "description": "Button label to open the documentation about server configuration"
-   }
+   },
+  "sessionExpired": "Your session has expired, please log in again",
+  "@sessionExpired": {
+    "description": "Snackbar message shown when the saved login token is no longer valid"
+  },
+  "weightOrRepsRequired": "Please enter a weight, repetitions, or both",
+  "@weightOrRepsRequired": {
+    "description": "Validation error when both weight and repetitions are empty in a workout log"
+  },
+  "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
+  "@timeStartEndBothOrNeither": {
+    "description": "Validation error when only one of start/end time is set on a workout session"
+  }
 }

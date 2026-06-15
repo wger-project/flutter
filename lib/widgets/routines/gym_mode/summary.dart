@@ -21,15 +21,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/trophies/user_trophy.dart';
-import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/models/workouts/session_api.dart';
-import 'package:wger/providers/gym_state.dart';
-import 'package:wger/providers/routines.dart';
-import 'package:wger/providers/trophies.dart';
+import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
+import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/providers/trophy_notifier.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
@@ -47,39 +45,26 @@ class WorkoutSummary extends ConsumerStatefulWidget {
 }
 
 class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
-  late Future<void> _initData;
-  late Routine _routine;
+  late Future<void> _trophyFuture;
   bool _didInit = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_didInit) {
       final languageCode = Localizations.localeOf(context).languageCode;
-      _initData = _reloadRoutineData(languageCode);
+      _trophyFuture = ref
+          .read(trophyStateProvider.notifier)
+          .fetchUserTrophies(language: languageCode);
       _didInit = true;
     }
   }
 
-  Future<void> _reloadRoutineData(String languageCode) async {
-    widget._logger.fine('Loading routine data');
-    final gymState = ref.read(gymStateProvider);
-
-    _routine = await context.read<RoutinesProvider>().fetchAndSetRoutineFull(
-      gymState.routine.id!,
-    );
-
-    final trophyNotifier = ref.read(trophyStateProvider.notifier);
-    await trophyNotifier.fetchUserTrophies(language: languageCode);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final routineId = ref.read(gymStateProvider).routine.id!;
+    final routinesState = ref.watch(routinesRiverpodProvider).value;
+    final routine = routinesState?.routines.firstWhereOrNull((r) => r.id == routineId);
     final trophyState = ref.watch(trophyStateProvider);
 
     return Column(
@@ -91,29 +76,25 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
         ),
         Expanded(
           child: FutureBuilder<void>(
-            future: _initData,
+            future: _trophyFuture,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const BoxedProgressIndicator();
-              } else if (snapshot.hasError) {
+              if (snapshot.hasError) {
                 widget._logger.warning(snapshot.error);
                 widget._logger.warning(snapshot.stackTrace);
                 return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (snapshot.connectionState == ConnectionState.done) {
-                final apiSession = _routine.sessions.firstWhereOrNull(
-                  (s) => s.session.date.isSameDayAs(clock.now()),
-                );
-                final userTrophies = trophyState.prTrophies
-                    .where((t) => t.contextData?.sessionId == apiSession?.session.id)
-                    .toList();
-
-                return WorkoutSessionStats(
-                  apiSession,
-                  userTrophies,
-                );
+              }
+              if (snapshot.connectionState == ConnectionState.waiting || routine == null) {
+                return const BoxedProgressIndicator();
               }
 
-              return const Center(child: Text('Unexpected state!'));
+              final session = routine.sessions.firstWhereOrNull(
+                (s) => s.date.isSameDayAs(clock.now()),
+              );
+              final userTrophies = trophyState.prTrophies
+                  .where((t) => t.contextData?.sessionId == session?.id)
+                  .toList();
+
+              return WorkoutSessionStats(session, userTrophies);
             },
           ),
         ),
@@ -124,28 +105,24 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
 }
 
 class WorkoutSessionStats extends ConsumerWidget {
-  final WorkoutSessionApi? _sessionApi;
+  final WorkoutSession? _session;
   final List<UserTrophy> _userPrTrophies;
 
-  const WorkoutSessionStats(this._sessionApi, this._userPrTrophies, {super.key});
+  const WorkoutSessionStats(this._session, this._userPrTrophies, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
-    if (_sessionApi == null) {
+    if (_session == null) {
       return Center(
-        child: Text(
-          'Nothing logged yet.',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        child: Text('Nothing logged yet.', style: Theme.of(context).textTheme.titleMedium),
       );
     }
 
-    final session = _sessionApi.session;
-    final sessionDuration = session.duration;
-    final totalVolume = _sessionApi.volume;
+    final sessionDuration = _session.duration;
+    final totalVolume = _session.volume;
 
     /// We assume that users will do exercises (mostly) either in metric or imperial
     /// units so we just display the higher one.
@@ -194,9 +171,9 @@ class WorkoutSessionStats extends ConsumerWidget {
             ),
           ),
         const SizedBox(height: 10),
-        MuscleGroupsCard(_sessionApi.logs),
+        MuscleGroupsCard(_session.logs),
         const SizedBox(height: 10),
-        ExercisesCard(_sessionApi, _userPrTrophies),
+        ExercisesCard(_session, _userPrTrophies),
         FilledButton(
           onPressed: () {
             ref.read(gymStateProvider.notifier).clear();

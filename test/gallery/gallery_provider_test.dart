@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -16,79 +16,80 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/models/gallery/image.dart';
+import 'package:wger/providers/gallery_notifier.dart';
+import 'package:wger/providers/gallery_repository.dart';
 
-import '../other/base_provider_test.mocks.dart';
-import '../utils.dart';
+import 'gallery_provider_test.mocks.dart';
 
+@GenerateMocks([GalleryRepository])
 void main() {
-  group('test gallery provider', () {
-    test('Test that fetch and set gallery', () async {
-      final client = MockClient();
+  late MockGalleryRepository mockRepo;
 
-      when(
-        client.get(
-          Uri.https('localhost', 'api/v2/gallery/'),
-          headers: anyNamed('headers'),
-        ),
-      ).thenAnswer(
-        (_) async => http.Response(
-          '{"count":1,"next":null,"previous":null,"results":['
-          '{"id":58,'
-          '"date":"2022-01-09",'
-          '"image":"https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg",'
-          '"description":"eggsaddjujuit\'ddayhadIforcanview",'
-          '"height":1280,"width":960}]}',
-          200,
-        ),
-      );
+  final image1 = GalleryImage(
+    id: 58,
+    date: DateTime(2022, 01, 09),
+    imagePath: 'gallery/1/1.jpg',
+    description: 'image 1',
+  );
+  final image2 = GalleryImage(
+    id: 59,
+    date: DateTime(2022, 02, 14),
+    imagePath: 'gallery/1/2.jpg',
+    description: 'image 2',
+  );
 
-      final galleryProvider = GalleryProvider(testAuthProvider, [], client);
+  ProviderContainer makeContainer() {
+    return ProviderContainer.test(
+      overrides: [galleryRepositoryProvider.overrideWithValue(mockRepo)],
+    );
+  }
 
-      await galleryProvider.fetchAndSetGallery();
+  Future<ProviderContainer> containerWithImages(List<GalleryImage> images) async {
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(images));
+    final container = makeContainer();
+    container.listen(galleryProvider, (_, _) {});
+    await pumpEventQueue();
+    return container;
+  }
 
-      // Check that everything is ok
-      expect(galleryProvider.images.length, 1);
-    });
+  setUp(() {
+    mockRepo = MockGalleryRepository();
+    // Default: empty stream that never emits. Tests that exercise notifier
+    // methods on a fresh container use [containerWithImages] to seed.
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => const Stream.empty());
+    when(mockRepo.editLocalDrift(any)).thenAnswer((_) async {});
+    when(mockRepo.deleteLocalDrift(any)).thenAnswer((_) async {});
+  });
 
-    test('Test that delete gallery photo', () async {
-      final client = MockClient();
+  test('build streams the gallery from the repository, sorted newest first', () async {
+    // Drift returns rows in `Meta.ordering = ['-date']` order.
+    final container = await containerWithImages([image2, image1]);
 
-      when(
-        client.delete(
-          Uri.https('localhost', 'api/v2/gallery/58/'),
-          headers: anyNamed('headers'),
-        ),
-      ).thenAnswer(
-        (_) async => http.Response(
-          '{"id":58,'
-          '"date":"2022-01-09",'
-          '"image":"https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg",'
-          '"description":"eggsaddjujuit\'ddayhadIforcanview",'
-          '"height":1280,"width":960}',
-          200,
-        ),
-      );
+    final images = container.read(galleryProvider).requireValue;
+    expect(images, hasLength(2));
+    expect(images.first.id, 59);
+    verify(mockRepo.watchAllDrift()).called(1);
+  });
 
-      final galleryProvider = GalleryProvider(testAuthProvider, [], client);
+  test('deleteImage forwards to the repository', () async {
+    final container = makeContainer();
 
-      final image = gallery.Image(
-        id: 58,
-        date: DateTime(2022, 01, 09),
-        url: 'https://wger.de/media/gallery/170335/d2b9c9e0-d541-41ae-8786-a2ab459e3538.jpg',
-        description: "eggsaddjujuit'ddayhadIforcanview",
-      );
+    await container.read(galleryProvider.notifier).deleteImage(image1);
 
-      galleryProvider.images.add(image);
+    verify(mockRepo.deleteLocalDrift(image1.id)).called(1);
+  });
 
-      await galleryProvider.deleteImage(image);
+  test('editImage without a file routes through Drift', () async {
+    final container = makeContainer();
 
-      // Check that everything is ok
-      expect(galleryProvider.images.length, 0);
-    });
+    await container.read(galleryProvider.notifier).editImage(image1, null);
+
+    verify(mockRepo.editLocalDrift(image1)).called(1);
+    verifyNever(mockRepo.editImageServer(any, any));
   });
 }

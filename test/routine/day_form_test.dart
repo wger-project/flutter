@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,31 +17,41 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/day.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/routines/forms/day.dart';
 
 import '../../test_data/routines.dart';
-import 'routine_edit_test.mocks.dart';
+import 'day_form_test.mocks.dart';
+import 'helpers/routine_form_test_overrides.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesRepository])
 void main() {
-  late MockRoutinesProvider mockRoutinesProvider;
+  late MockRoutinesRepository mockRoutinesRepository;
 
   setUp(() {
-    mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.editDay(any)).thenAnswer((_) async => getTestRoutine().days[0]);
+    mockRoutinesRepository = MockRoutinesRepository();
+    when(mockRoutinesRepository.editDayServer(any)).thenAnswer((_) async => {});
+    when(
+      mockRoutinesRepository.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) => Future.value(getTestRoutine()));
   });
 
-  Widget renderWidget() {
-    return ChangeNotifierProvider<RoutinesProvider>.value(
-      value: mockRoutinesProvider,
+  Widget renderWidget({bool isOnline = true}) {
+    return ProviderScope(
+      overrides: [
+        routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
+        networkStatusProvider.overrideWithValue(isOnline),
+        ...routineFormAmbientOverrides(),
+      ],
       child: MaterialApp(
         locale: const Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -94,7 +104,7 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(
-        mockRoutinesProvider.editDay(
+        mockRoutinesRepository.editDayServer(
           argThat(
             isA<Day>()
                 .having((d) => d.routineId, 'routineId', 1)
@@ -105,6 +115,22 @@ void main() {
           ),
         ),
       );
+    });
+
+    testWidgets('Submit is disabled and editDay is not called when offline', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(renderWidget(isOnline: false));
+      await tester.pumpAndSettle();
+
+      final button = tester.widget<FormSubmitButton>(
+        find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+      );
+      expect(button.enabled, isFalse);
+
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
+      await tester.pump();
+      verifyNever(mockRoutinesRepository.editDayServer(any));
     });
   });
 }

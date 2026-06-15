@@ -3,9 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  app_links
+  connectivity_plus
   file_selector_windows
-  rive_common
-  sqlite3_flutter_libs
+  flutter_secure_storage_windows
   url_launcher_windows
 )
 

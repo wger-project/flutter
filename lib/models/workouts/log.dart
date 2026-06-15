@@ -16,18 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-
-part 'log.g.dart';
 
 enum LogTargetStatus {
   lessThanTarget,
@@ -36,60 +34,34 @@ enum LogTargetStatus {
   notSet,
 }
 
-@JsonSerializable()
 class Log {
-  @JsonKey(required: true)
-  int? id;
+  /// Max value the backend stores for weight / repetitions
+  /// (in the backend: DecimalField max_digits=6, decimal_places=2)
+  static const MAX_VALUE = 9999.99;
 
-  @JsonKey(required: true, name: 'exercise')
+  /// Client-generated UUID, is `null` only before the first persist
+  String? id;
+
   late int exerciseId;
+  late Exercise exerciseObj;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late Exercise exercise;
-
-  @JsonKey(required: true, name: 'routine')
   late int routineId;
-
-  @JsonKey(required: true, name: 'session')
-  int? sessionId;
-
-  @JsonKey(required: true)
+  String? sessionId;
   int? iteration;
-
-  @JsonKey(required: true, name: 'slot_entry')
   int? slotEntryId;
-
-  @JsonKey(required: false, fromJson: stringToNumNull)
   num? rir;
-
-  @JsonKey(required: false, fromJson: stringToNumNull, name: 'rir_target')
   num? rirTarget;
 
-  @JsonKey(required: true, fromJson: stringToNumNull, name: 'repetitions')
   num? repetitions;
-
-  @JsonKey(required: true, fromJson: stringToNumNull, name: 'repetitions_target')
   num? repetitionsTarget;
-
-  @JsonKey(required: true, name: 'repetitions_unit')
   int? repetitionsUnitId;
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
   RepetitionUnit? repetitionsUnitObj;
 
-  @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString)
   num? weight;
-
-  @JsonKey(required: true, fromJson: stringToNumNull, toJson: numToString, name: 'weight_target')
   num? weightTarget;
-
-  @JsonKey(required: true, name: 'weight_unit')
   int? weightUnitId;
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
   WeightUnit? weightUnitObj;
 
-  @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime date;
 
   Log({
@@ -98,6 +70,7 @@ class Log {
     this.iteration,
     this.slotEntryId,
     required this.routineId,
+    this.sessionId,
     this.repetitions,
     this.repetitionsTarget,
     this.repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
@@ -111,12 +84,12 @@ class Log {
     DateTime? date,
   }) : date = date ?? DateTime.now();
 
-  Log.fromSetConfigData(SetConfigData setConfig) {
+  Log.fromSetConfigData(SetConfigData setConfig, {int? routineId, this.iteration}) {
     date = DateTime.now();
     sessionId = null;
 
     slotEntryId = setConfig.slotEntryId;
-    exerciseBase = setConfig.exercise;
+    exercise = setConfig.exercise;
 
     weight = setConfig.weight;
     weightTarget = setConfig.weight;
@@ -130,13 +103,17 @@ class Log {
 
     rir = setConfig.rir;
     rirTarget = setConfig.rir;
+
+    if (routineId != null) {
+      this.routineId = routineId;
+    }
   }
 
   Log copyWith({
-    int? id,
+    String? id,
     int? exerciseId,
     int? routineId,
-    int? sessionId,
+    String? sessionId,
     int? iteration,
     int? slotEntryId,
     num? rir,
@@ -157,6 +134,7 @@ class Log {
       iteration: iteration ?? this.iteration,
       slotEntryId: slotEntryId ?? this.slotEntryId,
       routineId: routineId ?? this.routineId,
+      sessionId: sessionId ?? this.sessionId,
       repetitions: repetitions ?? this.repetitions,
       repetitionsTarget: repetitionsTarget ?? this.repetitionsTarget,
       repetitionsUnitId: repetitionsUnitId ?? this.repetitionsUnitId,
@@ -170,10 +148,6 @@ class Log {
       date: date ?? this.date,
     );
 
-    if (sessionId != null) {
-      out.sessionId = sessionId;
-    }
-
     if (repetitionsUnitObj != null) {
       out.repetitionsUnitObj = repetitionsUnitObj;
       out.repetitionsUnitId = repetitionsUnitObj.id;
@@ -183,19 +157,44 @@ class Log {
       out.weightUnitObj = weightUnitObj;
       out.weightUnitId = weightUnitObj.id;
     }
-    out.exerciseBase = exercise;
+    out.exerciseObj = exerciseObj;
 
     return out;
   }
 
-  // Boilerplate
-  factory Log.fromJson(Map<String, dynamic> json) => _$LogFromJson(json);
+  WorkoutLogTableCompanion toCompanion() {
+    return WorkoutLogTableCompanion(
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
+      exerciseId: drift.Value(exerciseId),
+      routineId: drift.Value(routineId),
+      sessionId: sessionId != null ? drift.Value(sessionId) : const drift.Value.absent(),
+      iteration: iteration != null ? drift.Value(iteration) : const drift.Value.absent(),
+      slotEntryId: slotEntryId != null ? drift.Value(slotEntryId) : const drift.Value.absent(),
+      rir: rir != null ? drift.Value(rir!.toDouble()) : const drift.Value.absent(),
+      rirTarget: rirTarget != null
+          ? drift.Value(rirTarget!.toDouble())
+          : const drift.Value.absent(),
+      repetitions: repetitions != null
+          ? drift.Value(repetitions!.toDouble())
+          : const drift.Value.absent(),
+      repetitionsTarget: repetitionsTarget != null
+          ? drift.Value(repetitionsTarget!.toDouble())
+          : const drift.Value.absent(),
+      repetitionsUnitId: repetitionsUnitId != null
+          ? drift.Value(repetitionsUnitId)
+          : const drift.Value.absent(),
+      weight: weight != null ? drift.Value(weight!.toDouble()) : const drift.Value.absent(),
+      weightTarget: weightTarget != null
+          ? drift.Value(weightTarget!.toDouble())
+          : const drift.Value.absent(),
+      weightUnitId: weightUnitId != null ? drift.Value(weightUnitId) : const drift.Value.absent(),
+      date: drift.Value(date),
+    );
+  }
 
-  Map<String, dynamic> toJson() => _$LogToJson(this);
-
-  set exerciseBase(Exercise base) {
-    exercise = base;
-    exerciseId = base.id!;
+  set exercise(Exercise exercise) {
+    exerciseObj = exercise;
+    exerciseId = exercise.id;
   }
 
   set weightUnit(WeightUnit? weightUnit) {
@@ -304,9 +303,6 @@ class Log {
   //ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode =>
       Object.hash(exerciseId, weight, weightUnitId, repetitions, repetitionsUnitId, rir);
-
-  //@override
-  //int get hashCode => super.hashCode;
 
   @override
   String toString() {

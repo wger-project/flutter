@@ -937,7 +937,6 @@
     "errorViewDetails": "Tehnički detalji",
     "applicationLogs": "Dnevnici aplikacije",
     "errorCouldNotConnectToServer": "Neuspjelo povezivanje sa serverom",
-    "errorCouldNotConnectToServerDetails": "Aplikacija se nije mogla povezati sa serverom. Provjeri internetsku vezu ili URL servera i pokušaj ponovo. Ako problem ne nestane, obrati se administratoru servera.",
     "copyToClipboard": "Kopiraj u međuspremnik",
     "endDate": "Datum kraja",
     "@endDate": {

@@ -896,7 +896,6 @@
     "errorInfoDescription2": "您可以继续使用这款应用，但部分功能可能无法正常运行。",
     "errorViewDetails": "错误技术详情",
     "errorCouldNotConnectToServer": "无法连接到服务器",
-    "errorCouldNotConnectToServerDetails": "应用程序无法连接到服务器。请检查您的网络连接或服务器网址，然后重试。如果问题持续存在，请联系服务器管理员。",
     "copyToClipboard": "复制",
     "aboutWhySupportTitle": "开源 & 免费使用",
     "aboutContributeTitle": "贡献",

@@ -17,17 +17,18 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/nutrition_repository.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/utils.dart';
 import '../test/weight/weight_screen_test.mocks.dart';
 import '../test_data/body_weight.dart';
 import '../test_data/nutritional_plans.dart';
@@ -35,15 +36,32 @@ import '../test_data/profile.dart';
 
 Widget createWeightScreen({Locale? locale}) {
   locale ??= const Locale('en');
-  final weightProvider = BodyWeightProvider(mockBaseProvider);
-  weightProvider.items = getScreenshotWeightEntries();
+  final mockBodyWeightRepository = MockBodyWeightRepository();
+  when(
+    mockBodyWeightRepository.watchAllDrift(),
+  ).thenAnswer((_) => Stream.value(getWeightEntries()));
 
-  final mockUserProvider = MockUserProvider();
-  when(mockUserProvider.profile).thenReturn(tProfile1);
+  final mockUserProfileRepository = MockUserProfileRepository();
+  when(
+    mockUserProfileRepository.watchDrift(),
+  ).thenAnswer((_) => Stream.value(tUserProfile1));
 
-  final mockNutritionPlansProvider = MockNutritionPlansProvider();
-  when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
-  when(mockNutritionPlansProvider.items).thenReturn([getNutritionalPlan()]);
+  final mockNutritionRepo = MockNutritionRepository();
+  final mockIngredientRepo = MockIngredientRepository();
+  when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
+
+  final container = ProviderContainer(
+    overrides: [
+      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
+      nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+      ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+    ],
+  );
+  // Seed the nutrition notifier with a plan so the weight overview can show it.
+  container.read(nutritionProvider.notifier).state = AsyncData(
+    NutritionState(plans: [getNutritionalPlan()]),
+  );
 
   return MediaQuery(
     data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
@@ -51,18 +69,8 @@ Widget createWeightScreen({Locale? locale}) {
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,
     ),
-    child: MultiProvider(
-      providers: [
-        ChangeNotifierProvider<UserProvider>(
-          create: (context) => mockUserProvider,
-        ),
-        ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => weightProvider,
-        ),
-        ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (context) => mockNutritionPlansProvider,
-        ),
-      ],
+    child: UncontrolledProviderScope(
+      container: container,
       child: MaterialApp(
         locale: locale,
         debugShowCheckedModeBanner: false,

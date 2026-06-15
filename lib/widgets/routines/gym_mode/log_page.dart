@@ -20,15 +20,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/routines/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/providers/gym_log_state.dart';
+import 'package:wger/providers/gym_log_notifier.dart';
 import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/providers/plate_weights.dart';
+import 'package:wger/providers/workout_logs_notifier.dart';
 import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/widgets/core/core.dart';
-import 'package:wger/widgets/routines/forms/log_form.dart';
+import 'package:wger/widgets/routines/forms/repetitions.dart';
+import 'package:wger/widgets/routines/forms/rir.dart';
+import 'package:wger/widgets/routines/forms/weight.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 import 'package:wger/widgets/routines/plate_calculator.dart';
 
@@ -36,7 +43,12 @@ class LogPage extends ConsumerWidget {
   final _logger = Logger('LogPage');
 
   final PageController _controller;
-  LogPage(this._controller);
+
+  /// Identifies which slot page this widget renders, so it shows its own
+  /// content instead of whatever the globally-current page happens to be.
+  final String slotUuid;
+
+  LogPage(this._controller, this.slotUuid);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,24 +56,20 @@ class LogPage extends ConsumerWidget {
     final gymState = ref.watch(gymStateProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
-    final page = gymState.getPageByIndex();
-    if (page == null) {
-      _logger.info(
-        'getPageByIndex for ${gymState.currentPage} returned null, showing empty container.',
-      );
+    final slotEntryPage = gymState.getSlotPageByUUID(slotUuid);
+    if (slotEntryPage == null) {
+      _logger.info('getSlotPageByUUID for $slotUuid returned null, showing empty container.');
       return Container();
     }
 
-    final slotEntryPage = gymState.getSlotEntryPageByIndex();
-    if (slotEntryPage == null) {
+    final page = gymState.getPageByIndex(slotEntryPage.pageIndex);
+    if (page == null) {
       _logger.info(
-        'getSlotPageByIndex for ${gymState.currentPage} returned null, showing empty container',
+        'getPageByIndex for ${slotEntryPage.pageIndex} returned null, showing empty container.',
       );
       return Container();
     }
     final setConfigData = slotEntryPage.setConfigData!;
-
-    final log = ref.read(gymLogProvider);
 
     // Mark done sets
     final decorationStyle = slotEntryPage.logDone
@@ -71,9 +79,8 @@ class LogPage extends ConsumerWidget {
     return Column(
       children: [
         NavigationHeader(
-          log!.exercise.getTranslation(languageCode).name,
+          setConfigData.exercise.getTranslation(languageCode).name,
           _controller,
-          key: const ValueKey('log-page-navigation-header'),
         ),
 
         Container(
@@ -114,14 +121,14 @@ class LogPage extends ConsumerWidget {
             ),
           ),
         ),
-        if (log.exercise.showPlateCalculator) const LogsPlatesWidget(),
+        if (setConfigData.exercise.showPlateCalculator) const LogsPlatesWidget(),
         if (slotEntryPage.setConfigData!.comment.isNotEmpty)
           Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
         Expanded(
-          child: (gymState.routine.filterLogsByExercise(log.exerciseId).isNotEmpty)
+          child: (gymState.routine.filterLogsByExercise(setConfigData.exerciseId).isNotEmpty)
               ? LogsPastLogsWidget(
-                  pastLogs: gymState.routine.filterLogsByExercise(log.exerciseId),
+                  pastLogs: gymState.routine.filterLogsByExercise(setConfigData.exerciseId),
                 )
               : Container(),
         ),
@@ -239,6 +246,140 @@ class LogsPastLogsWidget extends ConsumerWidget {
               contentPadding: const EdgeInsets.symmetric(horizontal: 40),
             );
           }),
+        ],
+      ),
+    );
+  }
+}
+
+class LogFormWidget extends ConsumerStatefulWidget {
+  final PageController controller;
+  final SetConfigData configData;
+
+  const LogFormWidget({
+    super.key,
+    required this.controller,
+    required this.configData,
+  });
+
+  @override
+  _LogFormWidgetState createState() => _LogFormWidgetState();
+}
+
+class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
+  final _form = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final logProvider = ref.read(workoutLogProvider);
+    final log = ref.watch(gymLogProvider);
+
+    return Form(
+      key: _form,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            i18n.newEntry,
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          Row(
+            children: [
+              Flexible(
+                child: RepetitionInputWidget(
+                  key: const ValueKey('logs-reps-widget'),
+                  value: log?.repetitions,
+                  valueChange: widget.configData.repetitionsRounding,
+                  unit: log?.repetitionsUnitObj,
+                  onChanged: (v) {
+                    if (v != null) {
+                      ref.read(gymLogProvider.notifier).setRepetitions(v);
+                    }
+                  },
+                  onUnitChanged: (v) {
+                    if (v != null) {
+                      ref.read(gymLogProvider.notifier).setRepetitionUnit(v);
+                    }
+                  },
+                ),
+              ),
+              Flexible(
+                child: WeightInputWidget(
+                  key: const ValueKey('logs-weight-widget'),
+                  value: log?.weight,
+                  valueChange: widget.configData.weightRounding,
+                  unit: log?.weightUnitObj,
+                  onChanged: (v) {
+                    if (v != null) {
+                      ref.read(gymLogProvider.notifier).setWeight(v);
+                      ref.read(plateCalculatorProvider.notifier).setWeight(v);
+                    }
+                  },
+                  onUnitChanged: (v) {
+                    if (v != null) {
+                      ref.read(gymLogProvider.notifier).setWeightUnit(v);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+          RiRInputWidget(
+            key: const ValueKey('rir-input-widget'),
+            log!.rir,
+            onChanged: (value) {
+              log.rir = value == '' ? null : num.parse(value);
+            },
+          ),
+          FilledButton(
+            key: const ValueKey('save-log-button'),
+            onPressed: () async {
+              final isValid = _form.currentState!.validate();
+              if (!isValid) {
+                return;
+              }
+              _form.currentState!.save();
+
+              final error = validateWorkoutLogCrossField(
+                repetitions: log.repetitions,
+                weight: log.weight,
+                i18n: i18n,
+              );
+              if (error != null) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                return;
+              }
+
+              final gymState = ref.read(gymStateProvider);
+              final gymProvider = ref.read(gymStateProvider.notifier);
+              final page = gymState.getSlotEntryPageByIndex()!;
+
+              // A failed write is intentionally left to propagate to the global
+              // error handler; the success path below is then skipped.
+              await logProvider.addEntry(log);
+              if (!context.mounted) {
+                return;
+              }
+
+              gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: const Duration(seconds: 2),
+                  content: Text(
+                    i18n.successfullySaved,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+              widget.controller.nextPage(
+                duration: DEFAULT_ANIMATION_DURATION,
+                curve: DEFAULT_ANIMATION_CURVE,
+              );
+            },
+            child: Text(i18n.save),
+          ),
         ],
       ),
     );

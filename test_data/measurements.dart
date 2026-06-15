@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -19,52 +19,88 @@
 import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/models/measurements/measurement_entry.dart';
 
-final e1 = MeasurementEntry(
-  id: 1,
-  category: 1,
-  date: DateTime(2022, 9, 10, 8, 0),
+final testMeasurementEntry1 = MeasurementEntry(
+  id: '1',
+  categoryId: '1',
+  date: DateTime(2022, 9, 10),
   value: 30,
   notes: '',
 );
-final e2 = MeasurementEntry(
-  id: 2,
-  category: 1,
-  date: DateTime(2022, 10, 5, 7, 30),
+final testMeasurementEntry2 = MeasurementEntry(
+  id: '2',
+  categoryId: '1',
+  date: DateTime(2022, 10, 5),
   value: 25,
   notes: '',
 );
-final e3 = MeasurementEntry(
-  id: 3,
-  category: 1,
-  date: DateTime(2022, 10, 10, 9, 15),
+final testMeasurementEntry3 = MeasurementEntry(
+  id: '3',
+  categoryId: '1',
+  date: DateTime(2022, 10, 10),
   value: 17,
   notes: '',
 );
-final e4 = MeasurementEntry(
-  id: 4,
-  category: 1,
-  date: DateTime(2022, 11, 1, 12, 0),
+final testMeasurementEntry4 = MeasurementEntry(
+  id: '4',
+  categoryId: '1',
+  date: DateTime(2022, 11, 1),
   value: 17,
   notes: '',
 );
-final e5 = MeasurementEntry(
-  id: 5,
-  category: 1,
-  date: DateTime(2022, 11, 10, 8, 45),
+final testMeasurementEntry5 = MeasurementEntry(
+  id: '5',
+  categoryId: '1',
+  date: DateTime(2022, 11, 10),
   value: 20,
   notes: '',
 );
-final e6 = MeasurementEntry(
-  id: 6,
-  category: 1,
-  date: DateTime(2022, 11, 15, 18, 30),
+final testMeasurementEntry6 = MeasurementEntry(
+  id: '6',
+  categoryId: '1',
+  date: DateTime(2022, 11, 15),
   value: 23,
   notes: '',
 );
 
-List<MeasurementCategory> getMeasurementCategories() {
-  final entries = [e1, e2, e3, e4, e5, e6];
-  final category = MeasurementCategory(id: 1, name: 'Body fat', unit: '%', entries: entries);
+final testMeasurementEntry7 = MeasurementEntry(
+  id: '7',
+  categoryId: '2',
+  date: DateTime(2026, 02, 1),
+  value: 40,
+  notes: '',
+);
 
-  return [category];
+final testMeasurementEntry8 = MeasurementEntry(
+  id: '8',
+  categoryId: '2',
+  date: DateTime(2026, 03, 14),
+  value: 45,
+  notes: '',
+);
+
+List<MeasurementCategory> getMeasurementCategories() {
+  return [
+    MeasurementCategory(
+      id: '1',
+      name: 'Body fat',
+      unit: '%',
+      entries: [
+        testMeasurementEntry1,
+        testMeasurementEntry2,
+        testMeasurementEntry3,
+        testMeasurementEntry4,
+        testMeasurementEntry5,
+        testMeasurementEntry6,
+      ],
+    ),
+    MeasurementCategory(
+      id: '2',
+      name: 'Biceps',
+      unit: 'cm',
+      entries: [
+        testMeasurementEntry7,
+        testMeasurementEntry8,
+      ],
+    ),
+  ];
 }

@@ -23,16 +23,16 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart' as legacy_provider;
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/core/search_options.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
+import 'package:wger/providers/ingredient_filters_notifier.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/wger_image.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/ingredient_dialogs.dart';
 import 'package:wger/widgets/nutrition/ingredient_filter_dialog.dart';
@@ -68,7 +68,7 @@ class IngredientTypeahead extends ConsumerStatefulWidget {
   final bool test;
   final bool showScanner;
 
-  final Function(int id, String name, num? amount) selectIngredient;
+  final Function(Ingredient ingredient, num? amount) selectIngredient;
   final Function() onDeselectIngredient;
   final Function(String query) onUpdateSearchQuery;
 
@@ -118,6 +118,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   @override
   Widget build(BuildContext context) {
     final filters = ref.watch(ingredientFiltersSyncProvider);
+    final isOnline = ref.watch(networkStatusProvider);
     return Column(
       children: [
         TypeAheadField<Ingredient>(
@@ -129,7 +130,9 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
               focusNode: focusNode,
               autofocus: true,
               validator: (value) {
-                if (value!.isEmpty) {
+                // Require an actual selection; typed-but-unpicked text leaves the
+                // id empty and would crash the submit's int.parse on the id.
+                if (value == null || value.isEmpty || widget._ingredientIdController.text.isEmpty) {
                   return AppLocalizations.of(context).selectIngredient;
                 }
                 return null;
@@ -141,7 +144,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     filterButton(),
-                    if (widget.showScanner && !isDesktop) scanButton(),
+                    if (widget.showScanner && !isDesktop && isOnline) scanButton(),
                   ],
                 ),
               ),
@@ -156,17 +159,19 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             widget.onUpdateSearchQuery(pattern);
             widget.onDeselectIngredient();
 
-            return legacy_provider.Provider.of<NutritionPlansProvider>(
-              context,
-              listen: false,
-            ).searchIngredient(
-              pattern,
-              languageCode: Localizations.localeOf(context).languageCode,
-              searchLanguage: filters.searchLanguage,
-              isVegan: filters.isVegan,
-              isVegetarian: filters.isVegetarian,
-              nutriscoreMax: filters.nutriscoreMax,
-            );
+            // The repository picks the REST or the local-DB path based on
+            // current connectivity.
+            return ref
+                .read(ingredientRepositoryProvider)
+                .search(
+                  pattern,
+                  isOnline: ref.read(networkStatusProvider),
+                  languageCode: Localizations.localeOf(context).languageCode,
+                  searchLanguage: filters.searchLanguage,
+                  isVegan: filters.isVegan,
+                  isVegetarian: filters.isVegetarian,
+                  nutriscoreMax: filters.nutriscoreMax,
+                );
           },
           itemBuilder: (context, ingredient) {
             final i18n = AppLocalizations.of(context);
@@ -205,20 +210,23 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             }
 
             return ListTile(
-              leading: ingredient.image != null
-                  ? CircleAvatar(
-                      backgroundImage: NetworkImage(ingredient.thumbnails!.medium),
-                    )
-                  : const CircleIconAvatar(
-                      Icon(Icons.image, color: Colors.grey),
-                    ),
+              leading: WgerImage(
+                mediaPath: ingredient.image?.image,
+                width: 40,
+                height: 40,
+                cacheWidth: 120,
+                borderRadius: BorderRadius.circular(20),
+                errorWidget: const CircleIconAvatar(
+                  Icon(Icons.image, color: Colors.grey),
+                ),
+              ),
               title: Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(text: ingredient.name),
-                    if (ingredient.brand != null && ingredient.brand!.isNotEmpty)
+                    if (ingredient.brand case final brand? when brand.isNotEmpty)
                       TextSpan(
-                        text: '  ${ingredient.brand}',
+                        text: '  $brand',
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -236,9 +244,10 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                 onPressed: () {
                   showIngredientDetails(
                     context,
-                    ingredient.id,
+                    ref,
+                    ingredient,
                     select: () {
-                      widget.selectIngredient(ingredient.id, ingredient.name, null);
+                      widget.selectIngredient(ingredient, null);
                     },
                   );
                 },
@@ -250,13 +259,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             child: child,
           ),
           onSelected: (suggestion) async {
-            // Cache selected ingredient
-            final provider = legacy_provider.Provider.of<NutritionPlansProvider>(
-              context,
-              listen: false,
-            );
-            await provider.cacheIngredient(suggestion);
-            widget.selectIngredient(suggestion.id, suggestion.name, null);
+            widget.selectIngredient(suggestion, null);
           },
         ),
       ],
@@ -278,10 +281,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
         showDialog(
           context: context,
           builder: (context) => FutureBuilder<Ingredient?>(
-            future: legacy_provider.Provider.of<NutritionPlansProvider>(
-              context,
-              listen: false,
-            ).searchIngredientWithBarcode(barcode),
+            future: ref.read(ingredientRepositoryProvider).searchIngredientByBarcode(barcode),
             builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
               return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
             },
@@ -291,14 +291,14 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
     );
   }
 
-  /// The filter icon button — shows an active-filter badge and opens
+  /// The filter icon button, shows an active-filter badge and opens
   /// [IngredientFilterDialog] on tap.
   Widget filterButton() {
     final filters = ref.watch(ingredientFiltersSyncProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
     // Auto-correct: in an English locale "current + English" collapses to
-    // "current" — fix it once if a stored preference landed on the
+    // "current", fix it once if a stored preference landed on the
     // non-locale-aware default.
     if (languageCode == LANGUAGE_SHORT_ENGLISH &&
         filters.searchLanguage == SearchLanguage.currentAndEnglish) {
@@ -323,24 +323,25 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   }
 }
 
-class IngredientAvatar extends StatelessWidget {
+class IngredientAvatar extends ConsumerWidget {
   final Ingredient ingredient;
 
   const IngredientAvatar({super.key, required this.ingredient});
 
   @override
-  Widget build(BuildContext context) {
-    return ingredient.image != null
-        ? GestureDetector(
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(ingredient.image!.url),
-            ),
-            onTap: () async {
-              if (ingredient.image!.objectUrl != '') {
-                return launchURL(ingredient.image!.objectUrl, context);
-              }
-            },
-          )
-        : const CircleIconAvatar(Icon(Icons.image, color: Colors.grey));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final image = WgerImage(
+      mediaPath: ingredient.image?.image,
+      width: 40,
+      height: 40,
+      cacheWidth: 120,
+      borderRadius: BorderRadius.circular(20),
+      errorWidget: const CircleIconAvatar(Icon(Icons.image, color: Colors.grey)),
+    );
+
+    return GestureDetector(
+      onTap: () => showIngredientDetails(context, ref, ingredient),
+      child: image,
+    );
   }
 }

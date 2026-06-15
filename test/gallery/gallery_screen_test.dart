@@ -17,31 +17,37 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/providers/gallery_repository.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/screens/gallery_screen.dart';
 import 'package:wger/widgets/gallery/overview.dart';
 
 import '../../test_data/gallery.dart';
 import './gallery_screen_test.mocks.dart';
 
-@GenerateMocks([GalleryProvider])
+@GenerateMocks([GalleryRepository])
 void main() {
-  var mockGalleryProvider = MockGalleryProvider();
+  late MockGalleryRepository mockGalleryRepository;
 
   setUp(() {
-    mockGalleryProvider = MockGalleryProvider();
-    when(mockGalleryProvider.images).thenAnswer((_) => getTestImages());
+    mockGalleryRepository = MockGalleryRepository();
+    when(
+      mockGalleryRepository.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(getTestImages()));
   });
 
   Widget renderScreen({locale = 'en'}) {
-    return ChangeNotifierProvider<GalleryProvider>(
-      create: (context) => mockGalleryProvider,
+    return ProviderScope(
+      overrides: [
+        galleryRepositoryProvider.overrideWithValue(mockGalleryRepository),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -51,9 +57,12 @@ void main() {
     );
   }
 
-  Widget renderDetail({locale = 'en'}) {
-    return ChangeNotifierProvider<GalleryProvider>(
-      create: (context) => mockGalleryProvider,
+  Widget renderDetail({locale = 'en', bool isOnline = true}) {
+    return ProviderScope(
+      overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
+        galleryRepositoryProvider.overrideWithValue(mockGalleryRepository),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -63,8 +72,26 @@ void main() {
     );
   }
 
+  Widget renderGalleryScreen({locale = 'en', bool isOnline = true}) {
+    return ProviderScope(
+      overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
+        galleryRepositoryProvider.overrideWithValue(mockGalleryRepository),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const GalleryScreen(),
+      ),
+    );
+  }
+
   testWidgets('Test the widgets on the gallery screen', (WidgetTester tester) async {
-    await mockNetworkImagesFor(() => tester.pumpWidget(renderScreen()));
+    await mockNetworkImagesFor(() async {
+      await tester.pumpWidget(renderScreen());
+      await tester.pumpAndSettle();
+    });
 
     expect(find.byType(SliverMasonryGrid), findsOneWidget);
     expect(find.byType(GestureDetector, skipOffstage: false), findsNWidgets(4));
@@ -82,5 +109,27 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('30.5.2021'), findsOneWidget);
+  });
+
+  testWidgets('Delete stays enabled when offline', (WidgetTester tester) async {
+    // Image deletion syncs through PowerSync, so it works offline.
+    await mockNetworkImagesFor(() => tester.pumpWidget(renderDetail(isOnline: false)));
+    await tester.pumpAndSettle();
+
+    final deleteButton = tester.widget<IconButton>(
+      find.widgetWithIcon(IconButton, Icons.delete),
+    );
+    expect(deleteButton.onPressed, isNotNull);
+  });
+
+  testWidgets('Add button is disabled when offline', (WidgetTester tester) async {
+    // Adding an image is a binary REST upload, so it needs connectivity.
+    await mockNetworkImagesFor(
+      () => tester.pumpWidget(renderGalleryScreen(isOnline: false)),
+    );
+    await tester.pumpAndSettle();
+
+    final fab = tester.widget<FloatingActionButton>(find.byType(FloatingActionButton));
+    expect(fab.onPressed, isNull);
   });
 }

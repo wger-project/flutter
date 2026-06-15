@@ -18,6 +18,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
@@ -132,7 +133,11 @@ void main() {
     late Exercise exercise;
 
     setUp(() {
-      exercise = Exercise(id: 1);
+      exercise = Exercise(
+        id: 1,
+        uuid: 'test-uuid',
+        category: const ExerciseCategory(id: 1, name: 'Test'),
+      );
     });
 
     test('uses default unit IDs when unit objects are not loaded', () {
@@ -140,7 +145,7 @@ void main() {
       //
       // When the user taps "+" in gym mode to add an extra exercise,
       // addExerciseAfterPage() creates a SetConfigData with only exerciseId and
-      // slotEntryId — no unit objects. The default constructor sets
+      // slotEntryId, no unit objects. The default constructor sets
       // weightUnitId=WEIGHT_UNIT_KG and repetitionsUnitId=REP_UNIT_REPETITIONS_ID,
       // but Log.fromSetConfigData was using the object setters which overwrite
       // those IDs with null when the objects are null, causing the server to
@@ -149,7 +154,7 @@ void main() {
         exerciseId: 1,
         slotEntryId: 1,
         exercise: exercise,
-        // no weightUnit or repetitionsUnit objects — mirrors addExerciseAfterPage()
+        // no weightUnit or repetitionsUnit objects, mirrors addExerciseAfterPage()
       );
 
       final log = Log.fromSetConfigData(setConfig);

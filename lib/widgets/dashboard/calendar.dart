@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2026 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,18 +17,23 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/measurement.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/models/workouts/session.dart';
+import 'package:wger/providers/body_weight_notifier.dart';
+import 'package:wger/providers/measurement_notifier.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/theme/theme.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 
 /// Types of events
 enum EventType { weight, measurement, session, caloriesDiary }
@@ -49,19 +54,16 @@ class Event {
   }
 }
 
-class DashboardCalendarWidget extends StatefulWidget {
+class DashboardCalendarWidget extends riverpod.ConsumerStatefulWidget {
   const DashboardCalendarWidget();
 
   @override
   _DashboardCalendarWidgetState createState() => _DashboardCalendarWidgetState();
 }
 
-class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
+class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCalendarWidget>
     with TickerProviderStateMixin {
-  late Map<String, List<Event>> _events;
-  late final ValueNotifier<List<Event>> _selectedEvents;
-  RangeSelectionMode _rangeSelectionMode =
-      RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
@@ -70,60 +72,32 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
   @override
   void initState() {
     super.initState();
-
-    _events = <String, List<Event>>{};
     _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
-    //Fix: Defer context-dependent loadEvents() until after build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadEvents();
-    });
   }
 
-  /// Loads and organizes all events from various providers into the calendar.
-  ///
-  /// This method asynchronously fetches and processes data from multiple sources:
-  /// - **Weight entries**: Retrieves weight measurements from [BodyWeightProvider]
-  /// - **Measurements**: Retrieves body measurements from [MeasurementProvider]
-  /// - **Workout sessions**: Fetches workout session data from [RoutinesProvider]
-  /// - **Nutritional plans**: Retrieves calorie diary entries from [NutritionPlansProvider]
-  ///
-  /// Each event is formatted according to the current locale and stored in the
-  /// [_events] map, keyed by date. The date format is determined by [DateFormatLists.format].
-  ///
-  /// After loading all events, the [_selectedEvents] value is updated with events
-  /// for the currently selected day, if any.
-  ///
-  /// **Note**: This method checks if the widget is still mounted before updating
-  /// the state after the async workout session fetch operation.
-  void loadEvents() async {
+  /// Builds the date → events map from already-loaded provider data
+  Map<String, List<Event>> _buildEvents({
+    required BuildContext context,
+    required List<WeightEntry> entries,
+    required List<MeasurementCategory> categories,
+    required List<WorkoutSession> sessions,
+    required List<NutritionalPlan> plans,
+  }) {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
     final i18n = AppLocalizations.of(context);
+    final events = <String, List<Event>>{};
 
-    // Process weight entries
-    final weightProvider = context.read<BodyWeightProvider>();
-    for (final entry in weightProvider.items) {
+    for (final entry in entries) {
       final date = DateFormatLists.format(entry.date);
-
-      if (!_events.containsKey(date)) {
-        _events[date] = [];
-      }
-
-      // Add events to lists
-      _events[date]?.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
+      events.putIfAbsent(date, () => []);
+      events[date]!.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
     }
 
-    // Process measurements
-    final measurementProvider = context.read<MeasurementProvider>();
-    for (final category in measurementProvider.categories) {
+    for (final category in categories) {
       for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
-
-        if (!_events.containsKey(date)) {
-          _events[date] = [];
-        }
-
-        _events[date]?.add(
+        events.putIfAbsent(date, () => []);
+        events[date]!.add(
           Event(
             EventType.measurement,
             '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
@@ -132,63 +106,41 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       }
     }
 
-    // Process workout sessions
-    final routinesProvider = context.read<RoutinesProvider>();
-    final sessions = await routinesProvider.fetchSessionData();
-    if (!mounted) {
-      return;
-    }
-
     for (final session in sessions) {
       final date = DateFormatLists.format(session.date);
-      _events.putIfAbsent(date, () => []);
-
-      final time = (session.timeStart != null && session.timeEnd != null)
-          ? '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})'
-          : '';
-
-      _events[date]?.add(
+      events.putIfAbsent(date, () => []);
+      var time = '';
+      if (session.timeStart != null && session.timeEnd != null) {
+        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+      }
+      events[date]!.add(
         Event(
           EventType.session,
-          '${i18n.impression}: ${session.impressionAsString(context)}${time.isNotEmpty ? ' $time' : ''}',
+          '${i18n.impression}: ${session.impression.localized(context)} $time',
         ),
       );
     }
 
-    // Process nutritional plans
-    final nutritionProvider = context.read<NutritionPlansProvider>();
-    for (final plan in nutritionProvider.items) {
+    for (final plan in plans) {
       for (final entry in plan.logEntriesValues.entries) {
         final date = DateFormatLists.format(entry.key);
-        if (!_events.containsKey(date)) {
-          _events[date] = [];
-        }
-
-        // Add events to lists
-        _events[date]?.add(
+        events.putIfAbsent(date, () => []);
+        events[date]!.add(
           Event(EventType.caloriesDiary, i18n.kcalValue(entry.value.energy.toStringAsFixed(0))),
         );
       }
     }
 
-    // Add initial selected day to events list
-    _selectedEvents.value = _selectedDay != null ? _getEventsForDay(_selectedDay!) : [];
+    return events;
   }
 
-  @override
-  void dispose() {
-    _selectedEvents.dispose();
-    super.dispose();
+  List<Event> _getEventsForDay(Map<String, List<Event>> events, DateTime day) {
+    return events[DateFormatLists.format(day)] ?? [];
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
-    return _events[DateFormatLists.format(day)] ?? [];
-  }
-
-  List<Event> _getEventsForRange(DateTime start, DateTime end) {
+  List<Event> _getEventsForRange(Map<String, List<Event>> events, DateTime start, DateTime end) {
     final days = daysInRange(start, end);
-
-    return [for (final d in days) ..._getEventsForDay(d)];
+    return [for (final d in days) ..._getEventsForDay(events, d)];
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -196,12 +148,10 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
-        _rangeStart = null; // Important to clean those
+        _rangeStart = null;
         _rangeEnd = null;
         _rangeSelectionMode = RangeSelectionMode.toggledOff;
       });
-
-      _selectedEvents.value = _getEventsForDay(selectedDay);
     }
   }
 
@@ -213,19 +163,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
       _rangeEnd = end;
       _rangeSelectionMode = RangeSelectionMode.toggledOn;
     });
-
-    // `start` or `end` could be null
-    if (start != null && end != null) {
-      _selectedEvents.value = _getEventsForRange(start, end);
-    } else if (start != null) {
-      _selectedEvents.value = _getEventsForDay(start);
-    } else if (end != null) {
-      _selectedEvents.value = _getEventsForDay(end);
-    }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _shell(BuildContext context, Widget body) {
     return Card(
       child: Column(
         children: [
@@ -239,6 +179,43 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
               color: Theme.of(context).textTheme.headlineMedium!.color,
             ),
           ),
+          body,
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = ref.watch(weightEntryProvider).value;
+    final categories = ref.watch(measurementProvider).value;
+    final routinesState = ref.watch(routinesRiverpodProvider).value;
+    final nutritionState = ref.watch(nutritionProvider).value;
+
+    // Show a spinner until every source has produced at least one value. Same
+    // pattern as the other dashboard widgets via [AsyncValueWidget].
+    if (entries == null || categories == null || routinesState == null || nutritionState == null) {
+      return _shell(context, const BoxedProgressIndicator());
+    }
+
+    final events = _buildEvents(
+      context: context,
+      entries: entries,
+      categories: categories,
+      sessions: routinesState.sessions,
+      plans: nutritionState.plans,
+    );
+
+    final selectedEvents = _selectedDay != null
+        ? _getEventsForDay(events, _selectedDay!)
+        : (_rangeStart != null && _rangeEnd != null)
+        ? _getEventsForRange(events, _rangeStart!, _rangeEnd!)
+        : const <Event>[];
+
+    return _shell(
+      context,
+      Column(
+        children: [
           TableCalendar<Event>(
             locale: Localizations.localeOf(context).languageCode,
             firstDay: DateTime.now().subtract(const Duration(days: 1000)),
@@ -251,7 +228,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             availableGestures: AvailableGestures.horizontalSwipe,
             availableCalendarFormats: const {CalendarFormat.month: ''},
             rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: _getEventsForDay,
+            eventLoader: (day) => _getEventsForDay(events, day),
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarStyle: getWgerCalendarStyle(Theme.of(context)),
             onDaySelected: _onDaySelected,
@@ -261,35 +238,28 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget>
             },
           ),
           const SizedBox(height: 8.0),
-          ValueListenableBuilder<List<Event>>(
-            valueListenable: _selectedEvents,
-            builder: (context, value, _) => Column(
-              children: [
-                ...value.map(
-                  (event) => ListTile(
-                    title: Text(
-                      (() {
-                        switch (event.type) {
-                          case EventType.caloriesDiary:
-                            return AppLocalizations.of(context).nutritionalDiary;
-
-                          case EventType.session:
-                            return AppLocalizations.of(context).workoutSession;
-
-                          case EventType.weight:
-                            return AppLocalizations.of(context).weight;
-
-                          case EventType.measurement:
-                            return AppLocalizations.of(context).measurement;
-                        }
-                      })(),
-                    ),
-                    subtitle: Text(event.description),
-                    //onTap: () => print('$event tapped!'),
+          Column(
+            children: [
+              ...selectedEvents.map(
+                (event) => ListTile(
+                  title: Text(
+                    (() {
+                      switch (event.type) {
+                        case EventType.caloriesDiary:
+                          return AppLocalizations.of(context).nutritionalDiary;
+                        case EventType.session:
+                          return AppLocalizations.of(context).workoutSession;
+                        case EventType.weight:
+                          return AppLocalizations.of(context).weight;
+                        case EventType.measurement:
+                          return AppLocalizations.of(context).measurement;
+                      }
+                    })(),
                   ),
+                  subtitle: Text(event.description),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

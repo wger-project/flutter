@@ -892,7 +892,6 @@
     "errorInfoDescription2": "Você pode continuar usando o applicativo, mas algumas funcionalidades não estarão disponíveis.",
     "errorViewDetails": "Detalhes técnicos",
     "errorCouldNotConnectToServer": "Não foi possível conectar ao servidor",
-    "errorCouldNotConnectToServerDetails": "O aplicativo não conseguiu conectar ao servidor. Verifique sua conexão de internet ou a URL do servidor e tente novamente. Se o problema persistir, contact o administrador.",
     "copyToClipboard": "Copiar ao clipboard",
     "min": "Min",
     "max": "Max",

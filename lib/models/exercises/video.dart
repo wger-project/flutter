@@ -16,68 +16,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
-
-part 'video.g.dart';
-
-@JsonSerializable()
 class Video {
-  @JsonKey(required: true)
   final int id;
-
-  @JsonKey(required: true)
   final String uuid;
-
-  @JsonKey(name: 'video', required: true)
-  final String url;
-
-  Uri get uri => Uri.parse(url);
-
-  @JsonKey(name: 'exercise', required: true)
   final int exerciseId;
+  final bool isMain;
 
-  @JsonKey(required: true)
+  /// Relative path under MEDIA_ROOT, as stored by Django's `FileField`.
+  /// Resolve to an absolute URL via `mediaUrlBuilderProvider`.
+  final String video;
+
   final int size;
-
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
   final num duration;
-
-  @JsonKey(required: true)
   final int width;
-
-  @JsonKey(required: true)
   final int height;
-
-  @JsonKey(required: true)
   final String codec;
-
-  @JsonKey(name: 'codec_long', required: true)
   final String codecLong;
+  final DateTime created;
+  final DateTime lastUpdate;
 
-  @JsonKey(required: true)
-  final int license;
+  /// FK to the `License` row.
+  final int licenseId;
+  final String licenseTitle;
+  final String licenseObjectUrl;
 
-  @JsonKey(name: 'license_author', required: true)
+  /// Author may be null on the server (`TextField(null=True)`).
   final String? licenseAuthor;
+  final String licenseAuthorUrl;
+  final String licenseDerivativeSourceUrl;
 
   const Video({
     required this.id,
     required this.uuid,
     required this.exerciseId,
+    required this.isMain,
+    required this.video,
     required this.size,
-    required this.url,
     required this.duration,
     required this.width,
     required this.height,
     required this.codec,
     required this.codecLong,
-    required this.license,
+    required this.created,
+    required this.lastUpdate,
+    required this.licenseId,
+    required this.licenseTitle,
+    required this.licenseObjectUrl,
     required this.licenseAuthor,
+    required this.licenseAuthorUrl,
+    required this.licenseDerivativeSourceUrl,
   });
-
-  // Boilerplate
-  factory Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$VideoToJson(this);
 }

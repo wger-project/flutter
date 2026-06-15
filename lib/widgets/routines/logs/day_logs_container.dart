@@ -19,13 +19,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/date.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/trophies.dart';
+import 'package:wger/providers/trophy_notifier.dart';
 
 import '../gym_mode/summary.dart';
 import 'exercise_log_chart.dart';
+import 'log_delete_dialog.dart';
+import 'log_edit_dialog.dart';
 import 'muscle_groups.dart';
 import 'session_info.dart';
 
@@ -39,22 +40,21 @@ class DayLogWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-
     final trophyState = ref.read(trophyStateProvider);
 
-    final sessionApi = _routine.sessions.firstWhere(
-      (sessionApi) => sessionApi.session.date.isSameDayAs(_date),
+    final session = _routine.sessions.firstWhere(
+      (s) => s.date.isSameDayAs(_date),
     );
-    final exercises = sessionApi.exercises;
+    final exercises = session.exercises;
 
     final prTrophies = trophyState.prTrophies
-        .where((t) => t.contextData?.sessionId == sessionApi.session.id)
+        .where((t) => t.contextData?.sessionId == session.id)
         .toList();
 
     return Column(
       spacing: 10,
       children: [
-        Card(child: SessionInfo(sessionApi.session)),
+        Card(child: SessionInfo(session)),
         if (prTrophies.isNotEmpty)
           SizedBox(
             width: double.infinity,
@@ -64,7 +64,8 @@ class DayLogWidget extends ConsumerWidget {
               color: theme.colorScheme.tertiaryContainer,
             ),
           ),
-        MuscleGroupsCard(sessionApi.logs),
+        MuscleGroupsCard(session.logs),
+
         Column(
           spacing: 10,
           children: [
@@ -81,7 +82,7 @@ class DayLogWidget extends ConsumerWidget {
                         translation.name,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      ...sessionApi.logs
+                      ...session.logs
                           .where((l) => l.exerciseId == exercise.id)
                           .map(
                             (log) => Row(
@@ -98,12 +99,22 @@ class DayLogWidget extends ConsumerWidget {
                                     Text(log.repTextNoNl(context)),
                                   ],
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  key: ValueKey('delete-log-${log.id}'),
-                                  onPressed: () {
-                                    showDeleteDialog(context, translation.name, log);
-                                  },
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      key: ValueKey('edit-log-${log.id}'),
+                                      onPressed: () => showLogEditDialog(context, log),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      key: ValueKey('delete-log-${log.id}'),
+                                      onPressed: () {
+                                        showDeleteLogDialog(context, translation.name, log);
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -112,7 +123,7 @@ class DayLogWidget extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: ExerciseLogChart(
                           _routine.groupLogsByRepetition(
-                            logs: _routine.filterLogsByExercise(exercise.id!),
+                            logs: _routine.filterLogsByExercise(exercise.id),
                             filterNullReps: true,
                             filterNullWeights: true,
                           ),
