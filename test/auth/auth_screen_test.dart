@@ -65,17 +65,17 @@ void main() {
   final Uri tHeadlessLogin = Uri(
     scheme: 'https',
     host: 'wger.de',
-    path: '/_allauth/app/v1/auth/login',
+    path: '/allauth/app/v1/auth/login',
   );
   final Uri tHeadlessSignup = Uri(
     scheme: 'https',
     host: 'wger.de',
-    path: '/_allauth/app/v1/auth/signup',
+    path: '/allauth/app/v1/auth/signup',
   );
   final Uri tHeadlessRefresh = Uri(
     scheme: 'https',
     host: 'wger.de',
-    path: '/_allauth/app/v1/tokens/refresh',
+    path: '/allauth/app/v1/tokens/refresh',
   );
 
   const validJwt = 'header.payload.signature';
@@ -412,7 +412,7 @@ void main() {
       final tHeadlessLoginCustom = Uri(
         scheme: 'https',
         host: 'my.server',
-        path: '/_allauth/app/v1/auth/login',
+        path: '/allauth/app/v1/auth/login',
       );
       when(
         mockClient.post(

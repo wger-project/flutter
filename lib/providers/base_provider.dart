@@ -71,7 +71,7 @@ class WgerBaseProvider {
     return makeUri(serverUrl!, path, id: id, objectMethod: objectMethod, query: query);
   }
 
-  /// Builds a `/_allauth/app/v1/<path>` URL for the headless API.
+  /// Builds a `/allauth/app/v1/<path>` URL for the headless API.
   Uri makeHeadlessUrl(String path) => makeHeadlessUri(serverUrl!, path);
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response

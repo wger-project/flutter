@@ -51,7 +51,7 @@ import 'package:wger/providers/user_profile_notifier.dart';
 part 'auth_notifier.g.dart';
 
 /// `allauth.headless` `app` client endpoints, relative to the
-/// `/_allauth/app/v1/` base.
+/// `/allauth/app/v1/` base.
 const HEADLESS_TOKENS_REFRESH_PATH = 'tokens/refresh';
 const HEADLESS_AUTH_LOGIN_PATH = 'auth/login';
 const HEADLESS_AUTH_SIGNUP_PATH = 'auth/signup';

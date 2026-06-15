@@ -57,7 +57,7 @@ void main() {
   });
 
   group('email management via headless', () {
-    final emailUri = Uri.https('localhost', '/_allauth/app/v1/account/email');
+    final emailUri = Uri.https('localhost', '/allauth/app/v1/account/email');
 
     test('requestEmailChange POSTs the new address to account/email', () async {
       when(mockBase.makeHeadlessUrl('account/email')).thenReturn(emailUri);

@@ -79,7 +79,7 @@ void main() {
   final tPowerSyncToken = Uri.parse('$serverUrl/api/v2/powersync-token');
   final tLiveness = Uri.parse('${powerSyncUrl}probes/liveness');
   final tIssueRefresh = Uri.parse('$serverUrl/api/v2/issue-refresh-token');
-  final tHeadlessRefresh = Uri.parse('$serverUrl/_allauth/app/v1/tokens/refresh');
+  final tHeadlessRefresh = Uri.parse('$serverUrl/allauth/app/v1/tokens/refresh');
 
   /// Builds a fresh ProviderContainer with the mock HTTP client wired into
   /// the auth notifier. Auto-disposes after the test.
@@ -956,7 +956,7 @@ void main() {
   });
 
   group('background revalidation: headless pre-emptive refresh', () {
-    final tRefresh = Uri.parse('$serverUrl/_allauth/app/v1/tokens/refresh');
+    final tRefresh = Uri.parse('$serverUrl/allauth/app/v1/tokens/refresh');
 
     String makeJwt(Map<String, dynamic> payload) {
       String enc(Map<String, dynamic> m) =>
@@ -1022,7 +1022,7 @@ void main() {
   });
 
   group('refreshAccessToken', () {
-    final tRefresh = Uri.parse('$serverUrl/_allauth/app/v1/tokens/refresh');
+    final tRefresh = Uri.parse('$serverUrl/allauth/app/v1/tokens/refresh');
 
     /// Builds a JWT-shaped string with the given payload (signature is a sham,
     /// we only ever decode the middle segment).

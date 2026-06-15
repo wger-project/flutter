@@ -46,7 +46,7 @@ void main() {
 
   const serverUrl = 'https://wger.example';
   const powerSyncUrl = 'https://ps.example/';
-  final tMfa = Uri.parse('$serverUrl/_allauth/app/v1/auth/2fa/authenticate');
+  final tMfa = Uri.parse('$serverUrl/allauth/app/v1/auth/2fa/authenticate');
   final tVersion = Uri.parse('$serverUrl/api/v2/version/');
   final tMinAppVersion = Uri.parse('$serverUrl/api/v2/min-app-version/');
   final tPowerSyncToken = Uri.parse('$serverUrl/api/v2/powersync-token');

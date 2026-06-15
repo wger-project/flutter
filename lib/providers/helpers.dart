@@ -89,7 +89,7 @@ Uri makeUri(
 }
 
 /// Builds a URL for the `allauth.headless` `app` client API at
-/// `/_allauth/app/v1/<path>`. Used by the auth notifier for login,
+/// `/allauth/app/v1/<path>`. Used by the auth notifier for login,
 /// signup, MFA, refresh, etc. The headless API does not use a trailing
 /// slash and lives on a separate URL prefix from the DRF data API.
 Uri makeHeadlessUri(String serverUrl, String path) {
@@ -98,7 +98,7 @@ Uri makeHeadlessUri(String serverUrl, String path) {
     scheme: uriServer.scheme,
     host: uriServer.host,
     port: uriServer.port,
-    path: [uriServer.path, '_allauth', 'app', 'v1', path].join('/'),
+    path: [uriServer.path, 'allauth', 'app', 'v1', path].join('/'),
   );
 }
 

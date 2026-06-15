@@ -90,8 +90,8 @@ void main() {
     isTrustworthy: true,
   );
 
-  final tHeadlessLogin = Uri.parse('$serverUrl/_allauth/app/v1/auth/login');
-  final tHeadlessSignup = Uri.parse('$serverUrl/_allauth/app/v1/auth/signup');
+  final tHeadlessLogin = Uri.parse('$serverUrl/allauth/app/v1/auth/login');
+  final tHeadlessSignup = Uri.parse('$serverUrl/allauth/app/v1/auth/signup');
   final tVersion = Uri.parse('$serverUrl/api/v2/version/');
   final tMinAppVersion = Uri.parse('$serverUrl/api/v2/min-app-version/');
   final tPowerSyncToken = Uri.parse('$serverUrl/api/v2/powersync-token');
@@ -503,7 +503,7 @@ void main() {
   });
 
   group('login: pasted refresh token', () {
-    final tRefresh = Uri.parse('$serverUrl/_allauth/app/v1/tokens/refresh');
+    final tRefresh = Uri.parse('$serverUrl/allauth/app/v1/tokens/refresh');
 
     test('exchanges at tokens/refresh and stores the rotated bundle', () async {
       final newAccess = makeJwt({'exp': 1900000000});
@@ -600,7 +600,7 @@ void main() {
   });
 
   group('completeMfa', () {
-    final tMfa = Uri.parse('$serverUrl/_allauth/app/v1/auth/2fa/authenticate');
+    final tMfa = Uri.parse('$serverUrl/allauth/app/v1/auth/2fa/authenticate');
 
     test('200 persists tokens and reaches loggedIn', () async {
       final accessJwt = makeJwt({'exp': 1900000000});
