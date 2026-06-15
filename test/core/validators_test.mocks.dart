@@ -768,17 +768,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get searchNamesInEnglish =>
-      (super.noSuchMethod(
-            Invocation.getter(#searchNamesInEnglish),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#searchNamesInEnglish),
-            ),
-          )
-          as String);
-
-  @override
   String get equipment =>
       (super.noSuchMethod(
             Invocation.getter(#equipment),
@@ -1163,17 +1152,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get sameRepetitions =>
-      (super.noSuchMethod(
-            Invocation.getter(#sameRepetitions),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#sameRepetitions),
-            ),
-          )
-          as String);
-
-  @override
   String get comment =>
       (super.noSuchMethod(
             Invocation.getter(#comment),
@@ -1345,17 +1323,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#newSet),
-            ),
-          )
-          as String);
-
-  @override
-  String get selectExercises =>
-      (super.noSuchMethod(
-            Invocation.getter(#selectExercises),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#selectExercises),
             ),
           )
           as String);
@@ -2766,17 +2733,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get goToToday =>
-      (super.noSuchMethod(
-            Invocation.getter(#goToToday),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#goToToday),
-            ),
-          )
-          as String);
-
-  @override
   String get enterValue =>
       (super.noSuchMethod(
             Invocation.getter(#enterValue),
@@ -3210,6 +3166,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
       (super.noSuchMethod(
             Invocation.getter(#add),
             returnValue: _i3.dummyValue<String>(this, Invocation.getter(#add)),
+          )
+          as String);
+
+  @override
+  String get increase =>
+      (super.noSuchMethod(
+            Invocation.getter(#increase),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#increase),
+            ),
+          )
+          as String);
+
+  @override
+  String get decrease =>
+      (super.noSuchMethod(
+            Invocation.getter(#decrease),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#decrease),
+            ),
           )
           as String);
 

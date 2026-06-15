@@ -46,7 +46,7 @@ abstract class _$GymStateNotifier extends $Notifier<GymModeState> {
   GymModeState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<GymModeState, GymModeState>;
     final element =
         ref.element
@@ -56,6 +56,6 @@ abstract class _$GymStateNotifier extends $Notifier<GymModeState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

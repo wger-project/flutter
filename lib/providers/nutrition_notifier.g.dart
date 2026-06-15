@@ -39,7 +39,7 @@ abstract class _$NutritionNotifier extends $StreamNotifier<NutritionState> {
   Stream<NutritionState> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<NutritionState>, NutritionState>;
     final element =
         ref.element
@@ -49,6 +49,6 @@ abstract class _$NutritionNotifier extends $StreamNotifier<NutritionState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

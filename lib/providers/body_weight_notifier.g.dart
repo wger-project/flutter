@@ -39,7 +39,7 @@ abstract class _$WeightEntryNotifier extends $StreamNotifier<List<WeightEntry>> 
   Stream<List<WeightEntry>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<WeightEntry>>, List<WeightEntry>>;
     final element =
         ref.element
@@ -49,6 +49,6 @@ abstract class _$WeightEntryNotifier extends $StreamNotifier<List<WeightEntry>> 
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

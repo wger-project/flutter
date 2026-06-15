@@ -38,7 +38,7 @@ abstract class _$AccountNotifier extends $AsyncNotifier<Account?> {
   FutureOr<Account?> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<Account?>, Account?>;
     final element =
         ref.element
@@ -48,6 +48,6 @@ abstract class _$AccountNotifier extends $AsyncNotifier<Account?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

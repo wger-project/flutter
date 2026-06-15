@@ -39,7 +39,7 @@ abstract class _$GalleryNotifier extends $StreamNotifier<List<GalleryImage>> {
   Stream<List<GalleryImage>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<GalleryImage>>, List<GalleryImage>>;
     final element =
         ref.element
@@ -49,6 +49,6 @@ abstract class _$GalleryNotifier extends $StreamNotifier<List<GalleryImage>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

@@ -47,7 +47,7 @@ abstract class _$TrophyStateNotifier extends $Notifier<TrophyState> {
   TrophyState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<TrophyState, TrophyState>;
     final element =
         ref.element
@@ -57,6 +57,6 @@ abstract class _$TrophyStateNotifier extends $Notifier<TrophyState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

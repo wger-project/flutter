@@ -50,7 +50,7 @@ final class ExerciseListFiltersNotifierProvider
   }
 }
 
-String _$exerciseListFiltersNotifierHash() => r'f2c3c5cee3725dc680c9560743bb50659783860c';
+String _$exerciseListFiltersNotifierHash() => r'482f7dedaa33f4872088942fa120ac2402060399';
 
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
@@ -60,7 +60,7 @@ abstract class _$ExerciseListFiltersNotifier extends $Notifier<ExerciseFilterSta
   ExerciseFilterState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<ExerciseFilterState, ExerciseFilterState>;
     final element =
         ref.element
@@ -70,6 +70,6 @@ abstract class _$ExerciseListFiltersNotifier extends $Notifier<ExerciseFilterSta
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

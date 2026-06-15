@@ -39,7 +39,7 @@ abstract class _$MeasurementNotifier extends $StreamNotifier<List<MeasurementCat
   Stream<List<MeasurementCategory>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<MeasurementCategory>>, List<MeasurementCategory>>;
     final element =
         ref.element
@@ -49,6 +49,6 @@ abstract class _$MeasurementNotifier extends $StreamNotifier<List<MeasurementCat
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

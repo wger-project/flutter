@@ -47,7 +47,7 @@ abstract class _$AddExerciseNotifier extends $Notifier<AddExerciseState> {
   AddExerciseState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AddExerciseState, AddExerciseState>;
     final element =
         ref.element
@@ -57,6 +57,6 @@ abstract class _$AddExerciseNotifier extends $Notifier<AddExerciseState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

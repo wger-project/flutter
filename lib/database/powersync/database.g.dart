@@ -10251,10 +10251,7 @@ final class $$LanguageTableTableReferences
   static MultiTypedResultKey<$ExerciseTranslationTableTable, List<ExerciseTranslationRow>>
   _exerciseTranslationTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseTranslationTable,
-    aliasName: $_aliasNameGenerator(
-      db.languageTable.id,
-      db.exerciseTranslationTable.languageId,
-    ),
+    aliasName: 'core_language__id__exercises_translation__language_id',
   );
 
   $$ExerciseTranslationTableTableProcessedTableManager get exerciseTranslationTableRefs {
@@ -10846,10 +10843,7 @@ final class $$ExerciseCategoryTableTableReferences
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.exerciseTable,
-    aliasName: $_aliasNameGenerator(
-      db.exerciseCategoryTable.id,
-      db.exerciseTable.categoryId,
-    ),
+    aliasName: 'exercises_exercisecategory__id__exercises_exercise__category_id',
   );
 
   $$ExerciseTableTableProcessedTableManager get exerciseTableRefs {
@@ -11111,10 +11105,7 @@ final class $$ExerciseTableTableReferences
   static $ExerciseCategoryTableTable _categoryIdTable(
     _$DriftPowersyncDatabase db,
   ) => db.exerciseCategoryTable.createAlias(
-    $_aliasNameGenerator(
-      db.exerciseTable.categoryId,
-      db.exerciseCategoryTable.id,
-    ),
+    'exercises_exercise__category_id__exercises_exercisecategory__id',
   );
 
   $$ExerciseCategoryTableTableProcessedTableManager get categoryId {
@@ -11134,10 +11125,7 @@ final class $$ExerciseTableTableReferences
   static MultiTypedResultKey<$ExerciseTranslationTableTable, List<ExerciseTranslationRow>>
   _exerciseTranslationTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseTranslationTable,
-    aliasName: $_aliasNameGenerator(
-      db.exerciseTable.id,
-      db.exerciseTranslationTable.exerciseId,
-    ),
+    aliasName: 'exercises_exercise__id__exercises_translation__exercise_id',
   );
 
   $$ExerciseTranslationTableTableProcessedTableManager get exerciseTranslationTableRefs {
@@ -11157,10 +11145,7 @@ final class $$ExerciseTableTableReferences
   static MultiTypedResultKey<$ExerciseMuscleM2NTable, List<ExerciseMuscleM2NData>>
   _exerciseMuscleM2NRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseMuscleM2N,
-    aliasName: $_aliasNameGenerator(
-      db.exerciseTable.id,
-      db.exerciseMuscleM2N.exerciseId,
-    ),
+    aliasName: 'exercises_exercise__id__exercises_exercise_muscles__exercise_id',
   );
 
   $$ExerciseMuscleM2NTableProcessedTableManager get exerciseMuscleM2NRefs {
@@ -11178,14 +11163,12 @@ final class $$ExerciseTableTableReferences
   }
 
   static MultiTypedResultKey<$ExerciseSecondaryMuscleM2NTable, List<ExerciseSecondaryMuscleM2NData>>
-  _exerciseSecondaryMuscleM2NRefsTable(_$DriftPowersyncDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.exerciseSecondaryMuscleM2N,
-        aliasName: $_aliasNameGenerator(
-          db.exerciseTable.id,
-          db.exerciseSecondaryMuscleM2N.exerciseId,
-        ),
-      );
+  _exerciseSecondaryMuscleM2NRefsTable(
+    _$DriftPowersyncDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.exerciseSecondaryMuscleM2N,
+    aliasName: 'exercises_exercise__id__exercises_exercise_muscles_secondary__exercise_id',
+  );
 
   $$ExerciseSecondaryMuscleM2NTableProcessedTableManager get exerciseSecondaryMuscleM2NRefs {
     final manager = $$ExerciseSecondaryMuscleM2NTableTableManager(
@@ -11204,10 +11187,7 @@ final class $$ExerciseTableTableReferences
   static MultiTypedResultKey<$ExerciseEquipmentM2NTable, List<ExerciseEquipmentM2NData>>
   _exerciseEquipmentM2NRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseEquipmentM2N,
-    aliasName: $_aliasNameGenerator(
-      db.exerciseTable.id,
-      db.exerciseEquipmentM2N.exerciseId,
-    ),
+    aliasName: 'exercises_exercise__id__exercises_exercise_equipment__exercise_id',
   );
 
   $$ExerciseEquipmentM2NTableProcessedTableManager get exerciseEquipmentM2NRefs {
@@ -11227,10 +11207,7 @@ final class $$ExerciseTableTableReferences
   static MultiTypedResultKey<$ExerciseImageTableTable, List<ExerciseImage>>
   _exerciseImageTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseImageTable,
-    aliasName: $_aliasNameGenerator(
-      db.exerciseTable.id,
-      db.exerciseImageTable.exerciseId,
-    ),
+    aliasName: 'exercises_exercise__id__exercises_exerciseimage__exercise_id',
   );
 
   $$ExerciseImageTableTableProcessedTableManager get exerciseImageTableRefs {
@@ -11251,10 +11228,7 @@ final class $$ExerciseTableTableReferences
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.exerciseVideoTable,
-    aliasName: $_aliasNameGenerator(
-      db.exerciseTable.id,
-      db.exerciseVideoTable.exerciseId,
-    ),
+    aliasName: 'exercises_exercise__id__exercises_exercisevideo__exercise_id',
   );
 
   $$ExerciseVideoTableTableProcessedTableManager get exerciseVideoTableRefs {
@@ -12042,10 +12016,7 @@ final class $$ExerciseTranslationTableTableReferences
 
   static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
       db.exerciseTable.createAlias(
-        $_aliasNameGenerator(
-          db.exerciseTranslationTable.exerciseId,
-          db.exerciseTable.id,
-        ),
+        'exercises_translation__exercise_id__exercises_exercise__id',
       );
 
   $$ExerciseTableTableProcessedTableManager get exerciseId {
@@ -12063,12 +12034,7 @@ final class $$ExerciseTranslationTableTableReferences
   }
 
   static $LanguageTableTable _languageIdTable(_$DriftPowersyncDatabase db) =>
-      db.languageTable.createAlias(
-        $_aliasNameGenerator(
-          db.exerciseTranslationTable.languageId,
-          db.languageTable.id,
-        ),
-      );
+      db.languageTable.createAlias('exercises_translation__language_id__core_language__id');
 
   $$LanguageTableTableProcessedTableManager get languageId {
     final $_column = $_itemColumn<int>('language_id')!;
@@ -12088,10 +12054,7 @@ final class $$ExerciseTranslationTableTableReferences
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.exerciseAliasTable,
-    aliasName: $_aliasNameGenerator(
-      db.exerciseTranslationTable.id,
-      db.exerciseAliasTable.translationId,
-    ),
+    aliasName: 'exercises_translation__id__exercises_alias__translation_id',
   );
 
   $$ExerciseAliasTableTableProcessedTableManager get exerciseAliasTableRefs {
@@ -12109,12 +12072,11 @@ final class $$ExerciseTranslationTableTableReferences
   }
 
   static MultiTypedResultKey<$ExerciseCommentTableTable, List<Comment>>
-  _exerciseCommentTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+  _exerciseCommentTableRefsTable(
+    _$DriftPowersyncDatabase db,
+  ) => MultiTypedResultKey.fromTable(
     db.exerciseCommentTable,
-    aliasName: $_aliasNameGenerator(
-      db.exerciseTranslationTable.id,
-      db.exerciseCommentTable.translationId,
-    ),
+    aliasName: 'exercises_translation__id__exercises_exercisecomment__translation_id',
   );
 
   $$ExerciseCommentTableTableProcessedTableManager get exerciseCommentTableRefs {
@@ -12717,10 +12679,7 @@ final class $$ExerciseAliasTableTableReferences
   static $ExerciseTranslationTableTable _translationIdTable(
     _$DriftPowersyncDatabase db,
   ) => db.exerciseTranslationTable.createAlias(
-    $_aliasNameGenerator(
-      db.exerciseAliasTable.translationId,
-      db.exerciseTranslationTable.id,
-    ),
+    'exercises_alias__translation_id__exercises_translation__id',
   );
 
   $$ExerciseTranslationTableTableProcessedTableManager get translationId {
@@ -13025,10 +12984,7 @@ final class $$ExerciseCommentTableTableReferences
   static $ExerciseTranslationTableTable _translationIdTable(
     _$DriftPowersyncDatabase db,
   ) => db.exerciseTranslationTable.createAlias(
-    $_aliasNameGenerator(
-      db.exerciseCommentTable.translationId,
-      db.exerciseTranslationTable.id,
-    ),
+    'exercises_exercisecomment__translation_id__exercises_translation__id',
   );
 
   $$ExerciseTranslationTableTableProcessedTableManager get translationId {
@@ -13331,10 +13287,7 @@ final class $$MuscleTableTableReferences
   static MultiTypedResultKey<$ExerciseMuscleM2NTable, List<ExerciseMuscleM2NData>>
   _exerciseMuscleM2NRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.exerciseMuscleM2N,
-    aliasName: $_aliasNameGenerator(
-      db.muscleTable.id,
-      db.exerciseMuscleM2N.muscleId,
-    ),
+    aliasName: 'exercises_muscle__id__exercises_exercise_muscles__muscle_id',
   );
 
   $$ExerciseMuscleM2NTableProcessedTableManager get exerciseMuscleM2NRefs {
@@ -13352,14 +13305,12 @@ final class $$MuscleTableTableReferences
   }
 
   static MultiTypedResultKey<$ExerciseSecondaryMuscleM2NTable, List<ExerciseSecondaryMuscleM2NData>>
-  _exerciseSecondaryMuscleM2NRefsTable(_$DriftPowersyncDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.exerciseSecondaryMuscleM2N,
-        aliasName: $_aliasNameGenerator(
-          db.muscleTable.id,
-          db.exerciseSecondaryMuscleM2N.muscleId,
-        ),
-      );
+  _exerciseSecondaryMuscleM2NRefsTable(
+    _$DriftPowersyncDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.exerciseSecondaryMuscleM2N,
+    aliasName: 'exercises_muscle__id__exercises_exercise_muscles_secondary__muscle_id',
+  );
 
   $$ExerciseSecondaryMuscleM2NTableProcessedTableManager get exerciseSecondaryMuscleM2NRefs {
     final manager = $$ExerciseSecondaryMuscleM2NTableTableManager(
@@ -13723,10 +13674,7 @@ final class $$ExerciseMuscleM2NTableReferences
 
   static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
       db.exerciseTable.createAlias(
-        $_aliasNameGenerator(
-          db.exerciseMuscleM2N.exerciseId,
-          db.exerciseTable.id,
-        ),
+        'exercises_exercise_muscles__exercise_id__exercises_exercise__id',
       );
 
   $$ExerciseTableTableProcessedTableManager get exerciseId {
@@ -13745,7 +13693,7 @@ final class $$ExerciseMuscleM2NTableReferences
 
   static $MuscleTableTable _muscleIdTable(_$DriftPowersyncDatabase db) =>
       db.muscleTable.createAlias(
-        $_aliasNameGenerator(db.exerciseMuscleM2N.muscleId, db.muscleTable.id),
+        'exercises_exercise_muscles__muscle_id__exercises_muscle__id',
       );
 
   $$MuscleTableTableProcessedTableManager get muscleId {
@@ -14100,13 +14048,11 @@ final class $$ExerciseSecondaryMuscleM2NTableReferences
     super.$_typedResult,
   );
 
-  static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
-      db.exerciseTable.createAlias(
-        $_aliasNameGenerator(
-          db.exerciseSecondaryMuscleM2N.exerciseId,
-          db.exerciseTable.id,
-        ),
-      );
+  static $ExerciseTableTable _exerciseIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.exerciseTable.createAlias(
+    'exercises_exercise_muscles_secondary__exercise_id__exercises_exercise__id',
+  );
 
   $$ExerciseTableTableProcessedTableManager get exerciseId {
     final $_column = $_itemColumn<int>('exercise_id')!;
@@ -14124,10 +14070,7 @@ final class $$ExerciseSecondaryMuscleM2NTableReferences
 
   static $MuscleTableTable _muscleIdTable(_$DriftPowersyncDatabase db) =>
       db.muscleTable.createAlias(
-        $_aliasNameGenerator(
-          db.exerciseSecondaryMuscleM2N.muscleId,
-          db.muscleTable.id,
-        ),
+        'exercises_exercise_muscles_secondary__muscle_id__exercises_muscle__id',
       );
 
   $$MuscleTableTableProcessedTableManager get muscleId {
@@ -14485,12 +14428,11 @@ final class $$EquipmentTableTableReferences
   );
 
   static MultiTypedResultKey<$ExerciseEquipmentM2NTable, List<ExerciseEquipmentM2NData>>
-  _exerciseEquipmentM2NRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+  _exerciseEquipmentM2NRefsTable(
+    _$DriftPowersyncDatabase db,
+  ) => MultiTypedResultKey.fromTable(
     db.exerciseEquipmentM2N,
-    aliasName: $_aliasNameGenerator(
-      db.equipmentTable.id,
-      db.exerciseEquipmentM2N.equipmentId,
-    ),
+    aliasName: 'exercises_equipment__id__exercises_exercise_equipment__equipment_id',
   );
 
   $$ExerciseEquipmentM2NTableProcessedTableManager get exerciseEquipmentM2NRefs {
@@ -14744,10 +14686,7 @@ final class $$ExerciseEquipmentM2NTableReferences
 
   static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
       db.exerciseTable.createAlias(
-        $_aliasNameGenerator(
-          db.exerciseEquipmentM2N.exerciseId,
-          db.exerciseTable.id,
-        ),
+        'exercises_exercise_equipment__exercise_id__exercises_exercise__id',
       );
 
   $$ExerciseTableTableProcessedTableManager get exerciseId {
@@ -14766,10 +14705,7 @@ final class $$ExerciseEquipmentM2NTableReferences
 
   static $EquipmentTableTable _equipmentIdTable(_$DriftPowersyncDatabase db) =>
       db.equipmentTable.createAlias(
-        $_aliasNameGenerator(
-          db.exerciseEquipmentM2N.equipmentId,
-          db.equipmentTable.id,
-        ),
+        'exercises_exercise_equipment__equipment_id__exercises_equipment__id',
       );
 
   $$EquipmentTableTableProcessedTableManager get equipmentId {
@@ -15150,10 +15086,7 @@ final class $$ExerciseImageTableTableReferences
 
   static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
       db.exerciseTable.createAlias(
-        $_aliasNameGenerator(
-          db.exerciseImageTable.exerciseId,
-          db.exerciseTable.id,
-        ),
+        'exercises_exerciseimage__exercise_id__exercises_exercise__id',
       );
 
   $$ExerciseTableTableProcessedTableManager get exerciseId {
@@ -15723,10 +15656,7 @@ final class $$ExerciseVideoTableTableReferences
 
   static $ExerciseTableTable _exerciseIdTable(_$DriftPowersyncDatabase db) =>
       db.exerciseTable.createAlias(
-        $_aliasNameGenerator(
-          db.exerciseVideoTable.exerciseId,
-          db.exerciseTable.id,
-        ),
+        'exercises_exercisevideo__exercise_id__exercises_exercise__id',
       );
 
   $$ExerciseTableTableProcessedTableManager get exerciseId {
@@ -16464,10 +16394,7 @@ final class $$MeasurementCategoryTableTableReferences
   static MultiTypedResultKey<$MeasurementEntryTableTable, List<MeasurementEntry>>
   _measurementEntryTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.measurementEntryTable,
-    aliasName: $_aliasNameGenerator(
-      db.measurementCategoryTable.id,
-      db.measurementEntryTable.categoryId,
-    ),
+    aliasName: 'measurements_category__id__measurements_measurement__category_id',
   );
 
   $$MeasurementEntryTableTableProcessedTableManager get measurementEntryTableRefs {
@@ -16748,10 +16675,7 @@ final class $$MeasurementEntryTableTableReferences
   static $MeasurementCategoryTableTable _categoryIdTable(
     _$DriftPowersyncDatabase db,
   ) => db.measurementCategoryTable.createAlias(
-    $_aliasNameGenerator(
-      db.measurementEntryTable.categoryId,
-      db.measurementCategoryTable.id,
-    ),
+    'measurements_measurement__category_id__measurements_category__id',
   );
 
   $$MeasurementCategoryTableTableProcessedTableManager get categoryId {
@@ -18345,10 +18269,7 @@ final class $$NutritionalPlanTableTableReferences
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.mealTable,
-    aliasName: $_aliasNameGenerator(
-      db.nutritionalPlanTable.id,
-      db.mealTable.planId,
-    ),
+    aliasName: 'nutrition_nutritionplan__id__nutrition_meal__plan_id',
   );
 
   $$MealTableTableProcessedTableManager get mealTableRefs {
@@ -18367,10 +18288,7 @@ final class $$NutritionalPlanTableTableReferences
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.logItemTable,
-    aliasName: $_aliasNameGenerator(
-      db.nutritionalPlanTable.id,
-      db.logItemTable.planId,
-    ),
+    aliasName: 'nutrition_nutritionplan__id__nutrition_logitem__plan_id',
   );
 
   $$LogItemTableTableProcessedTableManager get logItemTableRefs {
@@ -18912,10 +18830,7 @@ final class $$IngredientTableTableReferences
   static MultiTypedResultKey<$IngredientImageTableTable, List<IngredientImage>>
   _ingredientImageTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
     db.ingredientImageTable,
-    aliasName: $_aliasNameGenerator(
-      db.ingredientTable.id,
-      db.ingredientImageTable.ingredientId,
-    ),
+    aliasName: 'nutrition_ingredient__id__nutrition_image__ingredient_id',
   );
 
   $$IngredientImageTableTableProcessedTableManager get ingredientImageTableRefs {
@@ -18933,12 +18848,11 @@ final class $$IngredientTableTableReferences
   }
 
   static MultiTypedResultKey<$IngredientWeightUnitTableTable, List<IngredientWeightUnit>>
-  _ingredientWeightUnitTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
+  _ingredientWeightUnitTableRefsTable(
+    _$DriftPowersyncDatabase db,
+  ) => MultiTypedResultKey.fromTable(
     db.ingredientWeightUnitTable,
-    aliasName: $_aliasNameGenerator(
-      db.ingredientTable.id,
-      db.ingredientWeightUnitTable.ingredientId,
-    ),
+    aliasName: 'nutrition_ingredient__id__nutrition_ingredientweightunit__ingredient_id',
   );
 
   $$IngredientWeightUnitTableTableProcessedTableManager get ingredientWeightUnitTableRefs {
@@ -18959,10 +18873,7 @@ final class $$IngredientTableTableReferences
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.mealItemTable,
-    aliasName: $_aliasNameGenerator(
-      db.ingredientTable.id,
-      db.mealItemTable.ingredientId,
-    ),
+    aliasName: 'nutrition_ingredient__id__nutrition_mealitem__ingredient_id',
   );
 
   $$MealItemTableTableProcessedTableManager get mealItemTableRefs {
@@ -18981,10 +18892,7 @@ final class $$IngredientTableTableReferences
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.logItemTable,
-    aliasName: $_aliasNameGenerator(
-      db.ingredientTable.id,
-      db.logItemTable.ingredientId,
-    ),
+    aliasName: 'nutrition_ingredient__id__nutrition_logitem__ingredient_id',
   );
 
   $$LogItemTableTableProcessedTableManager get logItemTableRefs {
@@ -19834,10 +19742,7 @@ final class $$IngredientImageTableTableReferences
   static $IngredientTableTable _ingredientIdTable(
     _$DriftPowersyncDatabase db,
   ) => db.ingredientTable.createAlias(
-    $_aliasNameGenerator(
-      db.ingredientImageTable.ingredientId,
-      db.ingredientTable.id,
-    ),
+    'nutrition_image__ingredient_id__nutrition_ingredient__id',
   );
 
   $$IngredientTableTableProcessedTableManager get ingredientId {
@@ -20342,10 +20247,7 @@ final class $$IngredientWeightUnitTableTableReferences
   static $IngredientTableTable _ingredientIdTable(
     _$DriftPowersyncDatabase db,
   ) => db.ingredientTable.createAlias(
-    $_aliasNameGenerator(
-      db.ingredientWeightUnitTable.ingredientId,
-      db.ingredientTable.id,
-    ),
+    'nutrition_ingredientweightunit__ingredient_id__nutrition_ingredient__id',
   );
 
   $$IngredientTableTableProcessedTableManager get ingredientId {
@@ -20668,7 +20570,7 @@ final class $$MealTableTableReferences
 
   static $NutritionalPlanTableTable _planIdTable(_$DriftPowersyncDatabase db) =>
       db.nutritionalPlanTable.createAlias(
-        $_aliasNameGenerator(db.mealTable.planId, db.nutritionalPlanTable.id),
+        'nutrition_meal__plan_id__nutrition_nutritionplan__id',
       );
 
   $$NutritionalPlanTableTableProcessedTableManager get planId {
@@ -20689,10 +20591,7 @@ final class $$MealTableTableReferences
     _$DriftPowersyncDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.mealItemTable,
-    aliasName: $_aliasNameGenerator(
-      db.mealTable.id,
-      db.mealItemTable.mealId,
-    ),
+    aliasName: 'nutrition_meal__id__nutrition_mealitem__meal_id',
   );
 
   $$MealItemTableTableProcessedTableManager get mealItemTableRefs {
@@ -21069,9 +20968,8 @@ final class $$MealItemTableTableReferences
     super.$_typedResult,
   );
 
-  static $MealTableTable _mealIdTable(_$DriftPowersyncDatabase db) => db.mealTable.createAlias(
-    $_aliasNameGenerator(db.mealItemTable.mealId, db.mealTable.id),
-  );
+  static $MealTableTable _mealIdTable(_$DriftPowersyncDatabase db) =>
+      db.mealTable.createAlias('nutrition_mealitem__meal_id__nutrition_meal__id');
 
   $$MealTableTableProcessedTableManager get mealId {
     final $_column = $_itemColumn<String>('meal_id')!;
@@ -21090,7 +20988,7 @@ final class $$MealItemTableTableReferences
   static $IngredientTableTable _ingredientIdTable(
     _$DriftPowersyncDatabase db,
   ) => db.ingredientTable.createAlias(
-    $_aliasNameGenerator(db.mealItemTable.ingredientId, db.ingredientTable.id),
+    'nutrition_mealitem__ingredient_id__nutrition_ingredient__id',
   );
 
   $$IngredientTableTableProcessedTableManager get ingredientId {
@@ -21498,10 +21396,7 @@ final class $$LogItemTableTableReferences
 
   static $NutritionalPlanTableTable _planIdTable(_$DriftPowersyncDatabase db) =>
       db.nutritionalPlanTable.createAlias(
-        $_aliasNameGenerator(
-          db.logItemTable.planId,
-          db.nutritionalPlanTable.id,
-        ),
+        'nutrition_logitem__plan_id__nutrition_nutritionplan__id',
       );
 
   $$NutritionalPlanTableTableProcessedTableManager get planId {
@@ -21521,7 +21416,7 @@ final class $$LogItemTableTableReferences
   static $IngredientTableTable _ingredientIdTable(
     _$DriftPowersyncDatabase db,
   ) => db.ingredientTable.createAlias(
-    $_aliasNameGenerator(db.logItemTable.ingredientId, db.ingredientTable.id),
+    'nutrition_logitem__ingredient_id__nutrition_ingredient__id',
   );
 
   $$IngredientTableTableProcessedTableManager get ingredientId {

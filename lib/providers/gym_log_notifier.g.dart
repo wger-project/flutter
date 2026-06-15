@@ -40,16 +40,16 @@ final class GymLogNotifierProvider extends $NotifierProvider<GymLogNotifier, Log
   }
 }
 
-String _$gymLogNotifierHash() => r'82c162256cf93e6cc2c9673c1ebcd9d044a79de6';
+String _$gymLogNotifierHash() => r'2a9eb1f27bcc5d72a893843ddfaa077a32f8ed26';
 
 abstract class _$GymLogNotifier extends $Notifier<Log?> {
   Log? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Log?, Log?>;
     final element =
         ref.element as $ClassProviderElement<AnyNotifier<Log?, Log?>, Log?, Object?, Object?>;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
