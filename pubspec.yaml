@@ -86,7 +86,7 @@ dev_dependencies:
   # Used to stub the url_launcher platform interface for the web-handoff test
   url_launcher_platform_interface: ^2.3.2
   drift_dev: ^2.33.0
-  xml: ^6.6.1
+  xml: ^7.0.1
   flutter_lints: ^6.0.0
   flutter_native_splash: ^2.4.7
   freezed: ^3.2.0
