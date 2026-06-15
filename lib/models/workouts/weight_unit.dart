@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
+
+@immutable
 class WeightUnit {
   final int id;
   final String name;
