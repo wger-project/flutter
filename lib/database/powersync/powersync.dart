@@ -214,7 +214,7 @@ Future<void> deletePowerSyncDatabaseFile() async {
   for (final suffix in ['', '-wal', '-shm', '-journal']) {
     final file = File('$path$suffix');
     try {
-      if (await file.exists()) {
+      if (file.existsSync()) {
         await file.delete();
       }
     } catch (e, s) {
