@@ -135,6 +135,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
         IconButton(
           // "Quick-remove" button
           icon: const Icon(Icons.remove, color: Colors.black),
+          tooltip: i18n.decrease,
           onPressed: () {
             final base = currentWeight ?? 0;
             final newValue = base - widget.valueChange;
@@ -177,6 +178,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
         // "Quick-add" button
         IconButton(
           icon: const Icon(Icons.add, color: Colors.black),
+          tooltip: i18n.increase,
           onPressed: () {
             final base = currentWeight ?? 0;
             final newValue = base + widget.valueChange;
