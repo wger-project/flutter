@@ -116,7 +116,7 @@ void main() {
     final barChart = tester.widget<BarChart>(barChartFinder);
 
     // Verify all bars are 0.0 as nothing has been logged
-    for (var group in barChart.data.barGroups) {
+    for (final group in barChart.data.barGroups) {
       expect(
         group.barRods.first.toY,
         0.0,
@@ -164,7 +164,7 @@ void main() {
     final barChart = tester.widget<BarChart>(barChartFinder);
 
     // Verify all bars fallback to 0.0 safely instead of Infinity
-    for (var group in barChart.data.barGroups) {
+    for (final group in barChart.data.barGroups) {
       expect(
         group.barRods.first.toY,
         0.0,
@@ -194,7 +194,7 @@ void main() {
     expect(barChartFinder, findsOneWidget);
 
     final barChart = tester.widget<BarChart>(barChartFinder);
-    for (var group in barChart.data.barGroups) {
+    for (final group in barChart.data.barGroups) {
       expect(group.barRods.first.toY, 0.0);
     }
   });

@@ -73,17 +73,12 @@ class MealItem {
   /// after a JOIN; instances built here have only the FK ids set.
   MealItem.fromDrift({
     this.id,
-    required String mealId,
-    required int ingredientId,
+    required this.mealId,
+    required this.ingredientId,
     this.weightUnitId,
-    required int order,
-    required double amount,
-  }) {
-    this.mealId = mealId;
-    this.ingredientId = ingredientId;
-    this.amount = amount;
-    this.order = order;
-  }
+    required this.order,
+    required double this.amount,
+  });
 
   /// Drift companion for inserts/updates against `nutrition_mealitem`.
   ///
@@ -94,7 +89,7 @@ class MealItem {
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       mealId: drift.Value(mealId),
       ingredientId: drift.Value(ingredientId),
-      weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId!),
+      weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId),
       order: drift.Value(order),
       amount: drift.Value(amount.toDouble()),
     );

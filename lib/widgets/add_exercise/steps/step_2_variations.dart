@@ -53,7 +53,7 @@ class Step2Variations extends ConsumerWidget {
                           ),
                         ),
                         Consumer(
-                          builder: (ctx, ref, __) {
+                          builder: (ctx, ref, _) {
                             final state = ref.watch(addExerciseProvider);
                             return Switch(
                               value: state.variationGroup == key,
@@ -91,7 +91,7 @@ class Step2Variations extends ConsumerWidget {
                               ),
                             ),
                             Consumer(
-                              builder: (ctx, ref, __) {
+                              builder: (ctx, ref, _) {
                                 final state = ref.watch(addExerciseProvider);
                                 return Switch(
                                   value: state.variationConnectToExercise == base.id,

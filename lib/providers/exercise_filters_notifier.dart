@@ -93,12 +93,12 @@ class ExerciseListFiltersNotifier extends _$ExerciseListFiltersNotifier {
     var filters = currentFilters;
 
     if (filters.equipment.items.isEmpty && equipment.isNotEmpty) {
-      final Map<Equipment, bool> items = {for (var e in equipment) e: false};
+      final Map<Equipment, bool> items = {for (final e in equipment) e: false};
       filters = filters.copyWith(equipment: filters.equipment.copyWith(items: items));
     }
 
     if (filters.exerciseCategories.items.isEmpty && categories.isNotEmpty) {
-      final Map<ExerciseCategory, bool> items = {for (var c in categories) c: false};
+      final Map<ExerciseCategory, bool> items = {for (final c in categories) c: false};
       filters = filters.copyWith(
         exerciseCategories: filters.exerciseCategories.copyWith(items: items),
       );

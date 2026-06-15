@@ -55,7 +55,7 @@ class RoutineListScreen extends riverpod.ConsumerWidget {
             : null,
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      body: WidescreenWrapper(child: RoutinesList()),
+      body: const WidescreenWrapper(child: RoutinesList()),
     );
   }
 }

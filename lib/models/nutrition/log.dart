@@ -62,14 +62,11 @@ class LogItem {
     this.mealId,
     required this.ingredientId,
     this.weightUnitId,
-    required num amount,
+    required this.amount,
     required this.planId,
-    required DateTime datetime,
+    required this.datetime,
     this.comment,
-  }) {
-    this.amount = amount;
-    this.datetime = datetime;
-  }
+  });
 
   /// Builds a new log row from a meal-plan item, e.g. when the user taps
   /// "log this meal". The `id` stays null and is assigned by Drift on insert.
@@ -89,12 +86,12 @@ class LogItem {
     return LogItemTableCompanion(
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       planId: drift.Value(planId),
-      mealId: mealId == null ? const drift.Value.absent() : drift.Value(mealId!),
+      mealId: mealId == null ? const drift.Value.absent() : drift.Value(mealId),
       ingredientId: drift.Value(ingredientId),
-      weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId!),
+      weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId),
       datetime: drift.Value(datetime),
       amount: drift.Value(amount.toDouble()),
-      comment: comment == null ? const drift.Value.absent() : drift.Value(comment!),
+      comment: comment == null ? const drift.Value.absent() : drift.Value(comment),
     );
   }
 

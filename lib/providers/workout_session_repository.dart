@@ -69,7 +69,7 @@ class WorkoutSessionRepository {
         });
 
         final log = row.readTableOrNull(_db.workoutLogTable);
-        if (log == null || seenLogs.contains(log.id!)) {
+        if (log == null || seenLogs.contains(log.id)) {
           continue;
         }
         seenLogs.add(log.id!);

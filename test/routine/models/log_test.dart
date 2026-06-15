@@ -133,10 +133,10 @@ void main() {
     late Exercise exercise;
 
     setUp(() {
-      exercise = Exercise(
+      exercise = const Exercise(
         id: 1,
         uuid: 'test-uuid',
-        category: const ExerciseCategory(id: 1, name: 'Test'),
+        category: ExerciseCategory(id: 1, name: 'Test'),
       );
     });
 

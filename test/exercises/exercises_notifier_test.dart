@@ -54,19 +54,19 @@ void main() {
     // Two exercises share the 'chest' variationGroup, one is in 'legs', and
     // testCrunches has no variationGroup at all (so it should be excluded
     // from all variation lookups).
-    final benchPress = Exercise(
+    const benchPress = Exercise(
       id: 100,
       uuid: 'bench-uuid',
       category: testCategoryArms,
       variationGroup: 'chest',
     );
-    final inclineBench = Exercise(
+    const inclineBench = Exercise(
       id: 101,
       uuid: 'incline-uuid',
       category: testCategoryArms,
       variationGroup: 'chest',
     );
-    final squat = Exercise(
+    const squat = Exercise(
       id: 200,
       uuid: 'squat-uuid',
       category: testCategoryLegs,

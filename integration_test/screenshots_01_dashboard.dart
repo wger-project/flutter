@@ -122,7 +122,7 @@ Widget createDashboardScreen({Locale? locale}) {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: wgerLightTheme,
-        home: HomeTabsScreen(),
+        home: const HomeTabsScreen(),
       ),
     ),
   );

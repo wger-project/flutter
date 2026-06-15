@@ -83,7 +83,7 @@ class _Step4TranslationState extends ConsumerState<Step4Translation> {
                   title: '${i18n.name}*',
                   validator: (name) => validateName(name, context),
                   onChange: (v) => notifier.setExerciseNameTrans(v),
-                  onSaved: (String? name) => notifier.setExerciseNameTrans(name!),
+                  onSaved: (String? name) => notifier.setExerciseNameTrans(name),
                 ),
                 AddExerciseTextArea(
                   title: i18n.alternativeNames,
@@ -108,7 +108,7 @@ class _Step4TranslationState extends ConsumerState<Step4Translation> {
                       notifier.setAlternateNamesTrans(alternateName!.split('\n')),
                 ),
                 Consumer(
-                  builder: (ctx, ref, __) {
+                  builder: (ctx, ref, _) {
                     final descriptionTrans = ref.watch(
                       addExerciseProvider.select((s) => s.descriptionTrans),
                     );
@@ -120,7 +120,7 @@ class _Step4TranslationState extends ConsumerState<Step4Translation> {
                       helperText: i18n.enterTextInLanguage,
                       isMultiline: true,
                       validator: (name) => validateExerciseDescription(name, context),
-                      onSaved: (String? description) => notifier.setDescriptionTrans(description!),
+                      onSaved: (String? description) => notifier.setDescriptionTrans(description),
                     );
                   },
                 ),

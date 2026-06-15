@@ -176,7 +176,7 @@ class _Step5ImagesState extends ConsumerState<Step5Images> with ExerciseImagePic
           // Image picker or preview - shown when not entering metadata
           if (_currentImageToAdd == null)
             Consumer(
-              builder: (ctx, ref, __) {
+              builder: (ctx, ref, _) {
                 final exerciseImages = ref.watch(
                   addExerciseProvider.select((s) => s.exerciseImages),
                 );

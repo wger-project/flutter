@@ -103,7 +103,7 @@ class _SessionFormState extends ConsumerState<SessionForm> {
             keyboardType: TextInputType.multiline,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              widget._session.notes = newValue!;
+              widget._session.notes = newValue;
             },
             validator: (value) {
               if (value != null && value.length > WorkoutSession.maxNotesChars) {

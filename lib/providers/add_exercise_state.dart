@@ -29,8 +29,6 @@ part 'add_exercise_state.freezed.dart';
 /// Transient form state for the "contribute a new exercise" flow.
 @freezed
 sealed class AddExerciseState with _$AddExerciseState {
-  const AddExerciseState._();
-
   const factory AddExerciseState({
     @Default('') String author,
     String? exerciseNameEn,
@@ -49,6 +47,7 @@ sealed class AddExerciseState with _$AddExerciseState {
     @Default([]) List<Muscle> secondaryMuscles,
     @Default([]) List<ExerciseSubmissionImage> exerciseImages,
   }) = _AddExerciseState;
+  const AddExerciseState._();
 
   bool get newVariation => variationConnectToExercise != null;
 

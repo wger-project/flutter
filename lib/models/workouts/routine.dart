@@ -279,10 +279,10 @@ class Routine {
   }
 
   Routine replaceExercise(int oldExerciseId, Exercise newExercise) {
-    final updatedRoutine = this.copyWith(
-      sessions: List<WorkoutSession>.from(this.sessions),
-      dayData: List<DayData>.from(this.dayData),
-      dayDataGym: List<DayData>.from(this.dayDataGym),
+    final updatedRoutine = copyWith(
+      sessions: List<WorkoutSession>.from(sessions),
+      dayData: List<DayData>.from(dayData),
+      dayDataGym: List<DayData>.from(dayDataGym),
     );
 
     for (final session in updatedRoutine.sessions) {

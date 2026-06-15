@@ -71,14 +71,11 @@ class Meal {
   /// by the repository hydration step.
   Meal.fromDrift({
     this.id,
-    required String planId,
-    required int order,
+    required this.planId,
+    required this.order,
     this.time,
-    required String name,
+    required this.name,
   }) {
-    this.planId = planId;
-    this.order = order;
-    this.name = name;
     mealItems = [];
     diaryEntries = [];
   }
@@ -108,7 +105,7 @@ class Meal {
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       planId: drift.Value(planId),
       order: drift.Value(order),
-      time: time == null ? const drift.Value.absent() : drift.Value(time!),
+      time: time == null ? const drift.Value.absent() : drift.Value(time),
       name: drift.Value(name),
     );
   }

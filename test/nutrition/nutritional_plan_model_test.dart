@@ -125,7 +125,7 @@ void main() {
     });
 
     test('MealItem nutritionalValues with weight unit', () {
-      final unit = const IngredientWeightUnit(
+      const unit = IngredientWeightUnit(
         id: 1,
         uuid: '00000000-0000-0000-0000-000000000001',
         ingredientId: 1,
@@ -141,7 +141,7 @@ void main() {
     });
 
     test('MealItem nutritionalValues with weight unit amount 1', () {
-      final unit = const IngredientWeightUnit(
+      const unit = IngredientWeightUnit(
         id: 2,
         uuid: '00000000-0000-0000-0000-000000000002',
         ingredientId: 1,
