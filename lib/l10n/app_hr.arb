@@ -1185,5 +1185,13 @@
     "searchModeExact": "Točno",
     "@searchModeExact": {
         "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "appLanguage": "Jezik aplikacije",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Standardne vrijednosti sustava",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
     }
 }
