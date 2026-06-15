@@ -128,7 +128,9 @@ class NutritionRepository {
       meals.putIfAbsent(meal.id!, () => meal);
 
       final mealItem = row.readTableOrNull(_db.mealItemTable);
-      if (mealItem == null) continue;
+      if (mealItem == null) {
+        continue;
+      }
 
       final ingredient = row.readTableOrNull(_db.ingredientTable);
       final image = row.readTableOrNull(_db.ingredientImageTable);

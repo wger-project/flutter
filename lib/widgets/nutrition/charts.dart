@@ -520,10 +520,14 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
   );
 
   double _safePercent(double logged, double planned) {
-    if (planned <= 0 || logged <= 0) return 0.0;
+    if (planned <= 0 || logged <= 0) {
+      return 0.0;
+    }
     final percent = (logged / planned) * 100;
 
-    if (percent.isNaN || percent.isInfinite) return 0.0;
+    if (percent.isNaN || percent.isInfinite) {
+      return 0.0;
+    }
     return percent;
   }
 
