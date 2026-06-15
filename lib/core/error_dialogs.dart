@@ -231,9 +231,11 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                 if (kDebugMode) {
                   logger.warning('Error launching URL: $e');
                 }
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('Error opening issue tracker: $e')));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Error opening issue tracker: $e')));
+                }
               }
             },
           ),

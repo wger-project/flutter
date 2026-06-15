@@ -91,9 +91,6 @@ class IngredientDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final goals = ingredient.nutritionalValues.toGoals();
-    final source = ingredient.sourceName ?? 'unknown';
-
     return AlertDialog(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

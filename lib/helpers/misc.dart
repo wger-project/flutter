@@ -26,7 +26,7 @@ void launchURL(
 }) async {
   final launched = await launchUrl(Uri.parse(url), mode: mode);
 
-  if (!launched) {
+  if (!launched && context.mounted) {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     scaffoldMessenger.showSnackBar(
       SnackBar(content: Text('Could not open $url.')),
