@@ -248,14 +248,10 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   }
 
   Future<void> setDashboardOrder(int oldIndex, int newIndex) async {
-    var to = newIndex;
-    if (oldIndex < to) {
-      to -= 1;
-    }
     final current = state.asData?.value ?? const AppSettings();
     final items = List<DashboardItem>.of(current.dashboardItems);
     final item = items.removeAt(oldIndex);
-    items.insert(to, item);
+    items.insert(newIndex, item);
 
     state = AsyncData(current.copyWith(dashboardItems: items));
     await _persistDashboard(items);

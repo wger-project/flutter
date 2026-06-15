@@ -53,7 +53,7 @@ class SettingsDashboardVisibility extends ConsumerWidget {
     return ReorderableListView(
       physics: const NeverScrollableScrollPhysics(),
       buildDefaultDragHandles: false,
-      onReorder: notifier.setDashboardOrder,
+      onReorderItem: notifier.setDashboardOrder,
       children: items.asMap().entries.map((entry) {
         final index = entry.key;
         final item = entry.value;

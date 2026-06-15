@@ -86,8 +86,8 @@ void main() {
       final initialFirst = initial[0];
       final initialSecond = initial[1];
 
-      // move first to second position (ReorderableListView semantics)
-      await notifier.setDashboardOrder(0, 2);
+      // move first to second position (onReorderItem semantics: newIndex already adjusted)
+      await notifier.setDashboardOrder(0, 1);
 
       final updated = container
           .read(appSettingsProvider)

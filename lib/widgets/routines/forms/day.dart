@@ -100,11 +100,8 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
               ),
             );
           },
-          onReorder: (int oldIndex, int newIndex) {
+          onReorderItem: (int oldIndex, int newIndex) {
             setState(() {
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
               final Day item = widget.days.removeAt(oldIndex);
               widget.days.insert(newIndex, item);
 

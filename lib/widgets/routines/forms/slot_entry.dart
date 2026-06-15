@@ -547,12 +547,9 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
               ),
             );
           },
-          onReorder: (int oldIndex, int newIndex) {
+          onReorderItem: (int oldIndex, int newIndex) {
             setState(() {
               // Update the order of slots in your data source
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
               final item = widget.slots.removeAt(oldIndex);
               widget.slots.insert(newIndex, item);
 
