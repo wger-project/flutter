@@ -53,7 +53,6 @@ class PowerSyncUnreachableScreen extends ConsumerWidget {
               },
               child: Text(i18n.logout),
             ),
-            // TODO: Add the correct link to the powersync section, once it exists
             TextButton(
               onPressed: () => launchURL(READTHEDOCS_URL, context),
               child: Text(i18n.aboutViewDocsTitle),
