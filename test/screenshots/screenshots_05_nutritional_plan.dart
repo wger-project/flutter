@@ -46,7 +46,7 @@ Widget createNutritionalPlanScreen({Locale? locale}) {
   final mockBodyWeightRepository = MockBodyWeightRepository();
   when(
     mockBodyWeightRepository.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value(getWeightEntries()));
+  ).thenAnswer((_) => Stream.value(getScreenshotWeightEntries()));
 
   final container = ProviderContainer.test(
     overrides: [
