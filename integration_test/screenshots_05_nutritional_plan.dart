@@ -22,6 +22,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -35,6 +36,7 @@ Widget createNutritionalPlanScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
   final key = GlobalKey<NavigatorState>();
+  final plan = getNutritionalPlanScreenshot();
 
   final mockNutritionRepo = MockNutritionRepository();
   final mockIngredientRepo = MockIngredientRepository();
@@ -45,18 +47,26 @@ Widget createNutritionalPlanScreen({Locale? locale}) {
     mockBodyWeightRepository.watchAllDrift(),
   ).thenAnswer((_) => Stream.value(getWeightEntries()));
 
+  final container = ProviderContainer.test(
+    overrides: [
+      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+      ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+    ],
+  );
+  // The screen resolves the plan by id from the nutrition notifier state.
+  container.read(nutritionProvider.notifier).state = AsyncData(
+    NutritionState(plans: [plan]),
+  );
+
   return MediaQuery(
     data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
       padding: EdgeInsets.zero,
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,
     ),
-    child: ProviderScope(
-      overrides: [
-        bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
-        nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
-        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
-      ],
+    child: UncontrolledProviderScope(
+      container: container,
       child: MaterialApp(
         locale: locale,
         debugShowCheckedModeBanner: false,
@@ -67,7 +77,7 @@ Widget createNutritionalPlanScreen({Locale? locale}) {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: getNutritionalPlanScreenshot()),
+              settings: RouteSettings(arguments: plan.id),
               builder: (_) => const NutritionalPlanScreen(),
             ),
           ),
