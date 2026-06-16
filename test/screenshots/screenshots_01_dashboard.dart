@@ -32,6 +32,7 @@ import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/trophy_repository.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/theme/theme.dart';
@@ -43,6 +44,7 @@ import '../../test_data/measurements.dart';
 import '../../test_data/nutritional_plans.dart';
 import '../../test_data/profile.dart';
 import '../../test_data/routines.dart';
+import '../../test_data/trophies.dart';
 import 'screenshots_01_dashboard.mocks.dart';
 
 class _FakeAuthNotifier extends AuthNotifier {
@@ -62,6 +64,7 @@ class _FakeAuthNotifier extends AuthNotifier {
   MeasurementRepository,
   UserProfileRepository,
   RoutinesRepository,
+  TrophyRepository,
 ])
 Widget createDashboardScreen({Locale? locale}) {
   locale ??= const Locale('en');
@@ -93,6 +96,23 @@ Widget createDashboardScreen({Locale? locale}) {
     mockRoutinesRepo.watchAllDrift(),
   ).thenAnswer((_) => Stream.value([getTestRoutine(exercises: getScreenshotExercises())]));
 
+  final mockTrophyRepo = MockTrophyRepository();
+  when(
+    mockTrophyRepo.fetchUserTrophies(
+      filterQuery: anyNamed('filterQuery'),
+      language: anyNamed('language'),
+    ),
+  ).thenAnswer((_) async => getScreenshotUserTrophies());
+  when(
+    mockTrophyRepo.fetchTrophies(language: anyNamed('language')),
+  ).thenAnswer((_) async => []);
+  when(
+    mockTrophyRepo.fetchProgression(
+      filterQuery: anyNamed('filterQuery'),
+      language: anyNamed('language'),
+    ),
+  ).thenAnswer((_) async => []);
+
   const loggedInAuth = AuthState(
     status: AuthStatus.loggedIn,
     credential: LegacyCredential('test-token'),
@@ -110,6 +130,7 @@ Widget createDashboardScreen({Locale? locale}) {
       // Present the app as online for the screenshots.
       networkStatusProvider.overrideWithValue(true),
       routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
+      trophyRepositoryProvider.overrideWithValue(mockTrophyRepo),
     ],
   );
 
