@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/body_weight_repository.dart';
@@ -29,11 +30,17 @@ import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/weight/weight_screen_test.mocks.dart';
-import '../test_data/body_weight.dart';
-import '../test_data/nutritional_plans.dart';
-import '../test_data/profile.dart';
+import '../../test_data/body_weight.dart';
+import '../../test_data/nutritional_plans.dart';
+import '../../test_data/profile.dart';
+import 'screenshots_06_weight.mocks.dart';
 
+@GenerateMocks([
+  BodyWeightRepository,
+  UserProfileRepository,
+  NutritionRepository,
+  IngredientRepository,
+])
 Widget createWeightScreen({Locale? locale}) {
   locale ??= const Locale('en');
   final mockBodyWeightRepository = MockBodyWeightRepository();

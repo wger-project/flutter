@@ -17,25 +17,47 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/routines_notifier.dart';
-import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/nutrition_repository.dart';
+import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test_data/exercises.dart';
-import '../test_data/routines.dart';
+import '../../test_data/body_weight.dart';
+import '../../test_data/nutritional_plans.dart';
+import 'screenshots_05_nutritional_plan.mocks.dart';
 
-Widget createWorkoutDetailScreen({Locale? locale}) {
+@GenerateMocks([NutritionRepository, IngredientRepository, BodyWeightRepository])
+Widget createNutritionalPlanScreen({Locale? locale}) {
   locale ??= const Locale('en');
-  final key = GlobalKey<NavigatorState>();
 
-  final routine = getTestRoutine(exercises: getScreenshotExercises());
-  final container = riverpod.ProviderContainer.test();
-  container.read(routinesRiverpodProvider.notifier).state = riverpod.AsyncData(
-    RoutinesState(
-      routines: [getTestRoutine(exercises: getScreenshotExercises())],
-    ),
+  final key = GlobalKey<NavigatorState>();
+  final plan = getNutritionalPlanScreenshot();
+
+  final mockNutritionRepo = MockNutritionRepository();
+  final mockIngredientRepo = MockIngredientRepository();
+  when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
+
+  final mockBodyWeightRepository = MockBodyWeightRepository();
+  when(
+    mockBodyWeightRepository.watchAllDrift(),
+  ).thenAnswer((_) => Stream.value(getWeightEntries()));
+
+  final container = ProviderContainer.test(
+    overrides: [
+      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+      ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+    ],
+  );
+  // The screen resolves the plan by id from the nutrition notifier state.
+  container.read(nutritionProvider.notifier).state = AsyncData(
+    NutritionState(plans: [plan]),
   );
 
   return MediaQuery(
@@ -44,7 +66,7 @@ Widget createWorkoutDetailScreen({Locale? locale}) {
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,
     ),
-    child: riverpod.UncontrolledProviderScope(
+    child: UncontrolledProviderScope(
       container: container,
       child: MaterialApp(
         locale: locale,
@@ -56,8 +78,8 @@ Widget createWorkoutDetailScreen({Locale? locale}) {
         home: TextButton(
           onPressed: () => key.currentState!.push(
             MaterialPageRoute<void>(
-              settings: RouteSettings(arguments: routine.id),
-              builder: (_) => const RoutineScreen(),
+              settings: RouteSettings(arguments: plan.id),
+              builder: (_) => const NutritionalPlanScreen(),
             ),
           ),
           child: const SizedBox(),

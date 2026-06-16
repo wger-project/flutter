@@ -17,28 +17,30 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/providers/measurement_repository.dart';
-import 'package:wger/screens/measurement_categories_screen.dart';
+import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/measurements/measurement_categories_screen_test.mocks.dart';
-import '../test_data/measurements.dart';
+import '../../test_data/exercises.dart';
+import '../../test_data/routines.dart';
+import 'screenshots_02_workout.mocks.dart';
 
-Widget createMeasurementScreen({Locale? locale}) {
+@GenerateMocks([RoutinesRepository])
+Widget createWorkoutDetailScreen({Locale? locale}) {
   locale ??= const Locale('en');
+  final key = GlobalKey<NavigatorState>();
 
-  final mockMeasurementRepo = MockMeasurementRepository();
-  when(
-    mockMeasurementRepo.watchAll(),
-  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+  final routine = getTestRoutine(exercises: getScreenshotExercises());
+  final mockRoutinesRepo = MockRoutinesRepository();
+  when(mockRoutinesRepo.watchAllDrift()).thenAnswer((_) => Stream.value([routine]));
 
-  final container = ProviderContainer.test(
+  final container = riverpod.ProviderContainer.test(
     overrides: [
-      measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+      routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
     ],
   );
 
@@ -48,7 +50,7 @@ Widget createMeasurementScreen({Locale? locale}) {
       viewPadding: EdgeInsets.zero,
       viewInsets: EdgeInsets.zero,
     ),
-    child: UncontrolledProviderScope(
+    child: riverpod.UncontrolledProviderScope(
       container: container,
       child: MaterialApp(
         locale: locale,
@@ -56,7 +58,16 @@ Widget createMeasurementScreen({Locale? locale}) {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: wgerLightTheme,
-        home: const MeasurementCategoriesScreen(),
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(arguments: routine.id),
+              builder: (_) => const RoutineScreen(),
+            ),
+          ),
+          child: const SizedBox(),
+        ),
       ),
     ),
   );

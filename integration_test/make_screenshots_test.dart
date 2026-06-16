@@ -25,12 +25,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-import 'screenshots_01_dashboard.dart';
-import 'screenshots_02_workout.dart';
-import 'screenshots_03_gym_mode.dart';
-import 'screenshots_04_measurements.dart';
-import 'screenshots_05_nutritional_plan.dart';
-import 'screenshots_06_weight.dart';
+import '../test/screenshots/screenshots_01_dashboard.dart';
+import '../test/screenshots/screenshots_02_workout.dart';
+import '../test/screenshots/screenshots_03_gym_mode.dart';
+import '../test/screenshots/screenshots_04_measurements.dart';
+import '../test/screenshots/screenshots_05_nutritional_plan.dart';
+import '../test/screenshots/screenshots_06_weight.dart';
 
 /// Type of device
 ///

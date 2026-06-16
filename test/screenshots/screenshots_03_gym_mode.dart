@@ -31,8 +31,8 @@ import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/gym_mode/summary.dart';
 
-import '../test_data/exercises.dart';
-import '../test_data/routines.dart';
+import '../../test_data/exercises.dart';
+import '../../test_data/routines.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
   _StubRoutinesRiverpod(this._routines);

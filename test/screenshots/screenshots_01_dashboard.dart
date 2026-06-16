@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
@@ -27,24 +28,22 @@ import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/gallery_repository.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/measurement_repository.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
-import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../test/gallery/gallery_form_test.mocks.dart';
-import '../test/measurements/measurement_categories_screen_test.mocks.dart';
-import '../test/nutrition/nutritional_plan_screen_test.mocks.dart';
-import '../test/weight/weight_screen_test.mocks.dart' as weight;
-import '../test_data/body_weight.dart';
-import '../test_data/exercises.dart';
-import '../test_data/gallery.dart';
-import '../test_data/measurements.dart';
-import '../test_data/nutritional_plans.dart';
-import '../test_data/profile.dart';
-import '../test_data/routines.dart';
+import '../../test_data/body_weight.dart';
+import '../../test_data/exercises.dart';
+import '../../test_data/gallery.dart';
+import '../../test_data/measurements.dart';
+import '../../test_data/nutritional_plans.dart';
+import '../../test_data/profile.dart';
+import '../../test_data/routines.dart';
+import 'screenshots_01_dashboard.mocks.dart';
 
 class _FakeAuthNotifier extends AuthNotifier {
   _FakeAuthNotifier(this._state);
@@ -55,14 +54,23 @@ class _FakeAuthNotifier extends AuthNotifier {
   Future<AuthState> build() async => _state;
 }
 
+@GenerateMocks([
+  GalleryRepository,
+  NutritionRepository,
+  IngredientRepository,
+  BodyWeightRepository,
+  MeasurementRepository,
+  UserProfileRepository,
+  RoutinesRepository,
+])
 Widget createDashboardScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
   final mockGalleryRepo = MockGalleryRepository();
   when(mockGalleryRepo.watchAllDrift()).thenAnswer((_) => Stream.value(getTestImages()));
 
-  final mockNutritionRepo = weight.MockNutritionRepository();
-  final mockIngredientRepo = weight.MockIngredientRepository();
+  final mockNutritionRepo = MockNutritionRepository();
+  final mockIngredientRepo = MockIngredientRepository();
   when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
   final mockBodyWeightRepository = MockBodyWeightRepository();
@@ -75,10 +83,15 @@ Widget createDashboardScreen({Locale? locale}) {
     mockMeasurementRepo.watchAll(),
   ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
 
-  final mockUserProfileRepo = weight.MockUserProfileRepository();
+  final mockUserProfileRepo = MockUserProfileRepository();
   when(
     mockUserProfileRepo.watchDrift(),
   ).thenAnswer((_) => Stream.value(tUserProfile1));
+
+  final mockRoutinesRepo = MockRoutinesRepository();
+  when(
+    mockRoutinesRepo.watchAllDrift(),
+  ).thenAnswer((_) => Stream.value([getTestRoutine(exercises: getScreenshotExercises())]));
 
   const loggedInAuth = AuthState(
     status: AuthStatus.loggedIn,
@@ -94,12 +107,10 @@ Widget createDashboardScreen({Locale? locale}) {
       nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
       ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       galleryRepositoryProvider.overrideWithValue(mockGalleryRepo),
+      // Present the app as online for the screenshots.
+      networkStatusProvider.overrideWithValue(true),
+      routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
     ],
-  );
-  container.read(routinesRiverpodProvider.notifier).state = AsyncData(
-    RoutinesState(
-      routines: [getTestRoutine(exercises: getScreenshotExercises())],
-    ),
   );
 
   // Seed the nutrition notifier with the screenshot plan so the dashboard can
