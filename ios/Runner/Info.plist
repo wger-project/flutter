@@ -61,6 +61,12 @@
 		<string>$(FLUTTER_BUILD_NAME)</string>
 		<key>CFBundleSignature</key>
 		<string>????</string>
+		<!-- app_link_router (app_links) is the sole consumer of the wger:// deep
+		     link. Disable Flutter's built-in deep linking so the engine does not
+		     also push the callback URL as a named route, which matches nothing
+		     and throws in onUnknownRoute. -->
+		<key>FlutterDeepLinkingEnabled</key>
+		<false/>
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
