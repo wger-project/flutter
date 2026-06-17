@@ -1078,6 +1078,19 @@ void main() {
         await PreferenceHelper.asyncPref.getInt(PREFS_ACCESS_EXPIRES_AT),
         expectedExp.millisecondsSinceEpoch,
       );
+
+      // The refresh request must carry the app User-Agent
+      final headers =
+          verify(
+                mockClient.post(
+                  tRefresh,
+                  headers: captureAnyNamed('headers'),
+                  body: anyNamed('body'),
+                ),
+              ).captured.last
+              as Map<String, String>;
+      expect(headers['user-agent'], contains('wger App'));
+      expect(headers['accept'], 'application/json');
     });
 
     test('clearSessionOnly keeps the DB-owner marker (the local DB is preserved)', () async {

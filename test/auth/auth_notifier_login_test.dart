@@ -271,6 +271,9 @@ void main() {
               ).captured.last
               as Map<String, String>;
       expect(captured.containsKey('authorization'), false);
+      // Declares it expects JSON so a bot wall (Anubis, ...) forwards the
+      // request instead of serving its HTML challenge page.
+      expect(captured['accept'], 'application/json');
     });
 
     test('re-login re-fetches the account (keepAlive cleared on logout)', () async {

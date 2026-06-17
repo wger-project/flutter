@@ -118,11 +118,7 @@ class AuthNotifier extends _$AuthNotifier {
 
     final response = await _client.post(
       makeHeadlessUri(serverUrl, HEADLESS_AUTH_SIGNUP_PATH),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-        HttpHeaders.acceptLanguageHeader: locale,
-      },
+      headers: jsonApiHeaders(appVersion, {HttpHeaders.acceptLanguageHeader: locale}),
       body: json.encode(body),
     );
     final creds = _consumeHeadlessAuthResponse(response);
@@ -175,11 +171,7 @@ class AuthNotifier extends _$AuthNotifier {
     final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
     final response = await _client.post(
       makeHeadlessUri(serverUrl, HEADLESS_AUTH_MFA_AUTHENTICATE_PATH),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
-        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-        HEADLESS_SESSION_TOKEN_HEADER: sessionToken,
-      },
+      headers: jsonApiHeaders(appVersion, {HEADLESS_SESSION_TOKEN_HEADER: sessionToken}),
       body: json.encode({'code': code}),
     );
     final creds = _consumeHeadlessAuthResponse(response);
@@ -199,10 +191,7 @@ class AuthNotifier extends _$AuthNotifier {
 
     final response = await _client.post(
       makeHeadlessUri(serverUrl, HEADLESS_AUTH_LOGIN_PATH),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
-        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-      },
+      headers: jsonApiHeaders(appVersion),
       body: json.encode({'username': username, 'password': password}),
     );
     return _consumeHeadlessAuthResponse(response);
@@ -220,10 +209,7 @@ class AuthNotifier extends _$AuthNotifier {
   ) async {
     final response = await _client.post(
       makeHeadlessUri(serverUrl, HEADLESS_TOKENS_REFRESH_PATH),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
-        HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-      },
+      headers: jsonApiHeaders(appVersion),
       body: json.encode({'refresh_token': refreshToken}),
     );
     return _consumeHeadlessAuthResponse(response);
@@ -442,11 +428,9 @@ class AuthNotifier extends _$AuthNotifier {
     try {
       response = await _client.post(
         makeUri(serverUrl, ISSUE_REFRESH_TOKEN_PATH, trailingSlash: false),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json',
-          HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
+        headers: jsonApiHeaders(appVersion, {
           HttpHeaders.authorizationHeader: legacyCred.authHeaderValue,
-        },
+        }),
       );
     } on Exception catch (e, s) {
       if (isNetworkError(e)) {
@@ -767,11 +751,12 @@ class AuthNotifier extends _$AuthNotifier {
       return;
     }
 
+    final appVersion = current.applicationVersion ?? await PackageInfo.fromPlatform();
     final http.Response response;
     try {
       response = await _client.post(
         makeHeadlessUri(serverUrl, HEADLESS_TOKENS_REFRESH_PATH),
-        headers: {HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'},
+        headers: jsonApiHeaders(appVersion),
         body: json.encode({'refresh_token': refreshToken}),
       );
     } on Exception catch (e, s) {
@@ -994,4 +979,16 @@ String getAppNameHeader(PackageInfo? applicationVersion) {
         ' - https://github.com/wger-project';
   }
   return 'wger App$out';
+}
+
+/// Standard JSON-API headers for the auth endpoints. The `Accept` header keeps
+/// a bot wall (e.g. Anubis) from serving an HTML challenge to these endpoints
+/// instead of JSON. [extra] adds per-request headers (session token, auth, ...).
+Map<String, String> jsonApiHeaders(PackageInfo? appVersion, [Map<String, String>? extra]) {
+  return {
+    HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+    HttpHeaders.acceptHeader: 'application/json',
+    HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
+    ...?extra,
+  };
 }
