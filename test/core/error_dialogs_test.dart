@@ -43,4 +43,28 @@ void main() {
       expect(texts.every((t) => t.style?.color == Colors.red), isTrue);
     });
   });
+
+  group('htmlErrorTitle', () {
+    test('extracts and unescapes the title of a bot-wall page', () {
+      const html =
+          '<!doctype html><html lang="en"><head>'
+          '<title>Making sure you&#39;re not a bot!</title>'
+          '</head><body></body></html>';
+
+      expect(htmlErrorTitle(html), "Making sure you're not a bot!");
+    });
+
+    test('matches case-insensitively and ignores attributes on the title tag', () {
+      expect(
+        htmlErrorTitle('<HEAD><TITLE data-x="1">Just a moment...</TITLE></HEAD>'),
+        'Just a moment...',
+      );
+    });
+
+    test('returns null when there is no usable title', () {
+      expect(htmlErrorTitle('<html><body>no title here</body></html>'), isNull);
+      expect(htmlErrorTitle('<html><head><title>   </title></head></html>'), isNull);
+      expect(htmlErrorTitle(''), isNull);
+    });
+  });
 }

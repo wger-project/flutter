@@ -430,6 +430,12 @@ class FormHttpErrorsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // A JSON endpoint answering with HTML often means a proxy or bot wall such
+    // as Anubis intercepted the request. Such pages render near-blank through
+    // flutter_html since their visible content is JS-driven. In these cases we
+    // try pull out the <title>, which usually names the culprit
+    final htmlTitle = exception.type == ErrorType.html ? htmlErrorTitle(exception.htmlError) : null;
+
     return Container(
       constraints: const BoxConstraints(maxHeight: 250),
       decoration: BoxDecoration(
@@ -441,9 +447,18 @@ class FormHttpErrorsWidget extends StatelessWidget {
         child: Column(
           children: [
             Icon(Icons.error_outline, color: theme.colorScheme.error),
-            if (exception.type == ErrorType.html)
-              ServerHtmlError(data: exception.htmlError)
-            else
+            if (exception.type == ErrorType.html) ...[
+              if (htmlTitle != null)
+                Text(
+                  htmlTitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.error,
+                  ),
+                ),
+              ServerHtmlError(data: exception.htmlError),
+            ] else
               ...formatApiErrors(
                 extractErrors(exception.errors),
                 color: theme.colorScheme.error,
@@ -453,4 +468,26 @@ class FormHttpErrorsWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Extracts the `<title>` of an HTML error body (e.g. a proxy or bot-wall page
+/// such as Cloudflare or Anubis), with the few HTML entities that show up in
+/// such titles unescaped. Returns null when there is no usable title.
+String? htmlErrorTitle(String html) {
+  final match = RegExp(
+    r'<title[^>]*>(.*?)</title>',
+    caseSensitive: false,
+    dotAll: true,
+  ).firstMatch(html);
+  final raw = match?.group(1)?.trim();
+  if (raw == null || raw.isEmpty) {
+    return null;
+  }
+  return raw
+      .replaceAll('&#39;', "'")
+      .replaceAll('&#x27;', "'")
+      .replaceAll('&quot;', '"')
+      .replaceAll('&lt;', '<')
+      .replaceAll('&gt;', '>')
+      .replaceAll('&amp;', '&');
 }
