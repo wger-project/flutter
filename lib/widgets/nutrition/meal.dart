@@ -27,6 +27,7 @@ import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meal_screen.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
@@ -34,21 +35,20 @@ import 'package:wger/widgets/nutrition/nutrition_tile.dart';
 import 'package:wger/widgets/nutrition/nutrition_tiles.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
-enum viewMode {
+enum ViewMode {
   base, // just highlevel meal info (name, time)
   withIngredients, // + ingredients
   withAllDetails, // + nutritional breakdown of ingredients, + logged today
 }
 
+/// Card widget for a single [Meal] on the NutritionalPlanDetailWidget (NutritionalPlanScreen).
 class MealWidget extends ConsumerStatefulWidget {
   final Meal _meal;
-  final List<MealItem> _recentMealItems;
   final bool popTwice;
   final bool readOnly;
 
   const MealWidget(
     this._meal,
-    this._recentMealItems,
     this.popTwice,
     this.readOnly,
   );
@@ -58,7 +58,7 @@ class MealWidget extends ConsumerStatefulWidget {
 }
 
 class _MealWidgetState extends ConsumerState<MealWidget> {
-  var _viewMode = viewMode.base;
+  var _viewMode = ViewMode.base;
   bool _editing = false;
 
   void _toggleEditing() {
@@ -71,15 +71,15 @@ class _MealWidgetState extends ConsumerState<MealWidget> {
     setState(() {
       if (widget._meal.isRealMeal) {
         _viewMode = switch (_viewMode) {
-          viewMode.base => viewMode.withIngredients,
-          viewMode.withIngredients => viewMode.withAllDetails,
-          viewMode.withAllDetails => viewMode.base,
+          ViewMode.base => ViewMode.withIngredients,
+          ViewMode.withIngredients => ViewMode.withAllDetails,
+          ViewMode.withAllDetails => ViewMode.base,
         };
       } else {
         // the "other logs" fake meal doesn't have ingredients to show
         _viewMode = switch (_viewMode) {
-          viewMode.base => viewMode.withAllDetails,
-          _ => viewMode.base,
+          ViewMode.base => ViewMode.withAllDetails,
+          _ => ViewMode.base,
         };
       }
     });
@@ -102,90 +102,12 @@ class _MealWidgetState extends ConsumerState<MealWidget> {
               toggleViewMode: _toggleDetails,
               meal: widget._meal,
             ),
-            if (_editing)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Wrap(
-                  spacing: 8,
-                  children: [
-                    TextButton.icon(
-                      icon: const Icon(Icons.add),
-                      label: Text(AppLocalizations.of(context).addIngredient),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).addIngredient,
-                            getMealItemForm(widget._meal, widget._recentMealItems),
-                            hasListView: true,
-                          ),
-                        );
-                      },
-                    ),
-                    TextButton.icon(
-                      label: Text(AppLocalizations.of(context).edit),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).edit,
-                            MealForm(widget._meal.planId, widget._meal),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.timer),
-                    ),
-                    TextButton.icon(
-                      onPressed: () {
-                        // Delete the meal
-                        ref.read(nutritionProvider.notifier).deleteMeal(widget._meal);
-
-                        // and inform the user
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              AppLocalizations.of(context).successfullyDeleted,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
-                      },
-                      label: Text(AppLocalizations.of(context).delete),
-                      icon: const Icon(Icons.delete),
-                    ),
-                  ],
-                ),
-              ),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
-              const Divider(),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
-              const DiaryheaderTile(),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
-              if (widget._meal.mealItems.isEmpty && widget._meal.isRealMeal)
-                NutritionTile(
-                  title: Text(
-                    AppLocalizations.of(context).noIngredientsDefined,
-                    textAlign: TextAlign.left,
-                  ),
-                )
-              else
-                ...widget._meal.mealItems.map(
-                  (item) => MealItemEditableFullTile(item, _viewMode, _editing),
-                ),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
-              const Divider(),
-            if (_viewMode == viewMode.withIngredients || _viewMode == viewMode.withAllDetails)
-              NutritionTile(
-                vPadding: 0,
-                leading: const Text('total'),
-                title: getNutritionRow(
-                  context,
-                  muted(getNutritionalValues(widget._meal.plannedNutritionalValues, context)),
-                ),
-              ),
-            if (_viewMode == viewMode.withAllDetails)
+            MealIngredientsSection(
+              meal: widget._meal,
+              editing: _editing,
+              viewMode: _viewMode,
+            ),
+            if (_viewMode == ViewMode.withAllDetails)
               Column(
                 children: [
                   const Divider(),
@@ -220,7 +142,7 @@ class _MealWidgetState extends ConsumerState<MealWidget> {
 /// An editable NutritionTile showing the avatar, name, nutritional values
 class MealItemEditableFullTile extends ConsumerWidget {
   final bool _editing;
-  final viewMode _viewMode;
+  final ViewMode _viewMode;
   final MealItem _item;
 
   const MealItemEditableFullTile(this._item, this._viewMode, this._editing);
@@ -246,7 +168,7 @@ class MealItemEditableFullTile extends ConsumerWidget {
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.left,
       ),
-      subtitle: (_viewMode != viewMode.withAllDetails && !_editing)
+      subtitle: (_viewMode != ViewMode.withAllDetails && !_editing)
           ? null
           : getNutritionRow(context, muted(getNutritionalValues(values, context))),
       trailing: _editing
@@ -279,7 +201,7 @@ class MealHeader extends StatelessWidget {
   final bool _editing;
   final bool popTwice;
   final bool readOnly;
-  final viewMode _viewMode;
+  final ViewMode _viewMode;
   final Function() _toggleEditing;
   final Function() _toggleViewMode;
 
@@ -288,7 +210,7 @@ class MealHeader extends StatelessWidget {
     required bool editing,
     this.popTwice = false,
     this.readOnly = false,
-    required viewMode viewMode,
+    required ViewMode viewMode,
     required Function() toggleEditing,
     required Function() toggleViewMode,
   }) : _meal = meal,
@@ -325,9 +247,9 @@ class MealHeader extends StatelessWidget {
             children: [
               IconButton(
                 icon: switch (_viewMode) {
-                  viewMode.base => const Icon(Icons.info_outline),
-                  viewMode.withIngredients => const Icon(Icons.info),
-                  viewMode.withAllDetails => const Icon(Icons.info),
+                  ViewMode.base => const Icon(Icons.info_outline),
+                  ViewMode.withIngredients => const Icon(Icons.info),
+                  ViewMode.withAllDetails => const Icon(Icons.info),
                 },
                 onPressed: () {
                   _toggleViewMode();
@@ -359,6 +281,142 @@ class MealHeader extends StatelessWidget {
               : null,
         ),
       ],
+    );
+  }
+}
+
+class MealIngredientsSection extends StatelessWidget {
+  const MealIngredientsSection({
+    super.key,
+    required this.meal,
+    required this.editing,
+    required this.viewMode,
+  });
+  final Meal meal;
+  final bool editing;
+  final ViewMode viewMode;
+
+  bool showIngredientsDetails(ViewMode viewMode) {
+    return viewMode == ViewMode.withIngredients || viewMode == ViewMode.withAllDetails;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (showIngredientsDetails(viewMode)) ...[
+          if (editing)
+            MealEditingToolbar(
+              meal: meal,
+            ),
+
+          const Divider(),
+          const DiaryheaderTile(),
+          _buildIngredientList(context),
+          const Divider(),
+          _buildTotalRow(context),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildIngredientList(BuildContext context) {
+    if (meal.mealItems.isEmpty && meal.isRealMeal) {
+      return NutritionTile(
+        title: Text(
+          AppLocalizations.of(context).noIngredientsDefined,
+          textAlign: TextAlign.left,
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        ...meal.mealItems.map(
+          (item) => MealItemEditableFullTile(item, viewMode, editing),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTotalRow(BuildContext context) {
+    return NutritionTile(
+      vPadding: 0,
+      leading: const Text('total'),
+      title: getNutritionRow(
+        context,
+        muted(getNutritionalValues(meal.plannedNutritionalValues, context)),
+      ),
+    );
+  }
+}
+
+class MealEditingToolbar extends ConsumerWidget {
+  final Meal meal;
+  const MealEditingToolbar({super.key, required this.meal});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(nutritionProvider).value;
+    if (state == null) {
+      return const Center(child: BoxedProgressIndicator());
+    }
+    final recentMealItems = state.recentMealItemsInPlan(meal.planId) ?? const <MealItem>[];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Wrap(
+        spacing: 8,
+        children: [
+          TextButton.icon(
+            icon: const Icon(Icons.add),
+            label: Text(AppLocalizations.of(context).addIngredient),
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  AppLocalizations.of(context).addIngredient,
+                  getMealItemForm(meal, recentMealItems),
+                  hasListView: true,
+                ),
+              );
+            },
+          ),
+          TextButton.icon(
+            label: Text(AppLocalizations.of(context).edit),
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  AppLocalizations.of(context).edit,
+                  MealForm(meal.planId, meal),
+                ),
+              );
+            },
+            icon: const Icon(Icons.timer),
+          ),
+          TextButton.icon(
+            onPressed: () {
+              // Delete the meal
+              ref.read(nutritionProvider.notifier).deleteMeal(meal);
+
+              // and inform the user
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    AppLocalizations.of(context).successfullyDeleted,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            },
+            label: Text(AppLocalizations.of(context).delete),
+            icon: const Icon(Icons.delete),
+          ),
+        ],
+      ),
     );
   }
 }
