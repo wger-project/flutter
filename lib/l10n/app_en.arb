@@ -460,6 +460,25 @@
   "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
     "description": "Message shown to guide users to the nutritional plan details page to add meals"
   },
+  "planDateRange": "from {startDate} to {endDate}",
+  "@planDateRange": {
+    "description": "Label for the start and end date range of a plan",
+    "placeholders": {
+      "startDate": { "type": "String" },
+      "endDate": { "type": "String" }
+    }
+  },
+  "planStartDate": "from {startDate}",
+  "@planStartDate": {
+    "description": "Label for the start date of a plan",
+    "placeholders": {
+      "startDate": { "type": "String" }
+    }
+  },
+  "otherLogs": "Other logs",
+  "@otherLogs": {
+    "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
+  },
   "goalEnergy": "Energy goal",
   "goalProtein": "Protein goal",
   "goalCarbohydrates": "Carbohydrates goal",
@@ -675,6 +694,10 @@
   "fiber": "Fibers",
   "sodium": "Sodium",
   "@sodium": {},
+  "carbohydratesSugar": "Sugar (Carbohydrates)",
+  "@carbohydratesSugar": {
+    "description": "Label for the carbohydrates sugar"
+  },
   "amount": "Amount",
   "@amount": {
     "description": "The amount (e.g. in grams) of an ingredient in a meal"

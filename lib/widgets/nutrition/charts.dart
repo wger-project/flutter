@@ -337,6 +337,7 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     final logged7DayAvg = widget._nutritionalPlan.loggedNutritionalValues7DayAvg;
 
     final [colorPlanned, colorLoggedToday, colorLogged7Day] = LIST_OF_COLORS3;
+    final i18n = AppLocalizations.of(context);
 
     BarChartGroupData barchartGroup(
       int x,
@@ -433,18 +434,18 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                   borderData: FlBorderData(show: false),
                   groupsSpace: 30,
                   barGroups: [
-                    barchartGroup(0, barsSpace, barsWidth, 'protein'),
-                    barchartGroup(1, barsSpace, barsWidth, 'carbohydrates'),
+                    barchartGroup(0, barsSpace, barsWidth, i18n.protein),
+                    barchartGroup(1, barsSpace, barsWidth, i18n.carbohydrates),
                     barchartGroup(
                       2,
                       barsSpace,
                       barsWidth,
-                      'carbohydratesSugar',
+                      i18n.carbohydratesSugar,
                     ),
-                    barchartGroup(3, barsSpace, barsWidth, 'fat'),
-                    barchartGroup(4, barsSpace, barsWidth, 'fatSaturated'),
+                    barchartGroup(3, barsSpace, barsWidth, i18n.fat),
+                    barchartGroup(4, barsSpace, barsWidth, i18n.saturatedFat),
                     if (widget._nutritionalPlan.nutritionalGoals.fiber != null)
-                      barchartGroup(5, barsSpace, barsWidth, 'fiber'),
+                      barchartGroup(5, barsSpace, barsWidth, i18n.fiber),
                   ],
                 ),
               ),

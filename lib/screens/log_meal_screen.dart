@@ -78,7 +78,7 @@ class _LogMealScreenState extends ConsumerState<LogMealScreen> {
                       children: [
                         const DiaryheaderTile(),
                         ...meal.mealItems.map(
-                          (item) => MealItemEditableFullTile(item, viewMode.withAllDetails, false),
+                          (item) => MealItemEditableFullTile(item, ViewMode.withAllDetails, false),
                         ),
                         const SizedBox(height: 32),
                         Text(

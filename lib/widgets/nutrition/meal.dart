@@ -285,7 +285,7 @@ class MealHeader extends StatelessWidget {
   }
 }
 
-class MealIngredientsSection extends StatelessWidget {
+class MealIngredientsSection extends ConsumerWidget {
   const MealIngredientsSection({
     super.key,
     required this.meal,
@@ -301,7 +301,7 @@ class MealIngredientsSection extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         if (showIngredientsDetails(viewMode)) ...[
@@ -340,9 +340,11 @@ class MealIngredientsSection extends StatelessWidget {
   }
 
   Widget _buildTotalRow(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
     return NutritionTile(
       vPadding: 0,
-      leading: const Text('total'),
+      leading: Text(i18n.total),
       title: getNutritionRow(
         context,
         muted(getNutritionalValues(meal.plannedNutritionalValues, context)),
