@@ -31,6 +31,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
+import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -107,7 +109,7 @@ void main() {
     );
   }
 
-  setUp(() {
+  setUp(() async {
     mockClient = MockClient();
     mockSecureStorage = MockSecureTokenStorage();
     when(mockSecureStorage.deleteRefreshToken()).thenAnswer((_) async {});
@@ -119,6 +121,10 @@ void main() {
 
     SharedPreferences.setMockInitialValues({});
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    // PreferenceHelper caches its SharedPreferencesAsync, so swapping the
+    // platform instance above does not isolate it; clear the store so values a
+    // test writes (e.g. PREFS_LAST_SERVER) don't leak into the next one.
+    await PreferenceHelper.asyncPref.clear();
     PackageInfo.setMockInitialValues(
       appName: 'wger',
       packageName: 'com.example.example',
@@ -522,11 +528,42 @@ void main() {
       await tester.tap(find.text('Self-hosted'));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('inputServer')), findsOneWidget);
+      await tester.enterText(find.byKey(const Key('inputServer')), 'http://localhost:8000');
 
-      // Back to wger.de → server field disappears again.
+      // Back to wger.de → field disappears and the URL is reset to the official
+      // server, not left pointing at the stale self-hosted value.
       await tester.tap(find.text('wger.de'));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('inputServer')), findsNothing);
+
+      await tester.tap(find.text('Self-hosted'));
+      await tester.pumpAndSettle();
+      expect(find.text('https://wger.de'), findsOneWidget);
+      expect(find.text('http://localhost:8000'), findsNothing);
+    });
+
+    testWidgets('Sheet pre-selects Self-hosted for a custom last-used server', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      // A custom server was used last: the sheet must reflect that (Self-hosted
+      // active, URL shown) instead of claiming "wger.de" while pointing
+      // elsewhere.
+      await PreferenceHelper.asyncPref.setString(
+        PREFS_LAST_SERVER,
+        json.encode({'serverUrl': 'http://localhost:8000'}),
+      );
+
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+
+      // Self-hosted is already active: its URL field shows without tapping it.
+      expect(find.byKey(const Key('inputServer')), findsOneWidget);
+      expect(find.text('http://localhost:8000'), findsOneWidget);
     });
 
     testWidgets('Sheet round-trip: Refresh token → Username & password', (

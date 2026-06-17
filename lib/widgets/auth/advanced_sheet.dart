@@ -133,7 +133,11 @@ class _AdvancedSheetState extends State<AdvancedSheet> {
                 title: defaultServerName,
                 detail: i18n.serverOptionDefaultDetail,
                 selected: _hideCustomServer,
-                onTap: () => _set(() => _hideCustomServer = true),
+                onTap: () => _set(() {
+                  _hideCustomServer = true;
+                  // Selecting the official server always points at wger.de
+                  widget.serverUrlController.text = DEFAULT_SERVER_PROD;
+                }),
               ),
               _OptionRow(
                 icon: Icons.dns_outlined,

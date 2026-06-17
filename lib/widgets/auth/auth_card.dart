@@ -96,7 +96,12 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     super.initState();
     AuthNotifier.getServerUrlFromPrefs().then((value) {
       if (mounted) {
-        _serverUrlController.text = value;
+        setState(() {
+          _serverUrlController.text = value;
+          // Reflect the actual server in the option selection: anything other
+          // than the official server counts as a self-hosted instance.
+          _hideCustomServer = value == DEFAULT_SERVER_PROD;
+        });
       }
     });
 
