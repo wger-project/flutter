@@ -59,6 +59,11 @@ class NutritionState {
   /// Returns the plan with the given [id], or `null` if it isn't (yet) in the
   /// streamed snapshot
   NutritionalPlan? findByIdOrNull(String? id) => plans.firstWhereOrNull((plan) => plan.id == id);
+
+  List<MealItem>? recentMealItemsInPlan(String? planId) {
+    final nutriPlan = plans.firstWhereOrNull((plan) => plan.id == planId);
+    return nutriPlan?.dedupMealItems;
+  }
 }
 
 @Riverpod(keepAlive: true)

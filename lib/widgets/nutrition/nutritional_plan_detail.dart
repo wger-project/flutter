@@ -78,14 +78,12 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
           ..._nutritionalPlan.meals.map(
             (meal) => MealWidget(
               meal,
-              _nutritionalPlan.dedupMealItems,
               false,
               false,
             ),
           ),
           MealWidget(
             _nutritionalPlan.pseudoMealOthers('Other logs'),
-            _nutritionalPlan.dedupMealItems,
             false,
             true,
           ),
