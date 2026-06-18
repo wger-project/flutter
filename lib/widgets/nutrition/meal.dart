@@ -304,12 +304,11 @@ class MealIngredientsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
+        if (editing)
+          MealEditingToolbar(
+            meal: meal,
+          ),
         if (showIngredientsDetails(viewMode)) ...[
-          if (editing)
-            MealEditingToolbar(
-              meal: meal,
-            ),
-
           const Divider(),
           const DiaryheaderTile(),
           _buildIngredientList(context),

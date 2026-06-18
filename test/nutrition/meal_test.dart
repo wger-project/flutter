@@ -71,11 +71,6 @@ void main() {
     await tester.tap(find.byIcon(Icons.edit));
     await tester.pumpAndSettle();
 
-    // Reveal the ingredients section by entering details view mode.
-    // The toolbar is hidden in ViewMode.base, so we must toggle it.
-    await tester.tap(find.byIcon(Icons.info_outline));
-    await tester.pumpAndSettle();
-
     final addButton = tester.widget<TextButton>(
       find.ancestor(
         of: find.byIcon(Icons.add),
