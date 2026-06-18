@@ -22,7 +22,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/meal.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
+
+class _StubNutritionNotifier extends NutritionNotifier {
+  @override
+  Stream<NutritionState> build() async* {
+    yield const NutritionState();
+  }
+}
 
 void main() {
   Meal buildMeal() => Meal(
@@ -37,13 +45,16 @@ void main() {
       // The meal widget does not gate its actions on connectivity. Pinning the
       // network status to offline makes a re-introduced connectivity gate fail
       // this test.
-      overrides: [networkStatusProvider.overrideWithValue(isOnline)],
+      overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
+        nutritionProvider.overrideWith(() => _StubNutritionNotifier()),
+      ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: SingleChildScrollView(
-            child: MealWidget(buildMeal(), const [], false, false),
+            child: MealWidget(buildMeal(), false, false),
           ),
         ),
       ),
@@ -66,6 +77,7 @@ void main() {
         matching: find.byType(TextButton),
       ),
     );
+
     expect(addButton.onPressed, isNotNull);
   });
 }

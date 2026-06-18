@@ -61,7 +61,6 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
                     itemCount: nutritionalPlan.meals.length,
                     itemBuilder: (context, index) => MealWidget(
                       nutritionalPlan.meals[index],
-                      nutritionalPlan.dedupMealItems,
                       true,
                       true,
                     ),

@@ -42,6 +42,18 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
         ? nutritionalGoals / lastWeightEntry.weight.toDouble()
         : null;
 
+    final i18n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).languageCode;
+    final startDateFormatted = DateFormat.yMd(locale).format(_nutritionalPlan.startDate);
+
+    String dateDisplay;
+    if (_nutritionalPlan.endDate != null) {
+      final endDateFormatted = DateFormat.yMd(locale).format(_nutritionalPlan.endDate!);
+      dateDisplay = i18n.planDateRange(startDateFormatted, endDateFormatted);
+    } else {
+      dateDisplay = '${i18n.planStartDate(startDateFormatted)} (${i18n.openEnded})';
+    }
+
     return SliverList(
       delegate: SliverChildListDelegate(
         [
@@ -49,15 +61,7 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              _nutritionalPlan.endDate != null
-                  ? 'from ${DateFormat.yMd(
-                      Localizations.localeOf(context).languageCode,
-                    ).format(_nutritionalPlan.startDate)} to ${DateFormat.yMd(
-                      Localizations.localeOf(context).languageCode,
-                    ).format(_nutritionalPlan.endDate!)}'
-                  : 'from ${DateFormat.yMd(
-                      Localizations.localeOf(context).languageCode,
-                    ).format(_nutritionalPlan.startDate)} (${AppLocalizations.of(context).openEnded})',
+              dateDisplay,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontStyle: FontStyle.italic,
               ),
@@ -78,14 +82,12 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
           ..._nutritionalPlan.meals.map(
             (meal) => MealWidget(
               meal,
-              _nutritionalPlan.dedupMealItems,
               false,
               false,
             ),
           ),
           MealWidget(
-            _nutritionalPlan.pseudoMealOthers('Other logs'),
-            _nutritionalPlan.dedupMealItems,
+            _nutritionalPlan.pseudoMealOthers(i18n.otherLogs),
             false,
             true,
           ),
