@@ -124,7 +124,14 @@ class AuthCredentialsStorage {
     await _prefs.setString(PREFS_SERVER_URL, serverUrl);
 
     if (refreshToken != null) {
-      await _secureStorage.writeRefreshToken(refreshToken);
+      try {
+        await _secureStorage.writeRefreshToken(refreshToken);
+      } catch (e, s) {
+        // A locked or unavailable keyring must not abort login. The session
+        // works now, but the refresh token cannot be persisted, so there is no
+        // auto-login after a restart until the keyring becomes available.
+        _logger.warning('Could not persist refresh token, auto-login disabled', e, s);
+      }
     }
 
     await clearLegacy();
@@ -144,7 +151,14 @@ class AuthCredentialsStorage {
       await _prefs.remove(PREFS_ACCESS_EXPIRES_AT);
     }
     if (refreshToken != null) {
-      await _secureStorage.writeRefreshToken(refreshToken);
+      try {
+        await _secureStorage.writeRefreshToken(refreshToken);
+      } catch (e, s) {
+        // A locked or unavailable keyring must not abort login. The session
+        // works now, but the refresh token cannot be persisted, so there is no
+        // auto-login after a restart until the keyring becomes available.
+        _logger.warning('Could not persist refresh token, auto-login disabled', e, s);
+      }
     }
   }
 
@@ -158,7 +172,13 @@ class AuthCredentialsStorage {
     await _prefs.remove(PREFS_ACCESS_EXPIRES_AT);
     await _prefs.remove(PREFS_TOKEN_TYPE);
     await _prefs.remove(PREFS_SERVER_URL);
-    await _secureStorage.deleteRefreshToken();
+    try {
+      await _secureStorage.deleteRefreshToken();
+    } catch (e, s) {
+      // A locked or unavailable keyring must not abort logout; the refresh
+      // token is unreadable anyway, so wiping it is best-effort.
+      _logger.warning('Could not delete refresh token, keyring unavailable', e, s);
+    }
   }
 
   /// Wipes only the legacy `PREFS_USER` blob. Used by the JWT-migration
