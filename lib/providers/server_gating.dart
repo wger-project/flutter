@@ -35,16 +35,6 @@ import 'package:wger/providers/helpers.dart';
 const _MIN_APP_VERSION_PATH = 'min-app-version';
 const _SERVER_VERSION_PATH = 'version';
 
-/// Outcome of the post-credentials gating chain. The notifier folds this
-/// into an [AuthState] with the credential / serverUrl / appVersion
-/// it already has.
-class GatingResult {
-  final AuthStatus status;
-  final String? serverVersion;
-
-  const GatingResult({required this.status, this.serverVersion});
-}
-
 /// Server-side reachability and version checks that gate "we have valid
 /// credentials" from "the user can actually use the app".
 class ServerGating {
@@ -54,39 +44,31 @@ class ServerGating {
 
   ServerGating(this._client, this._storage);
 
-  /// Runs the gating chain in order: server version → min app version →
-  /// PowerSync reachability (only on the first-time path). Returns the
-  /// resulting [AuthStatus] plus the fetched [serverVersion] so the
-  /// caller can surface it in the auth state regardless of which gate
-  /// triggered.
-  Future<GatingResult> resolve({
+  /// Runs the credential-dependent gates: minimum app version, then PowerSync
+  /// reachability (only on the first-time path). The server-version gate runs
+  /// separately via [serverVersionGate], so callers check the version once and
+  /// pass it into the auth state themselves.
+  Future<AuthStatus> resolve({
     required AuthCredential credential,
     required String serverUrl,
     required PackageInfo appVersion,
   }) async {
-    final serverVersion = await fetchServerVersion(serverUrl);
-    if (serverUpdateRequired(serverVersion)) {
-      return GatingResult(
-        status: AuthStatus.serverUpdateRequired,
-        serverVersion: serverVersion,
-      );
-    }
-
     if (await applicationUpdateRequired(serverUrl, appVersion.version)) {
-      return GatingResult(
-        status: AuthStatus.appUpdateRequired,
-        serverVersion: serverVersion,
-      );
+      return AuthStatus.appUpdateRequired;
     }
-
     if (!await isPowerSyncReachable(serverUrl: serverUrl, credential: credential)) {
-      return GatingResult(
-        status: AuthStatus.powerSyncUnreachable,
-        serverVersion: serverVersion,
-      );
+      return AuthStatus.powerSyncUnreachable;
     }
+    return AuthStatus.loggedIn;
+  }
 
-    return GatingResult(status: AuthStatus.loggedIn, serverVersion: serverVersion);
+  /// The single place the server version is fetched and checked. Returns the
+  /// fetched `version` (for the auth state; null when unreadable) and whether
+  /// it's `tooOld` for this app. Lenient: `tooOld` is false on an unreadable
+  /// version.
+  Future<({String? version, bool tooOld})> serverVersionGate(String serverUrl) async {
+    final version = await fetchServerVersion(serverUrl);
+    return (version: version, tooOld: serverUpdateRequired(version));
   }
 
   /// HEAD probe against `/routine` to confirm the server is reachable

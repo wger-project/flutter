@@ -310,6 +310,83 @@ void main() {
     });
   });
 
+  group('login: server too old', () {
+    test('blocks before hitting the headless endpoint and routes to update', () async {
+      // A server older than MIN_SERVER_VERSION has no allauth.headless login
+      // endpoint, so a POST there would 404 with HTML. The pre-flight version
+      // check must catch this first.
+      when(mockClient.get(tVersion)).thenAnswer((_) async => Response('"2.5.0"', 200));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      final result = await container
+          .read(authProvider.notifier)
+          .login(username, password, serverUrl, null);
+
+      expect(result, LoginActions.update);
+      final state = container.read(authProvider).value!;
+      expect(state.status, AuthStatus.serverUpdateRequired);
+      expect(state.serverVersion, '2.5.0');
+
+      // The headless login endpoint must never have been contacted.
+      verifyNever(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      );
+    });
+
+    test('register is gated the same way', () async {
+      when(mockClient.get(tVersion)).thenAnswer((_) async => Response('"2.5.0"', 200));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      final result = await container
+          .read(authProvider.notifier)
+          .register(
+            username: username,
+            password: password,
+            email: 'alice@example.com',
+            serverUrl: serverUrl,
+          );
+
+      expect(result, LoginActions.update);
+      expect(container.read(authProvider).value!.status, AuthStatus.serverUpdateRequired);
+      verifyNever(
+        mockClient.post(tHeadlessSignup, headers: anyNamed('headers'), body: anyNamed('body')),
+      );
+    });
+
+    test('an unreadable version is lenient: login proceeds', () async {
+      // A version endpoint that errors out must not lock the user out; the
+      // gate falls through and the normal login flow runs.
+      when(mockClient.get(tVersion)).thenAnswer((_) async => Response('not found', 404));
+      final accessJwt = makeJwt({'sub': '7', 'exp': 1900000000});
+      when(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {},
+            'meta': {'access_token': accessJwt, 'refresh_token': 'r'},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      final result = await container
+          .read(authProvider.notifier)
+          .login(username, password, serverUrl, null);
+
+      expect(result, LoginActions.proceed);
+      expect(container.read(authProvider).value!.status, AuthStatus.loggedIn);
+    });
+  });
+
   group('login: user-switch detection', () {
     /// Builds a 200 response carrying [accessJwt] and a refresh token.
     void stubLoginSuccess(String accessJwt) {

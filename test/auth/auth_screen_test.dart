@@ -150,10 +150,12 @@ void main() {
       ),
     ).thenAnswer((_) => Future(() => Response(json.encode(headlessAuthOk()), 200)));
 
-    when(mockClient.get(any)).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
+    // Default gating GETs report a server new enough for this app, so the
+    // pre-flight server-version check lets the login POST proceed
+    when(mockClient.get(any)).thenAnswer((_) => Future(() => Response('"99.99.99"', 200)));
     when(
       mockClient.get(any, headers: anyNamed('headers')),
-    ).thenAnswer((_) => Future(() => Response('"1.2.3.4"', 200)));
+    ).thenAnswer((_) => Future(() => Response('"99.99.99"', 200)));
   });
 
   group('Login mode', () {

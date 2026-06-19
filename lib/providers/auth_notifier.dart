@@ -111,6 +111,10 @@ class AuthNotifier extends _$AuthNotifier {
     String locale = 'en',
   }) async {
     final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
+    final version = await _gateBeforeAuth(serverUrl, appVersion);
+    if (version.tooOld) {
+      return LoginActions.update;
+    }
     final body = <String, String>{'username': username, 'password': password};
     if (email.isNotEmpty) {
       body['email'] = email;
@@ -122,7 +126,7 @@ class AuthNotifier extends _$AuthNotifier {
       body: json.encode(body),
     );
     final creds = _consumeHeadlessAuthResponse(response);
-    return _completeLogin(creds, serverUrl, appVersion);
+    return _completeLogin(creds, serverUrl, appVersion, serverVersion: version.version);
   }
 
   /// Authenticates a user.
@@ -143,6 +147,10 @@ class AuthNotifier extends _$AuthNotifier {
     String? refreshToken,
   ) async {
     final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
+    final version = await _gateBeforeAuth(serverUrl, appVersion);
+    if (version.tooOld) {
+      return LoginActions.update;
+    }
     final creds = await _obtainCredentials(
       username,
       password,
@@ -150,7 +158,7 @@ class AuthNotifier extends _$AuthNotifier {
       refreshToken,
       appVersion,
     );
-    return _completeLogin(creds, serverUrl, appVersion);
+    return _completeLogin(creds, serverUrl, appVersion, serverVersion: version.version);
   }
 
   /// Completes a pending second-factor challenge started by [login].
@@ -169,13 +177,40 @@ class AuthNotifier extends _$AuthNotifier {
     required String serverUrl,
   }) async {
     final appVersion = _currentOrBlank().applicationVersion ?? await PackageInfo.fromPlatform();
+    final version = await _gateBeforeAuth(serverUrl, appVersion);
+    if (version.tooOld) {
+      return LoginActions.update;
+    }
     final response = await _client.post(
       makeHeadlessUri(serverUrl, HEADLESS_AUTH_MFA_AUTHENTICATE_PATH),
       headers: jsonApiHeaders(appVersion, {HEADLESS_SESSION_TOKEN_HEADER: sessionToken}),
       body: json.encode({'code': code}),
     );
     final creds = _consumeHeadlessAuthResponse(response);
-    return _completeLogin(creds, serverUrl, appVersion);
+    return _completeLogin(creds, serverUrl, appVersion, serverVersion: version.version);
+  }
+
+  /// Checks the server version before authenticating and, when the server is
+  /// too old to log into, publishes the server-update state so the router
+  /// shows the update screen. Returns the gate result either way; the caller
+  /// carries the version into the logged-in state when it proceeds.
+  Future<({String? version, bool tooOld})> _gateBeforeAuth(
+    String serverUrl,
+    PackageInfo appVersion,
+  ) async {
+    final gate = await _gating.serverVersionGate(serverUrl);
+    if (gate.tooOld) {
+      _logger.info('login blocked: server ${gate.version} below $MIN_SERVER_VERSION');
+      state = AsyncData(
+        AuthState(
+          status: AuthStatus.serverUpdateRequired,
+          serverUrl: serverUrl,
+          serverVersion: gate.version,
+          applicationVersion: appVersion,
+        ),
+      );
+    }
+    return gate;
   }
 
   Future<_FreshCredentials> _obtainCredentials(
@@ -290,8 +325,9 @@ class AuthNotifier extends _$AuthNotifier {
   Future<LoginActions> _completeLogin(
     _FreshCredentials creds,
     String serverUrl,
-    PackageInfo appVersion,
-  ) async {
+    PackageInfo appVersion, {
+    String? serverVersion,
+  }) async {
     // Compare the durable DB-owner marker against the incoming user. null
     // on the owner side means "no user data on disk" (fresh install, or the
     // DB was wiped), so there is nothing to leak; we only wipe on a
@@ -306,16 +342,16 @@ class AuthNotifier extends _$AuthNotifier {
       serverUrl: serverUrl,
     );
 
-    final gating = await _gating.resolve(
+    final status = await _gating.resolve(
       credential: creds.credential,
       serverUrl: serverUrl,
       appVersion: appVersion,
     );
     var newState = AuthState(
-      status: gating.status,
+      status: status,
       credential: creds.credential,
       serverUrl: serverUrl,
-      serverVersion: gating.serverVersion,
+      serverVersion: serverVersion,
       applicationVersion: appVersion,
     );
 
@@ -524,16 +560,19 @@ class AuthNotifier extends _$AuthNotifier {
       return _restoredSessionState(stored, appVersion);
     }
 
-    final gating = await _gating.resolve(
-      credential: stored.credential,
-      serverUrl: stored.serverUrl,
-      appVersion: appVersion,
-    );
+    final versionGate = await _gating.serverVersionGate(stored.serverUrl);
+    final status = versionGate.tooOld
+        ? AuthStatus.serverUpdateRequired
+        : await _gating.resolve(
+            credential: stored.credential,
+            serverUrl: stored.serverUrl,
+            appVersion: appVersion,
+          );
     final newState = AuthState(
-      status: gating.status,
+      status: status,
       credential: stored.credential,
       serverUrl: stored.serverUrl,
-      serverVersion: gating.serverVersion,
+      serverVersion: versionGate.version,
       applicationVersion: appVersion,
     );
     if (newState.status == AuthStatus.loggedIn) {
@@ -658,13 +697,13 @@ class AuthNotifier extends _$AuthNotifier {
         return;
       }
 
-      final serverVersion = await _gating.fetchServerVersion(serverUrl);
-      if (serverUpdateRequired(serverVersion)) {
+      final versionGate = await _gating.serverVersionGate(serverUrl);
+      if (versionGate.tooOld) {
         _logger.info('revalidation: server update required');
         state = AsyncData(
           current.copyWith(
             status: AuthStatus.serverUpdateRequired,
-            serverVersion: serverVersion,
+            serverVersion: versionGate.version,
           ),
         );
         return;
@@ -674,7 +713,7 @@ class AuthNotifier extends _$AuthNotifier {
         state = AsyncData(
           current.copyWith(
             status: AuthStatus.appUpdateRequired,
-            serverVersion: serverVersion,
+            serverVersion: versionGate.version,
           ),
         );
         return;
