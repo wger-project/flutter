@@ -44,7 +44,7 @@ jobs:
         #   runner: ubuntu-24.04-arm
     steps:
       - name: Checkout application
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref }}
 
@@ -83,7 +83,7 @@ jobs:
 
     steps:
       - name: Checkout flatpak-flathub repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: wger-project/de.wger.flutter
 
